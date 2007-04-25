@@ -29,7 +29,8 @@ my $apache_uid = getpwnam('apache');
 # open PHP sms mt system
 #
 my($sms_mt_chld_out, $sms_mt_chld_in);
-my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, '/var/www/vhost/jiwai.de/beta/robot/sms_mt.php') or die "open2 $!";
+#my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, '/var/www/vhost/jiwai.de/beta/robot/sms_mt.php') or die "open2 $!";
+my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "/proc/$$/cwd/sms_mt.php") or die "open2 $!";
 
 syslog('info', "sms_mt pid $sms_mt_pid opened.");
 
@@ -186,6 +187,12 @@ sub sms_deliver_file {
 	print $chld_in "$mobile_no $encode_msg\n";
 
 	$retval = <$chld_out>;
+
+	if ( !defined $retval ){
+		syslog('err', 'chld_out no data! mt process died? I must exit!');
+		exit(-1);
+	}
+
 	chomp $retval;
 
 

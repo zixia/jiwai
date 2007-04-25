@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-require ('../jiwai.php');
+require_once(dirname(__FILE__) . "/../../webroot/jiwai.inc.php");
 
 /*
 function test () {
