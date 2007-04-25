@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+              value="[%d{ISO8601}] %-5p %c %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="INFO"/>
+        </filter>
+    </appender>
+    <appender name="STDERR"  class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.err" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+              value="[%d{ISO8601}] %-5p %c %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="WARN"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+    </appender>
+        <appender name="SYSLOG"  class="org.apache.log4j.net.SyslogAppender">
+        <param name="syslogHost" value="localhost" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+              value="appname %-5p %c %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="FATAL"/>
+        </filter>
+    </appender>
+
+    <!--                          -->
+    <!-- Declare the SMTPAppender -->
+    <!--                          -->
+    <appender name="EMAIL"  class="org.apache.log4j.net.SMTPAppender">
+                <param name="Threshold" value="INFO"/>
+        <param name="BufferSize" value="128" />
+        <param name="SMTPHost" value="localhost" />
+        <param name="From" value="log4j@server5" />
+        <param name="To" value="user1@host.com, user2@domain.net" />
+        <param name="Subject" value="[SMTPAppender] Application message4" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <!--<param name="ConversionPattern"
+              value="[%d{ISO8601}]%n%n%-5p%n%n%c%n%n%m%n%n" />-->
+                        <param name="ConversionPattern" value="[%d{ISO8601}] %-5p %c %m%n"/>
+        </layout>
+
+    </appender>
+
+    <appender name="CSF_FILE" class="org.apache.log4j.RollingFileAppender">
+                <param name="Threshold" value="INFO"/>
+                <param name="File" value="csf.log"/>
+                <param name="Append" value="true"/>
+                <param name="MaxFileSize" value="500KB"/>
+                <param name="MaxBackupIndex" value="5"/>
+                <layout class="org.apache.log4j.PatternLayout">
+                        <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>
+                </layout>
+        </appender>
+
+    <!--                           -->
+    <!-- setup log4j's root logger -->
+    <!--                           -->
+    <root>
+        <level value="all" />
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDERR"/>
+        <appender-ref ref="SYSLOG" />
+        <appender-ref ref="EMAIL" />
+        <appender-ref ref="CSF_FILE" />
+    </root>
+</log4j:configuration>

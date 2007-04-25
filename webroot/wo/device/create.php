@@ -1,0 +1,61 @@
+<?php
+require_once ('../../jiwai.inc.php');
+
+JWUser::MustLogined();
+
+if ( ($idUser=JWUser::GetCurrentUserId())
+		&& array_key_exists('device',$_REQUEST) ){
+
+	$aDeviceInfo = $_REQUEST['device'];
+
+	$is_succ = JWDevice::Create($idUser
+							, $aDeviceInfo['address']
+							, $aDeviceInfo['type'] );
+
+	$address	= $aDeviceInfo['address'];
+	$type		= strtoupper($aDeviceInfo['type']);
+
+	if ( 'SMS' == $type )
+	{
+		$type = '手机';
+	}
+
+	$error_html = '';
+	$notice_html = '';
+
+	if ( null===$is_succ )
+	{
+		$error_html = <<<_ERR_
+$type 帐号 $address 未能通过叽歪de系统检查，请您检查是否输入了正确的 $type 帐号。如有疑问请
+_ERR_;
+		$error_html .= '<a href="' . JWTemplate::GetConst('ContactUsUrl') . '">联系我们</a>';
+	} 
+	else if ( false===$is_succ )
+	{
+		$error_html = <<<_ERR_
+对不起，$address 已经被使用，请您输入一个没有被使用的 $type 帐号。如有疑问请
+_ERR_;
+		$error_html .= '<a href="' . JWTemplate::GetConst('UrlContactUs') . '">联系我们</a>';
+	}
+	else if ( $is_succ )
+	{
+		$notice_html = <<<_INFO_
+$type 帐号 $address 添加成功，耶！
+_INFO_;
+	}
+	else
+	{
+		// no condition here
+	}
+
+	if ( !empty($error_html) )
+		JWSession::SetInfo('error',$error_html);
+
+	if ( !empty($notice_html) )
+		JWSession::SetInfo('notice',$notice_html);
+
+}
+
+header ('Location: /wo/device/');
+exit(0);
+?>

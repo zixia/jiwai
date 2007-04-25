@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<config>
+    <javascript>
+		<default>Nova.Core, Nova.Compat, Nova.Behavior, Nova.Dialog</default>
+		<fx>Nova.Core, Nova.Compat, Nova.Dialog</fx>
+    </javascript>
+    <meta>
+    	<keywords>
+			叽歪de,叽歪的,叽歪地,唧歪de,唧歪的,唧歪地,叽叽歪歪,唧唧歪歪,这一刻,你在做什么,tiny blog, blog, im nick, nick, log
+		</keywords>
+		<description>
+			叽歪de － 这一刻，你在做什么？
+		</description>
+		<title>
+			叽歪de － 这一刻，你在做什么？
+		</title>
+		<alternate>
+			http://feeds.feedburner.com/jiwai
+		</alternate>
+    </meta>
+    <db>
+		<host>127.0.0.1</host>
+		<username>jiwai</username>
+		<passwd>JiWai.de/zixia</passwd>
+		<dbname>jiwai</dbname>
+	</db>
+	<directory>
+		<queue>
+			<root>/var/cache/tmpfs/jiwai/queue/</root>
+			<robot>robot/</robot>
+			<msn>msn/</msn>
+			<sms>sms/</sms>
+		</queue>
+		<quarantine>
+			<root>/var/cache/tmpfs/jiwai/quarantine/</root>
+			<robot>robot/</robot>
+			<msn>msn/</msn>
+			<sms>sms/</sms>
+		</quarantine>
+
+		<mo>mo/</mo>
+		<mt>mt/</mt>
+		<user>
+			<home>/var/www/vhost/jiwai.de/asset/system/user/</home>
+		</user>
+	</directory>
+</config>
