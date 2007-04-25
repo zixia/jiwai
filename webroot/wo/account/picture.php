@@ -175,6 +175,15 @@ _HTML_;
 								<!--input id="user_profile_image_temp" name="user[profile_image_temp]" type="hidden" -->
 								<input id="user_profile_image" name="profile_image" size="30" type="file" />
 								<p><small>为保证您的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
+<?php
+if ( ! empty($arr_picture_info['name'] ) )
+{
+	echo <<<_HTML_
+								<p><small>因为没有头像，所以您目前不会出现在叽歪广场中。</small></p>
+
+_HTML_;
+}
+?>
 							</td>
 						</tr>
 						<tr>

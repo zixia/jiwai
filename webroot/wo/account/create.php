@@ -200,14 +200,14 @@ function validate_form(form)
 				<fieldset>
 					<table cellspacing="0">
 						<tr>
-							<th><label for="user_nameScreen">选择昵称：</label></th>
+							<th><label for="user_nameScreen">选择帐号：</label></th>
 
 							<td><input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" /> 
 								<small>用来登录<em>叽歪de</em>（不可含汉字、空格及特殊字符，最短6个字符）</small>
 							</td>
 						</tr>
 						<tr>
-							<th><label for="user_nameFull">全名：</label></th>
+							<th><label for="user_nameFull">名字：</label></th>
 
 							<td><input id="user_nameFull" name="user[nameFull]" size="30" type="text" value="<?php if(array_key_exists('nameFull',$aUserInfo)) echo $aUserInfo['nameFull'];?>" />
 								<small>可含汉字和空格</small>

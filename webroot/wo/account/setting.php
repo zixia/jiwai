@@ -45,14 +45,14 @@ if ( isset($new_user_info) )
 		if ( !JWUser::IsValidName($nameScreen) )
 		{
 			$error_html .= <<<_HTML_
-<li>昵称 <strong>$nameScreen</strong> 需由最短为5位的字母、数字、下划线和小数点组成，且不能短于6个字符。</li>
+<li>帐号 <strong>$nameScreen</strong> 需由最短为5位的字母、数字、下划线和小数点组成，且不能短于6个字符。</li>
 _HTML_;
 		}
 
 		if ( JWUser::IsExistName($nameScreen) )
 		{
 			$error_html .= <<<_HTML_
-<li>昵称 <strong>$nameScreen</strong> 已经被使用。</li>
+<li>帐号 <strong>$nameScreen</strong> 已经被使用。</li>
 _HTML_;
 		}
 	}
@@ -174,13 +174,13 @@ _HTML_;
 				<fieldset>
 					<table cellspacing="0">
 					<tr>
-						<th><label for="user_username">昵称：</label></th>
+						<th><label for="user_username">帐号：</label></th>
 						<td>
 							<input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" 
 								value="<?php echo isset($new_user_info)
 														?$new_user_info['nameScreen']
 														:$user_info['nameScreen']?>" />
-							<p><small>昵称将作为你的叽歪de主页地址：
+							<p><small>帐号将作为你的叽歪de主页地址：
 							(<a href="/<?php echo isset($new_user_info)
 														?$new_user_info['nameScreen']
 														:$user_info['nameScreen']?>">http://JiWai.de/<?php echo isset($new_user_info)
@@ -198,7 +198,7 @@ _HTML_;
 					</tr>
 
 					<tr>
-						<th><label for="user_name">姓名：</label></th>
+						<th><label for="user_name">名子：</label></th>
 
 						<td><input id="user_name" name="user[nameFull]" size="30" type="text" value="<?php echo isset($new_user_info)
                                                         ? $new_user_info['nameFull']
@@ -230,7 +230,7 @@ _HTML_;
 							<input id="user_location" name="user[location]" size="30" type="text" value="<?php echo isset($new_user_info)
                                                         ? $new_user_info['location']
                                                         : $user_info['location']?>" />
-							<p><small>你生活在哪个省市？</small></p>
+							<p><small>你生活在哪个城市？</small></p>
 						</td>
 					</tr>
 
