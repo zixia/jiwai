@@ -198,7 +198,7 @@ _HTML_;
 					</tr>
 
 					<tr>
-						<th><label for="user_name">名子：</label></th>
+						<th><label for="user_name">名字：</label></th>
 
 						<td><input id="user_name" name="user[nameFull]" size="30" type="text" value="<?php echo isset($new_user_info)
                                                         ? $new_user_info['nameFull']
