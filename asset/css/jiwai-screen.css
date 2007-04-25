@@ -227,12 +227,6 @@ h2.thumb, h2.thumb a {
 border:1px solid gray;
 }
 
-fieldset th, td {
-padding:7px 3px;
-vertical-align:top;
-}
-
-
 .subpage #content h1, .subpage #content h2, .subpage #content h3, .subpage #content h4, .subpage #content h5 {
 	margin:13px 0pt 4px;
 }
