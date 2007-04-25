@@ -286,6 +286,12 @@ sub on_message {
 #<msnobj Creator="callow819@yahoo.com.cn" Size="24758" Type="2" Location="TFRE.dat" Friendly="AAA=" SHA1D="q2x6DeSxjSJvn8WUUDg7HHqXz38=" SHA1C="3S8QlkpsiW5dearxAvLz2toQ6AM="/>
 # <msnobj Creator="jessicazhuzhu@hotmail.com" Type="2" SHA1D="WWQ5uZ36cljMBjyHNa6Q/jg5i4I=" Size="4443" Location="0" Friendly="AjACMAIwAAA="/>  3 分钟前  来自于 msn  Icon_star_empty   
 #<msnobj Creator="callow819@yahoo.com.cn" Size="220" Type="2" Location="TFR3.dat" Friendly="AAA=" SHA1D="s5JHL/zEfso5pIeAvv99HUnzUvY=" SHA1C="9YTwtENnHd1TIGnWOviynn4B/Eo="/>
+
+#[Client-Name: Gaim/2.0.0beta6
+#Chat-Logging: Y
+#]
+  return if $message=~m#^Client-Name:[\w\d\s\/\-:.]+$#sig ;
+
   $message=~s#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>##ig;
 
   return jiwai_queue_mo ($chandle,$message);
