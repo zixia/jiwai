@@ -79,8 +79,7 @@ _INFO_;
 							<code><?php echo $aDeviceInfo['sms']['secret']?></code>
 						</h4>
 
-						<p>注意：发短信给叽歪de服务是免费的。发送更新短信到叽歪de特服号，与发送短信给其他手机号码的收费是一样的。(目前联通号码还没有测试，我们需要一个拥有联通手机测志愿者，欢迎志愿者<a href="mailto:wo@jiwai.de">联系我们</a>。
-						</p>
+						<p>注意：<strong>免费</strong>通过手机短信更新叽歪de内容。发送短信到叽歪de特服号，跟日常短信一样，只需付给你的手机运营商一条普通短信的费用。 </p>
   
 
 						<small>
@@ -111,7 +110,7 @@ _INFO_;
       						<strong> <?php echo JWDevice::GetMobileSpNo($aDeviceInfo['sms']['address']) ?> </strong>
 						</small></p>
 
-						<p>注意：发短信给叽歪de服务是免费的。发送更新短信到叽歪de特服号，与发送短信给其他手机号码的收费是一样的。(目前联通号码还没有测试，我们需要一个拥有联通手机测志愿者，欢迎志愿者<a href="mailto:wo@jiwai.de">联系我们</a>。
+						<p>注意：<strong>免费</strong>通过手机短信更新叽歪de内容。发送短信到叽歪de特服号，跟日常短信一样，只需付给你的手机运营商一条普通短信的费用。 </p>
 
 						<small>
 							<form method="post" action="/wo/device/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to">
