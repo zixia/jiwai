@@ -111,8 +111,8 @@ use POSIX;
 
 use Data::Dumper;
 
-my $handle = 'bg1fmo@hotmail.com';
-my $password = 'zxzxzx';
+my $handle = 'wo@jiwai.de';
+my $password = 'Beta@JiWai741de';
 
 my $D = 0;
 my $PIDFile = './msn-client.pid';
