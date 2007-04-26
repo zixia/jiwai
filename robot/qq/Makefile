@@ -5,4 +5,4 @@ clean:
 	rm *.class
 
 run:
-	/usr/java/jdk1.5.0_11/bin/java -cp LumaQQ.jar:log4j.jar:. -Dqq.no=520656 -Dqq.pass=pianziji QQJiWaiRobot
+	/usr/java/jdk1.5.0_11/bin/java -cp LumaQQ.jar:log4j.jar:. -Dqq.no=229516989 -Dqq.pass=Beta@JiWai741de QQJiWaiRobot

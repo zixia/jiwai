@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.SyslogAppender;
+//import org.apache.log4j.SyslogAppender;
 
 import edu.tsinghua.lumaqq.qq.QQ;
 import edu.tsinghua.lumaqq.qq.QQClient;
@@ -59,13 +59,14 @@ public class QQJiWaiRobot implements IQQListener {
 	private String msg;
 	private boolean onlineFinished = false;
 
-	private static final Logger logger = org.apache.log4j.Logger.getLogger(QQJiWaiRobot.class);
+//	private static final Logger logger = org.apache.log4j.Logger.getLogger(QQJiWaiRobot.class);
 
 	public QQJiWaiRobot() {
 		if (!loadConfig()) {
 			return;
 		}
 
+/*
 		try 
 		{
 			SyslogAppender appender = new SyslogAppender();
@@ -75,6 +76,7 @@ public class QQJiWaiRobot implements IQQListener {
 		{
 			log(e);
 		}
+*/
  
 		try {
 			state = 0;
@@ -185,8 +187,8 @@ public class QQJiWaiRobot implements IQQListener {
 	}
 
 	static private void log(String msg) {
-		logger.info(msg);
-		//System.out.print(msg + "\n");
+		//logger.info(msg);
+		System.out.print(msg + "\n");
 	}
 
 	private void log(Exception e) {
@@ -197,11 +199,11 @@ public class QQJiWaiRobot implements IQQListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		logger.info("Enter main");
+		//logger.info("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
 		qq_robot.run();
 		log(qq_robot.toString());
-		logger.info("Exit main");
+		//logger.info("Exit main");
 		System.exit(0);
 	}
 
