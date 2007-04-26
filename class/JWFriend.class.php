@@ -45,7 +45,7 @@ class JWFriend {
 	 * Is idFriend is idUser's friend?
 	 *
 	 */
-	static function IsFriend($idUser, $idFriend=null)
+	static function IsFriend($idUser, $idFriend)
 	{
 		if ( !is_int($idUser) )
 			$idUser 	= intval($idUser);
@@ -53,8 +53,8 @@ class JWFriend {
 		if ( !is_int($idFriend) )
 			$idFriend 	= intval($idFriend);
 
-		if ( 0==$idUser || 0==$idFriend )
-			throw new JWException("need int id");
+		if ( 0===$idUser || 0===$idFriend )
+			throw new JWException('must int');
 
 		return JWDB::ExistTableRow('Friend', array('idUser'=>$idUser,'idFriend'=>$idFriend));
 	}
