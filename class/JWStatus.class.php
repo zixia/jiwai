@@ -274,7 +274,8 @@ _SQL_;
 			$tail_str		= htmlspecialchars($matches[4]);
 
 			$url_str		= <<<_HTML_
-<a href="javascript: urchinTracker('/wo/outlink/$url_domain$url_path'); document.location.href='http://$url_domain$url_path';">http://$url_domain/...</a>
+<a href="#" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
+						this.href='http://$url_domain$url_path';">http://$url_domain/...</a>
 _HTML_;
 			$status 		= $head_str . $url_str . $tail_str;
 		}
