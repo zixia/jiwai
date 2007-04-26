@@ -121,6 +121,7 @@ WHERE
 				WHERE	idUser=$idUser
 			)
 		AND Status.timestamp > (NOW()-INTERVAL 1 WEEK)
+		AND Status.idUser=User.id
 ORDER BY
 		Status.timestamp desc
 LIMIT $numMax;
