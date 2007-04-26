@@ -116,10 +116,14 @@ SELECT
 FROM	Status, User
 WHERE	
 		User.id IN
-			(	SELECT	idFriend
-				FROM	Friend
-				WHERE	idUser=$idUser
-			)
+		(
+			SELECT	idFriend
+			FROM	Friend
+			WHERE	idUser=$idUser
+			
+			UNION
+				SELECT $idUser as idFriend
+		)
 		AND Status.timestamp > (NOW()-INTERVAL 1 WEEK)
 		AND Status.idUser=User.id
 ORDER BY
