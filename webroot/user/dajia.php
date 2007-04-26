@@ -39,13 +39,14 @@ JWTemplate::timeline($aStatusList)
 
 
 <?php 
-$arr_menu = array(	'timeline_notice'
-					, 'featured'
+$arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong'))
+					, array ('featured'			, null)
 				);
-if ( ! JWUser::IsLogined() )
-	array_push ($arr_menu, 'register');
 
-JWTemplate::sidebar($arr_menu);
+if ( ! JWUser::IsLogined() )
+	array_push ($arr_menu, array('register', null));
+
+JWTemplate::sidebar($arr_menu, null);
 ?>
 			
 		

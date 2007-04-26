@@ -95,7 +95,7 @@ class JWRobotMsg {
 			if ( ! (strlen($this->mAddress) && strlen($this->mType) && strlen($this->mBody)) )
 				$this->mIsValid = false;
 
-			if ( ! JWDevice::is_valid($this->mAddress,$this->mType) )
+			if ( ! JWDevice::IsValid($this->mAddress,$this->mType) )
 				$this->mIsValid = false;
 		}
 

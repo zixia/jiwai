@@ -1,10 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
-require_once('../jiwai.inc.php');
+require_once(dirname(__FILE__) . '/../jiwai.inc.php');
 
 JWUser::MustLogined();
 
-$idUser = JWUser::GetCurrentUserInfo('id');
+$logined_user_info 	= JWUser::GetCurrentUserInfo();
+$logined_user_id 	= $logined_user_info['id'];
+
 
 $debug = JWDebug::instance();
 $debug->init();
@@ -47,9 +49,16 @@ _HTML_;
 <?php JWTemplate::tab_header( array() ) ?>
 
 <?php 
-$aStatusList = JWStatus::get_status_list_user($idUser);
+// when show archive, we set $show_archive=true, then include this file.
+if ( !isset($show_user_archive) )
+	$show_user_archive = false;;
 
-JWTemplate::timeline($aStatusList) 
+if ( $show_user_archive )
+	$arr_status_list = JWStatus::GetStatusListUser($logined_user_id);
+else
+	$arr_status_list = JWStatus::GetStatusListNetwork($logined_user_id);
+
+JWTemplate::timeline($arr_status_list, array('icon'=>!$show_user_archive,'trash'=>true)) 
 ?>
   
 <?php JWTemplate::pagination() ?>
@@ -73,7 +82,30 @@ JWTemplate::timeline($aStatusList)
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
-<?php JWTemplate::sidebar( array('status','count','jwvia','active','friend') ) ?>
+<?php 
+$arr_count_param	= JWUser::GetState($logined_user_id);
+
+
+$arr_device_active	= JWDevice::GetDeviceInfo($logined_user_id);
+
+$im_actived 		= ( isset($arr_device_active['im']) 
+							&& $arr_device_active['im']['verified']  );
+$sms_actived 		= ( isset($arr_device_active['sms']) 
+							&& $arr_device_active['sms']['verified'] );
+
+
+$arr_friend_list	= JWFriend::GetFriend($logined_user_id);
+
+
+$arr_menu 			= array(	array ('status'			, array($logined_user_info))
+								, array ('count'		, array($arr_count_param))
+								, array ('jwvia'		, array($logined_user_info))
+								, array ('active'		, array($im_actived, $sms_actived))
+								, array ('friend'		, array($arr_friend_list))
+							);
+	
+JWTemplate::sidebar( $arr_menu );
+?>
 
 </div><!-- #container -->
 

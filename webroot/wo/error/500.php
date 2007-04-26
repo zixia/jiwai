@@ -7,9 +7,9 @@ if ( array_key_exists('500URL',$_SESSION) )
 	$url = $_SESSION['500URL'];
 	unset ($_SESSION['500URL']);
 }
-else if ( isset($_SERVER['HTTP_REFFER']) )
+else if ( isset($_SERVER['HTTP_REFERER']) )
 {
-	$url = $_SERVER['HTTP_REFFER'];
+	$url = $_SERVER['HTTP_REFERER'];
 }
 else if ( isset($_SERVER['REDIRECT_SCRIPT_URI']) )
 {

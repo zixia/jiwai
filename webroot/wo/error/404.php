@@ -6,9 +6,9 @@ if ( array_key_exists('404URL',$_SESSION) )
 	$url = $_SESSION['404URL'];
 	unset ($_SESSION['404URL']);
 }
-else if ( isset($_SERVER['HTTP_REFFER']) )
+else if ( isset($_SERVER['HTTP_REFERER']) )
 {
-	$url = $_SERVER['HTTP_REFFER'];
+	$url = $_SERVER['HTTP_REFERER'];
 }
 else if ( isset($_SERVER['REDIRECT_SCRIPT_URI']) )
 {

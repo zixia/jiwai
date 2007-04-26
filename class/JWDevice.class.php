@@ -41,7 +41,7 @@ class JWDevice {
 	}
 
 
-	static function is_valid( $address, $type )
+	static function IsValid( $address, $type )
 	{
 		if ( strlen($address) > 64 ){ // too long
 			JWDebug::trace("device: address[$address] too long");
@@ -82,15 +82,16 @@ FROM	Device
 WHERE	address='$address' AND type='$type'
 LIMIT	1;
 _SQL_;
-		return JWDB::get_query_result ($sql);
+		return JWDB::GetQueryResult ($sql);
 	}
 
 
 	static public function GetDeviceInfo( $idUser )
 	{
-		if ( ! is_numeric($idUser) ){
-			return null;
-		}
+		$idUser = intval($idUser);
+
+		if ( 0==$idUser )
+			throw new JWException('must int');
 
 		$sql = <<<_SQL_
 SELECT	id as idDevice,address,type,secret
@@ -98,7 +99,7 @@ FROM	Device
 WHERE	idUser=$idUser
 LIMIT	2;
 _SQL_;
-		if ( ! $listDeviceInfo = JWDB::get_query_result ($sql, true) ){
+		if ( ! $listDeviceInfo = JWDB::GetQueryResult ($sql, true) ){
 			$listDeviceInfo = array();
 		}
 
@@ -141,7 +142,7 @@ _SQL_;
 	 */
 	static public function Create( $idUser, $address, $type )
 	{
-		if ( ! self::is_valid($address,$type) ){
+		if ( ! self::IsValid($address,$type) ){
 			return null;
 		}
 

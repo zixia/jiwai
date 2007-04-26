@@ -138,7 +138,7 @@ echo("UPDATE:\t$user_state[idUser] @$type: $body\n");
 								) )
 		{
 			$body = <<<_STR_
-:-D 恭喜，您已经通过了叽歪de验证！约1分钟后您就可以通过 $type 发送更新了！
+:-D 恭喜，您已经通过了叽歪de验证！约1分钟后您就可以通过 ${type} 发送更新了！
 
 耶！
 _STR_;

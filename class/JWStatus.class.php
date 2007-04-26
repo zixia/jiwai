@@ -67,7 +67,7 @@ class JWStatus {
 		return false;
 	}
 
-	static public function get_status_list_timeline ()
+	static public function GetStatusListTimeline ( $num_max=40 )
 	{
 		$sql = <<<_SQL_
 SELECT 
@@ -86,25 +86,59 @@ WHERE
 	AND Status.idUser=User.id
 ORDER BY
 	timestamp desc
-LIMIT 100;
+LIMIT $num_max;
 _SQL_;
-		$aStatusList = JWDB::get_query_result($sql,true);
+		$aStatusList = JWDB::GetQueryResult($sql,true);
 		return $aStatusList;
 
 	}
 
 
-	static public function get_status_list_network ($idUser)
+	static public function GetStatusListNetwork ($idUser, $numMax=40)
 	{
+		$idUser	= intval($idUser);
+		$numMax	= intval($numMax);
+
+		if ( !is_int($idUser) || !is_int($numMax) )
+			throw new JWException('must int');
+
+
+		$sql = <<<_SQL_
+SELECT
+		Status.id	as idStatus
+		, Status.status
+		, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
+		, Status.device
+		, User.id as idUser
+		, User.nameScreen
+		, User.nameFull
+		, User.photoInfo
+FROM	Status, User
+WHERE	
+		User.id IN
+			(	SELECT	idFriend
+				FROM	Friend
+				WHERE	idUser=$idUser
+			)
+		AND Status.timestamp > (NOW()-INTERVAL 1 WEEK)
+ORDER BY
+		Status.timestamp desc
+LIMIT $numMax;
+_SQL_;
+
+		$arr_status_list = JWDB::GetQueryResult($sql,true);
+		return $arr_status_list;
 	}
 
 	// idStatus, idUser, nameScreen, nameFull, photoUrl,status,timestamp,device
-	static public function get_status_list_user ($idUser)
+	static public function GetStatusListUser ($idUser, $numMax=40)
 	{
-		if ( !is_numeric($idUser) ){
-			JWDebug::trace("idUser[$idUser] is not number");
-			return null;
-		}
+		$idUser	= intval($idUser);
+		$numMax	= intval($numMax);
+
+		if ( !is_int($idUser) || !is_int($numMax) )
+			throw new JWException('must int');
+
 
 		$sql = <<<_SQL_
 SELECT 
@@ -123,9 +157,9 @@ WHERE
 	AND Status.idUser=User.id
 ORDER BY
 	timestamp desc
-LIMIT 100;
+LIMIT $numMax;
 _SQL_;
-		$aStatusList = JWDB::get_query_result($sql,true);
+		$aStatusList = JWDB::GetQueryResult($sql,true);
 		return $aStatusList;
 	}
 
@@ -159,6 +193,118 @@ _SQL_;
 			}
 		}
 	}
+
+
+	/*
+	 * @param	int
+	 * @return	bool
+	 */
+	static public function Delete ($idStatus)
+	{
+		if ( !is_numeric($idStatus) ){
+			throw new JWException("must be numeric! [$idStatus]");
+		}
+
+		return JWDB::DelTableRow('Status', array (	'id'	=> intval($idStatus) ));
+	}
+
+
+	/*
+	 * @param	int		status pk
+	 * @param	int		user pk
+	 * @return	bool	if user own status
+	 */
+	static public function IsUserOwnStatus ($idStatus, $idUser=null)
+	{
+		if ( null===$idUser )
+			$idUser = JWUser::GetCurrentUserId();
+
+		if ( !is_numeric($idStatus) || !is_numeric($idUser) )
+			throw new JWException("must be int! [$idStatus] [$idUser]");
+
+		return JWDB::ExistTableRow('Status', array (	'id'		=> intval($idStatus)
+														,'idUser'	=> intval($idUser)
+											) );
+	}
+
+
+	/*
+	 *	@param	string	status
+	 *
+	 *	@return	array	formated status & other info
+	 *					array ( 'status' => ..., 'replyto' => ... );
+	 */
+	static public function FormatStatus ($status)
+	{
+		$replyto	= null;
+		if ( preg_match('/^@([\d\w._\-]+)\s/',$status,$matches) )
+		{
+			$replyto = $matches[1];
+		}
+
+
+		/* 
+		 * if status contains URL, we split status str to 4 parts: url_before, url_domain, url_path, url_after.
+		 *
+		 * URL is ascii. UTF8 ascii is 1 byte so we use 0x00-0xff to match ascii.
+		 * 		":" is 0x3a
+		 *		"/" is 0x2F
+		 *		' ' is 0x20
+		 *
+		 */
+		if ( preg_match(	'/'
+									. '^(.*?)'
+									. 'http:\/\/'
+										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x79' . ']+)'
+										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x79' . ']*)'
+									. '(.*)$/'
+							, $status
+							, $matches 
+						) )
+		{
+			//var_dump($matches);
+			$head_str		= htmlspecialchars($matches[1]);
+			$url_domain		= htmlspecialchars($matches[2]);
+			$url_path		= htmlspecialchars($matches[3]);
+			$tail_str		= htmlspecialchars($matches[4]);
+
+			$url_str		= <<<_HTML_
+<a href="javascript: urchinTracker('/wo/outlink/$url_domain$url_path'); document.location.href='http://$url_domain$url_path';">http://$url_domain/...</a>
+_HTML_;
+			$status 		= $head_str . $url_str . $tail_str;
+		}
+		else
+		{
+			$status = htmlspecialchars($status);
+		}
+
+		return array ( 'status'		=> $status
+						, 'replyto'	=> $replyto
+					);
+	}
+	
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum for $idUser
+	 */
+	static public function GetStatusNum($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Status
+WHERE	idUser=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
 
 }
 ?>

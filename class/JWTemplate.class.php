@@ -383,10 +383,22 @@ document.write('<img alt="更新中" src="http://assets.jiwai.de/images/icon_thr
 	}
 
 
-	static public function timeline($aStatusList=null, $show_icon=true)
+	/*
+	 * 公共函数，显示 timeline list
+	 * @param 	array	status list
+	 * @param	array	show_item	array ( 'icon' => true ) 
+	 * @return	
+	 */
+	static public function timeline($aStatusList=null, $show_item=null )
 	{
 		if ( empty($aStatusList) )
 			return;
+
+		if ( null===$show_item )
+		{
+			$show_item['icon'] 		= true;
+			$show_item['trash'] 	= false;
+		}
 
 		$idCurrentUser = JWUser::GetCurrentUserInfo('id');
 ?>
@@ -425,74 +437,44 @@ document.write('<img alt="更新中" src="http://assets.jiwai.de/images/icon_thr
 			else
 				$device=strtoupper($device);
 
-			$reply_to	= null;
-			if ( preg_match('/^@([\d\w._\-]+)\s/',$status,$matches) )
-			{
-				$reply_to = $matches[1];
-			}
 
+			$formated_status 	= JWStatus::FormatStatus($status);
 
-			/* 
-			 * if status contains URL, we split status str to 4 parts: url_before, url_domain, url_path, url_after.
-			 *
-			 * URL is ascii. UTF8 ascii is 1 byte so we use 0x00-0xff to match ascii.
-			 * 		":" is 0x3a
-			 *		"/" is 0x2F
-			 *		' ' is 0x20
-			 *
-			 */
-			if ( preg_match(	'/'
-										. '^(.*?)'
-										. 'http:\/\/'
-											. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x79' . ']+)'
-											. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x79' . ']*)'
-										. '(.*)$/'
-								, $status
-								, $matches 
-							) )
-			{
-				//var_dump($matches);
-				$head_str		= htmlspecialchars($matches[1]);
-				$url_domain		= htmlspecialchars($matches[2]);
-				$url_path		= htmlspecialchars($matches[3]);
-				$tail_str		= htmlspecialchars($matches[4]);
-
-				$url_str		= <<<_HTML_
-<a href="javascript: urchinTracker('/wo/outlink/$url_domain$url_path'); document.location.href='http://$url_domain$url_path';">http://$url_domain/...</a>
-
-_HTML_;
-				$status 		= $head_str . $url_str . $tail_str;
-			}
-			else
-			{
-				$status = htmlspecialchars($status);
-			}
+			$replyto			= $formated_status['replyto'];
+			$status				= $formated_status['status'];
 ?>
 					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $idStatus;?>">
-<?php if ( $show_icon ){ ?>
+<?php if ( $show_item['icon'] ){ ?>
 						<td class="thumb">
 							<a href="/<?php echo $nameScreen;?>"><img alt="<?php echo $nameFull;?>" 
 									src="<?php echo $photo_url?>" /></a>
 						</td>
 <?php } ?>
 						<td>	
-<?php if ( $show_icon ){ ?>
 							<strong>
 								<a href="/<?php echo $nameScreen?>" 
 										title="<?php echo $nameFull?>"><?php echo $nameScreen?></a>
 							</strong>
-<?php } ?>
 
 							<?php echo $status?>
 			
 							<span class="meta">
 								<a href="/<?php echo $nameScreen?>/statuses/<?php echo $idStatus?>"><?php echo $duration?></a>
 								来自于 <?php echo $device?> 
-								<?php if (!empty($reply_to) ) echo " <a href='/$reply_to/'>给 ${reply_to} 的回复</a> " ?>
+								<?php if (!empty($replyto) ) echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> " ?>
 
 								<span id="status_actions_<?php echo $idStatus?>">
 
+<?php if ( !empty($idCurrentUser) ){ ?>
 									<a href="#" onclick="new Ajax.Request('/wo/favourings/create/<?php echo $idStatus?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $idStatus?>').src='/images/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" id="status_star_<?php echo $idStatus?>" src="http://asset.jiwai.de/img/icon_star_empty.gif" /></a>
+
+<?php } // is user logined? ?>
+
+
+<?php if ( @$show_item['trash'] ) { ?>
+									<a href="/wo/status/destroy/<?php echo $idStatus?>" onclick="if (confirm('确认删除这次更新：删除后将无法恢复！')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;" title="删除这条更新？"><img alt="con_trash" src="http://asset.jiwai.de/img/icon_trash.gif" border="0"></a>
+
+<?php } // show_item['trash'] ?>
 
 								</span>
 
@@ -610,31 +592,45 @@ document.getElementById('email').focus()
 <?php
 	}
 
-	static public function sidebar( $aList=array(), $idUser=null )
+
+	/*
+	 * Sidebar menu
+	 *	@param array	item list	array ( array('user_notice'	, array(param1=>val1,param2=>val2))
+											, array('count'		, array(param1=>val1,param2=>val2))
+										);
+	 *
+	 */
+	static public function sidebar( $menuList=array(), $idUser=null )
 	{
 		if ( empty($idUser) ){
 			$idUser = JWUser::GetCurrentUserId();
 		}
 
-		$aUserInfo = JWUser::GetUserInfoById($idUser);
+		if ( 0<$idUser )
+			$aUserInfo = JWUser::GetUserInfoById($idUser);
 ?>
 
     <div id="sidebar" class="static">
 <?php
-		foreach ( $aList as $partFunc ){
-			$partFunc = 'sidebar_' .$partFunc;
+		foreach ( $menuList as $func_menu ){
+			list ($menu_name,$menu_param)	= $func_menu;
 
-			if ( method_exists('JWTemplate',$partFunc) ){
-				call_user_func( array('JWTemplate',$partFunc), $aUserInfo );
+			$func_name = 'sidebar_' .$menu_name;
+
+//echo "<hr>$func_name";
+			if ( method_exists('JWTemplate',$func_name) ){
+				call_user_func_array( array('JWTemplate',$func_name), $menu_param );
 			}else{
-				throw new JWException("unsupport sidebar function $partFunc");
+				throw new JWException("unsupport sidebar function $func_name");
 			}
 		}
 
 /*
 	now supported:
 		self::sidebar_login_notice();
-		self::sidebar_timeline_notice();
+
+		self::sidebar_head();
+
 		self::sidebar_login();
 		self::sidebar_register();
 		self::sidebar_featured();
@@ -644,6 +640,7 @@ document.getElementById('email').focus()
 		self::sidebar_search()
 		self::sidebar_friend()
 		self::sidebar_active()
+		self::sidebar_action()
 */
 
 
@@ -653,12 +650,73 @@ document.getElementById('email').focus()
 <?php
 	}
 
-	static function sidebar_active($aUserInfo)
+
+	/*
+	 * @param	array	array('create'=>true, 'destroy'=>true, 'follow'=>true,'leave'=>true)
+	 */
+	static function sidebar_action($action, $idUserDst)
 	{
-?>
+		if ( empty($action) )
+			return;
+
+		$arr_user_info = JWUser::GetUserInfoById($idUserDst);
+
+		echo <<<_HTML_
+		<ul class="actions">
+			<li><strong>Actions</strong></li>
+
+_HTML_;
+
+		if ( isset($action['create']) )
+			echo <<<_HTML_
+			<li><a href="/wo/friend/create/$arr_user_info[id]">add</a> $arr_user_info[nameScreen]</li>
+
+_HTML_;
+
+		if ( isset($action['destroy']) )
+		echo <<<_HTML_
+			<li>
+				<a href="/wo/friend/destroy/$arr_user_info[id]" 
+						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">remove</a> $arr_user_info[nameScreen]
+			</li>
+
+_HTML_;
+
+	if ( isset($action['follow']) )
+		echo <<<_HTML_
+			<li>
+				<a href="/wo/friend/follow/$arr_user_info[id]">follow</a> $arr_user_info[nameScreen]
+			</li>
+
+_HTML_;
+
+		if ( isset($action['leave']) )
+		echo <<<_HTML_
+			<li>
+				<a href="/wo/friend/leave/$arr_user_info[id]">leave</a> $arr_user_info[nameScreen]
+			</li>
+
+_HTML_;
+
+		echo <<<_HTML_
+		</ul>
+
+_HTML_;
+
+	}
+
+
+	static function sidebar_active($imActived, $smsActived)
+	{
+		if ( !$imActived )
+			echo <<<_HTML_
 		<a href="/wo/device/">启用聊天软件！</a>
+_HTML_;
+
+		if ( !$smsActived )
+			echo <<<_HTML_
 		<a href="/wo/device/">启用手机短信！</a>
-<?php
+_HTML_;
 	}
 
 
@@ -698,11 +756,11 @@ document.getElementById('email').focus()
 	}
 
 
-	static function sidebar_timeline_notice()
+	static function sidebar_head($msg)
 	{
 ?>
 		<div class="msg">
-			JiWai.de <strong>叽歪广场</strong>
+			<?php echo $msg?>
 		</div>
 <?php
 	}
@@ -718,39 +776,38 @@ document.getElementById('email').focus()
 	}
 
 		
-	static function sidebar_count( $aUserInfo )
+	static function sidebar_count( $countInfo=null )
 	{
-		$user_stat_number = array(	'pm'			=> 0
-									, 'fav'			=> 0
-									, 'friend'		=> 0
-									, 'follower'	=> 0
-									, 'status'		=> 0
-								);
 ?>
 
 		<ul>
-			<li id="message_count"><a href="/direct_messages">站内PM: <?php echo $user_stat_number['pm']?></a></li>
-			<li id="favourite_count"><a href="/favorites">收藏夹: <?php echo $user_stat_number['fav']?></a></li>
-			<li id="friend_count"><a href="/friends">叽歪友: <?php echo $user_stat_number['friend']?></a></li>
-			<li id="follower_count"><a href="/followers">关注者: <?php echo $user_stat_number['follower']?></a></li>
-			<li id="update_count">总共叽歪了 <?php echo $user_stat_number['status']?> 次</li>
+			<li id="message_count"><a href="/wo/message">站内PM: <?php echo $countInfo['pm']?></a></li>
+			<li id="favourite_count"><a href="/wo/favorite">收藏夹: <?php echo $countInfo['fav']?></a></li>
+			<li id="friend_count"><a href="/wo/friend">叽歪友: <?php echo $countInfo['friend']?></a></li>
+			<li id="follower_count"><a href="/wo/follower">关注者: <?php echo $countInfo['follower']?></a></li>
+			<li id="update_count">总共叽歪了 <?php echo $countInfo['status']?> 次</li>
 		</ul>
 
 <?php
 	}
 
 
-	static function sidebar_status( $aUserInfo )
+	static function sidebar_status( $userInfo )
 	{
+		$arr_current_status = JWStatus::GetStatusListUser($userInfo['id'],1);
+		$current_status		= $arr_current_status[0]['status'];
+
+		$arr_status			= JWStatus::FormatStatus($current_status);
+//XXX
 ?>
 
 		<div class="msg">
 			欢迎回来，
-			<strong><a href="/<?php echo $aUserInfo['nameScreen'];?>"><?php echo $aUserInfo['nameFull'];?></a></strong>
+			<strong><a href="/<?php echo $userInfo['nameScreen'];?>"><?php echo $userInfo['nameFull'];?></a></strong>
 		</div>
 
 		<ul>
-			<li>当前：<em id="currently">打了2个小时的羽毛球，与DIV/CSS作战中……</em></li>
+			<li>当前：<em id="currently"><?php echo $arr_status['status']?></em></li>
 		</ul>
 
 <?php
@@ -782,13 +839,29 @@ document.getElementById('email').focus()
 	}
 
 
-	static function sidebar_friend( $aUserInfo )
+	static function sidebar_friend($friendIdList)
 	{
-?>
+		if ( empty($friendIdList) )
+			return;
+
+		echo <<<_HTML_
   		<div id="friend">
-			<a href="/zixia" rel="contact" title="李卓桓"><img alt="zixia_ssh" height="24" src="/zixia/picture/thumb24?1171954960" width="24" /></a>
-  		</div>
-<?php
+
+_HTML_;
+
+		foreach ( $friendIdList as $idFriend )
+		{
+			$friend_info 	= JWUser::GetUserInfoById($idFriend);
+			$picture_info	= JWUser::GetPictureInfo($friend_info['photoInfo']);
+			echo <<<_HTML_
+			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$picture_info[name]" height="24" src="/$friend_info[nameScreen]/picture/thumb24?$picture_info[time]" width="24" /></a>
+
+_HTML_;
+		}
+  		echo <<<_HTML_
+		</div>
+
+_HTML_;
 	}
 
 	static function sidebar_search()

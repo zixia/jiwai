@@ -290,7 +290,15 @@ $('user_nameScreen').focus()
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
-<?php JWTemplate::sidebar() ?>
+<?php 
+
+$arr_menu 			= array(	array ('head'	, array('<h3>已经是注册用户? 请直接登陆:</h3>'))
+								, array ('login'		, null)
+							);
+
+
+JWTemplate::sidebar($arr_menu, null) ;
+?>
 	
 </div><!-- #container -->
 

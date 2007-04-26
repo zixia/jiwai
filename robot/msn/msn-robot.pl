@@ -292,7 +292,10 @@ sub on_message {
 #]
   return if $message=~m#^Client-Name:[\w\d\s\/\-:.]+$#sig ;
 
-  $message=~s#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>##ig;
+# FIXME: we ignore the full msg that include msn emote icon now.
+#  $message=~s#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>##ig;
+  return if $message=~m#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>#si;
+
 
   return jiwai_queue_mo ($chandle,$message);
 
@@ -386,6 +389,8 @@ sub auth_add {
   $client->{_Log}('recieved authorisation request to add '. $chandle. ' ('.
     $friendly. ')', 3);
 
+# 我们设置了任何人都可以加我为好友，不需要认证通过了。但是应会收到通知
+# Update: 好像不行？
   return 1;
 }
 

@@ -74,7 +74,7 @@ WHERE 	nameScreen='$name_or_email'
 _SQL_;
 		}
 
-		$arr = JWDB::get_query_result($sql);
+		$arr = JWDB::GetQueryResult($sql);
 
 		if ( ! $arr )
 			return false;
@@ -351,16 +351,24 @@ _SQL_;
 
 	static public function GetUserInfoById( $idUser=null, $one_item=null )
 	{
-		return self::get_user_info('idUser',$idUser, $one_item);
+		return self::GetUserInfo('idUser',$idUser, $one_item);
 	}
 
 	static public function GetUserInfoByName( $nameScreen=null, $one_item=null )
 	{
-		return self::get_user_info('nameScreen',$nameScreen, $one_item);
+		return self::GetUserInfo('nameScreen',$nameScreen, $one_item);
 	}
 
 
-	static function get_user_info( $by_what, $value=null, $one_item=null )
+	/*
+	 * @param	string			by_what		condition key
+	 * @param	string			value		condition val, could be array in the furture
+	 * @param	string			one_item 	column name, if set, only return this column.
+
+	 * @return	array/string	user info 	array(string if one_item set). 
+											(or array of array if val is array in the furture).
+	 */
+	static function GetUserInfo( $by_what, $value=null, $one_item=null )
 	{
 		switch ( $by_what ){
 		case 'idUser':
@@ -401,7 +409,7 @@ WHERE	$by_what='$value' LIMIT 1
 _SQL_;
 
 		//TODO memcache here.
-		$aUserInfo 			= JWDB::get_query_result($sql);
+		$aUserInfo 			= JWDB::GetQueryResult($sql);
 
 		if ( empty($one_item) ){
 			return $aUserInfo;
@@ -568,5 +576,30 @@ _SQL_;
 						, 'type'	=> $matches[3]
 					);
 	}
+
+
+	/*
+	 * @return array ( pm => n, friend => x, follower=> )
+	 */
+	static public function GetState($idUser=null)
+	{
+		if ( null===$idUser )
+			throw new JWException("no idUser");
+
+		//TODO
+		//$num_pm			= JWMessage::GetMessageNum($idUser);
+		//$num_fav		= JWFavorite::GetFavoriteNum($idUser);
+		$num_friend		= JWFriend::GetFriendNum($idUser);
+		//$num_follower	= JWFollower::GetFollowerNum($idUser);
+		$num_status		= JWStatus::GetStatusNum($idUser);
+
+		return array(	'pm'			=> 0
+						, 'fav'			=> 0
+						, 'friend'		=> $num_friend
+						, 'follower'	=> 0
+						, 'status'		=> $num_status
+					);
+	}
+	
 }
 ?>

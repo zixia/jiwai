@@ -34,7 +34,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 	<div id="content">
 		<div id="wrapper">
 
-			<h2>Sign in to JiWai.de</h2>
+			<h2>登录到叽歪de</h2>
 
 <?php	
 if ( !empty($err) ){
@@ -43,29 +43,27 @@ if ( !empty($err) ){
 ?>
 
 <p>
-  If you&rsquo;ve been using JiWai.de from your phone,
-	<a href="/wo/account/complete">click here</a>
-	and we&rsquo;ll get you signed up on the web.
+	如果您已经通过手机使用了叽歪de服务，<a href="/wo/account/complete">请来这里</a>。我们将帮助您在网站上注册。
 </p>
 
 <form action="/wo/login" method="post" name="f">
   <fieldset>
   	<table cellspacing="0">
   		<tr>
-  			<th><label for="username_or_email">Username or Email</label></th>
+  			<th><label for="username_or_email">帐号或 Email</label></th>
   			<td><input id="username_or_email" name="username_or_email" type="text" /></td>
   		</tr>
   		<tr>
-  			<th><label for="password">Password</label></th>
-  			<td><input id="password" name="password" type="password" /> <small><a href="/account/resend_password">Forgot?</a></small></td>
+  			<th><label for="password">密码</label></th>
+  			<td><input id="password" name="password" type="password" /> <small><a href="/wo/account/resend_password">忘记?</a></small></td>
   		</tr>
   		<tr>
   			<th></th>
-  			<td><input id="remember_me" name="remember_me" type="checkbox" value="1" /> <label for="remember_me" class="inline">Remember me</label></td>
+  			<td><input id="remember_me" name="remember_me" type="checkbox" value="1" checked /> <label for="remember_me" class="inline">记住我</label></td>
   		</tr>
   		<tr>
   			<th></th>
-  			<td><input name="commit" type="submit" value="Sign In" /></td>
+  			<td><input name="commit" type="submit" value="登录" /></td>
   		</tr>
   	</table>
   </fieldset>
@@ -79,7 +77,12 @@ if ( !empty($err) ){
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
-<?php JWTemplate::sidebar( array('login', 'register', 'featured') ) ?>
+<?php 
+$arr_menu = array (	array('register'	, null)
+				);
+
+JWTemplate::sidebar( $arr_menu );
+?>
 	
 </div><!-- #container -->
 <hr class="separator" />

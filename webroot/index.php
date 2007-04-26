@@ -38,7 +38,7 @@ if ( JWUser::IsLogined() )
 ?>
 
 <?php 
-$aStatusList = JWStatus::get_status_list_timeline();
+$aStatusList = JWStatus::GetStatusListTimeline();
 JWTemplate::timeline($aStatusList) 
 ?>
   
@@ -47,7 +47,16 @@ JWTemplate::timeline($aStatusList)
 	</div><!-- content -->
 
 
-<?php JWTemplate::sidebar( array('login_notice','login','register','featured') ) ?>
+<?php 
+$arr_menu 			= array(	array ('head'			, array('<h3>请登陆！</h3>'))
+								, array ('login'		, null)
+								, array ('register'		, null)
+								, array ('featured'		, null)
+							);
+
+JWTemplate::sidebar($arr_menu, null) ;
+
+?>
 			
 		
 </div><!-- #container -->

@@ -104,7 +104,12 @@ class JWDB {
 		throw new JWException( "unreachable" );
 	}
 
-	static public function get_query_result( $sql, $more_than_one=false )
+	/*
+	 *	@param	string	SQL
+	 *	@param	bool	need return more then one row?
+	 *	@return	array	row or array of rows
+	 */
+	static public function GetQueryResult( $sql, $more_than_one=false )
 	{
 		//TODO need mysqli_real_escape_string, but it do escape through db server? damn it!
 		$db = self::get_db();
@@ -136,7 +141,7 @@ class JWDB {
 	/*
 	 * 方便删除。
 	 * @param condition array key为col name，val为条件值，多个条件的逻辑关系为AND
-	 * @return 删除的行数
+	 * @return bool
 	 */
 	static public function DelTableRow( $table, $condition )
 	{

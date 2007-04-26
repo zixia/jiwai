@@ -694,6 +694,10 @@ sub process_event {
     if (defined $type && $type eq 'RL' && !$self->if_buddy_exists($chandle)) {
       if ($self->if_callback_exists('auth_add')) {
         if (&{$self->{Callback}->{auth_add}}($chandle, $friendly)) {
+# by zixia
+# We agree others add me as friend, but we should not add others, coz we have a limit of max 150 friends.
+# ---try to not add FL--- must add FL, or can't be added as friend.
+# 
           $self->buddyaddfl($chandle, $chandle);
           $self->buddyaddal($chandle, $chandle);
         }
