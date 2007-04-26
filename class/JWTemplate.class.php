@@ -471,7 +471,7 @@ document.write('<img alt="更新中" src="http://assets.jiwai.de/images/icon_thr
 <?php } // is user logined? ?>
 
 
-<?php if ( @$show_item['trash'] ) { ?>
+<?php if ( @$show_item['trash'] && $idCurrentUser===$idUser) { ?>
 									<a href="/wo/status/destroy/<?php echo $idStatus?>" onclick="if (confirm('确认删除这次更新：删除后将无法恢复！')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;" title="删除这条更新？"><img alt="con_trash" src="http://asset.jiwai.de/img/icon_trash.gif" border="0"></a>
 
 <?php } // show_item['trash'] ?>
