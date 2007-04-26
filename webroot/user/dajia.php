@@ -29,7 +29,7 @@ JWDebug::init();
 ?>
 
 <?php 
-$aStatusList = JWStatus::get_status_list_timeline();
+$aStatusList = JWStatus::GetStatusListTimeline();
 JWTemplate::timeline($aStatusList) 
 ?>
   
