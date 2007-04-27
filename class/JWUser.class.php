@@ -511,7 +511,9 @@ _SQL_;
 		if ( preg_match($regexp, $email) ){
 			if ( $strict ){
 				list ($user,$domain) = split ('@', $email, 2);
-				if ( gethostbynamel($domain) )
+
+				// we check A or MX is set
+				if ( gethostbynamel($domain) || dns_get_mx($domain,$mxhosts) )
 					$valid = true;
 			}else{
 				$valid = true;
