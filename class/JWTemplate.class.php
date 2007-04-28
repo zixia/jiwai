@@ -451,10 +451,12 @@ document.write('<img alt="更新中" src="http://assets.jiwai.de/images/icon_thr
 						</td>
 <?php } ?>
 						<td>	
+<?php if ( $show_item['icon'] ){ ?>
 							<strong>
 								<a href="/<?php echo $nameScreen?>" 
 										title="<?php echo $nameFull?>"><?php echo $nameScreen?></a>
 							</strong>
+<?php } ?>
 
 							<?php echo $status?>
 			
