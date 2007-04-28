@@ -258,10 +258,14 @@ _SQL_;
 		 *
 		 */
 		if ( preg_match(	'/'
+									// head_str
 									. '^(.*?)'
 									. 'http:\/\/'
-										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
+										// url_domain
+										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
+										// url_path
 										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
+									// tail_str
 									. '(.*)$/'
 							, $status
 							, $matches 
@@ -273,8 +277,14 @@ _SQL_;
 			$url_path		= htmlspecialchars($matches[3]);
 			$tail_str		= htmlspecialchars($matches[4]);
 
+			if ('/'!=$url_path[0])
+			{
+				$tail_str = $url_path . $tail_str;
+				$url_path = '';
+			}
+
 			$url_str		= <<<_HTML_
-<a href="#" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
+<a href="#" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
 						this.href='http://$url_domain$url_path';">http://$url_domain/...</a>
 _HTML_;
 			$status 		= $head_str . $url_str . $tail_str;
