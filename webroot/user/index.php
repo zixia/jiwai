@@ -10,7 +10,7 @@ $pathParam 	= @$_REQUEST['pathParam'];
 
 if ( 'dajia'===strtolower($nameScreen) )
 {
-	require_once(dirname(__FILE__) . '/dajia.php');
+	require_once(dirname(__FILE__) . '/dajia.inc.php');
 	exit(0);
 }
 
@@ -26,7 +26,7 @@ if ( null===$idUserPage )
 switch ( $func )
 {
 	case 'picture':
-		require_once(dirname(__FILE__) . "/picture.php");
+		require_once(dirname(__FILE__) . "/picture.inc.php");
 
 		// get rid of file ext and dot: we know what type it is.
 		$param = preg_replace('/\.[^.]*$/','',$param);
@@ -36,7 +36,7 @@ switch ( $func )
 		exit(0);
 
 	default:
-		require_once(dirname(__FILE__) . "/wo.php");
+		require_once(dirname(__FILE__) . "/wo.inc.php");
 		exit(0);
 		break;
 }
