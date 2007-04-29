@@ -6,7 +6,7 @@
 @header("Pragma: no-cache");
 */
 
-require_once('../../jiwai.inc.php');
+require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
 JWUser::MustLogined();
