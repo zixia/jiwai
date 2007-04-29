@@ -70,22 +70,25 @@ if ( array_key_exists('nameScreen',$_REQUEST) ){
 
 $arr_action_param	= array ();
 
-if ( JWFriend::IsFriend($logined_user_info['id'], $page_user_info['id']) )
+if ( JWUser::IsLogined() )
 {
-	if ( $logined_user_info['id']!==$page_user_info['id'] )
-		$arr_action_param['destroy']	= true;
+	if ( JWFriend::IsFriend($logined_user_info['id'], $page_user_info['id']) )
+	{
+		if ( $logined_user_info['id']!==$page_user_info['id'] )
+			$arr_action_param['destroy']	= true;
 
 /* TODO: follow function
-	if ( JWFriend::IsFollower($page_user_info['id'], $logined_user_info['id'] ) )
+		if ( JWFriend::IsFollower($page_user_info['id'], $logined_user_info['id'] ) )
 		$arr_action_param['leave']	= true;
-	else
-		$arr_action_param['follow']	= true;
+		else
+			$arr_action_param['follow']	= true;
 */
-}
-else if ( $logined_user_info['id']!==$page_user_info['id'] )
-{
- 	// not friend, and not myself
-	$arr_action_param['create']		= true;
+	}
+	else if ( $logined_user_info['id']!==$page_user_info['id'] )
+	{
+ 		// not friend, and not myself
+		$arr_action_param['create']		= true;
+	}
 }
 
 $arr_friend_list	= JWFriend::GetFriend($page_user_info['id']);
