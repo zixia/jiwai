@@ -123,7 +123,7 @@ class JWSms {
 	{
 		self::Instance();
 
-		$now = strftime("%Y-%m-%d %H:%M:%S",timea());
+		$now = strftime("%Y-%m-%d %H:%M:%S",time());
 
 		error_log ( "$now ReceiveMo: msg [$smsMsg]"
 					. " from mobile [$mobileNo] to service [$serviceNo]"
