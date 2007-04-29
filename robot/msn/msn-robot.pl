@@ -292,6 +292,14 @@ sub on_message {
 #]
   return if $message=~m#^Client-Name:[\w\d\s\/\-:.]+$#sig ;
 
+# MIME-Version: 1.0
+#Content-Type: text/x-bobo
+#sv: 4.2.28.25
+#mv: 8.1.178.0
+#state: ssShellHandShake1
+#bobo1: 4157841205731911335491593.2343381297336730900564481
+	return if $message=~m#^MIME-Version: #i;
+
 # FIXME: we ignore the full msg that include msn emote icon now.
 #  $message=~s#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>##ig;
   return if $message=~m#<msnobj\s+Creator="[^"]+"\s+\S+="[^"]+"\s+.+?/>#si;
