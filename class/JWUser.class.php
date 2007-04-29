@@ -40,7 +40,7 @@ class JWUser {
 	{
 	}
 
-	static public function logout()
+	static public function Logout()
 	{
 		self::ForgetRemembedUser();
 		unset ($_SESSION['idUser']);
@@ -342,7 +342,11 @@ _SQL_;
 		{
 			$user_info = self::GetUserInfoById($id_user,$one_item);
 
-			return $user_info;
+			// maybe user be deleted in database.
+			if ( !empty($user_info) )
+				return $user_info;
+			else
+				self::Logout();
 		}
 
 		return null;
@@ -503,8 +507,11 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		$regexp = '/^\w[\w\d._\-]+$/';
-		if ( 1!==preg_match($regexp, $name) )
+		$regexp = '/^[[:alpha:]].[\d._\-]+$/';
+
+		$ret = preg_match($regexp, $name);
+
+		if ( 1!==$ret )
 			return false;
 
 		return true;
