@@ -726,7 +726,7 @@ _HTML_;
 	{
 ?>
 		<ul class="about">
-			<li>姓名: <?php echo htmlspecialchars($aUserInfo['nameFull'])?></li>
+			<li>名字: <?php echo htmlspecialchars($aUserInfo['nameFull'])?></li>
 <?php
 			if ( !empty($aUserInfo['bio']) )
 				echo "<li>简介: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
