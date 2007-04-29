@@ -13,7 +13,7 @@ $debug->init();
 	  <script type="text/javascript">
   function onLJLoading() {
     new Effect.Highlight('lj_details');
-    $('lj_details').innerHTML = '<img alt="Icon_throbber" src="http://assets0.twitter.com/images/icon_throbber.gif?1176324540" /> &nbsp; Working on it!  The more friends you have the longer it takes.';
+    $('newsmth_details').innerHTML = '<img alt="Icon_throbber" src="http://asset.jiwai.de/img/icon_throbber.gif?1176324540" /> &nbsp; 找朋友中……朋友越多，需要的时间会越长。';
   }
 
   function onSMTHFailure() {
