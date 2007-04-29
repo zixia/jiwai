@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-require_once(dirname(__FILE__) . "/../../webroot/jiwai.inc.php");
+require_once(dirname(__FILE__) . "/../../jiwai.inc.php");
 
 while ($line=JWConsole::getline()){
 	// get and use remaining arguments

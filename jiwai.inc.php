@@ -13,7 +13,7 @@
  * Path of JiWai.de
  *
  */
-define('JW_ROOT',     dirname(__FILE__) . '/../');
+define('JW_ROOT',     dirname(__FILE__) . '/');
 
 /**
  * Path of configuration

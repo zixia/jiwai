@@ -1,5 +1,5 @@
 <?php
-require_once('../jiwai.inc.php');
+require_once('../../jiwai.inc.php');
 //var_dump($_REQUEST);
 
 $nameScreen	= @$_REQUEST['nameScreen'];

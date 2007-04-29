@@ -1,5 +1,5 @@
 <?php
-require_once("../../jiwai.inc.php");
+require_once("../../../jiwai.inc.php");
 
 define ('SP_IP', '211.157.106.111');
 

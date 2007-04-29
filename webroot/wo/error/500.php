@@ -1,5 +1,5 @@
 <?php
-require_once('../../jiwai.inc.php');
+require_once('../../../jiwai.inc.php');
 
 
 if ( array_key_exists('500URL',$_SESSION) )
