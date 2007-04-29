@@ -24,8 +24,10 @@ if ( array_key_exists('user',$_REQUEST)
 	$aValid['email'] = true;
 	if ( array_key_exists('email',$aUserInfo) ){
 		$email = $aUserInfo['email'];
-		if ( $email ){
-			$aValid['email'] = JWUser::IsValidEmail( $email, true );
+
+		// let user input any email... successful registe is the most important thing. :)
+		if ( false && $email ){
+			$aValid['email'] = JWUser::IsValidEmail( $email, false );
 		}
 	}else{
 		$email = '';
@@ -203,7 +205,7 @@ function validate_form(form)
 							<th><label for="user_nameScreen">选择帐号：</label></th>
 
 							<td><input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" /> 
-								<small>用来登录<em>叽歪de</em>（不可含汉字、空格及特殊字符，最短6个字符）</small>
+								<small>用来登录<em>叽歪de</em>（不可含汉字、空格及特殊字符，最短5个字符）</small>
 							</td>
 						</tr>
 						<tr>

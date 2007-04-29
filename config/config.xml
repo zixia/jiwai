@@ -41,7 +41,7 @@
 		<mo>mo/</mo>
 		<mt>mt/</mt>
 		<user>
-			<home>/var/www/vhost/jiwai.de/asset/system/user/</home>
+			<home>/var/www/vhost/jiwai.de/domain/asset/system/user/</home>
 		</user>
 	</directory>
 </config>

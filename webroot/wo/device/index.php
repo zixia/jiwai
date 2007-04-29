@@ -159,11 +159,11 @@ _INFO_;
 <?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified ?>
 
 
-  						<h4>请点击验证你的聊天(IM)帐号 (<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>): 
+  						<!--h4>请点击验证你的聊天(IM)帐号 (<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>): 
 							<a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a>
 						</h4>
 
-  						<p>直接点击无法验证？请将
+  						<p>直接点击无法验证？-->请将
 							<a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a>
 							 加为你的好友，然后将如下验证码发送给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
