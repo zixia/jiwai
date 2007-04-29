@@ -507,7 +507,7 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		$regexp = '/^[[:alpha:]].[\d._\-]+$/';
+		$regexp = '/^[[:alpha:]][\w\d._\-]+$/';
 
 		$ret = preg_match($regexp, $name);
 
