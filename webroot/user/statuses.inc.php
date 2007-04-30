@@ -66,6 +66,10 @@ vertical-align:middle;
 h2.thumb, h2.thumb a {
 color:#000000;
 }
+
+#ad {
+padding:0px 0pt 5px 321px;
+}
 </style>
 <div id="container">
 	<div id="content">
@@ -107,6 +111,24 @@ color:#000000;
 			</h2>
 
 			<div id="ad">
+<script type="text/javascript"><!--
+google_ad_client = "pub-8383497624729613";
+google_ad_width = 234;
+google_ad_height = 60;
+google_ad_format = "234x60_as";
+google_ad_type = "text_image";
+//2007-04-30: JiWai.de - Statuses
+google_ad_channel = "3074588979";
+google_color_border = "99CC00";
+google_color_bg = "C3E169";
+google_color_link = "669900";
+google_color_text = "333333";
+google_color_url = "669900";
+//-->
+</script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
 			</div>
 
 
