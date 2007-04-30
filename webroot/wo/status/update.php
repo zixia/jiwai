@@ -11,7 +11,7 @@ if ( array_key_exists('status', $_REQUEST) ){
 
 		//JWDebug::trace( "update $id $status" );
 		if ( ctype_digit($id) ){
-			JWStatus::update($id, $status);
+			JWStatus::Update($id, $status);
 		}else{
 			JWDebug::trace( "status/update can't get user id" );
 		}

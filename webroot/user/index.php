@@ -23,9 +23,9 @@ else
 }
 
 
-if ( 'dajia'===strtolower($nameScreen) )
+if ( 'public_timeline'===strtolower($nameScreen) )
 {
-	require_once(dirname(__FILE__) . '/dajia.inc.php');
+	require_once(dirname(__FILE__) . '/public_timeline.inc.php');
 	exit(0);
 }
 

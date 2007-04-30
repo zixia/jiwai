@@ -21,5 +21,5 @@ if ( empty($url) )
 	exit(0);
 }
 
-echo "哎呀！我找不到 $url 啦！:-(";
+echo "哎呀！我找不到 <a href='$url'>$url</a> 啦！:-(";
 ?>
