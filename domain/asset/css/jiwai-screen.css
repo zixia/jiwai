@@ -111,7 +111,7 @@ a:hover {color:#333;}
 #content #doingForm .bar span {font-size: 0.92em; display: block; position: absolute; top: 0; right: 10px;}
 #content #doingForm .bar span#submit_loading {padding-top:.3em;}
 #content #doingForm textarea {width: 100%; margin:0; padding: 5px; border-color: #9c0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff;}
-#content #doingForm .submit {background: url(http://static.twitter.com/images/arr.gif) no-repeat top center; padding-top: 16px; height:40px; text-align:center}
+#content #doingForm .submit {background: url(http://asset.jiwai.de/img/arr.gif) no-repeat top center; padding-top: 16px; height:40px; text-align:center}
 
 #content .tabMenu {width: 100%; padding: 0 0 1px; text-align: right; margin: 15px -15px -6px; border: 0;}
 #content .tabMenu li {display: inline; margin: 0; border: 0;}
