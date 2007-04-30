@@ -30,6 +30,14 @@ if ( isset($new_user_info) )
     $location	= trim(@$new_user_info['location']);
     $protected	= @$new_user_info['protected'];
 
+
+	// compatible the twitter url param: name & description
+	if ( empty($nameScreen) )
+		$nameScreen	= trim(@$new_user_info['name']);
+	if ( empty($bio) )
+		$bio		= trim(@$new_user_info['description']);
+
+
 	$arr_changed 	= array();
 	$error_html 	= null;
 
