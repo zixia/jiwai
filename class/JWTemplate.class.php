@@ -24,6 +24,12 @@ class JWTemplate {
 	 */
 	static private $msJWConst = null;
 
+	/**
+	 * calc $n of asset${n}.jiwai.de/$path?$timestamp
+	 *
+	 * @var int
+	 */
+	static $msAssetCounter = 0;
 
 	/**
 	 * Instance of this singleton class
@@ -904,7 +910,8 @@ _HTML_;
 		if ( empty(self::$msJWConst) )
 		{
 			self::$msJWConst = array (	'UrlContactUs'			=>	'/wo/help/contact_us'
-										,'UrlPublicTimeline'	=>	'/dajia/'
+										,'UrlRegister'			=>	'/wo/account/create'
+										,'UrlPublicTimeline'	=>	'/public_timeline/'
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'
 
@@ -939,6 +946,33 @@ _HTML_;
 				echo " <a href=\"$setting[0]\">$setting[1]</a> ";
 		}
 		echo "\t</h4>\n";
+	}
+
+
+	/*
+	 * Get asset url with timestamp
+	 *	@param	path	the path of asset.jiwai.de/$path
+	 *	@return	URL		the url ( domain name & path )
+	 */
+	static public function GetAssetUrl($absPath)
+	{
+		JWTemplate::Instance();
+
+		$asset_num_max = 4;
+
+		if ( empty($absPath) )
+			throw new JWException('must have path');
+
+		self::$msAssetCounter++;
+		$n = self::$msAssetCounter % $asset_num_max;
+		$n++; // from 1 to $asset_num_max
+
+		$asset_path	= JW_ROOT . '/domain/asset';
+		$timestamp = filemtime("$asset_path$absPath");
+
+		//we use more then one domain name to down load asset in parallel
+		return "http://asset${n}.jiwai.de$absPath?$timestamp";
+
 	}
 }
 ?>
