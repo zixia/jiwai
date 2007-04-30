@@ -145,7 +145,7 @@ class JWFile {
 		$cmd = <<<_CMD_
 convert $srcFile \\
   -auto-orient \\
-  -thumbnail '800x>' \\
+  -thumbnail '500x>' \\
   $dstFile
 _CMD_;
 		if ( false===system($cmd,$ret) )
