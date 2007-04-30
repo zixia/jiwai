@@ -110,7 +110,7 @@ padding:0px 0pt 5px 321px;
 				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
 			</h2>
 
-			<div id="ad">
+			<div id="ad" style="visibility: hidden">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8383497624729613";
 google_ad_width = 234;
@@ -131,6 +131,13 @@ google_color_url = "669900";
 </script>
 			</div>
 
+<script type="text/javascript"><!--
+setTimeout("show_ad()", 15000);
+function show_ad()
+{
+	$('ad').style.visibility='visible'; 
+}
+</script>
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
