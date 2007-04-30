@@ -571,7 +571,6 @@ _SQL_;
 												, 'asset'			=> true
 												, 'blog'			=> true
 												, 'bug'				=> true
-												, 'dajia'			=> true
 												, 'help'			=> true
 												, 'jiwai'			=> true
 												, 'm'				=> true
