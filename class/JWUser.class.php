@@ -15,20 +15,29 @@ class JWUser {
 	 *
 	 * @var JWUser
 	 */
-	static private $instance__;
+	static private $msInstance = null;
+
+
+	/**
+	 * Reserved Named array, init when first be used
+	 *
+	 * @var msReservedNames
+	 */
+	static private $msReservedNames = null;
+
 
 	/**
 	 * Instance of this singleton class
 	 *
 	 * @return JWUser
 	 */
-	static public function &instance()
+	static public function &Instance()
 	{
-		if (!isset(self::$instance__)) {
+		if (!isset(self::$msInstance)) {
 			$class = __CLASS__;
-			self::$instance__ = new $class;
+			self::$msInstance = new $class;
 		}
-		return self::$instance__;
+		return self::$msInstance;
 	}
 
 
@@ -466,7 +475,7 @@ _SQL_;
 
 	static public function Create( $userInfo )
 	{
-		$db = JWDB::instance()->get_db();
+		$db = JWDB::Instance()->get_db();
 
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
@@ -507,7 +516,7 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		$regexp = '/^[[:alpha:]][\w\d._\-]+$/';
+		$regexp = '/^[[:alpha:]][\w\d_\-]+$/';
 
 		$ret = preg_match($regexp, $name);
 
@@ -545,21 +554,56 @@ _SQL_;
 	}
 
 
+	/*
+	 *	@param		string	nameScreen
+	 *	@return 	bool	is exist
+	 */
 	static public function IsExistName ($nameScreen)
 	{
+		self::Instance();
+
+		// XXX use db in the furture?
+		if ( !isset(self::$msReservedNames) )
+		{
+			self::$msReservedNames = array (	
+												'all'				=> true
+												, 'api'				=> true
+												, 'asset'			=> true
+												, 'blog'			=> true
+												, 'bug'				=> true
+												, 'dajia'			=> true
+												, 'help'			=> true
+												, 'jiwai'			=> true
+												, 'm'				=> true
+												, 'mashup'			=> true
+												, 'public_timeline'	=> true
+												, 'sms'				=> true
+												, 'team'			=> true
+												, 'twitter'			=> true
+												, 'wo'				=> true
+												, 'www'				=> true
+												, 'zixia'			=> true
+											);
+		}
+
+		if ( isset(self::$msReservedNames[$nameScreen]) )
+			return true;
+
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
 	}
 
 
 	/*
-	 * @param 	enum	pictType = ['thumb48' | 'thumb24' | 'picture']
 	 * @param 	int		idUser null if current user
-
+	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
 	 * @return 	string	url of picture
 	 */
-	static public function GetPictureUrl($picType='thumb48', $idUser=null)
+	static public function GetPictureUrl($idUser=null, $picSize='thumb48')
 	{
-		// I changed my idea - hardcode url: http://jiwai.de/zixia/picture/$picType
+		$picture_info	= self::GetPictureInfo(self::GetUserInfoById($idUser,'photoInfo'));
+
+		return "http://alpha.jiwai.de/$idUser/picture/$picSize/$picture_info[name].$picture_info[type]?$picture_info[time]";
+		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
 	}
 	
 	static public function SetPicture($fileName=null, $idUser=null)
@@ -581,7 +625,7 @@ _SQL_;
 	}
 
 	/*
-	 * @return array ( timestamp => n, filename=> x, $filetype=> )
+	 * @return array ( times=> n, name=> x, $type=> )
 	 */
 	static public function GetPictureInfo($photoInfo)
 	{
