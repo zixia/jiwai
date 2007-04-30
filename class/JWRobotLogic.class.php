@@ -106,7 +106,7 @@ echo ("VERIFY:\t$user_state[idUser] $user_state[secret]\n");
 		else
 		{	// update jiwai status
 echo("UPDATE:\t$user_state[idUser] @$type: $body\n");
-			if ( JWStatus::update($user_state['idUser'], $body, $type ) )
+			if ( JWStatus::Update($user_state['idUser'], $body, $type ) )
 			{	// succeed posted, keep silence
 				return null;
 			}
