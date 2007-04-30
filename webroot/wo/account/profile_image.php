@@ -26,7 +26,6 @@ else
 	$page_user_info = JWUser::GetCurrentUserInfo();
 }
 
-var_dump($_REQUEST);
 ?>
 <html>
 
