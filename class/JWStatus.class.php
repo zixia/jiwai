@@ -15,20 +15,22 @@ class JWStatus {
 	 *
 	 * @var JWStatus
 	 */
-	static private $instance__;
+	static private $msInstance = null;
+
+	const	DEFAULT_STATUS_NUM	= 20;
 
 	/**
 	 * Instance of this singleton class
 	 *
 	 * @return JWStatus
 	 */
-	static public function &instance()
+	static public function &Instance()
 	{
-		if (!isset(self::$instance__)) {
+		if (!isset(self::$msInstance)) {
 			$class = __CLASS__;
-			self::$instance__ = new $class;
+			self::$msInstance = new $class;
 		}
-		return self::$instance__;
+		return self::$msInstance;
 	}
 
 
@@ -41,9 +43,9 @@ class JWStatus {
 	}
 
 
-	static public function update( $user_id, $status, $device='web' )
+	static public function Update( $user_id, $status, $device='web' )
 	{
-		$db = JWDB::instance()->get_db();
+		$db = JWDB::Instance()->get_db();
 
 		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device) "
 								. " values (?,?,?)" ) ){
@@ -67,7 +69,7 @@ class JWStatus {
 		return false;
 	}
 
-	static public function GetStatusListTimeline ( $num_max=40 )
+	static public function GetStatusListTimeline ( $num_max=self::DEFAULT_STATUS_NUM )
 	{
 		$sql = <<<_SQL_
 SELECT 
@@ -94,7 +96,7 @@ _SQL_;
 	}
 
 
-	static public function GetStatusListNetwork ($idUser, $numMax=40)
+	static public function GetStatusListNetwork ($idUser, $numMax=20)
 	{
 		$idUser	= intval($idUser);
 		$numMax	= intval($numMax);
@@ -135,8 +137,9 @@ _SQL_;
 		return $arr_status_list;
 	}
 
+
 	// idStatus, idUser, nameScreen, nameFull, photoUrl,status,timestamp,device
-	static public function GetStatusListUser ($idUser, $numMax=40)
+	static public function GetStatusListUser ($idUser, $numMax=20)
 	{
 		$idUser	= intval($idUser);
 		$numMax	= intval($numMax);
@@ -215,6 +218,31 @@ _SQL_;
 
 
 	/*
+	 *	根据 idStatus 获取一条 status
+	 *	@param	int		idStatus 
+						TODO 未来考虑支持array?
+	 * 	@return	array	status 信息 
+	 * 
+	 */
+	static public function GetStatus ($idStatus)
+	{
+		$idStatus = intval($idStatus);
+
+		if ( 0>=$idStatus )
+			throw new JWException('must int');
+
+		$sql = <<<_SQL_
+SELECT	*
+FROM	Status
+WHERE	id=$idStatus
+_SQL_;
+
+		return JWDB::GetQueryResult($sql);
+	}
+
+
+
+	/*
 	 * @param	int		status pk
 	 * @param	int		user pk
 	 * @return	bool	if user own status
@@ -277,7 +305,7 @@ _SQL_;
 			$url_path		= htmlspecialchars($matches[3]);
 			$tail_str		= htmlspecialchars($matches[4]);
 
-			if ('/'!=$url_path[0])
+			if (!empty($url_path) && '/'!=$url_path[0])
 			{
 				$tail_str = $url_path . $tail_str;
 				$url_path = '';
