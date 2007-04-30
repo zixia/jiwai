@@ -314,7 +314,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 
     							<script type="text/javascript">
 //<![CDATA[
-document.write('<img alt="更新中" src="http://assets.jiwai.de/images/icon_throbber.gif" title="Updating" />')
+document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_throbber.gif" title="更新中..." />')
 //]]>
 								</script>
   							</span>
