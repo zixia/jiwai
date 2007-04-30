@@ -56,8 +56,8 @@ if ( array_key_exists('user',$_REQUEST)
 				$JWErr .= <<<_POD_
 <ul>
 	<li>注册有可能未成功，请您重新提交用户注册信息。 </li>
-	<li>如系统提示昵称、email重复请尝试<a href="/wo/login">登录</a>。 </li>
-	<li>如果仍然存在问题，请通知我们开展除虫工作：<a href="mailto:bug@jiwai.de">bug@jiwai.de</a>。 </li>
+	<li>如系统提示帐号、email重复请尝试<a href="/wo/login">登录</a>。 </li>
+	<li>如果仍然存在问题，请通知我们开展除虫工作：<a href="mailto:bug@jiwai.de?subject=BUG">wo@jiwai.de</a>。 </li>
 	<li>给您带来的不便我们深感抱歉，在您成功注册之前，您可以先浏览一下<a href="$public_timeline_url">大家都在做什么</a>。 </li>
 </ul>
 _POD_;
@@ -66,7 +66,7 @@ _POD_;
 		}else{ // email or nameScreen already exist
 			$JWErr .= "<ul>\n";
 			if ( $aExist['nameScreen'] ){
-				$JWErr .= "\t<li>昵称( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )已经被使用</li>\n";
+				$JWErr .= "\t<li>帐号( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )已经被使用</li>\n";
 			}
 			if ( $aExist['email'] ){
 				$JWErr .= "\t<li>Email ( <em>" . htmlspecialchars($aUserInfo['email']) . "</em> )已经被使用</li>\n";
@@ -77,10 +77,15 @@ _POD_;
 	}else{ // input not valid:
 		$JWErr .= "<ul>\n";
 		if ( !$aValid['nameScreen'] )
-			$JWErr .= "\t<li>昵称( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )含有特殊字符</li>\n";
+			if ( preg_match('/^\d+$/', $nameScreen) )
+				$JWErr .= "\t<li>帐号首字符不可为数字。如果是QQ号码，建议将 $aUserInfo[nameScreen] 注册为： <em> QQ$nameScreen </em></li>\n";
+			else if ( preg_match('/^\d/', $nameScreen) )
+				$JWErr .= "\t<li>帐号( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )的第一个字符不可以为数字</li>\n";
+			else
+				$JWErr .= "\t<li>帐号( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )含有特殊字符</li>\n";
 
 		if ( strlen($aUserInfo['nameScreen']) < $name_len_min )
-			$JWErr .= "\t<li>昵称( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )不可少于最短5个字符</li>\n";
+			$JWErr .= "\t<li>帐号( <em>" . htmlspecialchars($aUserInfo['nameScreen']) . "</em> )不可少于最短5个字符</li>\n";
 			
 		if ( !$aValid['email'] )
 			$JWErr .= "\t<li>Email ( <em>" . htmlspecialchars($aUserInfo['email'])  ."</em> )不正确</li>\n";
@@ -146,7 +151,7 @@ function validate_form(form)
 	{
 		$('user_nameScreen').className += " notice";
 		bValid = false;
-		JWErr += "\t" + n + ". 请输入不含空格，最短5位的昵称\n";
+		JWErr += "\t" + n + ". 请输入不含空格，最短5位的帐号\n";
 		n++;
 	}
 
