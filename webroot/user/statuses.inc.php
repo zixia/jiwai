@@ -110,7 +110,7 @@ padding:0px 0pt 5px 321px;
 				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
 			</h2>
 
-			<div id="ad" style="visibility: hidden">
+			<div id="ad">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8383497624729613";
 google_ad_width = 234;
@@ -124,19 +124,32 @@ google_color_bg = "C3E169";
 google_color_link = "669900";
 google_color_text = "333333";
 google_color_url = "669900";
+
+google_language = 'zh-CN';
 //-->
 </script>
 <script type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
+<script type="text/javascript" id="google_show_ads">
+</script>
 			</div>
 
 <script type="text/javascript"><!--
-setTimeout("show_ad()", 15000);
+/*
+setTimeout("show_ad()", 1000);
 function show_ad()
 {
-	$('ad').style.visibility='visible'; 
+alert(google_ad_width);
+	$('google_show_ads').src="http://pagead2.googlesyndication.com/pagead/show_ads.js";
+	ad_element = document.createElement("script")
+	ad_element.type = "text/javascript";
+	ad_element.language = 'javascript';
+	ad_element.src 	= "http://pagead2.googlesyndication.com/pagead/show_ads.js"
+	ad_element.id 	= "show_ads";
+	document.getElementById('ad').appendChild(ad_element);
 }
+*/
 </script>
 
 		</div><!-- wrapper -->
