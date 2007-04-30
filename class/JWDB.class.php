@@ -15,7 +15,7 @@ class JWDB {
 	 *
 	 * @var JWDB
 	 */
-	static private $instance__;
+	static private $msInstance;
 
 	/**
 	 * MySQLi DB Link
@@ -29,13 +29,13 @@ class JWDB {
 	 *
 	 * @return JWDB
 	 */
-	static public function &instance()
+	static public function &Instance()
 	{
-		if (!isset(self::$instance__)) {
+		if (!isset(self::$msInstance)) {
 			$class = __CLASS__;
-			self::$instance__ = new $class;
+			self::$msInstance = new $class;
 		}
-		return self::$instance__;
+		return self::$msInstance;
 	}
 
 
