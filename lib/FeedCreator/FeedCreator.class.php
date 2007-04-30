@@ -177,7 +177,7 @@ $rss->outputFeed("RSS1.0");
 **************************************************************************/
 
 // your local timezone, set to "" to disable or for GMT
-define("TIME_ZONE","+01:00");
+define("TIME_ZONE","+08:00");
 
 
 
@@ -186,7 +186,7 @@ define("TIME_ZONE","+01:00");
  * Version string.
  **/
  
-define("FEEDCREATOR_VERSION", "FeedCreator 1.7.2-ppt (info@mypapit.net)");
+define("FEEDCREATOR_VERSION", "http://JiWai.de/ Version 1.0 (wo@jiwai.de)");
 
 
 
@@ -902,10 +902,14 @@ class FeedDate {
 	 * @return a date in RFC 822 format
 	 */
 	function rfc822() {
-		//return gmdate("r",$this->unix);
+		// uncomment the next line, this seems right.
+		return date("r",$this->unix);
+
+		/* by zixia, we use server time zone.
 		$date = gmdate("D, d M Y H:i:s", $this->unix);
 		if (TIME_ZONE!="") $date .= " ".str_replace(":","",TIME_ZONE);
 		return $date;
+		*/
 	}
 	
 	/**
