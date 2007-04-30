@@ -20,7 +20,7 @@ if ( array_key_exists('since_id',$_REQUEST) )
 if ( array_key_exists('since',$_REQUEST) )
 	$since		= $_REQUEST['since'];
 else if ( array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER) )
-	$since		= $_HEADER['HTTP_IF_MODIFIED_SINCE'];
+	$since		= $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
 
 // rewrite param, may incluce the file ext name and user id/name
