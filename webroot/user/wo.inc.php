@@ -5,6 +5,9 @@ $debug->init();
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfoById($idUserPage);
+
+//die( var_dump($page_user_info));
+//die( var_dump($logined_user_info));
 ?>
 <html>
 
@@ -26,15 +29,11 @@ $page_user_info 	= JWUser::GetUserInfoById($idUserPage);
 
 
 <?php 
-if ( array_key_exists('nameScreen',$_REQUEST) ){
-	$nameScreen = $_REQUEST['nameScreen'];
-	$aStatusList = JWStatus::GetStatusListUser($idUserPage);
-}else{
-	$aStatusList = null;
-}
+$aStatusList = JWStatus::GetStatusListUser($idUserPage);
 
-	if ( isset($aStatusList) )
-		JWTemplate::status_head(array_shift($aStatusList)); 
+
+if ( isset($aStatusList) )
+	JWTemplate::status_head(array_shift($aStatusList)); 
 ?>
 
 <?php JWTemplate::tab_menu() ?>
