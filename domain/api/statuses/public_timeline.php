@@ -39,6 +39,13 @@ $pathParam	= $_REQUEST['pathParam'];
 # pathParam			string, part of url request.
 #################################################################
 
+$options	= array (
+					'type'		=> JWFeed::RSS20
+					, 'count'	=> $count
+					, 'since_id'=> @$since_id
+					, 'since'	=> @$since
+					, 'callback'=> @$callback
+				);
 
 switch ($pathParam[0])
 {
@@ -49,18 +56,25 @@ switch ($pathParam[0])
 
 		switch ($output_type)
 		{
-			case 'rss':
-				public_timeline_rss(array(
-						'count'		=> $count
-						, 'since_id'=> @$since_id
-						, 'since'	=> @$since
-					) );
-				break;
 			case 'atom':
+				$options['type']	= JWFeed::ATOM;
+				public_timeline_rss_n_atom($options);
+				break;
+			case 'rss':
+				$options['type']	= JWFeed::RSS20;
+				public_timeline_rss_n_atom($options);
 				break;
 			case 'json':
+				$statuses	= get_public_timeline_array($options);
+
+				if ( empty($options['callback']) )
+					echo json_encode($statuses);
+				else
+					echo $options['callback'] . '(' . json_encode($statuses) . ')';
+
 				break;
 			case 'xml':
+				public_timeline_xml($options);
 				break;
 			default: 
 				break;
@@ -84,7 +98,7 @@ exit(0);
 					count, since_id, since
  *
  */
-function public_timeline_rss($options)
+function public_timeline_rss_n_atom($options)
 {
 	$count	= intval($options['count']);
 	if ( 0>=$count )
@@ -120,6 +134,114 @@ function public_timeline_rss($options)
 
 	$feed->OutputFeed(JWFeed::RSS20);
 	exit(0);
+}
+
+
+/*
+ * 	output public timeline  in xml format
+ *	@param	array	options, include:
+					count, since_id, since, callback
+ *
+ */
+function public_timeline_xml($options)
+{
+	$statuses	= get_public_timeline_array($options);
+
+	header('Content-Type: application/xml; charset=utf-8');
+
+	$xml .= '<?xml version="1.0" encoding="UTF-8"?>';
+	$xml .= "\n<statuses>\n";
+
+
+	foreach ($statuses as $status)
+	{
+		$xml .= "\t<status>\n";
+		$xml .= array_to_xml($status,2);
+		$xml .= "\t</status>\n";
+	}
+
+	
+	$xml .= "</statuses>\n";
+
+	echo $xml;
+}
+
+
+/*
+ * 	return public timeline as a array
+ *	@param	array	options, include:
+					count, since_id, since
+ *
+ */
+function get_public_timeline_array($options)
+{
+	$count	= intval($options['count']);
+	if ( 0>=$count )
+		$count = JWStatus::DEFAULT_STATUS_NUM;
+
+	//TODO: since_id / since
+	
+	$statuses	= JWStatus::GetStatusListTimeline($count);
+
+
+	$statuses_array								= array();
+
+	foreach ( $statuses as $status )
+	{
+		$user	= JWUser::GetUserInfoById($status['idUser']);
+
+		$status_array['created_at']			= date("r",$status['timestamp']);
+		$status_array['id']					= intval($status['idStatus']);
+		$status_array['text']				= $status['status'];
+
+		$status_array['user']['id']			= intval($status['idUser']);
+		$status_array['user']['name']		= $user['nameFull'];
+		$status_array['user']['screen_name']= $user['nameScreen'];
+		$status_array['user']['location']	= $user['location'];
+		$status_array['user']['description']= $user['bio'];
+		$status_array['user']['profile_image_url']= JWUser::GetPictureUrl($status['idUser'], 'thumb48');
+		$status_array['user']['url']		= $user['url'];
+		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
+
+		array_push($statuses_array, $status_array);
+	}
+
+	return $statuses_array;
+}
+
+
+/*
+ *	convert a key=>val array to xml. 
+ *	can recursion key=>val array, but can't process a array('a','b','c').
+ *	@param	array	需要处理的array
+ *	@param	level	使用 "\t" 缩进的个数
+ *	@return	xml		处理过的 xml 片段
+ */
+function array_to_xml($array, $level=1) {
+	$xml = '';
+
+    foreach ($array as $key=>$value) {
+        $key = strtolower($key);
+		
+        if (is_array($value)) { // 大于一层的 assoc array
+			$xml .= str_repeat("\t",$level)
+					."<$key>\n"
+					. array_to_xml($value, $level+1)
+					. str_repeat("\t",$level)."</$key>\n";
+        } else { // 一层的 assoc array
+//			if (trim($value)!='') 
+//			{
+				if (htmlspecialchars($value)!=$value) {
+					$xml .= str_repeat("\t",$level)
+						."<$key><![CDATA[$value]]></$key>\n";
+				} else {
+					$xml .= str_repeat("\t",$level).
+						"<$key>$value</$key>\n";
+				}
+//			}
+        }
+    }
+    return $xml;
 }
 
 ?>
