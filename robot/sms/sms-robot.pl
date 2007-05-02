@@ -29,9 +29,12 @@ my $apache_uid = getpwnam('apache');
 # open PHP sms mt system
 #
 my($sms_mt_chld_out, $sms_mt_chld_in);
-#my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, '/var/www/vhost/jiwai.de/beta/robot/sms_mt.php') or die "open2 $!";
 
-my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "/proc/$$/cwd/sms_mt.php") or die "open2 $!";
+# 直接执行 /proc/$$/cwd/sms_mt.php 会有一定概率系统说无法执行，没有找到原因，替换为绝对路径
+#my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "/proc/$$/cwd/sms_mt.php") or die "open2 $!";
+
+my $cwd = readlink "/proc/$$/cwd";
+my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "$cwd/sms_mt.php") or die "open2 $!";
 
 syslog('info', "sms_mt pid $sms_mt_pid opened.");
 
