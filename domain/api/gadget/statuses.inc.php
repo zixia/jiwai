@@ -2,15 +2,15 @@
 define ('GADGET_THEME_ROOT'		, JW_ROOT.'domain/asset/gadget/theme/');
 define ('GADGET_THEME_DEFAULT'	, GADGET_THEME_ROOT.'iChat/');
 
-function gadget($nameScreen, $statusType, $themeName, $numMax, $thumbSize)
+function gadget($idUser, $statusType, $themeName, $countMax, $thumbSize)
 {
 	$id_user 	= JWUser::GetUserInfoByName($nameScreen, 'id');
 
 	switch (strtolower($statusType))
 	{
 		case 'self':
-		case 'net':
-		case 'net_dist':
+		case 'friends':
+		case 'friends_single':
 		default:
 			$statusType = 'net_dist';
 	}
@@ -26,9 +26,9 @@ function gadget($nameScreen, $statusType, $themeName, $numMax, $thumbSize)
 	//$theme_mtime	= filemtime($theme_dir);
 
 
-	$numMax		= intval($numMax);
-	if ($numMax<=0) $numMax=7;
-	if ($numMax>40) $numMax=40;
+	$countMax		= intval($countMax);
+	if ($countMax<=0 || $countMax>40) 
+		$countMax=JWStatus::DEFAULT_STATUS_NUM;
 
 
 	$thumbSize	= intval($thumbSize);
@@ -56,7 +56,7 @@ var other_next_content_template	= unescape('$other_next_content_template');
 
 
 re 		= / url\('/ig;
-img_url	=" url('$theme_url");
+img_url	=" url('$theme_url";
 css_template	= css_template.replace(re, img_url);
 
 document.write('<style type="text/css">' + css_template + "</style>");
@@ -77,8 +77,10 @@ function jiwai_de_cb(status_list)
 	one_status	= one_status.replace(/%userIconPath%/i, 'http://beta.jiwai.de/daodao/picture/thumb24');
 	document.write(one_status);
 
-	document.write("<h1>[$nameScreen] [$statusType] [$themeName] [$numMax]</h1>");
+	document.write("<h1>[$nameScreen] [$statusType] [$themeName] [$countMax]</h1>");
+}
 
 _JS_;
+
 }
 ?>
