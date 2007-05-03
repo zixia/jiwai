@@ -11,7 +11,9 @@ define ('GADGET_THEME_DEFAULT'	, GADGET_THEME_ROOT.'iChat/');
 		src="http://api.jiwai.de/gadget/statuses/1.js
 			?count=20
 			&selector={owner|friends|friends_newest}
-			&theme=iChat" >
+			&theme=iChat" 
+			&gadget_div=JiWai_de_gadget_timeline_1" 
+>
 </script>
 */
 #
@@ -21,7 +23,7 @@ $selector	= @$_REQUEST['selector'];
 $count		= @$_REQUEST['count'];
 $theme		= @$_REQUEST['theme'];
 $thumb		= @$_REQUEST['thumb'];
-
+$gadget_div	= @$_REQUEST['gadget_div'];
 
 // rewrite param, may incluce the file ext name and user id/name
 $pathParam	= $_REQUEST['pathParam'];
@@ -40,7 +42,7 @@ switch ($pathParam[0])
 			$idUser		= $matches[1];
 			$fileExt	= $matches[2];
 
-			gadget($idUser, $selector, $theme, $count, $thumb);
+			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div);
 			
 		}
 		else
@@ -63,7 +65,7 @@ switch ($pathParam[0])
 exit(0);
 
 
-function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
+function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId)
 {
 
 	switch (strtolower($statusSelector))
@@ -99,6 +101,8 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 	if ($thumbSize<=0) $thumbSize=24;
 	else if (48!==$thumbSize) $thumbSize=24;
 
+	if ( empty($gadgetDivId) )
+		$gadgetDivId = 'JiWai_de_gadget_timeline';
 
 	$gadget_script_url				= "http://api.jiwai.de/statuses/public_timeline.json"
 										. "?count=$countMax"
@@ -115,6 +119,10 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 
 	$css_template		= file_get_contents("$theme_dir/main.css");
 	
+	// 增加 css selector 限定作用域
+
+	$css_template		= preg_replace("/^(.+\s*{)/m", "#$gadgetDivId $1", $css_template);
+
 	$asset_number = 1;
 	$asset_number_max = 6;
 	$count = 0;
@@ -154,7 +162,7 @@ jiwai_de_html_head.appendChild(gadget_css);
 /***************************** CSS Style Loaded ***************************************/
 
 
-jiwai_de_gadget 				= document.getElementById("jiwai_de_gadget")
+jiwai_de_gadget 				= document.getElementById("$gadgetDivId")
 
 /*
 test_span			= document.createElement('span');
@@ -185,7 +193,7 @@ function relative_time(time_value)
 function jiwai_de_get_message_html(status)
 {
 	return status.text 
-			+ " <a href='http://jiwai.de/" + status.user.screen_name + "/' target='_blank'><small>" 
+			+ " <a href='http://jiwai.de/" + status.user.screen_name + "/statuses/" + status.id + "' target='_blank'><small>" 
 			+ relative_time(status.created_at)
 			+ "</small></a>";
 }
@@ -197,6 +205,15 @@ function jiwai_de_get_picture_html(status)
 			+ "</a>";
 }
   
+
+function jiwai_de_get_user_html(status)
+{
+	return "<a href='http://JiWai.de/" + status.user.screen_name + "/' target='_blank'>"
+			+ status.user.name
+			+ "</a>";
+}
+
+
 function jiwai_de_callback(statuses)
 {
 
@@ -214,15 +231,16 @@ function jiwai_de_callback(statuses)
 		// 这条更新是用户自己的
 		if ( $idUser==statuses[n].user.id )
 		{
-			status_html		= owner_content_template.replace(/%sender%/i	, statuses[n].user.name);
+			status_html		= owner_content_template.replace(/%sender%/i	, jiwai_de_get_user_html(statuses[n]));
 			status_html		= status_html.replace(/%userIconPath%/i		, jiwai_de_get_picture_html(statuses[n]));
 			status_html		= status_html.replace(/%message%/i			, jiwai_de_get_message_html(statuses[n]));
 
 			// 检查下一个(n+1) statuses 中的用户，是不是和当前用户(n)是同一人。如果是，则合并。
 			while ( (n+1)<statuses.length && statuses[n+1].user.id==statuses[n].user.id )
 			{
-				status_next_html	= owner_next_content_template.replace(/%message%/i, jiwai_de_get_message_html(statuses[n+1]));
-				status_html			= status_html.replace(/<div id='insert'><\\/div>/i, status_next_html);
+				status_next_html	= owner_next_content_template.replace(/%message%/i	,jiwai_de_get_message_html(statuses[n+1]));
+				status_next_html	= status_next_html.replace(/%sender%/i				,jiwai_de_get_user_html(statuses[n+1]));
+				status_html			= status_html.replace(/<div id=['"]insert['"]><\\/div>/i, status_next_html);
 				n++;
 			}
 
@@ -231,7 +249,7 @@ function jiwai_de_callback(statuses)
 		// 这条更新是用户的好友的
 		else
 		{
-			status_html	= other_content_template.replace(/%sender%/i, statuses[n].user.name);
+			status_html	= other_content_template.replace(/%sender%/i, jiwai_de_get_user_html(statuses[n]));
 			status_html	= status_html.replace(/%userIconPath%/i 	, jiwai_de_get_picture_html(statuses[n]));
 			status_html	= status_html.replace(/%message%/i			, jiwai_de_get_message_html(statuses[n]));
 
@@ -239,7 +257,8 @@ function jiwai_de_callback(statuses)
 			while ( (n+1)<statuses.length && statuses[n+1].user.id==statuses[n].user.id )
 			{
 				status_next_html	= other_next_content_template.replace(/%message%/i, jiwai_de_get_message_html(statuses[n+1]));
-				status_html			= status_html.replace(/<div id='insert'><\\/div>/i, status_next_html);
+				status_next_html	= status_next_html.replace(/%sender%/i				,jiwai_de_get_user_html(statuses[n+1]));
+				status_html			= status_html.replace(/<div id=['"]insert['"]><\\/div>/i, status_next_html);
 				n++;
 			}
 
