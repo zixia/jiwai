@@ -65,7 +65,6 @@ exit(0);
 
 function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 {
-	header ("Content-Type: text/javascript");
 
 	switch (strtolower($statusSelector))
 	{
@@ -82,7 +81,6 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 
 
 	$theme_dir		= GADGET_THEME_ROOT . $themeName . '/';
-	$theme_url		= 'http://asset.jiwai.de/gadget/theme/' . $themeName . '/';
 
 	if ( !file_exists($theme_dir) )
 	{
@@ -99,12 +97,17 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 
 	$thumbSize	= intval($thumbSize);
 	if ($thumbSize<=0) $thumbSize=24;
-	else if (24!==$thumbSize) $thumbSize=48;
+	else if (48!==$thumbSize) $thumbSize=24;
 
 
+	$gadget_script_url				= "http://api.jiwai.de/statuses/public_timeline.json"
+										. "?count=$countMax"
+										. "&thumb=$thumbSize"
+										. "&callback=jiwai_de_callback"
+									;
 
 	$owner_content_template			= rawurlencode(file_get_contents("$theme_dir/Outgoing/Content.html"));
-	$owner_next_content_template		= rawurlencode(file_get_contents("$theme_dir/Outgoing/NextContent.html"));
+	$owner_next_content_template	= rawurlencode(file_get_contents("$theme_dir/Outgoing/NextContent.html"));
 
 	$other_content_template			= rawurlencode(file_get_contents("$theme_dir/Incoming/Content.html"));
 	$other_next_content_template	= rawurlencode(file_get_contents("$theme_dir/Incoming/NextContent.html"));
@@ -113,11 +116,12 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 	$css_template		= file_get_contents("$theme_dir/main.css");
 	
 	$asset_number = 1;
+	$asset_number_max = 6;
 	$count = 0;
 	do
 	{
 		$css_template	= preg_replace("/ url\('(?!http)/i"
-											, (" url('http://asset" . $asset_number%6 . ".JiWai.de/gadget/theme/$themeName/")
+											, (" url('http://asset" . $asset_number%$asset_number_max . ".JiWai.de/gadget/theme/$themeName/")
 											, $css_template, 1, $count
 									);
 		$asset_number++;
@@ -126,6 +130,7 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize)
 	$css_template = rawurlencode($css_template);
 
 
+	header ("Content-Type: text/javascript");
 	echo <<<_JS_
 
 var jiwai_de_html_head = document.getElementsByTagName('head')[0];
@@ -255,9 +260,10 @@ function jiwai_de_callback(statuses)
 
 // 加载 JSON 格式的用户数据，并传入回调，耶！
 gadget_data_js 		= document.createElement("script");
-gadget_data_js.src	= 'http://api.jiwai.de/statuses/public_timeline.json?callback=jiwai_de_callback';
+gadget_data_js.src	= '$gadget_script_url';
 
 jiwai_de_html_head.appendChild(gadget_data_js);
+
 _JS_;
 
 }
