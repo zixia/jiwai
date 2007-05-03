@@ -6,7 +6,12 @@ require_once('../../jiwai.inc.php');
 $err = '';
 
 if ( array_key_exists('username_or_email',$_REQUEST) ){
-	if (JWUser::Login($_REQUEST['username_or_email'],$_REQUEST['password'],@$_REQUEST['remember_me'])){
+	$idUser = JWUser::GetUserFromPassword($_REQUEST['username_or_email'],$_REQUEST['password']);
+
+	if ( $idUser )
+	{
+		JWUser::Login($idUser, $_REQUEST['remember_me']);
+
 		if ( isset($_SESSION['login_redirect_url']) ){
 			header("Location: " . $_SESSION['login_redirect_url']);
 		}else{

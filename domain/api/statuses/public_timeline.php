@@ -23,6 +23,11 @@ else if ( array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER) )
 	$since		= $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
 
+// thumb: thumb size: 48 / 24
+if ( array_key_exists('thumb',$_REQUEST) )
+	$thumb	= $_REQUEST['thumb'];
+
+
 // rewrite param, may incluce the file ext name and user id/name
 $pathParam	= $_REQUEST['pathParam'];
 
@@ -41,10 +46,14 @@ $pathParam	= $_REQUEST['pathParam'];
 
 $options	= array (
 					'type'		=> JWFeed::RSS20
+					, 'thumb'	=> @$thumb
+
+					// compatible with twitter
 					, 'count'	=> $count
 					, 'since_id'=> @$since_id
 					, 'since'	=> @$since
 					, 'callback'=> @$callback
+
 				);
 
 switch ($pathParam[0])
@@ -120,7 +129,6 @@ function public_timeline_rss_n_atom($options)
 
 		$feed->AddItem(array( 
 				'title'		=> "$user[nameFull] - $status[status]"
-				, 'url'		=> "http://beta.jiwai.de/$user[nameScreen]/"
 				, 'desc'	=> "$user[nameFull] - $status[status]"
 				, 'date'	=> $status['timestamp']
 				, 'author'	=> $user['nameFull']
@@ -132,7 +140,7 @@ function public_timeline_rss_n_atom($options)
 	//Valid parameters are RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
 	// MBOX, OPML, ATOM, ATOM1.0, ATOM0.3, HTML, JS
 
-	$feed->OutputFeed(JWFeed::RSS20);
+	$feed->OutputFeed($options['type']);
 	exit(0);
 }
 
@@ -175,12 +183,22 @@ function public_timeline_xml($options)
  */
 function get_public_timeline_array($options)
 {
+	/* Twitter compatible */
+
 	$count	= intval($options['count']);
 	if ( 0>=$count )
 		$count = JWStatus::DEFAULT_STATUS_NUM;
 
 	//TODO: since_id / since
+
+	/* Twitter compatible */
 	
+	if ( !empty($options['thumb']) && 48!=$options['thumb'] ) {
+		$options['thumb'] = 24;
+	}else{
+		$options['thumb'] = 48;
+	}
+
 	$statuses	= JWStatus::GetStatusListTimeline($count);
 
 
@@ -199,7 +217,8 @@ function get_public_timeline_array($options)
 		$status_array['user']['screen_name']= $user['nameScreen'];
 		$status_array['user']['location']	= $user['location'];
 		$status_array['user']['description']= $user['bio'];
-		$status_array['user']['profile_image_url']= JWUser::GetPictureUrl($status['idUser'], 'thumb48');
+
+		$status_array['user']['profile_image_url']= JWUser::GetPictureUrl($status['idUser'], "thumb$options[thumb]");
 		$status_array['user']['url']		= $user['url'];
 		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
 

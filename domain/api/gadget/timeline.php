@@ -67,19 +67,28 @@ exit(0);
 
 function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId)
 {
-
-	switch (strtolower($statusSelector))
+	$statusSelector = strtolower($statusSelector);
+	switch ($statusSelector)
 	{
+		case 'user':
+			break;
 		case 'friends':
 			break;
 		case 'friends_newest':
 			break;
-		case 'owner':
+		case 'public':
 			// fall to default.
 		default:
-			$statusType = 'owner';
+			$statusSelector = 'user';
 			break;
 	}
+	
+	$gadget_script_url	= "http://api.jiwai.de/statuses/${statusSelector}_timeline"
+							. (("public"===$statusSelector) ? ".json" : "/$idUser.json")
+							. "?count=$countMax"
+							. "&thumb=$thumbSize"
+							. "&callback=jiwai_de_callback"
+						;
 
 
 	$theme_dir		= GADGET_THEME_ROOT . $themeName . '/';
@@ -104,11 +113,6 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 	if ( empty($gadgetDivId) )
 		$gadgetDivId = 'JiWai_de_gadget_timeline';
 
-	$gadget_script_url				= "http://api.jiwai.de/statuses/public_timeline.json"
-										. "?count=$countMax"
-										. "&thumb=$thumbSize"
-										. "&callback=jiwai_de_callback"
-									;
 
 	$owner_content_template			= rawurlencode(file_get_contents("$theme_dir/Outgoing/Content.html"));
 	$owner_next_content_template	= rawurlencode(file_get_contents("$theme_dir/Outgoing/NextContent.html"));
@@ -143,34 +147,31 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 
 var jiwai_de_html_head = document.getElementsByTagName('head')[0];
 
-/***************************** Load CSS Style ***************************************/
+/***************************** Load Template  ***************************************/
 var css_template				= unescape('$css_template');
 
 var owner_content_template 		= unescape('$owner_content_template');
-var owner_next_content_template 	= unescape('$owner_next_content_template');
+var owner_next_content_template	= unescape('$owner_next_content_template');
 
 var other_content_template 		= unescape('$other_content_template');
 var other_next_content_template	= unescape('$other_next_content_template');
 
 
-//document.write('<style type="text/css">' + css_template + "</style>");
+var gadget_css = document.createElement("style");
+gadget_css.setAttribute("type", "text/css");
 
-var gadget_css = document.createElement('style');
-gadget_css.innerHTML = css_template;
+if(gadget_css.styleSheet){// IE
+	gadget_css.styleSheet.cssText = css_template;
+} else {// w3c
+	gadget_css.innerHTML = css_template;
+}
 
 jiwai_de_html_head.appendChild(gadget_css);
-/***************************** CSS Style Loaded ***************************************/
 
+
+/***************************** Template Loaded ***************************************/
 
 jiwai_de_gadget 				= document.getElementById("$gadgetDivId")
-
-/*
-test_span			= document.createElement('span');
-test_span.innerHTML	= "Hello, World! I'm Gadget!";
-
-jiwai_de_gadget.appendChild(test_span);
-*/
-
 
 function relative_time(time_value) 
 {
@@ -266,7 +267,7 @@ function jiwai_de_callback(statuses)
 		}
 	}
 
-	statuses_html += "<!-- [$idUser] [$statusType] [$themeName] [$countMax] -->";
+	statuses_html += "<!-- [$idUser] [$statusSelector] [$themeName] [$countMax] -->";
 
 
 	statuses_div 			= document.createElement('div');

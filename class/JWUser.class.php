@@ -56,7 +56,11 @@ class JWUser {
 	}
 
 
-	static public function Login( $name_or_email, $pass, $isRememberMe=true )
+	/*
+	 * 	检查用户名/email 和 密码是否匹配
+	 *	@return	bool	pass/fail
+	 */
+	static public function GetUserFromPassword($name_or_email, $pass)
 	{
 		$db = JWDB::get_db();
 
@@ -88,24 +92,26 @@ _SQL_;
 		if ( ! $arr )
 			return false;
 
-		$idUser = $arr['idUser'];
-		$db_pass = $arr['pass'];
+		$idUser = intval($arr['idUser']);
 
 		#
 		# Step 2. 检查密码是否匹配
 		#
 		if ( ! self::VerifyPassword($pass, $idUser) )
-			return false;
+			return null;
+
+		return $idUser;
+	}
 
 
+	static public function Login( $idUser, $isRememberMe=true )
+	{
 		$_SESSION['idUser'] = $idUser;
 
 		if ( $isRememberMe )
 			self::SetRememberUser();
 		else
 			self::ForgetRemembedUser();
-
-		return true;
 	}
 
 	/*
@@ -150,10 +156,10 @@ _SQL_;
 	 * @param	int
 	 * @return	bool
 	 */
-	static public function VerifyPassword($password, $idUser=null)
+	static public function VerifyPassword($password, $idUser)
 	{
-		if ( null===$idUser )
-			$idUser = self::GetCurrentUserId();
+		if ( !$idUser )
+			throw new JWException('must int');
 
 		$md5_pass = self::GetUserInfoById($idUser,'pass');
 

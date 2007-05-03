@@ -49,8 +49,10 @@ class JWFeed {
 
 
 		$this->mFeed->language		= 'zh-CN';
-        $this->mFeed->cssStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.css');
-        $this->mFeed->xslStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.xsl');
+		
+		// FIXME IE 不认这两个？
+        //$this->mFeed->cssStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.css');
+        //$this->mFeed->xslStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.xsl');
 
 
     }

@@ -1,4 +1,5 @@
 <?php
+die ( 'NO USE' );
 require_once("../../../jiwai.inc.php");
 
 echo '<pre>'; die(var_dump($_REQUEST));
