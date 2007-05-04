@@ -44,7 +44,7 @@ if ( array_key_exists('user',$_REQUEST)
 
 	if ( $bValid ){
 		$aExist = array (	'nameScreen'	=>	JWUser::IsExistName( $nameScreen )
-							, 'email'		=>	JWUser::IsExistEmail( $email )
+							, 'email'		=>	empty($email) ? false : JWUser::IsExistEmail( $email )
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] ){
 			if ( JWUser::Create($aUserInfo)
