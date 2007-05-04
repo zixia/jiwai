@@ -6,24 +6,35 @@ define ('GADGET_THEME_DEFAULT'	, GADGET_THEME_ROOT.'iChat/');
 
 //echo '<pre>'; die(var_dump($_REQUEST));
 
-/*
+/*	1、被嵌入 gadget 的 http://JiWai.de/wo/badge/ 页面进行参数设置后供用户调用。
+ * 	2、所使用的数据源 API 为：
 <script type="text/javascript" 
 		src="http://api.jiwai.de/gadget/statuses/1.js
 			?count=20
-			&selector={owner|friends|friends_newest}
+			&selector={user|friends|public}
 			&theme=iChat" 
 			&gadget_div=JiWai_de_gadget_timeline_1" 
 >
 </script>
 */
+
 #
 # User URL Param
 #
 $selector	= @$_REQUEST['selector'];
 $count		= @$_REQUEST['count'];
 $theme		= @$_REQUEST['theme'];
-$thumb		= @$_REQUEST['thumb'];
+if ( !empty($_REQUEST['thumb']) ){
+	$thumb = $_REQUEST['thumb'];
+}else{
+	$thumb = 24;
+}
+$hidefollow	= @$_REQUEST['hidefollow'];
 $gadget_div	= @$_REQUEST['gadget_div'];
+if ( isset($_REQUEST['encoding']) )
+	$encoding	= @$_REQUEST['encoding'];
+else
+	$encoding 	= 'UTF-8';
 
 // rewrite param, may incluce the file ext name and user id/name
 $pathParam	= $_REQUEST['pathParam'];
@@ -42,7 +53,7 @@ switch ($pathParam[0])
 			$idUser		= $matches[1];
 			$fileExt	= $matches[2];
 
-			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div);
+			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div, $encoding, $hidefollow);
 			
 		}
 		else
@@ -65,7 +76,7 @@ switch ($pathParam[0])
 exit(0);
 
 
-function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId)
+function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId, $encoding, $hidefollow)
 {
 	$statusSelector = strtolower($statusSelector);
 	switch ($statusSelector)
@@ -79,15 +90,18 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 		case 'public':
 			// fall to default.
 		default:
-			$statusSelector = 'user';
+			$statusSelector = 'public';
 			break;
 	}
 	
+	$user = JWUser::GetUserInfoById($idUser);
+
 	$gadget_script_url	= "http://api.jiwai.de/statuses/${statusSelector}_timeline"
 							. (("public"===$statusSelector) ? ".json" : "/$idUser.json")
 							. "?count=$countMax"
 							. "&thumb=$thumbSize"
 							. "&callback=jiwai_de_callback"
+							. "&encoding=$encoding"
 						;
 
 
@@ -141,9 +155,15 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 
 	$css_template = rawurlencode($css_template);
 
+//die(var_dump($hidefollow));
+	if ( empty($hidefollow) )
+		$hidefollow = 'false';
+	else
+		$hidefollow = 'true';
 
-	header ("Content-Type: text/javascript");
-	echo <<<_JS_
+	$js_output = <<<_JS_
+
+var hidefollow = $hidefollow;
 
 var jiwai_de_html_head = document.getElementsByTagName('head')[0];
 
@@ -193,7 +213,8 @@ function relative_time(time_value)
 
 function jiwai_de_get_message_html(status)
 {
-	return status.text 
+	var status_html = status.text.replace(/(http:\/\/)([^\/]+)([^\s]*)/, "<a href='$1$2$3' target='_blank'>$1$2/...</a>");
+	return status_html
 			+ " <a href='http://jiwai.de/" + status.user.screen_name + "/statuses/" + status.id + "' target='_blank'><small>" 
 			+ relative_time(status.created_at)
 			+ "</small></a>";
@@ -202,7 +223,7 @@ function jiwai_de_get_message_html(status)
 function jiwai_de_get_picture_html(status)
 {
 	return "<a href='http://JiWai.de/" + status.user.screen_name + "/' target='_blank'>"
-			+ "<img class='icon' border='0' src='" + status.user.profile_image_url  + "' />";
+			+ "<img class='icon' border='0' alt='" + status.user.name + "' src='" + status.user.profile_image_url  + "' />";
 			+ "</a>";
 }
   
@@ -267,8 +288,14 @@ function jiwai_de_callback(statuses)
 		}
 	}
 
-	statuses_html += "<!-- [$idUser] [$statusSelector] [$themeName] [$countMax] -->";
+	if ( !hidefollow )
+	{
+		statuses_html += "<!-- [$idUser] [$statusSelector] [$themeName] [$countMax] -->";
 
+		statuses_html += "<div clear='both' align='center'>";
+		statuses_html += "<a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]</a>";
+		statuses_html += " <a href='http://JiWai.de/' target='_blank'><img style='vertical-align:middle' src='http://asset.jiwai.de/img/icon_ji_16x16.gif' alt='叽歪de' border='0'></a></div>";
+	}
 
 	statuses_div 			= document.createElement('div');
 	statuses_div.innerHTML 	= statuses_html;
@@ -286,5 +313,11 @@ jiwai_de_html_head.appendChild(gadget_data_js);
 
 _JS_;
 
+	header ("Content-Type: text/javascript; Charset: $encoding");
+	if ( 'UTF-8'==strtoupper($encoding) ){
+		die ($js_output);
+	}
+
+	die (mb_convert_encoding($js_output, $encoding, "UTF-8"));
 }
 ?>

@@ -94,7 +94,7 @@ switch ($pathParam[0])
 				public_timeline_rss_n_atom($options);
 				break;
 			case 'json':
-				$statuses	= get_user_timeline_array($options);
+				$statuses	= get_friends_timeline_array($options);
 
 				if ( empty($options['callback']) )
 					echo json_encode($statuses);
@@ -120,14 +120,14 @@ switch ($pathParam[0])
 			{
 				case 'atom':
 					$options['type']	= JWFeed::ATOM;
-					user_timeline_rss_n_atom($options);
+					friends_timeline_rss_n_atom($options);
 					break;
 				case 'rss':
 					$options['type']	= JWFeed::RSS20;
-					user_timeline_rss_n_atom($options);
+					friends_timeline_rss_n_atom($options);
 					break;
 				case 'json':
-					$statuses	= get_user_timeline_array($options);
+					$statuses	= get_friends_timeline_array($options);
 
 					if ( empty($options['callback']) )
 						$json_str = json_encode($statuses);
@@ -137,7 +137,7 @@ switch ($pathParam[0])
 					echo $json_str;
 					break;
 				case 'xml':
-					user_timeline_xml($options);
+					friends_timeline_xml($options);
 					break;
 				default: 
 					break;
@@ -161,13 +161,13 @@ exit(0);
 ###############################################################
 
 /*
- * 	output user timeline rss
+ * 	output friends timeline rss
  *	@param	array	options, include:
 					count, since_id, since
 					idUser
  *
  */
-function user_timeline_rss_n_atom($options)
+function friends_timeline_rss_n_atom($options)
 {
 	$count	= intval($options['count']);
 	if ( 0>=$count )
@@ -175,18 +175,19 @@ function user_timeline_rss_n_atom($options)
 
 	//TODO: since_id / since
 	
-	$statuses	= JWStatus::GetStatusListUser($options['idUser'],$count);
-	$user		= JWUser::GetUserInfoById($options['idUser']);
+	$statuses	= JWStatus::GetStatusListFriends($options['idUser'],$count);
 
-	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull']
+	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
 							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
-							, 'desc'	=> $user['nameFull'] . '的叽歪'
+							, 'desc'	=> $user['nameFull'] . '和朋友们的叽歪'
 							, 'ttl'		=> 40
 							, 'language'=> 'zh_CN'
 						) );
 
 	foreach ( $statuses as $status )
 	{
+		$user		= JWUser::GetUserInfoById($status['idUser']);
+
 		$feed->AddItem(array( 
 				'title'		=> "$user[nameFull] - $status[status]"
 				, 'desc'	=> "$user[nameFull] - $status[status]"
@@ -212,9 +213,9 @@ function user_timeline_rss_n_atom($options)
 					idUser
  *
  */
-function user_timeline_xml($options)
+function friends_timeline_xml($options)
 {
-	$statuses	= get_user_timeline_array($options);
+	$statuses	= get_friends_timeline_array($options);
 
 
 	$xml .= '<?xml version="1.0" encoding="UTF-8"?>';
@@ -237,13 +238,13 @@ function user_timeline_xml($options)
 
 
 /*
- * 	return user timeline as a array
+ * 	return friends timeline as a array
  *	@param	array	options, include:
 					count, since_id, since
 					idUser
  *
  */
-function get_user_timeline_array($options)
+function get_friends_timeline_array($options)
 {
 	/* Twitter compatible */
 
@@ -261,14 +262,14 @@ function get_user_timeline_array($options)
 		$options['thumb'] = 48;
 	}
 
-	$statuses	= JWStatus::GetStatusListUser($options['idUser'], $count);
+	$statuses	= JWStatus::GetStatusListFriends($options['idUser'], $count);
 
-	$user	= JWUser::GetUserInfoById($options['idUser']);
 
 	$statuses_array								= array();
 
 	foreach ( $statuses as $status )
 	{
+		$user	= JWUser::GetUserInfoById($status['idUser']);
 
 		$status_array['created_at']			= date("r",$status['timestamp']);
 		$status_array['id']					= intval($status['idStatus']);
