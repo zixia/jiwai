@@ -516,8 +516,14 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 <?php
 	}
 
-	static function sidebar_login()
+	/*
+	 *	@param	options		focus	=> true	: 是否激活输入焦点到email框
+	 *
+	 */
+	static function sidebar_login($options)
 	{
+		if ( false!==@$options['focus'] )
+			$options['focus'] = true;
 ?>
 
 		<form action="/wo/login" class="signin" method="post" name="f">
@@ -538,13 +544,16 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
     		</fieldset>
 		</form>
 
+<?php 	
+		if ( $options['focus'] ) 
+			echo <<<_HTML_
 		<script type="text/javascript">
 //<![CDATA[
 document.getElementById('email').focus()
 //]]>
 		</script>
+_HTML_;
 
-<?php
 	}
 
 	static function sidebar_register()
@@ -626,7 +635,6 @@ document.getElementById('email').focus()
 
 			$func_name = 'sidebar_' .$menu_name;
 
-//echo "<hr>$func_name";
 			if ( method_exists('JWTemplate',$func_name) ){
 				call_user_func_array( array('JWTemplate',$func_name), $menu_param );
 			}else{

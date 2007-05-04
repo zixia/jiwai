@@ -300,7 +300,7 @@ $('user_nameScreen').focus()
 <?php 
 
 $arr_menu 			= array(	array ('head'	, array('<h3>已经是注册用户? 请直接登陆:</h3>'))
-								, array ('login'		, null)
+								, array ('login'		, array( array('focus'	=> false) ))
 							);
 
 
