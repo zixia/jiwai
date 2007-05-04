@@ -607,7 +607,7 @@ _SQL_;
 	{
 		$picture_info	= self::GetPictureInfo(self::GetUserInfoById($idUser,'photoInfo'));
 
-		return "http://alpha.jiwai.de/$idUser/picture/$picSize/$picture_info[name].$picture_info[type]?$picture_info[time]";
+		return "http://JiWai.de/$idUser/picture/$picSize/$picture_info[name].$picture_info[type]?$picture_info[time]";
 		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
 	}
 	

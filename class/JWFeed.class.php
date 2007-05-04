@@ -36,9 +36,9 @@ class JWFeed {
         	$this->mFeed->ttl 			= 60;
 
         $img				= new FeedImage();
-        $img->url			= 'http://beta.jiwai.de/dev/picture/thumb24';
+        $img->url			= 'http://JiWai.de/dev/picture/thumb24';
 
-        $img->link			= 'http://beta.jiwai.de/';
+        $img->link			= 'http://JiWai.de/';
         $img->title			= '叽歪de - 这一刻，你在做什么？';
         $img->width			= 48;
         $img->height		= 48;

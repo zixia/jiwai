@@ -119,7 +119,7 @@ function public_timeline_rss_n_atom($options)
 
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪广场'
-							, 'url'		=> 'http://beta.jiwai.de/public_timeline/'
+							, 'url'		=> 'http://JiWai.de/public_timeline/'
 							, 'desc'	=> '所有人叽歪de更新都在这里！'
 						) );
 
@@ -132,8 +132,8 @@ function public_timeline_rss_n_atom($options)
 				, 'desc'	=> "$user[nameFull] - $status[status]"
 				, 'date'	=> $status['timestamp']
 				, 'author'	=> $user['nameFull']
-				, 'guid'	=> "http://beta.jiwai.de/$user[nameScreen]/statuses/$status[idStatus]"
-				, 'url'		=> "http://beta.jiwai.de/$user[nameScreen]/statuses/$status[idStatus]"
+				, 'guid'	=> "http://JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
+				, 'url'		=> "http://JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
 			) );
 	}
 
