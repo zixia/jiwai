@@ -2,6 +2,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
+
 $name_len_min = 5;
 
 $aUserInfo = array();
@@ -10,13 +11,14 @@ if ( array_key_exists('user',$_REQUEST)
 		&& array_key_exists('nameScreen',$_REQUEST['user']) ){
 	$aUserInfo = $_REQUEST['user'];
 
+	//echo "<pre>";var_dump($_FILES); die(var_dump($_REQUEST));
 	//JWDebug::trace($aUserInfo);
 
 	$nameScreen = $aUserInfo['nameScreen'];
 	$email = '';
 
 	$aValid = array (	'nameScreen'	=>	JWUser::IsValidName( $nameScreen )
-						, 'captcha'		=>	JWCaptcha::validate( $_REQUEST['key'] )
+						// CAPTCHA , 'captcha'		=>	JWCaptcha::validate( $_REQUEST['key'] )
 						, 'pass'		=>	strlen($aUserInfo['pass'])>0 && $aUserInfo['pass']===$aUserInfo['pass_confirm']
 					);
 
@@ -49,6 +51,25 @@ if ( array_key_exists('user',$_REQUEST)
 		if ( !$aExist['nameScreen'] && !$aExist['email'] ){
 			if ( JWUser::Create($aUserInfo)
 						&& JWUser::Login ( $aUserInfo['nameScreen'], $aUserInfo['pass'] ) ){
+
+				// after a user create his account the first time, we try to save the pict he uploaded, and ignore errors.
+				$file_info = @$_FILES['profile_image'];
+    
+    			if ( isset($file_info)
+            			&& 0===$file_info['error'] 
+            			&& preg_match('/image/',$file_info['type']) )
+    			{                       
+        			$user_named_file = '/tmp/' . $file_info['name'];
+        			if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) )
+        			{
+            			if ( JWFile::SaveUserPicture($user_named_file) )
+            			{   
+                			preg_match('/([^\/]+)$/',$user_named_file,$matches);
+   				            JWUser::SetPicture($matches[1]);
+						}
+					}
+				}
+
 				header("Location: /wo/invitation/invite");
 				exit();
 			}else{
@@ -90,9 +111,11 @@ _POD_;
 		if ( !$aValid['email'] )
 			$JWErr .= "\t<li>Email ( <em>" . htmlspecialchars($aUserInfo['email'])  ."</em> )不正确</li>\n";
 	
+/*	CAPTCHA 暂不检查注册码，等待 memcache 记录启用，能够识别多次重复注册时再启用
 		if ( !$aValid['captcha'] ){
 			$JWErr .= "\t<li>校验码输入错误，请重新输入</li>\n";
 		}
+*/
 		if ( !$aValid['pass'] ){
 			$JWErr .= "\t<li>密码两次输入不一致（注意密码不可为空）</li>\n";
 		}
@@ -175,6 +198,7 @@ function validate_form(form)
 		n++;
 	}
 
+/* CAPTCHA
 	if ( $('key') ){
 		if ( 0==$('key').value.length ){
 			$('key').className += " notice";
@@ -187,6 +211,7 @@ function validate_form(form)
 			n++;
 		}
 	}
+*/
 
 
 	if ( 0==$('user_email').value.length
@@ -242,7 +267,7 @@ function validate_form(form)
 								</label>
 							</th>
 						<td>
-							<input id="user_profile_image" name="user[profile_image]" size="30" type="file" value="浏览"/>
+							<input id="user_profile_image" name="profile_image" size="30" type="file" value="浏览"/>
 							<p><small>最小尺寸为48x48（jpg, gif, png）。（如果你上传头像图片，你将会出现在“<a href="/<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
 						</td>
 					</tr>
@@ -261,6 +286,7 @@ function validate_form(form)
 					<tr>
 						<th></th>
 						<td>
+							<br />
 							<p title="By default, we&rsquo;ll send you occasional Twitter news by email. It&rsquo;s extremely
 							easy to unsubscribe at any time (one click in the email).">
 							我们有时会通过E-mail来通知你一些关于叽歪de消息，你可以很容易地取消订阅（在email中点击一下即可）。
@@ -269,7 +295,7 @@ function validate_form(form)
 							<p>加入叽歪de之前，请确认你在13周岁以上，并接受<a href="/tos" target="_blank">服务条款</a>。</p>
 						</td>
 					</tr>		
-					<tr>
+					<!--tr> CAPTCHA
 						<th></th>
 						<td>
 							<input id="digest" name="digest" type="hidden" value="zixia_digest" />
@@ -280,10 +306,10 @@ function validate_form(form)
 							</label>
 							<p><input type="text" id="key" name="key" value="" /></p>
 						</td>
-					</tr>
+					</tr-->
 					<tr>
 						<th></th>
-						<td><input name="commit" type="submit" value="继续" /></td>
+						<td><br /><input name="commit" type="submit" value="创建我的帐号" /></td>
 					</tr>
 				</table>
 			</fieldset>

@@ -346,18 +346,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		$device		= $aStatus['device'];
 
 		$duration	= JWStatus::get_time_desc($timestamp);
-
-
-		$photo_url	= self::GetConst('UrlStrangerPicture');
-
-		if ( !empty($photoInfo) )
-		{
-			$arr_photo_info = JWUser::GetPictureInfo($photoInfo);
-
-			preg_match('/^(\d+)\|(.+)\.([^.]+)$/',$photoInfo,$matches);
-			$photo_url 	= "/$nameScreen/picture/thumb48." . $matches[3] . '?' . $matches[1];
-			$photo_name		= htmlspecialchars($matches[2]);
-		}
+		$photo_url 	= JWUser::GetPictureUrl($idUser);
 	
 
 ?>
@@ -425,18 +414,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$device		= $aStatus['device'];
 			
 			$duration	= JWStatus::get_time_desc($timestamp);
-
-
-			$photo_url	= self::GetConst('UrlStrangerPicture');
-
-			if ( !empty($photoInfo) )
-			{
-				$arr_photo_info = JWUser::GetPictureInfo($photoInfo);
-
-				preg_match('/^(\d+)\|(.+)\.([^.]+)$/',$photoInfo,$matches);
-				$photo_url 	= "/$nameScreen/picture/thumb48." . $matches[3] . '?' . $matches[1];
-				$photo_name		= htmlspecialchars($matches[2]);
-			}
+			$photo_url	= JWUser::GetPictureUrl($idUser);
 	
 
 			if ( 'sms'==$device )
@@ -869,9 +847,10 @@ _HTML_;
 		foreach ( $friendIdList as $idFriend )
 		{
 			$friend_info 	= JWUser::GetUserInfoById($idFriend);
-			$picture_info	= JWUser::GetPictureInfo($friend_info['photoInfo']);
+			$picture_url	= JWUser::GetPictureUrl($idFriend);
+			
 			echo <<<_HTML_
-			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$picture_info[name]" height="24" src="/$friend_info[nameScreen]/picture/thumb24?$picture_info[time]" width="24" /></a>
+			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
 
 _HTML_;
 		}

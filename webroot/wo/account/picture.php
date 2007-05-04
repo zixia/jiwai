@@ -163,8 +163,9 @@ _HTML_;
 }
 else	// we have photo
 {
+	$photo_url = JWUser::GetPictureUrl($user_info['id'],'thumb48');
 	echo <<<_HTML_
-									<img alt="$user_info[nameFull]" src="/$user_info[nameScreen]/picture/thumb48?$arr_picture_info[time]" style="vertical-align:middle" />
+									<img alt="$user_info[nameFull]" src="$photo_url" style="vertical-align:middle" />
 _HTML_;
 }
 ?>

@@ -104,8 +104,14 @@ _SQL_;
 	}
 
 
-	static public function Login( $idUser, $isRememberMe=true )
+	static public function Login( $userIdOrName, $isRememberMe=true )
 	{
+		if ( preg_match("/^\d/",$userIdOrName) ){
+			$idUser 	= $userIdOrName;
+		}else{
+			$user_info 	= self::GetUserInfoByName($userIdOrName);
+			$idUser		= $user_info['id'];
+		}
 		$_SESSION['idUser'] = $idUser;
 
 		if ( $isRememberMe )
