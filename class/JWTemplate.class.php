@@ -128,7 +128,7 @@ class JWTemplate {
 			<li><a href="/<?php echo $nameScreen ?>">叽歪de我</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/invitation/invite">邀请</a></li>
-			<li><a href="/wo/account/badge">挂件/饰件/Badges/widget</a></li>
+			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/account/setting">设置</a></li>
 			<li><a href="/help/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
@@ -148,14 +148,14 @@ class JWTemplate {
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007 叽歪de</li>
+		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved</li>
 
 		<li><a href="/help/aboutus">关于我们</a></li>
 		<li><a href="/help/contact">联系我们</a></li>
-		<li><a href="http://blog.jiwai.de">Blog</a></li>
+		<li><a href="http://blog.jiwai.de/">Blog</a></li>
 		<li><a href="/help/api">API</a></li>
 		<li><a href="/help">帮助</a></li>
-		<li><a href="/tos">使用协议</a></li>
+		<li><a href="http://help.jiwai.de/tos">使用协议</a></li>
 
 	</ul>
 </div>
@@ -523,7 +523,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		<form action="/wo/login" class="signin" method="post" name="f">
 			<fieldset>
 				<div>
-					<label for="username_or_email">用户名 / Email</label>
+					<label for="username_or_email">帐号 / Email</label>
 					<input id="email" name="username_or_email" type="text" />
     			</div>
 

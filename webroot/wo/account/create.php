@@ -48,7 +48,7 @@ if ( array_key_exists('user',$_REQUEST)
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] ){
 			if ( JWUser::Create($aUserInfo)
-						&& JWUser::login ( $aUserInfo['nameScreen'], $aUserInfo['pass'] ) ){
+						&& JWUser::Login ( $aUserInfo['nameScreen'], $aUserInfo['pass'] ) ){
 				header("Location: /wo/invitation/invite");
 				exit();
 			}else{

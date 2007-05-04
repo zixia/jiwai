@@ -1,0 +1,42 @@
+BODY {
+  margin: 4px;
+}
+DIV#content {
+  font: 12px courier new;
+}
+DIV#insert {
+  display: none;
+}
+
+DIV.system1st {
+  margin: 4px 0px 4px 0px;
+  font: 12px arial;
+}
+DIV.systemNth {
+  margin: 4px 0px 4px 0px;
+  font: 12px arial;
+}
+
+DIV.chat DIV.msg {
+  margin: 4px 0px 0px 0px;
+  padding-left: 11px;
+}
+DIV.chat DIV.1st {
+  text-indent: -11px;
+}
+
+.blue {
+color: #0000BB;
+}
+
+.green {
+color: #007700 ;
+}
+
+.red {
+color: #dd0000;
+}
+
+.orange {
+color: #ff8000;
+}

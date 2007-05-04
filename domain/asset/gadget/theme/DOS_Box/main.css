@@ -1,0 +1,89 @@
+BODY {
+  background-color: black;
+  margin: 0px;
+  padding: 4px;
+}
+
+DIV#content {
+  xfont: 11px Tahoma;
+}
+DIV#insert {
+  display: none;
+}
+
+/* Two ways to do icons with these rules:
+   <img class='icon' src='%userIconPath%'>
+   <div class='icon'><div style='height:1px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="%userIconPath%")'></div></div>
+*/
+
+A {
+	color: #00FFFF;
+}
+
+DIV.system1st, DIV.systemNth {
+  font: 12px Terminal;
+  font-weight: normal;
+  color: silver;
+}
+
+DIV.chat {
+  padding: 5px 0px;
+}
+DIV.chat DIV.Nth {
+  margin: 0px 0px 0px 0px;
+  font: 12px Terminal;
+  font-weight: normal;
+  color: silver;
+  text-indent: 10px;
+}
+
+DIV.chat SPAN.salutation-o {
+  display: inline;
+  margin: 0px 0px 1px;
+  padding: 0px 0px 0px 0px;
+  font: 12px Terminal;
+  font-weight: normal;
+  color: white;
+}
+
+DIV.chat SPAN.message-o {
+  font: 12px Terminal;
+  font-weight: normal;
+  color: silver;
+}
+
+DIV.chat SPAN.salutation-i {
+  display: inline;
+  margin: 0px 0px 1px;
+  padding: 0px 0px 0px 0px;
+  font: 12px Terminal;
+  font-weight: normal;
+  color: white;
+}
+
+DIV.chat SPAN.message-i {
+  font: 12px Terminal;
+  font-weight: normal;
+  color: silver;
+}
+
+DIV.out {
+  text-align: left;
+  height: 1px;
+}
+DIV.in {
+  text-align: left;
+  height: 1px;
+}
+
+DIV.clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+}
+
+DIV.break {
+  height: 1px;
+  margin: 3px 0px 0px 0px;
+  overflow: hidden;
+}

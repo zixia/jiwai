@@ -1,0 +1,70 @@
+BODY {
+  margin: 4px;
+background-color: #3a6ea5;
+}
+DIV#content {
+background-color: #3a6ea5;
+}
+DIV#insert {
+display: none;
+}
+
+/* Two ways to do icons with these rules:
+   <img class='icon' src='%userIconPath%'>
+   <div class='icon'><div style='height:1px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="%userIconPath%", sizingmethod=scale)'></div></div>
+*/
+
+
+DIV.chat {
+  padding: 0px 5px;
+}
+
+
+DIV.break {
+  height: 1px;
+  margin: 3px 0px 0px 0px;
+  overflow: hidden;
+}
+
+
+.window {
+border-top:#d4d0c8;
+border-left:#d4d0c8;
+border-bottom:#404040;
+border-right:#404040;
+border-width:1px;
+border-style: solid;
+}
+
+.window2 {
+border-top: #fff;
+border-left: #fff;
+border-bottom:#808080;
+border-right:#808080;
+border-width:1px;
+border-style: solid;
+}
+.window3 {
+background-color:#d4d0c8;
+border: 1px solid #d4d0c8;
+}
+
+.titlebar {
+height: 20px;
+font: 8pt Tahoma;
+font-weight: bold;
+color: #fff;
+vertical-align:super;
+filter: progid:DXImageTransform.Microsoft.Gradient(gradientType='1',startColorStr='#0a246a',endColorStr='#a6caf0');
+}
+
+DIV .chat .icon {
+width:16px;
+height: 16px;
+margin-top: 2px;
+display:inline;
+}
+
+.messagetext {
+font: 8pt Tahoma;
+}

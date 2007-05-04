@@ -112,6 +112,8 @@ _SQL_;
 			self::SetRememberUser();
 		else
 			self::ForgetRemembedUser();
+
+		return true;
 	}
 
 	/*
@@ -577,6 +579,7 @@ _SQL_;
 												, 'asset'			=> true
 												, 'blog'			=> true
 												, 'bug'				=> true
+												, 'faq'				=> true
 												, 'help'			=> true
 												, 'jiwai'			=> true
 												, 'm'				=> true

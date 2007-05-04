@@ -56,7 +56,7 @@ if ( !isset($show_user_archive) )
 if ( $show_user_archive )
 	$arr_status_list = JWStatus::GetStatusListUser($logined_user_id);
 else
-	$arr_status_list = JWStatus::GetStatusListNetwork($logined_user_id);
+	$arr_status_list = JWStatus::GetStatusListFriends($logined_user_id);
 
 JWTemplate::timeline($arr_status_list, array('icon'=>!$show_user_archive,'trash'=>true)) 
 ?>

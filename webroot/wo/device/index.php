@@ -60,9 +60,12 @@ _INFO_;
 					<td>
           				<h3>手机号码</h3>
 
-<?php if ( !isset($aDeviceInfo['sms']) || null==$aDeviceInfo['sms']) { // no sms at all ?>
+<?php if ( !isset($aDeviceInfo['sms']) || null==$aDeviceInfo['sms']) { // no sms at all 
+// FIXME: 两个保存按钮，应该任何一个按钮都能保存所有的用户填写信息
+?>
 						<form action="/wo/device/create" id="create_device" method="post">
   
+
     						<input id="device_type" name="device[type]" type="hidden" value="sms" />
     						<input id="device_address" name="device[address]" size="30" type="text" value=""/>
     						<input name="commit" type="submit" value="保存" />

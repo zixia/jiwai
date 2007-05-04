@@ -25,7 +25,8 @@ fieldset th {
 	text-align:right;
 	width:11em;
 }
-fieldset th, td {
+
+fieldset th, #timeline td {
 	padding:7px 3px;
 	vertical-align:top;
 }

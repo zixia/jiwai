@@ -96,7 +96,7 @@ _SQL_;
 	}
 
 
-	static public function GetStatusListNetwork ($idUser, $numMax=20)
+	static public function GetStatusListFriends ($idUser, $numMax=20)
 	{
 		$idUser	= intval($idUser);
 		$numMax	= intval($numMax);

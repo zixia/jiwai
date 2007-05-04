@@ -1,0 +1,41 @@
+DIV#insert {
+  display: none;
+}
+/* red line #C5A4B7 
+blue line #97c0e0
+paper #e6f3f9
+*/
+
+.head {
+border-right:1px solid #c5a4b7;
+height:50px;
+float:left;
+width:50px;
+}
+
+.top {
+border-bottom:1px solid #97c0e0;
+height:50px;
+width:100%;
+}
+
+.chat {
+padding-left:49px !important;
+background-image:url(images/line.png);
+}
+
+.message {
+display:block;
+border-left:1px solid #c5a4b7;
+padding-left:4px !important;
+}
+
+* {
+font:10pt times new roman !important;
+margin:0;
+padding:0;
+}
+
+.message SPAN {
+color:#000 !important;
+}

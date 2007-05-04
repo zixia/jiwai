@@ -1,0 +1,121 @@
+BODY {
+  margin: 4px;
+background-color:#00438E;
+}
+DIV#content {
+background-color:#00438E;
+}
+DIV#insert {
+display: none;
+}
+
+/* Two ways to do icons with these rules:
+   <img class='icon' src='%userIconPath%'>
+   <div class='icon'><div style='height:1px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="%userIconPath%")'></div></div>
+*/
+
+
+DIV.chat {
+  padding: 0px 5px;
+ height:1px;
+background-color:#00438E;
+}
+
+
+DIV.break {
+  height: 1px;
+  margin: 3px 0px 0px 0px;
+  overflow: hidden;
+}
+
+
+DIV .chat .topleft .icon {
+height:16px;
+width:16px;
+margin-top: 4px;
+margin-left: 4px;
+float:left;
+font: 4pt Trebuchet MS;
+}
+
+
+
+.topleft {
+float:left;
+background-image: url(images/topleft.png);
+background-repeat: no-repeat;
+height:29px;
+padding-top: 4px;
+}
+
+
+.topright {
+float:right;
+background-image: url(images/topright.png);
+background-repeat: no-repeat;
+width:60px;
+height:29px;
+}
+
+.titlebar {
+margin:0;
+height:29px;
+background-image:url(images/topmiddle.png);
+background-repeat: repeat-x;
+font: 10pt Trebuchet MS;
+font-weight: bold;
+color: #ffffff;
+}
+
+
+.center {
+margin:0;
+padding:0;
+height:1px;
+background-color:#ECE9D8;
+font: 10pt Trebuchet MS;
+font-weight: bold;
+}
+
+.leftborder {
+float:left;
+background-image:url(images/leftborder.png);
+background-repeat:repeat-y;
+padding:0;
+margin:0;
+height:100%;
+width:3px;
+}
+
+.rightborder {
+background-image:url(images/rightborder.png);
+background-position:right;
+background-repeat:repeat-y;
+font:8pt tahoma;
+display:block;
+padding-top:5px;
+height:100%;
+}
+
+.bottom {
+margin:0;
+height:3px;
+background-image:url(images/bottommiddle.png);
+background-repeat: repeat-x;
+}
+
+.bottomleft {
+float:left;
+background-image:url(images/bottomleft.png);
+background-repeat:no-repeat;
+width:5px;
+}
+.bottomright {
+float:right;
+background-image:url(images/bottomright.png);
+background-repeat:no-repeat;
+width:4px;
+}
+.system SPAN {
+color:#000000 !important;
+}
