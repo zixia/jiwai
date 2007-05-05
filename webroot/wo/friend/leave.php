@@ -5,20 +5,20 @@ JWUser::MustLogined();
 
 //die(var_dump($_REQUEST));
 
-$idUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWUser::GetCurrentUserId();
 
-if ( is_int($idUser) )
+if ( is_int($idLoginedUser) )
 {
 	$param = $_REQUEST['pathParam'];
 
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idFriend 	= $match[1];
+		$idPageUser 	= $match[1];
 
-		$friend_name	= JWUser::GetUserInfoById($idFriend);
+		$friend_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
 
-		if ( JWFollower::Leave($idUser, $idFriend) )
+		if ( JWFollower::Leave($idPageUser, $idLoginedUser) )
 		{
-			$info_html = <<<_HTML_
+			$notice_html = <<<_HTML_
 退订成功，您将不会再在手机或聊天软件上收到${friend_name}的更新。
 _HTML_;
 		}
@@ -30,6 +30,13 @@ _HTML_;
 _HTML_;
 		}
 	}
+
+	if ( !empty($error_html) )
+		JWSession::SetInfo('error',$error_html);
+
+	if ( !empty($notice_html) )
+		JWSession::SetInfo('notice',$notice_html);
+
 }
 
 

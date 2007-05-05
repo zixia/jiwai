@@ -6,21 +6,21 @@ JWUser::MustLogined();
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
-$idUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWUser::GetCurrentUserId();
 
-if ( $idUser )
+if ( $idLoginedUser )
 {
 	$param = $_REQUEST['pathParam'];
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idFriend = intval($match[1]);
+		$idPageUser = intval($match[1]);
 
-		$friend_name = JWUser::GetUserInfoById($idFriend, 'nameFull');
+		$friend_name = JWUser::GetUserInfoById($idPageUser, 'nameFull');
 
-		$is_succ = JWFollower::Follow($idUser, $idFollower);
+		$is_succ = JWFollower::Follow($idPageUser, $idLoginedUser);
 
 		if ($is_succ )
 		{
-			$info_html = <<<_HTML_
+			$notice_html = <<<_HTML_
 订阅成功。${friend_name}的更新将会发送到您的手机或聊天软件上。
 _HTML_;
 		}
@@ -45,6 +45,7 @@ _HTML_;
 
 	if ( !empty($notice_html) )
 		JWSession::SetInfo('notice',$notice_html);
+
 }
 
 if ( array_key_exists('HTTP_REFERER',$_SERVER) )

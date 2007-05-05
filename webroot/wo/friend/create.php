@@ -7,26 +7,28 @@ JWUser::MustLogined();
 //die(var_dump($_REQUEST));
 
 
-$idUser=JWUser::GetCurrentUserId();
-if ( is_int($idUser) )
+$idLoginedUser=JWUser::GetCurrentUserId();
+if ( is_int($idLoginedUser) )
 {
 	$param = $_REQUEST['pathParam'];
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idFriend = intval($match[1]);
+		$idPageUser = intval($match[1]);
 
+		$page_user_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
 
-		$is_succ = JWFriend::Create($idUser, $idFriend);
+		$is_succ = JWFriend::Create($idLoginedUser, $idPageUser);
 
 		if ($is_succ )
 		{
-			$info_html = <<<_HTML_
-好友添加成功，耶！
+			$notice_html = <<<_HTML_
+已经将${page_user_name}添加为好友，耶！
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！好友添加失败了……
+哎呀！由于系统故障，好友添加失败了……
+请稍后再尝试吧。
 _HTML_;
 		} 
 

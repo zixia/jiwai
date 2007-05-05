@@ -5,28 +5,37 @@ JWUser::MustLogined();
 
 //die(var_dump($_REQUEST));
 
-$idUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWUser::GetCurrentUserId();
 
-if ( is_int($idUser) )
+if ( is_int($idLoginedUser) )
 {
 	$param = $_REQUEST['pathParam'];
 
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idFriend = $match[1];
+		$idPageUser = $match[1];
 
-		if ( JWFriend::Destroy($idUser, $idFriend) )
+		$page_user_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
+
+		if ( JWFriend::Destroy($idLoginedUser, $idPageUser) )
 		{
-			$info_html = <<<_HTML_
-好友删除成功，耶！
+			$notice_html = <<<_HTML_
+${page_user_name}已经不再是您的好友了。
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！好友删除失败了……
+哎呀！由于系统故障，好友删除失败了……
+请稍后再试。
 _HTML_;
 		}
 	}
+
+	if ( !empty($error_html) )
+		JWSession::SetInfo('error',$error_html);
+
+	if ( !empty($notice_html) )
+		JWSession::SetInfo('notice',$notice_html);
 }
 
 
