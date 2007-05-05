@@ -106,7 +106,7 @@ padding:0px 0pt 5px 321px;
     			</div>
 
 			<h2 class="thumb">
-				<a href="/<?php echo $page_user_info['nameScreen']?>/"><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWUser::GetPictureUrl($page_user_info['id'],'thumb48')?>" /></a>
+				<a href="/<?php echo $page_user_info['nameScreen']?>/"><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'thumb48')?>" /></a>
 				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
 			</h2>
 
