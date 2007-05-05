@@ -640,13 +640,13 @@ _SQL_;
 		//$num_pm			= JWMessage::GetMessageNum($idUser);
 		//$num_fav		= JWFavorite::GetFavoriteNum($idUser);
 		$num_friend		= JWFriend::GetFriendNum($idUser);
-		//$num_follower	= JWFollower::GetFollowerNum($idUser);
+		$num_follower	= JWFollower::GetFollowerNum($idUser);
 		$num_status		= JWStatus::GetStatusNum($idUser);
 
 		return array(	'pm'			=> 0
 						, 'fav'			=> 0
 						, 'friend'		=> $num_friend
-						, 'follower'	=> 0
+						, 'follower'	=> $num_follower
 						, 'status'		=> $num_status
 					);
 	}

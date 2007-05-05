@@ -45,7 +45,7 @@ class JWStatus {
 
 	static public function Update( $user_id, $status, $device='web' )
 	{
-		$db = JWDB::Instance()->get_db();
+		$db = JWDB::Instance()->GetDb();
 
 		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device) "
 								. " values (?,?,?)" ) ){

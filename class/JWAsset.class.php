@@ -58,11 +58,14 @@ class JWAsset {
 		self::$msAssetMax		= 6;
 	}
 
-	static public function GetDomain();
+
+	static public function GetDomain()
 	{
 		self::Instance();
 
-		$n = self::$msAssetCounter++ % $self::$msAssetCounterself + 1;
+		$n = self::$msAssetCounter++;
+		$n %= self::$msAssetMax;
+		$n += 1;
 
 		return "http://asset$n.JiWai.de/";
 	}

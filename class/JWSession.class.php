@@ -70,7 +70,7 @@ Class JWSession {
 	 */
 	public static function GetInfo($infoType='err', $useOnce=true)
 	{
-		if ( array_key_exists("__JiWai__Info__$infoType",$_SESSION) )
+		if ( isset($_SESSION["__JiWai__Info__$infoType"]) )
 		{
 			$html_str = $_SESSION["__JiWai__Info__$infoType"];
 
@@ -80,7 +80,7 @@ Class JWSession {
 			return $html_str;
 		}
 
-		return ;
+		return null;
 	}
 }
 ?>

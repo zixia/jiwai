@@ -7,20 +7,21 @@
  */
 
 /**
- * JiWai.de Friend Class
+ * JiWai.de Follower Class
  */
-class JWFriend {
+class JWFollower {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWFriend
+	 * @var JWFollower
 	 */
 	static private $msInstance;
 
+	const	DEFAULT_FOLLOWER_MAX	= 20;
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWFriend
+	 * @return JWFollower
 	 */
 	static public function &Instance()
 	{
@@ -42,50 +43,36 @@ class JWFriend {
 
 
 	/**
-	 * Is idFriend is idUser's friend?
-	 *
-	 */
-	static function IsFriend($idUser, $idFriend)
-	{
-		if ( !is_int($idUser) )
-			$idUser 	= intval($idUser);
-
-		if ( !is_int($idFriend) )
-			$idFriend 	= intval($idFriend);
-
-		if ( 0===$idUser || 0===$idFriend )
-			throw new JWException('must int');
-
-		return JWDB::ExistTableRow('Friend', array('idUser'=>$idUser,'idFriend'=>$idFriend));
-	}
-
-
-	/**
 	 * Is idFollower is idUser's follower?
 	 *
 	 */
-	static function IsFollower($idUser, $idFollower=null)
+	static function IsFollower($idUser, $idFollower)
 	{
-		// TODO
-		return true;
+		$idUser 		= intval($idUser);
+		$idFollower 	= intval($idFollower);
+
+		if ( (0>=$idUser) || (0>=$idFollower) )
+			throw new JWException('must int');
+
+		return JWDB::ExistTableRow('Follower', array('idUser'=>$idUser,'idFollower'=>$idFollower));
 	}
 
 
 	/**
-	 * Get friend list
-	 *	@return array	array of friend id list
+	 * 	Get follower list
+	 *	@return array	array of follower id list
 	 */
-	static function GetFriend($idUser, $numMax=40)
+	static function GetFollower($idUser, $numMax=DEFAULT_FOLLOWER_MAX)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
 
-		if ( 0==$idUser || 0==$numMax )
+		if ( 0>=$idUser || 0>=$numMax )
 			throw new JWException('not int');
 
 		$sql = <<<_SQL_
-SELECT	idFriend
-FROM	Friend
+SELECT	idFollower
+FROM	Follower
 WHERE	idUser=$idUser
 LIMIT	$numMax
 _SQL_;
@@ -97,92 +84,82 @@ _SQL_;
 			return null;
 		}
 
-		$arr_friend_id = array();
+		$arr_follower_id = array();
 		foreach ( $arr_result as $row )
-			array_push($arr_friend_id, $row['idFriend']);
+			array_push($arr_follower_id, $row['idFollower']);
 
-		return $arr_friend_id;
+		return $arr_follower_id;
 	}
 
 
 	/*
-	 *	idUser 删除好友 idFriend
-	 * @param	int	idFriend
+	 *	取消 idUser 的 follower idFollower
+	 * @param	int	idFollower
 	 * @param	int	idUser
 	 * @return 
 			true: 成功 
 			false: 失败
 	 */
-	static public function Destroy($idUser, $idFriend)
+	static public function Leave($idUser, $idFollower)
 	{
-		if ( !is_int($idUser) )
-			$idUser 	= intval($idUser);
+		$idUser 	= intval($idUser);
+		$idFollower = intval($idFollower);
 
-		if ( !is_int($idFriend) )
-			$idFriend 	= intval($idFriend);
-
-
-		if ( !is_int($idFriend) || !is_int($idUser ) )
+		if ( (0>=$idFollower) || (0>=$idUser) )
 			throw new JWException("id not int");
 
 		$sql = <<<_SQL_
-DELETE FROM	Friend
+DELETE FROM	Follower
 WHERE 		idUser=$idUser
-			AND idFriend=$idFriend
+			AND idFollower=$idFollower
 _SQL_;
 
-		try
-		{
+		try {
 			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
+		} catch(Exception $e) {
 			JWDebug::trace( $e );
 			return false;
 		}
-
 		return true;
 	}
 
 
 	/*
-	 *	添加 idFriend 为 idUser 的好友
-	 * @param	int	idFriend
+	 *	添加 idFollower 为 idUser 订阅者
+	 * @param	int	idFollower
 	 * @param	int	idUser
 	 * @return 
 			true: 成功 
 			false: 失败
 	 */
-	static public function Create($idUser, $idFriend)
+	static public function Follow($idUser, $idFollower)
 	{
-		if ( !is_int($idFriend) || !is_int($idUser ) )
-			throw new JWException("id not int");
+		$idUser = intval($idUser);
+		$idFollower = intval($idFollower);
+
+		if ( 0>=$idUser || 0>=$idFollower )
+			throw new JWException('not int');
 
 		$sql = <<<_SQL_
-INSERT INTO	Friend
+INSERT INTO	Follower
 SET 		idUser			= $idUser
-			, idFriend		= $idFriend
-			, timeCreate	= NOW()
+			, idFollower	= $idFollower
 _SQL_;
 
-		try
-		{
+		try {
 			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
+		} catch(Exception $e) {
 			JWDebug::trace( $e );
 			return false;
 		}
-
 		return true;
 	}
 
 	/*
 	 *	@param	int		$idUser
-	 *	@return	int		$friendNum for $idUser
+	 *	@return	int		$followerNum for $idUser
 	 */
-	static public function GetFriendNum($idUser)
+	static public function GetFollowerNum($idUser)
 	{
 		$idUser = intval($idUser);
 
@@ -191,15 +168,12 @@ _SQL_;
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
-FROM	Friend
+FROM	Follower
 WHERE	idUser=$idUser
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 
 		return $row['num'];
 	}
-
-
-
 }
 ?>

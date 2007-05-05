@@ -77,7 +77,7 @@ class JWFile {
 			}
 		}
 		
-		// TODO: save a file to storage system here.
+		// TODO: save a file to remote(furture) storage system here.
 		return true;
 	}
 }
