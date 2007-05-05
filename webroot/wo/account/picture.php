@@ -17,6 +17,7 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 $has_photo		= !empty($user_info['idPicture']);
 
+//echo "<pre>"; die(var_dump($user_info));
 //var_dump($file_info);
 if ( isset($_REQUEST['save'] ) )
 {
@@ -133,13 +134,7 @@ _HTML_;
 }
 
 
-if ( !empty($notice_html) )
-{
-	echo <<<_HTML_
-			<div class="notice"><ul>$notice_html</ul></div>
-_HTML_;
-}
-else if ( !$has_photo )
+if ( !$has_photo )
 {
 	$public_timeline_url = JWTemplate::GetConst('UrlPublicTimeline');
 echo <<<_HTML_
@@ -172,7 +167,8 @@ _HTML_;
 							</th>
 							<td>
 								<!--input id="user_profile_image_temp" name="user[profile_image_temp]" type="hidden" -->
-								<input id="user_profile_image" name="profile_image" size="30" type="file" />
+								<input id="user_profile_image" name="profile_image" size="30" type="file" 
+											onclick="upload_button.style.display='block';"/>
 								<p><small>为保证您的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
 <?php
 if ( !$has_photo )
@@ -189,13 +185,25 @@ _HTML_;
 
 							<th></th>
 							<td>
-								<input name="save" type="submit" value="上载" onclick="if(0==$('user_profile_image').value.length){alert('请先选择头像文件，然后点击上载即可成功。如需删除头像，请点击<删除>按钮。'); return false}else{return true;}"/>
+<?php
+if ( !empty($notice_html) )
+{
+	echo <<<_HTML_
+			<div class="notice"><ul>$notice_html</ul></div>
+_HTML_;
+}
+?>
+
+
+								<input style="display:none" id="upload_button" name="save" type="submit" value="上载" onclick="if(0==$('user_profile_image').value.length){alert('请先选择头像文件，然后点击上载即可成功。如需删除头像，请点击<删除>按钮。'); return false}else{return true;}"/>
 							</td>
 						</tr>
 					</table>
 				</fieldset>
 			</form>
-<?php if ( !empty($user_info['idPicture']) )
+
+<?php
+if ( !empty($user_info['idPicture']) )
 		echo <<<_HTML_
 			<p><a href="?delete" onclick="return confirm('删除头像后您将无法出现在叽歪广场中，您确认删除头像图片吗？');"/>删除我的头像？</a></p>
 _HTML_;

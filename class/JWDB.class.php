@@ -266,7 +266,7 @@ class JWDB {
 	static public function UpdateTableRow( $tableName, $idPK, $conditionArray )
 	{
 		if ( ! is_int($idPK) )
-			throw JWException ("idPK need be int");
+			throw new JWException ("idPK need be int");
 
 		$db = self::GetDb();
 

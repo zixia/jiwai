@@ -114,17 +114,22 @@ for ( $n=1; $n<=20; $n++ )
 
 	$selected = "";
 
-	if ( !isset($gadget['count']) && 3==$n )
+	if ( !isset($gadget['count']) ){
+		if ( 3==$n ){
+			$selected = " 'selected' ";
+		}
+	}else if ( $n==$gadget['count'] ){
 		$selected = " 'selected' ";
-	else if ( $n==$gadget['count'] )
-		$selected = " 'selected' ";
+	}
 
 	echo "\t\t\t\t\t<option value='$n' $selected>$n</option>\n";
 }
-	if ( 40==$gadget['count'] )
-		$selected = " 'selected' ";
-	else
+	if ( isset($gadget['count']) ){
+		if (40==$gadget['count'] )
+			$selected = " 'selected' ";
+	}else{
 		$selected = "";
+	}
 
 	echo "\t\t\t\t\t\t<option value='40' $selected >40</option>"
 ?>
@@ -184,10 +189,12 @@ foreach ( $theme_list as $theme => $is_release )
 	$release = $is_release ? 'Beta' : 'Alpha';
 	$selected = '';
 
-	if ( !isset($gadget['theme']) && 'iChat'==$theme )
+	if ( !isset($gadget['theme']) ){
+		if ( 'iChat'==$theme )
+			$selected = "selected";
+	}else if ( $gadget['theme']==$theme ){
 		$selected = "selected";
-	else if ( $gadget['theme']==$theme )
-		$selected = "selected";
+	}
 
 	echo <<<_HTML_
 									<option value="$theme" "$selected">($release) $theme</option>

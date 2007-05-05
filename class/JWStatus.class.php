@@ -80,11 +80,11 @@ SELECT
 	, User.id as idUser
 	, User.nameScreen
 	, User.nameFull
-	, User.photoInfo
+	, User.idPicture
 FROM
 	Status, User
 WHERE
-	User.photoInfo<>''
+	User.idPicture>0
 	AND Status.idUser=User.id
 ORDER BY
 	timestamp desc
@@ -114,7 +114,7 @@ SELECT
 		, User.id as idUser
 		, User.nameScreen
 		, User.nameFull
-		, User.photoInfo
+		, User.idPicture
 FROM	Status, User
 WHERE	
 		User.id IN
@@ -157,7 +157,7 @@ SELECT
 	, User.id as idUser
 	, User.nameScreen
 	, User.nameFull
-	, User.photoInfo
+	, User.idPicture
 FROM
 	Status, User
 WHERE

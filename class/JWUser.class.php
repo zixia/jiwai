@@ -480,6 +480,11 @@ _SQL_;
 	}
 
 
+	/*
+	 *	创建一个帐号
+	 *	@param	userInfo	k => v 的用户信息
+	 *	@return	idUser on success, false on fail
+	 */
 	static public function Create( $userInfo )
 	{
 		$db = JWDB::Instance()->GetDb();
@@ -487,7 +492,7 @@ _SQL_;
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,photoInfo)"
+		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,idPicture)"
 								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
 			if ( $result = $stmt->bind_param("sssssss"
 											, $userInfo['nameScreen']
@@ -501,7 +506,7 @@ _SQL_;
 					//JWDebug::trace($stmt->affected_rows);
 					//JWDebug::trace($stmt->insert_id);
 					$stmt->close();
-					return true;
+					return JWDB::GetInsertId();
 				}else{
 					JWDebug::trace($db->error);
 				}
@@ -605,15 +610,18 @@ _SQL_;
 	 *	设置用户的头像
  	 *	@param	idUser		int
 	 *	@param	idPicture	int	图像的id，如果设置为null或者0，则删除用户头像。
+	 *	@return
 	 */
 	static public function SetIcon($idUser, $idPicture=null)
 	{
 		// set 0 to disable
-		if ( empty($idPicture) )
+		if ( null===$idPicture )
 			return JWDB::UpdateTableRow( 'User', $idUser, array ('idPicture' => '') );
 
+		$idUser = intval($idUser);
 		$idPicture = intval($idPicture);
-		if ( 0>=$idPicture )
+
+		if ( 0>=$idPicture || 0>=$idPicture )
 			throw new JWException('must int');
 
 		// if enabled, we set the timestamp of new picture

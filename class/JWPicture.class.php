@@ -94,7 +94,7 @@ _SQL_;
 	 */
 	static public function SaveUserIcon($idUser, $absFilePathName)
 	{
-		if ( ! preg_match('#(P<file_name>[^/]+)\.(P<file_ext)[^.]+)$/', $absFilePathName, $matches) )
+		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
 			return ;
 
 		$file_name 	= $matches['file_name'];
@@ -108,10 +108,10 @@ _SQL_;
 		$rel_path			= self::$msUserPath 
 									. $idUser . '/profile_image/';
 
-		$abs_path			= $storage_abs_root . $rel_path;
+		$abs_path			= $abs_storage_root . $rel_path;
 
 		if ( ! file_exists($abs_path) )
-			wkdir($abs_path,0770,true);
+			mkdir($abs_path,0770,true);
 
 		if ( ! is_writeable($abs_path) )
 			throw new JWException("$user_path unwriteable");

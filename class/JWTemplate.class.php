@@ -340,7 +340,6 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		$idUser 	= $aStatus['idUser'];
 		$nameScreen = $aStatus['nameScreen'];
 		$nameFull	= $aStatus['nameFull'];
-		$photoInfo	= $aStatus['photoInfo'];
 		$status		= $aStatus['status'];
 		$timestamp	= $aStatus['timestamp'];
 		$device		= $aStatus['device'];
@@ -408,7 +407,6 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$idUser 	= $aStatus['idUser'];
 			$nameScreen = $aStatus['nameScreen'];
 			$nameFull	= $aStatus['nameFull'];
-			$photoInfo	= $aStatus['photoInfo'];
 			$status		= $aStatus['status'];
 			$timestamp	= $aStatus['timestamp'];
 			$device		= $aStatus['device'];

@@ -49,8 +49,8 @@ if ( array_key_exists('user',$_REQUEST)
 							, 'email'		=>	empty($email) ? false : JWUser::IsExistEmail( $email )
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] ){
-			if ( JWUser::Create($aUserInfo)
-						&& JWUser::Login ( $aUserInfo['nameScreen'], $aUserInfo['pass'] ) ){
+			$idUser = JWUser::Create($aUserInfo);
+			if ( $idUser && JWUser::Login ( $idUser, $aUserInfo['pass'] ) ){
 
 				// after a user create his account the first time, we try to save the pict he uploaded, and ignore errors.
 				$file_info = @$_FILES['profile_image'];
@@ -62,10 +62,10 @@ if ( array_key_exists('user',$_REQUEST)
         			$user_named_file = '/tmp/' . $file_info['name'];
         			if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) )
         			{
-            			if ( JWFile::SaveUserPicture($user_named_file) )
+            			$idPicture = JWPicture::SaveUserIcon($idUser,$user_named_file);
+            			if ( $idPicture )
             			{   
-                			preg_match('/([^\/]+)$/',$user_named_file,$matches);
-   				            JWUser::SetPicture($matches[1]);
+   				            JWUser::SetIcon($idUser,$idPicture);
 						}
 					}
 				}

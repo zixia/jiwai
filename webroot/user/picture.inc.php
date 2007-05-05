@@ -13,12 +13,6 @@ function user_picture($idUser, $picSize)
 		case 'thumb24':
 			$filename = JWPicture::GetUserIconFullPathName($idUser, $picSize);
 
-			if ( ! file_exists($filename) )
-			{
-				header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
-				exit(0);
-			}
-
 			$picType = 'gif';
 			if ( !preg_match('/\.gif$/i',$filename) )
 				$picType = 'jpg';
@@ -26,7 +20,14 @@ function user_picture($idUser, $picSize)
 			header("Content-Type: image/$picType");
 			header("Content-Length: " . filesize($filename));
 
-			$fp = fopen($filename, 'rb');
+			$fp = @fopen($filename, 'rb');
+
+			if ( false==$fp )
+			{
+				header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
+				exit(0);
+			}
+
 			fpassthru($fp);
 
 			exit(0);
