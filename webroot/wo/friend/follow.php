@@ -6,27 +6,29 @@ JWUser::MustLogined();
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
-
 $idUser=JWUser::GetCurrentUserId();
-if ( is_int($idUser) )
+
+if ( $idUser )
 {
 	$param = $_REQUEST['pathParam'];
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idFriend = intval($match[1]);
 
+		$friend_name = JWUser::GetUserInfoById($idFriend, 'nameFull');
 
-		$is_succ = JWFriend::Create($idUser, $idFriend);
+		$is_succ = JWFollower::Follow($idUser, $idFollower);
 
 		if ($is_succ )
 		{
 			$info_html = <<<_HTML_
-好友添加成功，耶！
+订阅成功。${friend_name}的更新将会发送到您的手机或聊天软件上。
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！好友添加失败了……
+哎呀！由于系统临时故障，您未能成为${friend_name}的粉丝，订阅失败了……
+请稍后再试吧。
 _HTML_;
 		} 
 

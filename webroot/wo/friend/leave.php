@@ -12,18 +12,21 @@ if ( is_int($idUser) )
 	$param = $_REQUEST['pathParam'];
 
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idFriend = $match[1];
+		$idFriend 	= $match[1];
 
-		if ( JWFriend::Destroy($idUser, $idFriend) )
+		$friend_name	= JWUser::GetUserInfoById($idFriend);
+
+		if ( JWFollower::Leave($idUser, $idFriend) )
 		{
 			$info_html = <<<_HTML_
-好友删除成功，耶！
+退订成功，您将不会再在手机或聊天软件上收到${friend_name}的更新。
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！好友删除失败了……
+哎呀！由于系统故障，退订${friend_name}失败了……
+请稍后再试吧。
 _HTML_;
 		}
 	}
