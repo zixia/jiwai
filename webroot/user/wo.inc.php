@@ -27,8 +27,31 @@ $page_user_info 	= JWUser::GetUserInfoById($idUserPage);
 	<div id="content">
 		<div id="wrapper">
 
+<?php
+if ( empty($error_html) )
+	$error_html	= JWSession::GetInfo('error');
 
-<?php 
+if ( empty($notice_html) )
+	$notice_html	= JWSession::GetInfo('notice');
+
+
+if ( !empty($error_html) )
+{
+		echo <<<_HTML_
+			<div class="notice">$error_html</div>
+_HTML_;
+}
+
+if ( !empty($notice_html) )
+{
+		echo <<<_HTML_
+			<div class="notice">$notice_html</div>
+_HTML_;
+}
+
+
+
+
 $aStatusList = JWStatus::GetStatusListUser($idUserPage);
 
 
@@ -76,12 +99,10 @@ if ( JWUser::IsLogined() )
 		if ( $logined_user_info['id']!==$page_user_info['id'] )
 			$arr_action_param['destroy']	= true;
 
-/* TODO: follow function
-		if ( JWFriend::IsFollower($page_user_info['id'], $logined_user_info['id'] ) )
-		$arr_action_param['leave']	= true;
+		if ( JWFollower::IsFollower($page_user_info['id'], $logined_user_info['id'] ) )
+			$arr_action_param['leave']	= true;
 		else
 			$arr_action_param['follow']	= true;
-*/
 	}
 	else if ( $logined_user_info['id']!==$page_user_info['id'] )
 	{
