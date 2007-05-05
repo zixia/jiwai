@@ -46,7 +46,7 @@ else
 
 			<h2><a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a></h2>
 
-			<p><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWUser::GetPictureUrl($page_user_info['id'],'picture')?>" /></p>
+			<p><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'picture')?>" /></p>
 
 <?php 
 if ( isset($logined_user_info) 
