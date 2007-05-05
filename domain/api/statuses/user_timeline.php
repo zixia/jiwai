@@ -280,7 +280,7 @@ function get_user_timeline_array($options)
 		$status_array['user']['location']	= $user['location'];
 		$status_array['user']['description']= $user['bio'];
 
-		$status_array['user']['profile_image_url']= JWUser::GetPictureUrl($status['idUser'], "thumb$options[thumb]");
+		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($status['idUser'], "thumb$options[thumb]");
 		$status_array['user']['url']		= $user['url'];
 		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
 
