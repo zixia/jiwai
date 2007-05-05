@@ -40,8 +40,10 @@
 
 		<mo>mo/</mo>
 		<mt>mt/</mt>
-		<user>
-			<home>/var/www/vhost/jiwai.de/domain/asset/system/user/</home>
-		</user>
+
+		<storage>
+			<root>/var/www/vhost/jiwai.de/domain/asset/system/</root>
+			<user>user/</user>
+		</storage>
 	</directory>
 </config>

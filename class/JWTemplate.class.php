@@ -346,7 +346,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		$device		= $aStatus['device'];
 
 		$duration	= JWStatus::get_time_desc($timestamp);
-		$photo_url 	= JWUser::GetPictureUrl($idUser);
+		$photo_url 	= JWPicture::GetUserIconUrl($idUser);
 	
 
 ?>
@@ -414,7 +414,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$device		= $aStatus['device'];
 			
 			$duration	= JWStatus::get_time_desc($timestamp);
-			$photo_url	= JWUser::GetPictureUrl($idUser);
+			$photo_url	= JWPicture::GetUserIconUrl($idUser);
 	
 
 			if ( 'sms'==$device )
@@ -847,7 +847,7 @@ _HTML_;
 		foreach ( $friendIdList as $idFriend )
 		{
 			$friend_info 	= JWUser::GetUserInfoById($idFriend);
-			$picture_url	= JWUser::GetPictureUrl($idFriend);
+			$picture_url	= JWPicture::GetUserIconUrl($idFriend);
 			
 			echo <<<_HTML_
 			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
@@ -903,7 +903,7 @@ _HTML_;
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'
 
-										,'UrlStrangerPicture'	=>	'http://asset.jiwai.de/img/stranger.gif'
+										,'UrlStrangerPicture'	=>	'http://asset6.jiwai.de/img/stranger.gif'
 								);
 		}
 
@@ -942,13 +942,13 @@ _HTML_;
 	 *	@param	path	the path of asset.jiwai.de/$path
 	 *	@return	URL		the url ( domain name & path )
 	 */
-	static public function GetAssetUrl($absPath)
+	static public function GetAssetUrl($absUrlPath)
 	{
 		JWTemplate::Instance();
 
 		$asset_num_max = 4;
 
-		if ( empty($absPath) )
+		if ( empty($absUrlPath) )
 			throw new JWException('must have path');
 
 		self::$msAssetCounter++;
@@ -956,10 +956,10 @@ _HTML_;
 		$n++; // from 1 to $asset_num_max
 
 		$asset_path	= JW_ROOT . '/domain/asset';
-		$timestamp = filemtime("$asset_path$absPath");
+		$timestamp = filemtime("$asset_path$absUrlPath");
 
 		//we use more then one domain name to down load asset in parallel
-		return "http://asset${n}.jiwai.de$absPath?$timestamp";
+		return "http://asset${n}.JiWai.de$absUrlPath?$timestamp";
 
 	}
 }

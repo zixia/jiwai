@@ -160,8 +160,9 @@ _SQL_;
 
 		$sql = <<<_SQL_
 INSERT INTO	Friend
-SET 		idUser=$idUser
-			, idFriend=$idFriend
+SET 		idUser			= $idUser
+			, idFriend		= $idFriend
+			, timeCreate	= NOW()
 _SQL_;
 
 		try

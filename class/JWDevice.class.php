@@ -166,6 +166,7 @@ SET 	idUser=$idUser
 		, type='$type'
 		, address='$address'
 		, secret='$secret'
+		, timeCreate=NOW()
 _SQL_;
 
 		try

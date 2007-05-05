@@ -15,7 +15,7 @@ JWUser::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 
-$has_photo		= !empty($user_info['photoInfo']);
+$has_photo		= !empty($user_info['idPicture']);
 
 //var_dump($file_info);
 if ( isset($_REQUEST['save'] ) )
@@ -32,11 +32,12 @@ if ( isset($_REQUEST['save'] ) )
 
 		if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) )
 		{
-			if ( JWFile::SaveUserPicture($user_named_file) )
+			$idPicture	= JWPicture::SaveUserIcon($user_info['id'], $user_named_file);
+			if ( $idPicture )
 			{
 				preg_match('/([^\/]+)$/',$user_named_file,$matches);
 
-				JWUser::SetPicture($matches[1]);
+				JWUser::SetIcon($user_info['id'],$idPicture);
 
 
 				$notice_html = <<<_HTML_
@@ -154,20 +155,17 @@ _HTML_;
 							<th>
 								<label for="user_profile_image">
 <?php
-$arr_picture_info = JWUser::GetPictureInfo($user_info['photoInfo']);
-if ( empty($arr_picture_info['name']) )
-{	// we have no photo
-	echo <<<_HTML_
-									<img alt="$user_info[nameFull]" src="http://asset.jiwai.de/img/stranger.gif" style="vertical-align:middle"/>
-_HTML_;
+if ( $has_photo ){
+	// we have photo
+	$photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb48');
+}else{	
+	// we have no photo
+	$photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
 }
-else	// we have photo
-{
-	$photo_url = JWUser::GetPictureUrl($user_info['id'],'thumb48');
-	echo <<<_HTML_
+
+echo <<<_HTML_
 									<img alt="$user_info[nameFull]" src="$photo_url" style="vertical-align:middle" />
 _HTML_;
-}
 ?>
 
 								</label>
@@ -177,7 +175,7 @@ _HTML_;
 								<input id="user_profile_image" name="profile_image" size="30" type="file" />
 								<p><small>为保证您的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
 <?php
-if ( ! empty($arr_picture_info['name'] ) )
+if ( !$has_photo )
 {
 	echo <<<_HTML_
 								<p><small>因为没有头像，所以您目前不会出现在叽歪广场中。</small></p>
@@ -197,7 +195,7 @@ _HTML_;
 					</table>
 				</fieldset>
 			</form>
-<?php if ( !empty($arr_picture_info['name']) )
+<?php if ( !empty($user_info['idPicture']) )
 		echo <<<_HTML_
 			<p><a href="?delete" onclick="return confirm('删除头像后您将无法出现在叽歪广场中，您确认删除头像图片吗？');"/>删除我的头像？</a></p>
 _HTML_;

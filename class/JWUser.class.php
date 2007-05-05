@@ -62,7 +62,7 @@ class JWUser {
 	 */
 	static public function GetUserFromPassword($name_or_email, $pass)
 	{
-		$db = JWDB::get_db();
+		$db = JWDB::GetDb();
 
 		$idUser = null;
 
@@ -421,23 +421,15 @@ _SQL_;
 		}
 
 		$sql = <<<_SQL_
-SELECT	id
-		, nameScreen
-		, nameFull
-		, pass
-		, REVERSE(email) as email
-		, location
-		, timestamp
-		, protected
-		, photoInfo
-		, url
-		, bio
+SELECT	*
 FROM	User 
 WHERE	$by_what='$value' LIMIT 1
 _SQL_;
 
 		//TODO memcache here.
 		$aUserInfo 			= JWDB::GetQueryResult($sql);
+
+		$aUserInfo['email']	= strrev($aUserInfo['email']);
 
 		if ( empty($one_item) ){
 			return $aUserInfo;
@@ -490,13 +482,13 @@ _SQL_;
 
 	static public function Create( $userInfo )
 	{
-		$db = JWDB::Instance()->get_db();
+		$db = JWDB::Instance()->GetDb();
 
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (createTime,nameScreen,pass,email,nameFull,location,protected,photoInfo)"
-								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
+		if ( $stmt = $db->prepare( "INSERT INTO User (createTime,nameScreen,pass,email,nameFull,location,protected)"
+								. " values (NOW(),?,?,?,?,?,?)" ) ){
 			if ( $result = $stmt->bind_param("sssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
@@ -504,7 +496,6 @@ _SQL_;
 											, $userInfo['nameFull']
 											, $userInfo['location']
 											, $userInfo['protected']
-											, $userInfo['photoInfo']
 								) ){
 				if ( $stmt->execute() ){
 					//JWDebug::trace($stmt->affected_rows);
@@ -589,6 +580,7 @@ _SQL_;
 												, 'faq'				=> true
 												, 'help'			=> true
 												, 'jiwai'			=> true
+												, 'jiwaide'			=> true
 												, 'm'				=> true
 												, 'mashup'			=> true
 												, 'public_timeline'	=> true
@@ -608,51 +600,25 @@ _SQL_;
 	}
 
 
+	
 	/*
-	 * @param 	int		idUser null if current user
-	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
-	 * @return 	string	url of picture
+	 *	设置用户的头像
+ 	 *	@param	idUser		int
+	 *	@param	idPicture	int	图像的id，如果设置为null或者0，则删除用户头像。
 	 */
-	static public function GetPictureUrl($idUser=null, $picSize='thumb48')
+	static public function SetIcon($idUser, $idPicture=null)
 	{
-		$picture_info	= self::GetPictureInfo(self::GetUserInfoById($idUser,'photoInfo'));
+		// set 0 to disable
+		if ( empty($idPicture) )
+			return JWDB::UpdateTableRow( 'User', $idUser, array ('idPicture' => '') );
 
-		return "http://JiWai.de/$idUser/picture/$picSize/$picture_info[name].$picture_info[type]?$picture_info[time]";
-		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
-	}
-	
-	static public function SetPicture($fileName=null, $idUser=null)
-	{
-		if ( null===$idUser )
-			$idUser = self::GetCurrentUserId();
-
-		if ( null===$idUser )
-			throw new JWException("no session found");
-	
-		$now = time();
-
-		// disable
-		if ( empty($fileName) )
-			return JWDB::UpdateTableRow( 'User', $idUser, array ('photoInfo' => '') );
+		$idPicture = intval($idPicture);
+		if ( 0>=$idPicture )
+			throw new JWException('must int');
 
 		// if enabled, we set the timestamp of new picture
-		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'photoInfo' => "$now|$fileName" ) );
+		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'idPicture' => $idPicture ) );
 	}
-
-	/*
-	 * @return array ( times=> n, name=> x, $type=> )
-	 */
-	static public function GetPictureInfo($photoInfo)
-	{
-		if ( ! preg_match('/^(\d+)\|(.+)\.([^.]+)$/',$photoInfo,$matches) )
-			return null;
-
-		return array ( 	'time'		=> $matches[1]
-						, 'name'	=> $matches[2]
-						, 'type'	=> $matches[3]
-					);
-	}
-
 
 	/*
 	 * @return array ( pm => n, friend => x, follower=> )

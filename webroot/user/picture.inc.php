@@ -5,30 +5,23 @@ function user_picture($idUser, $picSize)
 	if ( empty($picSize) )
 		$picSize = 'thumb48';
 
-	$photo_info = JWUser::GetUserInfoById($idUser, 'photoInfo');
-
-	if ( empty($photo_info) )
-	{
-		header ( "Location: http://asset.jiwai.de/img/stranger.gif" );
-		exit(0);
-	}
-
-
-	$arr_picture_info = JWUser::GetPictureInfo($photo_info);
-	
-	$picType = $arr_picture_info['type'];
-
-
-	if ( 'gif'!=$picType )
-		$picType = 'jpg';
-
 
 	switch ($picSize)
 	{
 		case 'picture': // let JWFile choose 
 		case 'thumb48':// let JWFile choose 
 		case 'thumb24':
-			$filename = JWFile::GetUserPicture($picType,$picSize, $idUser);
+			$filename = JWPicture::GetUserIconFullPathName($idUser, $picSize);
+
+			if ( ! file_exists($filename) )
+			{
+				header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
+				exit(0);
+			}
+
+			$picType = 'gif';
+			if ( !preg_match('/\.gif$/i',$filename) )
+				$picType = 'jpg';
 
 			header("Content-Type: image/$picType");
 			header("Content-Length: " . filesize($filename));

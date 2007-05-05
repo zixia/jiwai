@@ -75,7 +75,7 @@ class JWDB {
 		}
 	}
 
-	static public function get_db()
+	static public function GetDb()
 	{
 		if (empty(self::$mysqli_link__)){
 			JWDB::instance();
@@ -87,13 +87,19 @@ class JWDB {
 
 	static public function escape_string( $string )
 	{
-		return self::get_db()->escape_string($string);
+		return self::GetDb()->escape_string($string);
 	}
 
+	static public function GetInsertId()
+	{
+		$db = self::GetDb();
+
+		return $db->insert_id;
+	}
 
 	static public function Execute( $sql )
 	{
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		if ( $result = $db->query($sql) ){
 			return $result;
@@ -112,7 +118,7 @@ class JWDB {
 	static public function GetQueryResult( $sql, $more_than_one=false )
 	{
 		//TODO need mysqli_real_escape_string, but it do escape through db server? damn it!
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		$aResult = null;
 
@@ -145,7 +151,7 @@ class JWDB {
 	 */
 	static public function DelTableRow( $table, $condition )
 	{
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		$sql = "DELETE FROM $table WHERE ";
 		
@@ -179,7 +185,7 @@ class JWDB {
 	 */
 	static public function ExistTableRow( $table, $condition )
 	{
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		$sql = "SELECT 1 FROM $table WHERE ";
 		
@@ -215,7 +221,7 @@ class JWDB {
 	 */
 	static public function SaveTableRow( $table, $condition )
 	{
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		$sql = "INSERT INTO $table ";
 		
@@ -262,7 +268,7 @@ class JWDB {
 		if ( ! is_int($idPK) )
 			throw JWException ("idPK need be int");
 
-		$db = self::get_db();
+		$db = self::GetDb();
 
 		$sql = "UPDATE $tableName SET ";
 		
