@@ -140,9 +140,16 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 
 	$css_template		= file_get_contents("$theme_dir/main.css");
 	
-	// 增加 css selector 限定作用域
 
-	$css_template		= preg_replace("/^(.+\s*{)/m", "#$gadgetDivId $1", $css_template);
+	$replace_array		= array ( 	 
+									// 增加 css selector 限定作用域
+									 "/^(.+\s*{)/m"							=> "#$gadgetDivId $1"
+									// 去掉 url 中的单引号 '
+									,"/(:\s*url\s*\(\s*)'([^']+)'(\s*\))/i"	=> "$1$2$3"
+								);
+
+	//$css_template		= preg_replace("/^(.+\s*{)/m", "#$gadgetDivId $1", $css_template);
+	$css_template		= preg_replace(array_keys($replace_array), array_values($replace_array),$css_template);
 
 	$asset_number = 1;
 	$asset_number_max = 6;
@@ -150,7 +157,7 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 	do
 	{
 
-        $css_template   = preg_replace("/(:\s*)url\(('?)(?!http)/i"
+        $css_template   = preg_replace("/(:\s*)url\s*\((?!http)/i"
                                             , ("$1url($2http://asset" . $asset_number%$asset_number_max . ".JiWai.de/gadget/theme/$themeName/")
                                             , $css_template, 1, $count
                                     );
