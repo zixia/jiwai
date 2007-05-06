@@ -165,7 +165,7 @@ sub sms_deliver_file {
 	close FD;
 
 	unless ( $file_content=~m#(.+?)\n\n(.+)#s ){
-		syslog('err', "parse file[$new_msg_file] err");
+		syslog('err', "parse file[$new_msg_file] err for content[$file_content]");
 
 		link($new_msg_file, "$QUARANTINE_MT/sms__${mobile_no}__$file_name_tailer")
 				&& unlink($new_msg_file);
