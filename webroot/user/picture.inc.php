@@ -17,9 +17,6 @@ function user_picture($idUser, $picSize)
 			if ( !preg_match('/\.gif$/i',$filename) )
 				$picType = 'jpg';
 
-			header("Content-Type: image/$picType");
-			header("Content-Length: " . filesize($filename));
-
 			$fp = @fopen($filename, 'rb');
 
 			if ( false==$fp )
@@ -28,9 +25,14 @@ function user_picture($idUser, $picSize)
 				exit(0);
 			}
 
+
+			header("Content-Type: image/$picType");
+			header("Content-Length: " . filesize($filename));
+
 			fpassthru($fp);
 
-			exit(0);
+			break;
+
 		default:
 			throw new JWException("unsupport size $picSize");
 	}
