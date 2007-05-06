@@ -127,9 +127,9 @@ class JWTemplate {
 		<h2><a class="header" href="/">叽歪de</a></h2>
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
-			<li class="first"><a href="/wo/">叽歪一下</a></li>
-			<li><a href="/<?php echo $nameScreen ?>/">叽歪de我</a></li>
-			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
+			<li class="first"><a href="/wo/">记录一下</a></li>
+			<li><a href="/<?php echo $nameScreen ?>/">我的记录</a></li>
+			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">最新动态</a></li>
 			<li><a href="/wo/invitation/invite">邀请</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/account/setting">设置</a></li>

@@ -21,7 +21,7 @@
 
 			<div class="tab">
 
-<?php JWTemplate::tab_header( array( 'title'	=>	'大家最新的叽叽歪歪' 
+<?php JWTemplate::tab_header( array( 'title'	=>	'最新动态 - 大家在做什么？' 
 									, 'title2'	=>	'你想叽歪呀，你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
 							) )
 ?>
