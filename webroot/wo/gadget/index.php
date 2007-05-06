@@ -18,6 +18,9 @@ if ( isset($_REQUEST['gadget']) )
 	
 	$gadget = $_REQUEST['gadget'];
 
+	if ( !isset($gadget['hidefollow']) )
+		$gadget['hidefollow']='';
+
 	$div_id = "JiWai_de__gadget_timeline_$gadget[selector]_$gadget[count]_$gadget[theme]_$gadget[encoding]_$idUser";
 
 	$gadget_script_html = 	 "<div id='$div_id'>"
@@ -156,7 +159,7 @@ for ( $n=1; $n<=20; $n++ )
 													echo " checked='checked' ";
 										?>/>中</label><br/>
    							<label><input type="checkbox" name="gadget[hidefollow]" value="1";
-										<?php	if ( isset($gadget['hidefollow']) ) 
+										<?php	if ( !empty($gadget['hidefollow']) ) 
 													echo " checked='checked' ";
 										?>/>不显示订阅链接</label><br/><br/>
 							<br/>
