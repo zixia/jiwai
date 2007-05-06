@@ -492,7 +492,7 @@ _SQL_;
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,idPicture)"
+		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected)"
 								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
 			if ( $result = $stmt->bind_param("sssssss"
 											, $userInfo['nameScreen']

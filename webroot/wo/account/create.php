@@ -48,9 +48,11 @@ if ( array_key_exists('user',$_REQUEST)
 		$aExist = array (	'nameScreen'	=>	JWUser::IsExistName( $nameScreen )
 							, 'email'		=>	empty($email) ? false : JWUser::IsExistEmail( $email )
 					);
-		if ( !$aExist['nameScreen'] && !$aExist['email'] ){
+		if ( !$aExist['nameScreen'] && !$aExist['email'] )
+		{
 			$idUser = JWUser::Create($aUserInfo);
-			if ( $idUser && JWUser::Login ( $idUser, $aUserInfo['pass'] ) ){
+			if ( $idUser && JWUser::Login ( $idUser, true ) )
+			{
 
 				// after a user create his account the first time, we try to save the pict he uploaded, and ignore errors.
 				$file_info = @$_FILES['profile_image'];
