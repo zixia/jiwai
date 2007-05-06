@@ -78,6 +78,9 @@ exit(0);
 
 function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId, $encoding, $hidefollow)
 {
+	if ( empty($themeName) )
+		$themeName = 'iChat';
+
 	$statusSelector = strtolower($statusSelector);
 	switch ($statusSelector)
 	{
@@ -146,10 +149,11 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 	$count = 0;
 	do
 	{
-		$css_template	= preg_replace("/ url\('(?!http)/i"
-											, (" url('http://asset" . $asset_number%$asset_number_max . ".JiWai.de/gadget/theme/$themeName/")
-											, $css_template, 1, $count
-									);
+
+        $css_template   = preg_replace("/(:\s*)url\(('?)(?!http)/i"
+                                            , ("$1url($2http://asset" . $asset_number%$asset_number_max . ".JiWai.de/gadget/theme/$themeName/")
+                                            , $css_template, 1, $count
+                                    );
 		$asset_number++;
 	} while (0<$count);
 
