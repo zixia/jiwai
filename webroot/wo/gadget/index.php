@@ -27,7 +27,7 @@ if ( isset($_REQUEST['gadget']) )
 									."&theme=$gadget[theme]"
 									."&thumb=$gadget[pictsize]"
 									."&encoding=$gadget[encoding]"
-									."&hidefollow=$gadget[hidefollow]"
+									."&hidefollow=@$gadget[hidefollow]"
 									."&gadget_div=$div_id"
 							."'></script></div>";
 }
