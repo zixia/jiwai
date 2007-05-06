@@ -638,13 +638,13 @@ _SQL_;
 
 		//TODO
 		//$num_pm			= JWMessage::GetMessageNum($idUser);
-		//$num_fav		= JWFavorite::GetFavoriteNum($idUser);
+		$num_fav		= JWFavorite::GetFavoriteNum($idUser);
 		$num_friend		= JWFriend::GetFriendNum($idUser);
 		$num_follower	= JWFollower::GetFollowerNum($idUser);
 		$num_status		= JWStatus::GetStatusNum($idUser);
 
 		return array(	'pm'			=> 0
-						, 'fav'			=> 0
+						, 'fav'			=> $num_fav
 						, 'friend'		=> $num_friend
 						, 'follower'	=> $num_follower
 						, 'status'		=> $num_status

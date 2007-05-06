@@ -197,7 +197,7 @@ urchinTracker();
 						<span style="display:none" id="submit_loading">
 							<script type="text/javascript">
 //<![CDATA[
-document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif" title="Updating" />')
+document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif" title="更新中..." />')
 //]]>
 
 							</script>
@@ -331,10 +331,13 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 	}
 
 
-	static public function status_head($aStatus=null)
+	static public function StatusHead($aStatus=null, $options=null)
 	{
 		if ( empty($aStatus) )
 			return;
+
+		if ( !isset($options['trash']) )
+			$options['trash'] = true;
 
 		$idStatus 	= $aStatus['idStatus'];
 		$idUser 	= $aStatus['idUser'];
@@ -367,14 +370,111 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
   					<a href="http://jiwai.de/zixia/statuses/<?php echo $idStatus?>"><?php echo $duration?></a>
   					来自 <?php echo $device?>
 					<span id="status_actions_<?php echo $idStatus?>">
-	<a href="#" onclick="new Ajax.Request('/wo/favourings/create/<?php echo $idStatus?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $idStatus?>').src='/images/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" border="0" id="status_star_<?php echo $idStatus?>" src="http://asset.jiwai.de/img/icon_star_empty.gif" /></a>
+	<!--a href="#" onclick="new Ajax.Request('/wo/favourings/create/<?php echo $idStatus?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $idStatus?>').src='/images/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" border="0" id="status_star_<?php echo $idStatus?>" src="http://asset.jiwai.de/img/icon_star_empty.gif" /></a-->
+<?php	
+if ( JWUser::IsLogined() )	
+{
+	$idLoginedUser = JWUser::GetCurrentUserId();
+	$isFav	= JWFavorite::IsFavorite($idLoginedUser,$idStatus);
+
+		echo self::FavoriteAction($idStatus,$isFav);
+	if ( true || $idLoginedUser!=$idUser ){
+		// we can fav ourselves
+	}else if ( $options['trash'] ){
+		echo self::TrashAction($idStatus);
+	}
+}
+?>
 	
-	<a href="/wo/status/destroy/<?php echo $idStatus?>" onclick="if (confirm('Sure you want to delete this update? There is NO undo!')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;" title="Delete this update?"><img alt="Icon_trash" border="0" src="http://asset.jiwai.de/img/icon_trash.gif" /></a>
+
 					</span>
   				</p>
 			</div>
 
 <?php
+	}
+
+
+	/*
+	 * 	显示删除的图标和操作
+ 	 *
+	 */
+	static public function TrashAction($idStatus)
+	{
+
+		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
+
+		$html_str = <<<_HTML_
+	<a href="/wo/status/destroy/$idStatus"
+		onclick="
+			if (confirm('请确认操作：删除后将永远无法恢复！')) 
+			{
+				var f = document.createElement('form');
+				f.style.display = 'none';
+				this.parentNode.appendChild(f);
+				f.method = 'POST';
+				f.action = this.href;
+				var m = document.createElement('input');
+				m.setAttribute('type', 'hidden');
+				m.setAttribute('name', '_method');
+				m.setAttribute('value', 'delete');
+				f.appendChild(m);
+				f.submit();
+			};
+			return false;" 
+		title="删除这条更新？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+_HTML_;
+		
+		$html_str	= preg_replace('/[\r\n\s]+/', ' ',$html_str);
+
+		return $html_str;
+	}
+
+
+	/*
+	 *	显示 favorite 的星星，配合 JWFavorite 进行 Ajax 收藏操作。
+	 *	@param	switch	当前是否已经被收藏, true为已经收藏，false为没有收藏
+	 */
+	static public function FavoriteAction($idStatus, $isFav=false)
+	{
+		$asset_throbber_url		= self::GetAssetUrl("/img/icon_throbber.gif");
+
+		if ( $isFav )
+		{
+			$asset_star_alt = '已收藏';
+			$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
+			$ajax_url		= "/wo/favourings/destroy/$idStatus";
+		}
+		else
+		{
+			$asset_star_alt = '未收藏';
+			$asset_star_url = self::GetAssetUrl("/img/icon_star_empty.gif");
+			$ajax_url		= "/wo/favourings/create/$idStatus";
+		}
+	//<a href="<?php echo $ajax_url? >" onclick="new Ajax.Request(
+
+		$html_str = <<<_HTML_
+	<a href="#" onclick="new Ajax(
+					'$ajax_url'
+					,{
+						 method: 		'get'
+						,headers: 		{'AJAX':true}
+						,async:			true
+						,evalScripts:	true
+						,evalResponse:	true
+						,onRequest:		function(){
+							$('status_star_$idStatus').src='$asset_throbber_url'
+						}
+					}
+				).request(); return false;"><img alt="$asset_star_alt" border="0" id="status_star_$idStatus" 
+										src="$asset_star_url" /></a>
+
+_HTML_;
+
+		$html_str		= preg_replace('/[\r\n\s]+/', ' ',$html_str);
+
+//echo "<pre>";die($html_str);
+		return $html_str;
 	}
 
 
@@ -389,11 +489,10 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		if ( empty($aStatusList) )
 			return;
 
-		if ( null===$show_item )
-		{
+		if ( !isset($show_item['icon']) )
 			$show_item['icon'] 		= true;
-			$show_item['trash'] 	= false;
-		}
+		if ( !isset($show_item['trash']) )
+			$show_item['trash'] 	= true;
 
 		$idCurrentUser = JWUser::GetCurrentUserInfo('id');
 ?>
@@ -450,16 +549,22 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 
 								<span id="status_actions_<?php echo $idStatus?>">
 
-<?php if ( !empty($idCurrentUser) ){ ?>
-									<a href="#" onclick="new Ajax.Request('/wo/favourings/create/<?php echo $idStatus?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $idStatus?>').src='/images/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" id="status_star_<?php echo $idStatus?>" src="http://asset.jiwai.de/img/icon_star_empty.gif" /></a>
+<?php	
+if ( JWUser::IsLogined() )	
+{
+	$idLoginedUser = JWUser::GetCurrentUserId();
+	$isFav	= JWFavorite::IsFavorite($idLoginedUser,$idStatus);
 
-<?php } // is user logined? ?>
-
-
-<?php if ( @$show_item['trash'] && $idCurrentUser===$idUser) { ?>
-									<a href="/wo/status/destroy/<?php echo $idStatus?>" onclick="if (confirm('确认删除这次更新：删除后将无法恢复！')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;" title="删除这条更新？"><img alt="con_trash" src="http://asset.jiwai.de/img/icon_trash.gif" border="0"></a>
-
-<?php } // show_item['trash'] ?>
+		echo self::FavoriteAction($idStatus,$isFav);
+	if ( $idLoginedUser!=$idUser ){
+		// 不是自己的status可以收藏
+		// 现在可以收藏自己的
+	}else if ($show_item['trash']){
+		//是自己的 status 可以删除
+		echo self::TrashAction($idStatus);
+	}
+}
+?>
 
 								</span>
 
@@ -775,7 +880,7 @@ _HTML_;
 
 		<ul>
 			<li id="message_count"><a href="/wo/message">站内PM: <?php echo $countInfo['pm']?></a></li>
-			<li id="favourite_count"><a href="/wo/favorite">收藏夹: <?php echo $countInfo['fav']?></a></li>
+			<li id="favourite_count"><a href="/wo/favourings">收藏夹: <?php echo $countInfo['fav']?></a></li>
 			<li id="friend_count"><a href="/wo/friend">叽歪友: <?php echo $countInfo['friend']?></a></li>
 			<li id="follower_count"><a href="/wo/follower">关注者: <?php echo $countInfo['follower']?></a></li>
 			<li id="update_count">总共叽歪了 <?php echo $countInfo['status']?> 次</li>
