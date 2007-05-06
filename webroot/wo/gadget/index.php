@@ -9,7 +9,7 @@ $idUser	= $user['id'];
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
-<div id="$div_id"><script type="text/javascript" src="http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&gadget_div=$div_id"></script></div>
+<div id="$div_id"><script type="text/javascript" src="http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&hidefollow=0&gadget_div=$div_id"></script></div>
 _HTML_;
 
 if ( isset($_REQUEST['gadget']) )
@@ -27,7 +27,7 @@ if ( isset($_REQUEST['gadget']) )
 									."&theme=$gadget[theme]"
 									."&thumb=$gadget[pictsize]"
 									."&encoding=$gadget[encoding]"
-									."&hidefollow=@$gadget[hidefollow]"
+									."&hidefollow=$gadget[hidefollow]"
 									."&gadget_div=$div_id"
 							."'></script></div>";
 }

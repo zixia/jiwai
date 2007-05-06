@@ -159,7 +159,7 @@ if ( $has_photo ){
 }
 
 echo <<<_HTML_
-									<img alt="$user_info[nameFull]" src="$photo_url" style="vertical-align:middle" />
+									<a href="/wo/account/profile_image/$user_info[nameScreen]"><img alt="$user_info[nameFull]" src="$photo_url" style="vertical-align:middle" /></a>
 _HTML_;
 ?>
 
