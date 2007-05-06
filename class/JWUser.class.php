@@ -493,15 +493,16 @@ _SQL_;
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
 		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected)"
-								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("sssssss"
+								. " values (NOW(),?,?,?,?,?,?)" ) ){
+			if ( $result = $stmt->bind_param("ssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
 											, strrev($userInfo['email'])
 											, $userInfo['nameFull']
 											, $userInfo['location']
 											, $userInfo['protected']
-								) ){
+								) )
+			{
 				if ( $stmt->execute() ){
 					//JWDebug::trace($stmt->affected_rows);
 					//JWDebug::trace($stmt->insert_id);
@@ -651,5 +652,56 @@ _SQL_;
 					);
 	}
 	
+
+	/*
+	 *	获取用户的通知设置
+	 *	@param	idUser				用户id
+	 *	@return	notice_settings		设置的 $k => $v array，key 有：auto_nudge_me / send_new_friend_email / send_new_direct_text_email
+	 */
+	static public function GetNotification($idUser)
+	{
+		$user_info = self::GetUserInfoById($idUser);
+
+		return array ( 	 'auto_nudge_me'	=> $user_info['noticeAutoNudge']
+						,'send_new_friend_email'	=> $user_info['noticeNewFriend']
+						,'send_new_direct_text_email'	=> $user_info['noticeNewMessage']
+					);
+	}
+
+
+	/*
+	 *	设置用户通知设置
+	 *	@param	idUser			用户id
+	 *	@param	noticeSettings	用户修改的设置 ( auto_nudge_me / send_new_friend_email / send_new_direct_text_email ), 
+								如果isset,则设为 Y
+	 */
+	static public function SetNotification($idUser, $noticeSettings)
+	{
+		$db_change_set = array();
+		$user_info	= self::GetUserInfoById($idUser);
+
+		
+		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? 'Y':'N';
+		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? 'Y':'N';
+		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? 'Y':'N';
+
+		if ( $user_info['noticeAutoNudge']!=$noticeSettings['auto_nudge_me'] )
+				$db_change_set['noticeAutoNudge'] = $noticeSettings['auto_nudge_me'];
+
+
+		if ( $user_info['noticeNewFriend']!=$noticeSettings['send_new_friend_email'] )
+				$db_change_set['noticeNewFriend'] = $noticeSettings['send_new_friend_email'];
+
+		if ( $user_info['noticeNewMessage']!=$noticeSettings['send_new_direct_text_email'] )
+				$db_change_set['noticeNewMessage'] = $noticeSettings['send_new_direct_text_email'];
+
+		if ( !count($db_change_set) )
+			return true;
+
+//die(var_dump($db_change_set));
+		$idUser	= intval($user_info['id']);
+
+		return JWDB::UpdateTableRow('User', $idUser, $db_change_set);
+	}
 }
 ?>

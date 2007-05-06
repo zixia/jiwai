@@ -8,34 +8,34 @@ JWUser::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 
-//$user_setting	= JWDevice::GetNotificationSetting($user_info['id']);
+$user_setting	= JWUser::GetNotification($user_info['id']);
 
+
+//echo "<pre>";(var_dump($user_setting));
 if ( isset($_REQUEST['commit']) )
 {
-echo "<pre>";die(var_dump($_REQUEST));
-
 	$user_new_setting	= $_REQUEST['user'];
 
-	foreach ( $user_setting as $k=>$v )
-	{
-	}
 
-	if ( ! JWUser::SetNotification($user_setting) )
+	if ( ! JWUser::SetNotification($user_info['id'], $user_new_setting) )
 	{
 		$error_html = <<<_HTML_
-<li>密码修改失败，请稍后再试。</li>
+<li>通知设置由于系统故障未能保存成功，请稍后再试。</li>
 _HTML_;
 		JWSession::SetInfo('error', $error_html);
 	}
 	else
 	{
 		$notice_html = <<<_HTML_
-<li>密码修改成功！</li>
+<li>通知设置保存成功！</li>
 _HTML_;
 		JWSession::SetInfo('notice', $notice_html);
 	}
-}
 
+
+	header('Location: ' . $_SERVER['PHP_SELF']);
+	exit(0);
+}
 
 ?>
 <html>
@@ -94,8 +94,8 @@ _HTML_;
 			<tr>
 				<th>自动提醒:</th>
 				<td>
-					<input checked="checked" id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="1" />
-					<input name="user[auto_nudge_me]" type="hidden" value="0" />
+					<input <?php if ( 'Y'==$user_setting['auto_nudge_me'] ) echo ' checked="checked" ';?> 
+							id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="Y" />
 					<label for="user_auto_nudge_me">如果我在24小时内没有更新，请提醒我</label>
 					<p><small>提醒消息将会发送到您的手机或聊天软件上</small></p>
 				</td>
@@ -103,14 +103,16 @@ _HTML_;
 			<tr>
 	    		<th>好友通知:</th>
 				<td>
-					<input checked="checked" id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="1" /><input name="user[send_new_friend_email]" type="hidden" value="0" /> <label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
+					<input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
+							id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
+					<label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
 				</td>
 	  		</tr>
 			<tr>
 	    		<th>消息通知:</th>
 				<td>
-					<input checked="checked" id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="1" />
-					<input name="user[send_new_direct_text_email]" type="hidden" value="0" /> 
+					<input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
+							id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
 					<label for="user_send_new_direct_text_email">等我接收到新消息的时候发邮件给我</label>
 				</td>
 	  		</tr>

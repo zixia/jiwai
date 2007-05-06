@@ -101,6 +101,9 @@ class JWTemplate {
 
 
 <ul id="accessibility">
+    <li>
+      您正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
+    </li>
 	<li>
 		<a href="#navigation" accesskey="2">跳转到导航目录</a>
 	</li>
@@ -125,7 +128,7 @@ class JWTemplate {
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
 			<li class="first"><a href="/wo/">叽歪一下</a></li>
-			<li><a href="/<?php echo $nameScreen ?>">叽歪de我</a></li>
+			<li><a href="/<?php echo $nameScreen ?>/">叽歪de我</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/invitation/invite">邀请</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
