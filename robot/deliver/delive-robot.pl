@@ -8,6 +8,7 @@ use Linux::Inotify2;
 
 use Data::Dumper;
 
+die("You must run me by root. I need root privilege, coz I need to chroot & setuid to apache.\n") unless 0==$>;
 
 openlog('JWDeliveRobot', "ndelay,pid,cons", 'local0');
 
