@@ -2,6 +2,8 @@
 <?php
 require_once(dirname(__FILE__) . "/../../jiwai.inc.php");
 
+define ('CONSOLE', true);
+
 /*
 function test () {
 	echo "okok!\n";
