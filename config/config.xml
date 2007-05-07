@@ -45,6 +45,9 @@
 			<root>/var/www/vhost/jiwai.de/domain/asset/system/</root>
 			<user>user/</user>
 		</storage>
+		<mail>
+			<template>/var/www/vhost/alpha.jiwai.de/config/template/mail/</template>
+		</mail>
 	</directory>
 	<spf>v=spf1 ip4:211.99.222.0/24 ip4:211.157.100.0/24 ip4:211.151.89.0/24 a mx -all</spf>
 </config>

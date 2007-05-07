@@ -10,6 +10,7 @@ use IPC::Open2;
 
 use Data::Dumper;
 
+die("You must run me by root. I need root privilege, coz I need to chroot & setuid to apache.\n") unless 0==$>;
 
 my $QUEUE_ROOT='/var/cache/tmpfs/jiwai/queue/';
 my $QUARANTINE_MT = '/var/cache/tmpfs/jiwai/quarantine/sms/mt';

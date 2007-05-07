@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
-$debug = JWDebug::instance();
-$debug->init();
+//$debug = JWDebug::instance();
+//$debug->init();
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfoById($idUserPage);

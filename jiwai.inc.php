@@ -57,7 +57,9 @@ define('EXCEPTION_LOG', true);
 define('EXCEPTION_DISPLAY', true);
 define('ERROR_LOG', true);
 define('ERROR_DISPLAY', true);
-define('CONSOLE',	false);
+
+if (!defined('CONSOLE'))
+	define('CONSOLE',	false);
 
 
 define('DEBUG',	true);

@@ -16,7 +16,7 @@ if ( is_int($idLoginedUser) )
 
 		$page_user_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
 
-		$is_succ = JWFriend::Create($idLoginedUser, $idPageUser);
+		$is_succ = JWSns::AddFriend($idLoginedUser, $idPageUser);
 
 		if ($is_succ )
 		{

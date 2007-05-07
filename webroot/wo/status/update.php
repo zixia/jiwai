@@ -5,16 +5,12 @@ JWDebug::init();
 JWUser::MustLogined();
 
 if ( array_key_exists('status', $_REQUEST) ){
-	if ( $status = $_REQUEST['status'] ){
+	if ( $status = $_REQUEST['status'] )
+	{
+		$idUser = JWUser::GetCurrentUserInfo('id');
 
-		$id = JWUser::GetCurrentUserInfo('id');
-
-		//JWDebug::trace( "update $id $status" );
-		if ( ctype_digit($id) ){
-			JWStatus::Update($id, $status);
-		}else{
-			JWDebug::trace( "status/update can't get user id" );
-		}
+		if ( !JWStatus::Update($idUser, $status) )
+			JWLog::Instance()->Log(LOG_ERR, "Update($id, $status) failed");
 	}
 }
 
