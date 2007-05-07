@@ -117,7 +117,7 @@ _SQL_;
 		try {
 			$result = JWDB::Execute($sql) ;
 		} catch(Exception $e) {
-			JWDebug::trace( $e );
+			JWLog::Instance()->Log(LOG_ERR, $e);
 			return false;
 		}
 		return true;
@@ -149,7 +149,7 @@ _SQL_;
 		try {
 			$result = JWDB::Execute($sql) ;
 		} catch(Exception $e) {
-			JWDebug::trace( $e );
+			JWLog::Instance()->Log(LOG_ERR, $e);
 			return false;
 		}
 		return true;

@@ -131,11 +131,12 @@ class JWRobot {
 
 		if ( ! $robotMsg->Save($filename) )
 		{	// can't save file
-			JWDebug::trace("save msg err: " 
-							. $robotMsg->GetAddress() 
-							. " @" . $robotMsg->GetType() 
-							. " : [" . $robotMsg->GetBody() . "]"
-							. " file [" . $filename . "]"
+			JWLog::Instance()->Log(LOG_ERR
+							,"save msg err: " 
+								.$robotMsg->GetAddress() 
+								." @" . $robotMsg->GetType() 
+								." : [" . $robotMsg->GetBody() . "]"
+								." file [" . $filename . "]"
 							);
 
 			self::QuarantineMsg($robotMsg);
@@ -161,7 +162,7 @@ class JWRobot {
 		$counter = 0;
 
 		if ( !$handle ){
-			JWDebug::trace ("mo opendir [" . self::$mQueuePathMo . "] failure.");
+			JWLog::Instance()->Log(LOG_ERR, "mo opendir [" . self::$mQueuePathMo . "] failure.");
 			throw new JWException ( "JWRobot opendir[" . self::$mQueuePathMo . "] failure" );
 		}
 
@@ -204,7 +205,7 @@ class JWRobot {
 			try{
 				self::MainLoop();
 			}catch(Exception $e){
-				JWDebug::trace ( 'main_loop exception' );
+ 				JWLog::Instance()->Log(LOG_ERR, 'main_loop exception' );
 				echo "Exception: " .  $e . "\n";
 			}
 		}
@@ -236,7 +237,7 @@ class JWRobot {
 					echo "unvalid msg from " . $robot_msg->GetAddress() ."\n";
 					self::QuarantineMsg($robot_msg);
 
-					JWDebug::trace('JWRobotLogic::process_mo failed');
+					JWLog::Instance()->Log(LOG_ERR, 'JWRobotLogic::process_mo failed, quarantined.');
 				}
 				else if ( null===$robot_reply_msg )
 				{	// no need to reply. just keep silence
@@ -250,7 +251,7 @@ class JWRobot {
 					}
 					else
 					{
-						JWDebug::trace('SendMt failed');
+						JWLog::Instance()->Log(LOG_ERR, 'SendMt failed');
 					}
 				}
 			}
@@ -266,7 +267,7 @@ class JWRobot {
 		{
 			if ( ! preg_match('/([^\/]+)$/',$file_path,$matches) )
 			{
-				JWDebug::trace('file[$file] format err?');
+				JWLog::Instance()->Log(LOG_ERR, "file[$file] format err?");
 				return false;
 			}
 

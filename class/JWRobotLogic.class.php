@@ -59,7 +59,7 @@ class JWRobotLogic {
 	{
 		if (empty ($robotMsg))
 		{
-			JWDebug::trace ( 'JWRobotLogic::process_mo received a empty msg' );
+			JWLog::Instance()->Log(LOG_CRIT, 'JWRobotLogic::process_mo received a empty msg' );
 			return null;
 		}
 		

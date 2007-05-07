@@ -137,7 +137,7 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWDebug::trace( $e );
+			JWLog::Instance()->Log(LOG_ERR, $e );
 			return false;
 		}
 
@@ -171,7 +171,7 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWDebug::trace( $e );
+			JWLog::Instance()->Log(LOG_ERR, $e );
 			return false;
 		}
 

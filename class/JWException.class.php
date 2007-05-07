@@ -367,7 +367,8 @@ class JWException extends Exception
         }
         if (EXCEPTION_LOG) self::logtofile($exception);
         if (DEBUG) {
-            JWDebug::write($causeMsg);
+            // by zixia JWDebug::write($causeMsg);
+			JWLog::Instance()->Log(LOG_ERR, $causeMsg);
         }
     }
 
@@ -380,7 +381,8 @@ class JWException extends Exception
         if (ERROR_DISPLAY) print $e;
         if (ERROR_LOG) self::logtofile($e);
         if (DEBUG && !CONSOLE) {
-            JWDebug::write($e->toText());
+            // by zixia JWDebug::write($e->toText());
+			JWLog::Instance()->Log(LOG_ERR, $e->toText());
         }
         //if ($errno == 0) die('Fatal');
     }
@@ -394,7 +396,7 @@ class JWException extends Exception
     }
 
     static function logtofile($e) {
-	self::$__lastException = $e;
+		self::$__lastException = $e;
         $f = preg_replace_callback('#{([^{}]+)}#', get_class($e)=='JWException' ? array($e,'__fillInfo') : array(__CLASS__, '__fillInfo__'), ERROR_LOGFILE);
         $s = '['.date(DATE_ATOM).'] Uncaught exception or error: '.$e->getCode().
              "\nMESSAGE\t".$e->getMessage().
@@ -405,7 +407,7 @@ class JWException extends Exception
              "\nREFERER\t".(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:"None")).
              //"\nLASTSQL\t".JWDBSource::$last_sql.
              "\nTRACE\n".$e->getTraceAsString().
-             "\n------------------------------- [Logged by JWException \$Rev: 150 $] ----\n";
+             "\n------------------------------- [Logged by JWException] ----\n";
         error_log($s, 3, $f);
     }
 

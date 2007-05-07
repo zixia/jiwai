@@ -44,7 +44,7 @@ class JWDevice {
 	static function IsValid( $address, $type )
 	{
 		if ( strlen($address) > 64 ){ // too long
-			JWDebug::trace("device: address[$address] too long");
+			JWLog::Instance()->Log(LOG_CRIT, "device: address[$address] too long");
 			return false;
 		}
 
@@ -60,7 +60,7 @@ class JWDevice {
 			case 'jabber':
 				return JWUser::IsValidEmail($address,true);
 			default:
-				JWDebug::trace("unsupport device address type[$type]");
+				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
 				return false;
 		}
 		//XXX unreachable

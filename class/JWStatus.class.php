@@ -55,16 +55,14 @@ class JWStatus {
 											, $device
 								) ){
 				if ( $stmt->execute() ){
-					//JWDebug::trace($stmt->affected_rows);
-					//JWDebug::trace($stmt->insert_id);
 					$stmt->close();
 					return true;
 				}else{
-					JWDebug::trace($db->error);
+					JWLog::Instance()->Log(LOG_ERR, $db->error );
 				}
 			}
 		}else{
-			JWDebug::trace($db->error);
+			JWLog::Instance()->Log(LOG_ERR, $db->error );
 		}
 		return false;
 	}
