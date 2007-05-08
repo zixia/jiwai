@@ -49,14 +49,12 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 
-
-
-
+// TODO 分页支持
 $aStatusList = JWStatus::GetStatusListUser($idUserPage, JWStatus::DEFAULT_STATUS_NUM+1);
+@array_shift($aStatusList); 
 
+JWTemplate::StatusHead($idUserPage);
 
-if ( isset($aStatusList) )
-	JWTemplate::StatusHead(array_shift($aStatusList)); 
 ?>
 
 <?php JWTemplate::tab_menu() ?>

@@ -1,5 +1,5 @@
 SUBJECT: %Friend.nameScreen%从%Friend.Device%发送给您的站内消息
-FROM: %Friend.nameFull% <wo@jiwai.de>
+FROM: %Friend.nameFull% <noreply@jiwai.de>
 
 %DirectMessage.status%
 

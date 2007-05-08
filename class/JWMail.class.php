@@ -212,7 +212,7 @@ class JWMail {
 		if ( !JWUser::IsValidEmail($friend['email']) )
 			return;
 
-		$template_file	= 'NoticeNewFriend.html';
+		$template_file	= 'NoticeNewFriend.tpl';
 
 		$template_data = self::LoadTemplate($template_file);
 		$template_data = self::RenderTemplate($template_data,$user,$friend);

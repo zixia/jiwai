@@ -1,5 +1,5 @@
 SUBJECT: 您成为了%User.nameScreen%的最新好友！
-FROM: 叽歪de <wo@jiwai.de>
+FROM: 叽歪de <noreply@jiwai.de>
 
 %Friend.nameFull%您好！
 

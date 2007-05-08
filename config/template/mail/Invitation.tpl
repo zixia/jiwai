@@ -1,5 +1,5 @@
 SUBJECT: %Friend.nameScreen%希望您加入叽歪de！
-FROM: %Friend.nameFull% <wo@jiwai.de>
+FROM: %Friend.nameFull% <noreply@jiwai.de>
 
 %User.nameFull%您好！
 

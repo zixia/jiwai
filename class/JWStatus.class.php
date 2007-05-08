@@ -348,5 +348,18 @@ _SQL_;
 	}
 
 
+	/*
+	 *	返回当前最大的Status的ID号
+ 	 */
+	static public function GetMaxId()
+	{
+		$sql = <<<_SQL_
+SELECT	MAX(id) as idStatus
+FROM	Status
+_SQL_;
+
+		$result = JWDB::GetQueryResult($sql);
+		return $result['idStatus'];
+	}
 }
 ?>

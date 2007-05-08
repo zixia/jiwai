@@ -50,7 +50,7 @@ class JWLog {
 		if ( !isset($facility) )
 			$facility = LOG_LOCAL0;
 
-		self::$msVerbose	= LOG_WARNING;
+		self::$msVerbose	= LOG_DEBUG;
 
 		openlog($ident, (LOG_PID | LOG_CONS), $facility);
 	}

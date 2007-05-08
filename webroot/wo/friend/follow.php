@@ -16,7 +16,7 @@ if ( $idLoginedUser )
 
 		$friend_name = JWUser::GetUserInfoById($idPageUser, 'nameFull');
 
-		$is_succ = JWFollower::Follow($idPageUser, $idLoginedUser);
+		$is_succ = JWFollower::Create($idPageUser, $idLoginedUser);
 
 		if ($is_succ )
 		{

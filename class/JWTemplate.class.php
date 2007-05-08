@@ -334,25 +334,36 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 	}
 
 
-	static public function StatusHead($aStatus=null, $options=null)
+	static public function StatusHead($idUser, $options=null)
 	{
-		if ( empty($aStatus) )
-			return;
+
+		$statuses 	= JWStatus::GetStatusListUser($idUser, 1);
+		$aStatus  	= $statuses[0];
+
+		$user_info	= JWUser::GetUserInfoById($idUser);
+		$nameScreen = $user_info['nameScreen'];
+		$nameFull	= $user_info['nameFull'];
+		$photo_url 	= JWPicture::GetUserIconUrl($idUser);
 
 		if ( !isset($options['trash']) )
 			$options['trash'] = true;
 
-		$idStatus 	= $aStatus['idStatus'];
-		$idUser 	= $aStatus['idUser'];
-		$nameScreen = $aStatus['nameScreen'];
-		$nameFull	= $aStatus['nameFull'];
-		$status		= $aStatus['status'];
-		$timestamp	= $aStatus['timestamp'];
-		$device		= $aStatus['device'];
-
-		$duration	= JWStatus::get_time_desc($timestamp);
-		$photo_url 	= JWPicture::GetUserIconUrl($idUser);
+		if ( ! empty($aStatus) )
+		{
+			$idStatus 	= $aStatus['idStatus'];
+			$status		= $aStatus['status'];
+			$timestamp	= $aStatus['timestamp'];
+			$device		= $aStatus['device'];
 	
+			$duration	= JWStatus::get_time_desc($timestamp);
+		}
+		else	
+		{
+			$status		= "迄今为止还没有更新过！";
+		}
+	
+	
+		$idLoginedUser	= JWUser::GetCurrentUserId();
 
 ?>
 
@@ -361,35 +372,52 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		
 				<?php echo $nameScreen ?>
 
-				<small>
+<?php
+if ( JWUser::IsLogined() 
+		&& $idLoginedUser!=$idUser 
+		&& JWFollower::IsFollower($idUser, $idLoginedUser) )
+{
+	echo <<<_HTML_
+<style type="text/css">
+#content h2.thumb small {
+font-size:0.4em;
+}
+</style>
 
+				<small>
+					是一个被你订阅了的朋友
 				</small>
-  
+_HTML_;
+}
+?>
 			</h2>
 
 			<div class="desc">
 	  			<p><?php echo htmlspecialchars($status)?></p>
 	  			<p class="meta">
+<?php 
+if ( isset($aStatus) ) 
+{
+?>
   					<a href="http://jiwai.de/zixia/statuses/<?php echo $idStatus?>"><?php echo $duration?></a>
   					来自 <?php echo $device?>
 					<span id="status_actions_<?php echo $idStatus?>">
-	<!--a href="#" onclick="new Ajax.Request('/wo/favourings/create/<?php echo $idStatus?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $idStatus?>').src='/images/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" border="0" id="status_star_<?php echo $idStatus?>" src="http://asset.jiwai.de/img/icon_star_empty.gif" /></a-->
 <?php	
-if ( JWUser::IsLogined() )	
+}
+
+if ( isset($aStatus) && JWUser::IsLogined() )	
 {
 	$idLoginedUser = JWUser::GetCurrentUserId();
 	$isFav	= JWFavorite::IsFavorite($idLoginedUser,$idStatus);
 
-		echo self::FavoriteAction($idStatus,$isFav);
-	if ( true || $idLoginedUser!=$idUser ){
-		// we can fav ourselves
-	}else if ( $options['trash'] ){
+	echo self::FavoriteAction($idStatus,$isFav);
+	if ( $idLoginedUser==$idUser 
+			&& $options['trash'] )
+	{
 		echo self::TrashAction($idStatus);
 	}
 }
 ?>
-	
-
 					</span>
   				</p>
 			</div>
@@ -764,13 +792,13 @@ _HTML_;
 
 		echo <<<_HTML_
 		<ul class="actions">
-			<li><strong>Actions</strong></li>
+			<li><strong>操作</strong></li>
 
 _HTML_;
 
 		if ( isset($action['create']) )
 			echo <<<_HTML_
-			<li><a href="/wo/friend/create/$arr_user_info[id]">add</a> $arr_user_info[nameScreen]</li>
+			<li><a href="/wo/friend/create/$arr_user_info[id]">结友</a> $arr_user_info[nameScreen]</li>
 
 _HTML_;
 
@@ -778,7 +806,7 @@ _HTML_;
 		echo <<<_HTML_
 			<li>
 				<a href="/wo/friend/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">remove</a> $arr_user_info[nameScreen]
+						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">绝交</a> $arr_user_info[nameScreen]
 			</li>
 
 _HTML_;
@@ -786,7 +814,7 @@ _HTML_;
 	if ( isset($action['follow']) )
 		echo <<<_HTML_
 			<li>
-				<a href="/wo/friend/follow/$arr_user_info[id]">follow</a> $arr_user_info[nameScreen]
+				<a href="/wo/friend/follow/$arr_user_info[id]">订阅</a> $arr_user_info[nameScreen]
 			</li>
 
 _HTML_;
@@ -794,7 +822,7 @@ _HTML_;
 		if ( isset($action['leave']) )
 		echo <<<_HTML_
 			<li>
-				<a href="/wo/friend/leave/$arr_user_info[id]">leave</a> $arr_user_info[nameScreen]
+				<a href="/wo/friend/leave/$arr_user_info[id]">离开</a> $arr_user_info[nameScreen]
 			</li>
 
 _HTML_;
@@ -836,9 +864,10 @@ _HTML_;
 				if ( !preg_match('/^\w+:\/\//',$aUserInfo['url']) )
 					$aUserInfo['url'] = 'http://' . $aUserInfo['url'];
 
-				echo "<li>网站:  <a href='" . htmlspecialchars($aUserInfo['url'])
-											. "' rel='" . htmlspecialchars($aUserInfo['nameFull']) 
-											. "'>" . htmlspecialchars($aUserInfo['url']) . "</a></li>\n";
+				echo "<li>网站:  <a href='" . htmlspecialchars($aUserInfo['url']) . "'"
+											. " rel='" . htmlspecialchars($aUserInfo['nameFull']) . "'"
+											. " target='_blank' "
+											. ">" . htmlspecialchars($aUserInfo['url']) . "</a></li>\n";
 			}
 ?>
 		</ul>
@@ -885,7 +914,7 @@ _HTML_;
 			<li id="message_count"><a href="/wo/message">站内PM: <?php echo $countInfo['pm']?></a></li>
 			<li id="favourite_count"><a href="/wo/favourings">收藏夹: <?php echo $countInfo['fav']?></a></li>
 			<li id="friend_count"><a href="/wo/friend">叽歪友: <?php echo $countInfo['friend']?></a></li>
-			<li id="follower_count"><a href="/wo/follower">关注者: <?php echo $countInfo['follower']?></a></li>
+			<li id="follower_count"><a href="/wo/follower">订阅者: <?php echo $countInfo['follower']?></a></li>
 			<li id="update_count">总共叽歪了 <?php echo $countInfo['status']?> 次</li>
 		</ul>
 

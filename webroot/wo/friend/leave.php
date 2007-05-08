@@ -16,7 +16,7 @@ if ( is_int($idLoginedUser) )
 
 		$friend_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
 
-		if ( JWFollower::Leave($idPageUser, $idLoginedUser) )
+		if ( JWFollower::Destroy($idPageUser, $idLoginedUser) )
 		{
 			$notice_html = <<<_HTML_
 退订成功，您将不会再在手机或聊天软件上收到${friend_name}的更新。

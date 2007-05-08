@@ -100,7 +100,7 @@ _SQL_;
 			true: 成功 
 			false: 失败
 	 */
-	static public function Leave($idUser, $idFollower)
+	static public function Destroy($idUser, $idFollower)
 	{
 		$idUser 	= intval($idUser);
 		$idFollower = intval($idFollower);
@@ -132,7 +132,7 @@ _SQL_;
 			true: 成功 
 			false: 失败
 	 */
-	static public function Follow($idUser, $idFollower)
+	static public function Create($idUser, $idFollower)
 	{
 		$idUser = intval($idUser);
 		$idFollower = intval($idFollower);
