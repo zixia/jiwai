@@ -2,8 +2,10 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-$debug = JWDebug::instance();
-$debug->init();
+JWUser::MustLogined();
+
+$user_info = JWUser::GetCurrentUserInfo();
+
 ?>
 
 <html>
@@ -14,11 +16,6 @@ $debug->init();
   function onLJLoading() {
     new Effect.Highlight('lj_details');
     $('newsmth_details').innerHTML = '<img alt="Icon_throbber" src="http://asset.jiwai.de/img/icon_throbber.gif?1176324540" /> &nbsp; 找朋友中……朋友越多，需要的时间会越长。';
-  }
-
-  function onSMTHFailure() {
-    $('smth_details').innerHTML = 'NewSMTH doesn\'t like that username.  Try again?';
-    new Effect.Shake('smth_details');
   }
 
   function onEmailChange() {
@@ -45,15 +42,15 @@ $debug->init();
 	<div id="content">
 		<div id="wrapper">
 
-  			<h2>邀请您的朋友<a href="/wo/">（跳过这一步？</a>）</h2>
+  			<h2>邀请您的朋友（<a href="/wo/">跳过这一步？</a>）</h2>
 
   			<p>
 				与朋友一起分享叽歪de乐趣！输入您朋友们的Email地址，我们将向他们发送一份邀请。
-				当他们接受邀请后，你们就成为叽歪的好友啦！
+				当他们接受邀请后，您们就成为叽歪的好友啦！
   			</p>
 
 
-			<form action="/wo/invitations/invite" id="f" method="post" name="f">
+			<form id="f" method="post" name="f">
 				<fieldset>
 					<table>
 						<tr>
@@ -67,15 +64,15 @@ $debug->init();
 								<p><small>多个 Email 地址间使用逗号（,）分隔</small></p>
 							</td>
 						</tr>
-						<tr id="mutualrow" style="display: none;">
+						<tr id="mutualrow" style="display:none">
 		  					<th><label for="mutualcheck">他们互相之间是好友吗？</label></th>
 		  					<td>
 
-		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" />
+		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" /><br />
 		    					<p><small>如果您邀请的朋友之间互相也是好友，那么他们在注册之后，会自动互相加为好友。</small></p>
 		  					</td>
 						</tr>
-						<tr>
+						<!--tr>
 		  					<th><label for="newsmth">邀请水木社区的好友？</label></th>
 		  					<td>
 		    					<input id="newsmthusername" name="newsmthusername" type="text" />
@@ -83,7 +80,7 @@ $debug->init();
 		    					<a href="#" onclick="if ($('newsmthusername').value != '') { new Ajax.Request('/wo/invitation/newsmth', {asynchronous:true, evalScripts:true, method:'post', onFailure:function(request){onSMTHFailure()}, onLoading:function(request){onSMTHLoading()}, parameters:Form.Element.serialize('newsmthusername')}); }; return false;">找出我的好友！</a>
 		    					<p><small id="newsmth_details">输入您的水木社区帐号</small></p>
 							  <td>
-						</tr>
+						</tr-->
 						<tr>
 							<th><label for="message">打个招呼？</label></th>
 							<td>
@@ -97,28 +94,36 @@ $debug->init();
 								<th>预览</th>
 								<td>
 
-									<pre id="invite_preview">你好！
+<style type="text/css">
+#invite_message {
+white-space:normal;
+}
+</style>
+									<pre id="invite_preview">您好！
 
-										<span id="invite_message"></span>
+<span id="invite_message"></span>
 
-您的朋友 zixia2 希望您加入JiWai！
+
+您的朋友 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 希望您加入叽歪de！
+
 
 请点击这里接受邀请：
 
-http://JiWai.de/wo/invitation/invitee/EXTRASPECIALCODEGOESHERE
+  http://JiWai.de/wo/invitation/invitee/EXTRASPECIALCODEGOESHERE
 
 
-查看zixia2的Jiwai档案:
+或您可以在这里关注 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 的最新动态：
+  http://JiWai.de/<?php echo $user_info[nameScreen]?>/
 
-http://JiWai.de/zixia2/
 
 耶!
+叽歪de
 									</pre>
 								</td>
 							</tr>
 							<tr>
 								<th></th>
-								<td><input name="commit" type="submit" value="Invite" /></td>
+								<td><input name="commit" type="submit" value="发送邀请" /></td>
 							</tr>
 						</table>
 					</fieldset>
@@ -134,9 +139,6 @@ function updatePreview(value) {$('invite_message').innerHTML = value;};
 			</div><!-- wrapper -->
 	</div><!-- content -->
 
-<?php JWTemplate::sidebar() ?>
-			
-		
 </div><!-- #container -->
 <hr class="separator" />
 
