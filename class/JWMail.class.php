@@ -229,5 +229,38 @@ class JWMail {
 					);
 	}
 
+
+	/*
+	 *	$user 向 $mails 发送邀请注册信
+ 	 *	@param	array	user	user_info的结构
+ 	 *	@param	string	email	邮件接收者
+ 	 */
+	static public function SendMailInvitation($user, $email, $message, $code)
+	{
+		if ( !JWUser::IsValidEmail($email) )
+			return false;
+
+		$friend['nameFull'] = '敬启者';
+
+		$template_file	= 'Invitation.tpl';
+
+		$template_data = self::LoadTemplate($template_file);
+		$template_data = self::RenderTemplate($template_data,$user, $friend);
+	
+		$template_data = preg_replace('/%INVITATION_ID%/i'	,$code		,$template_data);
+		$template_data = preg_replace('/%MESSAGE%/i'		,$message	,$template_data);
+
+		$template_info = self::ParseTemplate($template_data);
+
+//die(var_dump($template_info));
+		
+		return self::SendMail(	 $template_info['from']
+						,$email
+						,$template_info['subject']
+						,$template_info['html']
+					);
+	}
+
+
 }
 ?>

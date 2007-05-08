@@ -57,6 +57,10 @@ class JWTemplate {
 
 	static public function html_head()
 	{
+		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css'	,false);
+		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'		,false);
+		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'			,false);
+		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js'	,false);
 ?>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -66,7 +70,7 @@ class JWTemplate {
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de我" />
 
-	<link href="http://asset.jiwai.de/css/jiwai-screen.css?1173735600" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<link href="<?php echo $asset_url_css?>" media="screen, projection" rel="Stylesheet" type="text/css" />
 
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪de" />
@@ -81,12 +85,12 @@ class JWTemplate {
 
 	<meta name="robots" content="all" />
 
-	<link rel="shortcut icon" href="http://asset.jiwai.de/img/favicon.gif?1173735600" type="image/gif" />
+	<link rel="shortcut icon" href="<?php echo $asset_url_favicon?>" type="image/gif" />
 	
 	<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 
-	<script type="text/javascript" src="http://asset.jiwai.de/js/minmax.js"></script>
-	<script type="text/javascript" src="http://asset.jiwai.de/js/mootools.v1.00.js"></script>
+	<script type="text/javascript" src="<?php echo $asset_url_js_jiwai?>"></script>
+	<script type="text/javascript" src="<?php echo $asset_url_js_moo?>"></script>
 
 </head>
 
@@ -130,7 +134,7 @@ class JWTemplate {
 			<li class="first"><a href="/wo/">记录一下</a></li>
 			<li><a href="/<?php echo $nameScreen ?>/">我的记录</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">最新动态</a></li>
-			<li><a href="/wo/invitation/invite">邀请</a></li>
+			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/account/setting">设置</a></li>
 			<li><a href="/help/">帮助</a></li>
@@ -166,18 +170,28 @@ class JWTemplate {
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 </script>
 <script type="text/javascript">
-_uacct = "UA-287835-11";
-_uOsr[24]="iask"; _uOkw[24]="k";
-_uOsr[25]="sogou"; _uOkw[25]="query";
-_uOsr[26]="qihoo"; _uOkw[26]="kw";
-_uOsr[27]="daqi"; _uOkw[27]="content";
-_uOsr[28]="soso.com"; _uOkw[28]="w";
-_uOsr[29]="baidu"; _uOkw[29]="wd";
-_uOsr[30]="3721"; _uOkw[30]="name";
-_uOsr[31]="baidu"; _uOkw[31]="word";
-_uOsr[32]="qq.com"; _uOkw[32]="w";
 
-urchinTracker();
+setTimeout("run_google();", 500);
+
+function run_google() 
+{
+    if (!window.urchinTracker) {
+        setTimeout(run_google, 500);
+        return;
+    }
+
+	_uacct = "UA-287835-11";
+	_uOsr[24]="iask"; _uOkw[24]="k";
+	_uOsr[25]="sogou"; _uOkw[25]="query";
+	_uOsr[26]="qihoo"; _uOkw[26]="kw";
+	_uOsr[27]="daqi"; _uOkw[27]="content";
+	_uOsr[28]="soso.com"; _uOkw[28]="w";
+	_uOsr[29]="baidu"; _uOkw[29]="wd";
+	_uOsr[30]="3721"; _uOkw[30]="name";
+	_uOsr[31]="baidu"; _uOkw[31]="word";
+	_uOsr[32]="qq.com"; _uOkw[32]="w";
+	urchinTracker();
+}
 </script>
 <?php
 	}
@@ -1074,27 +1088,45 @@ _HTML_;
 
 	/*
 	 * Get asset url with timestamp
-	 *	@param	path	the path of asset.jiwai.de/$path
+	 *	@param	path		the path of asset.jiwai.de/$path
+	 *	@param	domainLoop	use asset1/asset2... etc...
 	 *	@return	URL		the url ( domain name & path )
 	 */
-	static public function GetAssetUrl($absUrlPath)
+	static public function GetAssetUrl($absUrlPath, $domainLoop=true)
 	{
 		JWTemplate::Instance();
 
-		$asset_num_max = 4;
+		$asset_num_max = 6;
 
 		if ( empty($absUrlPath) )
 			throw new JWException('must have path');
 
-		self::$msAssetCounter++;
-		$n = self::$msAssetCounter % $asset_num_max;
-		$n++; // from 1 to $asset_num_max
-
 		$asset_path	= JW_ROOT . '/domain/asset';
-		$timestamp = filemtime("$asset_path$absUrlPath");
+		$timestamp 	= filemtime("$asset_path$absUrlPath");
+
+
+		if ( preg_match('#(alpha)|(beta)\.jiwai\.de/#i',$_SERVER["HTTP_HOST"],$matches) )
+		{
+			$domain		= "$matches[1].jiwai.de";
+		}
+		else
+		{
+			$domain		= 'jiwai.de';
+		}
+
+
+		if ( $domainLoop )
+		{
+			self::$msAssetCounter++;
+			$n = self::$msAssetCounter % $asset_num_max;
+			$n++; // from 1 to $asset_num_max
+		} else {
+			$n = '';
+		}
+
 
 		//we use more then one domain name to down load asset in parallel
-		return "http://asset${n}.JiWai.de$absUrlPath?$timestamp";
+		return "http://asset${n}.$domain$absUrlPath?$timestamp";
 
 	}
 }

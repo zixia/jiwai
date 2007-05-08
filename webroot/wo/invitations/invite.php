@@ -6,6 +6,34 @@ JWUser::MustLogined();
 
 $user_info = JWUser::GetCurrentUserInfo();
 
+if ( isset($_REQUEST['commit']) )
+{
+	$email_addresses 	= $_REQUEST['email_addresses'];
+	$reciprocal			= isset($_REQUEST['reciprocal']);
+	$message			= @$_REQUEST['message'];
+	
+	$email_addresses 	= preg_replace('/[,;，；、]+/',',',$email_addresses);
+	$emails				= split(',',$email_addresses);
+
+//echo "<pre>"; echo "";die(var_dump($reciprocal));
+	if ( JWInvite::Invite($emails, $message, $reciprocal) )
+	{
+		$notice_html = <<<_HTML_
+您的邀请已经发送！
+_HTML_;
+		JWSession::SetInfo('notice',$notice_html);
+	}
+	else
+	{
+		$error_html = <<<_HTML_
+哎呀！非常抱歉：系统暂时无法发送邀请，请您稍后再尝试吧！
+_HTML_;
+		JWSession::SetInfo('error',$notice_html);
+	}
+	
+	header("Location: /wo/");
+	exit(0);
+}
 ?>
 
 <html>
@@ -20,10 +48,16 @@ $user_info = JWUser::GetCurrentUserInfo();
 
   function onEmailChange() {
     text = $('emails').value;
-    pieces = text.split(",");  
+
+	text = text.replace(/[,;，；、]/,',');
+
+    pieces = text.split(',');  
     
-    if ( (pieces.length > 1) && (pieces[1].strip() != '') && !($('mutualrow').visible())) {
-      new Effect.Appear('mutualrow');
+	Element.extend({ visible: function() { return this.style.display != 'none'; }});
+
+    if ( (pieces.length > 1) && (pieces[1].trim() != '') && !($('mutualrow').visible())) {
+      $('mutualrow').style.display = "";
+      JiWai.Yft('mutualrow');
     } else if (pieces.length <= 1) {
       $('mutualrow').style.display = "none";
     }
@@ -38,17 +72,39 @@ $user_info = JWUser::GetCurrentUserInfo();
 <?php JWTemplate::header() ?>
 <div class="separator"></div>
 
+
+<style type="text/css">
+#invite_message {
+white-space:normal;
+}
+#invite_preview {
+background-color:#EEEEFF;
+font-size:1.2em;
+padding:10px;
+}
+</style>
+	
 <div id="container">
 	<div id="content">
 		<div id="wrapper">
 
-  			<h2>邀请您的朋友（<a href="/wo/">跳过这一步？</a>）</h2>
+  			<h2>邀请您的朋友
+<?php	
+if ( preg_match('#/wo/account/create#i',$_SERVER['HTTP_REFERER']) ){
+	echo '（<a href="/wo/">跳过这一步？</a>）';
+}
+?>
+			</h2>
 
   			<p>
 				与朋友一起分享叽歪de乐趣！输入您朋友们的Email地址，我们将向他们发送一份邀请。
 				当他们接受邀请后，您们就成为叽歪的好友啦！
   			</p>
-
+<?php
+if ( !preg_match('#/wo/account/create#i',$_SERVER['HTTP_REFERER']) ){
+	echo '<p><a href="/wo/invitations/">查看以前的邀请历史</a></p>';
+}
+?>
 
 			<form id="f" method="post" name="f">
 				<fieldset>
@@ -65,7 +121,7 @@ $user_info = JWUser::GetCurrentUserInfo();
 							</td>
 						</tr>
 						<tr id="mutualrow" style="display:none">
-		  					<th><label for="mutualcheck">他们互相之间是好友吗？</label></th>
+		  					<th><label for="mutualcheck">大家互为朋友？</label></th>
 		  					<td>
 
 		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" /><br />
@@ -94,12 +150,7 @@ $user_info = JWUser::GetCurrentUserInfo();
 								<th>预览</th>
 								<td>
 
-<style type="text/css">
-#invite_message {
-white-space:normal;
-}
-</style>
-									<pre id="invite_preview">您好！
+								<pre id="invite_preview">您好！
 
 <span id="invite_message"></span>
 
@@ -109,11 +160,11 @@ white-space:normal;
 
 请点击这里接受邀请：
 
-  http://JiWai.de/wo/invitation/invitee/EXTRASPECIALCODEGOESHERE
+  http://JiWai.de/wo/i/YAOQINGDAIMA
 
 
 或您可以在这里关注 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 的最新动态：
-  http://JiWai.de/<?php echo $user_info[nameScreen]?>/
+  http://JiWai.de/<?php echo $user_info['nameScreen']?>/
 
 
 耶!

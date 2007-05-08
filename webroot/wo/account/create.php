@@ -72,7 +72,7 @@ if ( array_key_exists('user',$_REQUEST)
 					}
 				}
 
-				header("Location: /wo/invitation/invite");
+				header("Location: /wo/invitations/invite");
 				exit();
 			}else{
 				$public_timeline_url = JWTemplate::GetConst('UrlPublicTimeline');
