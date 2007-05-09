@@ -125,7 +125,7 @@ class JWSms {
 
 		$now = strftime("%Y-%m-%d %H:%M:%S",time());
 
-		error_log ( "$now ReceiveMo: msg [$smsMsg]"
+		JWLog::Instance()->Log(LOG_INFO, "$now ReceiveMo: msg [$smsMsg]"
 					. " from mobile [$mobileNo] to service [$serviceNo]"
 					. " by link [$linkId] through [$gateId]" );
 
@@ -145,7 +145,7 @@ class JWSms {
 	{
 		self::Instance();
 
-		error_log ( "SubscribeReport: mobile [$mobileNo] had $isSub-ed [$productId] @[$gateId]" );
+		JWLog::Instance()->Log ( LOG_INFO, "SubscribeReport: mobile [$mobileNo] had $isSub-ed [$productId] @[$gateId]" );
 		return true;
 	}
 
@@ -158,7 +158,7 @@ class JWSms {
 	{
 		self::Instance();
 
-		error_log ( "DeliverReport: [$msgId] of [$mobileNo] now [$deliveState], err [$errCode] @[$gateId]" );
+		JWLog::Instance()->Log ( LOG_INFO, "DeliverReport: [$msgId] of [$mobileNo] now [$deliveState], err [$errCode] @[$gateId]" );
 		return true;
 	}
 
@@ -248,13 +248,13 @@ class JWSms {
 			$rpc_url .= "&msgfmt=$msgfmt";
 
 
-		error_log("Calling: [$rpc_url]");
+		JWLog::Instance()->Log(LOG_INFO,"Calling: [$rpc_url]");
 
 		$return_content = file_get_contents($rpc_url);
 
 		if ( empty($return_content) )
 		{
-			error_log("MT connect to sp failed. pls retry later.");
+			JWLog::Instance()->Log(LOG_ERR,"MT connect to sp failed. pls retry later.");
 			return false;
 		}
 
@@ -263,14 +263,14 @@ class JWSms {
 			if ( preg_match('/^(\d+)$/',$return_content,$matches) )
 				$ret = $matches[1];
 
-			error_log("return content parse err:[$return_content]($error_code[$ret])");
+			JWLog::Instance()->Log(LOG_ERR, "return content parse err:[$return_content]($error_code[$ret])");
 			return false;
 		}
 
 		$ret	= $matches[1];
 		$msgid	= $matches[2];
 
-		error_log("mt succ. returns: ret[$ret]($error_code[$ret]) / msgid[$msgid]");
+		JWLog::Instance()->Log(LOG_INFO,"mt succ. returns: ret[$ret]($error_code[$ret]) / msgid[$msgid]");
 
 		return true;
 	}

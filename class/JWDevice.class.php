@@ -17,6 +17,13 @@ class JWDevice {
 	 */
 	static private $instance__;
 
+	/*
+	 * GenSecret 使用的参数：字母、数字、全部
+	 */
+	const	CHAR_WORD	= 1;
+	const	CHAR_NUM	= 2;
+	const	CHAR_ALL	= 3;
+
 	/**
 	 * Instance of this singleton class
 	 *
@@ -58,6 +65,9 @@ class JWDevice {
 			case 'gtalk':	
 				// im check email address
 			case 'jabber':
+				// im check email address
+			case 'email':
+				// email check email address，为了兼容邮件检查，Device表中没有这种类型
 				return JWUser::IsValidEmail($address,true);
 			default:
 				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
@@ -86,6 +96,14 @@ _SQL_;
 	}
 
 
+	/*
+	 *	@return 	device_info
+	 *					[sms][idDevice]
+	 *					[sms][address]
+	 *					[sms][secret]
+	 *					[sms][verified]
+	 *				so as [im]
+	 */
 	static public function GetDeviceInfo( $idUser )
 	{
 		$idUser = intval($idUser);
@@ -147,12 +165,7 @@ _SQL_;
 		}
 
 		// 存在，并且验证已经通过(secret='')
-		if ( JWDB::ExistTableRow('Device', array (	'type'		=> $type
-												, 'address'	=> $address
-												, 'secret'	=> ''
-											)
-							) )
-		{
+		if ( self::IsExist($address,$type,true) ){
 			return false;
 		}
 		
@@ -183,12 +196,23 @@ _SQL_;
 	}
 
 
-	static function GenSecret($len=6)
+	static function GenSecret($len=6, $type=self::CHAR_WORD)
 	{
 		$secret = '';
 		for ($i = 0; $i < $len;  $i++) {
-			//$secret .= chr(rand(65, 90));
-			$secret .= chr(rand(97, 122));
+			if ( self::CHAR_NUM==$type ){
+				// number
+				$secret .= chr(rand(48, 57));
+			}else if ( self::CHAR_WORD==$type ){
+				// word
+				$secret .= chr(rand(97, 122));
+			}else{
+				if ( 0==$i ){	// 混合时，第一个字符定为 word，为了可以当作 nameScreen
+					$secret .= chr(rand(97, 122));
+				} else {
+					$secret .= (0==rand(0,1)) ? chr(rand(97, 122)) : chr(rand(48,57));
+				}
+			}
 		}
 		return $secret;
 	}
@@ -225,7 +249,7 @@ _SQL_;
 			$ret = false;
 		}
 
-		echo "JWDevice::Verify([$address],[$type],[$secret]) " + $ret?'SUCC':'FAIL' + "\n";
+		JWLog::Instance()->Log(LOG_INFO,"JWDevice::Verify([$address],[$type],[$secret]) " + $ret?'SUCC':'FAIL' );
 
 		return $ret;
 	}
@@ -267,6 +291,30 @@ _SQL_;
 			case 3: return '暂时尚不支持小灵通';
 			default: return '99118816(移动) / 93188816(联通)';
 		}
+	}
+
+
+	/*
+	 *	检查 Device 是否被绑定，可以区分已经激活，和未被激活的设备
+	 *
+	 *	@param	bool	$isActive	true	只查找已经被激活的
+									false	查找所有
+		@return	bool	$isExist	是否存在
+	 */
+	static function IsExist($address, $type, $isActive=true)
+	{
+		if ( ! self::IsValid($address,$type) ){
+			return null;
+		}
+
+		$condition = array (	 'address'	=> $address
+								,'type'		=> $type
+							);
+		if ( $isActive ){
+			$condition['secret'] = '';
+		}
+
+		return JWDB::ExistTableRow('Device', $condition);
 	}
 }
 ?>

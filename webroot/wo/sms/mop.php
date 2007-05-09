@@ -36,7 +36,7 @@ switch ($arg_op)
 		$ret = mop_report();
 		break;
 	default:
-		error_log("unknown sms op: $arg_op");
+		JWLog::Instance('SMS')->Log("unknown sms op: $arg_op");
 		$ret = false;
 }
 

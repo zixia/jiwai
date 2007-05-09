@@ -8,6 +8,8 @@ JWDebug::init();
 $aDeviceInfo = JWDevice::GetDeviceInfo( JWUser::GetCurrentUserId() );
 $name_screen = JWUser::GetUserInfoById( JWUser::GetCurrentUserId(), 'nameScreen' );
 
+$sms_or_im = isset($_REQUEST['im'])?'im':'sms';
+
 ?>
 <html>
 
@@ -26,11 +28,27 @@ $name_screen = JWUser::GetUserInfoById( JWUser::GetCurrentUserId(), 'nameScreen'
 	<div id="content">
 		<div id="wrapper">
 
+<style type="text/css">
+td {
+padding:7px 3px;
+vertical-align:top;
+}
+#create_device input[type="text"], #create_device input[type="submit"], #create_device select {
+font-size:1.5em;
+padding:4px 2px;
+vertical-align:middle;
+}
+#create_device input[type="text"] {
+width:12em;
+}
+</style>
 	
 			<h2><?php echo $name_screen ?></h2>
 
 
-<?php JWTemplate::UserSettingNav('device'); ?>
+<?php 
+JWTemplate::UserSettingNav("device_$sms_or_im"); 
+?>
 
 <?php
 $error_html		= JWSession::GetInfo('error');
@@ -53,6 +71,7 @@ _INFO_;
 			<p>通过你的手机和即时聊天软件来感受更多叽歪de乐趣！现在就绑定你的手机或QQ、MSN、GTalk吧！</p>
 
 			<table class="device" cellspacing="0">
+<?php if ( 'im'!=$sms_or_im ) { // start SMS_setting ?>
 				<tr class="<?php if( empty($aDeviceInfo['sms']['verified']) 
 										|| !$aDeviceInfo['sms']['verified'] ) echo 'not_verified'?>">
   					<td class="thumb"><img alt="手机短信" src="http://asset.jiwai.de/img/phone.png" /></td>
@@ -130,7 +149,11 @@ _INFO_;
 
 					</td>
 				</tr>
-
+<?php 
+} // end SMS_setting 
+else
+{ // start IM_setting
+?>
 
 				<tr class="<?php if ( empty($aDeviceInfo['im']['verified'])
 										|| !$aDeviceInfo['im']['verified']) echo 'not_verified'?>">
@@ -162,11 +185,11 @@ _INFO_;
 <?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified ?>
 
 
-  						<!--h4>请点击验证你的聊天(IM)帐号 (<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>): 
-							<a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a>
+  						<h4><!--请点击-->验证你的聊天(IM)帐号 (<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>): 
+							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
 						</h4>
 
-  						<p>直接点击无法验证？-->请将
+  						<p><!--直接点击无法验证？-->请将
 							<a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a>
 							 加为你的好友，然后将如下验证码发送给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
@@ -221,6 +244,9 @@ _INFO_;
 
 <?php } // end im active judge ?>
 
+<?php 
+} // end IM_setting 
+?>
 
 					</td>
 				</tr>

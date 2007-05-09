@@ -100,6 +100,11 @@ class JWMail {
 			$options['contentType'] = 'text/plain';
 
 
+		$message_head = preg_replace("/\n/s",' ',$message);
+		$message_head = substr($message_head,0,40);
+		JWLog::Instance()->Log(LOG_INFO,"JWMail::SendMail($from, $to, $subject, [$message_head ...])");
+
+
 		if ( 'UTF-8'!=$options['encoding'] )
 			$message = mb_convert_encoding($message, $options['encoding'], 'UTF-8');
 
@@ -123,7 +128,6 @@ class JWMail {
 
 		$headers .= "\r\n";
 
-
 		return mail($to, $subject, $message, $headers);
 	}
 
@@ -142,7 +146,7 @@ class JWMail {
 							 '/%User.nameScreen%/i'	=>	$user['nameScreen']
 							,'/%User.nameFull%/i'	=>	$user['nameFull']
 
-							,'/%Friend.nameScreen%/i'=>	$friend['nameScreen']
+							,'/%Friend.nameScreen%/i'=>	@$friend['nameScreen']
 							,'/%Friend.nameFull%/i'	=>	$friend['nameFull']
 							);
 
@@ -247,8 +251,8 @@ class JWMail {
 		$template_data = self::LoadTemplate($template_file);
 		$template_data = self::RenderTemplate($template_data,$user, $friend);
 	
-		$template_data = preg_replace('/%INVITATION_ID%/i'	,$code		,$template_data);
-		$template_data = preg_replace('/%MESSAGE%/i'		,$message	,$template_data);
+		$template_data = preg_replace('/%INVITATION_ID%/i'	,strtoupper($code)	,$template_data);
+		$template_data = preg_replace('/%MESSAGE%/i'		,$message			,$template_data);
 
 		$template_info = self::ParseTemplate($template_data);
 

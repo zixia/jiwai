@@ -25,13 +25,6 @@ class JWTemplate {
 	static private $msJWConst = null;
 
 	/**
-	 * calc $n of asset${n}.jiwai.de/$path?$timestamp
-	 *
-	 * @var int
-	 */
-	static $msAssetCounter = 0;
-
-	/**
 	 * Instance of this singleton class
 	 *
 	 * @return JWTemplate
@@ -57,10 +50,10 @@ class JWTemplate {
 
 	static public function html_head()
 	{
-		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css'	,false);
-		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'		,false);
-		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'			,false);
-		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js'	,false);
+		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
+		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'	   );
+		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
+		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js' );
 ?>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -171,7 +164,7 @@ class JWTemplate {
 </script>
 <script type="text/javascript">
 
-setTimeout("run_google();", 500);
+setTimeout("run_google();", 100);
 
 function run_google() 
 {
@@ -369,7 +362,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$timestamp	= $aStatus['timestamp'];
 			$device		= $aStatus['device'];
 	
-			$duration	= JWStatus::get_time_desc($timestamp);
+			$duration	= JWStatus::GetTimeDesc($timestamp);
 		}
 		else	
 		{
@@ -555,7 +548,7 @@ _HTML_;
 			$timestamp	= $aStatus['timestamp'];
 			$device		= $aStatus['device'];
 			
-			$duration	= JWStatus::get_time_desc($timestamp);
+			$duration	= JWStatus::GetTimeDesc($timestamp);
 			$photo_url	= JWPicture::GetUserIconUrl($idUser);
 	
 
@@ -1062,12 +1055,13 @@ _HTML_;
 
 	static public function UserSettingNav($activeMenu='account')
 	{
-		$arr_menu = array ( 'account'		=> array ( '/wo/account/setting', '帐号' )
-							, 'password'	=> array ( '/wo/account/password', '密码')
-							, 'device'		=> array ( '/wo/device/', '聊天软件/手机短信')
+		$arr_menu = array ( 'account'		=> array ( '/wo/account/setting'	, '帐号' )
+							, 'password'	=> array ( '/wo/account/password'	, '密码')
+							, 'device_sms'	=> array ( '/wo/device/?sms'		, '手机短信')
+							, 'device_im'	=> array ( '/wo/device/?im'			, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification', '通知')
-							, 'picture'		=> array ( '/wo/account/picture', '头像')
-							, 'uidesign'	=> array ( '/wo/account/uidesign', '界面')
+							, 'picture'		=> array ( '/wo/account/picture'	, '头像')
+							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
@@ -1089,10 +1083,9 @@ _HTML_;
 	/*
 	 * Get asset url with timestamp
 	 *	@param	path		the path of asset.jiwai.de/$path
-	 *	@param	domainLoop	use asset1/asset2... etc...
-	 *	@return	URL		the url ( domain name & path )
+	 *	@return	URL			the url ( domain name & path )
 	 */
-	static public function GetAssetUrl($absUrlPath, $domainLoop=true)
+	static public function GetAssetUrl($absUrlPath)
 	{
 		JWTemplate::Instance();
 
@@ -1114,16 +1107,8 @@ _HTML_;
 			$domain		= 'jiwai.de';
 		}
 
-
-		if ( $domainLoop )
-		{
-			self::$msAssetCounter++;
-			$n = self::$msAssetCounter % $asset_num_max;
-			$n++; // from 1 to $asset_num_max
-		} else {
-			$n = '';
-		}
-
+		// 同一个文件，总会被分配到同一个 n 上。
+		$n = crc32($absUrlPath) % $asset_num_max;
 
 		//we use more then one domain name to down load asset in parallel
 		return "http://asset${n}.$domain$absUrlPath?$timestamp";

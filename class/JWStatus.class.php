@@ -170,7 +170,7 @@ _SQL_;
 	}
 
 
-	static public function get_time_desc ($unixtime)
+	static public function GetTimeDesc ($unixtime)
 	{
 
 		$duration = time() - $unixtime;
@@ -230,7 +230,12 @@ _SQL_;
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_
-SELECT	*
+SELECT
+	id
+	, idUser
+	, status
+	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
+	, device
 FROM	Status
 WHERE	id=$idStatus
 _SQL_;

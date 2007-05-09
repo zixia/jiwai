@@ -50,6 +50,8 @@ if ( array_key_exists('user',$_REQUEST)
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] )
 		{
+			$aUserInfo['isActive'] = 'Y';
+
 			$idUser = JWUser::Create($aUserInfo);
 			if ( $idUser && JWUser::Login ( $idUser, true ) )
 			{

@@ -1,20 +1,21 @@
-SUBJECT: %Friend.nameScreen%希望您加入叽歪de！
-FROM: %Friend.nameFull% <noreply@jiwai.de>
+SUBJECT: %User.nameScreen%希望您加入叽歪de！
+FROM: %User.nameFull% <noreply@jiwai.de>
 
-%User.nameFull%您好！
+%Friend.nameFull%您好！
 
 %MESSAGE%
 
-%Friend.nameFull% (%Friend.nameScreen%) 希望您加入叽歪de！
+%User.nameFull% (%User.nameScreen%) 邀请您加入叽歪de！
 
 点击这里开始：
 
-http://JiWai.de/wo/i/%INVITATION_ID%
+	http://JiWai.de/wo/i/%INVITATION_ID%
 
 
-或者您也可以来这里关注%Friend.nameFull%的最新动态：
+您也可以来这里关注%User.nameFull%的最新动态：
 
-	http://JiWai.de/%Friend.nameScreen%/
+	http://JiWai.de/%User.nameScreen%/
+
 
 耶！
 叽歪de

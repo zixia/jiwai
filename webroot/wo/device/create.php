@@ -57,6 +57,11 @@ _INFO_;
 
 }
 
-header ('Location: /wo/device/');
+$return_url = '/wo/device/';
+
+if ( isset($_SERVER['HTTP_REFERER']) )
+	$return_url = $_SERVER['HTTP_REFERER'];
+
+header ("Location: $return_url");
 exit(0);
 ?>

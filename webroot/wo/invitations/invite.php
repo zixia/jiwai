@@ -15,22 +15,29 @@ if ( isset($_REQUEST['commit']) )
 	$email_addresses 	= preg_replace('/[,;，；、]+/',',',$email_addresses);
 	$emails				= split(',',$email_addresses);
 
-//echo "<pre>"; echo "";die(var_dump($reciprocal));
-	if ( JWInvite::Invite($emails, $message, $reciprocal) )
+	$invitee_ids		= array();
+
+	foreach ( $emails as $email )
 	{
-		$notice_html = <<<_HTML_
+		if ( !strlen(trim($email)) )
+			continue;
+
+		$invitee_id = JWInvite::Invite($user_info['id'], $email, 'email', $message);
+
+		if ( $invitee_id ){
+			array_push($invitee_ids, $invitee_id);
+		}
+	}
+
+die(var_dump($invitee_id));
+	if ( $reciprocal )
+		JWSns::SetReciprocal( array($invitee_id,$user_info['id']) );
+
+	$notice_html = <<<_HTML_
 您的邀请已经发送！
 _HTML_;
-		JWSession::SetInfo('notice',$notice_html);
-	}
-	else
-	{
-		$error_html = <<<_HTML_
-哎呀！非常抱歉：系统暂时无法发送邀请，请您稍后再尝试吧！
-_HTML_;
-		JWSession::SetInfo('error',$notice_html);
-	}
-	
+	JWSession::SetInfo('notice',$notice_html);
+
 	header("Location: /wo/");
 	exit(0);
 }
