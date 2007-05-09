@@ -37,7 +37,7 @@ JWTemplate::timeline($aStatusList)
 
 
 <?php 
-$arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong'))
+$arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong>'))
 					, array ('featured'			, null)
 				);
 
