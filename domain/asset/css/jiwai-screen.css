@@ -185,7 +185,7 @@ a:hover {color:#333;}
 	top:16px;
 }
 
-#footer { position:relative;margin:0 auto;padding:18px 0;width:961px;background:#333 url(http://asset.jiwai.de/img/ft_bg.gif) repeat-x 0 0 ;color:#6B851E;font-size:11px;}
+#footer { position:relative;margin:0 auto;padding:18px 0;width:961px;background:#333 url(http://asset.jiwai.de/img/ft_bg.gif) repeat-x 0 0 ;color:#6B851E;font-size:11px;clear:both;}
   #footer a:link {color:#FFC;}
   #footer a:visited {color:#FFC;text-decoration:none;}
   #footer a:hover {color:#FFF;}
