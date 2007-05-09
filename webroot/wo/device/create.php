@@ -3,7 +3,7 @@ require_once ('../../../jiwai.inc.php');
 
 JWUser::MustLogined();
 
-echo "<pre>"; die(var_dump($_REQUEST));
+//echo "<pre>"; die(var_dump($_REQUEST));
 if ( ($idUser=JWUser::GetCurrentUserId())
 		&& array_key_exists('device',$_REQUEST) ){
 
