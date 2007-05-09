@@ -87,19 +87,37 @@ padding:0px 0pt 5px 321px;
     		  			<?php echo htmlspecialchars($status_info['status'])?>
     				</h1>
 
+<?php
+	$duration	= JWStatus::GetTimeDesc($status_info['timestamp']);
+
+	$device = $status_info['device'];
+
+	if ( 'sms'==$device )
+		$device='手机';
+	else
+		$device=strtoupper($device);
+
+
+?>
 					<!-- google_ad_section_end -->
 
     				<p class="meta">
     					<span class="meta">
-							about 9 hours ago
-    				    	from web
+							<?php echo $duration?>
+    				    	来自于 <?php echo $device?>
 							<span id="status_actions_<?php echo $status_info['id']?>">
-								<a href="#" onclick="new Ajax.Request('/wo/favouring/create/<?php echo $status_info['id']?>', {asynchronous:true, evalScripts:true, onLoading:function(request){$('status_star_<?php echo $status_info['id']?>').src='/img/icon_throbber.gif'}}); return false;"><img alt="Icon_star_empty" border="0" id="status_star_<?php echo $status_info['id']?>" src="http://asset1.jiwai.de/img/icon_star_empty.gif" /></a>
+<?php 
+if ( JWUser::IsLogined() )	
+{
+	$id_user_logined 	= JWUser::GetCurrentUserId();
+	$is_fav				= JWFavorite::IsFavorite($id_user_logined,$status_info['id']);
 
-<?php if ( isset($logined_user_info) && $idPageUser===$logined_user_info['id'] ) { ?>
-								<a href="/wo/status/destroy/<?php echo $status_info['id']?>" onclick="if (confirm('请确认删除这条更新。注意：删除后将无法回复！')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);f.submit(); };return false;" title="删除这条更新？"><img alt="Icon_trash" border="0" src="http://asset1.jiwai.de/img/icon_trash.gif" /></a>
-<?php } ?>
-
+	echo JWTemplate::FavoriteAction($status_info['id'],$is_fav);
+	if ( $id_user_logined==$idPageUser ) {
+		echo JWTemplate::TrashAction($idStatus);
+	}
+}
+?>
 							</span>
     					</span>
     				</p>
