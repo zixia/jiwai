@@ -29,7 +29,7 @@ var JiWai =
 				break;
 		}
 
-		if ( 'transition'==color )
+		if ( 'transparent'==color )
 			color = '#fff';
 
 		return color;
