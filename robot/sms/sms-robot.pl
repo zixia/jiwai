@@ -8,6 +8,9 @@ use Linux::Inotify2;
 use URI::Escape;
 use IPC::Open2;
 
+# Other module need this, so we load it before chroot.
+use Carp::Heavy;
+
 use Data::Dumper;
 
 die("You must run me by root. I need root privilege, coz I need to chroot & setuid to apache.\n") unless 0==$>;
