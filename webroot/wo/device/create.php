@@ -1,7 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 //echo "<pre>"; die(var_dump($_REQUEST));
 if ( ($idUser=JWUser::GetCurrentUserId())

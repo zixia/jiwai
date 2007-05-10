@@ -73,7 +73,7 @@ class JWStatus {
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromUser($idUser, $num=DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -86,6 +86,7 @@ class JWStatus {
 SELECT		Status.id	as idStatus
 FROM		Status, User
 WHERE		Status.idUser=User.id
+			AND User.id=$idUser
 ORDER BY 	Status.timestamp desc
 LIMIT 		$start,$num
 _SQL_;
@@ -110,7 +111,7 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromFriends($idUser, $num=DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -169,7 +170,7 @@ _SQL_;
 	 *	获取 public_timeline 的 idStatus 
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromPublic($num=DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdFromPublic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$num	= intval($num);
 		$start	= intval($start);
@@ -180,9 +181,9 @@ _SQL_;
 		$sql = <<<_SQL_
 SELECT		
 			Status.id	as idStatus
-			User.id		as idUser
+			,User.id		as idUser
 FROM		
-			Status
+			Status, User
 WHERE		
 			Status.idUser=User.id
 			AND User.idPicture>0
@@ -224,30 +225,33 @@ _SQL_;
 		if ( !is_array($idStatuses) )
 			throw new JWException('must array');
 
-		$reduce_function_content = <<<_FUNC_
-			if ( !empty($v) )
-				$v .= ',';
+		$idStatuses = array_unique($idStatuses);
 
-			return $v . intval($idStatus);
+		$reduce_function_content = <<<_FUNC_
+			if ( !empty(\$v) )
+				\$v .= ",";
+
+			return \$v . intval(\$idStatus);
 _FUNC_;
-		$condition_in = array_reduce(	$idStatuses
-										, create_function(
-												'$v,$idStatus'
+		$condition_in = array_reduce(	$idStatuses 
+										,create_function(
+												'$v, $idStatus'
 												,"$reduce_function_content"
 											)
 										,''
 									);
 		$sql = <<<_SQL_
 SELECT
-	id as idStatus
-	, idUser
-	, status
-	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
-	, device
+		id as idStatus
+		, idUser
+		, status
+		, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
+		, device
 FROM	Status
-WHERE	idStatus IN ($condition_in)
+WHERE	Status.id IN ($condition_in)
 _SQL_;
 
+//die($sql);
 		$rows = JWDB::GetQueryResult($sql,true);
 
 

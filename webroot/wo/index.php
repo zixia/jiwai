@@ -2,7 +2,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../jiwai.inc.php');
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
@@ -54,14 +54,17 @@ if ( !isset($show_user_archive) )
 	$show_user_archive = false;;
 
 if ( $show_user_archive )
-	$arr_status_list = JWStatus::GetStatusListUser($logined_user_id);
+	$status_data = JWStatus::GetStatusIdFromUser($logined_user_id);
 else
-	$arr_status_list = JWStatus::GetStatusListFriends($logined_user_id);
+	$status_data = JWStatus::GetStatusIdFromFriends($logined_user_id);
 
-JWTemplate::timeline($arr_status_list, array('icon'=>!$show_user_archive,'trash'=>true)) 
-?>
+$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
   
-<?php JWTemplate::pagination() ?>
+JWTemplate::pagination() 
+?>
 
 <?php JWTemplate::rss() ?>
 			</div><!-- tab -->

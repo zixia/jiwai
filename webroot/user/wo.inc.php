@@ -4,7 +4,7 @@
 //$debug->init();
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
-$page_user_info 	= JWUser::GetUserInfoById($idUserPage);
+$page_user_info 	= JWUser::GetUserInfoById($page_user_id);
 
 //die( var_dump($page_user_info));
 //die( var_dump($logined_user_info));
@@ -49,11 +49,14 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 
-// TODO 分页支持
-$aStatusList = JWStatus::GetStatusListUser($idUserPage, JWStatus::DEFAULT_STATUS_NUM+1);
-@array_shift($aStatusList); 
+$status_data 	= JWStatus::GetStatusIdFromUser($page_user_id, JWStatus::DEFAULT_STATUS_NUM+1);
+$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 
-JWTemplate::StatusHead($idUserPage);
+// 取出一个
+$head_status_id = @array_shift($status_data['status_ids']); 
+
+JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], $status_rows[$head_status_id] );
 
 ?>
 
@@ -63,7 +66,7 @@ JWTemplate::StatusHead($idUserPage);
 
 <?php JWTemplate::tab_header( array() ) ?>
 
-<?php JWTemplate::timeline($aStatusList, array('icon'=>false)) ?>
+<?php JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>false)) ?>
   
 <?php JWTemplate::pagination() ?>
 
@@ -103,13 +106,13 @@ $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('friend'	, array($arr_friend_list))
 							);
 
-if ( ! JWUser::IsLogined() )
+if ( ! JWLogin::IsLogined() )
 	array_push ( $arr_menu, 
 					array('register', null)
 				);
 
 
-JWTemplate::sidebar( $arr_menu, $idUserPage);
+JWTemplate::sidebar( $arr_menu, $page_user_id);
 ?>
 
 </div><!-- #container -->

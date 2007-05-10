@@ -3,7 +3,7 @@
 require_once('../jiwai.inc.php');
 //JWDebug::init();
 
-if ( JWUser::IsLogined() )
+if ( JWLogin::IsLogined() )
 	header('Location: /wo/');
 ?>
 <html>
@@ -38,8 +38,12 @@ if ( JWUser::IsLogined() )
 ?>
 
 <?php 
-$aStatusList = JWStatus::GetStatusListTimeline();
-JWTemplate::timeline($aStatusList) 
+$status_data = JWStatus::GetStatusIdFromPublic();
+
+$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
 ?>
   
 			</div><!-- tab -->

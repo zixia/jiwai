@@ -227,7 +227,7 @@ _CMD_;
 	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
 	 * @return 	string	url of picture
 	 */
-	static public function GetUserIconUrl($idUser=null, $picSize='thumb48')
+	static public function GetUserIconUrl($idUser, $picSize='thumb48')
 	{
 		$picture_info	= self::GetPictureByUserId($idUser);
 

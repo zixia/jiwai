@@ -9,7 +9,7 @@
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 
 $user_info		= JWUser::GetCurrentUserInfo();
@@ -114,7 +114,7 @@ _HTML_;
 	if ( empty($error_html) 
 			&& (!empty($arr_changed) ) )
 	{
-		if ( ! JWUser::Update($arr_changed) )
+		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
 			$error_html = <<<_HTML_
 <li>用户信息更新失败，请稍后再试。</li>

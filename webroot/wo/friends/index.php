@@ -2,7 +2,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 

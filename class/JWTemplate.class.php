@@ -341,26 +341,22 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 	}
 
 
-	static public function StatusHead($idUser, $options=null)
+	static public function StatusHead($idUser, $userRow, $statusRow, $options=null)
 	{
 
-		$statuses 	= JWStatus::GetStatusListUser($idUser, 1);
-		$aStatus  	= $statuses[0];
-
-		$user_info	= JWUser::GetUserInfoById($idUser);
-		$nameScreen = $user_info['nameScreen'];
-		$nameFull	= $user_info['nameFull'];
-		$photo_url 	= JWPicture::GetUserIconUrl($idUser);
+		$name_screen 	= $userRow['nameScreen'];
+		$name_full		= $userRow['nameFull'];
+		$photo_url 		= JWPicture::GetUserIconUrl($idUser);
 
 		if ( !isset($options['trash']) )
 			$options['trash'] = true;
 
-		if ( ! empty($aStatus) )
+		if ( ! empty($statusRow) )
 		{
-			$idStatus 	= $aStatus['idStatus'];
-			$status		= $aStatus['status'];
-			$timestamp	= $aStatus['timestamp'];
-			$device		= $aStatus['device'];
+			$status_id 	= $statusRow['idStatus'];
+			$status		= $statusRow['status'];
+			$timestamp	= $statusRow['timestamp'];
+			$device		= $statusRow['device'];
 	
 			$duration	= JWStatus::GetTimeDesc($timestamp);
 		}
@@ -370,19 +366,19 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 	
 	
-		$idLoginedUser	= JWUser::GetCurrentUserId();
+		$current_user_id	= JWUser::GetCurrentUserId();
 
 ?>
 
 			<h2 class="thumb">
-				<a href="/wo/account/profile_image/<?php echo $nameScreen?>"><img alt="<?php echo $nameFull?>" border="0" src="<?php echo $photo_url?>" valign="middle" /></a>
+				<a href="/wo/account/profile_image/<?php echo $name_screen?>"><img alt="<?php echo $name_full?>" border="0" src="<?php echo $photo_url?>" valign="middle" /></a>
 		
-				<?php echo $nameScreen ?>
+				<?php echo $name_screen ?>
 
 <?php
-if ( JWUser::IsLogined() 
-		&& $idLoginedUser!=$idUser 
-		&& JWFollower::IsFollower($idUser, $idLoginedUser) )
+if ( isset($current_user_id)
+		&& $current_user_id!=$idUser 
+		&& JWFollower::IsFollower($idUser, $current_user_id) )
 {
 	echo <<<_HTML_
 <style type="text/css">
@@ -403,25 +399,24 @@ _HTML_;
 	  			<p><?php echo htmlspecialchars($status)?></p>
 	  			<p class="meta">
 <?php 
-if ( isset($aStatus) ) 
+if ( isset($statusRow) ) 
 {
 ?>
-  					<a href="http://jiwai.de/zixia/statuses/<?php echo $idStatus?>"><?php echo $duration?></a>
+  					<a href="http://jiwai.de/zixia/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
   					来自 <?php echo $device?>
-					<span id="status_actions_<?php echo $idStatus?>">
+					<span id="status_actions_<?php echo $status_id?>">
 <?php	
 }
 
-if ( isset($aStatus) && JWUser::IsLogined() )	
+if ( isset($statusRow) && isset($current_user_id) )	
 {
-	$idLoginedUser = JWUser::GetCurrentUserId();
-	$isFav	= JWFavourite::IsFavourite($idLoginedUser,$idStatus);
+	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
-	echo self::FavouriteAction($idStatus,$isFav);
-	if ( $idLoginedUser==$idUser 
+	echo self::FavouriteAction($status_id,$is_fav);
+	if ( $current_user_id==$idUser 
 			&& $options['trash'] )
 	{
-		echo self::TrashAction($idStatus);
+		echo self::TrashAction($status_id);
 	}
 }
 ?>
@@ -518,38 +513,39 @@ _HTML_;
 
 	/*
 	 * 公共函数，显示 timeline list
-	 * @param 	array	status list
-	 * @param	array	show_item	array ( 'icon' => true ) 
+	 * @param 	array	$statusIds	array(1,2,3);
+	 * @param 	array	$userRows	user[id]=row
+	 * @param 	array	$statusRows	status[id]=row
+	 * @param	array	showItem	array ( 'icon' => true ) 
 	 * @return	
 	 */
-	static public function timeline($aStatusList=null, $show_item=null )
+	static public function Timeline($statusIds, $userRows, $statusRows, $showItem=null )
 	{
-		if ( empty($aStatusList) )
+		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
 
-		if ( !isset($show_item['icon']) )
-			$show_item['icon'] 		= true;
-		if ( !isset($show_item['trash']) )
-			$show_item['trash'] 	= true;
+		if ( !isset($showItem['icon']) )
+			$showItem['icon'] 		= true;
+		if ( !isset($showItem['trash']) )
+			$showItem['trash'] 	= true;
 
-		$idCurrentUser = JWUser::GetCurrentUserInfo('id');
+		$current_user_id = JWUser::GetCurrentUserInfo('id');
 ?>
 
 				<table class="doing" id="timeline" cellspacing="0" cellpadding="0">    
 <?php
 		$n=0;
-		foreach ( $aStatusList as $aStatus ){
+		foreach ( $statusIds as $status_id ){
 //die(var_dump($aStatusList));
-			$idStatus 	= $aStatus['idStatus'];
-			$idUser 	= $aStatus['idUser'];
-			$nameScreen = $aStatus['nameScreen'];
-			$nameFull	= $aStatus['nameFull'];
-			$status		= $aStatus['status'];
-			$timestamp	= $aStatus['timestamp'];
-			$device		= $aStatus['device'];
+			$user_id 	= $statusRows[$status_id]['idUser'];
+			$name_screen= $userRows[$user_id]['nameScreen'];
+			$name_full	= $userRows[$user_id]['nameFull'];
+			$status		= $statusRows[$status_id]['status'];
+			$timestamp	= $statusRows[$status_id]['timestamp'];
+			$device		= $statusRows[$status_id]['device'];
 			
 			$duration	= JWStatus::GetTimeDesc($timestamp);
-			$photo_url	= JWPicture::GetUserIconUrl($idUser);
+			$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
 
 			if ( 'sms'==$device )
@@ -563,43 +559,42 @@ _HTML_;
 			$replyto			= $formated_status['replyto'];
 			$status				= $formated_status['status'];
 ?>
-					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $idStatus;?>">
-<?php if ( $show_item['icon'] ){ ?>
+					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $status_id;?>">
+<?php if ( $showItem['icon'] ){ ?>
 						<td class="thumb">
-							<a href="/<?php echo $nameScreen;?>"><img alt="<?php echo $nameFull;?>" 
+							<a href="/<?php echo $name_screen;?>"><img alt="<?php echo $name_full;?>" 
 									src="<?php echo $photo_url?>" /></a>
 						</td>
 <?php } ?>
 						<td>	
-<?php if ( $show_item['icon'] ){ ?>
+<?php if ( $showItem['icon'] ){ ?>
 							<strong>
-								<a href="/<?php echo $nameScreen?>" 
-										title="<?php echo $nameFull?>"><?php echo $nameScreen?></a>
+								<a href="/<?php echo $name_screen?>" 
+										title="<?php echo $name_full?>"><?php echo $name_screen?></a>
 							</strong>
 <?php } ?>
 
 							<?php echo $status?>
 			
 							<span class="meta">
-								<a href="/<?php echo $nameScreen?>/statuses/<?php echo $idStatus?>"><?php echo $duration?></a>
+								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
 								来自于 <?php echo $device?> 
 								<?php if (!empty($replyto) ) echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> " ?>
 
-								<span id="status_actions_<?php echo $idStatus?>">
+								<span id="status_actions_<?php echo $status_id?>">
 
 <?php	
-if ( JWUser::IsLogined() )	
+if ( isset($current_user_id) )	
 {
-	$idLoginedUser = JWUser::GetCurrentUserId();
-	$isFav	= JWFavourite::IsFavourite($idLoginedUser,$idStatus);
+	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
-		echo self::FavouriteAction($idStatus,$isFav);
-	if ( $idLoginedUser!=$idUser ){
+	echo self::FavouriteAction($status_id,$is_fav);
+	if ( $current_user_id!=$user_id ){
 		// 不是自己的status可以收藏
 		// 现在可以收藏自己的
-	}else if ($show_item['trash']){
+	}else if ($showItem['trash']){
 		//是自己的 status 可以删除
-		echo self::TrashAction($idStatus);
+		echo self::TrashAction($status_id);
 	}
 }
 ?>
@@ -982,10 +977,15 @@ _HTML_;
 
 	static function sidebar_status( $userInfo )
 	{
-		$arr_current_status = JWStatus::GetStatusListUser($userInfo['id'],1);
-		$current_status		= $arr_current_status[0]['status'];
+		$status_data 	= JWStatus::GetStatusIdFromUser($userInfo['id'],1);
 
-		$arr_status			= JWStatus::FormatStatus($current_status);
+		$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+
+		$status_id		= $status_data['status_ids'][0];
+
+		$current_status	= $status_rows[$status_id]['status'];
+
+		$arr_status		= JWStatus::FormatStatus($current_status);
 //XXX
 ?>
 

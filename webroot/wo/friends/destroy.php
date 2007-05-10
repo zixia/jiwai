@@ -1,7 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 //die(var_dump($_REQUEST));
 

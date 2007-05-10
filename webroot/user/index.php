@@ -13,13 +13,13 @@ $pathParam 	= @$_REQUEST['pathParam'];
 
 if ( preg_match('/^\d+$/',$nameOrId) )
 {
-	$idUserPage = $nameOrId;
-	$nameScreen	= JWUser::GetUserInfoById($idUserPage,'nameScreen');
+	$page_user_id = $nameOrId;
+	$nameScreen	= JWUser::GetUserInfoById($page_user_id,'nameScreen');
 }
 else
 {
 	$nameScreen = $nameOrId;
-	$idUserPage	= JWUser::GetUserInfoByName($nameScreen,'id');
+	$page_user_id	= JWUser::GetUserInfoByName($nameScreen,'id');
 }
 
 
@@ -31,7 +31,7 @@ if ( 'public_timeline'===strtolower($nameScreen) )
 
 
 // userName/user_id not exist 
-if ( null===$idUserPage || null===$nameScreen )
+if ( null===$page_user_id || null===$nameScreen )
 {
 	$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
 	header ( "Location: " . JWTemplate::GetConst("UrlError404") );
@@ -49,7 +49,7 @@ switch ( $func )
 		list($pict_size) = split('[\.\/]',$param);
 
 		// TODO: http://jiwai.de/zixia/picture/thumb48/para.jpg
-		user_picture($idUserPage, $pict_size);
+		user_picture($page_user_id, $pict_size);
 		break;
 
 	case 'statuses':
@@ -57,8 +57,8 @@ switch ( $func )
 
 		if ( preg_match('/^(\d+)$/',$param,$matches) )
 		{
-			$idStatus = intval($matches[1]);
-			user_status($idUserPage, $idStatus);
+			$status_id = intval($matches[1]);
+			user_status($page_user_id, $status_id);
 		}
 		else
 		{
@@ -69,7 +69,7 @@ switch ( $func )
 		
 	case 'friends':
 		require_once(dirname(__FILE__) . "/friends.inc.php");
-		user_friends($idUserPage);	
+		user_friends($page_user_id);	
 		break;
 
 	default:

@@ -2,7 +2,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 $user	= JWUser::GetCurrentUserInfo();
 $idUser	= $user['id'];
 

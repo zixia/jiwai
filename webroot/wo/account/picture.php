@@ -9,7 +9,7 @@
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 //var_dump($_REQUEST);
 

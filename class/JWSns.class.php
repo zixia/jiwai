@@ -127,6 +127,9 @@ class JWSns {
 	 */
 	static public function GetUserAction($idUser, $idFriend)
 	{
+		if ( empty($idUser) || empty($idFriend) )
+			return array();
+
 		$action = array();
 
 		if ( JWFriend::IsFriend($idUser, $idFriend) )

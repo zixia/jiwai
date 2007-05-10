@@ -107,7 +107,7 @@ padding:0px 0pt 5px 321px;
     				    	来自于 <?php echo $device?>
 							<span id="status_actions_<?php echo $status_info['id']?>">
 <?php 
-if ( JWUser::IsLogined() )	
+if ( JWLogin::IsLogined() )	
 {
 	$id_user_logined 	= JWUser::GetCurrentUserId();
 	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['id']);

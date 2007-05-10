@@ -9,7 +9,7 @@
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
-JWUser::MustLogined();
+JWLogin::MustLogined();
 
 
 $user_info		= JWUser::GetCurrentUserInfo();

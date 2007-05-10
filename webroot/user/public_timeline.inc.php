@@ -27,8 +27,11 @@
 ?>
 
 <?php 
-$aStatusList = JWStatus::GetStatusListTimeline();
-JWTemplate::timeline($aStatusList) 
+$status_data 	= JWStatus::GetStatusIdFromPublic();
+$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows) 
 ?>
   
 			</div><!-- tab -->
@@ -41,7 +44,7 @@ $arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</stron
 					, array ('featured'			, null)
 				);
 
-if ( ! JWUser::IsLogined() )
+if ( ! JWLogin::IsLogined() )
 	array_push ($arr_menu, array('register', null));
 
 JWTemplate::sidebar($arr_menu, null);

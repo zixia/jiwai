@@ -154,7 +154,7 @@ _SQL_;
 
 	static public function GetCurrentUserId()
 	{
-		if ( self::IsLogined() )
+		if ( JWLogin::IsLogined() )
 			return intval($_SESSION['idUser']);
 
 		return null;
@@ -170,11 +170,55 @@ _SQL_;
 			if ( !empty($user_info) )
 				return $user_info;
 			else
-				self::Logout();
+				JWLogin::Logout();
 		}
 
-		self::Logout();
+		JWLogin::Logout();
 		return null;
+	}
+
+	/*
+	 *	根据 idUser 获取 Row 的详细信息
+	 *	@param	array	idUser
+	 * 	@return	array	以 idUser 为 key 的 status row
+	 * 
+	 */
+	static public function GetUserRowById( $idUsers)
+	{
+		if ( !is_array($idUsers) )
+			throw new JWException('must array');
+
+		$idUsers = array_unique($idUsers);
+
+		$reduce_function_content = <<<_FUNC_
+			if ( !empty(\$v) )
+				\$v .= ",";
+
+			return \$v . intval(\$idUser);
+_FUNC_;
+		$condition_in = array_reduce(	$idUsers
+										, create_function(
+												'$v,$idUser'
+												,"$reduce_function_content"
+											)
+										,''
+									);
+		$sql = <<<_SQL_
+SELECT	*, id as idUser
+FROM	User
+WHERE	id IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+
+		foreach ( $rows as $row )
+		{
+			$row['email']				= strrev($row['email']);
+			$user_map[$row['idUser']] 	= $row;
+		}
+
+		return $user_map;
 	}
 
 
@@ -197,7 +241,7 @@ _SQL_;
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static function GetUserInfo( $by_what, $value=null, $one_item=null )
+	static private function GetUserInfo( $by_what, $value=null, $one_item=null )
 	{
 		switch ( $by_what ){
 		case 'idUser':
@@ -251,10 +295,12 @@ _SQL_;
 		@return
 			bool	成功/失败
 	 */
-	static public function Update($modifiedUserInfo, $idUser=null)
+	static public function Modify($idUser, $modifiedUserInfo)
 	{
-		if ( null===$idUser )
-			$idUser = self::GetCurrentUserId();
+		$idUser = intval($idUser);
+
+		if ( 0>=$idUser )
+			throw new JWException('must int');
 
 		if ( empty($modifiedUserInfo) )
 			return false;
@@ -270,7 +316,7 @@ _SQL_;
 	 * make a user invisible.
 	 * @param int
 	 */
-	static public function Delete( $idUser )
+	static public function Destroy( $idUser )
 	{
 		$sql = <<<_SQL_
 DELETE 	FROM USER
@@ -499,7 +545,6 @@ _SQL_;
 		if ( !count($db_change_set) )
 			return true;
 
-//die(var_dump($db_change_set));
 		$idUser	= intval($user_info['id']);
 
 		return JWDB::UpdateTableRow('User', $idUser, $db_change_set);
