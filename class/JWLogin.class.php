@@ -102,6 +102,16 @@ class JWLogin {
 	}
 
 
+	static public function GetCurrentUserId()
+	{
+		if ( JWLogin::IsLogined() )
+			return intval($_SESSION['idUser']);
+
+		return null;
+	}
+
+
+
 	/*
 	 * 检查客户端cookie，并与 remember me 的密钥做比对。如果符合，则得到 idUser
 	 * @return $idUser or null;

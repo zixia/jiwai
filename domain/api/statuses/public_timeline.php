@@ -122,7 +122,11 @@ function public_timeline_rss_n_atom($options)
 
 	//TODO: since_id / since
 	
-	$statuses	= JWStatus::GetStatusListTimeline($count);
+	
+	//$statuses	= JWStatus::GetStatusListTimeline($count);
+	$status_data	= JWStatus::GetStatusIdFromPublic($count);
+	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪广场'
@@ -130,17 +134,16 @@ function public_timeline_rss_n_atom($options)
 							, 'desc'	=> '所有人叽歪de更新都在这里！'
 						) );
 
-	foreach ( $statuses as $status )
+	foreach ( $status_data['status_ids'] as $status_id )
 	{
-		$user	= JWUser::GetUserInfoById($status['idUser']);
-
+		$user_id = $status[$status_id]['idUser'];
 		$feed->AddItem(array( 
-				'title'		=> "$user[nameFull] - $status[status]"
-				, 'desc'	=> "$user[nameFull] - $status[status]"
-				, 'date'	=> $status['timestamp']
-				, 'author'	=> $user['nameFull']
-				, 'guid'	=> "http://JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
-				, 'url'		=> "http://JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
+				'title'		=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				, 'desc'	=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				, 'date'	=> $status_rows[$status_id]['timestamp']
+				, 'author'	=> $user_rows[$user_id]['nameFull']
+				, 'guid'	=> "http://JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$status_rows[$status_id][idStatus]"
+				, 'url'		=> "http://JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$status_rows[$status_id][idStatus]"
 			) );
 	}
 
@@ -206,28 +209,31 @@ function get_public_timeline_array($options)
 		$options['thumb'] = 48;
 	}
 
-	$statuses	= JWStatus::GetStatusListTimeline($count);
+	//$statuses	= JWStatus::GetStatusListTimeline($count);
 
+	$status_data	= JWStatus::GetStatusIdFromPublic($count);
+	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 
 	$statuses_array								= array();
 
-	foreach ( $statuses as $status )
+	foreach ( $status_data['status_ids'] as $status_id )
 	{
-		$user	= JWUser::GetUserInfoById($status['idUser']);
+		$user_id	= intval($status_rows[$status_id]['idUser']);
 
-		$status_array['created_at']			= date("r",$status['timestamp']);
-		$status_array['id']					= intval($status['idStatus']);
-		$status_array['text']				= $status['status'];
+		$status_array['created_at']			= date("r",$status_rows[$status_id]['timestamp']);
+		$status_array['id']					= intval($status_id)
+		$status_array['text']				= $status_rows[$status_id]['status'];
 
-		$status_array['user']['id']			= intval($status['idUser']);
-		$status_array['user']['name']		= $user['nameFull'];
-		$status_array['user']['screen_name']= $user['nameScreen'];
-		$status_array['user']['location']	= $user['location'];
-		$status_array['user']['description']= $user['bio'];
+		$status_array['user']['id']			= $user_id
+		$status_array['user']['name']		= $user_rows[$user_id]['nameFull'];
+		$status_array['user']['screen_name']= $user_rows[$user_id]['nameScreen'];
+		$status_array['user']['location']	= $user_rows[$user_id]['location'];
+		$status_array['user']['description']= $user_rows[$user_id]['bio'];
 
-		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($status['idUser'], "thumb$options[thumb]");
-		$status_array['user']['url']		= $user['url'];
-		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
+		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($user_id, "thumb$options[thumb]");
+		$status_array['user']['url']		= $user_rows[$user_id]['url'];
+		$status_array['user']['protected']	= $user_rows[$user_id]['protected']==='Y' ? true : false;
 
 		if ( 'UTF-8'!=$options['encoding'] )
 		{

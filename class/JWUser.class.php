@@ -58,8 +58,6 @@ class JWUser {
 	{
 		$db = JWDB::GetDb();
 
-		$idUser = null;
-
 		$name_or_email	= $db->escape_string($name_or_email);
 		$pass 			= $db->escape_string($pass);
 
@@ -86,15 +84,15 @@ _SQL_;
 		if ( ! $arr )
 			return false;
 
-		$idUser = intval($arr['idUser']);
+		$user_id = intval($arr['idUser']);
 
 		#
 		# Step 2. 检查密码是否匹配
 		#
-		if ( ! self::VerifyPassword($pass, $idUser) )
+		if ( ! self::VerifyPassword($user_id, $pass) )
 			return null;
 
-		return $idUser;
+		return $user_id;
 	}
 
 
@@ -152,17 +150,9 @@ _SQL_;
 	}
 
 
-	static public function GetCurrentUserId()
-	{
-		if ( JWLogin::IsLogined() )
-			return intval($_SESSION['idUser']);
-
-		return null;
-	}
-
 	static public function GetCurrentUserInfo( $one_item=null )
 	{
-		if ( $id_user = self::GetCurrentUserId() )
+		if ( $id_user = JWLogin::GetCurrentUserId() )
 		{
 			$user_info = self::GetUserInfoById($id_user,$one_item);
 
