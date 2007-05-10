@@ -739,7 +739,7 @@ _HTML_;
 		}
 
 		if ( 0<$idUser )
-			$aUserInfo = JWUser::GetUserInfoById($idUser);
+			$aUserInfo = JWUser::GetUserInfo($idUser);
 ?>
 
     <div id="sidebar" class="static">
@@ -790,7 +790,7 @@ _HTML_;
 		if ( empty($action) )
 			return;
 
-		$arr_user_info = JWUser::GetUserInfoById($idUserDst);
+		$arr_user_info = JWUser::GetUserInfo($idUserDst);
 
 		echo <<<_HTML_
 		<ul class="actions">
@@ -1039,7 +1039,7 @@ _HTML_;
 
 		foreach ( $friendIdList as $idFriend )
 		{
-			$friend_info 	= JWUser::GetUserInfoById($idFriend);
+			$friend_info 	= JWUser::GetUserInfo($idFriend);
 			$picture_url	= JWPicture::GetUserIconUrl($idFriend);
 			
 			echo <<<_HTML_

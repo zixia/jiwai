@@ -97,7 +97,7 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 			break;
 	}
 	
-	$user = JWUser::GetUserInfoById($idUser);
+	$user = JWUser::GetUserInfo($idUser);
 
 	$gadget_script_url	= "http://api.jiwai.de/statuses/${statusSelector}_timeline"
 							. (("public"===$statusSelector) ? ".json" : "/$idUser.json")

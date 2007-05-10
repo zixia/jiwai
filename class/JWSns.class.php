@@ -58,8 +58,8 @@ class JWSns {
 
 		if ( 'Y'==$notice_settings['send_new_friend_email'] )
 		{
-			$user	= JWUser::GetUserInfoById($idUser);
-			$friend = JWUser::GetUserInfoById($idFriend);
+			$user	= JWUser::GetUserInfo($idUser);
+			$friend = JWUser::GetUserInfo($idFriend);
 
 			JWMail::SendMailNoticeNewFriend($user, $friend);
 
@@ -106,7 +106,7 @@ class JWSns {
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite		= JWInvite::Create($idUser,$address,$type,$message, $code_invite);
 
-		$user_info = JWUser::GetUserInfoById($idUser);
+		$user_info = JWUser::GetUserInfo($idUser);
 
 		if ( 'email'==$type ){
 			JWMail::SendMailInvitation($user_info, $address, $message, $code_invide);

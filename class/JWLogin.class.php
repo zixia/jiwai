@@ -46,7 +46,7 @@ class JWLogin {
 		if ( preg_match("/^\d/",$userIdOrName) ){
 			$idUser 	= $userIdOrName;
 		}else{
-			$user_info 	= self::GetUserInfoByName($userIdOrName);
+			$user_info 	= JWUser::GetUserInfo($userIdOrName);
 			$idUser		= $user_info['id'];
 		}
 

@@ -14,7 +14,7 @@ if ( is_int($idLoginedUser) )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idPageUser = intval($match[1]);
 
-		$page_user_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
+		$page_user_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
 
 		$is_succ = JWSns::AddFriend($idLoginedUser, $idPageUser);
 

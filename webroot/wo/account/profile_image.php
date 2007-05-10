@@ -10,11 +10,11 @@ $logined_user_info	= JWUser::GetCurrentUserInfo();
 $pathParam 	= @$_REQUEST['pathParam'];
 if ( preg_match('/^\/(\d+)$/',$pathParam,$matches) )
 {
-	$page_user_info = JWUser::GetUserInfoById($matches[1]);
+	$page_user_info = JWUser::GetUserInfo($matches[1]);
 }
 else if ( preg_match('/^\/(\w.+)$/',$pathParam,$matches) )
 {
-	$page_user_info = JWUser::GetUserInfoByName($matches[1]);
+	$page_user_info = JWUser::GetUserInfo($matches[1]);
 }
 else if ( empty($logined_user_info) )
 {

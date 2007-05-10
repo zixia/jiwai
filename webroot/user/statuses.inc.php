@@ -4,7 +4,7 @@ function user_status($idPageUser, $idStatus)
 	$status_rows	= JWStatus::GetStatusRowById(array($idStatus));
 	$status_info	= $status_rows[$idStatus];
 
-	$page_user_info	= JWUser::GetUserInfoById($idPageUser);
+	$page_user_info	= JWUser::GetUserInfo($idPageUser);
 
 	if ( $status_info['idUser']!==$idPageUser )
 	{

@@ -14,7 +14,7 @@ if ( is_int($idLoginedUser) )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idPageUser 	= $match[1];
 
-		$friend_name	= JWUser::GetUserInfoById($idPageUser,'nameFull');
+		$friend_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
 
 		if ( JWFollower::Destroy($idPageUser, $idLoginedUser) )
 		{

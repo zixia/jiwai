@@ -15,8 +15,8 @@ $content	= <<<_HTML_
 </html>
 _HTML_;
 
-$user = JWUser::GetUserInfoById(1);
-$friend = JWUser::GetUserInfoById(11);
+$user = JWUser::GetUserInfo(1);
+$friend = JWUser::GetUserInfo(11);
 
 JWMail::SendMailNoticeNewFriend($user,$friend);
 

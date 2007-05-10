@@ -14,7 +14,7 @@ if ( $idLoginedUser )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idPageUser = intval($match[1]);
 
-		$friend_name = JWUser::GetUserInfoById($idPageUser, 'nameFull');
+		$friend_name = JWUser::GetUserInfo($idPageUser, 'nameFull');
 
 		$is_succ = JWFollower::Create($idPageUser, $idLoginedUser);
 

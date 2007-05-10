@@ -44,7 +44,7 @@ $nudge_user_ids = JWNudge::GetIdUserNudgeDay();
 
 foreach ( $nudge_user_ids as $idUser )
 {
-	$user_info = JWUser::GetUserInfoById($idUser);
+	$user_info = JWUser::GetUserInfo($idUser);
 
 	echo "$user_info[nameScreen]\n";
 }

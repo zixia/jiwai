@@ -182,7 +182,7 @@ function friends_timeline_rss_n_atom($options)
 	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
 	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 
-	$user			= JWUser::GetUserInfoById($master_user_id);
+	$user			= JWUser::GetUserInfo($master_user_id);
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
 							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'

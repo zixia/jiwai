@@ -24,7 +24,7 @@ _HTML_;
 	{
 		JWSession::SetInfo('InvitationCode',$invite_code);
 
-		$inviter_user_info	= JWUser::GetUserInfoById($inviter_id);
+		$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
 	}
 }
 ?>
@@ -118,7 +118,7 @@ _HTML_;
 
 		foreach ( $friend_ids as $friend_id )
 		{
-			$friend_info = JWUser::GetUserInfoById($friend_id);
+			$friend_info = JWUser::GetUserInfo($friend_id);
 			$icon_url	= JWPicture::GetUserIconUrl($friend_id);
 
 			echo <<<_HTML_

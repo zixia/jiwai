@@ -3,7 +3,7 @@ find . -type f -name '*.php' -print | grep -v svn |
   do
     (
     echo "processing $filename ..."
-    perl -e 'while(<>){s/JWUser::GetCurrentUserId/JWLogin::GetCurrentUserId/i;print;}' < $filename > $filename.xxxxx
+    perl -e 'while(<>){s/JWUser::GetUserInfoByName/JWUser::GetUserInfo/i;print;}' < $filename > $filename.xxxxx
     echo "baking $filename ..."
     mv $filename $filename.replace.bak
     echo "renaming $filename ..."

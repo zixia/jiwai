@@ -6,7 +6,6 @@ JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
-
 $friend_ids			= JWFriend::GetFriend($logined_user_info['id']);
 $friend_num			= count($friend_ids);
 ?>
@@ -29,10 +28,23 @@ $friend_num			= count($friend_ids);
 		<div id="wrapper">
 
 
+<?php 
+if ( isset($page_user_id) )
+{
+	echo <<<_HTML_
 			<h2> 您有<?php echo $friend_num?>位好友。
 		  		<a href="/wo/invitations/invite">邀请更多！</a>
 			</h2>
-
+_HTML_;
+} 
+else 
+{
+	echo <<<_HTML_
+			<h2> $nameScreen 有<?php echo $friend_num?>位好友。</h2>
+_HTML_;
+	
+}
+?>
 <style type="text/css">
 .friend-actions ul li
 {
@@ -53,10 +65,12 @@ text-indent:0.6em;
 
 <?php
 $n = 0;
-foreach ( $friend_ids as $friend_id )
+if ( isset($friend_ids) )
 {
-	$friend_info		= JWUser::GetUserInfoById($friend_id);
-	$friend_icon_url	= JWPicture::GetUserIconUrl($friend_id);
+	foreach ( $friend_ids as $friend_id )
+	{
+		$friend_info		= JWUser::GetUserInfo($friend_id);
+		$friend_icon_url	= JWPicture::GetUserIconUrl($friend_id);
 
 	/*
 	 * /webroot/user/friends.php 会调用(include)这个页面
@@ -91,6 +105,7 @@ _HTML_;
 	</td>
 </tr>
 _HTML_;
+	}
 }
 ?>
 

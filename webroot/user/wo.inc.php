@@ -4,7 +4,7 @@
 //$debug->init();
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
-$page_user_info 	= JWUser::GetUserInfoById($page_user_id);
+$page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
 //die( var_dump($page_user_info));
 //die( var_dump($logined_user_info));

@@ -154,7 +154,7 @@ _SQL_;
 	{
 		if ( $id_user = JWLogin::GetCurrentUserId() )
 		{
-			$user_info = self::GetUserInfoById($id_user,$one_item);
+			$user_info = self::GetUserInfo($id_user,$one_item);
 
 			// maybe user be deleted in database.
 			if ( !empty($user_info) )
@@ -212,27 +212,23 @@ _SQL_;
 	}
 
 
-	static public function GetUserInfoById( $idUser=null, $one_item=null )
-	{
-		return self::GetUserInfo('idUser',$idUser, $one_item);
-	}
-
-	static public function GetUserInfoByName( $nameScreen=null, $one_item=null )
-	{
-		return self::GetUserInfo('nameScreen',$nameScreen, $one_item);
-	}
-
-
 	/*
-	 * @param	string			by_what		condition key
+	 *	根据用户 nameScreen/email/idUser 返回用户信息
 	 * @param	string			value		condition val, could be array in the furture
 	 * @param	string			one_item 	column name, if set, only return this column.
 
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static private function GetUserInfo( $by_what, $value=null, $one_item=null )
+	static public function GetUserInfo( $value=null, $one_item=null )
 	{
+		if ( preg_match('/@/',$value) )
+			$by_what = 'email';
+		if ( preg_match('/^\d+$/',$value) )
+			$by_what = 'idUser';
+		else
+			$by_what = 'nameScreen';
+
 		switch ( $by_what ){
 		case 'idUser':
 			$by_what = 'id';
@@ -497,7 +493,7 @@ _SQL_;
 	 */
 	static public function GetNotification($idUser)
 	{
-		$user_info = self::GetUserInfoById($idUser);
+		$user_info = self::GetUserInfo($idUser);
 
 		return array ( 	 'auto_nudge_me'	=> $user_info['noticeAutoNudge']
 						,'send_new_friend_email'	=> $user_info['noticeNewFriend']
@@ -515,7 +511,7 @@ _SQL_;
 	static public function SetNotification($idUser, $noticeSettings)
 	{
 		$db_change_set = array();
-		$user_info	= self::GetUserInfoById($idUser);
+		$user_info	= self::GetUserInfo($idUser);
 
 		
 		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? 'Y':'N';

@@ -14,12 +14,12 @@ $pathParam 	= @$_REQUEST['pathParam'];
 if ( preg_match('/^\d+$/',$nameOrId) )
 {
 	$page_user_id = $nameOrId;
-	$nameScreen	= JWUser::GetUserInfoById($page_user_id,'nameScreen');
+	$nameScreen	= JWUser::GetUserInfo($page_user_id,'nameScreen');
 }
 else
 {
 	$nameScreen = $nameOrId;
-	$page_user_id	= JWUser::GetUserInfoByName($nameScreen,'id');
+	$page_user_id	= JWUser::GetUserInfo($nameScreen,'id');
 }
 
 
