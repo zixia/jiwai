@@ -1,7 +1,7 @@
 <?php
 require_once('../../jiwai.inc.php');
 
-JWUser::Logout();
+JWLogin::Logout();
 header("Location: /");
 exit(0);
 

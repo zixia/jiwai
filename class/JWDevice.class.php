@@ -297,6 +297,7 @@ _SQL_;
 	/*
 	 *	检查 Device 是否被绑定，可以区分已经激活，和未被激活的设备
 	 *
+	 *	@param	string	$type		Device 的 type - 查找 Device 表
 	 *	@param	bool	$isActive	true	只查找已经被激活的
 									false	查找所有
 		@return	bool	$isExist	是否存在

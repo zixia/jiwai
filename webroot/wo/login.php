@@ -10,7 +10,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 
 	if ( $idUser )
 	{
-		JWUser::Login($idUser, $_REQUEST['remember_me']);
+		JWLogin::Login($idUser, $_REQUEST['remember_me']);
 
 		if ( isset($_SESSION['login_redirect_url']) ){
 			header("Location: " . $_SESSION['login_redirect_url']);

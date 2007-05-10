@@ -51,6 +51,9 @@ class JWInvite {
 	 */
 	static public function Invite($idUser, $address, $type, $message='')
 	{
+		die ( "过期函数" );
+if ( 0 )
+{
 		if ( ! JWDevice::IsValid($address,$type) ){
 			JWLog::Instance()->Log(LOG_NOTICE, "JWInvite::Invite($address, $type, ...) found invalid address");
 			return null;
@@ -62,7 +65,8 @@ class JWInvite {
 		/*
 		 *	为被邀请用户在用户表中建立一个未被激活的，nameScreen有32个字符的临时帐号
 		 */
-		$user_info_invitee	= array ( 'protected' => 'Y' );
+		$user_info_invitee	= array ( 'protected' => 'Y', 'isActive' => 'N' );
+
 
 		// 生成临时 nameScreen（GenSecret CHAR_ALL 时，返回的字符串的第一个字符不会为数字）
 		$user_info_invitee['nameScreen']	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
@@ -73,9 +77,6 @@ class JWInvite {
 		if ( 'email'==$type ){
 			$user_info_invitee['email']		= $address;
 		}
-
-		// 设置用户为未激活状态
-		$user_info_invitee['isActive']		= 'N';
 
 
 		// 创建！ 并获取 id 
@@ -99,26 +100,32 @@ class JWInvite {
 		}
 
 		return $user_info_invitee['id'];
+} // if ( 0 );
 	}
 
 
 	/*
-	 *	建立一个用户邀请另外一个用户的关系
+	 *	idUser 邀请另外一个用户
 	 *
 	 */
-	static private function Create($idUser, $idInvitee, $message, $inviteCode)
+	static public function Create($idUser, $address, $type, $message, $inviteCode)
 	{
 		$idUser		= intval($idUser);
-		$idInvitee	= intval($idInvitee);
 
-		if ( !is_int($idUser) || !is_int($idInvitee) )
+		if ( !is_int($idUser) )
 			throw new JWException('id not int');
+
+		if ( ! JWDevice::IsValid($address,$type) ){
+			JWLog::Instance()->Log(LOG_NOTICE, "JWInvite::Create($idUser, $address, $type, ...) found invalid address");
+			return null;
+		}
 
 
 		$sql = <<<_SQL_
 INSERT INTO	Invitation
 SET 		idUser			= $idUser
-			, idInvitee		= $idInvitee
+			, address		= '$address'
+			, type			= '$type'
 			, message		= '$message'
 			, code			= '$inviteCode'
 			, timeCreate	= NOW()
@@ -130,11 +137,36 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWLog::Instance()->Log(LOG_ERR, $e );
-			return false;
+			JWLog::Instance()->Log(LOG_ERR, $e.toText() );
+			return null;
 		}
 
-		return true;
+		return JWDB::GetInsertId();
+	}
+
+
+	/*
+	 *
+	 *
+	 */
+	static public function GetInviteInfoById($idInvitation)
+	{
+		$idInvitation = intval($idInvitation);
+		if ( 0>=$idInvitation )
+			throw new JWException ('must int');
+
+		return JWDB::GetTableRow('Invitation', array('id'=>$idInvitation));
+	}
+
+	static public function GetInviteInfoByCode($code)
+	{
+		return JWDB::GetTableRow('Invitation', array('code'=>$code));
+	}
+
+	static public function GetInviterIdByCode($code)
+	{
+		$row = self::GetInviteInfoByCode($code);
+		return $row['idUser'];
 	}
 }
 ?>

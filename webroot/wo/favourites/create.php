@@ -17,7 +17,7 @@ if ( $idLoginedUser )
 	{
 		$idStatus = intval($match[1]);
 
-		$is_succ = JWFavorite::Create($idLoginedUser, $idStatus);
+		$is_succ = JWFavourite::Create($idLoginedUser, $idStatus);
 
 		if ($is_succ )
 		{
@@ -46,15 +46,15 @@ _HTML_;
 if ( ('XMLHttpRequest'==$_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_AJAX'] )
 {
 	// AJAX here
-	$favorite_html	= JWTemplate::FavoriteAction($idStatus, true);
+	$favourite_html	= JWTemplate::FavouriteAction($idStatus, true);
 
 	if ( JWStatus::IsUserOwnStatus($idStatus, $idLoginedUser) )
-		$favorite_html	.= JWTemplate::TrashAction($idStatus);
+		$favourite_html	.= JWTemplate::TrashAction($idStatus);
 
-	$favorite_html	= preg_replace('/"/', '\\"',$favorite_html);
+	$favourite_html	= preg_replace('/"/', '\\"',$favourite_html);
 
 	$js_str = <<<_JS_
-$("status_actions_$idStatus").setHTML("$favorite_html");
+$("status_actions_$idStatus").setHTML("$favourite_html");
 _JS_;
 
 	//die($js_str);

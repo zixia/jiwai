@@ -53,6 +53,12 @@ class JWMail {
 		if ( ! file_exists(self::$msTemplateRoot) ){
 			throw new JWException( "dir not exist [" . self::$msTemplateRoot . "]");
 		}
+
+		$sendmail_path = '/usr/sbin/sendmail -t -i '
+						.' -f noreply@jiwai.de '
+					//	.' -F ' . self::EscapeHeadString('叽歪de'))
+						;
+		ini_set('sendmail_path', $sendmail_path);
 	}
 
 
@@ -251,8 +257,8 @@ class JWMail {
 		$template_data = self::LoadTemplate($template_file);
 		$template_data = self::RenderTemplate($template_data,$user, $friend);
 	
-		$template_data = preg_replace('/%INVITATION_ID%/i'	,strtoupper($code)	,$template_data);
-		$template_data = preg_replace('/%MESSAGE%/i'		,$message			,$template_data);
+		$template_data = preg_replace('/%INVITATION_ID%/i'	,$code		,$template_data);
+		$template_data = preg_replace('/%MESSAGE%/i'		,$message	,$template_data);
 
 		$template_info = self::ParseTemplate($template_data);
 

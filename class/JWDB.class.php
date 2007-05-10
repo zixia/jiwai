@@ -181,13 +181,14 @@ class JWDB {
 
 
 	/*
-	 * @return true / false
+	 *	所有的数据表都有 id 字段（PK）
+	 * 	@return 	id 主键的值，或者0
 	 */
 	static public function ExistTableRow( $table, $condition )
 	{
 		$db = self::GetDb();
 
-		$sql = "SELECT 1 FROM $table WHERE ";
+		$sql = "SELECT id FROM $table WHERE ";
 		
 		$first = true;
 		foreach ( $condition as $k => $v ){
@@ -212,7 +213,13 @@ class JWDB {
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
-		return $result->num_rows!==0;
+
+        if ( $result->num_rows==0 ){
+			return 0;
+		}
+
+		$row = $result->fetch_assoc();
+		return $row['id'];
 	}
 
 
@@ -299,6 +306,60 @@ class JWDB {
 		}
 
 		return $result;
+	}
+
+
+	/*
+	 * 	@return 	array/array of array	$row/$rows
+	 */
+	static public function GetTableRow( $table, $condition, $limit=1 )
+	{
+		$db = self::GetDb();
+
+		$sql = "SELECT * FROM $table WHERE ";
+		
+		$where_condition = '';
+
+		$first = true;
+		foreach ( $condition as $k => $v ){
+			if ( $first ){
+				$first = false;
+			} else {
+				$where_condition .= ",";
+			}
+
+			$where_condition .= "$k=";
+
+			if ( is_int($v) )
+				$where_condition .= "$v";
+			else
+				$where_condition .= "'" . self::escape_string($v) . "'";
+
+		}
+		$sql .= " $where_condition LIMIT $limit ";
+
+		$result = $db->query ($sql);
+
+		if ( !$result ){
+			throw new JWException ("DB Error: " . $db->error);
+			return false;
+		}
+
+		if ( 1==$limit )
+		{
+			$row = $result->fetch_assoc();
+			return $row;
+		}
+
+
+		$rows = array();
+
+		while ( $row=$result->fetch_assoc() )
+		{
+			array_push($rows,$row);
+		}
+
+		return $rows;
 	}
 
 

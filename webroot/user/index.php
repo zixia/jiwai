@@ -67,6 +67,11 @@ switch ( $func )
 		}
 		break;
 		
+	case 'friends':
+		require_once(dirname(__FILE__) . "/friends.inc.php");
+		user_friends($idUserPage);	
+		break;
+
 	default:
 		require_once(dirname(__FILE__) . "/wo.inc.php");
 		break;

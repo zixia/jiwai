@@ -53,7 +53,7 @@ if ( array_key_exists('user',$_REQUEST)
 			$aUserInfo['isActive'] = 'Y';
 
 			$idUser = JWUser::Create($aUserInfo);
-			if ( $idUser && JWUser::Login ( $idUser, true ) )
+			if ( $idUser && JWLogin::Login ( $idUser, true ) )
 			{
 
 				// after a user create his account the first time, we try to save the pict he uploaded, and ignore errors.

@@ -38,7 +38,7 @@ _HTML_;
 _HTML_;
 	}
 
-	if ( ! JWUser::VerifyPassword($current_password) )
+	if ( ! JWUser::VerifyPassword($user_info['id'], $current_password) )
 	{
 			$error_html .= <<<_HTML_
 <li>当前密码输入错误，清除新输入</li>
@@ -51,7 +51,7 @@ _HTML_;
 	 */
 	if ( empty($error_html) )
 	{
-		if ( ! JWUser::ChangePassword($password_confirmation) )
+		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation)
 		{
 			$error_html = <<<_HTML_
 <li>密码修改失败，请稍后再试。</li>

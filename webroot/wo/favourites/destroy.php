@@ -14,7 +14,7 @@ if ( is_int($idLoginedUser) )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idStatus = $match[1];
 
-		if ( JWFavorite::Destroy($idLoginedUser, $idStatus) )
+		if ( JWFavourite::Destroy($idLoginedUser, $idStatus) )
 		{
 			$notice_html = <<<_HTML_
 您已经不再收藏这条更新了。
@@ -35,15 +35,15 @@ _HTML_;
 if ( ('XMLHttpRequest'==$_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_AJAX'] )
 {
 	// AJAX here
-	$favorite_html	= JWTemplate::FavoriteAction($idStatus, false);
+	$favourite_html	= JWTemplate::FavouriteAction($idStatus, false);
 
 	if ( JWStatus::IsUserOwnStatus($idStatus, $idLoginedUser) )
-		$favorite_html	.= JWTemplate::TrashAction($idStatus);
+		$favourite_html	.= JWTemplate::TrashAction($idStatus);
 
-	$favorite_html	= preg_replace('/"/', '\\"',$favorite_html);
+	$favourite_html	= preg_replace('/"/', '\\"',$favourite_html);
 
 	$js_str = <<<_JS_
-$("status_actions_$idStatus").setHTML("$favorite_html");
+$("status_actions_$idStatus").setHTML("$favourite_html");
 _JS_;
 
 	//die($js_str);

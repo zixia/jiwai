@@ -44,6 +44,7 @@ class JWPicture {
 
 	/*
 	 * supprot 'ICON' class only.
+	 *	return	array	row of table Picture
 	 */
 	static public function GetPictureByUserId($idUser)
 	{

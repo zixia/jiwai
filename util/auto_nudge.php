@@ -31,39 +31,15 @@
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
 
-$idStatusLastDay = JWNudge::GetIdStatusLastDay();
+$idStatusLastDay = JWNudge::GetIdStatusLastDayProcessed();
 
-$sql = <<<_SQL_
-SELECT	MAX(id) as idStatus
-FROM	Status
-_SQL_;
-
-$idStatus_max = JWDB::GetQueryResult($sql);
-$idStatus_max = $idStatus_max['idStatus'];
+$idStatus_max = JWStatus::GetMaxId();
 
 /*
 	选出idUser，条件为：
 		1、24小时前更新过，并且更新没有检查过 auto nudge (意味着idStatus>idStatusLastDay)的
 		2、24小时内未更新过的
  */
-
-$now_before_24h	= time() - 24 * 60 * 60;
-//$now_before_24h	= time() - 60*15;
-
-$sql = <<<_SQL_
-SELECT	distinct idUser
-FROM		Status
-WHERE		timestamp < FROM_UNIXTIME($now_before_24h)
-				AND id>$idStatusLastDay
-				AND idUser NOT IN
-					(
-							SELECT 	idUser from Status
-							WHERE		timestamp > FROM_UNIXTIME($now_before_24h)
-											AND id<=$idStatus_max
-					 )
-_SQL_;
-
-//die($sql);
 $nudge_user_ids = JWNudge::GetIdUserNudgeDay();
 
 foreach ( $nudge_user_ids as $idUser )

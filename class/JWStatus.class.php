@@ -43,14 +43,14 @@ class JWStatus {
 	}
 
 
-	static public function Update( $user_id, $status, $device='web' )
+	static public function Create( $idUser, $status, $device='web' )
 	{
 		$db = JWDB::Instance()->GetDb();
 
 		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device) "
 								. " values (?,?,?)" ) ){
 			if ( $result = $stmt->bind_param("iss"
-											, $user_id
+											, $idUser
 											, $status
 											, $device
 								) ){
@@ -67,53 +67,64 @@ class JWStatus {
 		return false;
 	}
 
-	static public function GetStatusListTimeline ( $num_max=self::DEFAULT_STATUS_NUM )
-	{
-		$sql = <<<_SQL_
-SELECT 
-	Status.id as idStatus
-	, Status.status
-	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
-	, Status.device
-	, User.id as idUser
-	, User.nameScreen
-	, User.nameFull
-	, User.idPicture
-FROM
-	Status, User
-WHERE
-	User.idPicture>0
-	AND Status.idUser=User.id
-ORDER BY
-	timestamp desc
-LIMIT $num_max;
-_SQL_;
-		$aStatusList = JWDB::GetQueryResult($sql,true);
-		return $aStatusList;
 
+	/*
+	 *	获取用户的 idStatus 
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdFromUser($idUser, $num=DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= intval($idUser);
+		$num	= intval($num);
+		$start	= intval($start);
+
+		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
+			throw new JWException('must int');
+
+		$sql = <<<_SQL_
+SELECT		Status.id	as idStatus
+FROM		Status, User
+WHERE		Status.idUser=User.id
+ORDER BY 	Status.timestamp desc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		// 装换rows, 返回 id 的 array
+		$status_ids = array_map(	create_function(
+												'$row'
+												, 'return $row["idStatus"];'
+											)
+							, $rows
+						);
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> array($idUser)
+					);
 	}
 
 
-	static public function GetStatusListFriends ($idUser, $numMax=20)
+	/*
+	 *	获取用户和好友的 idStatus，并返回相关的 idUser 以供后期组合
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdFromFriends($idUser, $num=DEFAULT_STATUS_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
-		$numMax	= intval($numMax);
+		$num	= intval($num);
+		$start	= intval($start);
 
-		if ( !is_int($idUser) || !is_int($numMax) )
+		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
 			throw new JWException('must int');
-
 
 		$sql = <<<_SQL_
 SELECT
 		Status.id	as idStatus
-		, Status.status
-		, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
-		, Status.device
 		, User.id as idUser
-		, User.nameScreen
-		, User.nameFull
-		, User.idPicture
-FROM	Status, User
+FROM	
+		Status, User
 WHERE	
 		User.id IN
 		(
@@ -128,45 +139,123 @@ WHERE
 		AND Status.idUser=User.id
 ORDER BY
 		Status.timestamp desc
-LIMIT $numMax;
+LIMIT 
+		$start,$num
 _SQL_;
 
-		$arr_status_list = JWDB::GetQueryResult($sql,true);
-		return $arr_status_list;
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		// 装换rows, 返回 idStatus / idUser 的 array
+		$status_ids = array_map(	create_function(
+												'$row'
+												, 'return $row["idStatus"];'
+											)
+							, $rows
+						);
+		$user_ids 	= array_map(	create_function(
+												'$row'
+												, 'return $row["idUser"];'
+											)
+							, $rows
+						);
+
+		return array ( 	 'status_ids'	=> $status_ids
+						,'user_ids'		=> $user_ids
+					);
 	}
 
 
-	// idStatus, idUser, nameScreen, nameFull, photoUrl,status,timestamp,device
-	static public function GetStatusListUser ($idUser, $numMax=20)
+	/*
+	 *	获取 public_timeline 的 idStatus 
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdFromPublic($num=DEFAULT_STATUS_NUM, $start=0)
 	{
-		$idUser	= intval($idUser);
-		$numMax	= intval($numMax);
+		$num	= intval($num);
+		$start	= intval($start);
 
-		if ( !is_int($idUser) || !is_int($numMax) )
+		if ( !is_int($num) || !is_int($start) )
 			throw new JWException('must int');
 
-
 		$sql = <<<_SQL_
-SELECT 
-	Status.id as idStatus
-	, Status.status
-	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
-	, Status.device
-	, User.id as idUser
-	, User.nameScreen
-	, User.nameFull
-	, User.idPicture
-FROM
-	Status, User
-WHERE
-	User.id=$idUser
-	AND Status.idUser=User.id
-ORDER BY
-	timestamp desc
-LIMIT $numMax;
+SELECT		
+			Status.id	as idStatus
+			User.id		as idUser
+FROM		
+			Status
+WHERE		
+			Status.idUser=User.id
+			AND User.idPicture>0
+ORDER BY 	
+			Status.timestamp desc
+LIMIT 		$start,$num
 _SQL_;
-		$aStatusList = JWDB::GetQueryResult($sql,true);
-		return $aStatusList;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		// 装换rows, 返回 id 的 array
+		$status_ids = array_map(	create_function(
+												'$row'
+												, 'return $row["idStatus"];'
+											)
+							, $rows
+						);
+		$user_ids 	= array_map(	create_function(
+												'$row'
+												, 'return $row["idUser"];'
+											)
+							, $rows
+						);
+
+		return array ( 	 'status_ids'	=> $status_ids
+						,'user_ids'		=> $user_ids
+					);
+	}
+
+
+	/*
+	 *	根据 idStatus 获取 Row 的详细信息
+	 *	@param	array	idStatuses
+	 * 	@return	array	以 idStatus 为 key 的 status row
+	 * 
+	 */
+	static public function GetStatusRowById ($idStatuses)
+	{
+		if ( !is_array($idStatuses) )
+			throw new JWException('must array');
+
+		$reduce_function_content = <<<_FUNC_
+			if ( !empty($v) )
+				$v .= ',';
+
+			return $v . intval($idStatus);
+_FUNC_;
+		$condition_in = array_reduce(	$idStatuses
+										, create_function(
+												'$v,$idStatus'
+												,"$reduce_function_content"
+											)
+										,''
+									);
+		$sql = <<<_SQL_
+SELECT
+	id as idStatus
+	, idUser
+	, status
+	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
+	, device
+FROM	Status
+WHERE	idStatus IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+
+		foreach ( $rows as $row )
+			$status_map[$row['idStatus']] = $row;
+
+
+		return $status_map;
 	}
 
 
@@ -205,7 +294,7 @@ _SQL_;
 	 * @param	int
 	 * @return	bool
 	 */
-	static public function Delete ($idStatus)
+	static public function Destroy ($idStatus)
 	{
 		if ( !is_numeric($idStatus) ){
 			throw new JWException("must be numeric! [$idStatus]");
@@ -366,5 +455,21 @@ _SQL_;
 		$result = JWDB::GetQueryResult($sql);
 		return $result['idStatus'];
 	}
+
+
+	/*
+	 *	获取在某一时刻之前的最大 idStatus
+	 */
+	static public function GetMaxIdStatusBeforeTime($unixtime)
+	{
+		$sql = <<<_SQL_
+SELECT	MAX(id) as idMax
+FROM	Status
+WHERE	timestamp < FROM_UNIXTIME($unixtime)
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+		return $row['idMax'];
+	}
+
 }
 ?>

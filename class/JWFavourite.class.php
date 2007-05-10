@@ -7,13 +7,13 @@
  */
 
 /**
- * JiWai.de Favorite Class
+ * JiWai.de Favourite Class
  */
-class JWFavorite {
+class JWFavourite {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWFavorite
+	 * @var JWFavourite
 	 */
 	static private $msInstance;
 
@@ -21,7 +21,7 @@ class JWFavorite {
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWFavorite
+	 * @return JWFavourite
 	 */
 	static public function &Instance()
 	{
@@ -43,10 +43,10 @@ class JWFavorite {
 
 
 	/**
-	 * Is idStatus is idUser's favorite?
+	 * Is idStatus is idUser's favourite?
 	 *
 	 */
-	static function IsFavorite($idUser, $idStatus)
+	static function IsFavourite($idUser, $idStatus)
 	{
 		$idUser 		= intval($idUser);
 		$idStatus	 	= intval($idStatus);
@@ -54,15 +54,15 @@ class JWFavorite {
 		if ( (0>=$idUser) || (0>=$idStatus) )
 			throw new JWException('must int');
 
-		return JWDB::ExistTableRow('Favorite', array('idUser'=>$idUser,'idStatus'=>$idStatus));
+		return JWDB::ExistTableRow('Favourite', array('idUser'=>$idUser,'idStatus'=>$idStatus));
 	}
 
 
 	/**
-	 * 	Get favorite list
-	 *	@return array	array of favorite idStatus list
+	 * 	Get favourite list
+	 *	@return array	array of favourite idStatus list
 	 */
-	static function GetFavorite($idUser, $numMax=DEFAULT_FOLLOWER_MAX)
+	static function GetFavourite($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
@@ -72,7 +72,7 @@ class JWFavorite {
 
 		$sql = <<<_SQL_
 SELECT	idStatus
-FROM	Favorite
+FROM	Favourite
 WHERE	idUser=$idUser
 LIMIT	$numMax
 _SQL_;
@@ -93,7 +93,7 @@ _SQL_;
 
 
 	/*
-	 *	取消 idUser 的 favorite idStatus
+	 *	取消 idUser 的 favourite idStatus
 	 * @param	int	idStatus
 	 * @param	int	idUser
 	 * @return 
@@ -109,7 +109,7 @@ _SQL_;
 			throw new JWException("id not int");
 
 		$sql = <<<_SQL_
-DELETE FROM	Favorite
+DELETE FROM	Favourite
 WHERE 		idUser=$idUser
 			AND idStatus=$idStatus
 _SQL_;
@@ -141,7 +141,7 @@ _SQL_;
 			throw new JWException('not int');
 
 		$sql = <<<_SQL_
-INSERT INTO	Favorite
+INSERT INTO	Favourite
 SET 		idUser			= $idUser
 			, idStatus	= $idStatus
 _SQL_;
@@ -157,9 +157,9 @@ _SQL_;
 
 	/*
 	 *	@param	int		$idUser
-	 *	@return	int		$favoriteNum for $idUser
+	 *	@return	int		$favouriteNum for $idUser
 	 */
-	static public function GetFavoriteNum($idUser)
+	static public function GetFavouriteNum($idUser)
 	{
 		$idUser = intval($idUser);
 
@@ -168,7 +168,7 @@ _SQL_;
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
-FROM	Favorite
+FROM	Favourite
 WHERE	idUser=$idUser
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);

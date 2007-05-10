@@ -96,5 +96,83 @@ class JWSns {
 		return true;
 	}
 
+
+	/*
+	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
+	 *
+	 */
+	static public function Invite($idUser, $address, $type, $message)
+	{
+		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
+		$id_invite		= JWInvite::Create($idUser,$address,$type,$message, $code_invite);
+
+		$user_info = JWUser::GetUserInfoById($idUser);
+
+		if ( 'email'==$type ){
+			JWMail::SendMailInvitation($user_info, $address, $message, $code_invide);
+		}else{	// SMS / IM
+			JWDevice::Create($user_info_invitee['id'], $address, $type);
+			// TODO
+			// 机器人给设备发送消息
+			die ( "UNFINISHED");
+		}
+
+		return $id_invite;
+	}
+
+	/*
+	 *	检查 $idUser 可以对 $idFriend 做哪些 Sns 操作
+	 *	$return	array	actions	array 	keys: 	add/remove(friend) follow/leave nudge/d
+										values: bool
+	 */
+	static public function GetUserAction($idUser, $idFriend)
+	{
+		$action = array();
+
+		if ( JWFriend::IsFriend($idUser, $idFriend) )
+		{
+			$action['remove']		= true;
+
+			if ( JWFollower::IsFollower($idUser, $idFriend) )
+				$action['leave']	= true;
+			else
+				$action['follow']	= true;
+		}
+		else if ( $idUser!=$idFriend )
+		{
+ 			// not friend, and not myself
+			$action['create']		= true;
+		}
+
+		// 反向也是朋友，则可以 direct_message / nudge
+		if ( JWFriend::IsFriend($idFriend,$idUser) )
+		{
+			$action['nudge']		= true;
+			$action['d']			= true;
+		}
+
+		return $action;
+	}
+
+	/*
+	 * @return array ( pm => n, friend => x, follower=> )
+	 */
+	static public function GetUserState($idUser)
+	{
+		//TODO
+		//$num_pm			= JWMessage::GetMessageNum($idUser);
+		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
+		$num_friend		= JWFriend::GetFriendNum($idUser);
+		$num_follower	= JWFollower::GetFollowerNum($idUser);
+		$num_status		= JWStatus::GetStatusNum($idUser);
+
+		return array(	'pm'			=> 0
+						, 'fav'			=> $num_fav
+						, 'friend'		=> $num_friend
+						, 'follower'	=> $num_follower
+						, 'status'		=> $num_status
+					);
+	}
+	
 }
 ?>

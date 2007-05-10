@@ -57,32 +57,32 @@ _SQL_;
 		JWDB::UpdateTableRow('Nudge', 1, $changeSet);
 	}
 
-	static public function GetIdStatusLastDay()
+	static public function GetIdStatusLastDayProcessed()
 	{
 		return self::GetNudgeInfo('idStatusLastDay');
 	}
 
-	static public function SetIdStatusLastDay($idStatusLastDay)
+	static public function SetIdStatusLastDayProcessed($idStatusLastDay)
 	{
-		$current_id = self::GetIdStatusLastDay();
+		$current_id = self::GetIdStatusLastDayProcessed();
 		if ( $current_id > $idStatusLastDay )
 			throw new JWException('new id less then old id?!');
 
 		return self::SetNudgeInfo( array('idStatusLastDay'=>$idStatusLastDay) );
 	}
 
-	static public function GetIdStatusLastWeek()
+	static public function GetIdStatusLastWeekProcesse()
 	{
 	}
 
-	static public function SetIdStatusLastWeek()
+	static public function SetIdStatusLastWeekProcessed()
 	{
 	}
 
-	static public function GetIdStatusLastMonth()
+	static public function GetIdStatusLastMonthProcessed()
 	{
 	}
-	static public function SetIdStatusLastMonth()
+	static public function SetIdStatusLastMonthProcessed()
 	{
 	}
 
@@ -93,7 +93,7 @@ _SQL_;
 	 */
 	static public function GetIdUserNudgeDay()
 	{
-		$id_status_last_day = self::GetIdStatusLastDay();
+		$id_status_last_day = self::GetIdStatusLastDayProcessed();
 
 		$id_status_max		= JWStatus::GetMaxId();
 
@@ -106,47 +106,44 @@ _SQL_;
 		$now_before_24h	= time() - 24 * 60 * 60;
 		//$now_before_24h	= time() - 60*15;
 
-		$id_status_last_day = self::GetIdStatusLastDay();
+		// 获取最接近24小时前的最大 idStatus
+		$id_status_before_24h	= JWStatus::GetMaxIdStatusBeforeTime($now_before_24h);
+
+
+		/*
+		 * 在 最后处理到的  idStatus 和 24小时前的 idStatus 之间扫描用户
+		 */
+		$id_status_last_day_processed = self::GetIdStatusLastDayProcessed();
 
 		$sql = <<<_SQL_
 SELECT	distinct idUser
 FROM	Status
-WHERE	timestamp < FROM_UNIXTIME($now_before_24h)
-			AND id>$id_status_last_day
-			AND idUser NOT IN
-			(
-				SELECT 	idUser from Status
-				WHERE	timestamp > FROM_UNIXTIME($now_before_24h)
-						AND id<=$id_status_max
-			 )
+WHERE	id BETWEEN $id_status_last_day_processed AND $id_status_before_24h
+		AND idUser NOT IN
+		(
+			SELECT 	idUser from Status
+			WHERE	id BETWEEN $id_status_before_24h AND $id_status_max
+		)
 _SQL_;
 
-//die($sql);
 		$result_array = JWDB::GetQueryResult($sql, true);
 
-		$id_user_need_nudge = array();
+		$id_users_need_nudge = array();
 
 		if ( !empty($result_array) ) {
 			foreach ( $result_array as $result ) {
-				array_push($id_user_need_nudge, $result['idUser']);
+				array_push($id_users_need_nudge, $result['idUser']);
 			}
 		}
 
 		// 将已经处理过的 idStatus 记录到 Nudge 表的 idStatusLastDay中，
 		// 下次处理之处理 > idStatusLastDay 的
-		$sql = <<<_SQL_
-SELECT	MAX(id) idStatusLastDay
-FROM	Status
-WHERE	timestamp < FROM_UNIXTIME($now_before_24h)
-_SQL_;
-
-		$result_array = JWDB::GetQueryResult($sql);
-		
-		self::SetIdStatusLastDay($result_array['idStatusLastDay']);
+		self::SetIdStatusLastDayProcessed($id_status_before_24h);
 
 		JWLog::Instance()->Log(LOG_INFO,"JWNudge::GetIdUserNudgeDay found " 
-									. count($id_user_need_nudge) . " user(s) need nudge");
-		return $id_user_need_nudge;
+									. count($id_users_need_nudge) . " user(s) need nudge");
+		return $id_users_need_nudge;
 	}
+
 }
 ?>

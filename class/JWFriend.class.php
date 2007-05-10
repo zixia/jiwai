@@ -61,17 +61,6 @@ class JWFriend {
 
 
 	/**
-	 * Is idFollower is idUser's follower?
-	 *
-	 */
-	static function IsFollower($idUser, $idFollower=null)
-	{
-		// TODO
-		return true;
-	}
-
-
-	/**
 	 * Get friend list
 	 *	@return array	array of friend id list
 	 */

@@ -83,7 +83,7 @@ JWTemplate::timeline($arr_status_list, array('icon'=>!$show_user_archive,'trash'
 	</div><!-- content -->
 
 <?php 
-$arr_count_param	= JWUser::GetState($logined_user_id);
+$arr_count_param	= JWSns::GetUserState($logined_user_id);
 
 
 $arr_device_active	= JWDevice::GetDeviceInfo($logined_user_id);

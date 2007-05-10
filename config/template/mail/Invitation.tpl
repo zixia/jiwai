@@ -12,7 +12,7 @@ FROM: %User.nameFull% <noreply@jiwai.de>
 	http://JiWai.de/wo/i/%INVITATION_ID%
 
 
-您也可以来这里关注%User.nameFull%的最新动态：
+在这里关注%User.nameFull%的最新动态：
 
 	http://JiWai.de/%User.nameScreen%/
 

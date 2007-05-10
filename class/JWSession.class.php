@@ -42,21 +42,24 @@ Class JWSession {
     }
 
 
-	public static function SetInfo($infoType, $htmlStr)
+	public static function SetInfo($infoType, $data)
 	{
-		if ( empty($htmlStr) )
+		if ( empty($data) )
 			return;
 
 		switch ($infoType)
 		{
 			case 'error':
-				$_SESSION["__JiWai__Info__$infoType"] = $htmlStr;
+				$_SESSION["__JiWai__Info__$infoType"] = $data;
 				break;
 			case 'notice':
-				$_SESSION["__JiWai__Info__$infoType"] = $htmlStr;;
+				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
 			case 'info':
-				$_SESSION["__JiWai__Info__$infoType"] = $htmlStr;;
+				$_SESSION["__JiWai__Info__$infoType"] = $data;;
+				break;
+			case 'InvitationCode':
+				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
 			default:
 				throw new JWException('info type not support');

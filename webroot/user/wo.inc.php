@@ -90,32 +90,15 @@ JWTemplate::StatusHead($idUserPage);
 
 $arr_action_param	= array ();
 
-if ( JWUser::IsLogined() )
-{
-	if ( JWFriend::IsFriend($logined_user_info['id'], $page_user_info['id']) )
-	{
-		if ( $logined_user_info['id']!==$page_user_info['id'] )
-			$arr_action_param['destroy']	= true;
+$arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
 
-		if ( JWFollower::IsFollower($page_user_info['id'], $logined_user_info['id'] ) )
-			$arr_action_param['leave']	= true;
-		else
-			$arr_action_param['follow']	= true;
-	}
-	else if ( $logined_user_info['id']!==$page_user_info['id'] )
-	{
- 		// not friend, and not myself
-		$arr_action_param['create']		= true;
-	}
-}
 
 $arr_friend_list	= JWFriend::GetFriend($page_user_info['id']);
-
-$arr_count_param	= JWUser::GetState($page_user_info['id']);
+$arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
-								, array ('count'		, array($arr_count_param))
+								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
 								, array ('action'	, array($arr_action_param,$page_user_info['id']))
 								, array ('friend'	, array($arr_friend_list))
 							);

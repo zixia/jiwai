@@ -49,12 +49,6 @@ class JWUser {
 	{
 	}
 
-	static public function Logout()
-	{
-		self::ForgetRemembedUser();
-		unset ($_SESSION['idUser']);
-	}
-
 
 	/*
 	 * 	检查用户名/email 和 密码是否匹配
@@ -104,47 +98,25 @@ _SQL_;
 	}
 
 
-	static public function Login( $userIdOrName, $isRememberMe=true )
-	{
-		if ( preg_match("/^\d/",$userIdOrName) ){
-			$idUser 	= $userIdOrName;
-		}else{
-			$user_info 	= self::GetUserInfoByName($userIdOrName);
-			$idUser		= $user_info['id'];
-		}
-		$_SESSION['idUser'] = $idUser;
-
-		if ( $isRememberMe )
-			self::SetRememberUser();
-		else
-			self::ForgetRemembedUser();
-
-		return true;
-	}
-
 	/*
 	 * @param string
 	 * @param int
 	 * @return bool
 	 */
-	static function ChangePassword($plainPassword, $idUser=null)
+	static function ChangePassword($idUser, $plainPassword)
 	{
 		// not permit empty pass
 		if ( empty($plainPassword) )
 			return false;
 
-		if ( null===$idUser )
-			$idUser = self::GetCurrentUserId();
+		$idUser = intval($idUser);
+
+		if ( 0>=$idUser )
+			throw new JWException('must int');
 
 		$md5_pass = self::CreatePassword($plainPassword);
 
-		$sql = <<<_SQL_
-UPDATE	User
-SET		pass='$md5_pass'
-WHERE	id=$idUser
-_SQL_;
-	
-		return JWDB::Execute($sql);
+		return JWDB::UpdateTableRow( 'User', $idUser, array('pass'=>$md5_pass) );
 	}
 
 
@@ -164,9 +136,11 @@ _SQL_;
 	 * @param	int
 	 * @return	bool
 	 */
-	static public function VerifyPassword($password, $idUser)
+	static public function VerifyPassword($idUser, $password)
 	{
-		if ( !$idUser )
+		$idUser = intval($idUser);
+
+		if ( 0>=$idUser )
 			throw new JWException('must int');
 
 		$md5_pass = self::GetUserInfoById($idUser,'pass');
@@ -178,19 +152,6 @@ _SQL_;
 	}
 
 
-	static public function MustLogined()
-	{
-		if ( self::IsLogined() ){
-			return true;
-		}
-
-		$_SESSION['login_redirect_url'] = $_SERVER['SCRIPT_URI'];
-
-		header ("Location: /wo/login"); 
-		exit(0);
-	}
-
-
 	static public function GetCurrentUserId()
 	{
 		if ( self::IsLogined() )
@@ -198,166 +159,6 @@ _SQL_;
 
 		return null;
 	}
-
-
-	/*
-	 * 检查是否已经登录，或者是系统记住的登录用户
-	 * @return true / false
-	 */
-	static public function IsLogined()
-	{
-		if ( array_key_exists('idUser',$_SESSION) )
-			return true;
-
-		$idUser = self::GetRememberUser();
-
-		if ( isset($idUser) && is_int($idUser) )
-		{
-			$_SESSION['idUser'] = $idUser;
-			return true;
-		}
-		
-		return false;
-	}
-
-
-	/*
-	 * 对客户端选择了“记住我”的cookie处理
-	 * @return $idUser or null;
-	 * 
-	 */
-	static function GetRememberUser()
-	{
-		$idUser = @$_COOKIE['JiWai_de_remembered_user_id'];
-		$secret = @$_COOKIE['JiWai_de_remembered_user_code'];
-
-		if ( empty($secret) || empty($idUser) )
-			return null;
-		
-
-		if ( ! self::LoadRememberMe($idUser,$secret) )
-		{
-			setcookie('JiWai_de_remembered_user_id',	'', time()-3600, '/');
-			setcookie('JiWai_de_remembered_user_code',	'', time()-3600, '/');
-			return null;
-		}
-
-		// refresh browser cookie lifetime
-		self::RefreshRememberUser();
-
-		return intval($idUser);
-	}
-
-
-	/*
-	 * @description refresh browser cookie lifetime.
-	 * @return 		bool 
-	 */
-	static function RefreshRememberUser()
-	{
-		$id_user	= @$_COOKIE['JiWai_de_remembered_user_id'];
-		$secret		= @$_COOKIE['JiWai_de_remembered_user_code'];
-
-		if ( empty($secret) || empty($id_user) )
-			return false;
-	
-		setcookie('JiWai_de_remembered_user_id', 	$id_user, time() + 31536000	, '/');
-		setcookie('JiWai_de_remembered_user_code',	$secret	, time() + 31536000	, '/');
-
-		return true;
-	}
-
-
-	/*
-	 * @return bool 
-	 */
-	static function SetRememberUser()
-	{
-		$id_user = self::GetCurrentUserId();
-
-		if ( empty($id_user) )
-			return false;
-			
-		$secret = JWDevice::GenSecret(16);
-
-		if ( ! self::SaveRememberMe($id_user,$secret) )
-		{
-			setcookie('JiWai_de_remembered_user_id'		, '' , time()-3600	, '/');
-			setcookie('JiWai_de_remembered_user_code'	, '' , time()-3600	, '/');
-			return false;
-		}
-
-		setcookie('JiWai_de_remembered_user_id', 	$id_user, time() + 31536000	, '/');
-		setcookie('JiWai_de_remembered_user_code',	$secret	, time() + 31536000	, '/');
-		
-		return true;
-	}
-
-
-	/*
-	 * @return bool
-	 */
-	static function ForgetRemembedUser()
-	{
-
-		$id_user = @$_COOKIE['JiWai_de_remembered_user_id'];
-		$secret = @$_COOKIE['JiWai_de_remembered_user_code'];
-
-		setcookie('JiWai_de_remembered_user_id'		, '', time()-3600, '/');
-		setcookie('JiWai_de_remembered_user_code'	, '', time()-3600, '/');
-		
-		if ( isset($id_user) || isset($secret) )
-			self::DelRememberMe($id_user,$secret);
-
-
-		return true;
-	}
-
-	/*
-	 * @return bool
-	 */
-	static function SaveRememberMe($idUser, $secret)
-	{
-		
-		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
-			return false;
-
-		return JWDB::SaveTableRow('RememberMe', array (	'idUser'	=>	intval($idUser)
-													, 'secret'	=>	$secret
-											) );
-	}
-
-
-	/*
-	 * @return bool
-	 */
-	static function LoadRememberMe($idUser, $secret)
-	{
-		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
-			return false;
-		
-
-		return JWDB::ExistTableRow('RememberMe', array (	'idUser'	=> intval($idUser)
-													, 'secret'	=> $secret
-												)
-						);
-	}
-
-
-	/*
-	 * @return int
-			deleted row num
-	 */
-	static function DelRememberMe($idUser, $secret)
-	{
-		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
-			return true;
-		
-		return JWDB::DelTableRow('RememberMe', array (	'idUser'	=> intval($idUser)
-														, 'secret'	=> $secret
-												) );
-	}
-
 
 	static public function GetCurrentUserInfo( $one_item=null )
 	{
@@ -494,7 +295,7 @@ _SQL_;
 
 		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,isActive)"
 								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("ssssss"
+			if ( $result = $stmt->bind_param("sssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
 											, strrev($userInfo['email'])
@@ -547,9 +348,17 @@ _SQL_;
 			if ( $strict ){
 				list ($user,$domain) = split ('@', $email, 2);
 
+				$n=0;
 				// we check A or MX is set
-				if ( gethostbynamel($domain) || dns_get_mx($domain,$mxhosts) )
-					$valid = true;
+				do {
+					if ( $n>0 )
+						JWLog::Instance()->Log(LOG_NOTICE, "JWUser::IsValidEmail($email, $strict) dns retry $n times");
+
+					if ( gethostbynamel($domain) || dns_get_mx($domain,$mxhosts) ){
+						$valid = true;
+						break;
+					}
+				} while ( $n++ < 3 );
 			}else{
 				$valid = true;
 			}
@@ -558,10 +367,27 @@ _SQL_;
 		return $valid;
 	}
 
+	/*
+	 *	检查 email 是否已经被使用
+	 *
+	 *	@param	string	$email		将查找用户信息的 email 是否存在。
+	 *	@param	bool	$isActive	true	只查找已经被激活的
+									false	查找所有
+		@return	bool	$isExist	是否存在
+	 */
 
-	static public function IsExistEmail ($email)
+	static public function IsExistEmail ($email, $isActive)
 	{
-		return JWDB::ExistTableRow('User',array('email'=>strrev($email)));
+		if ( empty($email) )
+			throw new JWException('email is empty?');
+
+		$condition = array ( 	'email'	=> strrev($email) );
+
+		if ( $isActive ){
+			$condition['isActive'] = 'Y';
+		}
+
+		return JWDB::ExistTableRow('User',$condition);
 	}
 
 
@@ -627,30 +453,6 @@ _SQL_;
 		// if enabled, we set the timestamp of new picture
 		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'idPicture' => $idPicture ) );
 	}
-
-	/*
-	 * @return array ( pm => n, friend => x, follower=> )
-	 */
-	static public function GetState($idUser=null)
-	{
-		if ( null===$idUser )
-			throw new JWException("no idUser");
-
-		//TODO
-		//$num_pm			= JWMessage::GetMessageNum($idUser);
-		$num_fav		= JWFavorite::GetFavoriteNum($idUser);
-		$num_friend		= JWFriend::GetFriendNum($idUser);
-		$num_follower	= JWFollower::GetFollowerNum($idUser);
-		$num_status		= JWStatus::GetStatusNum($idUser);
-
-		return array(	'pm'			=> 0
-						, 'fav'			=> $num_fav
-						, 'friend'		=> $num_friend
-						, 'follower'	=> $num_follower
-						, 'status'		=> $num_status
-					);
-	}
-	
 
 	/*
 	 *	获取用户的通知设置

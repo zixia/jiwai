@@ -415,9 +415,9 @@ if ( isset($aStatus) )
 if ( isset($aStatus) && JWUser::IsLogined() )	
 {
 	$idLoginedUser = JWUser::GetCurrentUserId();
-	$isFav	= JWFavorite::IsFavorite($idLoginedUser,$idStatus);
+	$isFav	= JWFavourite::IsFavourite($idLoginedUser,$idStatus);
 
-	echo self::FavoriteAction($idStatus,$isFav);
+	echo self::FavouriteAction($idStatus,$isFav);
 	if ( $idLoginedUser==$idUser 
 			&& $options['trash'] )
 	{
@@ -470,10 +470,10 @@ _HTML_;
 
 
 	/*
-	 *	显示 favorite 的星星，配合 JWFavorite 进行 Ajax 收藏操作。
+	 *	显示 favourite 的星星，配合 JWFavourite 进行 Ajax 收藏操作。
 	 *	@param	switch	当前是否已经被收藏, true为已经收藏，false为没有收藏
 	 */
-	static public function FavoriteAction($idStatus, $isFav=false)
+	static public function FavouriteAction($idStatus, $isFav=false)
 	{
 		$asset_throbber_url		= self::GetAssetUrl("/img/icon_throbber.gif");
 
@@ -481,13 +481,13 @@ _HTML_;
 		{
 			$asset_star_alt = '已收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
-			$ajax_url		= "/wo/favourings/destroy/$idStatus";
+			$ajax_url		= "/wo/favourites/destroy/$idStatus";
 		}
 		else
 		{
 			$asset_star_alt = '未收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_empty.gif");
-			$ajax_url		= "/wo/favourings/create/$idStatus";
+			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 	//<a href="<?php echo $ajax_url? >" onclick="new Ajax.Request(
 
@@ -591,9 +591,9 @@ _HTML_;
 if ( JWUser::IsLogined() )	
 {
 	$idLoginedUser = JWUser::GetCurrentUserId();
-	$isFav	= JWFavorite::IsFavorite($idLoginedUser,$idStatus);
+	$isFav	= JWFavourite::IsFavourite($idLoginedUser,$idStatus);
 
-		echo self::FavoriteAction($idStatus,$isFav);
+		echo self::FavouriteAction($idStatus,$isFav);
 	if ( $idLoginedUser!=$idUser ){
 		// 不是自己的status可以收藏
 		// 现在可以收藏自己的
@@ -788,9 +788,9 @@ _HTML_;
 
 
 	/*
-	 * @param	array	array('create'=>true, 'destroy'=>true, 'follow'=>true,'leave'=>true)
+	 * @param	array	JWSns::GetUserAction return array
 	 */
-	static function sidebar_action($action, $idUserDst)
+	static function sidebar_action($action, $idUserDst, $sidebar=true)
 	{
 		if ( empty($action) )
 			return;
@@ -799,44 +799,73 @@ _HTML_;
 
 		echo <<<_HTML_
 		<ul class="actions">
+_HTML_;
+		if ( $sidebar )
+		echo <<<_HTML_
 			<li><strong>操作</strong></li>
-
 _HTML_;
 
-		if ( isset($action['create']) )
+
+
+		if ( isset($action['nudge']) )
+		{
 			echo <<<_HTML_
-			<li><a href="/wo/friend/create/$arr_user_info[id]">结友</a> $arr_user_info[nameScreen]</li>
-
-_HTML_;
-
-		if ( isset($action['destroy']) )
-		echo <<<_HTML_
 			<li>
-				<a href="/wo/friend/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">绝交</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/nudge/$arr_user_info[id]">nudge</a> $arr_user_info[nameScreen]
 			</li>
-
 _HTML_;
+		}
 
-	if ( isset($action['follow']) )
-		echo <<<_HTML_
+		if ( isset($action['d']) )
+		{
+			echo <<<_HTML_
 			<li>
-				<a href="/wo/friend/follow/$arr_user_info[id]">订阅</a> $arr_user_info[nameScreen]
+				<a href="/wo/direct_messages/create/$arr_user_info[id]">消息</a> $arr_user_info[nameScreen]
 			</li>
-
 _HTML_;
+		}
+
+
+		if ( isset($action['follow']) )
+		{
+			echo <<<_HTML_
+			<li>
+				<a href="/wo/friends/follow/$arr_user_info[id]">订阅</a> $arr_user_info[nameScreen]
+			</li>
+_HTML_;
+		}
 
 		if ( isset($action['leave']) )
-		echo <<<_HTML_
+		{
+			echo <<<_HTML_
 			<li>
-				<a href="/wo/friend/leave/$arr_user_info[id]">离开</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/leave/$arr_user_info[id]">离开</a> $arr_user_info[nameScreen]
 			</li>
-
 _HTML_;
+		}
+
+
+		if ( isset($action['add']) )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/friends/create/$arr_user_info[id]">结友</a> $arr_user_info[nameScreen]</li>
+_HTML_;
+		}
+
+		if ( isset($action['remove']) )
+		{
+			echo <<<_HTML_
+			<li>
+				<a href="/wo/friends/destroy/$arr_user_info[id]" 
+						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">绝交</a> $arr_user_info[nameScreen]
+			</li>
+_HTML_;
+		}
+
+
 
 		echo <<<_HTML_
 		</ul>
-
 _HTML_;
 
 	}
@@ -913,19 +942,41 @@ _HTML_;
 	}
 
 		
-	static function sidebar_count( $countInfo=null )
+	static function sidebar_count( $countInfo=null, $user='wo' )
 	{
-?>
-
+		echo <<<_HTML_
 		<ul>
-			<li id="message_count"><a href="/wo/message">站内PM: <?php echo $countInfo['pm']?></a></li>
-			<li id="favourite_count"><a href="/wo/favourings">收藏夹: <?php echo $countInfo['fav']?></a></li>
-			<li id="friend_count"><a href="/wo/friend">叽歪友: <?php echo $countInfo['friend']?></a></li>
-			<li id="follower_count"><a href="/wo/follower">订阅者: <?php echo $countInfo['follower']?></a></li>
-			<li id="update_count">总共叽歪了 <?php echo $countInfo['status']?> 次</li>
-		</ul>
+_HTML_;
 
-<?php
+		if ( 'wo'==$user )
+		{
+			echo <<<_HTML_
+			<li id="message_count"><a href="/$user/direct_messages/">站内PM: $countInfo[pm]</a></li>
+_HTML_;
+		}
+
+		echo <<<_HTML_
+			<li id="favourite_count"><a href="/$user/favourites/">收藏夹: $countInfo[fav]</a></li>
+			<li id="friend_count"><a href="/$user/friends/">叽歪友: $countInfo[friend]</a></li>
+_HTML_;
+		
+		if ( 'wo'==$user ) 
+		{
+			echo <<<_HTML_
+			<li id="follower_count"><a href="/$user/followers/">订阅者: $countInfo[follower]</a></li>
+_HTML_;
+		} 
+		else 
+		{
+			echo <<<_HTML_
+			<li id="follower_count">订阅者: $countInfo[follower]</li>
+_HTML_;
+		}
+
+		echo <<<_HTML_
+			<li id="update_count">总共叽歪了 $countInfo[status] 次</li>
+		</ul>
+_HTML_;
 	}
 
 
