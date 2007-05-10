@@ -308,35 +308,6 @@ _SQL_;
 	}
 
 
-	/*
-	 *	根据 idStatus 获取一条 status
-	 *	@param	int		idStatus 
-						TODO 未来考虑支持array?
-	 * 	@return	array	status 信息 
-	 * 
-	 */
-	static public function GetStatus ($idStatus)
-	{
-		$idStatus = intval($idStatus);
-
-		if ( 0>=$idStatus )
-			throw new JWException('must int');
-
-		$sql = <<<_SQL_
-SELECT
-	id
-	, idUser
-	, status
-	, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
-	, device
-FROM	Status
-WHERE	id=$idStatus
-_SQL_;
-
-		return JWDB::GetQueryResult($sql);
-	}
-
-
 
 	/*
 	 * @param	int		status pk

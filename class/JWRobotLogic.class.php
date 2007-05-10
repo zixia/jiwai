@@ -95,18 +95,18 @@ class JWRobotLogic {
 
 		if ( empty($user_state) )
 		{	// user not registed
-echo ("UNKNOWN IM: $type://$address [$body]\n");
+			JWLog::Instance()->Log(LOG_NOTICE,"UNKNOWN IM: $type://$address [$body]");
 			return self::Command_Intro($robotMsg);
 		}
 		else if ( ! empty($user_state['secret']) )
 		{	// device not verified
-echo ("VERIFY:\t$user_state[idUser] $user_state[secret]\n");
+			JWLog::Instance()->Log(LOG_INFO,"VERIFY:\t$user_state[idUser] $user_state[secret]");
 			return self::ProcessMoVerifyDevice($robotMsg);
 		}
 		else
 		{	// update jiwai status
-echo("UPDATE:\t$user_state[idUser] @$type: $body\n");
-			if ( JWStatus::Update($user_state['idUser'], $body, $type ) )
+			syslog(LOG_INFO,"UPDATE:\t$user_state[idUser] @$type: $body");
+			if ( JWStatus::Create($user_state['idUser'], $body, $type ) )
 			{	// succeed posted, keep silence
 				return null;
 			}

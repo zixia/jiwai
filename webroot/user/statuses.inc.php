@@ -1,7 +1,9 @@
 <?php
 function user_status($idPageUser, $idStatus)
 {
-	$status_info	= JWStatus::GetStatus($idStatus);
+	$status_rows	= JWStatus::GetStatusRowById(array($idStatus));
+	$status_info	= $status_rows[$idStatus];
+
 	$page_user_info	= JWUser::GetUserInfoById($idPageUser);
 
 	if ( $status_info['idUser']!==$idPageUser )
@@ -105,14 +107,14 @@ padding:0px 0pt 5px 321px;
     					<span class="meta">
 							<?php echo $duration?>
     				    	来自于 <?php echo $device?>
-							<span id="status_actions_<?php echo $status_info['id']?>">
+							<span id="status_actions_<?php echo $status_info['idStatus']?>">
 <?php 
 if ( JWLogin::IsLogined() )	
 {
 	$id_user_logined 	= JWLogin::GetCurrentUserId();
-	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['id']);
+	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['idStatus']);
 
-	echo JWTemplate::FavouriteAction($status_info['id'],$is_fav);
+	echo JWTemplate::FavouriteAction($status_info['idStatus'],$is_fav);
 	if ( $id_user_logined==$idPageUser ) {
 		echo JWTemplate::TrashAction($idStatus);
 	}
