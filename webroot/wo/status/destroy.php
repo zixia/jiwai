@@ -20,7 +20,7 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 		if ( $method==='delete' )
 		{
 			if ( JWStatus::IsUserOwnStatus($idStatus,$idUser)){
-				JWStatus::Delete($idStatus);
+				JWStatus::Destroy($idStatus);
 			}
 			else
 			{
