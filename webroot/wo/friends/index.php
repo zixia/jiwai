@@ -58,7 +58,15 @@ foreach ( $friend_ids as $friend_id )
 	$friend_info		= JWUser::GetUserInfoById($friend_id);
 	$friend_icon_url	= JWPicture::GetUserIconUrl($friend_id);
 
-	$action				= JWSns::GetUserAction($logined_user_info['id'],$friend_id);
+	/*
+	 * /webroot/user/friends.php 会调用(include)这个页面
+	 * 这时候，所有用户给出 follow 的操作
+	 */
+	if ( isset($g_user_friends) ) {
+		$action = array ( 'follow'=>true );
+	} else {
+		$action	= JWSns::GetUserAction($logined_user_info['id'],$friend_id);
+	}
 
 	$odd_even			= ($n++ % 2) ? 'odd' : 'even';
 	echo <<<_HTML_
