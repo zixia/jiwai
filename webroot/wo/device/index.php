@@ -5,8 +5,8 @@ JWLogin::MustLogined();
 
 JWDebug::init();
 
-$aDeviceInfo = JWDevice::GetDeviceInfo( JWUser::GetCurrentUserId() );
-$name_screen = JWUser::GetUserInfoById( JWUser::GetCurrentUserId(), 'nameScreen' );
+$aDeviceInfo = JWDevice::GetDeviceInfo( JWLogin::GetCurrentUserId() );
+$name_screen = JWUser::GetUserInfoById( JWLogin::GetCurrentUserId(), 'nameScreen' );
 
 $sms_or_im = isset($_REQUEST['im'])?'im':'sms';
 

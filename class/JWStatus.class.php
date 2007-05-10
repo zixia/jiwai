@@ -346,7 +346,7 @@ _SQL_;
 	static public function IsUserOwnStatus ($idStatus, $idUser=null)
 	{
 		if ( null===$idUser )
-			$idUser = JWUser::GetCurrentUserId();
+			$idUser = JWLogin::GetCurrentUserId();
 
 		if ( !is_numeric($idStatus) || !is_numeric($idUser) )
 			throw new JWException("must be int! [$idStatus] [$idUser]");

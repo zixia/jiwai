@@ -3,7 +3,7 @@ require_once ('../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
-if ( ($idUser=JWUser::GetCurrentUserId())
+if ( ($idUser=JWLogin::GetCurrentUserId())
 		&& array_key_exists('_method',$_REQUEST)
 		&& array_key_exists('pathParam',$_REQUEST) )
 {

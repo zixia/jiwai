@@ -8,7 +8,7 @@ require_once ('../../../jiwai.inc.php');
 
 	//"<span id='status_actions_51444762'>
 
-$idLoginedUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWLogin::GetCurrentUserId();
 
 if ( $idLoginedUser )
 {

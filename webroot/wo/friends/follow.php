@@ -6,7 +6,7 @@ JWLogin::MustLogined();
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
-$idLoginedUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWLogin::GetCurrentUserId();
 
 if ( $idLoginedUser )
 {

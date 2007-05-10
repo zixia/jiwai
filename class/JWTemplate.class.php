@@ -366,7 +366,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 	
 	
-		$current_user_id	= JWUser::GetCurrentUserId();
+		$current_user_id	= JWLogin::GetCurrentUserId();
 
 ?>
 
@@ -735,7 +735,7 @@ _HTML_;
 	static public function sidebar( $menuList=array(), $idUser=null )
 	{
 		if ( empty($idUser) ){
-			$idUser = JWUser::GetCurrentUserId();
+			$idUser = JWLogin::GetCurrentUserId();
 		}
 
 		if ( 0<$idUser )

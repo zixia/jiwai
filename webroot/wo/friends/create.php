@@ -7,7 +7,7 @@ JWLogin::MustLogined();
 //die(var_dump($_REQUEST));
 
 
-$idLoginedUser=JWUser::GetCurrentUserId();
+$idLoginedUser=JWLogin::GetCurrentUserId();
 if ( is_int($idLoginedUser) )
 {
 	$param = $_REQUEST['pathParam'];

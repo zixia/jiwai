@@ -109,7 +109,7 @@ padding:0px 0pt 5px 321px;
 <?php 
 if ( JWLogin::IsLogined() )	
 {
-	$id_user_logined 	= JWUser::GetCurrentUserId();
+	$id_user_logined 	= JWLogin::GetCurrentUserId();
 	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['id']);
 
 	echo JWTemplate::FavouriteAction($status_info['id'],$is_fav);
