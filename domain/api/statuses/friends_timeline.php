@@ -175,7 +175,14 @@ function friends_timeline_rss_n_atom($options)
 
 	//TODO: since_id / since
 	
-	$statuses	= JWStatus::GetStatusListFriends($options['idUser'],$count);
+	//$statuses	= JWStatus::GetStatusListFriends($options['idUser'],$count);
+	$master_user_id	= intval($option['idUser']);
+
+	$status_data	= JWStatus::GetStatusIdFromFriends($master_user_id,$count);
+	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+
+	$user			= JWUser::GetUserInfoById($master_user_id);
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
 							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
@@ -184,17 +191,17 @@ function friends_timeline_rss_n_atom($options)
 							, 'language'=> 'zh_CN'
 						) );
 
-	foreach ( $statuses as $status )
+	foreach ( $status_data['status_ids'] as $status_id )
 	{
-		$user		= JWUser::GetUserInfoById($status['idUser']);
+		$user_id	= intval($status_rows[$status_id]['idUser']);
 
 		$feed->AddItem(array( 
-				'title'		=> "$user[nameFull] - $status[status]"
-				, 'desc'	=> "$user[nameFull] - $status[status]"
-				, 'date'	=> $status['timestamp']
-				, 'guid'	=> "http:/JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
-				, 'url'		=> "http:/JiWai.de/$user[nameScreen]/statuses/$status[idStatus]"
-				, 'author'	=> $user['nameFull']
+				'title'		=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				, 'desc'	=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				, 'date'	=> $status_rows[$status_id]['timestamp']
+				, 'guid'	=> "http:/JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$statu_id"
+				, 'url'		=> "http:/JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$statu_id"
+				, 'author'	=> $user_rows[$user_id]['nameFull']
 			) );
 	}
 
@@ -262,35 +269,43 @@ function get_friends_timeline_array($options)
 		$options['thumb'] = 48;
 	}
 
-	$statuses	= JWStatus::GetStatusListFriends($options['idUser'], $count);
+	//$statuses	= JWStatus::GetStatusListFriends($options['idUser'], $count);
+	$master_user_id	= intval($options['idUser']);
 
+	$status_data	= JWStatus::GetStatusIdFromFriends($master_user_id,$count);
+	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 
 	$statuses_array								= array();
 
-	foreach ( $statuses as $status )
+	foreach ( $status_data['status_ids'] as $status_id )
 	{
-		$user	= JWUser::GetUserInfoById($status['idUser']);
+		$user_id	= intval($status_rows[$status_id]['idUser']);
 
-		$status_array['created_at']			= date("r",$status['timestamp']);
-		$status_array['id']					= intval($status['idStatus']);
-		$status_array['text']				= $status['status'];
+		$status_array['created_at']			= date("r",$status_rows[$status_id]['timestamp']);
+		$status_array['id']					= intval($status_id);
+		$status_array['text']				= $status_rows[$status_id]['status'];
 
-		$status_array['user']['id']			= intval($status['idUser']);
-		$status_array['user']['name']		= $user['nameFull'];
-		$status_array['user']['screen_name']= $user['nameScreen'];
-		$status_array['user']['location']	= $user['location'];
-		$status_array['user']['description']= $user['bio'];
+		$status_array['user']['id']			= $user_id;
+		$status_array['user']['name']		= $user_rows[$user_id]['nameFull'];
+		$status_array['user']['screen_name']= $user_rows[$user_id]['nameScreen'];
+		$status_array['user']['location']	= $user_rows[$user_id]['location'];
+		$status_array['user']['description']= $user_rows[$user_id]['bio'];
 
-		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($status['idUser'], "thumb$options[thumb]");
-		$status_array['user']['url']		= $user['url'];
-		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
+		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($user_id, "thumb$options[thumb]");
+		$status_array['user']['url']		= $user_rows[$user_id]['url'];
+		$status_array['user']['protected']	= $user_rows[$user_id]['protected']==='Y' ? true : false;
 
 		if ( 'UTF-8'!=$options['encoding'] )
 		{
-			$status_array['text']				= mb_convert_encoding($status['status']	,$options['encoding'],'UTF-8');
-			$status_array['user']['name']		= mb_convert_encoding($user['nameFull']	,$options['encoding'],'UTF-8');
-			$status_array['user']['location']	= mb_convert_encoding($user['location']	,$options['encoding'],'UTF-8');
-			$status_array['user']['description']= mb_convert_encoding($user['bio']		,$options['encoding'],'UTF-8');
+			$status_array['text']				= mb_convert_encoding($status_rows[$status_id]['status']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['name']		= mb_convert_encoding($user_rows[$user_id]['nameFull']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['location']	= mb_convert_encoding($user_rows[$user_id]['location']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['description']= mb_convert_encoding($user_rows[$user_id]['bio']		
+																			,$options['encoding'],'UTF-8');
 		}
 
 		array_push($statuses_array, $status_array);

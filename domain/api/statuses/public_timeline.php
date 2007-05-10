@@ -222,10 +222,10 @@ function get_public_timeline_array($options)
 		$user_id	= intval($status_rows[$status_id]['idUser']);
 
 		$status_array['created_at']			= date("r",$status_rows[$status_id]['timestamp']);
-		$status_array['id']					= intval($status_id)
+		$status_array['id']					= intval($status_id);
 		$status_array['text']				= $status_rows[$status_id]['status'];
 
-		$status_array['user']['id']			= $user_id
+		$status_array['user']['id']			= $user_id;
 		$status_array['user']['name']		= $user_rows[$user_id]['nameFull'];
 		$status_array['user']['screen_name']= $user_rows[$user_id]['nameScreen'];
 		$status_array['user']['location']	= $user_rows[$user_id]['location'];
@@ -237,10 +237,14 @@ function get_public_timeline_array($options)
 
 		if ( 'UTF-8'!=$options['encoding'] )
 		{
-			$status_array['text']				= mb_convert_encoding($status['status']	,$options['encoding'],'UTF-8');
-			$status_array['user']['name']		= mb_convert_encoding($user['nameFull']	,$options['encoding'],'UTF-8');
-			$status_array['user']['location']	= mb_convert_encoding($user['location']	,$options['encoding'],'UTF-8');
-			$status_array['user']['description']= mb_convert_encoding($user['bio']		,$options['encoding'],'UTF-8');
+			$status_array['text']				= mb_convert_encoding($status_rows[$status_id]['status']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['name']		= mb_convert_encoding($user_rows[$user_id]['nameFull']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['location']	= mb_convert_encoding($user_rows[$user_id]['location']	
+																			,$options['encoding'],'UTF-8');
+			$status_array['user']['description']= mb_convert_encoding($user_rows[$user_id]['bio']		
+																			,$options['encoding'],'UTF-8');
 		}
 
 
