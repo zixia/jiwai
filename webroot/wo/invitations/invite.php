@@ -15,23 +15,30 @@ if ( isset($_REQUEST['commit']) )
 	$email_addresses 	= preg_replace('/[,;，；、]+/',',',$email_addresses);
 	$emails				= split(',',$email_addresses);
 
-	$invitee_ids		= array();
+	$registered_ids		= array();
+	$invited_ids		= array();
 
 	foreach ( $emails as $email )
 	{
-		if ( !strlen(trim($email)) )
+		$email = trim($email);
+
+		if ( !strlen($email) )
 			continue;
 
-		$invitee_id = JWInvite::Invite($user_info['id'], $email, 'email', $message);
-
-		if ( $invitee_id ){
-			array_push($invitee_ids, $invitee_id);
+		$registered_id = JWUser::IsExistEmail($email,true);
+		
+		if ( $registered_id ){
+			array_push($registered_ids, $registered_id);
+		} else {
+			$invite_id = JWSns::Invite($user_info['id'], $email, 'email', $message);
+			array_push($invited_ids, $invite_id);
 		}
 	}
 
-die(var_dump($invitee_id));
+(var_dump($invited_ids));
+die(var_dump($registered_ids));
 	if ( $reciprocal )
-		JWSns::SetReciprocal( array($invitee_id,$user_info['id']) );
+		JWSns::SetReciprocal( array($invited_ids,$user_info['id']) );
 
 	$notice_html = <<<_HTML_
 您的邀请已经发送！
