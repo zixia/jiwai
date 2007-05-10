@@ -82,6 +82,7 @@ class JWRobot {
 									. $directory->mt
 									;
 		self::InitDirectory();
+
 	}
 
 
@@ -234,7 +235,7 @@ class JWRobot {
 
 				if ( false===$robot_reply_msg )
 				{	// some err occur
-					echo "unvalid msg from " . $robot_msg->GetAddress() ."\n";
+					JWLog::Instance()->Log(LOG_ERR, "unvalid msg from " . $robot_msg->GetAddress());
 					self::QuarantineMsg($robot_msg);
 
 					JWLog::Instance()->Log(LOG_ERR, 'JWRobotLogic::process_mo failed, quarantined.');

@@ -141,7 +141,7 @@ _SQL_;
 		if ( 0>=$idUser )
 			throw new JWException('must int');
 
-		$md5_pass = self::GetUserInfoById($idUser,'pass');
+		$md5_pass = self::GetUserInfo($idUser,'pass');
 
 		if ( crypt($password,$md5_pass)!=$md5_pass )
 			return false;
@@ -175,6 +175,9 @@ _SQL_;
 	 */
 	static public function GetUserRowById( $idUsers)
 	{
+		if ( empty($idUsers) )
+			return array();
+
 		if ( !is_array($idUsers) )
 			throw new JWException('must array');
 

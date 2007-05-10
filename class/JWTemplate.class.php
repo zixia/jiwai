@@ -979,11 +979,16 @@ _HTML_;
 	{
 		$status_data 	= JWStatus::GetStatusIdFromUser($userInfo['id'],1);
 
-		$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-
-		$status_id		= $status_data['status_ids'][0];
-
-		$current_status	= $status_rows[$status_id]['status'];
+		if ( !empty($status_data['status_ids']) )
+		{
+			$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+			$status_id		= $status_data['status_ids'][0];
+			$current_status	= $status_rows[$status_id]['status'];
+		}
+		else
+		{
+			$current_status	= '还没有更新过！';
+		}
 
 		$arr_status		= JWStatus::FormatStatus($current_status);
 //XXX

@@ -51,7 +51,7 @@ _HTML_;
 	 */
 	if ( empty($error_html) )
 	{
-		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation)
+		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
 		{
 			$error_html = <<<_HTML_
 <li>密码修改失败，请稍后再试。</li>

@@ -95,7 +95,6 @@ $arr_action_param	= array ();
 
 $arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
 
-
 $arr_friend_list	= JWFriend::GetFriend($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 

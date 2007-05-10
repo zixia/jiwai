@@ -144,7 +144,7 @@ class JWSns {
 		else if ( $idUser!=$idFriend )
 		{
  			// not friend, and not myself
-			$action['create']		= true;
+			$action['add']		= true;
 		}
 
 		// 反向也是朋友，则可以 direct_message / nudge

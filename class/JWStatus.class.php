@@ -93,13 +93,21 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
+		if ( !empty($rows) )
+		{
 		// 装换rows, 返回 id 的 array
-		$status_ids = array_map(	create_function(
+			$status_ids = array_map(	create_function(
 												'$row'
 												, 'return $row["idStatus"];'
 											)
-							, $rows
-						);
+										, $rows
+									);
+		}
+		else
+		{
+			$status_ids = array();
+		}
+
 		return array (	'status_ids'	=> $status_ids
 						,'user_ids'		=> array($idUser)
 					);
@@ -146,19 +154,27 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
-		// 装换rows, 返回 idStatus / idUser 的 array
-		$status_ids = array_map(	create_function(
-												'$row'
-												, 'return $row["idStatus"];'
-											)
-							, $rows
-						);
-		$user_ids 	= array_map(	create_function(
-												'$row'
-												, 'return $row["idUser"];'
-											)
-							, $rows
-						);
+		if ( !empty($rows) )
+		{
+			// 装换rows, 返回 idStatus / idUser 的 array
+			$status_ids = array_map(	create_function(
+													'$row'
+													, 'return $row["idStatus"];'
+												)
+										, $rows
+									);
+			$user_ids 	= array_map(	create_function(
+													'$row'
+													, 'return $row["idUser"];'
+													)
+										, $rows
+									);
+		}
+		else
+		{
+			$status_ids = array();
+			$user_ids = array();
+		}
 
 		return array ( 	 'status_ids'	=> $status_ids
 						,'user_ids'		=> $user_ids
@@ -222,6 +238,9 @@ _SQL_;
 	 */
 	static public function GetStatusRowById ($idStatuses)
 	{
+		if ( empty($idStatuses) )
+			return array();
+
 		if ( !is_array($idStatuses) )
 			throw new JWException('must array');
 
