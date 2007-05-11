@@ -72,6 +72,12 @@ switch ( $func )
 		user_friends($page_user_id);	
 		break;
 
+	case 'favourites':
+		require_once(dirname(__FILE__) . "/favourites.inc.php");
+		user_favourites($page_user_id);	
+		break;
+
+
 	default:
 		require_once(dirname(__FILE__) . "/wo.inc.php");
 		break;

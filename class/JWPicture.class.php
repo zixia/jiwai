@@ -92,6 +92,7 @@ _SQL_;
 
 
 	/*
+	 *	过期函数
 	 * supprot 'ICON' class only.
 	 *	return	array	row of table Picture
 	 */
@@ -103,7 +104,7 @@ _SQL_;
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_
-SELECT	*
+SELECT	*, id as idPicture
 FROM	Picture
 WHERE	idUser=$idUser
 		AND class='ICON'
@@ -113,7 +114,7 @@ _SQL_;
 	}
 
 
-	static public function GetUserIconFullPathNameRowById($idUsers, $picSize='thumb48')
+	static private function GetUserIconFullPathNameRowById($idUsers, $picSize='thumb48')
 	{
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 
@@ -160,6 +161,7 @@ _SQL_;
 	}
 
 	/*
+	 * 过期函数，未来删除
 	 * @param 	int		idUser
 	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
 	 * @return 	string	url of picture
@@ -176,6 +178,8 @@ _SQL_;
 
 	/*
 	 *
+	 * 过期函数，未来删除
+	 * 	@desprited
 	 * @param	string	picture type (jpg | gif)
 	 * @param	string	picture size (picture | thumb48 | thumb24)
 	 * @param	int		idUser, null if current user.

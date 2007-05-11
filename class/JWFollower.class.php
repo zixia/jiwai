@@ -62,7 +62,7 @@ class JWFollower {
 	 * 	Get follower list
 	 *	@return array	array of follower id list
 	 */
-	static function GetFollower($idUser, $numMax=DEFAULT_FOLLOWER_MAX)
+	static function GetFollower($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
@@ -86,7 +86,7 @@ _SQL_;
 
 		$arr_follower_id = array();
 		foreach ( $arr_result as $row )
-			array_push($arr_follower_id, $row['idFollower']);
+			array_push($arr_follower_id, intval($row['idFollower']));
 
 		return $arr_follower_id;
 	}

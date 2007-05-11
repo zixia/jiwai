@@ -47,7 +47,7 @@ $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 if ( $page_user_info['id']==$logined_user_info['id'] )
 {
 	echo <<<_HTML_
-			<h2> 我有 $friend_num 位好友。
+			<h2> 我的 $friend_num 位好友。
 		  		<a href="/wo/invitations/invite">邀请更多！</a>
 			</h2>
 _HTML_;
@@ -55,7 +55,7 @@ _HTML_;
 else 
 {
 	echo <<<_HTML_
-			<h2> $page_user_info[nameScreen] 有 $friend_num 位好友。</h2>
+			<h2> $page_user_info[nameScreen] 的 $friend_num 位好友。</h2>
 _HTML_;
 	
 }

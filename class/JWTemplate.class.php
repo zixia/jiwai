@@ -1170,5 +1170,26 @@ _HTML_;
 		return "http://asset${n}.$domain$absUrlPath?$timestamp";
 
 	}
+
+	static public function	ShowActionResultTips()
+	{
+		$error_html		= JWSession::GetInfo('error');
+		$notice_html	= JWSession::GetInfo('notice');
+
+		if ( !empty($error_html) )
+		{
+			echo <<<_HTML_
+			<div class="notice"> $error_html </div>
+_HTML_;
+		}
+
+
+		if ( !empty($notice_html) )
+		{
+			echo <<<_HTML_
+			<div class="notice"> $notice_html </div>
+_HTML_;
+		}
+	}
 }
 ?>

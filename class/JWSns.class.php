@@ -42,37 +42,44 @@ class JWSns {
 
 
 	/*
-	 *	将 idFriend 添加为 idUser 的好友，并负责处理相关逻辑（是否允许添加好友，发送通知邮件等）
+	 *	@param	array or int	$idFriends	好友 id(s)
+	 *	将 idFriends 添加为 idUser 的好友，并负责处理相关逻辑（是否允许添加好友，发送通知邮件等）
 	 */
-	static public function AddFriend($idUser, $idFriend)
+	static public function AddFriend($idUser, $idFriends)
 	{
-		if ( JWFriend::IsFriend($idUser, $idFriend) )
-			return true;
-
-		// TODO check idUser permission
+		if ( !is_array($idFriends) )
+			$idFriends = array ($idFriends);
 		
-		if ( ! JWFriend::Create($idUser, $idFriend) )
-			throw new JWException('JWFriend::Create failed');
+		$friend_user_rows	= JWUser::GetUserRowById($idFriends);
+		$user_info			= JWUser::GetUserInfo($idUser);
 
-		$notice_settings = JWUser::GetNotification($idFriend);
-
-		if ( 'Y'==$notice_settings['send_new_friend_email'] )
+		foreach ( $idFriends as $friend_id )
 		{
-			$user	= JWUser::GetUserInfo($idUser);
-			$friend = JWUser::GetUserInfo($idFriend);
+			if ( JWFriend::IsFriend($idUser, $friend_id) )
+				continue;
 
-			JWMail::SendMailNoticeNewFriend($user, $friend);
-
-			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$idFriend),\tnotification email SENT.");
-		}
-		else
-		{
-			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$idFriend),\tNO notification email.");
-		}
+			// TODO check idUser permission
 		
-		// idUser 添加 idFriend 为好友后，idUser 应该自动成为 idFriend 的 Follower。
-		// 所以，被follow的人是 idFriend
-		self::AddFollower($idFriend, $idUser);
+			if ( ! JWFriend::Create($idUser, $friend_id) )
+				throw new JWException('JWFriend::Create failed');
+
+			$notice_settings = JWUser::GetNotification($friend_id);
+
+			if ( 'Y'==$notice_settings['send_new_friend_email'] )
+			{
+				JWMail::SendMailNoticeNewFriend($user_info, $friend_user_rows[$friend_id]);
+
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$friend_id),\tnotification email SENT.");
+			}
+			else
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$friend_id),\tNO notification email.");
+			}
+		
+			// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
+			// 所以，被follow的人是 friend_id
+			self::AddFollower($friend_id, $idUser);
+		}
 
 		return true;
 	}
