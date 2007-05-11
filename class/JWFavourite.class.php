@@ -62,19 +62,20 @@ class JWFavourite {
 	 * 	Get favourite list
 	 *	@return array	array of favourite idStatus list
 	 */
-	static function GetFavourite($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX)
+	static function GetFavourite($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX, $start=0)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
+		$start = intval($start);
 
-		if ( 0>=$idUser || 0>=$numMax )
+		if ( 0>=$idUser || 0>=$numMax || 0>$start )
 			throw new JWException('not int');
 
 		$sql = <<<_SQL_
 SELECT	idStatus
 FROM	Favourite
 WHERE	idUser=$idUser
-LIMIT	$numMax
+LIMIT	$start,$numMax
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);

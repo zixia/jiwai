@@ -125,7 +125,7 @@ _SQL_;
 		$num	= intval($num);
 		$start	= intval($start);
 
-		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
+		if ( 0>=$idUser || 0>=$num )
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_

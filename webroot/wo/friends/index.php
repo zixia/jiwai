@@ -4,10 +4,25 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
+/*
+ *	除了显示 /wo/friends/ 之外，还负责显示 /zixia/friends/
+ *	如果是其他用户的 friends 页(/zixia/friends)，则 $g_user_friends = true, 并且 $g_page_user_id 是页面用户 id
+ *
+ */
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
-$friend_ids			= JWFriend::GetFriend($logined_user_info['id']);
-$friend_num			= count($friend_ids);
+if ( isset($g_user_friends) && $g_user_friends ) {
+	$rows				= JWUser::GetUserRowById(array($g_page_user_id));
+	$page_user_info		= $rows[$g_page_user_id];
+} else {
+	$page_user_info		= $logined_user_info;
+}
+
+$friend_ids			= JWFriend::GetFriend		($page_user_info['id']);
+$friend_user_rows	= JWUser::GetUserRowById	($friend_ids);
+$friend_icon_url_rows = JWPicture::GetUserIconUrlRowById($friend_ids);
+
+$friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 ?>
 
 <html>
@@ -29,10 +44,10 @@ $friend_num			= count($friend_ids);
 
 
 <?php 
-if ( isset($page_user_id) )
+if ( $page_user_info['id']==$logined_user_info['id'] )
 {
 	echo <<<_HTML_
-			<h2> 您有<?php echo $friend_num?>位好友。
+			<h2> 我有 $friend_num 位好友。
 		  		<a href="/wo/invitations/invite">邀请更多！</a>
 			</h2>
 _HTML_;
@@ -40,7 +55,7 @@ _HTML_;
 else 
 {
 	echo <<<_HTML_
-			<h2> $nameScreen 有<?php echo $friend_num?>位好友。</h2>
+			<h2> $page_user_info[nameScreen] 有 $friend_num 位好友。</h2>
 _HTML_;
 	
 }
@@ -69,15 +84,18 @@ if ( isset($friend_ids) )
 {
 	foreach ( $friend_ids as $friend_id )
 	{
-		$friend_info		= JWUser::GetUserInfo($friend_id);
-		$friend_icon_url	= JWPicture::GetUserIconUrl($friend_id);
+		$friend_info		= $friend_user_rows[$friend_id];
+		$friend_icon_url	= $friend_icon_url_rows[$friend_id];
 
 	/*
 	 * /webroot/user/friends.php 会调用(include)这个页面
 	 * 这时候，所有用户给出 follow 的操作
 	 */
 	if ( isset($g_user_friends) ) {
-		$action = array ( 'follow'=>true );
+		if ( JWFollower::IsFollower($friend_id, $logined_user_info['id']) )
+			$action = array ( 'leave'=>true );
+		else
+			$action = array ( 'follow'=>true );
 	} else {
 		$action	= JWSns::GetUserAction($logined_user_info['id'],$friend_id);
 	}

@@ -4,10 +4,23 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
+/*
+ *	除了显示 /wo/favourites/ 之外，还负责显示 /zixia/favourites/
+ *	如果是其他用户的 favourites 页(/zixia/friends)，则 $g_user_friends = true, 并且 $g_page_user_id 是页面用户 id
+ *
+ */
+
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
+if ( isset($g_user_friends) && $g_user_friends ) {
+	$rows				= JWUser::GetUserRowById(array($g_page_user_id));
+	$page_user_info		= $rows[$g_page_user_id];
+} else {
+	$page_user_info		= $logined_user_info;
+}
 
-$status_ids		= JWFavourite::GetFavourite($logined_user_info['id']);
+$status_ids		= JWFavourite::GetFavourite($page_user_info['id']);
+$status_num		= JWFavourite::GetFavouriteNum($page_user_info['id']);
 ?>
 
 <html>
@@ -28,17 +41,52 @@ $status_ids		= JWFavourite::GetFavourite($logined_user_info['id']);
 	<div id="content">
 		<div id="wrapper">
 
-
-<h2> 我的收藏 </h2>
+<?php 
+if ( $page_user_info['id']==$logined_user_info['id'] )
+{
+	echo <<<_HTML_
+			<h2> 我有 $status_num 份收藏。 </h2>
+_HTML_;
+} 
+else 
+{
+	echo <<<_HTML_
+			<h2> $page_user_info[nameScreen] 有 $status_num 份收藏。</h2>
+_HTML_;
+	
+}
+?>
 
 <p>将更新旁边的星标点亮后，它们就会被存在这里啦！</p>
 
+<table class="doing" cellspacing="0">
 
 <?php
-$favourite_ids = JWFavourite::GetStatusListUser($logined_user_id);
+$n = 0;
+if ( isset($friend_ids) )
+{
+	foreach ( $status_ids as $status_id )
+	{
+		$status_info		= JWUser::GetUserInfo($friend_id);
+		$friend_icon_url	= JWPicture::GetUserIconUrl($friend_id);
 
-?>
-<table class="doing" cellspacing="0">
+	/*
+	 * /webroot/user/friends.php 会调用(include)这个页面
+	 * 这时候，所有用户给出 follow 的操作
+	 */
+	if ( isset($g_user_friends) ) {
+		if ( JWFollower::IsFollower($friend_id, $logined_user_info['id']) )
+			$action = array ( 'leave'=>true );
+		else
+			$action = array ( 'follow'=>true );
+	} else {
+		$action	= JWSns::GetUserAction($logined_user_info['id'],$friend_id);
+	}
+
+	$odd_even			= ($n++ % 2) ? 'odd' : 'even';
+	echo <<<_HTML_
+	<tr class="$odd_even vcard">
+
 
 	<tr class="odd hentry" id="status_51680632">
   

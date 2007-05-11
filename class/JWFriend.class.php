@@ -64,10 +64,11 @@ class JWFriend {
 	 * Get friend list
 	 *	@return array	array of friend id list
 	 */
-	static function GetFriend($idUser, $numMax=40)
+	static function GetFriend($idUser, $numMax=40, $start=0)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
+		$start  = intval($start);
 
 		if ( 0==$idUser || 0==$numMax )
 			throw new JWException('not int');
@@ -76,7 +77,7 @@ class JWFriend {
 SELECT	idFriend
 FROM	Friend
 WHERE	idUser=$idUser
-LIMIT	$numMax
+LIMIT	$start,$numMax
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);

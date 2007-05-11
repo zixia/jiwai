@@ -43,6 +43,55 @@ class JWPicture {
 
 
 	/*
+	 *	根据 idUser 获取 Picture Row 的详细信息
+	 *	@param	array	idUser
+	 * 	@return	array	以 idUser 为 key 的 picture row
+	 * 
+	 */
+	static public function GetPictureRowById( $idUsers )
+	{
+		if ( empty($idUsers) )
+			return array();
+
+		if ( !is_array($idUsers) )
+			throw new JWException('must array');
+
+		$idUsers = array_unique($idUsers);
+
+		$reduce_function_content = <<<_FUNC_
+			if ( empty(\$v) )
+				\$v = '';
+			else
+				\$v .= ",";
+
+			return \$v . intval(\$idUser);
+_FUNC_;
+		$condition_in = array_reduce(	$idUsers
+										, create_function(
+												'$v,$idUser'
+												,"$reduce_function_content"
+											)
+										,''
+									);
+		$sql = <<<_SQL_
+SELECT	*, id as idPicture
+FROM	Picture
+WHERE	idUser IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+
+		foreach ( $rows as $row )
+		{
+			$picture_map[$row['idUser']] 	= $row;
+		}
+
+		return $picture_map;
+	}
+
+
+	/*
 	 * supprot 'ICON' class only.
 	 *	return	array	row of table Picture
 	 */
@@ -61,6 +110,67 @@ WHERE	idUser=$idUser
 _SQL_;
 
 		return JWDB::GetQueryResult($sql);
+	}
+
+
+	static public function GetUserIconFullPathNameRowById($idUsers, $picSize='thumb48')
+	{
+		$abs_storage_root	= JWFile::GetStorageAbsRoot();
+
+		$picture_rows		= JWPicture::GetPictureRowById($idUsers);
+
+		foreach ( $idUsers as $user_id )
+		{
+			$abs_pathname		= $abs_storage_root
+									. self::$msUserPath . $user_id . '/profile_image/'
+									. $picSize . "." . $picture_row[$user_id]['fileExt'];
+			$path_map[$user_id] = $abs_pathname;
+		}
+
+		return $path_map;
+	}
+	
+
+	static public function GetUserIconUrlRowById($idUsers, $picSize='thumb48')
+	{
+		if ( empty($idUsers) )
+			return array();
+
+		$picture_rows 	= self::GetPictureRowById($idUsers);
+		
+		foreach ( $idUsers as $user_id )
+		{
+			if ( isset($picture_rows[$user_id]) ) // 用户上传了头像
+			{
+				$url_rows[$user_id] = "http://JiWai.de/"
+								. $picture_rows[$user_id]['idUser']
+								. "/picture/$picSize/"
+								. $picture_rows[$user_id]['fileName']
+								. '.'
+								. $picture_rows[$user_id]['fileExt']
+								. "?"
+								. $picture_rows[$user_id]['idPicture'];
+			}
+			else	// 用户没有头像
+			{
+				$url_rows[$user_id] = JWTemplate::GetConst('UrlStrangerPicture');
+			}
+		}
+		return $url_rows;
+	}
+
+	/*
+	 * @param 	int		idUser
+	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
+	 * @return 	string	url of picture
+	 */
+	static public function GetUserIconUrl($idUser, $picSize='thumb48')
+	{
+		$picture_info	= self::GetPictureByUserId($idUser);
+
+		// TODO return JWTemplate::GetAssetUrl() . 
+		return "http://JiWai.de/$idUser/picture/$picSize/$picture_info[fileName].$picture_info[fileExt]?$picture_info[id]";
+		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
 	}
 
 
@@ -221,20 +331,5 @@ _CMD_;
 
 		return 0===$ret;
 	}
-
-	/*
-	 * @param 	int		idUser
-	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
-	 * @return 	string	url of picture
-	 */
-	static public function GetUserIconUrl($idUser, $picSize='thumb48')
-	{
-		$picture_info	= self::GetPictureByUserId($idUser);
-
-		// TODO return JWTemplate::GetAssetUrl() . 
-		return "http://JiWai.de/$idUser/picture/$picSize/$picture_info[fileName].$picture_info[fileExt]?$picture_info[id]";
-		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
-	}
-
 }
 ?>
