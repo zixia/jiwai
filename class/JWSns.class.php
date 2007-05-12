@@ -116,7 +116,7 @@ class JWSns {
 		$user_info = JWUser::GetUserInfo($idUser);
 
 		if ( 'email'==$type ){
-			JWMail::SendMailInvitation($user_info, $address, $message, $code_invide);
+			JWMail::SendMailInvitation($user_info, $address, $message, $code_invite);
 		}else{	// SMS / IM
 			JWDevice::Create($user_info_invitee['id'], $address, $type);
 			// TODO
@@ -143,7 +143,7 @@ class JWSns {
 		{
 			$action['remove']		= true;
 
-			if ( JWFollower::IsFollower($idUser, $idFriend) )
+			if ( JWFollower::IsFollower($idFriend, $idUser) )
 				$action['leave']	= true;
 			else
 				$action['follow']	= true;
@@ -184,5 +184,6 @@ class JWSns {
 					);
 	}
 	
+
 }
 ?>

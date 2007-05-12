@@ -16,7 +16,7 @@ if ( isset($_REQUEST['commit']) )
 	$emails				= split(',',$email_addresses);
 
 	$registered_ids		= array();
-	$invited_ids		= array();
+	$invitation_ids		= array();
 
 	foreach ( $emails as $email )
 	{
@@ -31,14 +31,12 @@ if ( isset($_REQUEST['commit']) )
 			array_push($registered_ids, $registered_id);
 		} else {
 			$invite_id = JWSns::Invite($user_info['id'], $email, 'email', $message);
-			array_push($invited_ids, $invite_id);
+			array_push($invitation_ids, $invite_id);
 		}
 	}
 
-(var_dump($invited_ids));
-die(var_dump($registered_ids));
 	if ( $reciprocal )
-		JWSns::SetReciprocal( array($invited_ids,$user_info['id']) );
+		JWInvite::SetReciprocal( $invitation_ids );
 
 	$notice_html = <<<_HTML_
 您的邀请已经发送！

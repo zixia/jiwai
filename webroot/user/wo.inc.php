@@ -56,7 +56,7 @@ $user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
 // 取出一个
 $head_status_id = @array_shift($status_data['status_ids']); 
 
-JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], $status_rows[$head_status_id] );
+JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$status_rows[$head_status_id] );
 
 ?>
 

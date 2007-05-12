@@ -183,21 +183,8 @@ _SQL_;
 
 		$idUsers = array_unique($idUsers);
 
-		$reduce_function_content = <<<_FUNC_
-            if ( empty(\$v) )
-                \$v = '';
-            else
-                \$v .= ",";
+		$condition_in = JWDB::GetInConditionFromArray($idUsers);
 
-			return \$v . intval(\$idUser);
-_FUNC_;
-		$condition_in = array_reduce(	$idUsers
-										, create_function(
-												'$v,$idUser'
-												,"$reduce_function_content"
-											)
-										,''
-									);
 		$sql = <<<_SQL_
 SELECT	*, id as idUser
 FROM	User

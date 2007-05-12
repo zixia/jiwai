@@ -246,21 +246,8 @@ _SQL_;
 
 		$idStatuses = array_unique($idStatuses);
 
-		$reduce_function_content = <<<_FUNC_
-            if ( empty(\$v) )
-                \$v = '';
-            else
-                \$v .= ",";
+		$condition_in = JWDB::GetInConditionFromArray($idStatuses);
 
-			return \$v . intval(\$idStatus);
-_FUNC_;
-		$condition_in = array_reduce(	$idStatuses 
-										,create_function(
-												'$v, $idStatus'
-												,"$reduce_function_content"
-											)
-										,''
-									);
 		$sql = <<<_SQL_
 SELECT
 		id as idStatus

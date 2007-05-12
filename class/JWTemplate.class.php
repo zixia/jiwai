@@ -852,7 +852,7 @@ _HTML_;
 			echo <<<_HTML_
 			<li>
 				<a href="/wo/friends/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友"$arr_user_info[nameFull]"')">绝交</a> $arr_user_info[nameScreen]
+						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">绝裂</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -1145,7 +1145,7 @@ _HTML_;
 	{
 		JWTemplate::Instance();
 
-		$asset_num_max = 6;
+		$asset_num_max = 4;
 
 		if ( empty($absUrlPath) )
 			throw new JWException('must have path');

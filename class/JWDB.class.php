@@ -362,7 +362,47 @@ class JWDB {
 		return $rows;
 	}
 
+	/*
+	 *	将一个  array 变为 "1,2,3" 或者 "'zixia','daodao'"
+	 *	@param	array	$ids
+	 *	@param	array	$type			取值 {int|char}，代表数据类型
+	 *	@return	string	$in_condition	可以用在 IN ( $in_condition ) 的 SQL 语句中
+	 */
+	static public function GetInConditionFromArray( $ids, $type='int' )
+	{
+		if ( !is_array($ids) )
+			throw new JWException('must array');
 
+		$ids = array_unique($ids);
 
+		$reduce_function_content = <<<_FUNC_
+            if ( empty(\$reduce_string) )
+                \$reduce_string = '';
+            else
+                \$reduce_string .= ",";
+
+			switch (\$type)
+			{
+				case 'int'	:
+					\$reduce_string .= intval(\$id);
+					break;
+				case 'char'	:
+					//fall to default
+				default		:
+					\$reduce_string .= "'\$id'";
+					break;
+			}
+			return \$reduce_string;
+_FUNC_;
+		$condition_in = array_reduce(	$ids
+										,create_function(
+												"\$reduce_string, \$id, \$type='$type'"
+												,"$reduce_function_content"
+											)
+										,''
+									);
+		return $condition_in;
+	}
+	
 }
 ?>

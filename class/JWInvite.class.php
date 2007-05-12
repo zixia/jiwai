@@ -168,5 +168,27 @@ _SQL_;
 		$row = self::GetInviteInfoByCode($code);
 		return $row['idUser'];
 	}
+
+	/*
+	 *	设置 $idInvitations 之间互相为好友（包括邀请者）
+	 *	@param	array of int	$idInvitations	邀请表的主键
+	 */
+	static public function SetReciprocal( $idInvitations )
+	{
+		if (empty($idInvitations))
+			throw new JWException('no idInvitations');
+
+		$idReciprocal = intval(max($idInvitations));
+
+		$in_condition	= JWDB::GetInConditionFromArray($idInvitations);
+
+		$sql = <<<_SQL_
+UPDATE		Invitation
+SET			idReciprocal=$idReciprocal
+WHERE		id IN ( $in_condition )
+_SQL_;
+		return JWDB::Execute($sql);
+	}
+
 }
 ?>
