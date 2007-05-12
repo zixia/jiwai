@@ -35,17 +35,23 @@ class JWFeed {
 		else
         	$this->mFeed->ttl 			= 60;
 
-        $img				= new FeedImage();
-        $img->url			= 'http://JiWai.de/dev/picture/thumb24';
+		if ( array_key_exists('img',$option) )
+		{
+			$img				= $option['img'];
+		}
+		else
+		{
+        	$img				= new FeedImage();
+        	$img->url			= 'http://JiWai.de/team/picture/thumb48';
 
-        $img->link			= 'http://JiWai.de/';
-        $img->title			= '叽歪de - 这一刻，你在做什么？';
-        $img->width			= 48;
-        $img->height		= 48;
-        $img->description 	= '叽歪de - 这一刻，你在做什么？';
+        	$img->link			= 'http://JiWai.de/public_timeline/';
+        	$img->title			= '叽歪de - 这一刻，你在做什么？';
+        	$img->width			= 48;
+        	$img->height		= 48;
+        	$img->description 	= '叽歪de - 这一刻，你在做什么？';
+		}
 
         $this->mFeed->image	= $img;
-
 
 
 		$this->mFeed->language		= 'zh-CN';
@@ -53,8 +59,6 @@ class JWFeed {
 		// FIXME IE 不认这两个？
         //$this->mFeed->cssStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.css');
         //$this->mFeed->xslStyleSheet = JWTemplate::GetAssetUrl('/css/feed_rss.xsl');
-
-
     }
 
 	/*
@@ -88,6 +92,20 @@ class JWFeed {
 	{
         $this->mFeed->outputFeed($type);
     }
+
+	static public function FeedImage($options)
+	{
+       	$img				= new FeedImage();
+       	$img->url			= $options['url'];
+
+       	$img->link			= $options['link'];
+       	$img->title			= $options['title'];
+       	$img->width			= $options['width'];
+       	$img->height		= $options['height'];
+       	$img->description 	= $options['description'];
+		
+		return $img;
+	}
 
 }
 
