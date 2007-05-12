@@ -247,8 +247,10 @@ _SQL_;
 		$idStatuses = array_unique($idStatuses);
 
 		$reduce_function_content = <<<_FUNC_
-			if ( !empty(\$v) )
-				\$v .= ",";
+            if ( empty(\$v) )
+                \$v = '';
+            else
+                \$v .= ",";
 
 			return \$v . intval(\$idStatus);
 _FUNC_;

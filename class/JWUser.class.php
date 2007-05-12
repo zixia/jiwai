@@ -184,8 +184,10 @@ _SQL_;
 		$idUsers = array_unique($idUsers);
 
 		$reduce_function_content = <<<_FUNC_
-			if ( !empty(\$v) )
-				\$v .= ",";
+            if ( empty(\$v) )
+                \$v = '';
+            else
+                \$v .= ",";
 
 			return \$v . intval(\$idUser);
 _FUNC_;
