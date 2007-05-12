@@ -146,7 +146,7 @@ switch ($pathParam[0])
 		else
 		{
 			// XXX
-			die("ARG ERR");
+			die("ARG ERR $output_type");
 		}
 		
 		break;
@@ -180,24 +180,38 @@ function user_timeline_rss_n_atom($options)
 	$status_data	= JWStatus::GetStatusIdFromUser($user_id, $count);
 	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
 	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowById(array($user_id),'thumb48');
 
 	$user			= $user_rows[$user_id];
+	$user_icon_url	= $user_icon_url_rows[$user_id];
+	$user_url		= 'http://JiWai.de/' . $user['nameScreen'] . '/';
+
+	$img_options	= array ( 	 'url'			=>	$user_icon_url
+								,'link'			=>	$user_url
+								,'title'		=>	$user['nameScreen']
+								,'width'		=>	48
+								,'height'		=>	48
+								,'description'	=>	$user['nameFull']
+							);
+
+	$feed_img	= JWFeed::FeedImage($img_options);
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull']
-							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
+							, 'url'		=> $user_url
 							, 'desc'	=> $user['nameFull'] . '的叽歪'
 							, 'ttl'		=> 40
 							, 'language'=> 'zh_CN'
+							, 'img'		=> $feed_img
 						) );
 
 	foreach ( $status_data['status_ids'] as $status_id )
 	{
 		$feed->AddItem(array( 
-				'title'		=> "$user[nameFull] - $status_rows[$status_id][status]"
-				, 'desc'	=> "$user[nameFull] - $status_rows[$status_id][status]"
+				'title'		=> $user[nameFull] . ' - ' . $status_rows[$status_id]['status']
+				, 'desc'	=> $user[nameFull] . ' - ' . $status_rows[$status_id]['status']
 				, 'date'	=> $status_rows[$status_id]['timestamp']
-				, 'guid'	=> "http:/JiWai.de/$user[nameScreen]/statuses/$status_rows[$status_id][idStatus]"
-				, 'url'		=> "http:/JiWai.de/$user[nameScreen]/statuses/$status_rows[$status_id][idStatus]"
+				, 'guid'	=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
+				, 'url'		=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
 				, 'author'	=> $user['nameFull']
 			) );
 	}

@@ -136,20 +136,21 @@ function public_timeline_rss_n_atom($options)
 
 	foreach ( $status_data['status_ids'] as $status_id )
 	{
-		$user_id = $status[$status_id]['idUser'];
+		$user_id = $status_rows[$status_id]['idUser'];
 		$feed->AddItem(array( 
-				'title'		=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
-				, 'desc'	=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				'title'		=> $user_rows[$user_id][nameFull] . ' - ' . $status_rows[$status_id][status]
+				, 'desc'	=> $user_rows[$user_id][nameFull] . ' - ' . $status_rows[$status_id][status]
 				, 'date'	=> $status_rows[$status_id]['timestamp']
 				, 'author'	=> $user_rows[$user_id]['nameFull']
-				, 'guid'	=> "http://JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$status_rows[$status_id][idStatus]"
-				, 'url'		=> "http://JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$status_rows[$status_id][idStatus]"
+				, 'guid'	=> "http://JiWai.de/" . $user_rows[$user_id]['nameScreen'] . "/statuses/" . $status_rows[$status_id]['idStatus']
+				, 'url'		=> "http://JiWai.de/" . $user_rows[$user_id]['nameScreen'] . "/statuses/" . $status_rows[$status_id]['idStatus']
 			) );
 	}
 
 	//Valid parameters are RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
 	// MBOX, OPML, ATOM, ATOM1.0, ATOM0.3, HTML, JS
 
+//die(var_dump($feed));
 	$feed->OutputFeed($options['type']);
 	exit(0);
 }

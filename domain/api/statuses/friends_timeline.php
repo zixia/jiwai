@@ -176,31 +176,48 @@ function friends_timeline_rss_n_atom($options)
 	//TODO: since_id / since
 	
 	//$statuses	= JWStatus::GetStatusListFriends($options['idUser'],$count);
-	$master_user_id	= intval($option['idUser']);
+	$master_user_id	= intval($options['idUser']);
 
 	$status_data	= JWStatus::GetStatusIdFromFriends($master_user_id,$count);
 	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
 	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowById(array($master_user_id),'thumb48');
 
-	$user			= JWUser::GetUserInfo($master_user_id);
+	$user			= $user_rows[$master_user_id];
+	$user_icon_url	= $user_icon_url_rows[$master_user_id];
+	$user_url		= 'http://JiWai.de/' . $user['nameScreen'] . '/';
+
+	$img_options	= array ( 	 'url'			=>	$user_icon_url
+								,'link'			=>	$user_url
+								,'title'		=>	$user['nameScreen']
+								,'width'		=>	48
+								,'height'		=>	48
+								,'description'	=>	$user['nameFull']
+							);
+
+	$feed_img	= JWFeed::FeedImage($img_options);
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
 							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
 							, 'desc'	=> $user['nameFull'] . '和朋友们的叽歪'
 							, 'ttl'		=> 40
 							, 'language'=> 'zh_CN'
+							, 'img'		=> $feed_img
 						) );
 
 	foreach ( $status_data['status_ids'] as $status_id )
 	{
 		$user_id	= intval($status_rows[$status_id]['idUser']);
 
+		$desc 	= $user_rows[$user_id]['nameFull'] .' - '. $status_rows[$status_id]['status'];
+		$url	= "http:/JiWai.de/". $user_rows[$user_id]['nameScreen'] ."/statuses/$status_id";
+
 		$feed->AddItem(array( 
-				'title'		=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
-				, 'desc'	=> "$user_rows[$user_id][nameFull] - $status_rows[$status_id][status]"
+				'title'		=> $desc
+				, 'desc'	=> $desc
 				, 'date'	=> $status_rows[$status_id]['timestamp']
-				, 'guid'	=> "http:/JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$statu_id"
-				, 'url'		=> "http:/JiWai.de/$user_rows[$user_id][nameScreen]/statuses/$statu_id"
+				, 'guid'	=> $url
+				, 'url'		=> $url
 				, 'author'	=> $user_rows[$user_id]['nameFull']
 			) );
 	}
