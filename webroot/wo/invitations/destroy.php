@@ -11,13 +11,13 @@ $param = $_REQUEST['pathParam'];
 if ( preg_match('/^\/(\w+)$/',$param,$match) ){
 	$invitation_code = $match[1];
 
-	$invitation_row	= JWInvite::GetInviteInfoByCode($invitation_code);
+	$invitation_row	= JWInvitation::GetInviteInfoByCode($invitation_code);
 
 	$inviter_id		= $invitation_row['idInvitation'];
 
 	if ( $inviter_id )
 	{
-		JWInvite::Destroy($inviter_id);
+		JWInvitation::Destroy($inviter_id);
 
 		$notice_html = <<<_HTML_
 我们已经取消了对您的邀请。有时间的话在叽歪de网站上看看大家都在做什么吧！

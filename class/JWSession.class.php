@@ -58,7 +58,7 @@ Class JWSession {
 			case 'info':
 				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
-			case 'InvitationCode':
+			case 'invitation_id':
 				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
 			default:

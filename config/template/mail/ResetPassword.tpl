@@ -9,7 +9,6 @@ FROM: 叽歪de <noreply@jiwai.de>
 
 
 点击这里为您的帐号(%User.nameScreen%)设置一个新的密码：
-
 		%RESET_PASSWORD_URL%
 
 

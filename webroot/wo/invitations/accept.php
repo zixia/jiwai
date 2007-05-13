@@ -13,13 +13,13 @@ $param = $_REQUEST['pathParam'];
 if ( preg_match('/^\/(\w+)$/',$param,$match) ){
 	$invite_code = $match[1];
 
-	$invitation_row	= JWInvite::GetInviteInfoByCode($invite_code);
+	$invitation_row	= JWInvitation::GetInviteInfoByCode($invite_code);
 
 	if ( isset($invitation_row) )
 	{
 		JWSession::SetInfo('invitation_id',$invitation_row['idInvitation']);
 
-		JWInvite::Accept($invitation_row['idInvitation']);
+		JWInvitation::Accept($invitation_row['idInvitation']);
 	}
 }
 

@@ -1207,8 +1207,11 @@ _HTML_;
 		$error_html		= JWSession::GetInfo('error');
 		$notice_html	= JWSession::GetInfo('notice');
 
+		$is_exist = false;
+
 		if ( !empty($error_html) )
 		{
+			$is_exist = true;
 			echo <<<_HTML_
 			<div class="notice"> $error_html </div>
 _HTML_;
@@ -1217,8 +1220,16 @@ _HTML_;
 
 		if ( !empty($notice_html) )
 		{
+			$is_exist = true;
 			echo <<<_HTML_
 			<div class="notice"> $notice_html </div>
+_HTML_;
+		}
+
+		if ( $is_exist )
+		{
+			echo <<<_HTML_
+<script type="text/javascript">JiWai.Yft(".notice");</script>
 _HTML_;
 		}
 	}

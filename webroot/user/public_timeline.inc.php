@@ -19,6 +19,9 @@
 		<div id="wrapper">
 
 
+<?php JWTemplate::ShowActionResultTips(); ?>
+
+
 			<div class="tab">
 
 <?php JWTemplate::tab_header( array( 'title'	=>	'最新动态 - 大家在做什么？' 

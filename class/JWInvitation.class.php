@@ -6,13 +6,13 @@
  */
 
 /**
- * JiWai.de Invite Class
+ * JiWai.de Invitation Class
  */
-class JWInvite {
+class JWInvitation {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWInvite
+	 * @var JWInvitation
 	 */
 	static private $msInstance;
 
@@ -20,7 +20,7 @@ class JWInvite {
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWInvite
+	 * @return JWInvitation
 	 */
 	static public function &Instance()
 	{
@@ -55,7 +55,7 @@ class JWInvite {
 if ( 0 )
 {
 		if ( ! JWDevice::IsValid($address,$type) ){
-			JWLog::Instance()->Log(LOG_NOTICE, "JWInvite::Invite($address, $type, ...) found invalid address");
+			JWLog::Instance()->Log(LOG_NOTICE, "JWInvitation::Invitation($address, $type, ...) found invalid address");
 			return null;
 		}
 
@@ -83,7 +83,7 @@ if ( 0 )
 		$user_info_invitee['id']	= JWUser::Create($user_info_invitee);
 
 		if ( ! $user_info_invitee['id'] ){
-			JWLog::Instance()->Log(LOG_ERR, "JWInvite::Invite($address,$type,...) JWUser::Create failed");
+			JWLog::Instance()->Log(LOG_ERR, "JWInvitation::Invitation($address,$type,...) JWUser::Create failed");
 			return null;
 		}
 
@@ -116,7 +116,7 @@ if ( 0 )
 			throw new JWException('id not int');
 
 		if ( ! JWDevice::IsValid($address,$type) ){
-			JWLog::Instance()->Log(LOG_NOTICE, "JWInvite::Create($idUser, $address, $type, ...) found invalid address");
+			JWLog::Instance()->Log(LOG_NOTICE, "JWInvitation::Create($idUser, $address, $type, ...) found invalid address");
 			return null;
 		}
 
@@ -149,7 +149,7 @@ _SQL_;
 	 *
 	 *
 	 */
-	static public function GetInviteInfoById($idInvitation)
+	static public function GetInvitationInfoById($idInvitation)
 	{
 		$idInvitation = intval($idInvitation);
 		if ( 0>=$idInvitation )
@@ -158,14 +158,17 @@ _SQL_;
 		return JWDB::GetTableRow('Invitation', array('id'=>$idInvitation));
 	}
 
-	static public function GetInviteInfoByCode($code)
+	static public function GetInvitationInfoByCode($code)
 	{
-		return JWDB::GetTableRow('Invitation', array('code'=>$code));
+		$row = JWDB::GetTableRow('Invitation', array('code'=>$code));
+		$row['idInvitation'] = $row['id'];
+
+		return $row;
 	}
 
-	static public function GetInviterIdByCode($code)
+	static public function GetInvitationrIdByCode($code)
 	{
-		$row = self::GetInviteInfoByCode($code);
+		$row = self::GetInvitationInfoByCode($code);
 		return $row['idUser'];
 	}
 
@@ -186,6 +189,28 @@ _SQL_;
 UPDATE		Invitation
 SET			idReciprocal=$idReciprocal
 WHERE		id IN ( $in_condition )
+_SQL_;
+		return JWDB::Execute($sql);
+	}
+
+
+	static public function Accept($idInvitation)
+	{
+		$idInvitation = JWDB::CheckInt($idInvitation);
+
+		$now = time();
+
+		return JWDB::UpdateTableRow('Invitation', $idInvitation, array ('timeAccept'=>$now) );
+	}
+
+
+	static public function Destroy($idInvitation)
+	{
+		$idInvitation = JWDB::CheckInt($idInvitation);
+
+		$sql = <<<_SQL_
+DELETE FROM	Invitation
+WHERE		id=$idInvitation
 _SQL_;
 		return JWDB::Execute($sql);
 	}

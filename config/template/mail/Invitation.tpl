@@ -7,13 +7,11 @@ FROM: %User.nameFull% <noreply@jiwai.de>
 
 %User.nameFull% (%User.nameScreen%) 邀请您加入叽歪de！
 
+
 点击这里开始：
-
-	http://JiWai.de/wo/i/%INVITATION_ID%
-
+	http://JiWai.de/wo/invitations/i/%INVITATION_ID%
 
 在这里关注%User.nameFull%的最新动态：
-
 	http://JiWai.de/%User.nameScreen%/
 
 

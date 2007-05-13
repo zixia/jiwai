@@ -36,7 +36,7 @@ if ( isset($_REQUEST['commit']) )
 	}
 
 	if ( $reciprocal )
-		JWInvite::SetReciprocal( $invitation_ids );
+		JWInvitation::SetReciprocal( $invitation_ids );
 
 	$notice_html = <<<_HTML_
 您的邀请已经发送！

@@ -111,7 +111,7 @@ class JWSns {
 	static public function Invite($idUser, $address, $type, $message)
 	{
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
-		$id_invite		= JWInvite::Create($idUser,$address,$type,$message, $code_invite);
+		$id_invite		= JWInvitation::Create($idUser,$address,$type,$message, $code_invite);
 
 		$user_info = JWUser::GetUserInfo($idUser);
 

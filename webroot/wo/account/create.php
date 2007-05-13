@@ -7,8 +7,9 @@ $name_len_min = 5;
 
 $aUserInfo = array();
 $JWErr = '';
-if ( array_key_exists('user',$_REQUEST) 
-		&& array_key_exists('nameScreen',$_REQUEST['user']) ){
+if ( isset($_REQUEST['user'])
+		&& isset($_REQUEST['user']['nameScreen']) ){
+
 	$aUserInfo = $_REQUEST['user'];
 
 	//echo "<pre>";var_dump($_FILES); die(var_dump($_REQUEST));
@@ -27,7 +28,6 @@ if ( array_key_exists('user',$_REQUEST)
 	if ( array_key_exists('email',$aUserInfo) ){
 		$email = $aUserInfo['email'];
 
-		// let user input any email... successful registe is the most important thing. :)
 		if ( false && $email ){
 			$aValid['email'] = JWUser::IsValidEmail( $email, false );
 		}
@@ -72,6 +72,14 @@ if ( array_key_exists('user',$_REQUEST)
    				            JWUser::SetIcon($idUser,$idPicture);
 						}
 					}
+				}
+
+				$invitatio_id	= JWSession::GetInfo('invitation_id');
+				
+				if ( isset($invitatio_id) )
+				{
+					$invitation_row	= JWInvitation::
+					JWSns::AcceptInvitation($
 				}
 
 				header("Location: /wo/invitations/invite");
