@@ -7,9 +7,6 @@ JWLogin::MustLogined();
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
 
-
-$debug = JWDebug::instance();
-$debug->init();
 ?>
 
 <html>
@@ -29,75 +26,90 @@ $debug->init();
 		<div id="wrapper">
 
 
-			<h2>Your Previous Invitations</h2>
+<?php
+$invitation_ids		= JWInvitation::GetInvitationIdFromUser($logined_user_info['id']);
+$invitation_rows	= JWInvitation::GetInvitationRowsByIds($invitation_ids);
+
+$not_registered_invitation_ids	= array();
+$registered_invitation_ids		= array();
+$invitee_user_ids				= array();
+
+foreach ( $invitation_ids as $invitation_id )
+{
+	$row	= $invitation_rows[$invitation_id];
+
+	if ( isset($row['idInvitee']) )
+	{
+		// 用户已经应邀注册
+		array_push($registered_invitation_ids	,$invitation_id);
+		array_push($invitee_user_ids			,$row['idInvitee']);
+	}
+	else
+	{
+		// 用户尚未注册
+		array_push($not_registered_invitation_ids	,$invitation_id);
+	}
+}
+
+if ( !empty($invitee_user_ids) )
+	$invitee_user_rows	= JWUser::GetUserRowsByIds($invitee_user_ids);
 
 
-  			<h3>2 accepted invitations:</h3>
+?>
+			<h2>您以前的邀请记录</h2>
 
-  			<table class="doing" id="accepted" cellspacing="0">
-    
-  	  			<tr class="odd">
-					<td class="thumb">
-						<a href="http://jiwai.de/xinyu19"><img alt="_____" src="http://jiwai.de/daodao/picture" /></a>
-					</td>
-					<td>
-						<strong><a href="http://jiwai.de/xinyu19">maxinyu (xinyu19)</a></strong>
-						<p class="friend-actions">
-							<small>
-		  						<a href="/friends/leave/774107" title="Turn OFF notifications for maxinyu">leave xinyu19</a>
-				  				<a href="/direct_messages/create/774107" title="Send a direct message to maxinyu">d xinyu19</a> |
-  								<a href="/friends/nudge/774107" title="Remind maxinyu to update!">nudge xinyu19</a>
-								| <a href="/friendships/destroy/774107" onclick="return confirm('Sure you want to remove maxinyu from your list?')">remove xinyu19</a>
-							</small>
-						</p>
-					</td>
-				</tr>
 
-  	
-  	  			<tr class="even">
-					<td class="thumb">
-						<a href="http://jiwai.de/DAODAO19"><img alt="Default_profile_image_normal" src="http://jiwai.de/zixia/picture?1178587735" /></a>
-					</td>
-					<td>
-						<strong><a href="http://jiwai.de/DAODAO19">DAODAO19</a></strong>
+  			<h3>被接受的邀请数： <?php echo count($registered_invitation_ids)?> 个</h3>
 
-						<p class="friend-actions">
-							<small>
-		  						<a href="/friends/leave/5533532" title="Turn OFF notifications for DAODAO19">leave DAODAO19</a>
-				  				<a href="/direct_messages/create/5533532" title="Send a direct message to DAODAO19">d DAODAO19</a> |
-  								<a href="/friends/nudge/5533532" title="Remind DAODAO19 to update!">nudge DAODAO19</a>
-								| <a href="/friendships/destroy/5533532" onclick="return confirm('Sure you want to remove DAODAO19 from your list?')">remove DAODAO19</a>
-
-							</small>
-						</p>
-					</td>
-				</tr>
-  			</table>
+<?php JWTemplate::ListUser($logined_user_id, $invitee_user_ids, array('element_id'=>'accepted') ); ?>
 
 	
-  			<h3>2 pending invitations:</h3>
+<?php 
+if ( !empty($not_registered_invitation_ids) ) 
+{
+?>
+  			<h3>还在等待回应的邀请数： <?php echo count($not_registered_invitation_ids)?> 个</h3>
 
   			<table class="doing" id="pending" cellspacing="3">
    	 			<tr>
-   	   				<th>Contact</th>
-   	   				<th>Message</th>
-   	   				<th>Sent</th>
+   	   				<th>联系地址</th>
+   	   				<th>招呼</th>
+   	   				<th>邀请时间</th>
     			</tr>
     
+<?php
+	foreach ( $not_registered_invitation_ids as $pending_invitaion_id )
+	{
+		$pending_invitation_row = $invitation_rows[$pending_invitaion_id];
+		echo <<<_HTML_
     			<tr class="odd" style="font-size: small;">
+_HTML_;
 	
-   		   			<td width="20%"><a href="mailto:halen@zixia.net">halen@zixia.net</a></td>
-   		   			<td width="50%">Interesting... :) </td>
-   	   				<td width="30%">2 months ago</td>
+		if ( 'email'==$pending_invitation_row['type'] )
+		{
+			echo <<<_HTML_
+   		   			<td width="20%"><a href="mailto:$pending_invitation_row[address]">$pending_invitation_row[address]</a></td>
+_HTML_;
+		}
+		else
+		{
+			echo <<<_HTML_
+   		   			<td width="20%">$pending_invitation_row[type]://$pending_invitation_row[address]</a></td>
+_HTML_;
+		}
+		echo <<<_HTML_
+   		   			<td width="50%">$pending_invitation_row[message]</td>
+   	   				<td width="30%">$pending_invitation_row[timeCreate]</td>
     			</tr>
-    
-    			<tr class="even" style="font-size: small;">
-      				<td width="20%"><a href="mailto:zixia@aka.cn">zixia@aka.cn</a></td>
-      				<td width="50%">���</td>
-					<td width="30%">less than a minute ago</td>
+_HTML_;
+	}	// end foreach
+?>
     			</tr>
     
   			</table>
+<?php
+}	//end not_registered_invitation_ids
+?>
 
 
 		</div><!-- wrapper -->
