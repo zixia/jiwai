@@ -207,8 +207,8 @@ function user_timeline_rss_n_atom($options)
 	foreach ( $status_data['status_ids'] as $status_id )
 	{
 		$feed->AddItem(array( 
-				'title'		=> $user[nameFull] . ' - ' . $status_rows[$status_id]['status']
-				, 'desc'	=> $user[nameFull] . ' - ' . $status_rows[$status_id]['status']
+				'title'		=> $user['nameFull'] . ' - ' . $status_rows[$status_id]['status']
+				, 'desc'	=> $user['nameFull'] . ' - ' . $status_rows[$status_id]['status']
 				, 'date'	=> $status_rows[$status_id]['timestamp']
 				, 'guid'	=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
 				, 'url'		=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']

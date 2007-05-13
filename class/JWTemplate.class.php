@@ -634,7 +634,7 @@ if ( isset($current_user_id) )
 	 *	@param	options		focus	=> true	: 是否激活输入焦点到email框
 	 *
 	 */
-	static function sidebar_login($options)
+	static function sidebar_login($options=null)
 	{
 		if ( false!==@$options['focus'] )
 			$options['focus'] = true;
@@ -866,19 +866,6 @@ _HTML_;
 	}
 
 
-	static function sidebar_active($imActived, $smsActived)
-	{
-		if ( !$imActived )
-			echo <<<_HTML_
-		<a href="/wo/device/">启用聊天软件！</a>
-_HTML_;
-
-		if ( !$smsActived )
-			echo <<<_HTML_
-		<a href="/wo/device/">启用手机短信！</a>
-_HTML_;
-	}
-
 
 	static function sidebar_user_info($aUserInfo)
 	{
@@ -1007,28 +994,72 @@ _HTML_;
 	}
 
 
-	static function sidebar_jwvia( $aUserInfo )
+	/*
+	 *	显示通知信息发送到的位置，以及激活界面（如果有未激活的设备的话）
+	 *	@param	array	$activeOptions	array('im'=>, 'sms'=>)
+	 *	@param	string	$viaDevice		'sms' or 'im' or 'web'
+	 */
+	static function sidebar_jwvia($activeOptions, $viaDevice)
 	{
+		$smsActived	=	isset($activeOptions['sms']) 	? true : false;
+		$imActived	=	isset($activeOptions['im']) 	? true : false;
+
 ?>
 		<ul>
 			<li>
-				<form action="/account/update_send_via" id="send_via_form" method="post" onsubmit="/*new Ajax.Request('/account/update_send_via', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)});*/ return false;">
+				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
 					<fieldset>
-						<h4>发送通知信息到:</h4>
-
-						<input checked="checked" id="current_user_send_via_im" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" value="im" />
-						<label for="current_user_send_via_im">聊天软件</label>
-						
-						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" value="sms" />
+<?php
+		if ( $smsActived )
+		{
+?>
+						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
 						<label for="current_user_send_via_sms">手机</label>
 
-						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" value="none" />
+<?php
+		}
+						
+		if ( $imActived )
+		{
+?>
+						<h4>发送通知消息到:</h4>
+
+						<input checked="checked" id="current_user_send_via_im" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('im'==$viaDevice) echo ' checked="checked" '; ?>value="im" />
+						<label for="current_user_send_via_im">聊天软件</label>
+
+<?php
+		}
+
+		if ( $smsActived || $imActived )
+		{
+?>
+						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('none'==$viaDevice) echo ' checked="checked" '; ?> value="none" />
 						<label for="current_user_send_via_none">网页</label>
 					</fieldset>
+<?php
+		}
+?>
 				</form>	
 			</li>
 		</ul>
+
+		<ul>
 <?php
+		if ( !$imActived )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/device/?im">启用聊天软件！</a></li>
+_HTML_;
+		}
+
+		if ( !$smsActived )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/device/?sms">启用手机短信！</a></li>
+_HTML_;
+		}
+		
+		echo "</ul>";
 	}
 
 

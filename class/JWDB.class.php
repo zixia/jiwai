@@ -404,5 +404,18 @@ _FUNC_;
 		return $condition_in;
 	}
 	
+	/*
+	 *	检查变量是否为 int 值，并返回 int 类型的数字
+	 *	注意：这里的 int 不可以为 0
+	 */
+	static public function CheckInt($id)
+	{
+		$id = intval($id);
+
+		if ( 0>=$id )
+			throw new JWException('must int!');
+
+		return $id;
+	}
 }
 ?>

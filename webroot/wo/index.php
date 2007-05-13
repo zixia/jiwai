@@ -91,19 +91,25 @@ $arr_count_param	= JWSns::GetUserState($logined_user_id);
 
 $arr_device_active	= JWDevice::GetDeviceInfo($logined_user_id);
 
-$im_actived 		= ( isset($arr_device_active['im']) 
-							&& $arr_device_active['im']['verified']  );
-$sms_actived 		= ( isset($arr_device_active['sms']) 
-							&& $arr_device_active['sms']['verified'] );
+if ( isset($arr_device_active['im']) 
+							&& $arr_device_active['im']['verified']  )
+{
+	$active_options['im']	= true;
+}
 
+if ( isset($arr_device_active['sms']) 
+							&& $arr_device_active['sms']['verified'] )
+{
+	$active_options['sms']	= true;
+}
 
 $arr_friend_list	= JWFriend::GetFriend($logined_user_id);
 
+$via_device			= JWUser::GetSendViaDevice($logined_user_id);
 
 $arr_menu 			= array(	array ('status'			, array($logined_user_info))
 								, array ('count'		, array($arr_count_param))
-								, array ('jwvia'		, array($logined_user_info))
-								, array ('active'		, array($im_actived, $sms_actived))
+								, array ('jwvia'		, array($active_options, $via_device))
 								, array ('friend'		, array($arr_friend_list))
 							);
 	

@@ -139,7 +139,7 @@ function public_timeline_rss_n_atom($options)
 		$user_id = $status_rows[$status_id]['idUser'];
 		$feed->AddItem(array( 
 				'title'		=> $user_rows[$user_id][nameFull] . ' - ' . $status_rows[$status_id][status]
-				, 'desc'	=> $user_rows[$user_id][nameFull] . ' - ' . $status_rows[$status_id][status]
+				, 'desc'	=> $user_rows[$user_id]['nameFull'] . ' - ' . $status_rows[$status_id]['status']
 				, 'date'	=> $status_rows[$status_id]['timestamp']
 				, 'author'	=> $user_rows[$user_id]['nameFull']
 				, 'guid'	=> "http://JiWai.de/" . $user_rows[$user_id]['nameScreen'] . "/statuses/" . $status_rows[$status_id]['idStatus']

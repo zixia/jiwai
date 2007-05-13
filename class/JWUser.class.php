@@ -527,5 +527,34 @@ _SQL_;
 
 		return JWDB::UpdateTableRow('User', $idUser, $db_change_set);
 	}
+
+	static public function GetSendViaDevice($idUser)
+	{
+		$user_rows	= JWUser::GetUserRowById(array($idUser));
+
+		if ( isset($user_rows[$idUser]['deviceSendVia']) )
+			return $user_rows[$idUser]['deviceSendVia'];
+		else
+			return 'none';
+	}
+
+	static public function SetSendViaDevice($idUser, $device)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		switch ( $device )
+		{
+			case	'sms':	// valid, fall down
+			case	'im':	// valid, fall down
+			case	'none':	// valid.
+				break;
+			default:
+				$device='none';
+				break;
+		}
+
+		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));
+	}
+
 }
 ?>
