@@ -86,6 +86,49 @@ _SQL_;
 		return JWDB::GetInsertId();
 	}
 
+	/*
+	 *	获取用户的 idInvitation
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	$invitation_ids
+	 */
+	static public function GetInvitationIdFromUser($idUser, $num=JWDB::DEFAULT_LIMIT_NUM, $start=0)
+	{
+		$idUser	= intval($idUser);
+		$num	= intval($num);
+		$start	= intval($start);
+
+		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
+			throw new JWException('must int');
+
+		$sql = <<<_SQL_
+SELECT		id	as idInvitation
+FROM		Invitation
+WHERE		Invitation.idUser=$idUser
+ORDER BY 	timeCreate desc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( !empty($rows) )
+		{
+			// 装换rows, 返回 id 的 array
+			$invitation_ids = array_map(	create_function(
+												'$row'
+												, 'return $row["idInvitation"];'
+											)
+										, $rows
+									);
+		}
+		else
+		{
+			$invitation_ids = array();
+		}
+
+		return $invitation_ids;
+	}
+
+
 
 	/*
 	 *
@@ -94,7 +137,7 @@ _SQL_;
 	static public function GetInvitationRowsByIds($idInvitations)
 	{
 		if ( empty($idInvitations) )
-			throw new JWException('no ids?');
+			return array();
 
 		if ( !is_array($idInvitations) )
 			throw new JWException('must array');

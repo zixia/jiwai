@@ -1236,5 +1236,71 @@ _HTML_;
 _HTML_;
 		}
 	}
+
+
+	/*
+	 *	显示用户的列表，并根据 $idUser 与用户的关系，显示相应的 action
+	 *	@param	@options	array ( 'element_id' => 'doing' )
+	 *
+	 */
+	static public function ListUser($idUser, $idListUsers, $options=null)
+	{
+		echo <<<_HTML_
+<style type="text/css">
+.friend-actions ul li
+{
+	display: inline;
+}
+.subpage #content p {
+line-height:1.2;
+margin:5px 0pt;
+}
+.friend-actions {
+text-indent:0.6em;
+}
+</style>
+	
+<table class="doing" id="$options[element_id]" cellspacing="0">
+_HTML_;
+
+		$n = 0;
+		$list_user_rows				= JWUser::GetUserRowsByIds			($idListUsers);
+		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($idListUsers);
+
+		foreach ( $idListUsers as $list_user_id )
+		{
+			$list_user_row			= $list_user_rows			[$list_user_id];
+			$list_user_icon_url		= $list_user_icon_url_rows	[$list_user_id];
+
+
+			$odd_even			= ($n++ % 2) ? 'odd' : 'even';
+
+			echo <<<_HTML_
+	<tr class="$odd_even vcard">
+		<td class="thumb">
+			<a href="http://jiwai.de/$list_user_row[nameScreen]/"><img alt="$list_user_row[nameFull]" class="photo" src="$list_user_icon_url" /></a>
+		</td>
+		<td>
+			<strong>
+		  		<a href="http://jiwai.de/$list_user_row[nameScreen]/" class="url"><span class="fn">$list_user_row[nameFull]</span> (<span class="uid">$list_user_row[nameScreen]</span>)</a>
+			</strong>
+			<p class="friend-actions">
+		  		<small>
+_HTML_;
+
+			$action	= JWSns::GetUserAction($idUser,$list_user_row['idUser']);
+			JWTemplate::sidebar_action($action,$list_user_id,false);
+
+			echo <<<_HTML_
+  		  		</small>
+		</p>
+
+	</td>
+</tr>
+_HTML_;
+		}
+
+		echo "</table>";
+	}
 }
 ?>

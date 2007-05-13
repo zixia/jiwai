@@ -24,6 +24,8 @@ class JWDB {
 	 */
 	static private $mysqli_link__;
 
+	const	DEFAULT_LIMIT_NUM	= 20;
+
 	/**
 	 * Instance of this singleton class
 	 *

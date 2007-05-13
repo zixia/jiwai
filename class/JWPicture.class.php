@@ -81,10 +81,12 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
-
-		foreach ( $rows as $row )
-		{
-			$picture_map[$row['idUser']] 	= $row;
+		if ( empty($rows) ) {
+			$picture_map = array();
+		} else {
+			foreach ( $rows as $row ) {
+				$picture_map[$row['idUser']] 	= $row;
+			}
 		}
 
 		return $picture_map;
