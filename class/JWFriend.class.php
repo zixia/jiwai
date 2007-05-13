@@ -77,6 +77,7 @@ class JWFriend {
 SELECT	idFriend
 FROM	Friend
 WHERE	idUser=$idUser
+		AND idFriend IS NOT NULL
 LIMIT	$start,$numMax
 _SQL_;
 
@@ -145,7 +146,10 @@ _SQL_;
 	 */
 	static public function Create($idUser, $idFriend)
 	{
-		if ( !is_int($idFriend) || !is_int($idUser ) )
+		$idUser 	= intval($idUser);
+		$idFriend 	= intval($idFriend);
+
+		if ( 0>=$idFriend || 0>=$idUser )
 			throw new JWException("id not int");
 
 		$sql = <<<_SQL_

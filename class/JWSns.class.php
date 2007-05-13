@@ -65,13 +65,13 @@ class JWSns {
 		if ( ! JWFriend::Create($userInfo['id'], $friendInfo['id']) )
 			throw new JWException('JWFriend::Create failed');
 
-		$notice_settings 	= JWUser::GetNotification($idFriend);
-		$need_notice_mail	= ('Y'==$friend_notice_settings['send_new_friend_email']);
+		$notice_settings 	= JWUser::GetNotification($friendInfo['id']);
+		$need_notice_mail	= ('Y'==$notice_settings['send_new_friend_email']);
 
 		if ( $need_notice_mail )
-			JWMail::SendMailNoticeNewFriend($user_info, $friend_info);
+			JWMail::SendMailNoticeNewFriend($userInfo, $friendInfo);
 
-		JWLog::Instance()->Log(LOG_INFO, "JWSns::Create($userInfo[id],$friendInfo[id]),\tnotification email "
+		JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id],$friendInfo[id]),\tnotification email "
 											. ( $need_notice_mail ? 'sent. ' : '')
 								);
 	

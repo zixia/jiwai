@@ -35,6 +35,9 @@ _HTML_;
 	<div id="content">
 		<div id="wrapper">
 
+<?php JWTemplate::ShowActionResultTips() ?>
+
+
 <?php JWTemplate::updater() ?>
 
   			<!-- p class="notice">
@@ -90,6 +93,8 @@ $arr_count_param	= JWSns::GetUserState($logined_user_id);
 
 
 $arr_device_active	= JWDevice::GetDeviceInfo($logined_user_id);
+
+$active_options = array();
 
 if ( isset($arr_device_active['im']) 
 							&& $arr_device_active['im']['verified']  )

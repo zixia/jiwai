@@ -172,9 +172,11 @@ FROM	Invitation
 WHERE	idReciprocal = 
 		(
 			SELECT	idReciprocal
-			FROM	idInvitation
+			FROM	Invitation
 			WHERE	id=$idInvitation
+			LIMIT	1
 		)
+		AND idInvitee IS NOT NULL
 _SQL_;
 		$rows = JWDB::GetQueryResult($sql, true);
 
@@ -197,7 +199,7 @@ _SQL_;
 	{
 		$idInvitation = JWDB::CheckInt($idInvitation);
 
-		$now = time();
+		$now = date(DATE_ATOM,time());
 
 		return JWDB::UpdateTableRow('Invitation', $idInvitation, array('timeAccept'=>$now) );
 	}
@@ -211,10 +213,10 @@ _SQL_;
 		$idInvitation 	= JWDB::CheckInt($idInvitation);
 		$idInvitee 		= JWDB::CheckInt($idInvitee);
 
-		$now = time();
+		$now = date(DATE_ATOM,time());
 
 		$condition = array ( 'timeRegister'	=> $now
-							,'idInvitee'		=> $idInvitee
+							,'idInvitee'	=> $idInvitee
 						);
 
 		return JWDB::UpdateTableRow('Invitation', $idInvitation, $condition);

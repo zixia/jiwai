@@ -69,7 +69,7 @@ _HTML_;
 
     if ( (pieces.length > 1) && (pieces[1].trim() != '') && !($('mutualrow').visible())) {
       $('mutualrow').style.display = "";
-      JiWai.Yft('mutualrow');
+      JiWai.Yft('#mutualrow');
     } else if (pieces.length <= 1) {
       $('mutualrow').style.display = "none";
     }
@@ -102,7 +102,7 @@ padding:10px;
 
   			<h2>邀请您的朋友
 <?php	
-if ( preg_match('#/wo/account/create#i',$_SERVER['HTTP_REFERER']) ){
+if ( preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 	echo '（<a href="/wo/">跳过这一步？</a>）';
 }
 ?>
@@ -113,7 +113,7 @@ if ( preg_match('#/wo/account/create#i',$_SERVER['HTTP_REFERER']) ){
 				当他们接受邀请后，您们就成为叽歪的好友啦！
   			</p>
 <?php
-if ( !preg_match('#/wo/account/create#i',$_SERVER['HTTP_REFERER']) ){
+if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 	echo '<p><a href="/wo/invitations/">查看以前的邀请历史</a></p>';
 }
 ?>

@@ -12,7 +12,10 @@ _HTML_;
 if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 {
 	$invite_code	= $matches[1];
-	$inviter_id		= JWInvitation::GetInviterIdByCode($invite_code);
+
+	$invitation_info	= JWInvitation::GetInvitationInfoByCode($invite_code);
+
+	$inviter_id = $invitation_info['idUser'];
 
 	if ( empty($inviter_id) )
 	{

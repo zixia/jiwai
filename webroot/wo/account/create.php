@@ -50,8 +50,6 @@ if ( isset($_REQUEST['user'])
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] )
 		{
-			$aUserInfo['isActive'] = 'Y';
-
 			$idUser = JWUser::Create($aUserInfo);
 			if ( $idUser && JWLogin::Login ( $idUser, true ) )
 			{
@@ -80,7 +78,12 @@ if ( isset($_REQUEST['user'])
 				{
 					JWInvitation::Register($invitation_id, $idUser);
 
-					$reciprocal_user_ids	= JWInvitation::GetReciprocalInviteeIds($invitation_id);
+
+					$invitation_rows		= JWInvitation::GetInvitationRowsByIds(array($invitation_id));
+					$inviter_id				= $invitation_rows[$invitation_id]['idUser'];
+
+					$reciprocal_user_ids	= JWInvitation::GetReciprocalUserIds($invitation_id);
+					array_push( $reciprocal_user_ids, $inviter_id );
 
 					// 互相加为好友
 					JWSns::AddFriends( $idUser, $reciprocal_user_ids, true );

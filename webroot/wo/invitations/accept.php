@@ -1,8 +1,6 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-JWLogin::MustLogined();
-
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
@@ -10,10 +8,11 @@ JWLogin::MustLogined();
 $logined_user_id	= JWLogin::GetCurrentUserId();
 
 $param = $_REQUEST['pathParam'];
-if ( preg_match('/^\/(\w+)$/',$param,$match) ){
+if ( preg_match('/^\/(\w+)$/',$param,$match) )
+{
 	$invite_code = $match[1];
 
-	$invitation_row	= JWInvitation::GetInviteInfoByCode($invite_code);
+	$invitation_row	= JWInvitation::GetInvitationInfoByCode($invite_code);
 
 	if ( isset($invitation_row) )
 	{

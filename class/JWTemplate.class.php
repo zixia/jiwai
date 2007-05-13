@@ -1063,20 +1063,23 @@ _HTML_;
 	}
 
 
-	static function sidebar_friend($friendIdList)
+	static function sidebar_friend($friendIds)
 	{
-		if ( empty($friendIdList) )
+		if ( empty($friendIds) )
 			return;
+
+		$friend_rows			= JWUser::GetUserRowsByIds($friendIds);
+		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByIds($friendIds);
 
 		echo <<<_HTML_
   		<div id="friend">
 
 _HTML_;
 
-		foreach ( $friendIdList as $idFriend )
+		foreach ( $friendIds as $friend_id )
 		{
-			$friend_info 	= JWUser::GetUserInfo($idFriend);
-			$picture_url	= JWPicture::GetUserIconUrl($idFriend);
+			$friend_info 	= $friend_rows[$friend_id];
+			$picture_url	= $friend_icon_url_rows[$friend_id];
 			
 			echo <<<_HTML_
 			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>

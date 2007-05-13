@@ -176,7 +176,7 @@ _SQL_;
 	static public function GetUserRowsByIds( $idUsers)
 	{
 		if ( empty($idUsers) )
-			throw new JWException('no ids?');
+			return array();
 
 		if ( !is_array($idUsers) )
 			throw new JWException('must array');
@@ -315,16 +315,15 @@ _SQL_;
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,isActive)"
-								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("sssssss"
+		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected)"
+								. " values (NOW(),?,?,?,?,?,?)" ) ){
+			if ( $result = $stmt->bind_param("ssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
 											, strrev($userInfo['email'])
 											, $userInfo['nameFull']
 											, $userInfo['location']
 											, $userInfo['protected']
-											, $userInfo['isActive']
 								) )
 			{
 				if ( $stmt->execute() ){
@@ -393,21 +392,15 @@ _SQL_;
 	 *	检查 email 是否已经被使用
 	 *
 	 *	@param	string	$email		将查找用户信息的 email 是否存在。
-	 *	@param	bool	$isActive	true	只查找已经被激活的
-									false	查找所有
 		@return	bool	$isExist	是否存在
 	 */
 
-	static public function IsExistEmail ($email, $isActive)
+	static public function IsExistEmail ($email)
 	{
 		if ( empty($email) )
 			throw new JWException('email is empty?');
 
 		$condition = array ( 	'email'	=> strrev($email) );
-
-		if ( $isActive ){
-			$condition['isActive'] = 'Y';
-		}
 
 		return JWDB::ExistTableRow('User',$condition);
 	}
