@@ -59,75 +59,9 @@ else
 _HTML_;
 	
 }
+
+JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('element_id'=>'friends'));
 ?>
-<style type="text/css">
-.friend-actions ul li
-{
-	display: inline;
-}
-
-.subpage #content p {
-line-height:1.2;
-margin:5px 0pt;
-}
-.friend-actions {
-text-indent:0.6em;
-}
-
-</style>
-	
-<table class="doing" cellspacing="0">
-
-<?php
-$n = 0;
-if ( isset($friend_ids) )
-{
-	foreach ( $friend_ids as $friend_id )
-	{
-		$friend_info		= $friend_user_rows[$friend_id];
-		$friend_icon_url	= $friend_icon_url_rows[$friend_id];
-
-	/*
-	 * /webroot/user/friends.php 会调用(include)这个页面
-	 * 这时候，所有用户给出 follow 的操作
-	 */
-	if ( isset($g_user_friends) ) {
-		if ( JWFollower::IsFollower($friend_id, $logined_user_info['id']) )
-			$action = array ( 'leave'=>true );
-		else
-			$action = array ( 'follow'=>true );
-	} else {
-		$action	= JWSns::GetUserAction($logined_user_info['id'],$friend_id);
-	}
-
-	$odd_even			= ($n++ % 2) ? 'odd' : 'even';
-	echo <<<_HTML_
-	<tr class="$odd_even vcard">
-		<td class="thumb">
-			<a href="http://jiwai.de/$friend_info[nameScreen]/"><img alt="$friend_info[nameFull]" class="photo" src="$friend_icon_url" /></a>
-		</td>
-		<td>
-			<strong>
-		  		<a href="http://jiwai.de/$friend_info[nameScreen]/" class="url"><span class="fn">$friend_info[nameFull]</span> (<span class="uid">$friend_info[nameScreen]</span>)</a>
-			</strong>
-			<p class="friend-actions">
-		  		<small>
-_HTML_;
-
-		JWTemplate::sidebar_action($action,$friend_id,false);
-
-		echo <<<_HTML_
-  		  		</small>
-		</p>
-
-	</td>
-</tr>
-_HTML_;
-	}
-}
-?>
-
-</table>
 
 <div class="pagination">
 <br/>

@@ -167,6 +167,9 @@ class JWSns {
 
 		$action = array();
 
+		if ( $idUser==$idFriend )
+			return $action;
+
 		if ( JWFriend::IsFriend($idUser, $idFriend) )
 		{
 			$action['remove']		= true;
