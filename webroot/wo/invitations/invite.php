@@ -166,14 +166,11 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 
 <span id="invite_message"></span>
 
-
 您的朋友 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 希望您加入叽歪de！
 
 
 请点击这里接受邀请：
-
-  http://JiWai.de/wo/i/YAOQINGDAIMA
-
+  http://JiWai.de/wo/invitations/i/YAOQINGDAIMA
 
 或您可以在这里关注 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 的最新动态：
   http://JiWai.de/<?php echo $user_info['nameScreen']?>/
