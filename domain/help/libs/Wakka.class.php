@@ -1315,7 +1315,7 @@ class Wakka
 		// raw page handler
 		elseif ($this->method == "raw")
 		{
-			header("Content-type: text/plain");
+			header("Content-type: text/plain; charset=UTF-8");
 			print($this->Method($this->method));
 		}
 		// grabcode page handler

@@ -314,6 +314,7 @@ if ((strtolower($page) == $page) && (isset($_SERVER['REQUEST_URI']))) #38
  */
 $wakka =& new Wakka($wakkaConfig);
 
+
 /** 
  * Check for database access.
  */
@@ -322,7 +323,6 @@ if (!$wakka->dblink)
 	echo '<em class="error">'.ERROR_NO_DB_ACCESS.'</em>';
       exit;
 }
-
 
 /** 
  * Run the engine.
@@ -335,7 +335,7 @@ if (!preg_match("/(xml|raw|mm|grabcode)$/", $method))
 	//calculate the difference
 	$totaltime = ($tend - $tstart);
 	//output result
-	print '<div class="smallprint">'.sprintf(PAGE_GENERATION_TIME, $totaltime)."</div>\n</body>\n</html>";
+	print '<!-- div class="smallprint">'.sprintf(PAGE_GENERATION_TIME, $totaltime)."</div-->\n</body>\n</html>";
 }
 
 $content =  ob_get_contents();

@@ -1,4 +1,5 @@
 <?php
+	header('Content-type: text/html; charset=UTF-8');
 	$message = $this->GetRedirectMessage();
 	$user = $this->GetUser();
       $site_base = $this->GetConfigValue("base_url");
@@ -7,10 +8,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<title><?php echo $this->GetWakkaName().": ".$this->PageTitle(); ?></title>
+	<title><?php echo "叽歪de帮助: ".$this->PageTitle(); ?></title>
 	<base href="<?php echo $site_base ?>" />
 	<?php if ($this->GetMethod() != 'show' || $this->page["latest"] == 'N' || $this->page["tag"] == 'SandBox') echo "<meta name=\"robots\" content=\"noindex, nofollow, noarchive\" />\n"; ?>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="keywords" content="<?php echo $this->GetConfigValue("meta_keywords") ?>" />
 	<meta name="description" content="<?php echo $this->GetConfigValue("meta_description") ?>" />
 	<link rel="stylesheet" type="text/css" href="css/<?php echo $this->GetConfigValue("stylesheet") ?>" />
@@ -27,8 +28,8 @@ if ($this->GetMethod() != 'edit') {
 </head>
 <body <?php echo $message ? "onLoad=\"alert('".$message."');\" " : "" ?> >
 <div class="header">
-	<h2><?php echo $this->config["wakka_name"] ?> : <a href="<?php echo $this->href('backlinks', '', ''); ?>" title="Display a list of pages linking to <? echo $this->tag ?>"><?php echo $this->GetPageTag(); ?></a></h2>
-	<?php echo $this->Link($this->config["root_page"]); ?> ::
+	<h2><a href="/JiWaiHelp">叽歪de帮助中心</a> : <a href="<?php echo $this->href('backlinks', '', ''); ?>" title="Display a list of pages linking to <? echo $this->tag ?>"><?php echo $this->GetPageTag(); ?></a></h2>
+	<a href="/JiWaiHelp">叽歪de帮助中心</a> ::
 	<?php 
 		if ($this->GetUser()) {
 			echo $this->config["logged_in_navigation_links"] ? $this->Format($this->config["logged_in_navigation_links"])." :: " : ""; 
