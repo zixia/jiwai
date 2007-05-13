@@ -58,9 +58,10 @@ _HTML_;
 ?>
 
 <p>
-  	叽歪de is a social texting service based on the idea that every moment
-  	has a caption and the moments in your life are funny, important, and
-  	interesting to the people who care about you.
+生活中每一时刻都有意义。对关心你的人们来说，你生活中的每个瞬间都有趣而重要。叽歪de是基于此的一项交流服务。 
+</p>
+<p>
+在关心你的人们看来，你生活中的每个瞬间都有趣、重要而精彩。叽歪de相信生命中每个时刻都有意义，为您提供记录瞬间的交流服务。 
 </p>
 
 <style type="text/css">
@@ -69,6 +70,11 @@ font-size:1.5em;
 padding:4px 2px;
 vertical-align:middle;
 width:12em;
+}
+
+td {
+padding:7px 3px;
+vertical-align:top;
 }
 </style>
 
