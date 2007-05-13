@@ -1,0 +1,20 @@
+Wikka 1.1.6.3
+Released on May 7, 2007
+
+Security patches
+----------------
+* Sanitized UserSettings to prevent JS injection. http://tracker.wikkawiki.org/ticket/363 (thanks to Sakaru)
+* Secured LoadRecentComments() and LoadRecentlyCommented(). http://tracker.wikkawiki.org/ticket/383
+* Dropped use of GetEnv() to retrieve Wikka configuration because of potential security issues on shared servers. http://tracker.wikkawiki.org/ticket/98
+* Fixed bug that allowed changes to private pages to show up in the RecentChanges feed. http://tracker.wikkawiki.org/ticket/305
+* Replaced every occurrence of $_REQUEST with $_GET or $_POST to enforce security of user input. http://tracker.wikkawiki.org/ticket/312
+* Patched a native PHP vulnerability (HTML Entity Encoder Heap Overflow Vulnerability) affecting virtually anyweb application running on PHP<5.2. The security fix was also applied to GeSHi version 1.0.7.18. http://tracker.wikkawiki.org/ticket/427
+
+Bug fixes
+---------
+* Fixed bug producing invalid XHTML in referrer handlers. http://tracker.wikkawiki.org/ticket/469
+* Added missing trailing slash that could result in invalid base_url during installation. http://tracker.wikkawiki.org/ticket/438
+* Fixed bug in Onyx that could prevent correct feed parsing when using PHP<4.3.0. http://tracker.wikkawiki.org/ticket/420
+* Further minor fixes. http://tracker.wikkawiki.org/ticket/466, http://tracker.wikkawiki.org/ticket/437
+
+Full release notes are available at: http://wikkawiki.org/WikkaReleaseNotes
