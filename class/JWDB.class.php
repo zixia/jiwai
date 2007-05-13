@@ -296,8 +296,6 @@ class JWDB {
 		$sql .= " WHERE id=$idPK";
 		// " (field1,field2) values (value1,value2)";
 
-		//die($sql);
-
 		$result = $db->query ($sql);
 
 		if ( !$result ){
