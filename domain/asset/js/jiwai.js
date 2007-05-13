@@ -35,40 +35,38 @@ var JiWai =
 		return color;
 	},
 
-	Yft		: function (idElement) 
+	Yft		: function (selector) 
 	{
-		yft_element		= $(idElement);
+		$$(selector).each( function(yft_element) {
+			background_color = yft_element.getStyle('background-color');
 
-		if ( !yft_element )
-			return;
+			orig_color 		= this.GetBgColor(yft_element);
 
-		background_color = yft_element.getStyle('background-color');
+			yellow_color	= new Color('#ff0');
+			yellow_color	= yellow_color.mix(orig_color);
 
-		orig_color 		= this.GetBgColor(yft_element);
-
-		yellow_color	= new Color('#ff0');
-		yellow_color	= yellow_color.mix(orig_color);
-
-		yft_element.effect(
-			'background-color'
-			,{
-			 	duration: 1500
-				,transition: Fx.Transitions.Quad.easeOut
-			}
-		).start(
-			orig_color
-			,yellow_color
-		).chain( function () {
 			yft_element.effect(
-				 'background-color'
+				'background-color'
 				,{
-					 duration: 1500
-					,transition: Fx.Transitions.Bounce.easeOut
+				 	duration: 1500
+					,transition: Fx.Transitions.Quad.easeOut
 				}
-			).start(yellow_color,orig_color).chain( function () {
-				yft_element.setStyle('background-color', background_color);
-			})
-		});
+			).start(
+				orig_color
+				,yellow_color
+			).chain( function () {
+				yft_element.effect(
+				 	'background-color'
+					,{
+					 	duration: 1500
+						,transition: Fx.Transitions.Bounce.easeOut
+					}
+				).start(yellow_color,orig_color).chain( function () {
+					yft_element.setStyle('background-color', background_color);
+				})
+			});
+
+		}, JiWai); // end each
 	}
 
 }
