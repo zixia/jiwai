@@ -22,8 +22,6 @@ _HTML_;
 	}
 	else
 	{
-		JWSession::SetInfo('InvitationCode',$invite_code);
-
 		$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
 	}
 }
