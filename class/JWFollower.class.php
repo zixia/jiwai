@@ -170,6 +170,7 @@ _SQL_;
 SELECT	COUNT(*) as num
 FROM	Follower
 WHERE	idUser=$idUser
+		AND idFollower IS NOT NULL
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 

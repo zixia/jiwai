@@ -187,6 +187,7 @@ _SQL_;
 SELECT	COUNT(*) as num
 FROM	Friend
 WHERE	idUser=$idUser
+		AND idFriend IS NOT NULL
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 

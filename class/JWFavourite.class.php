@@ -171,6 +171,7 @@ _SQL_;
 SELECT	COUNT(*) as num
 FROM	Favourite
 WHERE	idUser=$idUser
+		AND idStatus IS NOT NULL
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 
