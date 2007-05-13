@@ -1184,7 +1184,7 @@ _HTML_;
 		if ( empty($absUrlPath) )
 			throw new JWException('must have path');
 
-		$asset_path	= JW_ROOT . '/domain/asset';
+		$asset_path	= JW_ROOT . 'domain/asset';
 		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 
