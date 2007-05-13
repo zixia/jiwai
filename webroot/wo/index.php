@@ -58,8 +58,8 @@ if ( $show_user_archive )
 else
 	$status_data = JWStatus::GetStatusIdFromFriends($logined_user_id);
 
-$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
   

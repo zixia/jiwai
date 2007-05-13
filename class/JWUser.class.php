@@ -173,15 +173,13 @@ _SQL_;
 	 * 	@return	array	以 idUser 为 key 的 status row
 	 * 
 	 */
-	static public function GetUserRowById( $idUsers)
+	static public function GetUserRowsByIds( $idUsers)
 	{
 		if ( empty($idUsers) )
-			return array();
+			throw new JWException('no ids?');
 
 		if ( !is_array($idUsers) )
 			throw new JWException('must array');
-
-		$idUsers = array_unique($idUsers);
 
 		$condition_in = JWDB::GetInConditionFromArray($idUsers);
 
@@ -530,7 +528,7 @@ _SQL_;
 
 	static public function GetSendViaDevice($idUser)
 	{
-		$user_rows	= JWUser::GetUserRowById(array($idUser));
+		$user_rows	= JWUser::GetUserRowsByIds(array($idUser));
 
 		if ( isset($user_rows[$idUser]['deviceSendVia']) )
 			return $user_rows[$idUser]['deviceSendVia'];

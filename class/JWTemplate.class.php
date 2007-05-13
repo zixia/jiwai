@@ -968,7 +968,7 @@ _HTML_;
 
 		if ( !empty($status_data['status_ids']) )
 		{
-			$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
+			$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
 			$status_id		= $status_data['status_ids'][0];
 			$current_status	= $status_rows[$status_id]['status'];
 		}

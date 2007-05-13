@@ -13,7 +13,7 @@ JWLogin::MustLogined();
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
 if ( isset($g_user_favourites) && $g_user_favourites ) {
-	$rows				= JWUser::GetUserRowById(array($g_page_user_id));
+	$rows				= JWUser::GetUserRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 } else {
 	$page_user_info		= $logined_user_info;
@@ -22,12 +22,12 @@ if ( isset($g_user_favourites) && $g_user_favourites ) {
 $status_ids		= JWFavourite::GetFavourite($page_user_info['id']);
 $status_num		= JWFavourite::GetFavouriteNum($page_user_info['id']);
 
-$status_rows	= JWStatus::GetStatusRowById($status_ids);
+$status_rows	= JWStatus::GetStatusRowsByIds($status_ids);
 
 $user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
-$user_rows		= JWUser::GetUserRowById($user_ids);
+$user_rows		= JWUser::GetUserRowsByIds($user_ids);
 
-$user_icon_url_rows	= JWPicture::GetUserIconUrlRowById($user_ids);
+$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($user_ids);
 ?>
 
 <html>

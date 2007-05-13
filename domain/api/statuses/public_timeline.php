@@ -125,8 +125,8 @@ function public_timeline_rss_n_atom($options)
 	
 	//$statuses	= JWStatus::GetStatusListTimeline($count);
 	$status_data	= JWStatus::GetStatusIdFromPublic($count);
-	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+	$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 
 
 	$feed = new JWFeed( array (	'title'		=> '叽歪广场'
@@ -213,8 +213,8 @@ function get_public_timeline_array($options)
 	//$statuses	= JWStatus::GetStatusListTimeline($count);
 
 	$status_data	= JWStatus::GetStatusIdFromPublic($count);
-	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+	$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 
 	$statuses_array								= array();
 

@@ -48,7 +48,7 @@ class JWPicture {
 	 * 	@return	array	以 idUser 为 key 的 picture row
 	 * 
 	 */
-	static public function GetPictureRowById( $idUsers )
+	static public function GetPictureRowsByIds( $idUsers )
 	{
 		if ( empty($idUsers) )
 			return array();
@@ -114,11 +114,11 @@ _SQL_;
 	}
 
 
-	static private function GetUserIconFullPathNameRowById($idUsers, $picSize='thumb48')
+	static private function GetUserIconFullPathNameRowsByIds($idUsers, $picSize='thumb48')
 	{
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 
-		$picture_rows		= JWPicture::GetPictureRowById($idUsers);
+		$picture_rows		= JWPicture::GetPictureRowsByIds($idUsers);
 
 		foreach ( $idUsers as $user_id )
 		{
@@ -132,12 +132,12 @@ _SQL_;
 	}
 	
 
-	static public function GetUserIconUrlRowById($idUsers, $picSize='thumb48')
+	static public function GetUserIconUrlRowsByIds($idUsers, $picSize='thumb48')
 	{
 		if ( empty($idUsers) )
 			return array();
 
-		$picture_rows 	= self::GetPictureRowById($idUsers);
+		$picture_rows 	= self::GetPictureRowsByIds($idUsers);
 		
 		foreach ( $idUsers as $user_id )
 		{

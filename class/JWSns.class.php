@@ -50,7 +50,7 @@ class JWSns {
 		if ( !is_array($idFriends) )
 			$idFriends = array ($idFriends);
 		
-		$friend_user_rows	= JWUser::GetUserRowById($idFriends);
+		$friend_user_rows	= JWUser::GetUserRowsByIds($idFriends);
 		$user_info			= JWUser::GetUserInfo($idUser);
 
 		foreach ( $idFriends as $friend_id )

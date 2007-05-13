@@ -179,9 +179,9 @@ function friends_timeline_rss_n_atom($options)
 	$master_user_id	= intval($options['idUser']);
 
 	$status_data	= JWStatus::GetStatusIdFromFriends($master_user_id,$count);
-	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
-	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowById(array($master_user_id),'thumb48');
+	$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
+	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds(array($master_user_id),'thumb48');
 
 	$user			= $user_rows[$master_user_id];
 	$user_icon_url	= $user_icon_url_rows[$master_user_id];
@@ -290,8 +290,8 @@ function get_friends_timeline_array($options)
 	$master_user_id	= intval($options['idUser']);
 
 	$status_data	= JWStatus::GetStatusIdFromFriends($master_user_id,$count);
-	$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-	$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+	$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+	$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 
 	$statuses_array								= array();
 

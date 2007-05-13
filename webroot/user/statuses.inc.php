@@ -1,7 +1,7 @@
 <?php
 function user_status($idPageUser, $idStatus)
 {
-	$status_rows	= JWStatus::GetStatusRowById(array($idStatus));
+	$status_rows	= JWStatus::GetStatusRowsByIds(array($idStatus));
 	$status_info	= $status_rows[$idStatus];
 
 	$page_user_info	= JWUser::GetUserInfo($idPageUser);

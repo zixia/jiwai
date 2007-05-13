@@ -50,8 +50,8 @@ _HTML_;
 }
 
 $status_data 	= JWStatus::GetStatusIdFromUser($page_user_id, JWStatus::DEFAULT_STATUS_NUM+1);
-$status_rows	= JWStatus::GetStatusRowById($status_data['status_ids']);
-$user_rows		= JWUser::GetUserRowById	($status_data['user_ids']);
+$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 
 // 取出一个
 $head_status_id = @array_shift($status_data['status_ids']); 

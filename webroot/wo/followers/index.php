@@ -12,8 +12,8 @@ $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $page_user_info		= $logined_user_info;
 
 $follower_ids			= JWFollower::GetFollower	($page_user_info['id']);
-$follower_user_rows		= JWUser::GetUserRowById	($follower_ids);
-$follower_icon_url_rows = JWPicture::GetUserIconUrlRowById($follower_ids);
+$follower_user_rows		= JWUser::GetUserRowsByIds	($follower_ids);
+$follower_icon_url_rows = JWPicture::GetUserIconUrlRowsByIds($follower_ids);
 
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 

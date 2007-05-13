@@ -236,7 +236,7 @@ _SQL_;
 	 * 	@return	array	以 idStatus 为 key 的 status row
 	 * 
 	 */
-	static public function GetStatusRowById ($idStatuses)
+	static public function GetStatusRowsByIds ($idStatuses)
 	{
 		if ( empty($idStatuses) )
 			return array();

@@ -12,15 +12,15 @@ JWLogin::MustLogined();
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
 if ( isset($g_user_friends) && $g_user_friends ) {
-	$rows				= JWUser::GetUserRowById(array($g_page_user_id));
+	$rows				= JWUser::GetUserRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 } else {
 	$page_user_info		= $logined_user_info;
 }
 
 $friend_ids			= JWFriend::GetFriend		($page_user_info['id']);
-$friend_user_rows	= JWUser::GetUserRowById	($friend_ids);
-$friend_icon_url_rows = JWPicture::GetUserIconUrlRowById($friend_ids);
+$friend_user_rows	= JWUser::GetUserRowsByIds	($friend_ids);
+$friend_icon_url_rows = JWPicture::GetUserIconUrlRowsByIds($friend_ids);
 
 $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 ?>

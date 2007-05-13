@@ -91,20 +91,38 @@ _SQL_;
 	 *
 	 *
 	 */
-	static public function GetInvitationRowById($idInvitations)
+	static public function GetInvitationRowsByIds($idInvitations)
 	{
+		if ( empty($idInvitations) )
+			throw new JWException('no ids?');
+
+		if ( !is_array($idInvitations) )
+			throw new JWException('must array');
+
+		$in_condition = JWDB::GetInConditionFromArray($idInvitations);
+
+		$sql = <<<_SQL_
+SELECT	*, id as idInvitation
+FROM	Invitation
+WHERE	id IN ( $in_condition )
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql, true);
+	
+		$invitation_map = array();
+
+		foreach ( $rows as $row )
+		{
+			$invitation_map[$row['idInvitation']] = $row;
+		}
+		
+		return $invitation_map;
 	}
 
 
-	static public function GetInvitationInfoById($idInvitation)
-	{
-		$idInvitation = intval($idInvitation);
-		if ( 0>=$idInvitation )
-			throw new JWException ('must int');
-
-		return JWDB::GetTableRow('Invitation', array('id'=>$idInvitation));
-	}
-
+	/*
+	 *	好像没有必要考虑 memcache
+	 */
 	static public function GetInvitationInfoByCode($code)
 	{
 		$row = JWDB::GetTableRow('Invitation', array('code'=>$code));
