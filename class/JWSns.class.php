@@ -42,43 +42,71 @@ class JWSns {
 
 
 	/*
+	 *	根据详细信息建立两个人的好友关系
+	 *	@param	array	$userInfo
+	 *	@param	array	$friendInfo
+	 */
+	static public function AddFriend($userInfo, $friendInfo)
+	{
+		if ( $friendInfo['id']==$userInfo['id'] )
+		{
+			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id]...) is self");
+			return true;
+		}
+
+		if ( JWFriend::IsFriend($userInfo['id'], $friendInfo['id']) )
+		{
+			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id],$friendInfo[id]) already friends");
+			return true;
+		}
+
+		// TODO check idUser permission
+	
+		if ( ! JWFriend::Create($userInfo['id'], $friendInfo['id']) )
+			throw new JWException('JWFriend::Create failed');
+
+		$notice_settings 	= JWUser::GetNotification($idFriend);
+		$need_notice_mail	= ('Y'==$friend_notice_settings['send_new_friend_email']);
+
+		if ( $need_notice_mail )
+			JWMail::SendMailNoticeNewFriend($user_info, $friend_info);
+
+		JWLog::Instance()->Log(LOG_INFO, "JWSns::Create($userInfo[id],$friendInfo[id]),\tnotification email "
+											. ( $need_notice_mail ? 'sent. ' : '')
+								);
+	
+		// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
+		// 所以，被follow的人是 friend_id
+		if ( ! JWFollower::IsFollower($friendInfo['id'], $userInfo['id']) )
+			self::AddFollower($friendInfo['id'], $userInfo['id']);
+
+		return true;
+	}
+
+	/*
 	 *	@param	array or int	$idFriends	好友 id(s)
 	 *	将 idFriends 添加为 idUser 的好友，并负责处理相关逻辑（是否允许添加好友，发送通知邮件等）
 	 */
-	static public function AddFriend($idUser, $idFriends)
+	static public function AddFriends($idUser, $idFriends, $isReciprocal=false)
 	{
 		if ( !is_array($idFriends) )
-			$idFriends = array ($idFriends);
+			throw new JWException('must array');
 		
 		$friend_user_rows	= JWUser::GetUserRowsByIds($idFriends);
 		$user_info			= JWUser::GetUserInfo($idUser);
 
+		$user_notice_settings 	= JWUser::GetNotification($idUser);
+		$user_need_notice_mail	= ('Y'==$user_notice_settings['send_new_friend_email']);
+
 		foreach ( $idFriends as $friend_id )
 		{
-			if ( JWFriend::IsFriend($idUser, $friend_id) )
+			if ( $friend_id==$idUser )
 				continue;
 
-			// TODO check idUser permission
-		
-			if ( ! JWFriend::Create($idUser, $friend_id) )
-				throw new JWException('JWFriend::Create failed');
+			JWSns::AddFriend($user_info, $friend_user_rows[$friend_id]);
 
-			$notice_settings = JWUser::GetNotification($friend_id);
-
-			if ( 'Y'==$notice_settings['send_new_friend_email'] )
-			{
-				JWMail::SendMailNoticeNewFriend($user_info, $friend_user_rows[$friend_id]);
-
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$friend_id),\tnotification email SENT.");
-			}
-			else
-			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($idUser,$friend_id),\tNO notification email.");
-			}
-		
-			// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
-			// 所以，被follow的人是 friend_id
-			self::AddFollower($friend_id, $idUser);
+			if ( $isReciprocal )
+				JWSns::AddFriend($friend_user_rows[$friend_id], $user_info);
 		}
 
 		return true;

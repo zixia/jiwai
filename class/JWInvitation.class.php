@@ -158,14 +158,66 @@ _SQL_;
 		return JWDB::Execute($sql);
 	}
 
+	/*
+	 *	获取属于某次 invite 的一群被邀者注册后的用户 id，以便于互相加为好友
+	 *
+	 */
+	static public function GetReciprocalUserIds( $idInvitation )
+	{
+		$idInvitation = JWDB::CheckInt($idInvitation);
 
+		$sql = <<<_SQL_
+SELECT 	idInvitee
+FROM	Invitation
+WHERE	idReciprocal = 
+		(
+			SELECT	idReciprocal
+			FROM	idInvitation
+			WHERE	id=$idInvitation
+		)
+_SQL_;
+		$rows = JWDB::GetQueryResult($sql, true);
+
+		$invitee_ids = array();
+
+		if ( isset($rows) ) {
+			foreach ( $rows as $row ) {
+				array_push($invitee_ids, $row['idInvitee']);
+			}
+		}
+
+		return $invitee_ids;
+	}
+
+
+	/*
+	 *	设置用户接受邀请，
+	 */
 	static public function Accept($idInvitation)
 	{
 		$idInvitation = JWDB::CheckInt($idInvitation);
 
 		$now = time();
 
-		return JWDB::UpdateTableRow('Invitation', $idInvitation, array ('timeAccept'=>$now) );
+		return JWDB::UpdateTableRow('Invitation', $idInvitation, array('timeAccept'=>$now) );
+	}
+
+
+	/*
+	 *	记录用户接受邀请后注册的用户帐号
+	 */
+	static public function Register($idInvitation, $idInvitee)
+	{
+		$idInvitation 	= JWDB::CheckInt($idInvitation);
+		$idInvitee 		= JWDB::CheckInt($idInvitee);
+
+		$now = time();
+
+		$condition = array ( 'timeRegister'	=> $now
+							,'idInvitee'		=> $idInvitee
+						);
+
+		return JWDB::UpdateTableRow('Invitation', $idInvitation, $condition);
 	}
 
 

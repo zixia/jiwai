@@ -74,12 +74,16 @@ if ( isset($_REQUEST['user'])
 					}
 				}
 
-				$invitatio_id	= JWSession::GetInfo('invitation_id');
+				$invitation_id	= JWSession::GetInfo('invitation_id');
 				
-				if ( isset($invitatio_id) )
+				if ( isset($invitation_id) )
 				{
-					$invitation_row	= JWInvitation::
-					JWSns::AcceptInvitation($
+					JWInvitation::Register($invitation_id, $idUser);
+
+					$reciprocal_user_ids	= JWInvitation::GetReciprocalInviteeIds($invitation_id);
+
+					// 互相加为好友
+					JWSns::AddFriends( $idUser, $reciprocal_user_ids, true );
 				}
 
 				header("Location: /wo/invitations/invite");

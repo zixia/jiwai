@@ -15,7 +15,7 @@ if ( is_int($logined_user_id) )
 
 		if ( !empty($follower_ids) )
 		{
-			$is_succ = JWSns::AddFriend($logined_user_id, $follower_ids);
+			$is_succ = JWSns::AddFriends($logined_user_id, $follower_ids);
 
 			if ($is_succ )
 			{
