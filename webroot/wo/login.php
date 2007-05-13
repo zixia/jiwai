@@ -12,6 +12,25 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 	{
 		JWLogin::Login($idUser, $_REQUEST['remember_me']);
 
+
+		$invitation_id = @$_REQUEST['invitation_id'];
+
+		if ( isset($invitation_id) )
+		{
+			JWInvitation::Register($invitation_id, $idUser);
+
+
+			$invitation_rows		= JWInvitation::GetInvitationRowsByIds(array($invitation_id));
+			$inviter_id				= $invitation_rows[$invitation_id]['idUser'];
+
+			$reciprocal_user_ids	= JWInvitation::GetReciprocalUserIds($invitation_id);
+			array_push( $reciprocal_user_ids, $inviter_id );
+
+			// 互相加为好友
+			JWSns::AddFriends( $idUser, $reciprocal_user_ids, true );
+		}
+
+
 		if ( isset($_SESSION['login_redirect_url']) ){
 			header("Location: " . $_SESSION['login_redirect_url']);
 		}else{
