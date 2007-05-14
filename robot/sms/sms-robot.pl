@@ -7,6 +7,7 @@ use Sys::Syslog;
 use Linux::Inotify2;
 use URI::Escape;
 use IPC::Open2;
+use Fcntl ' :flock '; # import LOCK_* constants
 
 # Other module need this, so we load it before chroot.
 use Carp::Heavy;
@@ -164,6 +165,10 @@ sub sms_deliver_file {
 		syslog('err', "can't open file[$new_msg_file] to read");
 		return;
 	}
+
+
+	# inotify 得到的文件可能还没有写完，这里配合 JWRobotMsg::Save 进行等待排它锁的释放
+	flock(FD,LOCK_EX);
 
 	my $file_content = join('',<FD>);
 	close FD;

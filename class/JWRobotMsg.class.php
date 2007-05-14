@@ -181,6 +181,12 @@ class JWRobotMsg {
 		if (!$handle)
 			throw new JWException("can't save msg 2");
 
+		if ( !flock($handle, LOCK_EX) )
+		{
+			JWLog::Log(LOG_ERR, "JWRobotMsg::Save can't abtain lock_ex of file " . $this->mFile);
+			throw new JWException("can't lock-ex file");
+		}
+			
 		$ret = true;
 
 		$ret = $ret && fputs($handle, "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n");
