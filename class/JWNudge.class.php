@@ -71,7 +71,16 @@ class JWNudge {
 					$device_type	= array_keys($device_row);
 					$device_type	= $device_type[0];
 
-					JWNudge::NudgeDevice( $device_row, $device_type, $message, $messageType );
+					if ( $device_type==$user_row['deviceSendVia'] ) {
+						JWNudge::NudgeDevice( $device_row, $device_type, $message, $messageType );
+					} else {
+						JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
+											."[$user_row[deviceSendVia]]"
+ 											."not equal for the only device type"
+											. "[$device_type] for user id[$user_id]"
+										);
+					}
+
 					break;
 				
 				case 2:

@@ -277,17 +277,21 @@ _SQL_;
 	}
 
 
+	/*
+	 *
+	 *	@return 	int	idUser	成功返回 idUser，失败返回 false;
+	 */
 	static function Verify($address, $type, $secret)
 	{
 		//XXX MySQL 5.0 比较英文字符的时候忽略大小写
-		$is_exist = JWDB::ExistTableRow('Device',array(	'address'	=> $address
+		$device_row = JWDB::GetTableRow('Device',array(	'address'	=> $address
 													,'type'		=> $type
 													,'secret'	=> $secret
 								) );
 
 		$ret = false;
 
-		if ( $is_exist ) // Verify PASS
+		if ( !empty($device_row) ) // Verify PASS
 		{
 			$sql = <<<_SQL_
 UPDATE	Device
@@ -310,7 +314,11 @@ _SQL_;
 
 		JWLog::Instance()->Log(LOG_INFO,"JWDevice::Verify([$address],[$type],[$secret]) " + $ret?'SUCC':'FAIL' );
 
-		return $ret;
+		if ( ! $ret )
+			return false;
+
+
+		return $device_row['idUser'];
 	}
 
 	
@@ -419,6 +427,7 @@ _SQL_;
 				break;
 		}
 
+//		$device_row = JWDevice::GetDeviceInfo(
 		return JWDB::UpdateTableRow('Device', $idDevice, array('enabledFor'=>$enabledFor));
 	}
 }

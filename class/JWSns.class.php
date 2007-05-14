@@ -229,5 +229,34 @@ class JWSns {
 
 		return JWStatus::Create($idUser,$status,$device);
 	}
+
+
+	/*
+	 *	验证设备，如果通过验证，则设置最新验证设备为接收设备
+	 *	@return	int		成功返回$idUser 失败返回false
+	 */
+	static public function VerifyDevice($address, $type, $secret)
+	{
+		$ret = false;
+
+		$user_id = JWDevice::Verify($robotMsg->GetAddress()
+									, $type
+									, $secret
+								);
+		
+		if ( $user_id )
+		{
+			if ( 'sms'!=$type )
+				$type = 'im';
+
+			JWUser::SetSendViaDevice($user_id, $type);
+		}
+
+		if ( !$ret )
+			return false;
+
+		return $user_id;
+	}
+
 }
 ?>

@@ -132,7 +132,7 @@ class JWRobotLogic {
 
 		$type = $robotMsg->GetType();
 
-		if ( JWDevice::Verify($robotMsg->GetAddress()
+		if ( JWSns::VerifyDevice($robotMsg->GetAddress()
 								, $type
 								, $secret
 								) )
