@@ -317,5 +317,50 @@ _SQL_;
 
 		return JWDB::ExistTableRow('Device', $condition);
 	}
+
+
+	static public function IsUserOwnDevice($idUser, $idDevice)
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		$idDevice	= JWDB::CheckInt($idDevice);
+
+		return JWDB::ExistTableRow('Device', array (	'id'		=> intval($idDevice)
+														,'idUser'	=> intval($idUser)
+											) );
+	}
+
+	static public function GetDeviceEnableFor($idDevice)
+	{
+		$idDevice	= JWDB::CheckInt($idDevice);
+
+		$row  		= JWDB::GetTableRow('Device', array('id'=>$idDevice) );
+
+		$enabled_for	= $row['enabledFor'];
+			
+		if ( empty($enabled_for) )
+			$enabled_for = 'nothing';
+
+		return $enabled_for;
+	}
+
+	static public function SetDeviceEnableFor($idDevice, $enabledFor)
+	{
+		$idDevice	= JWDB::CheckInt($idDevice);
+
+		switch ( $enabledFor )
+		{
+			case 'everything':
+				break;
+			case 'direct_messages':
+				break;
+			case 'nothing':
+				break;
+			default:
+				$enabledFor = 'nothing';
+				break;
+		}
+
+		return JWDB::UpdateTableRow('Device', $idDevice, array('enabledFor'=>$enabledFor));
+	}
 }
 ?>

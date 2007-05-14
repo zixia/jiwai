@@ -326,12 +326,12 @@ _SQL_;
 	 * @param	int		user pk
 	 * @return	bool	if user own status
 	 */
-	static public function IsUserOwnStatus ($idStatus, $idUser=null)
+	static public function IsUserOwnStatus ($idUser, $idStatus)
 	{
-		if ( null===$idUser )
-			$idUser = JWLogin::GetCurrentUserId();
+		$idUser 	= intval($idUser);
+		$idStatus	= intval($idStatus);
 
-		if ( !is_numeric($idStatus) || !is_numeric($idUser) )
+		if ( 0>=$idStatus || 0>=$idUser )
 			throw new JWException("must be int! [$idStatus] [$idUser]");
 
 		return JWDB::ExistTableRow('Status', array (	'id'		=> intval($idStatus)

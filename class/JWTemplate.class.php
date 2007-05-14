@@ -1049,14 +1049,14 @@ _HTML_;
 		if ( !$imActived )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/device/?im">启用聊天软件！</a></li>
+			<li><a href="/wo/devices/?im">启用聊天软件！</a></li>
 _HTML_;
 		}
 
 		if ( !$smsActived )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/device/?sms">启用手机短信！</a></li>
+			<li><a href="/wo/devices/?sms">启用手机短信！</a></li>
 _HTML_;
 		}
 		
@@ -1148,8 +1148,8 @@ _HTML_;
 	{
 		$arr_menu = array ( 'account'		=> array ( '/wo/account/setting'	, '帐号' )
 							, 'password'	=> array ( '/wo/account/password'	, '密码')
-							, 'device_sms'	=> array ( '/wo/device/?sms'		, '手机短信')
-							, 'device_im'	=> array ( '/wo/device/?im'			, '聊天软件')
+							, 'device_sms'	=> array ( '/wo/devices/?sms'		, '手机短信')
+							, 'device_im'	=> array ( '/wo/devices/?im'			, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification', '通知')
 							, 'picture'		=> array ( '/wo/account/picture'	, '头像')
 							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')
@@ -1302,6 +1302,33 @@ _HTML_;
 		}
 
 		echo "</table>";
+	}
+
+
+	static public function RedirectBackToLastUrl($defaultReturnRul=null)
+	{
+		$url = $defaultReturnRul;
+
+		 if ( isset($_SERVER['HTTP_REFERER']) )
+		{
+			$url = $_SERVER['HTTP_REFERER'];
+		}
+		else if ( isset($_SERVER['REDIRECT_SCRIPT_URI']) )
+		{
+			$url = $_SERVER['REDIRECT_SCRIPT_URI'];
+		}
+		else if ( array_key_exists('404URL',$_SESSION) )
+		{
+			$url = $_SESSION['404URL'];
+			unset ($_SESSION['404URL']);
+		}
+
+		if ( empty($url) ) {
+			header('Location: /');
+		} else {
+			header("Location: $url");
+		}
+		exit(0);
 	}
 }
 ?>
