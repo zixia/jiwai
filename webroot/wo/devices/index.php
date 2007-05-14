@@ -120,10 +120,15 @@ _INFO_;
 
 						<form action="/wo/devices/enable/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="device_control" id="device_<?php echo $aDeviceInfo['sms']['idDevice']?>_updates_form" method="post">
 							<select name="device[enabled_for]">
-  								<option selected="selected" value="everything">开启</option>
-  								<option value="nothing">关闭</option>
-
-  								<option value="direct_messages">站内消息</option>
+  								<option <?php if ('everything'==$aDeviceInfo['sms']['enabledFor']) 
+											echo 'selected="selected" ';
+										?> value="everything">开启</option>
+  								<option <?php if ('nothing'==$aDeviceInfo['sms']['enabledFor']) 
+											echo 'selected="selected" ';
+										?> value="nothing">关闭</option>
+  								<option  <?php if ('direct_messages'==$aDeviceInfo['sms']['enabledFor']) 
+											echo 'selected="selected" ';
+										?> value="direct_messages">站内消息</option>
 							</select>
 							<input name="commit" type="submit" value="保存" />
 						</form>
@@ -217,9 +222,15 @@ else
 								id="device_<?php echo $aDeviceInfo['im']['idDevice']?>_updates_form" method="post">
 
 							<select name="device[enabled_for]">
-  								<option value="everything">开启</option>
-  								<option value="nothing">关闭</option>
-  								<option value="direct_messages">站内消息</option>
+  								<option <?php if ('everything'==$aDeviceInfo['im']['enabledFor']) 
+											echo 'selected="selected" ';
+										?>value="everything">开启</option>
+  								<option <?php if ('nothing'==$aDeviceInfo['im']['enabledFor']) 
+											echo 'selected="selected" ';
+										?>value="nothing">关闭</option>
+  								<option <?php if ('direct_messages'==$aDeviceInfo['im']['enabledFor']) 
+											echo 'selected="selected" ';
+										?>value="direct_messages">站内消息</option>
 							</select>
 
 							<input name="commit" value="保存" type="submit">
