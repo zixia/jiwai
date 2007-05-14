@@ -28,10 +28,11 @@
 								WHERE timestamp < NOW()-24H AND id>id_status_last_auto_nudge
  *
  */
+define ('CONSOLE',true);
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
 
-$idStatusLastDay = JWNudge::GetIdStatusLastDayProcessed();
+$idStatusLastDay = JWAutoNudge::GetIdStatusLastDayProcessed();
 
 $idStatus_max = JWStatus::GetMaxId();
 
@@ -40,7 +41,7 @@ $idStatus_max = JWStatus::GetMaxId();
 		1、24小时前更新过，并且更新没有检查过 auto nudge (意味着idStatus>idStatusLastDay)的
 		2、24小时内未更新过的
  */
-$nudge_user_ids = JWNudge::GetIdUserNudgeDay();
+$nudge_user_ids = JWAutoNudge::GetIdUserNudgeDay();
 
 foreach ( $nudge_user_ids as $idUser )
 {

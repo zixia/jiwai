@@ -216,5 +216,18 @@ class JWSns {
 	}
 	
 
+	static public function	UpdateStatus( $idUser, $status, $device='web' )
+	{
+		// FIXME: Follower 最多可以有多少位？
+		$follower_ids = JWFollower::GetFollower($idUser);
+
+		if ( !empty($follower_ids) )
+		{
+			$user_name_screen = JWUser::GetUserInfo($idUser, 'nameScreen');
+			JWNudge::NudgeUserIds($follower_ids, "$user_name_screen: $status");
+		}
+
+		return JWStatus::Create($idUser,$status,$device);
+	}
 }
 ?>

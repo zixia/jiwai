@@ -106,7 +106,7 @@ class JWRobotLogic {
 		else
 		{	// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$user_state[idUser] @$type: $body");
-			if ( JWStatus::Create($user_state['idUser'], $body, $type ) )
+			if ( JWSns::UpdateStatus($user_state['idUser'], $body, $type ) )
 			{	// succeed posted, keep silence
 				return null;
 			}

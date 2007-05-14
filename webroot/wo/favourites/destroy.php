@@ -37,7 +37,7 @@ if ( ('XMLHttpRequest'==$_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_AJA
 	// AJAX here
 	$favourite_html	= JWTemplate::FavouriteAction($idStatus, false);
 
-	if ( JWStatus::IsUserOwnStatus($idStatus, $idLoginedUser) )
+	if ( JWStatus::IsUserOwnStatus($idLoginedUser,$idStatus) )
 		$favourite_html	.= JWTemplate::TrashAction($idStatus);
 
 	$favourite_html	= preg_replace('/"/', '\\"',$favourite_html);

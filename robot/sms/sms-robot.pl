@@ -38,7 +38,7 @@ my($sms_mt_chld_out, $sms_mt_chld_in);
 #my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "/proc/$$/cwd/sms_mt.php") or die "open2 $!";
 
 my $cwd = readlink "/proc/$$/cwd";
-my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "$cwd/sms_mt.php") or die "open2 $!";
+my $sms_mt_pid = open2($sms_mt_chld_out, $sms_mt_chld_in, "php $cwd/sms_mt.php") or die "open2 $!";
 
 syslog('info', "sms_mt pid $sms_mt_pid opened.");
 

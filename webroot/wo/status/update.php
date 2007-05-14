@@ -9,8 +9,8 @@ if ( array_key_exists('status', $_REQUEST) ){
 	{
 		$idUser = JWUser::GetCurrentUserInfo('id');
 
-		if ( !JWStatus::Create($idUser, $status) )
-			JWLog::Instance()->Log(LOG_ERR, "Create($id, $status) failed");
+		if ( !JWSns::UpdateStatus($idUser, $status) )
+			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
 	}
 }
 

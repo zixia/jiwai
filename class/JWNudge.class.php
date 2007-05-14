@@ -98,6 +98,10 @@ class JWNudge {
 
 	/*
 	 *	向一个 device 上发送消息
+	 *	@param	array	$deviceRow	JWDevice::GetDeviceRowsByUserIds 的返回结构
+	 *	@param	string	$smsOrIm	{'sms'|'im'}
+	 *	@param	string	$message
+	 *	@param	string	$messageType	{'nudge'|'direct_messages'}
 	 */
 	static public function NudeDevice( $deviceRow, $smsOrIm, $message, $messageType )
 	{
