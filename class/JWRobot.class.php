@@ -32,6 +32,7 @@ class JWRobot {
 	 */
 	static private $mQueuePathMo;
 	static private $mQueuePathMt;
+	static private $mQueuePathTmp;
 
 	/**
 	 * bad msg here
@@ -72,6 +73,14 @@ class JWRobot {
 								. $directory->mt
 								;
 
+		/*
+		 * 	JWRobotMsg 在没有完成时先把文件写在这里，然后 link 过去。
+		 *	避免 delive 空文件
+		 */
+		self::$mQueuePathTmp	= $directory->queue->root 
+								. $directory->tmp
+								;
+	
 		self::$mQuarantinePathMo	= $directory->quarantine->root 
 									. $directory->quarantine->robot 
 									. $directory->mo
@@ -132,6 +141,14 @@ class JWRobot {
 						. $robotMsg->GenFileName();
 		}while (file_exists($filename) );
 
+		/*
+	 	 *	为了提供队列目录中，文件出现的原子性（即inode被创建之时，文件内容已经ready），需要先写入tmp文件
+		 */
+		do{
+			$filename_tmp = self::$mQueuePathTmp
+							. $robotMsg->GenFileName();
+		}while (file_exists($filename_tmp) );
+
 
 		JWLog::Log(LOG_ERR
 						,"JWRobot::SendMt "
@@ -142,7 +159,7 @@ class JWRobot {
 						);
 
 
-		if ( ! $robotMsg->Save($filename) )
+		if ( ! $robotMsg->Save($filename, $filename_tmp) )
 		{	// can't save file
 			JWLog::Log(LOG_ERR
 							,"save msg err: " 

@@ -82,7 +82,7 @@ class JWNudge {
 						case 'sms':
 							// legal, fall to im
 						case 'im':
-							JWNudge::NudeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
+							JWNudge::NudgeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
 							break;
 
 						case 'none':

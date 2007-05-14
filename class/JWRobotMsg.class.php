@@ -165,7 +165,7 @@ class JWRobotMsg {
 		$this->mIsValid	= $this->IsValid(true);
 	}
 
-	public function Save($fileName=null)
+	public function Save($fileName=null, $fileNameTmp=null)
 	{
 		if ( $this->mReadOnly )
 			throw new JWException('cant modify readonly msg');
@@ -176,26 +176,28 @@ class JWRobotMsg {
 		if ( empty($this->mFile) || ! $this->IsValid() )
 			throw new JWException("can't save msg");
 
-		$handle = fopen($this->mFile, "w");
 
-		if (!$handle)
-			throw new JWException("can't save msg 2");
+		$file_contents = 	 "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n"
+							."\n"
+							.$this->mBody
+						;
 
-		if ( !flock($handle, LOCK_EX) )
-		{
-			JWLog::Log(LOG_ERR, "JWRobotMsg::Save can't abtain lock_ex of file " . $this->mFile);
-			throw new JWException("can't lock-ex file");
-		}
-			
 		$ret = true;
 
-		$ret = $ret && fputs($handle, "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n");
-		$ret = $ret && fputs($handle, "\n");
-
-		$ret = $ret && fputs($handle, $this->mBody);
-
-		$ret = $ret && fclose($handle);	
-
+		if ( empty($fileNameTmp) )
+		{
+			$ret = $ret && file_put_contents($this->mFile, $file_contents);
+		}
+		else
+		{
+			/*
+		 	 *	保证文件出现的原子性：inode和文件内容同时出现
+			 */
+			$ret = $ret && file_put_contents($fileNameTmp, $file_contents);
+			$ret = $ret && link($fileNameTmp, $this->mFile);
+			$ret = $ret && unlink($fileNameTmp);
+		}
+		
 		return $ret;
 	}
 

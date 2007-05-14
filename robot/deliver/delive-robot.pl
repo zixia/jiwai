@@ -3,6 +3,7 @@
 
 use strict;
 use POSIX;
+# use Fcntl qw (:flock); # import LOCK_* constants
 use Sys::Syslog;
 use Linux::Inotify2;
 
@@ -137,7 +138,6 @@ sub deliver_file {
 		{
 			my $dest_file = "$msg_type/$direction/$msg_type$file_name_tailer";
 
-			# XXX
 			syslog('info', "move $new_msg_file to $dest_file");
 			link($new_msg_file, $dest_file)
 				&& unlink($new_msg_file);
@@ -151,7 +151,6 @@ sub deliver_file {
 		{
 			my $dest_file = "robot/$direction/$msg_type$file_name_tailer";
 
-			# XXX
 			syslog('info', "move $new_msg_file to $dest_file");
 			link($new_msg_file, $dest_file)
 				&& unlink($new_msg_file);
@@ -159,4 +158,28 @@ sub deliver_file {
 	}
 }
 
+=pod=
+Inotify 会在文件 inode 建立的时候出发 event，这个核心的事件是如此的快，
+以至于这个时候 PHP 刚刚 open 文件，甚至连 flock 都没有来得及调用
+所以无法通过锁来确认。
 
+目前的解决方案是，JWRobotMsg::Save 的时候，先写入一个临时文件，然后再link过来。
+sub wait_file_ready()
+{
+	my $file_path_name = shift;
+
+	syslog('info', "opening file...");
+	if ( open ( FD, "<$file_path_name" ) )
+	{
+		# inotify 得到的文件可能还没有写完，这里配合 JWRobotMsg::Save 进行等待排它锁的释放
+		syslog('info', "getting lock...");
+		flock (FD,LOCK_SH);
+		syslog('info', "got lock.");
+		close FD;
+	}
+	else
+	{
+		syslog('err', "fopen [$file_path_name] failed, can't test flock sh");
+	}
+}
+=cut=

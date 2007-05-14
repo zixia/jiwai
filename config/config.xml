@@ -27,6 +27,7 @@
 	<directory>
 		<queue>
 			<root>/var/cache/tmpfs/jiwai/queue/</root>
+			<tmp>tmp/</tmp>
 			<robot>robot/</robot>
 			<msn>msn/</msn>
 			<sms>sms/</sms>
