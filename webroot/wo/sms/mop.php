@@ -65,6 +65,7 @@ function mop_mo()
 		global $arg_src, $arg_gid, $arg_dst
 				, $arg_linkid, $arg_msg;
 
+		error_log ( "mop.php mop_mo received urlencode msg: [$arg_msg]" );
 		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
 
 		//file_put_contents("/tmp/zixia.txt", "$arg_src -> $arg_dst\n$arg_msg");

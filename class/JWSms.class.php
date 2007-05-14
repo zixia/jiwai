@@ -158,7 +158,7 @@ class JWSms {
 	{
 		self::Instance();
 
-		JWLog::Instance()->Log ( LOG_INFO, "DeliverReport: [$msgId] of [$mobileNo] now [$deliveState], err [$errCode] @[$gateId]" );
+		JWLog::Instance()->Log ( LOG_INFO, "DeliverReport: [$msgId] of [$mobileNo] state [$deliveState], err [$errCode] @[$gateId]" );
 		return true;
 	}
 
