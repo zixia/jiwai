@@ -118,7 +118,7 @@ _INFO_;
 
 						通知：
 
-						<form action="/wo/device/enable/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="device_control" id="device_<?php echo $aDeviceInfo['sms']['idDevice']?>_updates_form" method="post">
+						<form action="/wo/devices/enable/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="device_control" id="device_<?php echo $aDeviceInfo['sms']['idDevice']?>_updates_form" method="post">
 							<select name="device[enabled_for]">
   								<option selected="selected" value="everything">开启</option>
   								<option value="nothing">关闭</option>
@@ -213,7 +213,7 @@ else
 
 						通知：
 			
-						<form action="/wo/device/enable/<?php echo $aDeviceInfo['im']['idDevice']?>" class="device_control" 
+						<form action="/wo/devices/enable/<?php echo $aDeviceInfo['im']['idDevice']?>" class="device_control" 
 								id="device_<?php echo $aDeviceInfo['im']['idDevice']?>_updates_form" method="post">
 
 							<select name="device[enabled_for]">
