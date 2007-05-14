@@ -79,7 +79,7 @@ class JWTemplate {
 
 	<meta name="robots" content="all" />
 
-	<link rel="shortcut icon" href="<?php echo $asset_url_favicon?>" type="image/gif" />
+	<link rel="shortcut icon" href="$asset_url_favicon" type="image/gif" />
 	
 	<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 
@@ -798,7 +798,7 @@ _HTML_;
 _HTML_;
 		if ( $sidebar )
 		echo <<<_HTML_
-			<li><strong>操作</strong></li>
+			<li><strong>好友操作</strong></li>
 _HTML_;
 
 
@@ -807,7 +807,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">nudge</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/nudge/$arr_user_info[id]">问询</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -844,7 +844,7 @@ _HTML_;
 		if ( isset($action['add']) )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friends/create/$arr_user_info[id]">结友</a> $arr_user_info[nameScreen]</li>
+			<li><a href="/wo/friends/create/$arr_user_info[id]">添加</a> $arr_user_info[nameScreen]</li>
 _HTML_;
 		}
 
@@ -853,7 +853,7 @@ _HTML_;
 			echo <<<_HTML_
 			<li>
 				<a href="/wo/friends/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">绝裂</a> $arr_user_info[nameScreen]
+						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -1189,7 +1189,7 @@ _HTML_;
 		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 
-		if ( preg_match('#(alpha)|(beta)\.jiwai\.de/#i',$_SERVER["HTTP_HOST"],$matches) )
+		if ( preg_match('#((alpha)|(beta))\.jiwai\.de#i',$_SERVER["HTTP_HOST"],$matches) )
 		{
 			$domain		= "$matches[1].jiwai.de";
 		}
