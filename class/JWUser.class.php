@@ -529,6 +529,10 @@ _SQL_;
 			return 'none';
 	}
 
+	/*
+	 *
+	 *	@return	bool	
+	 */
 	static public function SetSendViaDevice($idUser, $device)
 	{
 		$idUser = JWDB::CheckInt($idUser);

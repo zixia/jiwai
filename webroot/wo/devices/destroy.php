@@ -16,7 +16,7 @@ if ( $idUser=JWLogin::GetCurrentUserId()
 		$idDevice = $match[1];
 
 		if ( $method==='delete' ){
-			JWDevice::Destroy($idDevice);
+			JWSns::DestroyDevice($idDevice);
 		}
 	}
 }

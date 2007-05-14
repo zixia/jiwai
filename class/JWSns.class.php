@@ -246,7 +246,7 @@ class JWSns {
 			if ( 'sms'!=$type )
 				$type = 'im';
 
-			JWUser::SetSendViaDevice($user_id, $type);
+			$ret = JWUser::SetSendViaDevice($user_id, $type);
 		}
 
 		if ( !$ret )
@@ -255,5 +255,37 @@ class JWSns {
 		return $user_id;
 	}
 
+	/*
+	 *	删除设备，同时设置用户的设置为其他设备（如果用户有绑定其他设备的话）
+	 *	@return	bool
+	 */
+	static public function DestroyDevice($idDevice)
+	{
+		$ret = false;
+
+		$device_rows 	= JWDevice::GetDeviceRowsByIds(array($idDevice));
+		$device_row		= $device_rows[$idDevice];
+
+		$user_id				= $device_row['idUser'];
+		$destroy_device_type	= $device_row['type'];
+
+		$send_via_device	= JWUser::GetSendViaDevice($user_id);
+
+		if ( 'none'!=$send_via_device )
+		{
+			$device_map		= JWDevice::GetDeviceRowsByUserIds(array($user_id));
+			$device_info	= $device_map[$user_id];
+
+			$device_types		= array_keys($device_info);
+			$left_device_types	= array_diff($device_types, array($destroy_device_type) );
+
+			if ( !empty($left_device_types) ){
+				JWUser::SetSendViaDevice($user_id, $left_device_types[0]);
+			}
+		}
+
+		return JWDevice::Destroy($idDevice);
+	}
+	
 }
 ?>

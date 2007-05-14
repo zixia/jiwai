@@ -443,5 +443,43 @@ _SQL_;
 
 		return JWDB::UpdateTableRow('Device', $idDevice, array('enabledFor'=>$enabledFor));
 	}
+
+
+	/*
+	 *	根据 idDevice 获取 Row 的详细信息
+	 *	@param	array	idDevices
+	 * 	@return	array	以 idDevice 为 key 的 device row
+	 * 
+	 */
+	static public function GetDeviceRowsByIds( $idDevices)
+	{
+		if ( empty($idDevices) )
+			return array();
+
+		if ( !is_array($idDevices) )
+			throw new JWException('must array');
+
+		$condition_in = JWDB::GetInConditionFromArray($idDevices);
+
+		$sql = <<<_SQL_
+SELECT	*, id as idDevice
+FROM	Device
+WHERE	id IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+
+		$device_map = array();
+
+		foreach ( $rows as $row )
+		{
+			$device_map[$row['idDevice']] 	= $row;
+		}
+
+		return $device_map;
+	}
+
+
 }
 ?>
