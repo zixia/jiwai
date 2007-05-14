@@ -206,6 +206,7 @@ class JWSms {
 
 
 		list($msg,$msgfmt)	= self::FormatSms($smsMsg);
+
 		$msg				= urlencode(
 									iconv('UTF-8','GBK', $msg)
 							);		// urlencode的GBK编码消息
@@ -244,7 +245,7 @@ class JWSms {
 							. "&src=9911881612345" //XXX src ??
 						;
 
-		if ( !empty($msgfmt) )
+		if ( isset($msgfmt) )
 			$rpc_url .= "&msgfmt=$msgfmt";
 
 

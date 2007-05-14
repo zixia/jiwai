@@ -212,7 +212,7 @@ sub sms_deliver_file {
 	}
 	else
 	{
-		syslog('err', "MT FAIL: $new_msg_file");
+		syslog('err', "MT FAIL: $new_msg_file return [$retval]");
 	}
 }
 
