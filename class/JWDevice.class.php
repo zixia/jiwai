@@ -195,7 +195,7 @@ _SQL_;
 		return $aDeviceInfo;
 	}
 
-	static public function del( $idDevice )
+	static public function Destroy( $idDevice )
 	{
 		if ( !is_numeric($idDevice) )
 			return false;
@@ -410,6 +410,7 @@ _SQL_;
 		return $enabled_for;
 	}
 
+
 	static public function SetDeviceEnableFor($idDevice, $enabledFor)
 	{
 		$idDevice	= JWDB::CheckInt($idDevice);
@@ -417,17 +418,29 @@ _SQL_;
 		switch ( $enabledFor )
 		{
 			case 'everything':
+				$device_row = JWDB::GetTableRow('Device',array('id'=>$idDevice));
+				$user_id 	= $device_row['idUser'];
+				$type		= $device_row['type'];
+
+				if ( $type!='sms' )
+					$type = 'im';
+
+				JWUser::SetSendViaDevice($user_id, $type);
+
 				break;
+
 			case 'direct_messages':
 				break;
+
 			case 'nothing':
 				break;
+
 			default:
 				$enabledFor = 'nothing';
 				break;
 		}
 
-//		$device_row = JWDevice::GetDeviceInfo(
+
 		return JWDB::UpdateTableRow('Device', $idDevice, array('enabledFor'=>$enabledFor));
 	}
 }

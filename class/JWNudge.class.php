@@ -77,7 +77,7 @@ class JWNudge {
 						JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
 											."[$user_row[deviceSendVia]]"
  											."not equal for the only device type"
-											. "[$device_type] for user id[$user_id]"
+											. "[$device_type] for user id[$user_id], skiped."
 										);
 					}
 
