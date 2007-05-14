@@ -263,9 +263,13 @@ _SQL_;
 		$rows = JWDB::GetQueryResult($sql,true);
 
 
-		foreach ( $rows as $row )
-			$status_map[$row['idStatus']] = $row;
-
+		if ( empty($rows) ){
+			$status_map = array();
+		} else {
+			foreach ( $rows as $row ) {
+				$status_map[$row['idStatus']] = $row;
+			}
+		}
 
 		return $status_map;
 	}
