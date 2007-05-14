@@ -54,7 +54,8 @@ class JWTemplate {
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js' );
-?>
+
+		echo <<<_HTML_
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -63,7 +64,7 @@ class JWTemplate {
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de我" />
 
-	<link href="<?php echo $asset_url_css?>" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪de" />
@@ -82,12 +83,12 @@ class JWTemplate {
 	
 	<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 
-	<script type="text/javascript" src="<?php echo $asset_url_js_jiwai?>"></script>
-	<script type="text/javascript" src="<?php echo $asset_url_js_moo?>"></script>
+	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+	<script type="text/javascript" src="$asset_url_js_moo"></script>
 
 </head>
 
-<?php
+_HTML_;
 
 	}
 
