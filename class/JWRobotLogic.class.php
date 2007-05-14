@@ -138,18 +138,14 @@ class JWRobotLogic {
 								) )
 		{
 			$body = <<<_STR_
-:-D 恭喜，您已经通过了叽歪de验证！约1分钟后您就可以通过 ${type} 发送更新了！
-
-耶！
+:-D 恭喜，您已经通过了叽歪de验证！约1分钟后您就可以通过 ${type} 发送更新了！ 耶！
 _STR_;
 //(这一刻，你在做什么？ - http://JiWai.de)
 		}
 		else
 		{
 			$body = <<<_STR_
-:-( 非常抱歉，由于您输入的验证码"$secret"不正确，本次未能验证成功，请查证后重试。
-
-哼叽
+:-( 非常抱歉，由于您输入的验证码"$secret"不正确，本次未能验证成功，请查证后重试。 哼叽...
 _STR_;
 		}
 
@@ -167,9 +163,7 @@ _STR_;
 	static function Command_Help($robotMsg)
 	{
 		$body = <<<_STR_
-命令列表：
-help	- 帮助
-intro	- 简介
+命令列表： help:帮助 intro:简介
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -185,9 +179,7 @@ _STR_;
 	static function Command_Intro($robotMsg)
 	{
 		$body = <<<_STR_
-这一刻，你在做什么？
-
-免费注册叽歪de - http://JiWai.de
+这一刻，你在做什么？ 免费注册叽歪de - http://JiWai.de
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();

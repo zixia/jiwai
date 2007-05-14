@@ -39,111 +39,89 @@ class JWNudge {
 	{
 	}
 
-	static private function GetNudgeInfo($key)
+	/*
+	 *	向 $idUSers 的设备上发送消息
+	 *	@param	array of int	$idUsers
+	 *	@param	string			$message
+	 *	@type	string			$messageType	{'nudge'|'direct_messages'}
+	 *	@return	
+	 */
+	static public function NudgeUserIds($idUsers, $message, $messageType='nudge')
 	{
-		$sql = <<<_SQL_
-SELECT	*
-FROM	Nudge
-LIMIT	1
-_SQL_;
-		$nudge_info = JWDB::GetQueryResult($sql);
+		$user_rows		= JWUser::GetUserRowsByIds			($idUsers);
+		$device_rows	= JWDevice::GetDeviceRowsByUserIds	($idUsers);
 
-		return intval($nudge_info[$key]);
-	}
+		foreach ( $idUsers as $user_id )
+		{
+			$user_row	= $user_rows	[$user_id];
+			$device_row	= $device_rows	[$user_id];
 
-	static private function SetNudgeInfo($changeSet)
-	{
-		// TODO check param to make sure it's llegal
-		JWDB::UpdateTableRow('Nudge', 1, $changeSet);
-	}
+			// device_num 只可能：0:没有，1:有一个（im or sms），2:两个都有（im and sms）
+			$device_num = count(array_keys($device_row));
 
-	static public function GetIdStatusLastDayProcessed()
-	{
-		return self::GetNudgeInfo('idStatusLastDay');
-	}
+			
+			switch( $device_num ) 
+			{	
+				case 0:
+					// 如果用户没有 sms / im ，处理下一个
+					continue;
+					break;
 
-	static public function SetIdStatusLastDayProcessed($idStatusLastDay)
-	{
-		$current_id = self::GetIdStatusLastDayProcessed();
-		if ( $current_id > $idStatusLastDay )
-			throw new JWException('new id less then old id?!');
+				case 1:
+					$device_type	= array_keys($device_row);
+					$device_type	= $device_type[0];
 
-		return self::SetNudgeInfo( array('idStatusLastDay'=>$idStatusLastDay) );
-	}
+					JWNudge::NudeDevice( $device_row, $device_type, $message, $messageType );
+					break;
+				
+				case 2:
+					// 用户有 im & sms, fall to default
+				default:
+					switch ( $user_row['deviceSendVia'] )
+					{
+						case 'sms':
+							// legal, fall to im
+						case 'im':
+							JWNudge::NudeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
+							break;
 
-	static public function GetIdStatusLastWeekProcesse()
-	{
-	}
-
-	static public function SetIdStatusLastWeekProcessed()
-	{
-	}
-
-	static public function GetIdStatusLastMonthProcessed()
-	{
-	}
-	static public function SetIdStatusLastMonthProcessed()
-	{
+						case 'none':
+							//fall to default
+						default:
+							break;
+					}
+					break;
+			}
+		}
 	}
 
 
 	/*
-	 *	获取需要进行 24 小时未更新提醒的idUser列表
- 	 *	注意：获取列表后，系统就认为已经提醒过，再次调用本函数不很返回已经返回过的idUser.
+	 *	向一个 device 上发送消息
 	 */
-	static public function GetIdUserNudgeDay()
+	static public function NudeDevice( $deviceRow, $smsOrIm, $message, $messageType )
 	{
-		$id_status_last_day = self::GetIdStatusLastDayProcessed();
+		// 对特定的 device ( sms / im） - 查看 Device.enabledFor:
+		// enabledFor 可能有三个值: everything / nothing / direct_messages
+		switch ( $deviceRow[$smsOrIm]['enabledFor'] )
+		{
+			case 'direct_messages':
+				if ( 'direct_messages'!=$messageType )
+					break;
+				// if equal, fall to everything: send it.
 
-		$id_status_max		= JWStatus::GetMaxId();
+			case 'everything':
+				$type		= $deviceRow[$smsOrIm]['type'];
+				$address 	= $deviceRow[$smsOrIm]['address'];
+				JWRobot::SendMtRaw($address, $type, $message);
 
-		/*
-			选出idUser，条件为：
-				1、24小时前更新过，并且更新没有检查过 auto nudge (意味着idStatus>idStatusLastDay)的
-				2、24小时内未更新过的
- 		*/
+				break;
 
-		$now_before_24h	= time() - 24 * 60 * 60;
-		//$now_before_24h	= time() - 60*15;
-
-		// 获取最接近24小时前的最大 idStatus
-		$id_status_before_24h	= JWStatus::GetMaxIdStatusBeforeTime($now_before_24h);
-
-
-		/*
-		 * 在 最后处理到的  idStatus 和 24小时前的 idStatus 之间扫描用户
-		 */
-		$id_status_last_day_processed = self::GetIdStatusLastDayProcessed();
-
-		$sql = <<<_SQL_
-SELECT	distinct idUser
-FROM	Status
-WHERE	id BETWEEN $id_status_last_day_processed AND $id_status_before_24h
-		AND idUser NOT IN
-		(
-			SELECT 	idUser from Status
-			WHERE	id BETWEEN $id_status_before_24h AND $id_status_max
-		)
-_SQL_;
-
-		$result_array = JWDB::GetQueryResult($sql, true);
-
-		$id_users_need_nudge = array();
-
-		if ( !empty($result_array) ) {
-			foreach ( $result_array as $result ) {
-				array_push($id_users_need_nudge, $result['idUser']);
-			}
+			case 'nothing':
+				// fall to default
+			default:
+				break;
 		}
-
-		// 将已经处理过的 idStatus 记录到 Nudge 表的 idStatusLastDay中，
-		// 下次处理之处理 > idStatusLastDay 的
-		self::SetIdStatusLastDayProcessed($id_status_before_24h);
-
-		JWLog::Instance()->Log(LOG_INFO,"JWNudge::GetIdUserNudgeDay found " 
-									. count($id_users_need_nudge) . " user(s) need nudge");
-		return $id_users_need_nudge;
 	}
-
 }
 ?>

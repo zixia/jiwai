@@ -74,6 +74,7 @@ class JWFollower {
 SELECT	idFollower
 FROM	Follower
 WHERE	idUser=$idUser
+		AND idFollower IS NOT NULL
 LIMIT	$numMax
 _SQL_;
 

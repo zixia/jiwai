@@ -1010,11 +1010,12 @@ _HTML_;
 			<li>
 				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
 					<fieldset>
+						<h4>发送通知消息到:</h4>
 <?php
 		if ( $smsActived )
 		{
 ?>
-						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
+						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').send()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
 						<label for="current_user_send_via_sms">手机</label>
 
 <?php
@@ -1023,9 +1024,7 @@ _HTML_;
 		if ( $imActived )
 		{
 ?>
-						<h4>发送通知消息到:</h4>
-
-						<input checked="checked" id="current_user_send_via_im" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('im'==$viaDevice) echo ' checked="checked" '; ?>value="im" />
+						<input id="current_user_send_via_im" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('im'==$viaDevice) echo ' checked="checked" '; ?> value="im" />
 						<label for="current_user_send_via_im">聊天软件</label>
 
 <?php

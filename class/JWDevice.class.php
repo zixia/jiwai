@@ -97,11 +97,67 @@ _SQL_;
 
 
 	/*
+	 *	批量处理用户的 device 信息，返回一个较为复杂结构的数组，结构如下
+	 *	@return 	device_info
+	 *					[$idUser][sms]
+	 *					[$idUser][im]
+										[idDevice]	int
+	 *									[address]	string
+	 *									[secret]	string
+	 *									[verified]	bool
+										[enabledFor]	string
+	 */
+	static public function GetDeviceRowsByUserIds( $idUsers )
+	{
+		if ( empty($idUsers) )
+		{
+			JWLog::Log(LOG_ERR, 'JWDevice::GetDeviceRowsByUserIds([$idUsers]) got empty param');
+			return array();
+		}
+
+		$in_condition = JWDB::GetInConditionFromArray($idUsers, 'int');
+
+		$sql = <<<_SQL_
+SELECT	*,id as idDevice
+FROM	Device
+WHERE	idUser IN ( $in_condition )
+_SQL_;
+
+		if ( ! $db_rows = JWDB::GetQueryResult ($sql, true) ){
+			$db_rows = array();
+		}
+
+		$device_rows = array();
+
+		foreach ( $db_rows as $db_row )
+		{
+			$user_id = $db_row['idUser'];
+
+			if ( empty($db_row['enabledFor']) )
+				$db_row['enabledFor'] = 'nothing';
+
+			// 按照 sms / msn / gtalk 等进行分类数组存放
+			if ( $db_row['type'] === 'sms' ){
+				$device_rows[$user_id]['sms'] 				= $db_row;
+				$device_rows[$user_id]['sms']['verified'] 	= empty($db_row['secret']);
+			}else{ // qq/msn/gtalk/jaber...
+				$device_rows[$user_id]['im'] 				= $db_row;
+				$device_rows[$user_id]['im']['verified'] 	= empty($db_row['secret']);
+			}
+		}
+
+		return $device_rows;
+	}
+
+
+	/*
+	 *	@desprecited 废弃函数 //FIXME 这个英文怎么拼写？
 	 *	@return 	device_info
 	 *					[sms][idDevice]
 	 *					[sms][address]
 	 *					[sms][secret]
 	 *					[sms][verified]
+						[sms][enabledFor]
 	 *				so as [im]
 	 */
 	static public function GetDeviceInfo( $idUser )
@@ -112,7 +168,7 @@ _SQL_;
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_
-SELECT	id as idDevice,address,type,secret
+SELECT	id as idDevice,address,type,secret,enabledFor
 FROM	Device
 WHERE	idUser=$idUser
 LIMIT	2;
@@ -124,6 +180,9 @@ _SQL_;
 		$aDeviceInfo = array();
 
 		foreach ( $listDeviceInfo as $v ){
+			if ( empty($v['enabledFor']) )
+				$v['enabledFor'] = 'nothing';
+
 			if ( $v['type'] === 'sms' ){
 				$aDeviceInfo['sms'] = $v;
 				$aDeviceInfo['sms']['verified'] = empty($v['secret']);

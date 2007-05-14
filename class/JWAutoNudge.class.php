@@ -6,20 +6,20 @@
  */
 
 /**
- * JiWai.de Nudge Class
+ * JiWai.de AutoNudge Class
  */
-class JWNudge {
+class JWAutoNudge {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWNudge
+	 * @var JWAutoNudge
 	 */
 	static private $msInstance;
 
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWNudge
+	 * @return JWAutoNudge
 	 */
 	static public function &Instance()
 	{
@@ -43,7 +43,7 @@ class JWNudge {
 	{
 		$sql = <<<_SQL_
 SELECT	*
-FROM	Nudge
+FROM	AutoNudge
 LIMIT	1
 _SQL_;
 		$nudge_info = JWDB::GetQueryResult($sql);
@@ -54,7 +54,7 @@ _SQL_;
 	static private function SetNudgeInfo($changeSet)
 	{
 		// TODO check param to make sure it's llegal
-		JWDB::UpdateTableRow('Nudge', 1, $changeSet);
+		JWDB::UpdateTableRow('AutoNudge', 1, $changeSet);
 	}
 
 	static public function GetIdStatusLastDayProcessed()
@@ -140,7 +140,7 @@ _SQL_;
 		// 下次处理之处理 > idStatusLastDay 的
 		self::SetIdStatusLastDayProcessed($id_status_before_24h);
 
-		JWLog::Instance()->Log(LOG_INFO,"JWNudge::GetIdUserNudgeDay found " 
+		JWLog::Instance()->Log(LOG_INFO,"JWAutoNudge::GetIdUserNudgeDay found " 
 									. count($id_users_need_nudge) . " user(s) need nudge");
 		return $id_users_need_nudge;
 	}

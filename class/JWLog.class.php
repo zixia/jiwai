@@ -89,6 +89,9 @@ LOG_DEBUG debug-level message
 	*/
 	static public function Log($priority, $message)
 	{
+		// we use JWLog::Log directly.
+		self::Instance();
+
 		if ( $priority > self::$msVerbose )
 			return;
 

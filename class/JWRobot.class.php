@@ -117,8 +117,10 @@ class JWRobot {
 	 *	@param	robotMsgs	array of RobotMsg / one RobotMsg
 	 *	@return	true/false
 	 */
-	static function SendMt ($robotMsg)
+	static public function SendMt ($robotMsg)
 	{
+		self::Instance();
+
 		if ( empty($robotMsg) ){
 			throw new JWException("empty msg");
 		}
@@ -130,9 +132,19 @@ class JWRobot {
 						. $robotMsg->GenFileName();
 		}while (file_exists($filename) );
 
+
+		JWLog::Log(LOG_ERR
+						,"JWRobot::SendMt "
+							."Address[" . $robotMsg->GetAddress() . "] "
+							." Type[" . $robotMsg->GetType() . "]"
+							." Body[" . $robotMsg->GetBody() . "]"
+							." File [" . $filename . "]"
+						);
+
+
 		if ( ! $robotMsg->Save($filename) )
 		{	// can't save file
-			JWLog::Instance()->Log(LOG_ERR
+			JWLog::Log(LOG_ERR
 							,"save msg err: " 
 								.$robotMsg->GetAddress() 
 								." @" . $robotMsg->GetType() 
@@ -207,7 +219,7 @@ class JWRobot {
 				self::MainLoop();
 			}catch(Exception $e){
  				JWLog::Instance()->Log(LOG_ERR, 'main_loop exception' );
-				echo "Exception: " .  $e . "\n";
+				echo "Exception: " .  $e->getMessage() . "\n";
 			}
 		}
 	}
@@ -268,7 +280,7 @@ class JWRobot {
 		{
 			if ( ! preg_match('/([^\/]+)$/',$file_path,$matches) )
 			{
-				JWLog::Instance()->Log(LOG_ERR, "file[$file] format err?");
+				JWLog::Log(LOG_ERR, "file[$file] format err?");
 				return false;
 			}
 

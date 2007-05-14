@@ -32,9 +32,7 @@ class JWRobotMsg {
 	function __construct ($fileName=null)
 	{
 		if ( empty($fileName) )
-		{
 			return;
-		}
 
 		$this->Load($fileName);
 	}
@@ -50,13 +48,14 @@ class JWRobotMsg {
 
 		if ( false===file_get_contents($fileName) )
 		{
-			//throw new JWException("[$fileName] read failed");
+			JWLog::Instance()->Log(LOG_ERR, "[$fileName] read failed");
 			return false;
 		}
 
 		if ( ! preg_match('/^(.+?)\n\n(.+)$/s', $raw_msg_content, $matches) )
 		{
-			//throw new JWException("parse_msg($raw_msg_content) parse format failed");
+			
+			JWLog::Instance()->Log(LOG_ERR, "parse_msg($raw_msg_content) parse format failed");
 			return false;
 		}
 
@@ -92,7 +91,7 @@ class JWRobotMsg {
 			# first set true, then check unvalid values.
 			$this->mIsValid = true;
 
-			if ( ! (strlen($this->mAddress) && strlen($this->mType) && strlen($this->mBody)) )
+			if ( empty($this->mAddress) || empty($this->mType) || empty($this->mBody) )
 				$this->mIsValid = false;
 
 			if ( ! JWDevice::IsValid($this->mAddress,$this->mType) )
