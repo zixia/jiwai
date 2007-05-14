@@ -78,7 +78,7 @@ class JWRobot {
 		 *	避免 delive 空文件
 		 */
 		self::$mQueuePathTmp	= $directory->queue->root 
-								. $directory->tmp
+								. $directory->queue->tmp
 								;
 	
 		self::$mQuarantinePathMo	= $directory->quarantine->root 
@@ -99,6 +99,7 @@ class JWRobot {
 	{
 		if ( ! file_exists(self::$mQueuePathMo)
 				|| ! file_exists(self::$mQueuePathMt)
+				|| ! file_exists(self::$mQueuePathTmp)
 				|| ! file_exists(self::$mQuarantinePathMo)
 				|| ! file_exists(self::$mQuarantinePathMt)
 				)
@@ -107,12 +108,14 @@ class JWRobot {
 
 			mkdir(self::$mQueuePathMo,0700,true);
 			mkdir(self::$mQueuePathMt,0700,true);
+			mkdir(self::$mQueuePathTmp,0700,true);
 			mkdir(self::$mQuarantinePathMo,0700,true);
 			mkdir(self::$mQuarantinePathMt,0700,true);
 		}
 	
 		if ( ! is_writeable(self::$mQueuePathMo) 
 				|| !is_writeable(self::$mQueuePathMt)
+				|| !is_writeable(self::$mQueuePathTmp)
 				|| !is_writeable(self::$mQuarantinePathMo)
 				|| !is_writeable(self::$mQuarantinePathMt)
 				)
