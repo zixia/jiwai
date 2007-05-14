@@ -239,10 +239,7 @@ class JWSns {
 	{
 		$ret = false;
 
-		$user_id = JWDevice::Verify($robotMsg->GetAddress()
-									, $type
-									, $secret
-								);
+		$user_id = JWDevice::Verify($address , $type , $secret);
 		
 		if ( $user_id )
 		{

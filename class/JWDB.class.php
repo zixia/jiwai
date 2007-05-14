@@ -325,7 +325,7 @@ class JWDB {
 			if ( $first ){
 				$first = false;
 			} else {
-				$where_condition .= ",";
+				$where_condition .= " AND ";
 			}
 
 			$where_condition .= "$k=";
