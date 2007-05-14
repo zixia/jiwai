@@ -54,10 +54,10 @@ class JWNudge {
 		foreach ( $idUsers as $user_id )
 		{
 			$user_row	= $user_rows	[$user_id];
-			$device_row	= $device_rows	[$user_id];
+			$device_row	= @$device_rows	[$user_id];
 
 			// device_num 只可能：0:没有，1:有一个（im or sms），2:两个都有（im and sms）
-			$device_num = count(array_keys($device_row));
+			$device_num = count(@array_keys($device_row));
 
 			
 			switch( $device_num ) 
