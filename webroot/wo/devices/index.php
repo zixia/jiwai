@@ -82,7 +82,7 @@ _INFO_;
 <?php if ( !isset($aDeviceInfo['sms']) || null==$aDeviceInfo['sms']) { // no sms at all 
 // FIXME: 两个保存按钮，应该任何一个按钮都能保存所有的用户填写信息
 ?>
-						<form action="/wo/device/create" id="create_device" method="post">
+						<form action="/wo/devices/create" id="create_device" method="post">
   
 
     						<input id="device_type" name="device[type]" type="hidden" value="sms" />
@@ -105,7 +105,7 @@ _INFO_;
   
 
 						<small>
-							<form method="post" action="/wo/device/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to"><div><input name="_method" type="hidden" value="delete" /><input onclick="return confirm('请确认删除手机号码：<?php echo $aDeviceInfo['sms']['address']?>');" type="submit" value="删除，然后重新设置？" /></div></form></small>
+							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to"><div><input name="_method" type="hidden" value="delete" /><input onclick="return confirm('请确认删除手机号码：<?php echo $aDeviceInfo['sms']['address']?>');" type="submit" value="删除，然后重新设置？" /></div></form></small>
 
     
   </td>
@@ -140,7 +140,7 @@ _INFO_;
 						<p>注意：<strong>免费</strong>通过手机短信更新叽歪de内容。发送短信到叽歪de特服号，跟日常短信一样，只需付给你的手机运营商一条普通短信的费用。 </p>
 
 						<small>
-							<form method="post" action="/wo/device/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" type="hidden" value="delete" />
 									<input onclick="return confirm('请确认删除手机号码：<?php echo $aDeviceInfo['sms']['address']?>');" type="submit" value="删除?" />	
@@ -170,7 +170,7 @@ else
 <?php if ( empty($aDeviceInfo['im']) ) { // no im at all ?>
 
 
-						<form action="/wo/device/create" id="create_device" method="post">
+						<form action="/wo/devices/create" id="create_device" method="post">
   
     						<input id="device_address" name="device[address]" size="30" type="text" />
 
@@ -201,7 +201,7 @@ else
   						</p>
 
 						<small>
-							<form method="post" action="/wo/device/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" value="delete" type="hidden">
 									<input onclick="return confirm('请你确认删除帐号：<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>')" 
@@ -243,7 +243,7 @@ else
 
 
 						<small>
-							<form method="post" action="/wo/device/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" value="delete" type="hidden">
 									<input onclick="return confirm('请确认删除帐号：<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>？');" 
