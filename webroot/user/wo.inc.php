@@ -107,7 +107,7 @@ $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 
 if ( ! JWLogin::IsLogined() )
 	array_push ( $arr_menu, 
-					array('register', null)
+					array('register', array(true) )
 				);
 
 

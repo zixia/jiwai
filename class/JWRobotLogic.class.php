@@ -51,7 +51,7 @@ class JWRobotLogic {
 	/*
 	 * @return 
 	 * 		JWRobotMsg				- reply one msg
-	 * 		array of JWRobotMsg		- reply many msg
+	 * 		TODO array of JWRobotMsg		- reply many msg
 	 * 		null					- no need to reply
 	 * 		false					- in case of error
 	 */
@@ -64,10 +64,24 @@ class JWRobotLogic {
 		}
 		
 		if ( ! $robotMsg->IsValid() )
+		{
+			JWLog::Instance()->Log(LOG_CRIT, 'JWRobotLogic::process_mo received a invalid msg' );
 			return false;
+		}
 
 		$body = $robotMsg->GetBody();
 
+		/*
+		 *	一个 MO 消息有如下几种状态：
+				1、用户从来没有用过，发送给特服号码一条短信
+				2、用户从来没有用过，发送给特服号码一条短信后，得到输入用户名的提示，又发回来了用户名
+				3、用户是被邀请来的，发送了accept/deny
+				4、用户设备没有经过验证
+				5、用户设备已经通过验证
+		 *
+		 *
+		 *
+		 */
 		if ( preg_match('/^(\w+)/',$body,$matches) 
 				&& isset(self::$msRobotCommand[strtolower($matches[1])]) )
 		{

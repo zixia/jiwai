@@ -671,14 +671,20 @@ _HTML_;
 
 	}
 
-	static function sidebar_register()
+	static function sidebar_register($showLogin=false)
 	{
 ?>
 
 		<div class="notify">
   			想拥有一个叽歪de帐号吗？<br />
   			<a href="/wo/account/create" class="join">免费注册！</a><br />
+<?php 	if ( !$showLogin ) { ?>
   			10秒搞定！
+			<br/>
+<?php	} else { ?>
+			已经有帐号了？
+			<a href="/wo/login">登录！</a>
+<?php 	} ?>
   		</div>
 
 <?php
