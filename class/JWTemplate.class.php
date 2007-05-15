@@ -622,7 +622,7 @@ if ( isset($current_user_id) )
 				<div class="pagination">
   					<ul>
   						<li class="nextpage">
-	   	 					<a href="/home?page=2">前一页 &#187;</a>
+	   	 					<a href="/wo/?page=2">前一页 &#187;</a>
   						</li>
   					</ul>
 				</div>
@@ -990,7 +990,7 @@ _HTML_;
 
 		<div class="msg">
 			欢迎回来，
-			<strong><a href="/<?php echo $userInfo['nameScreen'];?>"><?php echo $userInfo['nameFull'];?></a></strong>
+			<strong><a href="/<?php echo $userInfo['nameScreen'];?>/"><?php echo $userInfo['nameFull'];?></a></strong>
 		</div>
 
 		<ul>
@@ -1122,7 +1122,7 @@ _HTML_;
 	{
 ?>
 				<span class="statuses_options">
-   			 		<a class="rss" href="/statuses/friends_timeline/762460.rss">RSS</a>
+   			 		<a class="rss" href="http://api.jiwai.de/statuses/public_timeline.rss">RSS</a>
 				</span>
 
 <?php
