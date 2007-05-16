@@ -47,7 +47,7 @@ class JWDB {
 	 */
 	function __construct()
 	{
-		$db_config = JWConfig::instance();
+		$db_config = JWConfig::Instance();
 		$db_config = $db_config->db;
 
 		if ( !isset($db_config) )
@@ -79,9 +79,7 @@ class JWDB {
 
 	static public function GetDb()
 	{
-		if (empty(self::$mysqli_link__)){
-			JWDB::instance();
-		}
+		JWDB::Instance();
 
 		return self::$mysqli_link__;
 	}
@@ -363,6 +361,98 @@ class JWDB {
 	}
 
 	/*
+	 *	将一个  array 变为 "('zixia@zixia.net','msn'), ('yaya@zixia.net', 'msn')" 或者 "(1,2),(2,3)"
+	 *
+	 *	@param	array	$arrayOfArray	array( array('address'=>'zixia@zixia.net','type'=>'msn'), array(), array() )
+	 *	@param	array	$keys			array 中 key 的顺序。array( 'address', 'type' )
+	 *	@param	array	$type			取值 {int|char}，代表数据类型
+	 *
+	 *	@return	string	$in_condition	可以用在 IN ( $in_condition ) 的 SQL 语句中
+	 */
+	static public function GetInConditionFromArrayOfArray( $arrayOfArray, $keys, $type='char' )
+	{
+		if ( !is_array($arrayOfArray) )
+			throw new JWException('must array');
+
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWDB::GetInConditionFromArrayOfArray_${type}_" . join("_", $keys);
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = '
+            	if ( empty($reduce_string) )
+                	$reduce_string = "";
+            	else
+	                $reduce_string .= ",";
+	
+				switch ($type)
+				{
+					case "int"	:
+						$reduce_string 		.= "(";
+						$is_first = true;
+						foreach ( $keys as $key )
+						{
+							if ( $is_first )	$is_first = false;
+							else				$reduce_string .= ",";
+
+							$reduce_string .= intval($oneArray[$key]);
+						}
+						$reduce_string 		.= ")";
+						break;
+
+					case "char"	:
+						//fall to default
+					default		:
+						$reduce_string 		.= "(";
+						$is_first = true;
+						foreach ( $keys as $key )
+						{
+							if ( $is_first )	$is_first = false;
+							else				$reduce_string .= ",";
+
+	
+							$reduce_string .= "\'$oneArray[$key]\'";
+						}
+						$reduce_string 		.= ")";
+						break;
+				}
+				return $reduce_string;
+';
+
+			
+			/*
+			 *	构造参数中的缺省值 array 字符串
+			 */
+			$keys_array_content	= "array(";
+			$is_first = true;
+			foreach ( $keys as $key )
+			{
+				if ( $is_first )
+					$is_first = false;
+				else
+					$keys_array_content .= ",";
+
+				$keys_array_content .= "'$key'";
+			}
+			$keys_array_content .= ")";
+
+
+			$reduce_function_param 	= '$reduce_string, $oneArray, $keys=' . $keys_array_content . ', $type=' . "'$type'";
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+		
+		$condition_in = array_reduce($arrayOfArray, $func_callable_name, '');
+		return $condition_in;
+
+	}
+	
+
+	/*
 	 *	将一个  array 变为 "1,2,3" 或者 "'zixia','daodao'"
 	 *	@param	array	$ids
 	 *	@param	array	$type			取值 {int|char}，代表数据类型
@@ -375,32 +465,41 @@ class JWDB {
 
 		$ids = array_unique($ids);
 
-		$reduce_function_content = <<<_FUNC_
-            if ( empty(\$reduce_string) )
-                \$reduce_string = '';
-            else
-                \$reduce_string .= ",";
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWDB::GetInConditionFromArray_$type";
+		$func_callable_name	= JWFunction::Get($func_key_name);
 
-			switch (\$type)
-			{
-				case 'int'	:
-					\$reduce_string .= intval(\$id);
-					break;
-				case 'char'	:
-					//fall to default
-				default		:
-					\$reduce_string .= "'\$id'";
-					break;
-			}
-			return \$reduce_string;
-_FUNC_;
-		$condition_in = array_reduce(	$ids
-										,create_function(
-												"\$reduce_string, \$id, \$type='$type'"
-												,"$reduce_function_content"
-											)
-										,''
-									);
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = '
+            	if ( empty($reduce_string) )
+                	$reduce_string = "";
+            	else
+	                $reduce_string .= ",";
+	
+				switch ($type)
+				{
+					case "int"	:
+						$reduce_string .= intval($id);
+						break;
+					case "char"	:
+						//fall to default
+					default		:
+						$reduce_string .= "\'$id\'";
+						break;
+				}
+				return $reduce_string;
+';
+
+			$func_callable_name = create_function( "\$reduce_string, \$id, \$type='$type'"
+														,"$reduce_function_content"
+													);
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+		
+		$condition_in = array_reduce($ids, $func_callable_name, '');
 		return $condition_in;
 	}
 	
