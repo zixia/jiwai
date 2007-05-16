@@ -40,6 +40,8 @@ class JWRobotLingo {
 			,'ACCEPT'	=> array( 'func'=>'Lingo_Accept','param'=>1)
 			,'DENY'		=> array( 'func'=>'Lingo_Deny' 	,'param'=>1)
 
+			,'REG'		=> array( 'func'=>'Lingo_Reg' 	,'param'=>1)
+
 			,'D'		=> array( 'func'=>'Lingo_D' 	,'param'=>999)
 
 		);
@@ -118,18 +120,24 @@ class JWRobotLingo {
 		}
 
 
-		$lingo_ifo	= self::$msRobotLingo[$lingo];
 
-		$param_count = count( preg_split('/\s+/',$param) );
+		$lingo_info	= self::$msRobotLingo[$lingo];
+
+		if ( empty($param) )
+			$param_count = 0;
+		else
+			$param_count = count( preg_split('/\s+/',$param) );
 
 
 	 	/* 	lingo_info[param] 设置这个命令接受的最多参数
 		 *	如果用户输入多于这个最大值，则不当作lingo处理。
 		 * 	（如用户输入"on the way home"）
 		 */
+echo "Lingo: $lingo, param: $param param_count: $param_count lingo_info['param']=" . $lingo_info['param'] . "\n";
 		if ( $param_count > $lingo_info['param'] )
 			return false;
 
+echo "lingo_info: " . $lingo_info['func'] . "\n";
 		$lingo_function = array('JWRobotLingo', $lingo_info['func']);
 
 		if ( ! is_callable($lingo_function) )
@@ -148,7 +156,7 @@ class JWRobotLingo {
 
 		$robot_reply_msg->Set( $robotMsg->GetAddress()
 								, $robotMsg->GetType()
-								, $$message
+								, $message
 							);
 
 		return $robot_reply_msg;
@@ -212,12 +220,17 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
 
-		$user_id	= $device_rows[$type][$address]['idUser'];
-		$device_id	= $device_rows[$type][$address]['idDevice'];
+		if ( empty($address_device_ids) )
+			return self::Lingo_Reg($robotMsg);
+
+		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+
+		$user_id	= $address_device_rows[$type][$address]['idUser'];
+		$device_id	= $address_device_rows[$type][$address]['idDevice'];
 
 		
 		if ( 'sms'==$type )
@@ -255,15 +268,21 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
 
-		$user_id	= $device_rows[$type][$address]['idUser'];
-		$device_id	= $device_rows[$type][$address]['idDevice'];
+		if ( empty($address_device_ids) )
+			return self::Lingo_Reg($robotMsg);
 
-		$user_device_rows		= JWDevice::GetDeviceRowsByUserIds( array($user_id) );
-		$user_device_row		= $user_device_rows[$user_id];
+
+		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+
+
+		$user_device_row		= $address_device_rows[$type][$address];
+		$user_id				= $user_device_row['idUser'];
+		$device_id				= $user_device_row['idDevice'];
+
 
 		if ( 'sms'==$type && isset($user_device_row['im']) ) {
 			// 如果关闭的是 sms，而用户又有 im 帐号绑定
@@ -303,11 +322,18 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
 
-		$address_user_id	= $device_rows[$type][$address]['idUser'];
+		if ( empty($address_device_ids) )
+			return self::Lingo_Reg($robotMsg);
+
+
+		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+
+
+		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
 
 
 		/*
@@ -326,7 +352,7 @@ _STR_;
 		 */
 		$followe_user_row = JWUser::GetUserInfo( $followe );
 
-		JWFollower::Create($followe_user_row['idUser'], $address_user_id);
+		JWSns::CreateFollowers($followe_user_row['idUser'], array($address_user_id));
 
 
 		$body = <<<_STR_
@@ -360,12 +386,19 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
+		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds( $address_device_ids );
 
-		$address_user_id	= $device_rows[$type][$address]['idUser'];
+		$address_user_id	= @$address_device_rows[$type][$address]['idUser'];
 
+
+		if ( empty($address_user_id) )
+			return self::Lingo_Reg($robotMsg);
+
+		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_row	= $address_user_rows[$address_user_id];
 
 		/*
 	 	 *	解析命令参数
@@ -382,7 +415,7 @@ _STR_;
 		 */
 		$followe_user_row = JWUser::GetUserInfo( $followe );
 
-		JWFollower::Destroy($followe_user_row['idUser'], $address_user_id);
+		JWSns::DestroyFollowers($followe_user_row['idUser'], array($address_user_row['idUser']));
 
 
 		$body = <<<_STR_
@@ -416,11 +449,12 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
+		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
-		$address_user_id	= $device_rows[$type][$address]['idUser'];
+		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
 		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
@@ -440,9 +474,10 @@ _STR_;
 		/*
 		 *	查看被添加的手机号码是否已经存在
 		 */
-		$invitee_device_rows = JWDevice::GetDeviceRowsByAddress(	array(
-													array('address'=>$invitee_sms_number,'type'=>'sms')
-												) );
+		$invitee_device_ids 	= JWDevice::GetDeviceIdsByAddress(
+											array('address'=>$invitee_sms_number,'type'=>'sms')
+										);
+		$invitee_device_rows 	= JWDevice::GetDeviceAddressRowsByIds($invitee_device_ids);
 
 		if ( isset($invitee_device_rows['sms'][$invitee_sms_number]) )
 		{
@@ -501,11 +536,15 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+
+		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
+		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
-		$address_user_id	= $device_rows[$type][$address]['idUser'];
+		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_row	= $address_user_rows[$address_user_id];
 
 
 		/*
@@ -556,7 +595,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^leave\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^get\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$friend_name = $matches[1];
@@ -566,6 +605,9 @@ _STR_;
 		 */
 		$friend_user_row = JWUser::GetUserInfo( $friend_name );
 
+		if ( empty($friend_user_row['idUser']) )
+			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+
 		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_row['idUser'], 1);
 
 		if ( empty($status_ids) )
@@ -574,9 +616,9 @@ _STR_;
 		}
 		else
 		{
-			$status_id	= $status_ids[0];
+			$status_id		= $status_ids['status_ids'][0];
 
-			$status_rows	= JWStatus::GetStatusRowsByIds ( $status_ids );
+			$status_rows	= JWStatus::GetStatusRowsByIds ( array($status_id) );
 			$status_row		= $status_rows[$status_id];
 			$status	= $status_row['status'];
 		}
@@ -616,6 +658,9 @@ _STR_;
 		$friend_name 		= $matches[1];
 		$friend_user_row	= JWUser::GetUserInfo($friend_name);
 
+		if ( empty($friend_user_row['idUser']) )
+			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+
 
 		/*
 		 *	获取发送者的 idUser
@@ -623,17 +668,19 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_rows	= JWDevice::GetDeviceRowsByAddresses(	array( 
+
+		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
 													array('address'=>$address,'type'=>$type) 
 											) );
+		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
-		$address_user_id	= $device_rows[$type][$address]['idUser'];
+		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
 		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
 
 		$nudge_message = <<<_NUDGE_
-$address_user_row[screenName]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
+$address_user_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
 _NUDGE_;
 
 		JWNudge::NudgeUserIds(array($friend_user_row['idUser']), $nudge_message, 'nudge');
@@ -674,11 +721,25 @@ _STR_;
 		$friend_name 		= $matches[1];
 		$friend_user_row	= JWUser::GetUserInfo($friend_name);
 
-		$register_date	= date("Y年n月",strtotime($friend_user_row[timeCreate]));
+		if ( empty($friend_user_row['idUser']) )
+			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+
+
+		$register_date	= date("Y年n月",strtotime($friend_user_row['timeCreate']));
 	
 		$body = <<<_STR_
-$friend_user_row[nameFull] / 注册时间: $register_date / 简介: $friend_user_row[bio] / 位置: $friend_user_row[location] / 网站: $friend_user_row[url]
+$friend_user_row[nameFull] / 注册时间: $register_date
 _STR_;
+
+		if ( !empty($friend_user_row['bio']) )
+			$body .= " / 简介: $friend_user_row[bio]";
+
+		if ( !empty($friend_user_row['location']) )
+			$body .= " / 位置: $friend_user_row[location]";
+
+		if ( !empty($friend_user_row['url']) )
+			$body .= " / 网站: $friend_user_row[url]";
+
 
 		$robot_reply_msg = new JWRobotMsg();
 		
@@ -838,6 +899,26 @@ _STR_;
 
 		return $robot_reply_msg;
 	}
+
+	/*
+	 *
+	 */
+	static function	Lingo_Reg($robotMsg)
+	{
+		$body = <<<_STR_
+注册用户
+_STR_;
+
+		$robot_reply_msg = new JWRobotMsg();
+		
+		$robot_reply_msg->Set( $robotMsg->GetAddress()
+								, $robotMsg->GetType()
+								, $body
+							);
+
+		return $robot_reply_msg;
+	}
+
 
 }
 ?>

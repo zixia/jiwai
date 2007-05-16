@@ -242,7 +242,7 @@ _SQL_;
 		}
 
 		$sql = <<<_SQL_
-SELECT	*
+SELECT	*, id as idUser
 FROM	User 
 WHERE	$by_what='$value' LIMIT 1
 _SQL_;

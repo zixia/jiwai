@@ -82,16 +82,16 @@ class JWRobotLogic {
 		 *
 		 *
 		 */
-		if ( preg_match('/^(\w+)/',$body,$matches) 
-				&& isset(self::$msRobotCommand[strtolower($matches[1])]) )
-		{
-			$cmd = strtolower($matches[1]);
+		$lingo_func = JWRobotLingo::GetLingoFunctionFromMsg($robotMsg);
 
-			// user JiWai command
-			return call_user_func(array('JWRobotLogic', self::$msRobotCommand[$cmd]), $robotMsg);
+		if ( !empty($lingo_func) )
+		{
+echo "\nfound lingo\n";
+			return call_user_func($lingo_func, $robotMsg);
 		}
 		else // user JiWai status or verify code
 		{
+echo "\nnot lingo\n";
 			return self::ProcessMoStatus($robotMsg);
 		}
 	}
@@ -108,17 +108,20 @@ class JWRobotLogic {
 		$user_state = JWDevice::GetUserStateFromDevice($address,$type);
 
 		if ( empty($user_state) )
-		{	// user not registed
+		{	
+			// user not registed
 			JWLog::Instance()->Log(LOG_NOTICE,"UNKNOWN IM: $type://$address [$body]");
-			return self::Command_Intro($robotMsg);
+			return JWRobotLingo::Lingo_Tips($robotMsg);
 		}
 		else if ( ! empty($user_state['secret']) )
-		{	// device not verified
+		{	
+			// device not verified
 			JWLog::Instance()->Log(LOG_INFO,"VERIFY:\t$user_state[idUser] $user_state[secret]");
 			return self::ProcessMoVerifyDevice($robotMsg);
 		}
 		else
-		{	// update jiwai status
+		{	
+			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$user_state[idUser] @$type: $body");
 			if ( JWSns::UpdateStatus($user_state['idUser'], $body, $type ) )
 			{	// succeed posted, keep silence
@@ -164,39 +167,6 @@ _STR_;
 :-( 非常抱歉，由于您输入的验证码"$secret"不正确，本次未能验证成功，请查证后重试。 哼叽...
 _STR_;
 		}
-
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
-	}
-
-
-	static function Command_Help($robotMsg)
-	{
-		$body = <<<_STR_
-命令列表： help:帮助 intro:简介
-_STR_;
-
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
-	}
-
-	static function Command_Intro($robotMsg)
-	{
-		$body = <<<_STR_
-这一刻，你在做什么？ 免费注册叽歪de - http://JiWai.de
-_STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
 		

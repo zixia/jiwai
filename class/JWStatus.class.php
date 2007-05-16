@@ -259,7 +259,6 @@ FROM	Status
 WHERE	Status.id IN ($condition_in)
 _SQL_;
 
-//die($sql);
 		$rows = JWDB::GetQueryResult($sql,true);
 
 

@@ -118,15 +118,54 @@ class JWSns {
 	 */
 	static public function CreateFollower($userRow, $followerRow)
 	{
+		$user_id 		= $userRow['idUser'];
+		$follower_id 	= $followerRow['idUser'];
+
 		// TODO check idUser permission
 		
-		if ( ! JWFollower::Create($userRow['idUser'], $followerRow['idUser']) )
-			throw new JWException('JWFollower::Create failed');
+		if ( JWFollower::IsFollower	($user_id, $follower_id) )
+			return true;
+
+		if ( ! JWFollower::Create	($user_id, $follower_id) )
+		{
+			JWLog::Log(LOG_CRIT, "JWSns::CreateFollower($user_id, $follower_id) failed.");
+			return false;
+		}
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
 		
 		return true;
 	}
+
+
+	/*
+	 *	将 idFollower 不做为 idUser 的粉丝了，并负责处理相关逻辑（发送通知邮件等）
+	 */
+	static public function DestroyFollowers($idUser, $idFollowers, $biDirection=false)
+	{
+		foreach ( $idFollowers as $follower_id )
+		{
+			if ( JWFollower::IsFollower($idUser, $follower_id) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JW::DestroyFollower JWFollower::Destroy($idUser,$follower_id).");
+				if ( ! JWFollower::Destroy($idUser, $follower_id) )
+				{
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFollowers JWFollower::Destroy($idUser, $follower_id) failed.");
+				}
+			}else if ( $biDirection && JWFollower::IsFollower($follower_id,$idUser) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFollower JWFollower::Destroy($follower_id, $idUser).");
+				if ( ! JWFollower::Destroy($follower_id, $idUser) )
+				{
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFollowers JWFollower::Destroy($follower_id, $idUser) failed.");
+				}
+			}
+
+		}
+		
+		return true;
+	}
+
 
 
 	/*
@@ -143,7 +182,7 @@ class JWSns {
 
 		foreach ( $idFollowers as $follower_id )
 		{
-			if ( $follow_id==$idUser )
+			if ( $follower_id==$idUser )
 				continue;
 
 			JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
@@ -335,5 +374,32 @@ class JWSns {
 
 		return true;
 	}
+
+	/*
+	 *	将 idFriend 不做为 idUser 的好友了，并负责处理相关逻辑（是否双向决裂等）
+	 */
+	static public function DestroyFriends($idUser, $idFriends, $biDirection=false)
+	{
+		foreach ( $idFriends as $friend_id )
+		{
+			if ( JWFriend::IsFriend($idUser, $friend_id) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JW::DestroyFriend JWFriend::Destroy($idUser,$friend_id).");
+				if ( ! JWFriend::Destroy($idUser, $friend_id) )
+				{
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
+				}
+			}else if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriend JWFriend::Destroy($friend_id, $idUser).");
+				if ( ! JWFriend::Destroy($friend_id, $idUser) )
+				{
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
+				}
+			}
+
+		}
+	}
+
 }
 ?>

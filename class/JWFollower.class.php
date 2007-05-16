@@ -150,7 +150,7 @@ _SQL_;
 		try {
 			$result = JWDB::Execute($sql) ;
 		} catch(Exception $e) {
-			JWLog::Instance()->Log(LOG_ERR, $e );
+			JWLog::Instance()->Log(LOG_ERR, $e->getTraceAsString() );
 			return false;
 		}
 		return true;
