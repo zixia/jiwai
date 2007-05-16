@@ -813,7 +813,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">推推</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}

@@ -106,6 +106,7 @@ class JWNudge {
 					break;
 			}
 		}
+		return true;
 	}
 
 
