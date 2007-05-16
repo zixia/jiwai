@@ -114,10 +114,11 @@ _SQL_;
 			return array();
 
 
+		$invitation_ids = array();
+
 		// 装换rows, 返回 id 的 array
 		foreach ( $rows as $row )
 			array_push($invitation_ids, $row["idInvitation"]);
-
 
 		return $invitation_ids;
 	}
