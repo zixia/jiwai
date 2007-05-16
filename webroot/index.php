@@ -38,7 +38,7 @@ if ( JWLogin::IsLogined() )
 ?>
 
 <?php 
-$status_data = JWStatus::GetStatusIdFromPublic();
+$status_data = JWStatus::GetStatusIdsFromPublic();
 
 $status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);

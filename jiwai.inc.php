@@ -71,7 +71,7 @@ define('DEBUG_LOG',	true);
 if (file_exists(CONFIG_CACHE)){
        	require_once CONFIG_CACHE;
 }else{
-	JWConfig::instance();
+	JWConfig::Instance();
 	$config_data=JWConfig::dump();
 $str=<<<STR
 <?php
@@ -114,7 +114,7 @@ function __autoload($class_name) {
 //require_once 'JWDebug.class.php';
 //require_once 'class/JWException.class.php';
 
-JWSession::instance();
+JWSession::Instance();
 
 // use for strftime
 setlocale(LC_ALL, 'zh_CN.UTF-8');

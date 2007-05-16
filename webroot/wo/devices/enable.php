@@ -25,7 +25,7 @@ if ( isset($_REQUEST['device']) )
 {
 	$enabled_for	= $_REQUEST['device']['enabled_for'];
 
-	JWDevice::SetDeviceEnableFor($device_id,$enabled_for);
+	JWDevice::SetDeviceEnabledFor($device_id,$enabled_for);
 }
 	
 JWTemplate::RedirectBackToLastUrl('/wo/devices/');

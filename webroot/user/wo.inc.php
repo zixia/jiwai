@@ -49,7 +49,7 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 
-$status_data 	= JWStatus::GetStatusIdFromUser($page_user_id, JWStatus::DEFAULT_STATUS_NUM+1);
+$status_data 	= JWStatus::GetStatusIdsFromUser($page_user_id, JWStatus::DEFAULT_STATUS_NUM+1);
 $status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserRowsByIds	($status_data['user_ids']);
 

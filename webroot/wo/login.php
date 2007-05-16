@@ -27,7 +27,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 			array_push( $reciprocal_user_ids, $inviter_id );
 
 			// 互相加为好友
-			JWSns::AddFriends( $idUser, $reciprocal_user_ids, true );
+			JWSns::CreateFriends( $idUser, $reciprocal_user_ids, true );
 		}
 
 
