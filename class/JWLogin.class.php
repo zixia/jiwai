@@ -170,7 +170,7 @@ class JWLogin {
 		if ( empty($id_user) )
 			return false;
 			
-		$secret = JWDevice::GenSecret(16);
+		$secret = JWDevice::GenSecret(32,JWDevice::CHAR_ALL);
 
 		if ( ! self::SaveRememberMe($id_user,$secret) )
 		{

@@ -45,7 +45,7 @@ class JWFile {
 	 */
 	function __construct()
 	{
-		$config 	= JWConfig::instance();
+		$config 	= JWConfig::Instance();
 		$directory 	= $config->directory;
 
 		self::$msStorageAbsRoot		= 	$directory->storage->root ;

@@ -45,7 +45,7 @@ class JWMail {
 	 */
 	function __construct()
 	{
-		$config 	= JWConfig::instance();
+		$config 	= JWConfig::Instance();
 		$directory 	= $config->directory;
 
 		self::$msTemplateRoot	= 	$directory->mail->template ;

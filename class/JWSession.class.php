@@ -23,7 +23,7 @@ Class JWSession {
      *
      * @return JWSession
      */
-    static public function &instance()
+    static public function &Instance()
     {
         if (!isset(self::$msInstance)) {
             $class = __CLASS__;

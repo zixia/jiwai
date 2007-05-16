@@ -115,12 +115,12 @@ _SQL_;
 			return array();
 		}
 
-		$in_condition = JWDB::GetInConditionFromArray($idUsers, 'int');
+		$condition_in = JWDB::GetInConditionFromArray($idUsers, 'int');
 
 		$sql = <<<_SQL_
 SELECT	*,id as idDevice
 FROM	Device
-WHERE	idUser IN ( $in_condition )
+WHERE	idUser IN ( $condition_in )
 _SQL_;
 
 		if ( ! $db_rows = JWDB::GetQueryResult ($sql, true) ){
@@ -378,9 +378,9 @@ _SQL_;
 		$condition = array (	 'address'	=> $address
 								,'type'		=> $type
 							);
-		if ( $isActive ){
+		if ( $isActive )
 			$condition['secret'] = '';
-		}
+
 
 		return JWDB::ExistTableRow('Device', $condition);
 	}
@@ -411,7 +411,7 @@ _SQL_;
 	}
 
 
-	static public function SetDeviceEnableFor($idDevice, $enabledFor)
+	static public function SetDeviceEnabledFor($idDevice, $enabledFor)
 	{
 		$idDevice	= JWDB::CheckInt($idDevice);
 
@@ -471,15 +471,78 @@ _SQL_;
 
 
 		$device_map = array();
-
 		foreach ( $rows as $row )
-		{
 			$device_map[$row['idDevice']] 	= $row;
-		}
+
 
 		return $device_map;
 	}
 
 
+	/*
+	 *	根据 array(array('address'=>'','type'=>''),...) 获取 DeviceRow
+	 *
+	 *	@param	array		$addresses	array(array('address'=>'','type'=>''),...) 
+	 *
+	 *	@return	array		$device_ids
+	 */
+	static public function GetDeviceIdsByAddresses( $addresses )
+	{
+		if ( empty($addresses) )
+			return array();
+
+		if ( !is_array($addresses) )
+			throw new JWException('must array');
+
+		$condition_in = JWDB::GetInConditionFromArrayOfArray($addresses, array('address','type'), 'char');
+
+		$sql = <<<_SQL_
+SELECT	id as idDevice
+FROM	Device
+WHERE	(address,type) IN ($condition_in)
+_SQL_;
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+
+		$device_ids = array();
+		foreach ( $rows as $row )
+			array_push($device_ids, $row['idDevice']);
+
+
+		return $device_ids;
+	}
+
+
+	/*
+	 *	根据 idDevices 获取 以 type->address 方式哈希的 device_row 数组
+	 *
+	 *	@param	array		$Ids	idDevices
+	 *
+	 *	@return	array		$device_rows_by_address	ie. $device_row = $device_rows_by_address['msn']['zixia@zixia.net']
+								type
+									address
+										device_row
+	 */
+	static public function GetDeviceAddressRowsByIds( $idDevices )
+	{
+		if ( empty($idDevices) )
+			return array();
+
+		if ( !is_array($idDevices) )
+			throw new JWException('must array');
+
+		$device_rows 	= JWDevice::GetDeviceRowsByIds($idDevices);
+
+
+		$device_address_rows = array();
+		foreach ( $device_rows as $device_row )
+			$device_address_rows[$device_row['type']][$device_row['address']] = $device_row;
+
+		
+		return $device_address_rows;
+	}
 }
 ?>

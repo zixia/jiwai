@@ -73,7 +73,7 @@ class JWStatus {
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -119,7 +119,7 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -186,7 +186,7 @@ _SQL_;
 	 *	获取 public_timeline 的 idStatus 
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdFromPublic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromPublic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$num	= intval($num);
 		$start	= intval($start);
@@ -371,7 +371,7 @@ _SQL_;
 										// url_domain
 										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
 										// url_path
-										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
+										. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
 									// tail_str
 									. '(.*)$/'
 							, $status

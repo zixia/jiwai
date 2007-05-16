@@ -43,42 +43,42 @@ class JWSns {
 
 	/*
 	 *	根据详细信息建立两个人的好友关系
-	 *	@param	array	$userInfo
-	 *	@param	array	$friendInfo
+	 *	@param	array	$userRow
+	 *	@param	array	$friendRow
 	 */
-	static public function AddFriend($userInfo, $friendInfo)
+	static public function CreateFriend($userRow, $friendRow)
 	{
-		if ( $friendInfo['id']==$userInfo['id'] )
+		if ( $friendRow['id']==$userRow['id'] )
 		{
-			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id]...) is self");
+			JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id]...) is self");
 			return true;
 		}
 
-		if ( JWFriend::IsFriend($userInfo['id'], $friendInfo['id']) )
+		if ( JWFriend::IsFriend($userRow['id'], $friendRow['id']) )
 		{
-			JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id],$friendInfo[id]) already friends");
+			JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]) already friends");
 			return true;
 		}
 
 		// TODO check idUser permission
 	
-		if ( ! JWFriend::Create($userInfo['id'], $friendInfo['id']) )
+		if ( ! JWFriend::Create($userRow['id'], $friendRow['id']) )
 			throw new JWException('JWFriend::Create failed');
 
-		$notice_settings 	= JWUser::GetNotification($friendInfo['id']);
+		$notice_settings 	= JWUser::GetNotification($friendRow['id']);
 		$need_notice_mail	= ('Y'==$notice_settings['send_new_friend_email']);
 
 		if ( $need_notice_mail )
-			JWMail::SendMailNoticeNewFriend($userInfo, $friendInfo);
+			JWMail::SendMailNoticeNewFriend($userRow, $friendRow);
 
-		JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFriend($userInfo[id],$friendInfo[id]),\tnotification email "
+		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]),\tnotification email "
 											. ( $need_notice_mail ? 'sent. ' : '')
 								);
 	
 		// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
 		// 所以，被follow的人是 friend_id
-		if ( ! JWFollower::IsFollower($friendInfo['id'], $userInfo['id']) )
-			self::AddFollower($friendInfo['id'], $userInfo['id']);
+		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
+			self::CreateFollower($friendRow['id'], $userRow['id']);
 
 		return true;
 	}
@@ -87,7 +87,7 @@ class JWSns {
 	 *	@param	array or int	$idFriends	好友 id(s)
 	 *	将 idFriends 添加为 idUser 的好友，并负责处理相关逻辑（是否允许添加好友，发送通知邮件等）
 	 */
-	static public function AddFriends($idUser, $idFriends, $isReciprocal=false)
+	static public function CreateFriends($idUser, $idFriends, $isReciprocal=false)
 	{
 		if ( !is_array($idFriends) )
 			throw new JWException('must array');
@@ -103,10 +103,10 @@ class JWSns {
 			if ( $friend_id==$idUser )
 				continue;
 
-			JWSns::AddFriend($user_info, $friend_user_rows[$friend_id]);
+			JWSns::CreateFriend($user_info, $friend_user_rows[$friend_id]);
 
 			if ( $isReciprocal )
-				JWSns::AddFriend($friend_user_rows[$friend_id], $user_info);
+				JWSns::CreateFriend($friend_user_rows[$friend_id], $user_info);
 		}
 
 		return true;
@@ -116,18 +116,42 @@ class JWSns {
 	/*
 	 *	将 idFollower 添加为 idUser 的粉丝，并负责处理相关逻辑（是否允许添加粉丝，发送通知邮件等）
 	 */
-	static public function AddFollower($idUser, $idFollower)
+	static public function CreateFollower($userRow, $followerRow)
 	{
-		if ( JWFollower::IsFollower($idUser, $idFollower) )
-			return true;
-
 		// TODO check idUser permission
 		
-		if ( ! JWFollower::Create($idUser, $idFollower) )
+		if ( ! JWFollower::Create($userRow['idUser'], $followerRow['idUser']) )
 			throw new JWException('JWFollower::Create failed');
 
-		JWLog::Instance()->Log(LOG_INFO, "JWSns::AddFollower($idUser,$idFollower),\tNO notification email.");
+		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
 		
+		return true;
+	}
+
+
+	/*
+	 *	@param	array or int	$idFollowers	fans id(s)
+	 *	将 idFollowers 添加为 idUser 的粉丝，并负责处理相关逻辑（是否允许添加粉丝?）
+	 */
+	static public function CreateFollowers($idUser, $idFollowers, $isReciprocal=false)
+	{
+		if ( !is_array($idFollowers) )
+			throw new JWException('must array');
+		
+		$follower_user_rows	= JWUser::GetUserRowsByIds($idFollowers);
+		$user_row			= JWUser::GetUserInfo($idUser);
+
+		foreach ( $idFollowers as $follower_id )
+		{
+			if ( $follow_id==$idUser )
+				continue;
+
+			JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
+
+			if ( $isReciprocal )
+				JWSns::CreateFollower($follower_user_rows[$follower_id], $user_row);
+		}
+
 		return true;
 	}
 
@@ -141,15 +165,15 @@ class JWSns {
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite		= JWInvitation::Create($idUser,$address,$type,$message, $code_invite);
 
-		$user_info = JWUser::GetUserInfo($idUser);
+		$user_rows 	= JWUser::GetUserRowsByIds(array($idUser));
+		$user_row	= $user_rows[$idUser];
 
 		if ( 'email'==$type ){
-			JWMail::SendMailInvitation($user_info, $address, $message, $code_invite);
+			JWMail::SendMailInvitation($user_row, $address, $message, $code_invite);
 		}else{	// SMS / IM
-			JWDevice::Create($user_info_invitee['id'], $address, $type);
 			// TODO
 			// 机器人给设备发送消息
-			die ( "UNFINISHED");
+			JWRobot::SendMtRaw($address, $type, $message);
 		}
 
 		return $id_invite;
@@ -287,5 +311,29 @@ class JWSns {
 		return JWDevice::Destroy($idDevice);
 	}
 	
+	
+	/*
+	 *	用户收到邀请后，根据邀请注册用户成功，将调用这个函数进行相关邀请关系的设置
+	 *	@param	int	$idUser			接受邀请的用户注册后的 idUser
+	 *	@param	int	$idInvitation	邀请 id
+	 */
+//FIXME	名字不对
+	static public function AcceptInvitation($idUser, $idInvitation)
+	{
+		JWInvitation::Register($idInvitation, $idUser);
+
+
+		$invitation_rows		= JWInvitation::GetInvitationRowsByIds(array($idInvitation));
+		$inviter_id				= $invitation_rows[$idInvitation]['idUser'];
+
+		$reciprocal_user_ids	= JWInvitation::GetReciprocalUserIds($idInvitation);
+		array_push( $reciprocal_user_ids, $inviter_id );
+
+		// 互相加为好友
+		JWSns::CreateFriends	( $idUser, $reciprocal_user_ids, true );
+		JWSns::CreateFollowers	( $idUser, $reciprocal_user_ids, true );
+
+		return true;
+	}
 }
 ?>

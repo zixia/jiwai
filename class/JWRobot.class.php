@@ -61,7 +61,7 @@ class JWRobot {
 	 */
 	function __construct()
 	{
-		$directory = JWConfig::instance()->directory;
+		$directory = JWConfig::Instance()->directory;
 		
 		self::$mQueuePathMo	= $directory->queue->root 
 								. $directory->queue->robot 
@@ -104,7 +104,7 @@ class JWRobot {
 				|| ! file_exists(self::$mQuarantinePathMt)
 				)
 		{
-			echo "JWRobot::InitDirectory ing...\n";
+			JWLog::Log(LOG_NOTICE, "JWRobot::InitDirectory ing...");
 
 			mkdir(self::$mQueuePathMo,0700,true);
 			mkdir(self::$mQueuePathMt,0700,true);
@@ -145,7 +145,7 @@ class JWRobot {
 		}while (file_exists($filename) );
 
 		/*
-	 	 *	为了提供队列目录中，文件出现的原子性（即inode被创建之时，文件内容已经ready），需要先写入tmp文件
+	 	 *	为了提供队列目录中，文件出现的原子性（即inode被创建之时，文件内容已经ready），需要先写入tmp目录一个临时文件
 		 */
 		do{
 			$filename_tmp = self::$mQueuePathTmp
@@ -211,16 +211,20 @@ class JWRobot {
 
 			$robot_msg = new JWRobotMsg($file);
 
+		
+			/*
+			 * 只需要一个，返回。
+			 */
 			if ( 1==$returnNumMax ){
    				closedir($handle);
 				return $robot_msg;
-			}else{
-				array_push ($arr_robot_msgs, $robot_msg);
+			}
 
-				$counter++;
-				if ( $counter>=$returnNumMax ){
-					break;
-				}
+			array_push ($arr_robot_msgs, $robot_msg);
+
+			$counter++;
+			if ( $counter>=$returnNumMax ){
+				break;
 			}
 		}
 
@@ -292,6 +296,9 @@ class JWRobot {
 	}
 
 
+	/*
+	 *	FIXME: 好像从来没看到过隔离成功的？
+	 */
 	static function QuarantineMsg($rRobotMsg)
 	{
 		$file_path= $rRobotMsg->GetFile();

@@ -126,10 +126,10 @@ _HTML_;
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
 			<li class="first"><a href="/wo/">叽歪一下</a></li>
-			<li><a href="/<?php echo $nameScreen ?>/">我的叽歪</a></li>
+			<li><a href="/<?php echo $nameScreen ?>/">叽歪档案</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
-			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
+			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/account/setting">设置</a></li>
 			<li><a href="/help/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
@@ -813,7 +813,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">问询</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/nudge/$arr_user_info[id]">推推</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -940,30 +940,30 @@ _HTML_;
 		if ( 'wo'==$user )
 		{
 			echo <<<_HTML_
-			<li id="message_count"><a href="/$user/direct_messages/">站内PM: $countInfo[pm]</a></li>
+			<li id="message_count"><a href="/$user/direct_messages/">消息: $countInfo[pm]</a></li>
 _HTML_;
 		}
 
 		echo <<<_HTML_
-			<li id="favourite_count"><a href="/$user/favourites/">收藏夹: $countInfo[fav]</a></li>
-			<li id="friend_count"><a href="/$user/friends/">叽歪友: $countInfo[friend]</a></li>
+			<li id="favourite_count"><a href="/$user/favourites/">收藏: $countInfo[fav]</a></li>
+			<li id="friend_count"><a href="/$user/friends/">好友: $countInfo[friend]</a></li>
 _HTML_;
 		
 		if ( 'wo'==$user ) 
 		{
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/$user/followers/">订阅者: $countInfo[follower]</a></li>
+			<li id="follower_count"><a href="/$user/followers/">粉丝: $countInfo[follower]</a></li>
 _HTML_;
 		} 
 		else 
 		{
 			echo <<<_HTML_
-			<li id="follower_count">订阅者: $countInfo[follower]</li>
+			<li id="follower_count">粉丝: $countInfo[follower]</li>
 _HTML_;
 		}
 
 		echo <<<_HTML_
-			<li id="update_count">总共叽歪了 $countInfo[status] 次</li>
+			<li id="update_count">一共记录了 $countInfo[status] 条更新</li>
 		</ul>
 _HTML_;
 	}
@@ -971,7 +971,7 @@ _HTML_;
 
 	static function sidebar_status( $userInfo )
 	{
-		$status_data 	= JWStatus::GetStatusIdFromUser($userInfo['id'],1);
+		$status_data 	= JWStatus::GetStatusIdsFromUser($userInfo['id'],1);
 
 		if ( !empty($status_data['status_ids']) )
 		{

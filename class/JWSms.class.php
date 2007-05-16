@@ -53,7 +53,7 @@ class JWSms {
 	 */
 	function __construct()
 	{
-		$config 	= JWConfig::instance();
+		$config 	= JWConfig::Instance();
 		$directory 	= $config->directory;
 
 		self::$msQueuePathMo	= $directory->queue->root 
@@ -249,29 +249,38 @@ class JWSms {
 			$rpc_url .= "&msgfmt=$msgfmt";
 
 
-		JWLog::Instance()->Log(LOG_INFO,"Calling: [$rpc_url]");
+		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt Calling: [$rpc_url]");
+
+		$retry = 0;
 
 		$return_content = file_get_contents($rpc_url);
 
+		while ( empty($return_content) && $retry++<3 )
+		{
+			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt connect to sp failed. retry #$retry.");
+			$return_content = file_get_contents($rpc_url);
+		}
+
 		if ( empty($return_content) )
 		{
-			JWLog::Instance()->Log(LOG_ERR,"MT connect to sp failed. pls retry later.");
+			JWLog::Instance()->Log(LOG_CRIT,"JWSms::SendMt connect to sp failed after retry $retry times.");
 			return false;
 		}
+
 
 		if ( !preg_match('/^(\d+)\s+(\S+)$/',$return_content,$matches) )
 		{
 			if ( preg_match('/^(\d+)$/',$return_content,$matches) )
 				$ret = $matches[1];
 
-			JWLog::Instance()->Log(LOG_ERR, "return content parse err:[$return_content]($error_code[$ret])");
+			JWLog::Instance()->Log(LOG_ERR, "JWSms::SendMt return content parse err:[$return_content]($error_code[$ret])");
 			return false;
 		}
 
 		$ret	= $matches[1];
 		$msgid	= $matches[2];
 
-		JWLog::Instance()->Log(LOG_INFO,"mt succ. returns: ret[$ret]($error_code[$ret]) / msgid[$msgid]");
+		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt succ. returns: ret[$ret]($error_code[$ret]) / msgid[$msgid]");
 
 		return true;
 	}

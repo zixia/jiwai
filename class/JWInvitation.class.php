@@ -110,25 +110,49 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
-		if ( !empty($rows) )
-		{
-			// 装换rows, 返回 id 的 array
-			$invitation_ids = array_map(	create_function(
-												'$row'
-												, 'return $row["idInvitation"];'
-											)
-										, $rows
-									);
-		}
-		else
-		{
-			$invitation_ids = array();
-		}
+		if ( empty($rows) )
+			return array();
+
+
+		// 装换rows, 返回 id 的 array
+		foreach ( $rows as $row )
+			array_push($invitation_ids, $row["idInvitation"]);
+
 
 		return $invitation_ids;
 	}
 
 
+	/*
+	 *
+	 *	@param	array	$addresses	array ( array('address'=>'','type'=>''), array(), array() );
+	 *	@return	array	@invitation_ids
+	 */
+	static public function GetInvitationIdsFromAddresses($addresses)
+	{
+		if ( empty($addresses) )
+			return array();
+
+		if ( !is_array($addresses) )
+			throw new JWException('must array');
+
+		$condition_in = JWDB::GetInConditionFromArrayOfArray($addresses, array('address','type'), 'char');
+
+		$sql = <<<_SQL_
+SELECT	id as idInvitation
+FROM	Invitation
+WHERE	(address,type) IN ($condition_in)
+_SQL_;
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+		foreach ( $rows as $row )
+			array_push($invitation_ids, $row['idInvitation']);
+
+		return $invitation_ids;
+	}
 
 	/*
 	 *
@@ -155,9 +179,7 @@ _SQL_;
 		$invitation_map = array();
 
 		foreach ( $rows as $row )
-		{
 			$invitation_map[$row['idInvitation']] = $row;
-		}
 		
 		return $invitation_map;
 	}
