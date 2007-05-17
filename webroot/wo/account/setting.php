@@ -37,6 +37,9 @@ if ( isset($new_user_info) )
 	if ( empty($bio) )
 		$bio		= trim(@$new_user_info['description']);
 
+	if ( empty($protected) )
+		$protected = 'N';
+
 
 	$arr_changed 	= array();
 	$error_html 	= null;
@@ -251,7 +254,7 @@ _HTML_;
 ?>
 							<input <?php echo isset($new_user_info)
                                                         ? ('Y'==@$new_user_info['protected']?' checked ':'')
-                                                        : ('Y'==$user_info['protected']?' checked ':'')?> id="user_protected" name="user[protected]" type="checkbox" value="Y" />
+                                                        : ('Y'==$user_info['protected'] ? ' checked ' : '')?> id="user_protected" name="user[protected]" type="checkbox" value="Y" />
 							<label for="user_protected">设为私密</label>
 
 							<p><small>只允许被我加为好友的人看到我的更新。如果选择了这项设置，你将不会出现在
