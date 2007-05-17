@@ -48,7 +48,7 @@ class JWPicture {
 	 * 	@return	array	以 idUser 为 key 的 picture row
 	 * 
 	 */
-	static public function GetPictureRowsByIds( $idUsers )
+	static public function GetPictureDbRowsByIds( $idUsers )
 	{
 		if ( empty($idUsers) )
 			return array();
@@ -56,23 +56,8 @@ class JWPicture {
 		if ( !is_array($idUsers) )
 			throw new JWException('must array');
 
-		$idUsers = array_unique($idUsers);
+		$condition_in = JWDB::GetInConditionFromArray($idUsers);
 
-		$reduce_function_content = <<<_FUNC_
-			if ( empty(\$v) )
-				\$v = '';
-			else
-				\$v .= ",";
-
-			return \$v . intval(\$idUser);
-_FUNC_;
-		$condition_in = array_reduce(	$idUsers
-										, create_function(
-												'$v,$idUser'
-												,"$reduce_function_content"
-											)
-										,''
-									);
 		$sql = <<<_SQL_
 SELECT	*, id as idPicture
 FROM	Picture
@@ -120,7 +105,7 @@ _SQL_;
 	{
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 
-		$picture_rows		= JWPicture::GetPictureRowsByIds($idUsers);
+		$picture_rows		= JWPicture::GetPictureDbRowsByIds($idUsers);
 
 		foreach ( $idUsers as $user_id )
 		{
@@ -139,7 +124,7 @@ _SQL_;
 		if ( empty($idUsers) )
 			return array();
 
-		$picture_rows 	= self::GetPictureRowsByIds($idUsers);
+		$picture_rows 	= self::GetPictureDbRowsByIds($idUsers);
 		
 		foreach ( $idUsers as $user_id )
 		{
