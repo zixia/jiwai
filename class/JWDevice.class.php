@@ -91,11 +91,8 @@ class JWDevice {
 
 		if ( ! empty($device_ids) ) 
 		{
-			$device_db_rows	= JWDevice::GetDeviceRowsByIds($device_ids );
-
 			$device_id		= array_shift($device_ids);
-
-			$device_db_row	= $device_db_rows[$device_id];
+			$device_db_row	= JWDevice::GetDeviceDbRowById($device_id);
 		}
 
 		return $device_db_row;
@@ -166,39 +163,14 @@ _SQL_;
 						[sms][enabledFor]
 	 *				so as [im]
 	 */
-	static public function GetDeviceInfo( $idUser )
+	static public function GetDeviceRowByUserId( $idUser )
 	{
-		$idUser = intval($idUser);
+		$device_address_rows = JWDevice::GetDeviceRowsByUserIds( array($idUser) )
 
-		if ( 0==$idUser )
-			throw new JWException('must int');
+		if ( empty($device_address_rows) )
+			return array();
 
-		$sql = <<<_SQL_
-SELECT	id as idDevice,address,type,secret,enabledFor
-FROM	Device
-WHERE	idUser=$idUser
-LIMIT	2;
-_SQL_;
-		if ( ! $listDeviceInfo = JWDB::GetQueryResult ($sql, true) ){
-			$listDeviceInfo = array();
-		}
-
-		$aDeviceInfo = array();
-
-		foreach ( $listDeviceInfo as $v ){
-			if ( empty($v['enabledFor']) )
-				$v['enabledFor'] = 'nothing';
-
-			if ( $v['type'] === 'sms' ){
-				$aDeviceInfo['sms'] = $v;
-				$aDeviceInfo['sms']['verified'] = empty($v['secret']);
-			}else{ // qq/msn/gtalk/jaber...
-				$aDeviceInfo['im'] = $v;
-				$aDeviceInfo['im']['verified'] = empty($v['secret']);
-			}
-		}
-
-		return $aDeviceInfo;
+		return $device_address_rows[$idUser];
 	}
 
 	static public function Destroy( $idDevice )
@@ -394,21 +366,22 @@ _SQL_;
 
 	static public function IsUserOwnDevice($idUser, $idDevice)
 	{
-		$idUser	= JWDB::CheckInt($idUser);
-		$idDevice	= JWDB::CheckInt($idDevice);
+		$device_row = self::GetDeviceDbRowById($idDevice);
 
-		return JWDB::ExistTableRow('Device', array (	'id'		=> intval($idDevice)
-														,'idUser'	=> intval($idUser)
-											) );
+		if ( empty($device_rows) )
+			return false;
+
+		return $idUser==$device_row['idUser'];
 	}
 
 	static public function GetDeviceEnableFor($idDevice)
 	{
-		$idDevice	= JWDB::CheckInt($idDevice);
+		$device_row = JWDevice::GetDeviceDbRowById($idDevice);
 
-		$row  		= JWDB::GetTableRow('Device', array('id'=>$idDevice) );
+		if ( empty($device_row) )
+			return 'nothing';
 
-		$enabled_for	= $row['enabledFor'];
+		$enabled_for	= $device_rows['enabledFor'];
 			
 		if ( empty($enabled_for) )
 			$enabled_for = 'nothing';
@@ -424,7 +397,7 @@ _SQL_;
 		switch ( $enabledFor )
 		{
 			case 'everything':
-				$device_row = JWDB::GetTableRow('Device',array('id'=>$idDevice));
+				$device_row	= JWDevice::GetDeviceDbRowById($idDevice);
 				$user_id 	= $device_row['idUser'];
 				$type		= $device_row['type'];
 
@@ -457,7 +430,7 @@ _SQL_;
 	 * 	@return	array	以 idDevice 为 key 的 device row
 	 * 
 	 */
-	static public function GetDeviceRowsByIds( $idDevices)
+	static public function GetDeviceDbRowsByIds( $idDevices)
 	{
 		if ( empty($idDevices) )
 			return array();
@@ -484,6 +457,15 @@ _SQL_;
 		return $device_map;
 	}
 
+	static public function GetDeviceDbRowById($idDevice)
+	{
+		$device_rows = JWDevice::GetDeviceDbRowsByIds(array($idDevice));
+
+		if ( empty($device_rows) )
+			return array();
+
+		return $device_rows[$idDevice];
+	}
 
 	/*
 	 *	根据 array(array('address'=>'','type'=>''),...) 获取 DeviceRow
@@ -521,6 +503,20 @@ _SQL_;
 		return $device_ids;
 	}
 
+	/*
+	 *	@param	array	$address	array('address'=>'','type'=>'');
+	 *
+	 *	@return	array	$device_ids
+	 */
+	static public function GetDeviceIdByAddress($address)
+	{
+		$device_ids = JWDevice::GetDeviceIdsByAddresses( array($address) );
+
+		if ( empty($device_ids) )
+			return array();
+
+		return array_pop($device_ids);
+	}
 
 	/*
 	 *	根据 idDevices 获取 以 type->address 方式哈希的 device_row 数组
@@ -540,7 +536,7 @@ _SQL_;
 		if ( !is_array($idDevices) )
 			throw new JWException('must array');
 
-		$device_rows 	= JWDevice::GetDeviceRowsByIds($idDevices);
+		$device_rows 	= JWDevice::GetDeviceDbRowsByIds($idDevices);
 
 
 		$device_address_rows = array();

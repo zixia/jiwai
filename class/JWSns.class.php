@@ -385,7 +385,7 @@ class JWSns {
 	{
 		$ret = false;
 
-		$device_rows 	= JWDevice::GetDeviceRowsByIds(array($idDevice));
+		$device_rows 	= JWDevice::GetDeviceDbRowsByIds(array($idDevice));
 		$device_row		= $device_rows[$idDevice];
 
 		$user_id				= $device_row['idUser'];

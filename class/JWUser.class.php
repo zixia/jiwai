@@ -173,7 +173,7 @@ _SQL_;
 	 * 	@return	array	以 idUser 为 key 的 status row
 	 * 
 	 */
-	static public function GetUserRowsByIds( $idUsers)
+	static public function GetUserDbRowsByIds( $idUsers)
 	{
 		if ( empty($idUsers) )
 			return array();

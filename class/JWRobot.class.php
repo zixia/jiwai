@@ -220,7 +220,7 @@ class JWRobot {
 				return $robot_msg;
 			}
 
-			array_push ($arr_robot_msgs, $robot_msg);
+			array_unshift ($arr_robot_msgs, $robot_msg);
 
 			$counter++;
 			if ( $counter>=$returnNumMax ){

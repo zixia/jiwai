@@ -127,25 +127,25 @@ class JWRobotLogic {
 		$body		= $robotMsg->GetBody();
 
 
-		$user_state = JWDevice::GetUserStateFromDevice($address,$type);
+		$device_row = JWDevice::GetDeviceRowByAddress($address,$type);
 
-		if ( empty($user_state) )
+		if ( empty($device_row) )
 		{	
 			// user not registed
 			JWLog::Instance()->Log(LOG_NOTICE,"UNKNOWN IM: $type://$address [$body]");
 			return JWRobotLingo::Lingo_Tips($robotMsg);
 		}
-		else if ( ! empty($user_state['secret']) )
+		else if ( ! empty($device_row['secret']) )
 		{	
 			// device not verified
-			JWLog::Instance()->Log(LOG_INFO,"VERIFY:\t$user_state[idUser] $user_state[secret]");
+			JWLog::Instance()->Log(LOG_INFO,"VERIFY:\t$device_row[idUser] $device_row[secret]");
 			return self::ProcessMoVerifyDevice($robotMsg);
 		}
 		else
 		{	
 			// update jiwai status
-			syslog(LOG_INFO,"UPDATE:\t$user_state[idUser] @$type: $body");
-			if ( JWSns::UpdateStatus($user_state['idUser'], $body, $type ) )
+			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body");
+			if ( JWSns::UpdateStatus($device_row['idUser'], $body, $type ) )
 			{	// succeed posted, keep silence
 				return null;
 			}

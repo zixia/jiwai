@@ -92,7 +92,7 @@ JWTemplate::pagination()
 $arr_count_param	= JWSns::GetUserState($logined_user_id);
 
 
-$arr_device_active	= JWDevice::GetDeviceInfo($logined_user_id);
+$arr_device_active	= JWDevice::GetDeviceRowByUserId($logined_user_id);
 
 $active_options = array();
 

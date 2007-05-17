@@ -23,7 +23,7 @@ function user_status($idPageUser, $idStatus)
 
 <body class="status" id="show">
 
-<?php JWTemplate::accessibility() ?>
+<?php //JWTemplate::accessibility() ?>
 
 <?php //JWTemplate::header() ?>
 
