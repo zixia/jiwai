@@ -363,7 +363,14 @@ _SQL_;
 		 *		' ' is 0x20
 		 *
 		 */
-		if ( preg_match(	'/'
+
+		$skip_url_regex = 	 '#'
+							.'(http://komoo.cn)'
+							.'#'
+						;
+
+		if ( !preg_match($skip_url_regex,$status)
+				&& preg_match(	'/'
 									// head_str
 									. '^(.*?)'
 									. 'http:\/\/'
