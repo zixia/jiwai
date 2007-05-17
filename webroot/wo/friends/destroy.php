@@ -16,7 +16,7 @@ if ( is_int($idLoginedUser) )
 
 		$page_user_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
 
-		if ( JWFriend::Destroy($idLoginedUser, $idPageUser) )
+		if ( JWSns::DestroyFriends($idLoginedUser, array($idPageUser)) )
 		{
 			$notice_html = <<<_HTML_
 ${page_user_name}已经不再是您的好友了。

@@ -21,6 +21,8 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 	{
 		$error_html = <<<_HTML_
 哎呀！介个邀请代码貌似不是我们发放的。（<a href="http://www.google.com/search?q=$invite_code" target="_blank">Google一下？</a>）
+
+<h2><a href="/wo/account/create">直接注册免费的JiWai帐号，请点这里 >></a></h2>
 _HTML_;
 	}
 	else

@@ -136,8 +136,8 @@ class JWNudge {
 				{
 					JWLog::Log(LOG_INFO, "JWNudge::Nudge skip unverfied device for idUser"
 										. '[' . $deviceRow[$smsOrIm]['idUser'] . ']'
-										. ' of device [' . $deviceRow['smsOrIm']['type']
-											. ':' .  $deviceRow['smsOrIm']['address']
+										. ' of device [' . $deviceRow[$smsOrIm]['type']
+											. ':' .  $deviceRow[$smsOrIm]['address']
 								);
 					break;
 				}
@@ -154,8 +154,8 @@ class JWNudge {
 			default:
 				JWLog::Log(LOG_INFO, "JWNudge::Nudge skip Device.enabledFor nothing for idUser"
 									. '[' . $deviceRow[$smsOrIm]['idUser'] . ']'
-									. ' of device [' . $deviceRow['smsOrIm']['type']
-										. ':' .  $deviceRow['smsOrIm']['address']
+									. ' of device [' . $deviceRow[$smsOrIm]['type']
+										. ':' .  $deviceRow[$smsOrIm]['address']
 							);
 				break;
 		}

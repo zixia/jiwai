@@ -78,21 +78,27 @@ class JWDevice {
 	}
 
 	/*
-	 * @return array ( 'idUser'			=> 1
-     *					, 'secret'	=>	'zixia' );
+	 * @return array 	$device_db_row;
 	 */
-	static public function GetUserStateFromDevice( $address, $type )
+	static public function GetDeviceRowByAddress( $address, $type )
 	{
-		$address	= JWDB::escape_string($address);
-		$type		= JWDB::escape_string($type);
+		$device_ids		= JWDevice::GetDeviceIdsByAddresses(	
+										array( 
+											array('address'=>$address,'type'=>$type) 
+										) );
 
-		$sql = <<<_SQL_
-SELECT	idUser,secret
-FROM	Device
-WHERE	address='$address' AND type='$type'
-LIMIT	1;
-_SQL_;
-		return JWDB::GetQueryResult ($sql);
+		$device_db_row 	= array();
+
+		if ( ! empty($device_ids) ) 
+		{
+			$device_db_rows	= JWDevice::GetDeviceRowsByIds($device_ids );
+
+			$device_id		= array_shift($device_ids);
+
+			$device_db_row	= $device_db_rows[$device_id];
+		}
+
+		return $device_db_row;
 	}
 
 

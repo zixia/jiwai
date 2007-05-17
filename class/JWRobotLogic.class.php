@@ -17,12 +17,6 @@ class JWRobotLogic {
 	static private $msInstance;
 
 
-	static private $msRobotCommand = array (
-			'help'		=>	'Command_Help'
-			, 'intro'		=>	'Command_Intro'
-			);
-
-
 	/**
 	 * Instance of this singleton class
 	 *
@@ -69,31 +63,59 @@ class JWRobotLogic {
 			return false;
 		}
 
-		$body = $robotMsg->GetBody();
+		$address	= $robotMsg->GetAddress();
+		$type		= $robotMsg->GetType();
+		$body 		= $robotMsg->GetBody();
+
+		$msg = sprintf("%-35s: %s\n", "MO($type://$address)", $body);
+		echo iconv('UTF-8', 'GBK', $msg);
 
 		/*
 		 *	一个 MO 消息有如下几种状态：
+				if ( 是机器人指令 )
+				else if (是用户绑定的设备)
+				else //不是用户绑定的设备
+
 				1、用户从来没有用过，发送给特服号码一条短信
+					邀请表中无记录
+					或者是 accept
 				2、用户从来没有用过，发送给特服号码一条短信后，得到输入用户名的提示，又发回来了用户名
+					邀请表中有记录
 				3、用户是被邀请来的，发送了accept/deny
-				4、用户设备没有经过验证
-				5、用户设备已经通过验证
 		 *
 		 *
 		 *
 		 */
-		$lingo_func = JWRobotLingo::GetLingoFunctionFromMsg($robotMsg);
+		$lingo_func		= JWRobotLingo::GetLingoFunctionFromMsg($robotMsg);
 
 		if ( !empty($lingo_func) )
 		{
-echo "\nfound lingo\n";
-			return call_user_func($lingo_func, $robotMsg);
+			$reply_robot_msg 	= call_user_func($lingo_func, $robotMsg);
 		}
-		else // user JiWai status or verify code
+		else if ( JWDevice::IsExist($address, $type, false) )
 		{
-echo "\nnot lingo\n";
-			return self::ProcessMoStatus($robotMsg);
+			// 设备已经设置，(false 代表包含未激活的设备)
+			// 		1、user JiWai status
+			//		2、verify code
+			$reply_robot_msg	= self::ProcessMoStatus($robotMsg);
 		}
+		else
+		{
+			// 非注册用户（在Device表中没有的设备）
+			$reply_robot_msg 	= self::CreateAccount($robotMsg);
+		}
+
+		if ( empty($reply_robot_msg) ) {
+			$msg = "MT: none\n";
+		} else {
+			$msg = sprintf("%-35s: %s\n", "MT(" . $reply_robot_msg->GetType()
+									. "://" . $reply_robot_msg->GetAddress()
+									. ")"
+							, $reply_robot_msg->GetBody() );
+		}
+		echo iconv('UTF-8', 'GBK', $msg);
+
+		return $reply_robot_msg;
 	}
 
 
@@ -142,7 +164,7 @@ echo "\nnot lingo\n";
 	{
 		if ( ! preg_match('/^\s*(\S+)/',$robotMsg->GetBody(),$matches) )
 		{
-			return Command_Intro($robotMsg);
+			return JWRobotLingo::Lingo_Help($robotMsg);
 		}
 
 		$secret = $matches[1];
@@ -157,14 +179,14 @@ echo "\nnot lingo\n";
 		if ( $user_id )
 		{
 			$body = <<<_STR_
-:-D 恭喜，您已经通过了叽歪de验证！约1分钟后您就可以通过 ${type} 发送更新了！ 耶！
+搞定了！您已经通过了叽歪de验证。约1分钟后您就可以通过 ${type} 发送更新了，耶！
 _STR_;
 //(这一刻，你在做什么？ - http://JiWai.de)
 		}
 		else
 		{
 			$body = <<<_STR_
-:-( 非常抱歉，由于您输入的验证码"$secret"不正确，本次未能验证成功，请查证后重试。 哼叽...
+哎呀！由于您输入的验证码"$secret"不正确，本次验证未能成功，请您查证后再重试一下吧。
 _STR_;
 		}
 
@@ -178,5 +200,11 @@ _STR_;
 		return $robot_reply_msg;
 	}
 
+	/*
+	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
+	 */
+	static public function CreateAccount($robotMsg)
+	{
+	}
 }
 ?>

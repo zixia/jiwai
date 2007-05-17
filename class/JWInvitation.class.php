@@ -197,11 +197,13 @@ _SQL_;
 		return $row;
 	}
 
+/* unknown function
 	static public function GetInvitationrIdByCode($code)
 	{
 		$row = self::GetInvitationInfoByCode($code);
 		return $row['idUser'];
 	}
+*/
 
 	/*
 	 *	设置 $idInvitations 之间互相为好友（包括邀请者）

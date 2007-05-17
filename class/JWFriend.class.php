@@ -75,8 +75,10 @@ class JWFriend {
 		
 		$user_friend_rows = array();
 
-		foreach ( $user_friend_ids as $user_friend_id ) {
-			$user_friend_rows[$idUser][$user_friend_id] = true;
+		if ( !empty($user_friend_ids) ) {
+			foreach ( $user_friend_ids as $user_friend_id ) {
+				$user_friend_rows[$idUser][$user_friend_id] = true;
+			}
 		}
 
 
@@ -87,8 +89,10 @@ class JWFriend {
 		{
 			$user_be_friend_ids		= JWFriend::GetBeFriendIds	($idUser, 9999);
 		
-			foreach ( $user_be_friend_ids as $user_be_friend_id ) {
-				$user_friend_rows[$user_be_friend_id][$idUser] = true;
+			if ( !empty($user_be_friend_ids) ) {
+				foreach ( $user_be_friend_ids as $user_be_friend_id ) {
+					$user_friend_rows[$user_be_friend_id][$idUser] = true;
+				}
 			}
 		}
 

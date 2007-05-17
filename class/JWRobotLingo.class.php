@@ -40,10 +40,13 @@ class JWRobotLingo {
 			,'ACCEPT'	=> array( 'func'=>'Lingo_Accept','param'=>1)
 			,'DENY'		=> array( 'func'=>'Lingo_Deny' 	,'param'=>1)
 
-			,'REG'		=> array( 'func'=>'Lingo_Reg' 	,'param'=>1)
-
 			,'D'		=> array( 'func'=>'Lingo_D' 	,'param'=>999)
 
+
+			/*
+			 *	JiWai 扩展，Twitter没有
+			 */
+			,'WHOAMI'	=> array( 'func'=>'Lingo_Whoami','param'=>0)
 		);
 
 
@@ -58,6 +61,8 @@ class JWRobotLingo {
 			,'SLEEP'	=>	'OFF'			// alis of OFF
 
 			,'INVITE'	=>	'ADD'
+
+			,'NAO'		=>	'NUDGE'
 
 			,'REMOVE'	=>	'DELETE'
 		);
@@ -133,11 +138,11 @@ class JWRobotLingo {
 		 *	如果用户输入多于这个最大值，则不当作lingo处理。
 		 * 	（如用户输入"on the way home"）
 		 */
-echo "Lingo: $lingo, param: $param param_count: $param_count lingo_info['param']=" . $lingo_info['param'] . "\n";
+//echo "Lingo: $lingo, param: $param param_count: $param_count lingo_info['param']=" . $lingo_info['param'] . "\n";
 		if ( $param_count > $lingo_info['param'] )
 			return false;
 
-echo "lingo_info: " . $lingo_info['func'] . "\n";
+//echo "lingo_info: " . $lingo_info['func'] . "\n";
 		$lingo_function = array('JWRobotLingo', $lingo_info['func']);
 
 		if ( ! is_callable($lingo_function) )
@@ -191,7 +196,7 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS 帐号、NUDGE 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE "
+命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE "
 _STR_;
 
 		if ( 'sms'==$robotMsg->GetType() )
@@ -225,7 +230,7 @@ _STR_;
 											) );
 
 		if ( empty($address_device_ids) )
-			return self::Lingo_Reg($robotMsg);
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
@@ -273,7 +278,7 @@ _STR_;
 											) );
 
 		if ( empty($address_device_ids) )
-			return self::Lingo_Reg($robotMsg);
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 
 		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
@@ -327,7 +332,7 @@ _STR_;
 											) );
 
 		if ( empty($address_device_ids) )
-			return self::Lingo_Reg($robotMsg);
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 
 		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
@@ -341,7 +346,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^follow\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$followe = $matches[1];
@@ -395,7 +400,7 @@ _STR_;
 
 
 		if ( empty($address_user_id) )
-			return self::Lingo_Reg($robotMsg);
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
@@ -405,7 +410,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^leave\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$followe = $matches[1];
@@ -439,7 +444,7 @@ _STR_;
 	static function	Lingo_Add($robotMsg)
 	{
 		$help = <<<_STR_
-LEAVE命令帮助：LEAVE 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+ADD命令帮助：ADD 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
 
 
@@ -455,6 +460,10 @@ _STR_;
 		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
 		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+
+		if ( empty($address_user_id) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
 		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
@@ -464,7 +473,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^add\s+(\+?\d+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\+?\d+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$invitee_sms_number = $matches[1];
@@ -474,8 +483,8 @@ _STR_;
 		/*
 		 *	查看被添加的手机号码是否已经存在
 		 */
-		$invitee_device_ids 	= JWDevice::GetDeviceIdsByAddress(
-											array('address'=>$invitee_sms_number,'type'=>'sms')
+		$invitee_device_ids 	= JWDevice::GetDeviceIdsByAddresses(
+											array( array('address'=>$invitee_sms_number,'type'=>'sms') )
 										);
 		$invitee_device_rows 	= JWDevice::GetDeviceAddressRowsByIds($invitee_device_ids);
 
@@ -499,7 +508,7 @@ _STR_;
 		{
 			// 没有注册用户，发送邀请
 			$invite_msg = <<<_INVITATION_
-$address_user_row[nameFull]($address_user_row[nameScreen])想成为您在JiWai的好友！回复ACCEPT $address_user_rows[nameScreen]接受，或回复DENY $address_user_row[nameScreen]拒绝。
+$address_user_row[nameFull]($address_user_row[nameScreen])想成为您在JiWai的好友！回复ACCEPT $address_user_row[nameScreen]接受，或回复DENY $address_user_row[nameScreen]拒绝。
 _INVITATION_;
 			JWSns::Invite($address_user_id, $invitee_sms_number, 'sms', $invite_msg);
 
@@ -552,7 +561,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^delete\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$friend_name = $matches[1];
@@ -595,7 +604,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^get\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$friend_name = $matches[1];
@@ -644,7 +653,7 @@ _STR_;
 	static function	Lingo_Nudge($robotMsg)
 	{
 		$help = <<<_STR_
-使用方法：NUDGE 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+使用方法：NAO 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
 
 		/*
@@ -652,7 +661,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^nudge\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$friend_name 		= $matches[1];
@@ -681,6 +690,11 @@ _STR_;
 		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
 		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+
+		if ( ! JWFriend::IsFriend($friend_user_row['idUser'], $address_user_id) )
+			return self::ErrorMsg($robotMsg, "对不起，你还不是$friend_user_row[nameFull]的好友呢，"
+											."不能随便挠挠他，呵呵。等他加你为好友再挠吧!");
+
 		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
@@ -721,7 +735,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^whois\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$friend_name 		= $matches[1];
@@ -734,17 +748,17 @@ _STR_;
 		$register_date	= date("Y年n月",strtotime($friend_user_row['timeCreate']));
 	
 		$body = <<<_STR_
-$friend_user_row[nameFull] / 注册时间: $register_date
+$friend_user_row[nameFull]；注册时间：$register_date
 _STR_;
 
 		if ( !empty($friend_user_row['bio']) )
-			$body .= " / 简介: $friend_user_row[bio]";
+			$body .= "；简介：$friend_user_row[bio]";
 
 		if ( !empty($friend_user_row['location']) )
-			$body .= " / 位置: $friend_user_row[location]";
+			$body .= "；位置：$friend_user_row[location]";
 
 		if ( !empty($friend_user_row['url']) )
-			$body .= " / 网站: $friend_user_row[url]";
+			$body .= "；网站：$friend_user_row[url]";
 
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -773,7 +787,7 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^accept\s+(\w+)\s*$/i',$param_body,$matches) )
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
 		$inviter_name = $matches[1];
@@ -822,7 +836,7 @@ die("UN-IMPL");
 				/*
 				 *	1.1	用户被邀请过（通过设备查找到邀请）
 				 */
-				JWSns::AcceptInvitation($idUser, $invitation_ids[0]);
+				JWSns::AcceptInvitation( $idUser, array_shift($invitation_ids[0]) );
 			}
 			else
 			{
@@ -841,19 +855,6 @@ die("UN-IMPL");
 
 		$body = <<<_STR_
 搞定了！ 您和$invitee_user_row[nameFull]($address_user_row[nameScreen])已经成为好友！回复GET $invitee_user_row[nameScreen]查看最新更新。
-_STR_;
-
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
-
-		$body = <<<_STR_
-尚未支持，请明天再试吧。http://JiWai.de/
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -906,13 +907,25 @@ _STR_;
 		return $robot_reply_msg;
 	}
 
+
 	/*
 	 *
 	 */
-	static function	Lingo_Reg($robotMsg)
+	static function	Lingo_Whoami($robotMsg)
 	{
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+
+		$device_row = JWDevice::GetDeviceRowByAddress($address,$type);
+
+		if ( empty($device_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		$address_user_id	= $device_row['idUser'];
+		$address_user_row	= JWUser::GetUserInfo($address_user_id);
+	
 		$body = <<<_STR_
-注册用户
+$address_user_row[nameFull] ($address_user_row[nameScreen])
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -924,7 +937,5 @@ _STR_;
 
 		return $robot_reply_msg;
 	}
-
-
 }
 ?>

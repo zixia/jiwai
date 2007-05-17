@@ -402,7 +402,9 @@ class JWSns {
 			$left_device_types	= array_diff($device_types, array($destroy_device_type) );
 
 			if ( !empty($left_device_types) ){
-				JWUser::SetSendViaDevice($user_id, $left_device_types[0]);
+				JWUser::SetSendViaDevice( $user_id, array_shift($left_device_types) );
+			} else {
+				JWUser::SetSendViaDevice( $user_id, 'none');
 			}
 		}
 
@@ -443,21 +445,42 @@ class JWSns {
 		{
 			if ( JWFriend::IsFriend($idUser, $friend_id) )
 			{
-				JWLog::Instance()->Log(LOG_INFO, "JW::DestroyFriend JWFriend::Destroy($idUser,$friend_id).");
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($idUser,$friend_id).");
 
 				if ( ! JWFriend::Destroy($idUser, $friend_id) )
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
 
 			}
-			else if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
+
+			if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
 			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriend JWFriend::Destroy($friend_id, $idUser).");
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser).");
 
 				if ( ! JWFriend::Destroy($friend_id, $idUser) )
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
 
 			}
 
+			/*
+			 *	处理 Follower
+			 */
+			if ( JWFollower::IsFollower($friend_id,$idUser) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($friend_id,$idUser).");
+
+				if ( ! JWFollower::Destroy($friend_id,$idUser) )
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($friend_id,$idUser) failed.");
+
+			}
+
+			if ( $biDirection && JWFollower::IsFollower($idUser,$friend_id) )
+			{
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id).");
+
+				if ( ! JWFollower::Destroy($idUser, $friend_id) )
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id) failed.");
+
+			}
 		}
 	}
 
