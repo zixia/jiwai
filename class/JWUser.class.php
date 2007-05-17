@@ -328,7 +328,7 @@ _SQL_;
 			{
 				if ( $stmt->execute() ){
 					$stmt->close();
-					return JWDB::GetInsertId();
+					return JWDB::GetInsertedId();
 				}else{
 					JWLog::Instance()->Log(LOG_ERR, $db->error );
 				}
@@ -519,6 +519,31 @@ _SQL_;
 		return JWDB::UpdateTableRow('User', $idUser, $db_change_set);
 	}
 
+	/*
+	 *	@param	array	$idUsers
+	 *	@return array	$send_via_device_rows;
+	 */
+	static public function GetSendViaDeviceRowByIds($idUsers)
+	{
+		$user_rows	= JWUser::GetUserRowsByIds($idUsers);
+
+		$send_via_device_rows = array();
+
+		foreach ( $idUsers as $user_id )
+		{
+			if ( isset($user_rows[$user_id]['deviceSendVia']) )
+				$send_via_device_rows[$user_id] = $user_rows[$user_id]['deviceSendVia'];
+			else
+				$send_via_device_rows[$user_id] = 'none';
+		}
+
+		return $send_via_device_rows;
+	}
+
+
+	/*
+	 *	过期函数
+	 */
 	static public function GetSendViaDevice($idUser)
 	{
 		$user_rows	= JWUser::GetUserRowsByIds(array($idUser));

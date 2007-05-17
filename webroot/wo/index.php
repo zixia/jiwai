@@ -108,7 +108,7 @@ if ( isset($arr_device_active['sms'])
 	$active_options['sms']	= true;
 }
 
-$arr_friend_list	= JWFriend::GetFriend($logined_user_id);
+$arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
 
 $via_device			= JWUser::GetSendViaDevice($logined_user_id);
 

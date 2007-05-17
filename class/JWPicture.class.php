@@ -272,7 +272,7 @@ _SQL_;
 
 		$result = JWDB::Execute($sql);
 
-		return JWDB::GetInsertId();
+		return JWDB::GetInsertedId();
 	}
 
 	static public function ConvertPictureBig($srcFile, $dstFile)

@@ -83,7 +83,7 @@ _SQL_;
 			return null;
 		}
 
-		return JWDB::GetInsertId();
+		return JWDB::GetInsertedId();
 	}
 
 	/*

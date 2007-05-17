@@ -218,7 +218,66 @@ class JWSns {
 		return $id_invite;
 	}
 
+
 	/*
+	 *	检查 $idUser 可以对 $idFriends 做哪些 Sns 操作
+	 *	$return	array of array		action_rows
+										array 	
+											key1: 		idFriend
+											value1:		array
+												key2(s): 	add/remove(friend) follow/leave nudge/d
+												value2: bool
+									ie. array(1=>array('add'=>true,'remove'=>...), 2=>array(...))
+	 */
+	static public function GetUserActions($idUser, $idFriends)
+	{
+		if ( empty($idUser) || empty($idFriends) )
+			return array();
+
+		if ( !is_array($idFriends) )
+			throw new JWException('must array');
+
+
+		$friend_relation	= JWFriend::IsFriends		($idUser, $idFriends	,true);
+		$follower_relation	= JWFollower::IsFollowers	($idUser, $idFriends	,true);
+
+		$send_via_device_rows	= JWUser::GetSendViaDeviceRowByIds($idFriends);
+
+		$action_rows = array();
+		foreach ( $idFriends as $friend_id )
+		{
+			if ( $friend_relation[$idUser][$friend_id] )
+			{
+				$action_rows[$friend_id]['remove']	= true;
+
+				if ( $follower_relation[$friend_id][$idUser] )	
+					$action_rows[$friend_id]['leave']	= true;
+				else
+					$action_rows[$friend_id]['follow']	= true;
+			}
+			else if ( $idUser!=$friend_id )
+			{
+ 				// not friend, and not myself
+				$action_rows[$friend_id]['add']		= true;
+			}
+
+			// 反向也是朋友，则可以 direct_message / nudge
+			if ( $friend_relation[$friend_id][$idUser] )
+			{
+				if ( 'none'!=$send_via_device_rows[$friend_id] )
+					$action_rows[$friend_id]['nudge']		= true;
+
+				// TODO $action_rows[$friend_id]['d']			= true;
+			}
+
+		}
+		return $action_rows;
+	}
+
+
+	/*
+	 	@过期函数	替代为 GetUserActions
+
 	 *	检查 $idUser 可以对 $idFriend 做哪些 Sns 操作
 	 *	$return	array	actions	array 	keys: 	add/remove(friend) follow/leave nudge/d
 										values: bool
@@ -282,7 +341,7 @@ class JWSns {
 	static public function	UpdateStatus( $idUser, $status, $device='web' )
 	{
 		// FIXME: Follower 最多可以有多少位？
-		$follower_ids = JWFollower::GetFollower($idUser);
+		$follower_ids = JWFollower::GetFollowerIds($idUser);
 
 		if ( !empty($follower_ids) )
 		{

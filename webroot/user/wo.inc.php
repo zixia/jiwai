@@ -91,17 +91,24 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$status_rows[$
 
 <?php 
 
-$arr_action_param	= array ();
 
-$arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
+//$arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
 
-$arr_friend_list	= JWFriend::GetFriend($page_user_info['id']);
+$user_action_rows	= JWSns::GetUserActions($logined_user_info['id'] , array($page_user_info['id']) );
+
+if ( empty($user_action_rows) )
+	$user_action_row	= array();
+else
+	$user_action_row	= $user_action_rows[$page_user_info['id']];
+
+
+$arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
 								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
-								, array ('action'	, array($arr_action_param,$page_user_info['id']))
+								, array ('action'	, array($user_action_row,$page_user_info['id']))
 								, array ('friend'	, array($arr_friend_list))
 							);
 

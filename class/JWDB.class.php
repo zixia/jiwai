@@ -90,7 +90,7 @@ class JWDB {
 		return self::GetDb()->escape_string($string);
 	}
 
-	static public function GetInsertId()
+	static public function GetInsertedId()
 	{
 		$db = self::GetDb();
 
@@ -515,6 +515,39 @@ class JWDB {
 			throw new JWException('must int!');
 
 		return $id;
+	}
+
+
+	/*
+	 *	查找某个查询中最大的 id
+	 *	功能说明：有些时候我们根据一个条件，查找到了相关的id。但是还需对这些 id 做一些运算，得到结果。
+					为了 cache 结果，我们需要知道条件查询的 id 是否有变化。所以用这个max id作为版本号
+	 */
+	static public function GetMaxId($table, $condition)
+	{
+		$db = self::GetDb();
+
+		$sql = "SELECT MAX(id) as idMax  FROM $table WHERE ";
+		
+		$first = true;
+		foreach ( $condition as $k => $v ){
+			if ( $first )	$first = false;
+			else 			$sql .= " AND ";
+
+			if ( is_int($v) )	$sql .= " $k=$v ";
+			else				$sql .= " $k='" . self::escape_string($v) . "' ";
+		}
+		// " WHERE $field='$value' AND field2=value2 ");
+
+		$result = $db->query ($sql);
+
+		if ( !$result ){
+			throw new JWException ("DB Error: " . $db->error);
+			return false;
+		}
+
+		$row = $result->fetch_assoc();
+		return $row['idMax'];
 	}
 }
 ?>

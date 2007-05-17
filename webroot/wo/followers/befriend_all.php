@@ -11,7 +11,7 @@ $logined_user_id	= JWLogin::GetCurrentUserId();
 
 if ( is_int($logined_user_id) )
 {
-		$follower_ids	= JWFollower::GetFollower($logined_user_id);
+		$follower_ids	= JWFollower::GetFollowerIds($logined_user_id);
 
 		if ( !empty($follower_ids) )
 		{

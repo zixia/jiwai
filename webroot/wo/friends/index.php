@@ -18,7 +18,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$friend_ids			= JWFriend::GetFriend		($page_user_info['id']);
+$friend_ids			= JWFriend::GetFriendIds	($page_user_info['id']);
 $friend_user_rows	= JWUser::GetUserRowsByIds	($friend_ids);
 $friend_icon_url_rows = JWPicture::GetUserIconUrlRowsByIds($friend_ids);
 
@@ -44,6 +44,9 @@ $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 
 
 <?php 
+
+JWTemplate::ShowActionResultTips();
+
 if ( $page_user_info['id']==$logined_user_info['id'] )
 {
 	echo <<<_HTML_

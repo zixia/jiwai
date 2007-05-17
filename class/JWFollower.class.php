@@ -43,6 +43,84 @@ class JWFollower {
 
 
 	/**
+	 *	这个函数有些复杂。;-)
+
+	 * 	Is idFollowers is idUser's follower? or check bidirection? 
+	 *	根据 $idFollowers，返回二维($idUser,$idFollowers) 为 key 的 array，true为是朋友，false 为不是朋友
+	 *
+	 *	@param	array of int	$idFollowers
+	 *	@param	bool			$biDirection	如果是 true，则检查双向关系
+
+	 *	@return	array	$follower_relation[idUser][idFollower] = true/false
+						如果 biDirection, 还会有 $follower_rows[idFollower][idUser] 来确认 idUser 有没有被 idFollower 订阅 
+						ie.	array(1=>array(2=>true, 4=>false), 2=>array(...) );
+						如果 true，说明 idFollower 是 idUesr 订阅者
+	 */
+	static function IsFollowers($idUser, $idFollowers, $biDirection=false)
+	{
+		$idUser = intval($idUser);
+
+		if ( 0>=$idUser )
+			throw new JWException('must int');
+
+		if ( empty($idFollowers) )
+			return array();
+
+		if ( !is_array($idFollowers) )
+			throw new JWException('must array');
+
+		// prepare for memcache, key may like this: Follower_IdFollower_of_$IdUser_$user_follower_version
+		// $user_follower_version 	= JWDB::GetMaxId('Follower', array('idUser'=>$idUser));
+
+		$user_follower_ids 		= JWFollower::GetFollowerIds	($idUser, 9999);
+		
+		$user_follower_rows = array();
+
+		foreach ( $user_follower_ids as $user_follower_id ) {
+			$user_follower_rows[$idUser][$user_follower_id] = true;
+		}
+
+
+		/*
+		 *	如果查找双向的关系，找出都有谁添加了 $idUser 为好友
+	 	 */
+		if ( $biDirection )
+		{
+			$user_be_follower_ids		= JWFollower::GetBeFollowerIds	($idUser, 9999);
+		
+			foreach ( $user_be_follower_ids as $user_be_follower_id ) {
+				$user_follower_rows[$user_be_follower_id][$idUser] = true;
+			}
+		}
+
+		$return_follower_relation = array();
+
+		foreach ( $idFollowers as $follower_id )
+		{
+			// 检查正向订阅关系
+			if ( isset($user_follower_rows[$idUser][$follower_id]) )
+				$return_follower_relation[$idUser][$follower_id] = true;
+			else
+				$return_follower_relation[$idUser][$follower_id] = false;
+
+
+			// 检查反向订阅关系
+			if ( $biDirection )
+			{
+				if ( isset($user_follower_rows[$follower_id][$idUser]) )
+					$return_follower_relation[$follower_id][$idUser] = true;
+				else
+					$return_follower_relation[$follower_id][$idUser] = false;
+			}
+			
+		}
+
+		return $return_follower_relation;
+	}
+
+
+	/**
+		@过期函数
 	 * Is idFollower is idUser's follower?
 	 *
 	 */
@@ -62,7 +140,7 @@ class JWFollower {
 	 * 	Get follower list
 	 *	@return array	array of follower id list
 	 */
-	static function GetFollower($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX)
+	static function GetFollowerIds($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
@@ -91,6 +169,41 @@ _SQL_;
 
 		return $arr_follower_id;
 	}
+
+
+	/**
+	 * 	Get ids of whom is follower with $idUser
+	 *	@return array	array of be-follower id list
+	 */
+	static function GetBeFollowerIds($idFollower, $numMax=40, $start=0)
+	{
+		$idFollower 	= intval($idFollower);
+		$numMax 	= intval($numMax);
+		$start  	= intval($start);
+
+		if ( 0==$idFollower || 0==$numMax )
+			throw new JWException('not int');
+
+		$sql = <<<_SQL_
+SELECT	idUser
+FROM	Follower
+WHERE	idFollower=$idFollower
+		AND idUser IS NOT NULL
+LIMIT	$start,$numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$arr_user_id = array();
+		foreach ( $arr_result as $row )
+			array_push($arr_user_id, $row['idUser']);
+
+		return $arr_user_id;
+	}
+
 
 
 	/*

@@ -131,7 +131,7 @@ _HTML_;
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/account/setting">设置</a></li>
-			<li><a href="/help/">帮助</a></li>
+			<li><a href="http://help.jiwai.de/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
 		</ul>
 <?php } ?>
@@ -1016,8 +1016,14 @@ _HTML_;
 			<li>
 				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
 					<fieldset>
+<?php 
+		if ( $smsActived || $imActived ) 
+		{ 
+?>
 						<h4>发送通知消息到:</h4>
-<?php
+<?php 
+		}
+
 		if ( $smsActived )
 		{
 ?>
@@ -1041,10 +1047,10 @@ _HTML_;
 ?>
 						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('none'==$viaDevice) echo ' checked="checked" '; ?> value="none" />
 						<label for="current_user_send_via_none">网页</label>
-					</fieldset>
 <?php
 		}
 ?>
+					</fieldset>
 				</form>	
 			</li>
 		</ul>
@@ -1273,6 +1279,9 @@ _HTML_;
 		$list_user_rows				= JWUser::GetUserRowsByIds			($idListUsers);
 		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($idListUsers);
 
+		$action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
+
+//die(var_dump($action_rows));
 		foreach ( $idListUsers as $list_user_id )
 		{
 			$list_user_row			= $list_user_rows			[$list_user_id];
@@ -1284,18 +1293,19 @@ _HTML_;
 			echo <<<_HTML_
 	<tr class="$odd_even vcard">
 		<td class="thumb">
-			<a href="http://jiwai.de/$list_user_row[nameScreen]/"><img alt="$list_user_row[nameFull]" class="photo" src="$list_user_icon_url" /></a>
+			<a href="/$list_user_row[nameScreen]/"><img alt="$list_user_row[nameFull]" class="photo" src="$list_user_icon_url" /></a>
 		</td>
 		<td>
 			<strong>
-		  		<a href="http://jiwai.de/$list_user_row[nameScreen]/" class="url"><span class="fn">$list_user_row[nameFull]</span> (<span class="uid">$list_user_row[nameScreen]</span>)</a>
+		  		<a href="/$list_user_row[nameScreen]/" class="url"><span class="fn">$list_user_row[nameFull]</span> (<span class="uid">$list_user_row[nameScreen]</span>)</a>
 			</strong>
 			<p class="friend-actions">
 		  		<small>
 _HTML_;
 
-			$action	= JWSns::GetUserAction($idUser,$list_user_row['idUser']);
-			JWTemplate::sidebar_action($action,$list_user_id,false);
+			$action_row = $action_rows[$list_user_id];
+
+			JWTemplate::sidebar_action($action_row,$list_user_id,false);
 
 			echo <<<_HTML_
   		  		</small>
