@@ -661,6 +661,12 @@ _STR_;
 		if ( empty($friend_user_row['idUser']) )
 			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
+		$friend_user_id		= $friend_user_row['idUser'];
+
+		$send_via_device_rows	= JWUser::GetSendViaDeviceRowByIds( array($friend_user_id) );
+
+		if ( 'none'==$send_via_device_rows[$friend_user_id] )
+			return self::ErrorMsg($robotMsg, "$friend_user_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 
 		/*
 		 *	获取发送者的 idUser

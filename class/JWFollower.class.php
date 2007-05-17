@@ -76,10 +76,11 @@ class JWFollower {
 		
 		$user_follower_rows = array();
 
-		foreach ( $user_follower_ids as $user_follower_id ) {
-			$user_follower_rows[$idUser][$user_follower_id] = true;
+		if ( !empty($user_follower_ids) ) {
+			foreach ( $user_follower_ids as $user_follower_id ) {
+				$user_follower_rows[$idUser][$user_follower_id] = true;
+			}
 		}
-
 
 		/*
 		 *	如果查找双向的关系，找出都有谁添加了 $idUser 为好友
@@ -88,8 +89,10 @@ class JWFollower {
 		{
 			$user_be_follower_ids		= JWFollower::GetBeFollowerIds	($idUser, 9999);
 		
-			foreach ( $user_be_follower_ids as $user_be_follower_id ) {
-				$user_follower_rows[$user_be_follower_id][$idUser] = true;
+			if ( !empty($user_be_follower_ids) ) {
+				foreach ( $user_be_follower_ids as $user_be_follower_id ) {
+					$user_follower_rows[$user_be_follower_id][$idUser] = true;
+				}
 			}
 		}
 
@@ -120,19 +123,14 @@ class JWFollower {
 
 
 	/**
-		@过期函数
 	 * Is idFollower is idUser's follower?
 	 *
 	 */
 	static function IsFollower($idUser, $idFollower)
 	{
-		$idUser 		= intval($idUser);
-		$idFollower 	= intval($idFollower);
+		$is_follower_rows = self::IsFollowers($idUser, array($idFollower));
 
-		if ( (0>=$idUser) || (0>=$idFollower) )
-			throw new JWException('must int');
-
-		return JWDB::ExistTableRow('Follower', array('idUser'=>$idUser,'idFollower'=>$idFollower));
+		return $is_follower_rows[$idUser][$idFollower];
 	}
 
 

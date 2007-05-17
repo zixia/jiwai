@@ -78,7 +78,7 @@ class JWSns {
 		// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
 		// 所以，被follow的人是 friend_id
 		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
-			self::CreateFollower($friendRow['id'], $userRow['id']);
+			self::CreateFollower($friendRow, $userRow);
 
 		return true;
 	}
@@ -444,17 +444,18 @@ class JWSns {
 			if ( JWFriend::IsFriend($idUser, $friend_id) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JW::DestroyFriend JWFriend::Destroy($idUser,$friend_id).");
+
 				if ( ! JWFriend::Destroy($idUser, $friend_id) )
-				{
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
-				}
-			}else if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
+
+			}
+			else if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriend JWFriend::Destroy($friend_id, $idUser).");
+
 				if ( ! JWFriend::Destroy($friend_id, $idUser) )
-				{
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
-				}
+
 			}
 
 		}
