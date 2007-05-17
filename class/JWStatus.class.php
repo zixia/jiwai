@@ -236,7 +236,7 @@ _SQL_;
 	 * 	@return	array	以 idStatus 为 key 的 status row
 	 * 
 	 */
-	static public function GetStatusRowsByIds ($idStatuses)
+	static public function GetStatusDbRowsByIds ($idStatuses)
 	{
 		if ( empty($idStatuses) )
 			return array();
@@ -273,6 +273,15 @@ _SQL_;
 		return $status_map;
 	}
 
+	static public function GetStatusDbRowById ($idStatus)
+	{
+		$status_db_rows = JWStatus::GetStatusDbRowsByIds(array($idStatus));
+
+		if ( empty($status_db_rows) )
+			return array();
+
+		return $status_db_rows[$idStatus];
+	}
 
 	static public function GetTimeDesc ($unixtime)
 	{

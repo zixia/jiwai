@@ -92,7 +92,7 @@ class JWSns {
 		if ( !is_array($idFriends) )
 			throw new JWException('must array');
 		
-		$friend_user_rows	= JWUser::GetUserRowsByIds($idFriends);
+		$friend_user_rows	= JWUser::GetUserDbRowsByIds($idFriends);
 		$user_info			= JWUser::GetUserInfo($idUser);
 
 		$user_notice_settings 	= JWUser::GetNotification($idUser);
@@ -177,7 +177,7 @@ class JWSns {
 		if ( !is_array($idFollowers) )
 			throw new JWException('must array');
 		
-		$follower_user_rows	= JWUser::GetUserRowsByIds($idFollowers);
+		$follower_user_rows	= JWUser::GetUserDbRowsByIds($idFollowers);
 		$user_row			= JWUser::GetUserInfo($idUser);
 
 		foreach ( $idFollowers as $follower_id )
@@ -204,7 +204,7 @@ class JWSns {
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite		= JWInvitation::Create($idUser,$address,$type,$message, $code_invite);
 
-		$user_rows 	= JWUser::GetUserRowsByIds(array($idUser));
+		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
 		if ( 'email'==$type ){

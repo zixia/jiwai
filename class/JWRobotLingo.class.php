@@ -402,7 +402,7 @@ _STR_;
 		if ( empty($address_user_id) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
 		/*
@@ -464,7 +464,7 @@ _STR_;
 		if ( empty($address_user_id) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
 
@@ -497,7 +497,7 @@ _STR_;
 			JWSns::CreateFriends	( $address_user_id	,array($invitee_user_id) );
 			JWSns::CreateFollowers	( $invitee_user_id	,array($address_user_id) );
 
-			$invitee_user_rows 	= JWUser::GetUserRowsByIds(array($invitee_user_id));
+			$invitee_user_rows 	= JWUser::GetUserDbRowsByIds(array($invitee_user_id));
 			$invitee_user_row 	= $invitee_user_rows[$invitee_user_id];
 
 			$body = <<<_STR_
@@ -552,7 +552,7 @@ _STR_;
 		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
 		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
-		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
 
@@ -627,7 +627,7 @@ _STR_;
 		{
 			$status_id		= $status_ids['status_ids'][0];
 
-			$status_rows	= JWStatus::GetStatusRowsByIds ( array($status_id) );
+			$status_rows	= JWStatus::GetStatusDbRowsByIds ( array($status_id) );
 			$status_row		= $status_rows[$status_id];
 			$status	= $status_row['status'];
 		}
@@ -695,7 +695,7 @@ _STR_;
 			return self::ErrorMsg($robotMsg, "对不起，你还不是$friend_user_row[nameFull]的好友呢，"
 											."不能随便挠挠他，呵呵。等他加你为好友再挠吧!");
 
-		$address_user_rows	= JWUser::GetUserRowsByIds(array($address_user_id));
+		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
 		$address_user_row	= $address_user_rows[$address_user_id];
 
 

@@ -202,6 +202,16 @@ _SQL_;
 	}
 
 
+	static public function GetUserDbRowById($idUser)
+	{
+		$user_db_rows = JWUser::GetUserDbRowsByIds(array($idUser));
+
+		if ( empty($user_db_rows) )
+			return array();
+
+		return $user_db_rows[$idUser];
+	}
+
 	/*
 	 *	根据用户 nameScreen/email/idUser 返回用户信息
 	 * @param	string			value		condition val, could be array in the furture
@@ -525,7 +535,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDeviceRowByIds($idUsers)
 	{
-		$user_rows	= JWUser::GetUserRowsByIds($idUsers);
+		$user_rows	= JWUser::GetUserDbRowsByIds($idUsers);
 
 		$send_via_device_rows = array();
 
@@ -546,7 +556,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDevice($idUser)
 	{
-		$user_rows	= JWUser::GetUserRowsByIds(array($idUser));
+		$user_rows	= JWUser::GetUserDbRowsByIds(array($idUser));
 
 		if ( isset($user_rows[$idUser]['deviceSendVia']) )
 			return $user_rows[$idUser]['deviceSendVia'];

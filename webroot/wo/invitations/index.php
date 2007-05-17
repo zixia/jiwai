@@ -52,7 +52,7 @@ foreach ( $invitation_ids as $invitation_id )
 }
 
 if ( !empty($invitee_user_ids) )
-	$invitee_user_rows	= JWUser::GetUserRowsByIds($invitee_user_ids);
+	$invitee_user_rows	= JWUser::GetUserDbRowsByIds($invitee_user_ids);
 
 
 ?>

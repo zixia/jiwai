@@ -15,7 +15,7 @@ if ( $logined_user_id )
 	$param = $_REQUEST['pathParam'];
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$nudged_user_id = intval($match[1]);
-		$nudged_user_rows	= JWUser::GetUserRowsByIds(array($nudged_user_id));
+		$nudged_user_rows	= JWUser::GetUserDbRowsByIds(array($nudged_user_id));
 		$nudged_user_row	= $nudged_user_rows[$nudged_user_id];
 
 		if ( JWFriend::IsFriend($nudged_user_id, $logined_user_id) )

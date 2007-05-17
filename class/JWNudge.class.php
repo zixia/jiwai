@@ -48,7 +48,7 @@ class JWNudge {
 	 */
 	static public function NudgeUserIds($idUsers, $message, $messageType='nudge')
 	{
-		$user_rows		= JWUser::GetUserRowsByIds			($idUsers);
+		$user_rows		= JWUser::GetUserDbRowsByIds			($idUsers);
 		$device_rows	= JWDevice::GetDeviceRowsByUserIds	($idUsers);
 
 		foreach ( $idUsers as $user_id )

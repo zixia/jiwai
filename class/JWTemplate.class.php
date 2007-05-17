@@ -975,7 +975,7 @@ _HTML_;
 
 		if ( !empty($status_data['status_ids']) )
 		{
-			$status_rows	= JWStatus::GetStatusRowsByIds($status_data['status_ids']);
+			$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 			$status_id		= $status_data['status_ids'][0];
 			$current_status	= $status_rows[$status_id]['status'];
 		}
@@ -1080,7 +1080,7 @@ _HTML_;
 		if ( empty($friendIds) )
 			return;
 
-		$friend_rows			= JWUser::GetUserRowsByIds($friendIds);
+		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByIds($friendIds);
 
 		echo <<<_HTML_
@@ -1276,7 +1276,7 @@ text-indent:0.6em;
 _HTML_;
 
 		$n = 0;
-		$list_user_rows				= JWUser::GetUserRowsByIds			($idListUsers);
+		$list_user_rows				= JWUser::GetUserDbRowsByIds			($idListUsers);
 		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($idListUsers);
 
 		$action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
