@@ -482,6 +482,8 @@ class JWSns {
 
 			}
 		}
+
+		return true;
 	}
 
 }
