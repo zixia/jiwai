@@ -301,7 +301,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 	static public function tab_header( $vars=null )
 	{
 		if ( !array_key_exists('title',$vars) )	
-			$vars['title'] = '<a href="/wo">你</a>和<a href="/friends">朋友们</a>都在做什么?';
+			$vars['title'] = '<a href="/wo/">你</a>和<a href="/wo/friends/">朋友们</a>都在做什么?';
 
 		if ( !array_key_exists('title2',$vars) )	
 			$vars['title2'] = '每分钟更新一次。';

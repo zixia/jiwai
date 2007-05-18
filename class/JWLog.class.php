@@ -97,5 +97,14 @@ LOG_DEBUG debug-level message
 
 		return syslog($priority, $message);
 	}
+
+	static public function LogFuncName($priority, $message)
+	{
+		$curr_trace = array_shift(debug_backtrace());
+
+		$prefix = $curr_trace['class'] . '::' . $curr_trace['function'] . ' ';
+
+		self::Log($priority, "$prefix $message");
+	}
 }
 ?>

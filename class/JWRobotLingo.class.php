@@ -157,18 +157,6 @@ class JWRobotLingo {
 	}
 	
 
-	static public function ErrorMsg($robotMsg, $message)
-	{
-		$robot_reply_msg = new JWRobotMsg();
-
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $message
-							);
-
-		return $robot_reply_msg;
-	}
-
 	/*
 	 *
 	 */
@@ -335,7 +323,7 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 		$followe = $matches[1];
 
@@ -393,7 +381,7 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 
 		$followe = $matches[1];
@@ -422,7 +410,12 @@ _STR_;
 
 
 	/*
-	 *	目前只支持 add 手机号码
+	 *	当添加用户时，完整地址应为：type://address。如果 type:// 忽略，则按照如下规则：
+			1、如果 address 是不是数字，则 type = 用户发送消息的  type。
+				比如用户用 msn 邀请 zixia@zixia.net，则认为 zixia@zixia.net 是 MSN 地址
+			2、如果 address 是数字
+				如果数字是合法手机号码，则 type = 'sms'
+				否则，认为是 qq 号码
 	 */
 	static function	Lingo_Add($robotMsg)
 	{
@@ -434,15 +427,17 @@ _STR_;
 		/*
 		 *	获取发送者的 idUser
 		 */
-		$address 	= $robotMsg->GetAddress();	
-		$type 		= $robotMsg->GetType();	
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
-		$address_user_id		= $address_device_db_row['idUser'];
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress(
+										 $robotMsg->GetAddress()
+										,$robotMsg->GetType()
+									);
 
-		if ( empty($address_user_id) )
+
+		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
+		$address_user_id		= $address_device_db_row['idUser'];
 
 		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
 
@@ -452,17 +447,49 @@ _STR_;
 	 	 */
 		$param_body = $robotMsg->GetBody();
 
-		if ( ! preg_match('/^\w+\s+(\+?\d+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) )
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
-		$invitee_sms_number = $matches[1];
-
-		$invitee_sms_number	= preg_replace("/^\+86/","",$invitee_sms_number);
+		$user_input_invitee_address 	= $matches[1];
 
 		/*
-		 *	查看被添加的手机号码是否已经存在
+		 * 用户输入的邀请地址，是否包含类型信息？is full address? 
+				(msn://)zixia.net
+				(sms://)13911833788
+					or 13911833788
+				(qq://)918999
+
+				
 		 */
-		$invitee_device_id 		= JWDevice::GetDeviceIdByAddress(array('address'=>$invitee_sms_number,'type'=>'sms') );
+		if ( preg_match('#^([^/]+)://(.+)$#',$user_input_invitee_address,$matches) ) {
+			$invitee_type		= $matches[1];
+			$invitee_address	= $matches[2];
+		} else {
+			$invitee_address	= $user_input_invitee_address;
+
+			if ( JWDevice::IsValid($invitee_address, 'sms') )	$invitee_type	= 'sms';
+			else 												$invitee_type		= $robotMsg->GetType();
+		}
+
+		if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，我太笨了。您添加的 $user_input_invitee_address 我不认识，请您输入手机号码或邮件地址。了解更多？发送 HELP。");
+
+
+		switch ( $invitee_type )
+		{
+			case 'sms':
+				$invitee_address	= preg_replace("/^\+86/","",$invitee_address);
+				break;
+
+			default:
+				// 没有动作
+		}
+
+
+		/*
+		 *	查看被添加的地址是否已经存在
+		 */
+		$invitee_device_id 		= JWDevice::GetDeviceIdByAddress(array('address'=>$invitee_address,'type'=>$invitee_type) );
 		$invitee_device_db_row	= JWDevice::GetDeviceDbRowById($invitee_device_id);
 
 		if ( !empty($invitee_device_db_row) )
@@ -471,13 +498,16 @@ _STR_;
 
 			$invitee_user_id = $invitee_device_db_row['idUser'];
 
-			JWSns::CreateFriends	( $address_user_id	,array($invitee_user_id) );
-			JWSns::CreateFollowers	( $invitee_user_id	,array($address_user_id) );
+			/*
+			 * 互相添加为好友和粉丝
+			 */
+			JWSns::CreateFriends	( $address_user_id	,array($invitee_user_id), true );
+			JWSns::CreateFollowers	( $invitee_user_id	,array($address_user_id), true );
 
 			$invitee_user_row 	= JWUser::GetUserDbRowById($invitee_user_id);
 
 			$body = <<<_STR_
-${invitee_sms_number}在JiWai注册过！档案地址：http://JiWai.de/$invitee_user_row[nameScreen]/。我们已经帮您发送了好友添加请求。
+${invitee_address}在JiWai注册过！档案地址：http://JiWai.de/$invitee_user_row[nameScreen]/。我们已经帮您发送了好友添加请求。
 _STR_;
 		}
 		else
@@ -486,7 +516,7 @@ _STR_;
 			$invite_msg = <<<_INVITATION_
 $address_user_row[nameFull]($address_user_row[nameScreen])想成为您在JiWai的好友！回复ACCEPT $address_user_row[nameScreen]接受，或回复DENY $address_user_row[nameScreen]拒绝。
 _INVITATION_;
-			JWSns::Invite($address_user_id, $invitee_sms_number, 'sms', $invite_msg);
+			JWSns::Invite($address_user_id, $invitee_address, $invitee_type, $invite_msg);
 
 			$body = <<<_STR_
 搞定了！我们已经帮您发出了邀请！期待很快能得到您朋友的回应。
@@ -538,7 +568,7 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 		$friend_name = $matches[1];
 
@@ -581,7 +611,7 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 		$friend_name = $matches[1];
 
@@ -591,7 +621,7 @@ _STR_;
 		$friend_user_db_row = JWUser::GetUserInfo( $friend_name );
 
 		if ( empty($friend_user_db_row) )
-			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
 		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_db_row['idUser'], 1);
 
@@ -638,21 +668,21 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 
 		$friend_name 		= $matches[1];
 		$friend_user_db_row	= JWUser::GetUserInfo($friend_name);
 
 		if ( empty($friend_user_db_row) )
-			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
 		$friend_user_id		= $friend_user_db_row['idUser'];
 
 		$send_via_device	= JWUser::GetSendViaDeviceByUserId($friend_user_id);
 
 		if ( 'none'==$send_via_device )
-			return self::ErrorMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
+			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 
 		/*
 		 *	获取发送者的 idUser
@@ -667,7 +697,7 @@ _STR_;
 		$address_user_id		= $address_device_db_row['idUser'];
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
-			return self::ErrorMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
+			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
 											."不能随便挠挠他，呵呵。等他加你为好友再挠吧!");
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
@@ -710,13 +740,13 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
 		$friend_name 		= $matches[1];
 		$friend_user_row	= JWUser::GetUserInfo($friend_name);
 
 		if ( empty($friend_user_row['idUser']) )
-			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
 
 		$register_date	= date("Y年n月",strtotime($friend_user_row['timeCreate']));
@@ -762,17 +792,10 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return self::ErrorMsg($robotMsg, $help);
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
 
-		$inviter_name = $matches[1];
-
-		/*
-		 *	获取邀请者的用户信息
-		 */
-		$inviter_user_row = JWUser::GetUserInfo( $inviter_name );
-
-		if ( empty($inviter_user_row) )
-			return self::ErrorMsg($robotMsg, $help);
+		$inviter_name 		= $matches[1];
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
 
 
 		/*
@@ -784,49 +807,58 @@ _STR_;
 		$address_device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		/*
-		 *	分为几种情况处理：
-				1、被邀请用户没有注册
-					1.1	用户被邀请过（通过设备查找到邀请）
-					1.2 用户没有被邀请过
-				2、被邀请用户已经注册（通过设备查找到了用户）
-		 *
+		 *	分为三种情况处理：
+				1、用户已经注册
+				2、用户没有注册，但是有邀请
+				3、用户没有注册，没有邀请
 		 */
-		if ( empty($address_device_db_row) )
+		if ( ! empty($address_device_db_row) )
 		{
-die("UN-IMPL");
-			// 1、用户没有注册，查找邀请
-			$invitation_ids	= JWInvitation::GetInvitationIdsFromAddresses( array( 
-													array('address'=>$address,'type'=>$type) 
-											) ); 
+			/*
+			 *	 1、用户已经注册
+			 */
 
-			if ( isset($invitation_ids) )
-			{
-				/*
-				 *	1.1	用户被邀请过（通过设备查找到邀请）
-				 */
-				JWSns::AcceptInvitation( $idUser, array_shift($invitation_ids[0]) );
-			}
-			else
-			{
-				/*
-				 *	1.2 用户没有被邀请过
-				 */
-			}
+			$address_user_id	= $address_device_db_row['idUser'];
+
+
+			// 互相加，无所谓先后顺序
+			JWSns::CreateFriends	($address_user_id, array($inviter_user_row['idUser']), true);
+			JWSns::CreateFollowers	($address_user_id, array($inviter_user_row['idUser']), true);
+
+			$body = <<<_STR_
+搞定了！您和$inviter_user_row[nameFull]($inviter_user_row[nameScreen])已经成为好友！回复GET $inviter_user_row[nameScreen]查看最新更新。
+_STR_;
+
+		}
+		else if ( !empty($inviter_user_row) )
+		{
+			/*
+			 *	2、 被邀请用户没有完成注册 
+			 * 		这时用户回复的字符串，只要不是命令，即会被系统当作用户选择的用户名。
+			 *		回复提示信息
+			 */
+
+			$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
+
+
+			if ( empty($invitation_id) )
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！${inviter_name}没有邀请过您。请回复您希望使用的用户名。");
+
+
+			JWSns::AcceptInvitation($invitation_id);
+
+			return JWRobotLogic::ReplyMsg($robotMsg, "搞定了！您已经接受了${inviter_name}的邀请。请回复您希望使用的用户名。");
 		}
 		else
 		{
-			// 2、用户已经注册
-			$address_user_id	= $device_rows[$type][$address]['idUser'];
-
-			// 互相加，无所谓先后顺序
-			JWSns::CreateFriends	($address_user_id, $inviter_user_row['idUser'], true);
-			JWSns::CreateFollowers	($address_user_id, $inviter_user_row['idUser'], true);
-		}
-
-
-		$body = <<<_STR_
-搞定了！ 您和$invitee_user_row[nameFull]($address_user_row[nameScreen])已经成为好友！回复GET $invitee_user_row[nameScreen]查看最新更新。
+			/*
+				3、无效邀请
+			 *		邀请者(Accept的用户)不存在？
+			 */
+			$body = <<<_STR_
+哎呀！没有找到这个用户($inviter_name)，是不是他（她）改名了？。发送HELP了解更多。
 _STR_;
+		}
 
 		$robot_reply_msg = new JWRobotMsg();
 		
@@ -844,9 +876,58 @@ _STR_;
 	 */
 	static function	Lingo_Deny($robotMsg)
 	{
-		$body = <<<_STR_
-尚未支持，请明天再试吧。http://JiWai.de/
+		$help = <<<_HELP_
+DENY命令帮助：DENY 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_HELP_;
+
+		$param_body = $robotMsg->GetBody();
+
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
+
+
+		$friend_name 	= $matches[1];
+
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType() ;
+		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array(
+									 'address'	=> $address
+									,'type'		=> $type
+								) ); 
+
+		if ( empty($invitation_id) )
+		{
+			/*
+			 * 没有邀请过这个设备
+			 * 检查是否设备已经注册过，如果没有注册过则引导注册
+			 */
+			if ( JWDevice::IsExist($address,$type) )
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！${friend_name}并没有邀请您。发送HELP了解更多。");
+			else
+				return JWRobotLogic::CreateAccount($robotMsg);
+		}
+
+		/*
+		 *	删除邀请记录
+		 *	FIXME: 如果一个 address 被多人邀请多次，这里可能删除的是别人的邀请……
+					这样需要多 deny 几次，就全部删除了……
+		 */
+		JWInvitation::Destroy($invitation_id);
+
+		$friend_db_row = JWUser::GetUserInfo($friend_name);
+
+		if ( empty($friend_db_row) )
+		{
+			$body = <<<_STR_
+哎呀！没有找到邀请您的朋友${friend_name}，发送HELP或访问http://jiwai.de/了解更多！
 _STR_;
+		}
+		else
+		{
+			$body = <<<_STR_
+搞定了！您没有接受$friend_db_row[nameFull]($friend_db_row[nameScreen])的邀请。发送GET $friend_db_row[nameScreen]获取$friend_db_row[nameFull]的最新更新（本短信服务免费）
+_STR_;
+		}
 
 		$robot_reply_msg = new JWRobotMsg();
 		

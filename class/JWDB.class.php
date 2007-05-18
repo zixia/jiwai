@@ -549,5 +549,30 @@ class JWDB {
 		$row = $result->fetch_assoc();
 		return $row['idMax'];
 	}
+
+	/*
+	 *	当一个用户被删除时，相关的外键会变为 NULL
+	 *	应该定期清理
+	 */
+	static public function CleanDiedRows()
+	{
+		$sqls = array (
+					 'DELETE FROM Status 		WHERE idUser IS NULL'
+					,'DELETE FROM Device 		WHERE idUser IS NULL'
+					,'DELETE FROM RememberMe	WHERE idUser IS NULL'
+					,'DELETE FROM Picture		WHERE idUser IS NULL'
+
+					,'DELETE FROM Friend 		WHERE (idUser IS NULL) OR (idFriend IS NULL)'
+					,'DELETE FROM Follower 		WHERE (idUser IS NULL) OR (idFollower IS NULL)'
+
+					,'DELETE FROM Favourite		WHERE (idUser IS NULL) OR (idStatus IS NULL)'
+					,'DELETE FROM Invitation	WHERE (idUser IS NULL)'
+				);
+		 
+		foreach ( $sqls as $sql ) 
+			self::Execute($sql);
+
+		return;
+	}
 }
 ?>

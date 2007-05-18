@@ -132,8 +132,8 @@ class JWRobotLogic {
 		if ( empty($device_row) )
 		{	
 			// user not registed
-			JWLog::Instance()->Log(LOG_NOTICE,"UNKNOWN IM: $type://$address [$body]");
-			return JWRobotLingo::Lingo_Tips($robotMsg);
+			JWLog::Instance()->Log(LOG_NOTICE,"JWRobotLogic::ProcessMoStatus UNKNOWN IM: $type://$address");
+			return JWRobotLogic::CreateAccount($robotMsg);
 		}
 		else if ( ! empty($device_row['secret']) )
 		{	
@@ -179,7 +179,7 @@ class JWRobotLogic {
 		if ( $user_id )
 		{
 			$body = <<<_STR_
-搞定了！您已经通过了叽歪de验证。约1分钟后您就可以通过 ${type} 发送更新了，耶！
+搞定了！您已经通过了叽歪de验证。约1分钟后您就可以通过${type}发送更新了，耶！
 _STR_;
 //(这一刻，你在做什么？ - http://JiWai.de)
 		}
@@ -205,6 +205,161 @@ _STR_;
 	 */
 	static public function CreateAccount($robotMsg)
 	{
+		$address = $robotMsg->GetAddress();
+		$type	 = $robotMsg->GetType();
+
+		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
+
+		if ( empty($invitation_id) )
+		{
+			/*
+			 *	1 用户没有被邀请过
+			 */
+
+			/*
+			 *	为这个用户添加一个缺省的好友：JiwWi
+			 */
+		
+			$jiwai_user_db_row = JWUser::GetUserInfo('JiWai');
+			
+			if ( empty($jiwai_user_db_row) )
+				throw new JWException('cant fount user JiWai !?');
+
+			$jiwai_user_id = $jiwai_user_db_row['idUser'];
+
+			$ret = JWInvitation::Create(	 $jiwai_user_id
+											,$robotMsg->GetAddress()
+											,$robotMsg->GetType()
+											,'用户主动上行注册，自动建立邀请'
+											,JWDevice::GenSecret(32, JWDevice::CHAR_ALL)
+									);
+
+			if ( ! $ret )
+			{
+				JWLog::LogFuncName(LOG_CRIT, "JWInvitation::Create error for "
+									. $robotMsg->GetType() . "://"
+									. $robotMsg->GetAddress() 
+						);
+
+				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，您过一会儿再来试试吧。");
+			}
+
+			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的JiWai用户名。访问http://jiwai.de/了解更多。");
+		}
+
+
+		/*
+		 *	2	用户被邀请过（通过设备查找到邀请）
+		 */
+		$param_body = $robotMsg->GetBody();
+
+		$user_name = preg_replace("/[^\w]+/"	,""	,$param_body);
+		$user_name = preg_replace("/^\d+/"		,""	,$user_name);
+		
+		if ( empty($user_name) )
+		{
+			$user_name = $robotMsg->GetType() . '_' . $robotMsg->GetAddress();
+			$user_name = preg_replace("/@/","_",$user_name);
+		}
+		
+
+		/*
+		 *	处理名字过短的问题
+		 *	如果是3个字符的名字，那么通过
+		 *	如果是1、2个字符的名字，则随机填充到4个字符
+		 */
+		$user_name_len = strlen($user_name);
+
+		if ( 3>$user_name_len )
+		{
+			for ( $n=$user_name_len; $n<4; $n++ )
+				$user_name .= rand(0,9);
+		}
+
+		$is_valid_name = false;
+
+		if ( ! JWUser::IsExistName($user_name) )
+		{
+			$is_valid_name = true;
+		}
+		else
+		{
+			$n = 1;
+			while ( $n++ < 30 )
+			{
+				if ( ! JWUser::IsExistName("$user_name$n") )
+				{
+					$user_name .= $n;
+
+					$is_valid_name = true;
+					break;
+				}
+			}
+			
+		}
+
+		if ( ! $is_valid_name )
+		{
+			$month_day = date("md");
+			if ( ! JWUser::IsExistName("$user_name$month_day") )
+			{
+				$user_name 	.= $month_day;
+
+				$is_valid_name = true;
+			}
+		}
+
+		if ( ! $is_valid_name )
+			return self::ReplyMsg($robotMsg, "哎呀！您选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
+
+	
+		$new_user_row = array	(
+							 'nameScreen'	=> $user_name
+							,'nameFull'		=> $user_name
+							,'pass'			=> JWDevice::GenSecret(16)
+						);
+
+		if ( 'qq'!=$type && 'sms'!=$type )
+			$new_user_row['email'] = $address;
+		
+	
+		$new_user_id =  JWUser::Create($new_user_row);
+
+		if ( $new_user_id )
+		{
+			if ( ! JWSns::CreateDevice($new_user_id, $address, $type, true) )
+				JWLog::LogFuncName(LOG_CRIT, "JWDevice::Create($new_user_id,$address,$type,true) failed.");
+
+			// 互相加为好友，标识邀请状态
+			JWSns::FinishInvitation($new_user_id, $invitation_id);
+
+			$body = <<<_STR_
+欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"到99118816来获取您的更新吧。发送HELP可以了解更多JiWai功能。 
+_STR_;
+		}
+		else
+		{
+			$body = <<<_STR_
+哇，真可怕！现在暂时无法处理新用户请求，您过一会儿再来试试吧。");
+_STR_;
+		}
+
+		return self::ReplyMsg($robotMsg, $body);
 	}
+
+
+	static public function ReplyMsg($robotMsg, $message)
+	{
+		$robot_reply_msg = new JWRobotMsg();
+
+		$robot_reply_msg->Set( $robotMsg->GetAddress()
+								, $robotMsg->GetType()
+								, $message
+							);
+
+		return $robot_reply_msg;
+	}
+
+
 }
 ?>

@@ -75,7 +75,7 @@ if ( isset($_REQUEST['user'])
 				$invitation_id	= JWSession::GetInfo('invitation_id');
 				
 				if ( isset($invitation_id) )
-					JWSns::AcceptInvitation($idUser, $invitation_id);
+					JWSns::FinishInvitation($idUser, $invitation_id);
 
 				header("Location: /wo/invitations/invite");
 				exit();

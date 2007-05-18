@@ -60,6 +60,7 @@ class JWDevice {
 				return preg_match('/^\+?\d+$/',$address);
 			case 'qq':
 				return preg_match('/^\d+$/',$address);
+
 			case 'msn':		
 				// im check email address
 			case 'gtalk':	
@@ -69,12 +70,13 @@ class JWDevice {
 			case 'email':
 				// email check email address，为了兼容邮件检查，Device表中没有这种类型
 				return JWUser::IsValidEmail($address,true);
+
 			default:
 				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
 				return false;
 		}
 		//XXX unreachable
-		return false;
+		throw new JWException('unreachable');
 	}
 
 	/*
@@ -190,11 +192,11 @@ _SQL_;
 	/*
 	 *	建立用户的 Device 信息，并设置激活码
 	 * @return 
-			true: 成功 
+			int(>0): 成功, 为新建立的 device_id
 			false: 已经被占用 
 			null: 非法address/type
 	 */
-	static public function Create( $idUser, $address, $type )
+	static public function Create( $idUser, $address, $type, $isVerified=false )
 	{
 		if ( ! self::IsValid($address,$type) ){
 			return null;
@@ -205,7 +207,9 @@ _SQL_;
 			return false;
 		}
 		
-		$secret = self::GenSecret();
+		// 建立的时候可以指定免验证
+		if ( $isVerified ) 	$secret = '';
+		else 				$secret = self::GenSecret();
 
 		// 慎用 REPLACE，会改变主键值！(replace = delete & insert)
 		// 使用REPLACE的原因：如果有其他用户误填写了地址，需要帮助用户更新到自己名下。
@@ -228,7 +232,7 @@ _SQL_;
 			return false;
 		}
 
-		return true;
+		return JWDB::GetInsertedId();
 	}
 
 
@@ -256,6 +260,7 @@ _SQL_;
 
 	/*
 	 *
+		FIXME: 不应该返回 idUser，应该返回 idDevice
 	 *	@return 	int	idUser	成功返回 idUser，失败返回 false;
 	 */
 	static function Verify($address, $type, $secret)
@@ -357,14 +362,20 @@ _SQL_;
 			return null;
 		}
 
-		$condition = array (	 'address'	=> $address
-								,'type'		=> $type
-							);
-		if ( $isActive )
-			$condition['secret'] = '';
+		$device_db_row = JWDevice::GetDeviceDbRowById($device_id);
 
+		// 用户都不在了，删之
+		if ( empty($device_db_row['idUser']) )
+		{
+			JWDevice::Destroy($device_id);
+			return false;
+		}
 
-		return JWDB::ExistTableRow('Device', $condition);
+		// 参数要求已经激活，但是记录中的验证码还没有验证过（验证过应该为空）
+		if ( $isActive && !empty($device_db_row['secret']) )
+			return false;
+
+		return true;
 	}
 
 
@@ -454,6 +465,10 @@ _SQL_;
 
 
 		$device_map = array();
+
+		if ( empty($rows) )
+			return $device_map;
+
 		foreach ( $rows as $row )
 			$device_map[$row['idDevice']] 	= $row;
 

@@ -17,10 +17,10 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 
 		if ( isset($invitation_id) )
 		{
-			JWInvitation::Register($invitation_id, $idUser);
+			JWInvitation::LogRegister($invitation_id, $idUser);
 
 
-			$invitation_rows		= JWInvitation::GetInvitationRowsByIds(array($invitation_id));
+			$invitation_rows		= JWInvitation::GetInvitationDbRowsByIds(array($invitation_id));
 			$inviter_id				= $invitation_rows[$invitation_id]['idUser'];
 
 			$reciprocal_user_ids	= JWInvitation::GetReciprocalUserIds($invitation_id);

@@ -27,8 +27,8 @@ $logined_user_id 	= $logined_user_info['id'];
 
 
 <?php
-$invitation_ids		= JWInvitation::GetInvitationIdFromUser($logined_user_info['id']);
-$invitation_rows	= JWInvitation::GetInvitationRowsByIds($invitation_ids);
+$invitation_ids		= JWInvitation::GetInvitationIdsFromUser($logined_user_info['id']);
+$invitation_rows	= JWInvitation::GetInvitationDbRowsByIds($invitation_ids);
 
 $not_registered_invitation_ids	= array();
 $registered_invitation_ids		= array();

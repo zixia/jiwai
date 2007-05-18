@@ -91,7 +91,7 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	$invitation_ids
 	 */
-	static public function GetInvitationIdFromUser($idUser, $num=JWDB::DEFAULT_LIMIT_NUM, $start=0)
+	static public function GetInvitationIdsFromUser($idUser, $num=JWDB::DEFAULT_LIMIT_NUM, $start=0)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -146,6 +146,8 @@ WHERE	(address,type) IN ($condition_in)
 _SQL_;
 		$rows = JWDB::GetQueryResult($sql,true);
 
+		$invitation_ids = array();
+
 		if ( empty($rows) )
 			return array();
 
@@ -155,11 +157,23 @@ _SQL_;
 		return $invitation_ids;
 	}
 
+
+	static public function GetInvitationIdFromAddress($address)
+	{
+		$invitation_ids = JWInvitation::GetInvitationIdsFromAddresses( array($address) );
+
+		if ( empty($invitation_ids) )
+			return null;
+
+		return array_pop($invitation_ids);
+	}
+
+
 	/*
 	 *
 	 *
 	 */
-	static public function GetInvitationRowsByIds($idInvitations)
+	static public function GetInvitationDbRowsByIds($idInvitations)
 	{
 		if ( empty($idInvitations) )
 			return array();
@@ -185,7 +199,16 @@ _SQL_;
 		return $invitation_map;
 	}
 
+	static public function GetInvitationDbRowById($idInvitation)
+	{
+		if ( empty($idInvitation) )
+			return array();
 
+		$invitation_db_rows = JWInvitation::GetInvitationDbRowsByIds(array($idInvitation));
+		return $invitation_db_rows[$idInvitation];
+	}
+
+	
 	/*
 	 *	好像没有必要考虑 memcache
 	 */
@@ -263,7 +286,7 @@ _SQL_;
 	/*
 	 *	设置用户接受邀请，
 	 */
-	static public function Accept($idInvitation)
+	static public function LogAccept($idInvitation)
 	{
 		$idInvitation = JWDB::CheckInt($idInvitation);
 
@@ -276,7 +299,7 @@ _SQL_;
 	/*
 	 *	记录用户接受邀请后注册的用户帐号
 	 */
-	static public function Register($idInvitation, $idInvitee)
+	static public function LogRegister($idInvitation, $idInvitee)
 	{
 		$idInvitation 	= JWDB::CheckInt($idInvitation);
 		$idInvitee 		= JWDB::CheckInt($idInvitee);

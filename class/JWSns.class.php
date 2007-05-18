@@ -199,7 +199,7 @@ class JWSns {
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
 	 *
 	 */
-	static public function Invite($idUser, $address, $type, $message)
+	static public function Invite($idUser, $address, $type, $message='')
 	{
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite		= JWInvitation::Create($idUser,$address,$type,$message, $code_invite);
@@ -207,12 +207,23 @@ class JWSns {
 		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
-		if ( 'email'==$type ){
-			JWMail::SendMailInvitation($user_row, $address, $message, $code_invite);
-		}else{	// SMS / IM
-			// TODO
-			// 机器人给设备发送消息
-			JWRobot::SendMtRaw($address, $type, $message);
+		switch ( $type )
+		{
+			case 'msn':
+				JWRobot::SendMtRaw($address, $type, $message);
+				// 发完消息，再发邮件 :-D
+			case 'email':
+				JWMail::SendMailInvitation($user_row, $address, $message, $code_invite);
+				break;
+
+			case 'sms':
+				// 机器人给设备发送消息
+				JWRobot::SendMtRaw($address, $type, $message);
+				break;
+
+			default:
+				JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
+				throw new JWException("unsupport type $type");
 		}
 
 		return $id_invite;
@@ -378,6 +389,32 @@ class JWSns {
 	}
 
 	/*
+	 *	建立设备，则设置最新验证设备为接收设备
+	 *	@return	int		成功返回$device_id 失败返回false
+	 */
+	static public function CreateDevice($idUser, $address, $type, $isVerified=false)
+	{
+		$ret = false;
+
+		$device_id = JWDevice::Create($idUser, $address , $type , $isVerified);
+		
+		if ( empty($device_id) )
+		{
+			JWLog::LogFuncName(LOG_CRIT, "JWDevice::Create($idUser, $address , $type , $isVerified) failed.");
+			return false;
+		}
+
+		if ( 'sms'!=$type )
+			$type = 'im';
+
+		if ( ! JWUser::SetSendViaDevice($idUser, $type) )
+			JWLog::LogFuncName(LOG_CRIT, "JWUser::SetSendViaDevice($idUser, $type) failed."); 
+
+		return $device_id;
+	}
+
+
+	/*
 	 *	删除设备，同时设置用户的设置为其他设备（如果用户有绑定其他设备的话）
 	 *	@return	bool
 	 */
@@ -412,18 +449,24 @@ class JWSns {
 	}
 	
 	
+	static public function AcceptInvitation($idInvitation)
+	{
+		JWInvitation::LogAccept($idInvitation);
+	}
+
+
 	/*
 	 *	用户收到邀请后，根据邀请注册用户成功，将调用这个函数进行相关邀请关系的设置
 	 *	@param	int	$idUser			接受邀请的用户注册后的 idUser
 	 *	@param	int	$idInvitation	邀请 id
 	 */
 //FIXME	名字不对
-	static public function AcceptInvitation($idUser, $idInvitation)
+	static public function FinishInvitation($idUser, $idInvitation)
 	{
-		JWInvitation::Register($idInvitation, $idUser);
+		JWInvitation::LogRegister($idInvitation, $idUser);
 
 
-		$invitation_rows		= JWInvitation::GetInvitationRowsByIds(array($idInvitation));
+		$invitation_rows		= JWInvitation::GetInvitationDbRowsByIds(array($idInvitation));
 		$inviter_id				= $invitation_rows[$idInvitation]['idUser'];
 
 		$reciprocal_user_ids	= JWInvitation::GetReciprocalUserIds($idInvitation);

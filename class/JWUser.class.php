@@ -58,8 +58,8 @@ class JWUser {
 	{
 		$db = JWDB::GetDb();
 
-		$name_or_email	= $db->EscapeString($name_or_email);
-		$pass 			= $db->EscapeString($pass);
+		$name_or_email	= JWDB::EscapeString($name_or_email);
+		$pass 			= JWDB::EscapeString($pass);
 
 
 		#
@@ -260,6 +260,9 @@ _SQL_;
 		//TODO memcache here.
 		$aUserInfo 			= JWDB::GetQueryResult($sql);
 
+		if ( empty($aUserInfo) )
+			return array();
+
 		$aUserInfo['email']	= strrev($aUserInfo['email']);
 
 		if ( empty($one_item) ){
@@ -270,7 +273,7 @@ _SQL_;
 			return $aUserInfo[$one_item];
 		}
 
-		return null;
+		return array();
 	}
 
 	/*
@@ -330,7 +333,7 @@ _SQL_;
 			if ( $result = $stmt->bind_param("ssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
-											, strrev($userInfo['email'])
+											, strrev(@$userInfo['email']) // 如果是手机注册，则为空
 											, $userInfo['nameFull']
 											, $userInfo['location']
 											, $userInfo['protected']
