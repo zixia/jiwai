@@ -54,9 +54,11 @@ class JWRobotLingo {
 	 *	记录所有的机器人命令的alias
 	 */
 	static private $msRobotLingoAlias = array (
-			 'START'	=>	'ON'			// alias of ON
+			 'KAI'		=>	'ON'			// alias of ON
+			,'START'	=>	'ON'			// alias of ON
 			,'WAKE'		=>	'ON'			// alias of ON
 
+			,'GUAN'		=>	'OFF'			// alis of OFF
 			,'STOP'		=>	'OFF'			// alis of OFF
 			,'SLEEP'	=>	'OFF'			// alis of OFF
 
@@ -225,17 +227,14 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_ids) )
+		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
 
-		$user_id	= $address_device_rows[$type][$address]['idUser'];
-		$device_id	= $address_device_rows[$type][$address]['idDevice'];
+		$user_id	= $address_device_db_row['idUser'];
+		$device_id	= $address_device_db_row['idDevice'];
 
 		
 		if ( 'sms'==$type )
@@ -273,23 +272,17 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_ids) )
+		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
-		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+		$user_id	= $address_device_db_row['idUser'];
 
+		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
 
-		$user_device_row		= $address_device_rows[$type][$address];
-		$user_id				= $user_device_row['idUser'];
-		$device_id				= $user_device_row['idDevice'];
-
-
-		if ( 'sms'==$type && isset($user_device_row['im']) ) {
+		if ( 'sms'==$type && isset($device_for_user['im']) ) {
 			// 如果关闭的是 sms，而用户又有 im 帐号绑定
 			$ret = JWUser::SetSendViaDevice($user_id, 'im');
 		} else {
@@ -327,18 +320,13 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_ids) )
+		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
-		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
-
-
-		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+		$address_user_id	= $address_device_db_row['idUser'];
 
 
 		/*
@@ -355,13 +343,13 @@ _STR_;
 		 *	获取被订阅者的用户信息
 		 *	TODO: 权限检查
 		 */
-		$followe_user_row = JWUser::GetUserInfo( $followe );
+		$followe_user_db_row = JWUser::GetUserInfo( $followe );
 
-		JWSns::CreateFollowers($followe_user_row['idUser'], array($address_user_id));
+		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
 
 		$body = <<<_STR_
-每当$followe_user_row[nameFull]更新，您都会收到消息。如果要撤销，请发送LEAVE $followe_user_row[nameScreen]。发送HELP了解更多。
+每当$followe_user_db_row[nameFull]更新，您都会收到消息。如果要撤销，请发送LEAVE $followe_user_db_row[nameScreen]。发送HELP了解更多。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -391,19 +379,13 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
-		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds( $address_device_ids );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		$address_user_id	= @$address_device_rows[$type][$address]['idUser'];
-
-
-		if ( empty($address_user_id) )
+		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
-		$address_user_row	= $address_user_rows[$address_user_id];
+
+		$address_user_id	= $address_device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -413,18 +395,19 @@ _STR_;
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
+
 		$followe = $matches[1];
 
 		/*
 		 *	获取被订阅者的用户信息
 		 */
-		$followe_user_row = JWUser::GetUserInfo( $followe );
+		$followe_user_db_row = JWUser::GetUserInfo( $followe );
 
-		JWSns::DestroyFollowers($followe_user_row['idUser'], array($address_user_row['idUser']));
+		JWSns::DestroyFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
 
 		$body = <<<_STR_
-您已离开$followe_user_row[nameFull]，取消了对他的订阅。在http://JiWai.de/$followe_user_row[nameScreen]/页面上点击订阅或发送FOLLOW ZIXIA可恢复订阅。
+您已离开$followe_user_db_row[nameFull]，取消了对他的订阅。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW ZIXIA可恢复订阅。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -454,18 +437,14 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
-		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
-
-		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$address_user_id		= $address_device_db_row['idUser'];
 
 		if ( empty($address_user_id) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
-		$address_user_row	= $address_user_rows[$address_user_id];
+
+		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
 
 
 		/*
@@ -483,22 +462,19 @@ _STR_;
 		/*
 		 *	查看被添加的手机号码是否已经存在
 		 */
-		$invitee_device_ids 	= JWDevice::GetDeviceIdsByAddresses(
-											array( array('address'=>$invitee_sms_number,'type'=>'sms') )
-										);
-		$invitee_device_rows 	= JWDevice::GetDeviceAddressRowsByIds($invitee_device_ids);
+		$invitee_device_id 		= JWDevice::GetDeviceIdByAddress(array('address'=>$invitee_sms_number,'type'=>'sms') );
+		$invitee_device_db_row	= JWDevice::GetDeviceDbRowById($invitee_device_id);
 
-		if ( isset($invitee_device_rows['sms'][$invitee_sms_number]) )
+		if ( !empty($invitee_device_db_row) )
 		{
 			// 被添加的手机号码已经注册了用户（只是可能还未激活，暂时不考虑错绑定的情况）
 
-			$invitee_user_id = $invitee_device_rows['sms'][$invitee_sms_number]['idUser'];
+			$invitee_user_id = $invitee_device_db_row['idUser'];
 
 			JWSns::CreateFriends	( $address_user_id	,array($invitee_user_id) );
 			JWSns::CreateFollowers	( $invitee_user_id	,array($address_user_id) );
 
-			$invitee_user_rows 	= JWUser::GetUserDbRowsByIds(array($invitee_user_id));
-			$invitee_user_row 	= $invitee_user_rows[$invitee_user_id];
+			$invitee_user_row 	= JWUser::GetUserDbRowById($invitee_user_id);
 
 			$body = <<<_STR_
 ${invitee_sms_number}在JiWai注册过！档案地址：http://JiWai.de/$invitee_user_row[nameScreen]/。我们已经帮您发送了好友添加请求。
@@ -546,14 +522,14 @@ _STR_;
 		$type 		= $robotMsg->GetType();	
 
 
-		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
-		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$address_user_id		= $address_device_db_row['idUser'];
 
-		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
-		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
-		$address_user_row	= $address_user_rows[$address_user_id];
+		if ( empty($address_user_id) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+
+		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
 
 
 		/*
@@ -571,8 +547,8 @@ _STR_;
 		 */
 		$friend_user_row = JWUser::GetUserInfo( $friend_name );
 
-		JWSns::DestroyFriends	($address_user_id, 	array($friend_user_row['idUser']));
-		JWSns::DestroyFollowers	($address_user_id, 	array($friend_user_row['idUser']));
+		JWSns::DestroyFriends	($address_user_id			,array($friend_user_row['idUser']));
+		JWSns::DestroyFollowers	($friend_user_row['idUser']	,array($address_user_id));
 
 
 		$body = <<<_STR_
@@ -612,12 +588,12 @@ _STR_;
 		/*
 		 *	获取被订阅者的用户信息
 		 */
-		$friend_user_row = JWUser::GetUserInfo( $friend_name );
+		$friend_user_db_row = JWUser::GetUserInfo( $friend_name );
 
-		if ( empty($friend_user_row['idUser']) )
+		if ( empty($friend_user_db_row) )
 			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
-		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_row['idUser'], 1);
+		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_db_row['idUser'], 1);
 
 		if ( empty($status_ids) )
 		{
@@ -633,7 +609,7 @@ _STR_;
 		}
 
 		$body = <<<_STR_
-$friend_user_row[nameScreen]: $status
+$friend_user_db_row[nameScreen]: $status
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -664,18 +640,19 @@ _STR_;
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return self::ErrorMsg($robotMsg, $help);
 
-		$friend_name 		= $matches[1];
-		$friend_user_row	= JWUser::GetUserInfo($friend_name);
 
-		if ( empty($friend_user_row['idUser']) )
+		$friend_name 		= $matches[1];
+		$friend_user_db_row	= JWUser::GetUserInfo($friend_name);
+
+		if ( empty($friend_user_db_row) )
 			return self::ErrorMsg($robotMsg, "哎呀！没有找到 $friend_name 这个用户！");
 
-		$friend_user_id		= $friend_user_row['idUser'];
+		$friend_user_id		= $friend_user_db_row['idUser'];
 
-		$send_via_device_rows	= JWUser::GetSendViaDeviceRowByIds( array($friend_user_id) );
+		$send_via_device	= JWUser::GetSendViaDeviceByUserId($friend_user_id);
 
-		if ( 'none'==$send_via_device_rows[$friend_user_id] )
-			return self::ErrorMsg($robotMsg, "$friend_user_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
+		if ( 'none'==$send_via_device )
+			return self::ErrorMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 
 		/*
 		 *	获取发送者的 idUser
@@ -684,29 +661,26 @@ _STR_;
 		$type 		= $robotMsg->GetType();	
 
 
-		$address_device_ids	= JWDevice::GetDeviceIdsByAddresses(	array( 
-													array('address'=>$address,'type'=>$type) 
-											) );
-		$address_device_rows= JWDevice::GetDeviceAddressRowsByIds($address_device_ids);
+		$address_device_id		= JWDevice::GetDeviceIdByAddress( array('address'=>$address,'type'=>$type) );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowById	($address_device_id);
 
-		$address_user_id	= $address_device_rows[$type][$address]['idUser'];
+		$address_user_id		= $address_device_db_row['idUser'];
 
-		if ( ! JWFriend::IsFriend($friend_user_row['idUser'], $address_user_id) )
-			return self::ErrorMsg($robotMsg, "对不起，你还不是$friend_user_row[nameFull]的好友呢，"
+		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
+			return self::ErrorMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
 											."不能随便挠挠他，呵呵。等他加你为好友再挠吧!");
 
-		$address_user_rows	= JWUser::GetUserDbRowsByIds(array($address_user_id));
-		$address_user_row	= $address_user_rows[$address_user_id];
+		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
 
 
 		$nudge_message = <<<_NUDGE_
-$address_user_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
+$address_user_db_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
 _NUDGE_;
 
-		JWNudge::NudgeUserIds(array($friend_user_row['idUser']), $nudge_message, 'nudge');
+		JWNudge::NudgeUserIds(array($friend_user_db_row['idUser']), $nudge_message, 'nudge');
 
 		$body = <<<_STR_
-我们已经帮您挠挠了$friend_user_row[nameScreen]一下！期待很快能得到您朋友的回应。
+我们已经帮您挠挠了$friend_user_db_row[nameScreen]一下！期待很快能得到您朋友的回应。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -807,13 +781,7 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_ids		= JWDevice::GetDeviceIdsByAddresses( array( 
-													array('address'=>$address,'type'=>$type) 
-											) ); 
-		$address_device_rows	= JWDevice::GetDeviceAddressRowsByIds( $address_device_ids );
-
-		// 可能没有，因为没有注册
-		$address_user_id	= @$device_rows[$type][$address]['idUser'];
+		$address_device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		/*
 		 *	分为几种情况处理：
@@ -823,7 +791,7 @@ _STR_;
 				2、被邀请用户已经注册（通过设备查找到了用户）
 		 *
 		 */
-		if ( empty($address_user_id) )
+		if ( empty($address_device_db_row) )
 		{
 die("UN-IMPL");
 			// 1、用户没有注册，查找邀请
@@ -848,6 +816,9 @@ die("UN-IMPL");
 		else
 		{
 			// 2、用户已经注册
+			$address_user_id	= $device_rows[$type][$address]['idUser'];
+
+			// 互相加，无所谓先后顺序
 			JWSns::CreateFriends	($address_user_id, $inviter_user_row['idUser'], true);
 			JWSns::CreateFollowers	($address_user_id, $inviter_user_row['idUser'], true);
 		}
@@ -916,12 +887,12 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
 
-		$device_row = JWDevice::GetDeviceRowByAddress($address,$type);
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($device_row) )
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id	= $device_row['idUser'];
+		$address_user_id	= $device_db_row['idUser'];
 		$address_user_row	= JWUser::GetUserInfo($address_user_id);
 	
 		$body = <<<_STR_

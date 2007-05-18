@@ -80,7 +80,7 @@ class JWDevice {
 	/*
 	 * @return array 	$device_db_row;
 	 */
-	static public function GetDeviceRowByAddress( $address, $type )
+	static public function GetDeviceDbRowByAddress( $address, $type )
 	{
 		$device_ids		= JWDevice::GetDeviceIdsByAddresses(	
 										array( 
@@ -154,7 +154,6 @@ _SQL_;
 
 
 	/*
-	 *	@desprecited 废弃函数 //FIXME 这个英文怎么拼写？
 	 *	@return 	device_info
 	 *					[sms][idDevice]
 	 *					[sms][address]
@@ -165,7 +164,7 @@ _SQL_;
 	 */
 	static public function GetDeviceRowByUserId( $idUser )
 	{
-		$device_address_rows = JWDevice::GetDeviceRowsByUserIds( array($idUser) )
+		$device_address_rows = JWDevice::GetDeviceRowsByUserIds( array($idUser) );
 
 		if ( empty($device_address_rows) )
 			return array();
@@ -349,6 +348,11 @@ _SQL_;
 	 */
 	static function IsExist($address, $type, $isActive=true)
 	{
+		$device_id = JWDevice::GetDeviceIdByAddress( array('address'=>$address,'type'=>$type) );
+
+		if ( empty($device_id) )
+			return false;
+
 		if ( ! self::IsValid($address,$type) ){
 			return null;
 		}
@@ -366,7 +370,7 @@ _SQL_;
 
 	static public function IsUserOwnDevice($idUser, $idDevice)
 	{
-		$device_row = self::GetDeviceDbRowById($idDevice);
+		$device_row = JWDevice::GetDeviceDbRowById($idDevice);
 
 		if ( empty($device_rows) )
 			return false;

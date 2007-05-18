@@ -127,7 +127,7 @@ class JWRobotLogic {
 		$body		= $robotMsg->GetBody();
 
 
-		$device_row = JWDevice::GetDeviceRowByAddress($address,$type);
+		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		if ( empty($device_row) )
 		{	

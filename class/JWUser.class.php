@@ -58,8 +58,8 @@ class JWUser {
 	{
 		$db = JWDB::GetDb();
 
-		$name_or_email	= $db->escape_string($name_or_email);
-		$pass 			= $db->escape_string($pass);
+		$name_or_email	= $db->EscapeString($name_or_email);
+		$pass 			= $db->EscapeString($pass);
 
 
 		#
@@ -237,13 +237,13 @@ _SQL_;
 
 		case 'nameScreen':
 			if ( !self::IsValidName($value) ) return null;
-			$value = JWDB::escape_string($value);
+			$value = JWDB::EscapeString($value);
 			break;
 
 		case 'email':
 			if ( !self::IsValidEmail($value) ) return null;
 			// email need reverse 
-			$value = JWDB::escape_string(strrev($value));
+			$value = JWDB::EscapeString(strrev($value));
 			break;
 
 
@@ -533,7 +533,7 @@ _SQL_;
 	 *	@param	array	$idUsers
 	 *	@return array	$send_via_device_rows;
 	 */
-	static public function GetSendViaDeviceRowByIds($idUsers)
+	static public function GetSendViaDeviceRowsByUserIds($idUsers)
 	{
 		$user_rows	= JWUser::GetUserDbRowsByIds($idUsers);
 
@@ -548,6 +548,17 @@ _SQL_;
 		}
 
 		return $send_via_device_rows;
+	}
+
+
+	static public function GetSendViaDeviceByUserId($idUser)
+	{
+		$rows = JWUser::GetSendViaDeviceRowsByUserIds(array($idUser));
+
+		if ( empty($rows) )
+			return array();
+
+		return $rows[$idUser];
 	}
 
 

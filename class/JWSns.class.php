@@ -241,7 +241,7 @@ class JWSns {
 		$friend_relation	= JWFriend::IsFriends		($idUser, $idFriends	,true);
 		$follower_relation	= JWFollower::IsFollowers	($idUser, $idFriends	,true);
 
-		$send_via_device_rows	= JWUser::GetSendViaDeviceRowByIds($idFriends);
+		$send_via_device_rows	= JWUser::GetSendViaDeviceRowsByUserIds($idFriends);
 
 		$action_rows = array();
 		foreach ( $idFriends as $friend_id )

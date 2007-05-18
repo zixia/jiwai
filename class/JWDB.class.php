@@ -85,7 +85,7 @@ class JWDB {
 	}
 
 
-	static public function escape_string( $string )
+	static public function EscapeString( $string )
 	{
 		return self::GetDb()->escape_string($string);
 	}
@@ -163,7 +163,7 @@ class JWDB {
 			if ( is_int($v) )
 				$sql .= " $k=$v ";
 			else
-				$sql .= " $k='" . self::escape_string($v) . "' ";
+				$sql .= " $k='" . self::EscapeString($v) . "' ";
 
 			if ( $first = true )
 				$first = false;
@@ -199,7 +199,7 @@ class JWDB {
 			if ( is_int($v) )
 				$sql .= " $k=$v ";
 			else
-				$sql .= " $k='" . self::escape_string($v) . "' ";
+				$sql .= " $k='" . self::EscapeString($v) . "' ";
 
 			if ( $first = true )
 				$first = false;
@@ -247,7 +247,7 @@ class JWDB {
 			if ( is_int($v) )
 				$val_list .= "$v";
 			else
-				$val_list .= "'" . self::escape_string($v) . "'";
+				$val_list .= "'" . self::EscapeString($v) . "'";
 
 			if ( $first = true )
 				$first = false;
@@ -288,7 +288,7 @@ class JWDB {
 			if ( is_int($v) )
 				$sql .= "$k=$v";
 			else
-				$sql .= "$k='" . self::escape_string($v) . "'";
+				$sql .= "$k='" . self::EscapeString($v) . "'";
 
 			if ( $first = true )
 				$first = false;
@@ -331,7 +331,7 @@ class JWDB {
 			if ( is_int($v) )
 				$where_condition .= "$v";
 			else
-				$where_condition .= "'" . self::escape_string($v) . "'";
+				$where_condition .= "'" . self::EscapeString($v) . "'";
 
 		}
 		$sql .= " $where_condition LIMIT $limit ";
@@ -414,7 +414,7 @@ class JWDB {
 							else				$reduce_string .= ",";
 
 	
-							$reduce_string .= "\'$oneArray[$key]\'";
+							$reduce_string .= "\'" . JWDB::EscapeString($oneArray[$key]) . "\'";
 						}
 						$reduce_string 		.= ")";
 						break;
@@ -487,7 +487,7 @@ class JWDB {
 					case "char"	:
 						//fall to default
 					default		:
-						$reduce_string .= "\'$id\'";
+						$reduce_string .= "\'" . JWDB::EscapeString($id) . "\'";
 						break;
 				}
 				return $reduce_string;
@@ -535,7 +535,7 @@ class JWDB {
 			else 			$sql .= " AND ";
 
 			if ( is_int($v) )	$sql .= " $k=$v ";
-			else				$sql .= " $k='" . self::escape_string($v) . "' ";
+			else				$sql .= " $k='" . self::EscapeString($v) . "' ";
 		}
 		// " WHERE $field='$value' AND field2=value2 ");
 
