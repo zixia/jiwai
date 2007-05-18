@@ -21,7 +21,7 @@ class JWRobotLingo {
 	 *	param 设置这个命令接受的最多参数。如果用户输入多于这个最大值，则不当作lingo处理。（如用户输入"on the way home"）
 	 */
 	static private $msRobotLingo = array (
-			 'HELP'		=> array( 'func'=>'Lingo_Help' 	,'param'=>0 )
+			 'HELP'		=> array( 'func'=>'Lingo_Help' 	,'param'=>1 )
 			,'TIPS'		=> array( 'func'=>'Lingo_Tips' 	,'param'=>0 )
 
 			,'ON'		=> array( 'func'=>'Lingo_On' 	,'param'=>0)
@@ -186,7 +186,7 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE "
+命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE 1380013800"
 _STR_;
 
 		if ( 'sms'==$robotMsg->GetType() )
@@ -395,7 +395,7 @@ _STR_;
 
 
 		$body = <<<_STR_
-您已离开$followe_user_db_row[nameFull]，取消了对他的订阅。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW ZIXIA可恢复订阅。
+您已离开$followe_user_db_row[nameFull]，取消了对他的订阅。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW $followe_user_db_row[nameScreen]可恢复订阅。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -411,11 +411,14 @@ _STR_;
 
 	/*
 	 *	当添加用户时，完整地址应为：type://address。如果 type:// 忽略，则按照如下规则：
-			1、如果 address 是不是数字，则 type = 用户发送消息的  type。
-				比如用户用 msn 邀请 zixia@zixia.net，则认为 zixia@zixia.net 是 MSN 地址
-			2、如果 address 是数字
-				如果数字是合法手机号码，则 type = 'sms'
-				否则，认为是 qq 号码
+			1、如果有 type:// 前缀 - 根据 type:// 前缀走
+			2、如果没有 type:// 前缀
+				2.1 如果 address 包含 @ ，则认为是 type={用户发送消息的type} 的一个 im email 地址。
+					比如，用户用 msn 邀请 zixia@zixia.net，则认为 zixia@zixia.net 是 MSN 地址
+				2.2 如果 address 以 [\d\+] 打头，并且紧跟着全是数字
+					如果是合法手机号码，则 type='sms'
+					不是手机号码，认为是 QQ 号码
+				2.3	认为是用户 nameScreen
 	 */
 	static function	Lingo_Add($robotMsg)
 	{
@@ -459,20 +462,109 @@ _STR_;
 					or 13911833788
 				(qq://)918999
 
+
 				
 		 */
-		if ( preg_match('#^([^/]+)://(.+)$#',$user_input_invitee_address,$matches) ) {
+		if ( preg_match('#^([^/]+)://(.+)$#',$user_input_invitee_address,$matches) ) 
+		{
+			/* 
+			 *	1、如果有 type:// 前缀 - 根据 type:// 前缀走
+			 */
 			$invitee_type		= $matches[1];
 			$invitee_address	= $matches[2];
-		} else {
+		} 
+		else 
+		{
+			/*
+			 *	2、如果没有 type:// 前缀
+			 */
 			$invitee_address	= $user_input_invitee_address;
 
-			if ( JWDevice::IsValid($invitee_address, 'sms') )	$invitee_type	= 'sms';
-			else 												$invitee_type		= $robotMsg->GetType();
+			if ( preg_match('/@/',$invitee_address) ) 
+			{
+				/* 
+				 *	2.1 如果 address 包含 @ ，则认为是 type={用户发送消息的type} 的一个 im email 地址。
+				 *		比如，用户用 msn 邀请 zixia@zixia.net，则认为 zixia@zixia.net 是 MSN 地址
+				 */
+				$invitee_type		= $robotMsg->GetType();
+			} 
+			else if ( preg_match('/^[\d\+]?\d+$/', $invitee_address) ) 
+			{
+				/*
+				 *	2.2 如果 address 以 [\d\+] 打头，并且紧跟着全是数字
+				 */
+
+				if ( JWDevice::IsValid($invitee_address, 'sms') ) 
+				{
+					/*
+					 *	2.2.1	如果是合法手机号码，则 type='sms'
+					 */
+					$invitee_type	= 'sms';
+				}
+				else
+				{
+					/*
+					 *	2.2.2	不是手机号码，认为是 QQ 号码
+				 	 */
+					$invitee_address= preg_replace('/\+/','',$invitee_address);
+					$invitee_type	= 'qq';
+				}
+			} 	
+			else 
+			{
+				/*
+				 *	2.3	认为是用户 nameScreen
+						注意：这个类型是多出来的，要排除在设备之外判断
+				 */
+				$invitee_type	= 'nameScreen';
+			}
+			/*
+			 *	分析完毕
+			 */
 		}
 
-		if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
+		/*
+		 *	检查
+				1、不存在的用户名，并处理好友添加操作
+				2、错误的地址和
+		 */
+		if ( 'nameScreen'==$invitee_type )
+		{
+			$friend_user_db_row = JWUser::GetUserInfo($invitee_address);
+			if ( empty($friend_user_db_row) ) 
+			{
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，我太笨了。您添加的"
+												. "${user_input_invitee_address}我不认识，"
+												. "请您输入手机号码或邮件地址。了解更多？发送 HELP。"
+											);
+			}
+
+			$friend_user_id	= $friend_user_db_row['idUser'];
+
+			if ( JWFriend::IsFriend($address_user_id, $friend_user_id) )
+			{
+				$msg = "您已经是${invitee_address}的好友了。";
+			}
+			else
+			{
+				JWSns::CreateFriends	( $address_user_id	,array($friend_user_id) );
+				JWSns::CreateFollowers	( $friend_user_id	,array($address_user_id) );
+
+				$msg = <<<_STR_
+搞定了！我们已经帮您向${invitee_address}发送了好友添加请求。
+_STR_;
+			}
+
+			/*
+			 *	已经添加用户完毕，返回
+			 */
+			return JWRobotLogic::ReplyMsg($robotMsg, $msg);
+
+		}
+		else if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
+		{
 			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，我太笨了。您添加的 $user_input_invitee_address 我不认识，请您输入手机号码或邮件地址。了解更多？发送 HELP。");
+		}
 
 
 		switch ( $invitee_type )

@@ -6,7 +6,7 @@
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
-//die( var_dump($page_user_info));
+//die( var_dump($page_user_id));
 //die( var_dump($logined_user_info));
 ?>
 <html>
@@ -56,6 +56,7 @@ $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 // 取出一个
 $head_status_id = @array_shift($status_data['status_ids']); 
 
+//die(var_dump($page_user_id));
 JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$status_rows[$head_status_id] );
 
 ?>

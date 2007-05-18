@@ -31,7 +31,7 @@ if ( 'public_timeline'===strtolower($nameScreen) )
 
 
 // userName/user_id not exist 
-if ( null===$page_user_id || null===$nameScreen )
+if ( empty($page_user_id) || empty($nameScreen) )
 {
 	$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
 	header ( "Location: " . JWTemplate::GetConst("UrlError404") );

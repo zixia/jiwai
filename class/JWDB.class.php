@@ -561,12 +561,13 @@ class JWDB {
 					,'DELETE FROM Device 		WHERE idUser IS NULL'
 					,'DELETE FROM RememberMe	WHERE idUser IS NULL'
 					,'DELETE FROM Picture		WHERE idUser IS NULL'
+					,'DELETE FROM Invitation	WHERE (idUser IS NULL)'
 
 					,'DELETE FROM Friend 		WHERE (idUser IS NULL) OR (idFriend IS NULL)'
 					,'DELETE FROM Follower 		WHERE (idUser IS NULL) OR (idFollower IS NULL)'
 
 					,'DELETE FROM Favourite		WHERE (idUser IS NULL) OR (idStatus IS NULL)'
-					,'DELETE FROM Invitation	WHERE (idUser IS NULL)'
+					,'DELETE FROM Invitation	WHERE (idInvitee IS NULL) AND (timeRegister IS NOT NULL)'
 				);
 		 
 		foreach ( $sqls as $sql ) 
