@@ -197,6 +197,8 @@ class JWSns {
 
 	/*
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
+	 *	@param	string or array	$message	当为 string 的时候，不去分消息类型
+											当为 array 的时候，要有 im / sms / email 的 key
 	 *
 	 */
 	static public function Invite($idUser, $address, $type, $message='')
@@ -207,18 +209,37 @@ class JWSns {
 		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
+		$im_message 	= '';
+		$sms_message 	= '';
+		$email_message 	= '';
+
+
+		/*
+		 *	支持 string & array 的 message 参数
+		 */
+		if ( is_string($message) )
+		{
+			$im_message = $sms_message = $email_message = $message;
+		}
+		else
+		{
+			$im_message = $sms_message = $message['im'];
+			$email_message = $message['email'];
+		}
+
+
 		switch ( $type )
 		{
 			case 'msn':
-				JWRobot::SendMtRaw($address, $type, $message);
+				JWRobot::SendMtRaw($address, $type, $im_message);
 				// 发完消息，再发邮件 :-D
 			case 'email':
-				JWMail::SendMailInvitation($user_row, $address, $message, $code_invite);
+				JWMail::SendMailInvitation($user_row, $address, $email_message, $code_invite);
 				break;
 
 			case 'sms':
 				// 机器人给设备发送消息
-				JWRobot::SendMtRaw($address, $type, $message);
+				JWRobot::SendMtRaw($address, $type, $sms_message);
 				break;
 
 			default:

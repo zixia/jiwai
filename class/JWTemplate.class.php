@@ -1217,6 +1217,50 @@ _HTML_;
 
 	}
 
+
+	static public function	ShowAlphaBetaTips()
+	{
+		if ( ! preg_match('#((alpha)|(beta))(\.jiwai\.de.*)$#i',$_SERVER["HTTP_HOST"],$matches) )
+			return;
+		
+		$version 	= strtolower($matches[1]);
+		$domain_url	= $matches[2];
+
+		$msg	= '';
+
+		switch ( $version )
+		{
+			case 'alpha':
+				$msg = <<<_MSG_
+<p>
+这里是叽歪de(<strong>Alpha</strong>)测试系统。Alpha测试的定义为：在有开发者关注下对系统进行使用测试。如果您想试用最新的，还在开发中的功能，那么可以在这里继续访问。但是需要注意的是，系统也许会经常的工作不正常，甚至出错，所以我们建议您至少使用<a href='http://beta.$domain_url'>Beta系统</a>。
+</p>
+_MSG_;
+				break;
+
+			case 'beta':
+				$msg = <<<_MSG_
+<p>
+这里是叽歪de(<strong>Beta</strong>)测试系统。如果您想试用最新的，正在准备升级的功能时，欢迎在这里继续访问。最新的系统功能可能有不稳定的情况，欢迎向我们<a href='mailto:wo@jiwai.de'>报告BUG</a>。如果您希望使用最为稳定的版本，请来正式运行的网站：<a href='http://$domain_url'>叽歪de</a>。
+</p>
+_MSG_;
+				break;
+
+			default:
+				JWLog::LogFuncName(LOG_CRIT, "unknown version: $version");
+				break;
+		}
+
+		echo <<<_HTML_
+<div class="yft" style="margin:1em; padding:1em">
+$msg
+</div>
+<script type="text/javascript">JiWai.Yft(".yft",1);</script>
+_HTML_;
+
+	}
+
+
 	static public function	ShowActionResultTips()
 	{
 		$error_html		= JWSession::GetInfo('error');

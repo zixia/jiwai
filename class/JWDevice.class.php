@@ -508,7 +508,14 @@ SELECT	id as idDevice
 FROM	Device
 WHERE	(address,type) IN ($condition_in)
 _SQL_;
-		$rows = JWDB::GetQueryResult($sql,true);
+
+		try {
+			$rows = JWDB::GetQueryResult($sql,true);
+		} catch ( Exception $e ) {
+			$sql_string = preg_replace("/\n/"," ",$sql);
+			JWLog::LogFuncName(LOG_CRIT, "JWDB::GetQueryResult($sql_string,true) exception " . $e->getMessage());
+			return array();
+		}
 
 		if ( empty($rows) )
 			return array();

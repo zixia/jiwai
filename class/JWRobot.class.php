@@ -247,6 +247,7 @@ class JWRobot {
 			}catch(Exception $e){
  				JWLog::Instance()->Log(LOG_ERR, 'main_loop exception' );
 				echo "Exception: " .  $e->getMessage() . $e->getTraceAsString() . "\n";
+				sleep(1);
 			}
 		}
 	}

@@ -604,10 +604,19 @@ _STR_;
 		}
 		else
 		{
-			// 没有注册用户，发送邀请
-			$invite_msg = <<<_INVITATION_
-$address_user_row[nameFull]($address_user_row[nameScreen])想成为您在JiWai的好友！回复ACCEPT $address_user_row[nameScreen]接受，或回复DENY $address_user_row[nameScreen]拒绝。
+			/*
+			 *	没有注册用户，发送邀请
+			 *	使用 msg 数组，区分 email / im 的消息
+			 */
+			$invite_msg['email'] = <<<_INVITATION_
+$address_user_row[nameFull]（$address_user_row[nameScreen]）邀请您来JiWai.de！
 _INVITATION_;
+
+			$invite_msg['im'] = $invite_msg['email'] . <<<_INVITATION_
+请回复您名字的拼音，这样我们可以帮助您完成注册。（本短信服务免费）
+_INVITATION_;
+			$invite_msg['sms'] = $invite_msg['im'];
+
 			JWSns::Invite($address_user_id, $invitee_address, $invitee_type, $invite_msg);
 
 			$body = <<<_STR_

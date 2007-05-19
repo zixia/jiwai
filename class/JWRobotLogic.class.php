@@ -323,6 +323,7 @@ _STR_;
 			$new_user_row['email'] = $address;
 		
 	
+		// TODO 增加标志，允许用户去 Web 上注册用户
 		$new_user_id =  JWUser::Create($new_user_row);
 
 		if ( $new_user_id )
