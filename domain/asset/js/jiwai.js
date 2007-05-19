@@ -35,9 +35,15 @@ var JiWai =
 		return color;
 	},
 
-	Yft		: function (selector) 
+	Yft		: function (selector, hideSecs) 
 	{
-		$$(selector).each( function(yft_element) {
+(function(){alert(1);return this;}).delay(1000);
+
+alert('ok');
+//.chain(function(){alert(2)}).chain(function(){alert(3)}).chain(function(){alert(4)});
+
+		$$(selector).each( function(yft_element) 
+		{
 			background_color = yft_element.getStyle('background-color');
 
 			orig_color 		= this.GetBgColor(yft_element);
@@ -48,25 +54,41 @@ var JiWai =
 			yft_element.effect(
 				'background-color'
 				,{
-				 	duration: 1500
+				 	duration: 5000
 					,transition: Fx.Transitions.Quad.easeOut
 				}
 			).start(
 				orig_color
 				,yellow_color
-			).chain( function () {
-				yft_element.effect(
-				 	'background-color'
-					,{
-					 	duration: 1500
-						,transition: Fx.Transitions.Bounce.easeOut
-					}
-				).start(yellow_color,orig_color).chain( function () {
+			).chain( function () 
+				{
+					yft_element.effect
+					(
+					 	'background-color'
+						,{
+						 	duration: 1500
+							,transition: Fx.Transitions.Bounce.easeOut
+						}
+					).start(yellow_color,orig_color)
+				}
+			).chain( function () 
+				{
 					yft_element.setStyle('background-color', background_color);
-				})
-			});
 
-		}, JiWai); // end each
+					if ( hideSecs )
+					{
+						(
+							function()
+							{
+								var mySlider = new Fx.Slide(yft_element, {duration: 500});
+								mySlider.toggle();
+								//yft_element.setStyle('display', 'none');
+							}
+						).delay(hideSecs*1000); // FIXME
+					}
+				}
+			) 
+		}, JiWai ); // end each
 	}
 
 }

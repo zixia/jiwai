@@ -26,15 +26,19 @@ $debug->init();
 
 <div id="container">
 <?php 
+/*
 $now_str = strftime("%Y/%m/%d") ;
 echo <<<_HTML_
 	<div id="flaginfo">$now_str</div>
 _HTML_;
+*/
 ?>
 <!-- google_ad_section_start -->
 	<div id="content">
 		<div id="wrapper">
 
+
+<?php JWTemplate::ShowAlphaBetaTips() ?>
 <?php JWTemplate::ShowActionResultTips() ?>
 
 

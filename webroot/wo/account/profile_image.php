@@ -18,12 +18,18 @@ else if ( preg_match('/^\/(\w.+)$/',$pathParam,$matches) )
 }
 else if ( empty($logined_user_info) )
 {
-	header("Location: " . JWTemplate::GetConst('UrlRegister'));
+	JWTemplate::RedirectBackToLastUrl( JWTemplate::GetConst('UrlRegister') );
 	exit(0);
 }
 else
 {
 	$page_user_info = JWUser::GetCurrentUserInfo();
+}
+
+if ( empty($page_user_info) )
+{
+	JWTemplate::RedirectBackToLastUrl( JWTemplate::GetConst('UrlRegister') );
+	exit(0);
 }
 
 ?>

@@ -27,6 +27,9 @@ $logined_user_id 	= $logined_user_info['id'];
 
 
 <?php
+JWTemplate::ShowActionResultTips();
+
+
 $invitation_ids		= JWInvitation::GetInvitationIdsFromUser($logined_user_info['id']);
 $invitation_rows	= JWInvitation::GetInvitationDbRowsByIds($invitation_ids);
 
