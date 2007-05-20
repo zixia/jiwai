@@ -21,11 +21,11 @@
  *
  *		// 选出在最后一次 auto_nudge 之后，24小时之前更新的用户
  *		id_user_nudge_day 	= SELECT distinct idUser FROM Status 
-								WHERE timestamp < NOW()-24H AND id>id_status_last_auto_nudge
+								WHERE timeCreate < NOW()-24H AND id>id_status_last_auto_nudge
  *		id_user_nudge_week 	= SELECT distinct idUser FROM Status 
-								WHERE timestamp < NOW()-24H AND id>id_status_last_auto_nudge
+								WHERE timeCreate < NOW()-24H AND id>id_status_last_auto_nudge
  *		id_user_nudge_month	= SELECT distinct idUser FROM Status 	
-								WHERE timestamp < NOW()-24H AND id>id_status_last_auto_nudge
+								WHERE timeCreate < NOW()-24H AND id>id_status_last_auto_nudge
  *
  */
 define ('CONSOLE',true);
@@ -43,11 +43,21 @@ $idStatus_max = JWStatus::GetMaxId();
  */
 $nudge_user_ids = JWAutoNudge::GetIdUserNudgeDay();
 
+if ( empty($nudge_user_ids) )
+	die ( "No user need nudge??\n" );
+
 foreach ( $nudge_user_ids as $idUser )
 {
 	$user_info = JWUser::GetUserInfo($idUser);
 
 	echo "$user_info[nameScreen]\n";
+
 }
+
+$nudge_message = <<<_NUDGE_
+JiWai挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
+_NUDGE_;
+
+JWNudge::NudgeUserIds($nudge_user_ids, $nudge_message, 'nudge');
 
 ?>
