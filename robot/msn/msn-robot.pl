@@ -191,6 +191,7 @@ while (1) {
   &checkSTDIN() unless ($D == 1);
   &checkQueue();
 }
+die("Robot quit\n");
 
 sub checkQueue {
 	my @MTs = jiwai_queue_mt();
@@ -203,7 +204,16 @@ print "\nmt: $email [$msg] of $file\n";
 			unlink $file;
 		}else{
 			# FIXME move to retry queue, to provent full fill the mt queue, which can lead to deadlock(starve)
- 	      	print STDERR $email . " is not online or not on your contact list\n"
+ 	      	print STDERR $email . " is not online or not on your contact list\n";
+			
+			if ( $file=~/([^\/]+)$/ ) {
+				my $retry_file_name = $MSN_QUEUE . $1;
+				my $quarantine_dir = $MSN_QUEUE . "quarantine";
+				mkdir $quarantine_dir if ( ! -e $quarantine_dir );
+				link $file, $quarantine_dir;
+			}
+
+			unlink $file;
 		}
 	}
 }
