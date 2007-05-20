@@ -1220,11 +1220,11 @@ _HTML_;
 
 	static public function	ShowAlphaBetaTips()
 	{
-		if ( ! preg_match('#((alpha)|(beta))(\.jiwai\.de.*)$#i',$_SERVER["HTTP_HOST"],$matches) )
+		if ( ! preg_match('#((alpha)|(beta))(?P<domain_url>\.jiwai\.de.*?)$#i',$_SERVER["HTTP_HOST"],$matches) )
 			return;
 		
 		$version 	= strtolower($matches[1]);
-		$domain_url	= $matches[2];
+		$domain_url	= $matches['domain_url'];
 
 		$msg	= '';
 
