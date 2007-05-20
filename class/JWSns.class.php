@@ -203,17 +203,6 @@ class JWSns {
 	 */
 	static public function Invite($idUser, $address, $type, $message='')
 	{
-		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
-		$id_invite		= JWInvitation::Create($idUser,$address,$type,$message, $code_invite);
-
-		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
-		$user_row	= $user_rows[$idUser];
-
-		$im_message 	= '';
-		$sms_message 	= '';
-		$email_message 	= '';
-
-
 		/*
 		 *	支持 string & array 的 message 参数
 		 */
@@ -227,10 +216,23 @@ class JWSns {
 			$email_message = $message['email'];
 		}
 
+		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
+		$id_invite		= JWInvitation::Create($idUser,$address,$type,$email_message, $code_invite);
+
+		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
+		$user_row	= $user_rows[$idUser];
+
+		$im_message 	= '';
+		$sms_message 	= '';
+		$email_message 	= '';
+
+
+
 
 		switch ( $type )
 		{
 			case 'msn':
+			case 'gtalk':
 				JWRobot::SendMtRaw($address, $type, $im_message);
 				// 发完消息，再发邮件 :-D
 			case 'email':

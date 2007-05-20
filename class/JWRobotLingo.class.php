@@ -616,9 +616,9 @@ $address_user_row[nameFull]（$address_user_row[nameScreen]）邀请您来JiWai.
 _INVITATION_;
 
 			$invite_msg['im'] = $invite_msg['email'] . <<<_INVITATION_
-请回复您名字的拼音，这样我们可以帮助您完成注册。（本短信服务免费）
+请回复您的英文名字或拼音，这样我们可以帮助您完成注册。
 _INVITATION_;
-			$invite_msg['sms'] = $invite_msg['im'];
+			$invite_msg['sms'] = $invite_msg['im'] . "（本短信服务免费）";
 
 			JWSns::Invite($address_user_id, $invitee_address, $invitee_type, $invite_msg);
 
@@ -729,7 +729,7 @@ _STR_;
 
 		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_db_row['idUser'], 1);
 
-		if ( empty($status_ids) )
+		if ( empty($status_ids['status_ids']) )
 		{
 			$status = '还没有更新过';
 		}
