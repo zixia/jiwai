@@ -18,7 +18,7 @@ if ( preg_match('/^\/(\w+)$/',$param,$match) )
 	{
 		JWSession::SetInfo('invitation_id',$invitation_row['idInvitation']);
 
-		JWInvitation::Accept($invitation_row['idInvitation']);
+		JWSns::AcceptInvitation($invitation_row['idInvitation']);
 	}
 }
 
