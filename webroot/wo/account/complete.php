@@ -2,10 +2,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-define('IS_WEB_USER'	,1);	//用户以前在 Web 上登录过
-define('NOT_WEB_USER'	,2);	//用户没有在 Web 上登录过
-define('NO_SUCH_USER'	,3);	//帐号与地址不匹配，或不存在
-
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 
 
@@ -18,24 +14,25 @@ if ( !empty($nameScreen) )
 	{
 		$user_row = JWUser::GetUserInfo($nameScreen);
 		
-		JWUser::IsWebUser($user_row['idUser'])
-			$user_state = IS_WEB_USER;
+		if ( JWUser::IsWebUser($user_row['idUser']) )
+		{
+			$notice_html = <<<_HTML_
+您以前曾来过这里！为什么不登录呢？
+_HTML_;
+			JWSession::SetInfo('notice',$notice_html);
+			header("Location: /wo/login");
+			exit(0);
+		}
 		else
-			$user_state = NOT_WEB_USER;
-	}
-	else
-	{
-		$user_state = NO_SUCH_USER;
+		{
+			// IM / SMS 用户第一次来，设置好登录状态后，送到用户信息修改页面
+			JWLogin::Login($user_row['idUser'], false);
+			header('Location: /wo/account/password');
+			exit(0);
+		}
 	}
 }
 
-if ( isset($user_state) && NOT_WEB_USER==$user_state )
-{
-	// IM / SMS 用户第一次来，设置好登录状态后，送到用户信息修改页面
-	JWLogin::Login($user_row['idUser'], false);
-	header('Location: /wo/account/password');
-	exit(0);
-}
 /*
  *	错误信息下面处理
  */
@@ -61,6 +58,27 @@ if ( isset($user_state) && NOT_WEB_USER==$user_state )
 
 <br>
 
+<?php
+if ( isset($nameScreen) )
+{
+	// 用户输入了用户设备但是没有找到？
+	echo <<<_HTML_
+<div class="yft">
+哎呀！我们没能够找到您！<br>
+是否帐号名没有输入正确？<br>
+<br>
+您可以通过短信或IM发送"WHOAMI"或"WOSHISHUI"(我是谁)给IM机器人（wo@jiwai.de）或短信特服号（移动99118816，联通93188816），查询正确的帐号名。
+</div>
+
+<script type="text/javascript">
+JiWai.Yft('.yft');
+</script>
+
+_HTML_;
+}
+?>
+<hr class="separator">
+
 <p>请填写您使用JiWai时用的手机号码或聊天软件帐号。</p>
 
 <br>
@@ -80,6 +98,7 @@ if ( isset($user_state) && NOT_WEB_USER==$user_state )
 </table>
 </fieldset>
 </form>
+
 <script type="text/javascript">
 //<![CDATA[
 $('address').focus();

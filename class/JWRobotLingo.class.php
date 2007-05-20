@@ -191,13 +191,11 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE 1380013800"
+命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE 1380013800
 _STR_;
 
-		if ( 'sms'==$robotMsg->GetType() )
-			$body .= "手机号";
-		else
-			$body .= "帐号";
+		if ( 'sms'!=$robotMsg->GetType() )
+			$body .= "（或聊天软件帐号）";
 
 		$body .="。了解更多？登录 http://jiwai.de ！";
 

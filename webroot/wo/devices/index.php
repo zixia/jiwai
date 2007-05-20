@@ -80,7 +80,6 @@ _INFO_;
           				<h3>手机号码</h3>
 
 <?php if ( !isset($aDeviceInfo['sms']) || null==$aDeviceInfo['sms']) { // no sms at all 
-// FIXME: 两个保存按钮，应该任何一个按钮都能保存所有的用户填写信息
 ?>
 						<form action="/wo/devices/create" id="create_device" method="post">
   
@@ -175,10 +174,10 @@ else
     						<input id="device_address" name="device[address]" size="30" type="text" />
 
 							<select name="device[type]">
-								<option value="msn">MSN（我们很快会支持QQ和GTalk！）</option>
+								<option value="gtalk">GTalk</option>
+								<option value="msn">MSN（我们很快会支持QQ！）</option>
 <!--
 								<option value="qq">QQ</option>
-								<option value="gtalk">GTalk</option>
 								<option value="jabber">Jabber</option>
 -->
 							</select>
@@ -214,7 +213,8 @@ else
 <?php }else{ // already verified ?>
 
 
-						<h3> <?php echo $aDeviceInfo['im']['address']?> </h3>
+						<h3> <?php echo $aDeviceInfo['im']['address'] 
+										. "(" . $aDeviceInfo['im']['type'] . ")" ?> </h3>
 
 						通知：
 			

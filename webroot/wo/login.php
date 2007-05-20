@@ -61,6 +61,9 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 			<h2>登录到叽歪de</h2>
 
 <?php	
+
+JWTemplate::ShowActionResultTips();
+
 if ( !empty($err) ){
 	echo "<p class='notice'> $err </p>\n";
 }
