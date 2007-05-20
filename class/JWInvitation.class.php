@@ -144,9 +144,17 @@ SELECT	id as idInvitation
 FROM	Invitation
 WHERE	(address,type) IN ($condition_in)
 _SQL_;
-		$rows = JWDB::GetQueryResult($sql,true);
 
 		$invitation_ids = array();
+
+		try {
+			$rows = JWDB::GetQueryResult($sql,true);
+		} catch ( Exception $e ) {
+			$sql_str = preg_replace("/\n",$sql);
+			JWLog::LogFuncName("JWDB::GetQueryResult($sql_str,true) fail.");
+			return array();
+		}
+
 
 		if ( empty($rows) )
 			return array();

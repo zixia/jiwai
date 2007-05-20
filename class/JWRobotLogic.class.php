@@ -143,9 +143,12 @@ class JWRobotLogic {
 		}
 		else
 		{	
+			$time = $robotMsg->GetCreateTime();
+
 			// update jiwai status
-			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body");
-			if ( JWSns::UpdateStatus($device_row['idUser'], $body, $type ) )
+			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
+
+			if ( JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time ) )
 			{	// succeed posted, keep silence
 				return null;
 			}
@@ -258,8 +261,23 @@ _STR_;
 		
 		if ( empty($user_name) )
 		{
-			$user_name = $robotMsg->GetType() . '_' . $robotMsg->GetAddress();
-			$user_name = preg_replace("/@/","_",$user_name);
+			// 从邮件中取用户名，并进行特殊字符处理
+			$user_name = $robotMsg->GetAddress();
+			$user_name = preg_replace("/@.*/"	,""	,$user_name);
+			$user_name = preg_replace("/\./"	,""	,$user_name);
+
+			// 如果是手机用户或者QQ用户 
+			if ( preg_match('/^\d+$/',$user_name) )
+			{
+				if ( JWDevice::IsValid($user_name,'sms') )
+					$user_name = 'sms' . $user_name;
+				else
+					$user_name = 'qq' . $user_name;
+			}
+			else
+			{
+				$user_name = preg_replace("/^\d+/"	,""	,$user_name);
+			}
 		}
 		
 
@@ -317,6 +335,7 @@ _STR_;
 							 'nameScreen'	=> $user_name
 							,'nameFull'		=> $user_name
 							,'pass'			=> JWDevice::GenSecret(16)
+							,'isWebUser'	=> 'N'	// 很重要：设备直接注册的用户，要设置标志，方便未来Web上设置密码
 						);
 
 		if ( 'qq'!=$type && 'sms'!=$type )

@@ -67,6 +67,11 @@ class JWRobotLingo {
 			,'NAO'		=>	'NUDGE'
 
 			,'REMOVE'	=>	'DELETE'
+
+			/*
+		 	 * 	JiWai扩展
+			 */
+			,'WOSHISHUI'=>	'WHOAMI'
 		);
 
 
@@ -853,17 +858,17 @@ _STR_;
 		$register_date	= date("Y年n月",strtotime($friend_user_row['timeCreate']));
 	
 		$body = <<<_STR_
-$friend_user_row[nameFull]；注册时间：$register_date
+$friend_user_row[nameFull]，注册时间：$register_date
 _STR_;
 
 		if ( !empty($friend_user_row['bio']) )
-			$body .= "；简介：$friend_user_row[bio]";
+			$body .= "，简介：$friend_user_row[bio]";
 
 		if ( !empty($friend_user_row['location']) )
-			$body .= "；位置：$friend_user_row[location]";
+			$body .= "，位置：$friend_user_row[location]";
 
 		if ( !empty($friend_user_row['url']) )
-			$body .= "；网站：$friend_user_row[url]";
+			$body .= "，网站：$friend_user_row[url]";
 
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -1075,6 +1080,15 @@ _STR_;
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_id	= $device_db_row['idUser'];
+
+		if ( empty($address_user_id) )
+		{
+			// 可能 device 还在，但是用户没了。
+			// 删除 device.
+			JWDevice::Destroy($device_db_row['idDevice']);
+			return JWRobotLogic::CreateAccount($robotMsg);
+		}
+
 		$address_user_row	= JWUser::GetUserInfo($address_user_id);
 	
 		$body = <<<_STR_

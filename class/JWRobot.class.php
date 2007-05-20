@@ -157,7 +157,7 @@ class JWRobot {
 						,"JWRobot::SendMt "
 							."Address[" . $robotMsg->GetAddress() . "] "
 							." Type[" . $robotMsg->GetType() . "]"
-							." Body[" . $robotMsg->GetBody() . "]"
+							#." Body[" . $robotMsg->GetBody() . "]"
 							." File [" . $filename . "]"
 						);
 

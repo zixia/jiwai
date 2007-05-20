@@ -2,9 +2,9 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-const IS_WEB_USER	= 1;	//用户以前在 Web 上登录过
-const NOT_WEB_USER	= 2;	//用户没有在 Web 上登录过
-const NO_SUCH_USER	= 3;	//帐号与地址不匹配，或不存在
+define('IS_WEB_USER'	,1);	//用户以前在 Web 上登录过
+define('NOT_WEB_USER'	,2);	//用户没有在 Web 上登录过
+define('NO_SUCH_USER'	,3);	//帐号与地址不匹配，或不存在
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 
@@ -18,7 +18,7 @@ if ( !empty($nameScreen) )
 	{
 		$user_row = JWUser::GetUserInfo($nameScreen);
 		
-		if ( 'Y'==$user_row['isWebUser'] )
+		JWUser::IsWebUser($user_row['idUser'])
 			$user_state = IS_WEB_USER;
 		else
 			$user_state = NOT_WEB_USER;
@@ -32,10 +32,13 @@ if ( !empty($nameScreen) )
 if ( isset($user_state) && NOT_WEB_USER==$user_state )
 {
 	// IM / SMS 用户第一次来，设置好登录状态后，送到用户信息修改页面
-	JWUser::Login($user_row['idUser'], false);
-	header('Location: /wo/account/settings');
+	JWLogin::Login($user_row['idUser'], false);
+	header('Location: /wo/account/password');
 	exit(0);
 }
+/*
+ *	错误信息下面处理
+ */
 ?>
 <html>
 
@@ -110,9 +113,13 @@ function IsAddressBelongsToName($address,$name)
 	if ( empty($user_row) )
 		return false;
 
-	$device_row		= JWDevice::GetDeviceDbRowByUserId($user_row['idUser']);
+	$device_row		= JWDevice::GetDeviceRowByUserId($user_row['idUser']);
 
-	if ( empty($device_row) || $address!=$device_row['address'] )
+	if ( empty($device_row) )
+		return false;
+
+	if ( $address!=@$device_row['sms']['address'] 
+			&& $address!=@$device_row['im']['address'] )
 		return false;
 
 	return true;

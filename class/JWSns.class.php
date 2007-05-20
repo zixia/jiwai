@@ -72,7 +72,7 @@ class JWSns {
 			JWMail::SendMailNoticeNewFriend($userRow, $friendRow);
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]),\tnotification email "
-											. ( $need_notice_mail ? 'sent. ' : '')
+											. ( $need_notice_mail ? 'sent. ' : 'none')
 								);
 	
 		// idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
@@ -370,7 +370,10 @@ class JWSns {
 	}
 	
 
-	static public function	UpdateStatus( $idUser, $status, $device='web' )
+	/*
+	 *
+	 */
+	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null )
 	{
 		// FIXME: Follower 最多可以有多少位？
 		$follower_ids = JWFollower::GetFollowerIds($idUser);
@@ -381,7 +384,7 @@ class JWSns {
 			JWNudge::NudgeUserIds($follower_ids, "$user_name_screen: $status");
 		}
 
-		return JWStatus::Create($idUser,$status,$device);
+		return JWStatus::Create($idUser,$status,$device,$time);
 	}
 
 

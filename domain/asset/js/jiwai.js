@@ -37,10 +37,12 @@ var JiWai =
 
 	Yft		: function (selector, hideSecs) 
 	{
+/*
 (function(){alert(1);return this;}).delay(1000);
 
 alert('ok');
 //.chain(function(){alert(2)}).chain(function(){alert(3)}).chain(function(){alert(4)});
+*/
 
 		$$(selector).each( function(yft_element) 
 		{

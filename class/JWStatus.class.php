@@ -43,16 +43,25 @@ class JWStatus {
 	}
 
 
-	static public function Create( $idUser, $status, $device='web' )
+	/*
+	 *	@param	int	$time	unixtime
+	 */
+	static public function Create( $idUser, $status, $device='web', $time=null )
 	{
 		$db = JWDB::Instance()->GetDb();
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device) "
-								. " values (?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("iss"
+		$time = intval($time);
+
+		if ( 0>=$time )
+			$time = time();
+
+		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate) "
+								. " values (?,?,?,FROM_UNIXTIME(?))" ) ){
+			if ( $result = $stmt->bind_param("isss"
 											, $idUser
 											, $status
 											, $device
+											, $time
 								) ){
 				if ( $stmt->execute() ){
 					$stmt->close();
@@ -87,7 +96,7 @@ SELECT		Status.id	as idStatus
 FROM		Status, User
 WHERE		Status.idUser=User.id
 			AND User.id=$idUser
-ORDER BY 	Status.timestamp desc
+ORDER BY 	Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
@@ -144,10 +153,10 @@ WHERE
 			UNION
 				SELECT $idUser as idFriend
 		)
-		AND Status.timestamp > (NOW()-INTERVAL 1 WEEK)
+		AND Status.timeCreate > (NOW()-INTERVAL 1 WEEK)
 		AND Status.idUser=User.id
 ORDER BY
-		Status.timestamp desc
+		Status.timeCreate desc
 LIMIT 
 		$start,$num
 _SQL_;
@@ -204,7 +213,7 @@ WHERE
 			Status.idUser=User.id
 			AND User.idPicture>0
 ORDER BY 	
-			Status.timestamp desc
+			Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
@@ -253,7 +262,7 @@ SELECT
 		id as idStatus
 		, idUser
 		, status
-		, UNIX_TIMESTAMP(Status.timestamp) AS timestamp
+		, UNIX_TIMESTAMP(Status.timeCreate) AS timeCreate
 		, device
 FROM	Status
 WHERE	Status.id IN ($condition_in)
@@ -467,7 +476,7 @@ _SQL_;
 		$sql = <<<_SQL_
 SELECT	MAX(id) as idMax
 FROM	Status
-WHERE	timestamp < FROM_UNIXTIME($unixtime)
+WHERE	timeCreate < FROM_UNIXTIME($unixtime)
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 		return $row['idMax'];

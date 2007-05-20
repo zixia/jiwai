@@ -328,15 +328,19 @@ _SQL_;
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected)"
-								. " values (NOW(),?,?,?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("ssssss"
+		if ( empty($userInfo['isWebUser']) )
+			$userInfo['isWebUser']='Y';
+
+		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,isWebUser)"
+								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
+			if ( $result = $stmt->bind_param("sssssss"
 											, $userInfo['nameScreen']
 											, $userInfo['pass']
 											, strrev(@$userInfo['email']) // 如果是手机注册，则为空
 											, $userInfo['nameFull']
 											, $userInfo['location']
 											, $userInfo['protected']
+											, $userInfo['isWebUser']
 								) )
 			{
 				if ( $stmt->execute() ){
@@ -600,5 +604,21 @@ _SQL_;
 		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));
 	}
 
+	static public function IsWebUser($idUser)
+	{
+		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		return ('Y'==$user_db_row['isWebUser']);
+	}
+
+	static public function SetWebUser($idUser, $isWebUser=true)
+	{
+		$idUser = intval($idUser);
+
+		if ( 0>=$idUser )
+			throw new JWException('must int');
+
+		$condition = array( 'isWebUser'	=> ($isWebUser ? 'Y' : 'N') );
+		return JWDB::UpdateTableRow('User', $idUser, $condition);
+	}
 }
 ?>

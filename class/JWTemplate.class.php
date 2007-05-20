@@ -130,7 +130,7 @@ _HTML_;
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
-			<li><a href="/wo/account/setting">设置</a></li>
+			<li><a href="/wo/account/settings">设置</a></li>
 			<li><a href="http://help.jiwai.de/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
 		</ul>
@@ -356,10 +356,10 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		{
 			$status_id 	= $statusRow['idStatus'];
 			$status		= $statusRow['status'];
-			$timestamp	= $statusRow['timestamp'];
+			$timeCreate	= $statusRow['timeCreate'];
 			$device		= $statusRow['device'];
 	
-			$duration	= JWStatus::GetTimeDesc($timestamp);
+			$duration	= JWStatus::GetTimeDesc($timeCreate);
 		}
 		else	
 		{
@@ -542,10 +542,10 @@ _HTML_;
 			$name_screen= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];
 			$status		= $statusRows[$status_id]['status'];
-			$timestamp	= $statusRows[$status_id]['timestamp'];
+			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
 			
-			$duration	= JWStatus::GetTimeDesc($timestamp);
+			$duration	= JWStatus::GetTimeDesc($timeCreate);
 			$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
 
@@ -1157,7 +1157,7 @@ _HTML_;
 
 	static public function UserSettingNav($activeMenu='account')
 	{
-		$arr_menu = array ( 'account'		=> array ( '/wo/account/setting'	, '帐号' )
+		$arr_menu = array ( 'account'		=> array ( '/wo/account/settings'	, '帐号' )
 							, 'password'	=> array ( '/wo/account/password'	, '密码')
 							, 'device_sms'	=> array ( '/wo/devices/?sms'		, '手机短信')
 							, 'device_im'	=> array ( '/wo/devices/?im'			, '聊天软件')

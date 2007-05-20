@@ -160,5 +160,6 @@ class JWNudge {
 				break;
 		}
 	}
+
 }
 ?>

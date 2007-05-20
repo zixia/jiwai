@@ -17,6 +17,7 @@ class JWRobotMsg {
 	private $mType		= null;
 	private $mBody		= null;
 	private $mFile		= null;
+	private $mCreateTime	= null;
 
 	/**
 	 * if this instance can be modifyed.
@@ -40,9 +41,17 @@ class JWRobotMsg {
 
 	function Load($fileName=null)
 	{
-		// set file name first, so if any err, 
-		// we can quarantine this file.
-		$this->mFile		= $fileName;
+		if ( null==$fileName )
+		{
+			if ( empty($this->mFile) )
+				throw new JWException('Load without filename');
+		}
+		else
+		{
+			// set file name first, so if any err, 
+			// we can quarantine this file.
+			$this->mFile		= $fileName;
+		}
 
 		$raw_msg_content = file_get_contents( $fileName );
 
@@ -72,6 +81,7 @@ class JWRobotMsg {
 
 		$this->mBody		= $body;
 		$this->mFile		= $fileName;
+		$this->mCreateTime	= filemtime($fileName);
 
 		// we prevent modify a RoboMsg which load from the file.
 		// when we need to create a RobotMsg, we must create a new one
@@ -148,6 +158,10 @@ class JWRobotMsg {
 			throw new JWException('cant modify readonly msg');
 
 		$this->mFile = $file;
+	}
+	public function GetCreateTime()
+	{
+		return $this->mCreateTime;
 	}
 
 

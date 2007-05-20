@@ -215,7 +215,7 @@ function friends_timeline_rss_n_atom($options)
 		$feed->AddItem(array( 
 				'title'		=> $desc
 				, 'desc'	=> $desc
-				, 'date'	=> $status_rows[$status_id]['timestamp']
+				, 'date'	=> $status_rows[$status_id]['timeCreate']
 				, 'guid'	=> $url
 				, 'url'		=> $url
 				, 'author'	=> $user_rows[$user_id]['nameFull']
@@ -299,7 +299,7 @@ function get_friends_timeline_array($options)
 	{
 		$user_id	= intval($status_rows[$status_id]['idUser']);
 
-		$status_array['created_at']			= date("r",$status_rows[$status_id]['timestamp']);
+		$status_array['created_at']			= date("r",$status_rows[$status_id]['timeCreate']);
 		$status_array['id']					= intval($status_id);
 		$status_array['text']				= $status_rows[$status_id]['status'];
 

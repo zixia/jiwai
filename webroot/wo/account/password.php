@@ -7,24 +7,27 @@
 */
 
 require_once('../../../jiwai.inc.php');
-JWDebug::init();
 
 JWLogin::MustLogined();
 
 
 $user_info		= JWUser::GetCurrentUserInfo();
+$is_web_user	= JWUser::IsWebUser($user_info['idUser']);
 
-//var_dump($user_info);
 
-if ( isset($_REQUEST['current_password']) )
+//die(var_dump(JWUser::IsWebUser($user_info['idUser'])));
+
+if ( isset($_REQUEST['password']) )
 {
 	$current_password 		= trim( @$_REQUEST['current_password'] );
 	$password 				= trim( @$_REQUEST['password'] );
 	$password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
 
-	if ( empty($current_password) 
-			|| empty($password)
-			|| empty($password_confirmation) )
+	if ( $is_web_user
+			&& (	empty($current_password) 
+					|| empty($password)
+					|| empty($password_confirmation) 
+			) )
 	{
 		$error_html = <<<_HTML_
 			<li>请完整填写三处密码输入框</li>
@@ -38,7 +41,8 @@ _HTML_;
 _HTML_;
 	}
 
-	if ( ! JWUser::VerifyPassword($user_info['id'], $current_password) )
+	if ( $is_web_user &&
+			! JWUser::VerifyPassword($user_info['id'], $current_password) )
 	{
 			$error_html .= <<<_HTML_
 <li>当前密码输入错误，清除新输入</li>
@@ -63,6 +67,9 @@ _HTML_;
 			$notice_html = <<<_HTML_
 <li>密码修改成功！</li>
 _HTML_;
+			if ( !$is_web_user )
+				JWUser::SetWebUser($user_info['idUser']);
+
 			JWSession::SetInfo('notice', $notice_html);
 		}
 
@@ -122,11 +129,13 @@ _HTML_;
 			<form action="/wo/account/password" method="post" name="f">
 				<fieldset>
 					<table cellspacing="0">
+<?php if ( $is_web_user ) { ?>
 						<tr>
 							<th><label for="current_password">当前密码：</label></th>
 
 							<td><input id="current_password" name="current_password" type="password" /></td>
 						</tr>
+<?php } ?>
 						<tr>
 							<th><label for="password">新密码：</label></th>
 	 						<td><input id="password" name="password" type="password" /></td>
