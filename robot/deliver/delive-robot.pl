@@ -46,6 +46,9 @@ or die "Unable to create new inotify object: $!" ;
 # create watch
 foreach my $device_dir ( @device_dirs )
 {
+	# we skip tmp dir
+	next if 'tmp' eq $device_dir;
+
 	my $mo_dir = "$device_dir/mo";
 	my $mt_dir = "$device_dir/mt";
 
@@ -64,7 +67,7 @@ foreach my $device_dir ( @device_dirs )
 		@exist_old_msgs = grep (/^(\w+)__/, readdir(DIR));
 		closedir DIR;
 
-		deliver_file("$mt_dir/$_") foreach ( @exist_old_msgs );
+		delive_file("$mt_dir/$_") foreach ( @exist_old_msgs );
 
 		syslog('info', "starting watch new file in $mt_dir");
 	}
@@ -78,7 +81,7 @@ foreach my $device_dir ( @device_dirs )
 		@exist_old_msgs = grep (/^(\w+)__/, readdir(DIR));
 		closedir DIR;
 
-		deliver_file("$mo_dir/$_") foreach ( @exist_old_msgs );
+		delive_file("$mo_dir/$_") foreach ( @exist_old_msgs );
 
 
 		syslog('info', "starting watch new file in $mo_dir");
@@ -100,7 +103,7 @@ while ( ! $need_exit ) {
 
 		foreach my $event (@events) {
 			#print Dumper($_);
-			deliver_file($event->fullname());
+			delive_file($event->fullname());
 		}
 }
 
@@ -110,7 +113,7 @@ exit(0);
 ########################################
 # JiWai.de robot deliver logic here
 ##########################################
-sub deliver_file {
+sub delive_file {
 	my $new_msg_file = shift;
 
 	if ( ! -f $new_msg_file )
@@ -138,9 +141,15 @@ sub deliver_file {
 		{
 			my $dest_file = "$msg_type/$direction/$msg_type$file_name_tailer";
 
-			syslog('info', "move $new_msg_file to $dest_file");
-			link($new_msg_file, $dest_file)
-				&& unlink($new_msg_file);
+			if ( link($new_msg_file, $dest_file) )
+			{
+				syslog('info', "move $new_msg_file to $dest_file");
+				unlink($new_msg_file);
+			}
+			else
+			{
+				syslog('info', "move $new_msg_file to $dest_file FAILED, keep orig file.");
+			}
 		}
 	}
 	else
@@ -151,9 +160,15 @@ sub deliver_file {
 		{
 			my $dest_file = "robot/$direction/$msg_type$file_name_tailer";
 
-			syslog('info', "move $new_msg_file to $dest_file");
-			link($new_msg_file, $dest_file)
-				&& unlink($new_msg_file);
+			if ( link($new_msg_file, $dest_file) )
+			{
+				syslog('info', "move $new_msg_file to $dest_file");
+				unlink($new_msg_file);
+			}
+			else
+			{
+				syslog('info', "move $new_msg_file to $dest_file FAILED, keep orig file");
+			}
 		}
 	}
 }

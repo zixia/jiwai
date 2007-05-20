@@ -10,7 +10,7 @@ my $IM_QUEUE='/var/cache/tmpfs/jiwai/queue/';
 my $MSN_QUEUE=$IM_QUEUE . 'msn/';
 
 my $IDLE_CIRCLE=1;
-my $IDLE_CIRCLE_MAX=256;
+my $IDLE_CIRCLE_MAX=64;
 
 use Time::HiRes qw/gettimeofday/;
 use Data::Dumper;
