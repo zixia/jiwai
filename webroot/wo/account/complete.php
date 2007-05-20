@@ -2,16 +2,40 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
+const IS_WEB_USER	= 1;	//用户以前在 Web 上登录过
+const NOT_WEB_USER	= 2;	//用户没有在 Web 上登录过
+const NO_SUCH_USER	= 3;	//帐号与地址不匹配，或不存在
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 
 
 $address 	= @$_REQUEST['address'];
+$nameScreen	= @$_REQUEST['nameScreen'];
 
-if ( !empty($address) )
+if ( !empty($nameScreen) )
 {
+	if ( IsAddressBelongsToName($address,$nameScreen) )
+	{
+		$user_row = JWUser::GetUserInfo($nameScreen);
+		
+		if ( 'Y'==$user_row['isWebUser'] )
+			$user_state = IS_WEB_USER;
+		else
+			$user_state = NOT_WEB_USER;
+	}
+	else
+	{
+		$user_state = NO_SUCH_USER;
+	}
 }
 
+if ( isset($user_state) && NOT_WEB_USER==$user_state )
+{
+	// IM / SMS 用户第一次来，设置好登录状态后，送到用户信息修改页面
+	JWUser::Login($user_row['idUser'], false);
+	header('Location: /wo/account/settings');
+	exit(0);
+}
 ?>
 <html>
 
@@ -36,13 +60,18 @@ if ( !empty($address) )
 
 <p>请填写您使用JiWai时用的手机号码或聊天软件帐号。</p>
 
+<br>
+
 <form action="/wo/account/complete" method="post" name="f">
 <fieldset>
 <table>
-
 	<tr>
-		<th><label for="address">手机号码或者聊天软件帐号(邮件地址)：</label></th>
+		<th><nobr><label for="address">手机号码或者聊天软件帐号<small>(邮件地址)</small>：</label></nobr></th>
 		<td><input id="address" name="address" type="text" /></td>
+	</tr>
+	<tr>
+		<th><label for="screen_name">帐号名</small>(忘记？发送whoami或woshishui查询)</small>：</label></th>
+		<td><input id="screen_name" name="nameScreen" type="text" /></td>
 	</tr>
 	<tr><th></th><td><input name="commit" type="submit" value="继续" /></td></tr>
 </table>
@@ -67,3 +96,25 @@ $('address').focus();
 </body>
 </html>
 
+<?php
+function IsAddressBelongsToName($address,$name)
+{
+	if ( empty($address) || empty($name) )
+		return false;
+
+	if ( preg_match('/^\d/',$name) )
+		return false;
+
+	$user_row	 	= JWUser::GetUserInfo($name);
+
+	if ( empty($user_row) )
+		return false;
+
+	$device_row		= JWDevice::GetDeviceDbRowByUserId($user_row['idUser']);
+
+	if ( empty($device_row) || $address!=$device_row['address'] )
+		return false;
+
+	return true;
+}
+?>
