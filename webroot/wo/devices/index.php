@@ -186,17 +186,20 @@ else
 						</form>
 
 
-<?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified ?>
+<?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified 
+
+		$im_type = strtoupper($aDeviceInfo['im']['type']) ;
+?>
 
 
-  						<h4><!--请点击-->验证你的聊天(IM)帐号 (<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>): 
+  						<h4><!--请点击-->验证你的聊天(IM)帐号 (<?php echo $im_type . ":" . $aDeviceInfo['im']['address']?>): 
 							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
 						</h4>
 
-  						<p><!--直接点击无法验证？-->请将
+  						<p><!--直接点击无法验证？-->请用 <strong><?php echo $im_type?></strong> 将
 							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
 								<strong>wo@jiwai.de</strong>
-							 加为你的好友，然后将如下验证码发送给她即可：
+							 加为你的 <strong><?php echo $im_type?></strong> 好友，然后将如下验证码发送给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
   						</p>
 
