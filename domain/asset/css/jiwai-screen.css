@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {color:#FFF;background:#FFF;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
+body {color:#FFF;background:#333;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
 form {margin:0;padding:0;}
 
 
@@ -47,7 +47,7 @@ a:hover {color:#333;}
 
 
 #header {position:relative;margin:0 auto; padding:0 auto; background:#333 url(http://asset.jiwai.de/img/jiwai-beta.gif) repeat-x 0 0;height:74px;width:100%;}
-  #navigation {position: relative;margin:0 auto; min-width:755px; max-width:900px; width:95%; }
+  #navigation {position: relative;margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px}
   #header a.header {display:block;text-indent:-9999px;overflow:hidden;}
   #header a {margin-left:10px;text-decoration:none;color:#fff;font-weight:bold;}
   #header h2 {width:200px;margin:0;padding:0;background:transparent url(http://asset.jiwai.de/img/jiwai_logo_2.gif) no-repeat top left;}
@@ -64,10 +64,10 @@ a:hover {color:#333;}
     #header li { float:left;}
 */
 
-#container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333;background-color:#FFF;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
+#container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333;background:transparent;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
 
 
-#content {width:100%; float:left; margin:20px 0 0 -225px; border-right:1px solid #9C0; line-height:1.5em; overflow:hidden; }
+#content {width:100%; float:left; margin:20px 0 0 -225px; border-right:1px solid #9C0; line-height:2em; overflow:hidden; }
   #content #wrapper { margin: 10px 0; margin-left:235px; padding:0 0 1em 20px;}
   #content ul {margin:0;padding:0 1.5em;}
 
@@ -107,18 +107,18 @@ a:hover {color:#333;}
   #sidebar .actions { background:#FFFFFF none repeat scroll 0%; border:1px solid #87BC44; margin:10px -3px; padding:2px 5px; }
 
 
-#content #doingForm .bar {line-height: 2.5em; position: relative; padding: 0 10px;}
-#content #doingForm .bar h3 {font: normal 1.5em/1.5 Helvetica, Arial, sans-serif; color: #000; padding-right: 170px;}
+#content #doingForm .bar {line-height: 2.5em; position: relative; padding-left: 10px; margin: 0px}
+#content #doingForm .bar h3 {font: normal 1.5em/1.5 Helvetica, Arial, sans-serif; color: #000; padding: 5px 170px 0 0;}
 #content #doingForm .bar span {font-size: 0.92em; display: block; position: absolute; top: 0; right: 10px;}
 #content #doingForm .bar span#submit_loading {padding-top:.3em;}
-#content #doingForm textarea {width: 100%; margin:0; padding: 5px; border-color: #9c0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff;}
+#content #doingForm textarea {width: 100%; margin:0; padding: 9px; height: 50px; width:500px;border-color: #9c0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff; overflow:hidden;}
 #content #doingForm .submit {background: url(http://asset.jiwai.de/img/arr.gif) no-repeat top center; padding-top: 16px; height:40px; text-align:center}
 
-#content .tabMenu {width: 100%; padding: 0 0 1px; text-align: right; margin: 15px -15px -6px; border: 0;}
+#content .tabMenu {width: 100%; padding: 0 0 0px; text-align: right; margin: 15px -15px -9px; border: 0;position:relative}
 #content .tabMenu li {display: inline; margin: 0; border: 0;}
 #content .tabMenu li a {display: inline; padding: 4px 20px 4px 20px; background: #E1F0B4;}
 #content .tabMenu li.active a {background: #91C100; color: #fff;font-weight:bold}
-#content .tab {background: #fff; padding: 0;}
+#content .tab {background: transparent; padding: 0;}
 #content .tab #ad {text-align: center;}
 #content .tab p {text-indent: 1em;}
 #content .doing {margin:0; padding: 0 0px 1em; font-size: 1.2em; line-height: 1.1; width: 100%;}
@@ -135,7 +135,7 @@ a:hover {color:#333;}
 .bg_tab_top_mid {height:35px; background: url(http://asset.jiwai.de/img/bg_tab_top_mid.gif) repeat-x 0 0; }
 .bg_tab_top_right {padding:0px; width:7px; height:35px; background: url(http://asset.jiwai.de/img/bg_tab_top_right.gif) no-repeat 0 0; }
 
-.bg_tab_top_mid h2 {display:inline;}
+.bg_tab_top_mid h2 {vertical-align:bottom} /* FIXME 文字太考上了，这行无效 */
 .bg_tab_top2_left {padding:0px; width:9px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_left.gif) no-repeat top right;}
 .bg_tab_top2_right {padding:0px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_right.gif) repeat-x 0 0; }
 
@@ -145,18 +145,18 @@ a:hover {color:#333;}
 
 
 
-.jiwai_icon_vtab {border:0; margin-left:-16px; padding: 0 0 0 14px; background: #fff url(http://asset.jiwai.de/img/icon_jiwaide_vertical.gif) no-repeat scroll 0 3px; text-align: left;} 
-.jiwai_icon_vtab_inner {margin:0; padding:0; border:1px solid #f00; border-right:0; overflow:hidden}
+.jiwai_icon_vtab {border:0; padding: 5px 5px 2px 18px; background: #F0F7D9 url(http://asset.jiwai.de/img/icon_jiwaide_vertical.gif) no-repeat scroll 5px 10px; text-align: left;} 
+.jiwai_icon_vtab_inner {margin:0; padding:50px; border:1px solid #f00; border-right:0; overflow:hidden}
 
 .buttonSubmit, .buttonSubmitHovered {
-	background:transparent url(http://asset.jiwai.de/img/form/button.gif) no-repeat scroll left top;
+	background:transparent url(http://asset.alpha.jiwai.de/img/form/button_big.gif) no-repeat scroll left top;
 	border:medium none;
 	color:#FFFFFF;
 	cursor:pointer;
 	font-weight:bold;
-	height:26px;
+	height:50px;
 	padding:2px 5px;
-	width:69px;
+	width:140px;
 }
 .buttonSubmitHovered {
 	background-position:left bottom;
@@ -185,7 +185,7 @@ a:hover {color:#333;}
 	top:16px;
 }
 
-#footer { position:relative;margin:0 auto;padding:18px 0;width:961px;background:#FFF url(http://asset.jiwai.de/img/ft_bg.gif) repeat-x 0 0 ;color:#333;font-size:11px;clear:both;}
+#footer { position:relative;margin:0 auto;padding:18px 0;width:100%;background:#FFF url(http://asset.jiwai.de/img/ft_bg.gif) repeat-x 0 0 ;color:#333;font-size:11px;clear:both;}
   #footer a:link {color:#333;text-decoration:none;}
   #footer a:visited {color:#444;text-decoration:none;}
   #footer a:hover {color:#222;}
@@ -203,6 +203,7 @@ h2.thumb, h2.thumb a {
 	color:#000000;
 }
 #content div.desc {
+	background:transparent url(http://asset.alpha.jiwai.de/img/arr2.gif) no-repeat scroll 14px 0px;
 	margin-top:6px;
 	padding-top:11px;
 }
@@ -215,6 +216,7 @@ h2.thumb, h2.thumb a {
 }
 
 #content div.desc p {
+	background:#F0F7D9 none repeat scroll 0%;
 	display:block;
 	font-size:2em;
 	font-weight:bold;
