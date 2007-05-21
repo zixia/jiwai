@@ -33,6 +33,9 @@ function user_status($idPageUser, $idStatus)
 h2.thumb, h2.thumb a {
 color:#000000;
 }
+#content div.desc{
+background: transparent url()
+}
 </style>
 
 <div id="container">
