@@ -182,9 +182,8 @@ class JWRobotLogic {
 		if ( $user_id )
 		{
 			$body = <<<_STR_
-搞定了！您已经通过了叽歪de验证。约1分钟后您就可以通过${type}发送更新了，耶！
+搞定了！您已经通过了叽歪de验证。回复本消息即可更新您的JiWai，耶！
 _STR_;
-//(这一刻，你在做什么？ - http://JiWai.de)
 		}
 		else
 		{

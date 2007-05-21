@@ -230,6 +230,7 @@ class JWSns {
 		{
 			case 'msn':
 			case 'gtalk':
+			case 'jabber':
 				JWRobot::SendMtRaw($address, $type, $im_message);
 				// 发完消息，再发邮件 :-D
 			case 'email':

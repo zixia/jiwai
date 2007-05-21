@@ -126,7 +126,7 @@ _HTML_;
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
 			<li class="first"><a href="/wo/">叽歪一下</a></li>
-			<li><a href="/<?php echo $nameScreen ?>/">叽歪档案</a></li>
+			<li><a href="/<?php echo $nameScreen ?>/">我的档案</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
@@ -566,7 +566,7 @@ _HTML_;
 <?php if ( $showItem['icon'] ){ ?>
 						<td class="thumb">
 							<a href="/<?php echo $name_screen;?>"><img alt="<?php echo $name_full;?>" 
-									src="<?php echo $photo_url?>" /></a>
+									src="<?php echo $photo_url?>" width="48" height="48"/></a>
 						</td>
 <?php } ?>
 						<td>	
@@ -647,11 +647,13 @@ if ( isset($current_user_id) )
 			<fieldset>
 				<div>
 					<label for="username_or_email">帐号 / Email</label>
+					<br>
 					<input id="email" name="username_or_email" type="text" />
     			</div>
 
     			<div>
     				<label for="password">密码</label>
+					<br>
     				<input id="pass" name="password" type="password" />
     			</div>
 
