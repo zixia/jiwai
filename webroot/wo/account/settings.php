@@ -181,7 +181,7 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 ?>
-			<form action="/wo/account/setting" enctype="multipart/form-data" method="post">
+			<form enctype="multipart/form-data" method="post">
 				<fieldset>
 					<table cellspacing="0">
 					<tr>
