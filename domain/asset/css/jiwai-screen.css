@@ -64,7 +64,7 @@ a:hover {color:#333;}
     #header li { float:left;}
 */
 
-#container { margin:0 auto; min-width:755px; max-width:900px; width:95%; color:#333;background-color:#FFF;border:1px solid #9C0;border-width:0 0px;overflow:auto;zoom:1;min-height:400px;}
+#container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333;background-color:#FFF;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
 
 
 #content {width:100%; float:left; margin:20px 0 0 -225px; border-right:1px solid #9C0; line-height:1.5em; overflow:hidden; }
@@ -136,8 +136,8 @@ a:hover {color:#333;}
 .bg_tab_top_right {padding:0px; width:7px; height:35px; background: url(http://asset.jiwai.de/img/bg_tab_top_right.gif) no-repeat 0 0; }
 
 .bg_tab_top_mid h2 {display:inline;}
-.bg_tab_top2_left {padding:0px; width:9px; height:22px; background: transparent url(http://asset.jiwai.de/img/bg_tab_top2_left.gif) no-repeat top right;}
-.bg_tab_top2_right {padding:0px; height:22px; background: url(http://asset.jiwai.de/img/bg_tab_top2_right.gif) repeat-x 0 0; }
+.bg_tab_top2_left {padding:0px; width:9px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_left.gif) no-repeat top right;}
+.bg_tab_top2_right {padding:0px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_right.gif) repeat-x 0 0; }
 
 
 .even {background-color:#E1F0B4;}
