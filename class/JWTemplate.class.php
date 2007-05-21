@@ -196,7 +196,7 @@ function run_google()
 ?>
 			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="new Ajax.Request('/status/update', {asynchronous:true, evalScripts:true, onComplete:function(request){$('status').value = ''; updateStatusTextCharCounter($('status').value);$('submit').disabled = false;$('submit_loading').style.display='none';Effect.Appear('chars_left_notice', {duration:0.5});}, onLoading:function(request){$('submit').disabled = true;Effect.Appear('submit_loading', {duration:0.3});$('chars_left_notice').style.display='none';}, parameters:Form.serialize(this)}); return false;">
 				<fieldset>
-					<div class="bar odd">
+					<div class="bar even">
 						<h3>
 							<label for="status">
 								这一刻，你在做什么？
@@ -300,6 +300,13 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 
 	static public function tab_header( $vars=null )
 	{
+/*
+		title2 长了之后，会莫名其妙的影响 tab 布局
+		$vars=array('title'=>'最新动态 - 大家在做什么？' 
+						, 'title2'=>'你想叽歪呀，你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
+				);
+*/
+
 		if ( !array_key_exists('title',$vars) )	
 			$vars['title'] = '<a href="/wo/">你</a>和<a href="/wo/friends/">朋友们</a>都在做什么?';
 
@@ -312,8 +319,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 						<td class="bg_tab_top_left">
 						</td>
 						<td class="bg_tab_top_mid">
-							<h2><?php echo $vars['title']; ?>
-</h2>
+							<h2><?php echo $vars['title']; ?></h2>
 						</td>
 						<td class="bg_tab_top_right">
 						</td>
@@ -402,11 +408,11 @@ _HTML_;
 <?php 
 if ( isset($statusRow) ) 
 {
-?>
-  					<a href="http://jiwai.de/zixia/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
-  					来自 <?php echo $device?>
-					<span id="status_actions_<?php echo $status_id?>">
-<?php	
+	echo <<<_HTML_
+  					<a href="/$name_screen/statuses/$status_id">$duration</a>
+  					来自 $device
+					<span id="status_actions_$status_id">
+_HTML_;
 }
 
 if ( isset($statusRow) && isset($current_user_id) )	
@@ -648,16 +654,16 @@ if ( isset($current_user_id) )
 				<div>
 					<label for="username_or_email">帐号 / Email</label>
 					<br>
-					<input id="email" name="username_or_email" type="text" />
+					<input id="email" name="username_or_email" type="text" style="width:158px"/>
     			</div>
 
     			<div>
     				<label for="password">密码</label>
 					<br>
-    				<input id="pass" name="password" type="password" />
+    				<input id="pass" name="password" type="password" style="width:158px"/>
     			</div>
 
-    			<input id="remember_me" name="remember_me" type="checkbox" value="1" checked/> <label for="remember_me">记住我</label>
+    			<input id="remember_me" name="remember_me" type="checkbox" value="1" checked style="margin-top:4px"/> <label for="remember_me">记住我</label>
     			<small><a href="/account/resend_password">忘记?</a></small>
     			<input id="submit" name="commit" type="submit" value="登录" />
     		</fieldset>
@@ -680,7 +686,7 @@ _HTML_;
 ?>
 
 		<div class="notify">
-  			想拥有一个叽歪de帐号吗？<br />
+  			想拥有一个叽歪de帐号？<br />
   			<a href="/wo/account/create" class="join">免费注册！</a><br />
 <?php 	if ( !$showLogin ) { ?>
   			10秒搞定！

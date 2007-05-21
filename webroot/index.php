@@ -31,7 +31,7 @@ if ( JWLogin::IsLogined() )
 <?php JWTemplate::tab_header( array( 'title'	=>	'看看<a href="' 
 													. JWTemplate::GetConst('UrlPublicTimeline')
 													. '">大家</a>都在忙些什么？'
-									, 'title2'	=>	'叽叽歪歪' 
+									, 'title2'	=>	'' 
 							) )
 ?>
 

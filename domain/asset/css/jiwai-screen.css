@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {color:#FFF;background:#000;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
+body {color:#FFF;background:#fff;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
 form {margin:0;padding:0;}
 
 
@@ -70,6 +70,10 @@ a:hover {color:#333;}
 #content {width:100%; float:left; margin:20px 0 0 -225px; border-right:1px solid #9C0; line-height:2em; overflow:hidden; }
   #content #wrapper { margin: 10px 0; margin-left:235px; padding:0 0 1em 20px;}
   #content ul {margin:0;padding:0 1.5em;}
+  #content #permalink h2 { background:transparent url(http://asset.jiwai.de/img/arr.gif) no-repeat scroll 335px 0pt; font-size:2em; padding:16px 0pt 5px 321px; }
+  #content h2.thumb img { border:1px solid #999999; vertical-align:middle; }
+
+
 
 #sidebar { border-width:1px 2px 2px 1px; border-style:solid; border-color: #87bc44; padding:12px; margin:10px;width:175px;background-color:#C3E169; float:right}
   #sidebar h3#sidebar_title {margin:0;background:url(h_sidebar.gif) no-repeat 0 0;text-indent:-8000px;height:42px;}
@@ -218,6 +222,12 @@ h2.thumb, h2.thumb a {
 
 #content div.desc h1 {
 	margin-right: 15px;
+	display:block;
+	font-size:2.12em;
+	font-weight:bold;
+	line-height:1.2em;
+	padding:7px;
+	background: #f0f7d9;
 }
 #content div.desc p {
 	background:#F0F7D9 none repeat scroll 0%;
@@ -253,4 +263,8 @@ font-weight:normal;
 	text-align:center;
 }
 /* Account Setting end */
+
+#ad {
+	padding:0px 0pt 5px 321px;
+}
 
