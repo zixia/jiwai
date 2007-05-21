@@ -194,7 +194,8 @@ else
 						</h4>
 
   						<p><!--直接点击无法验证？-->请将
-							<a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a>
+							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
+								<strong>wo@jiwai.de</strong>
 							 加为你的好友，然后将如下验证码发送给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
   						</p>
