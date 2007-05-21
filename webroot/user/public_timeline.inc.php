@@ -43,8 +43,15 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows)
 
 
 <?php 
+
+$featured_options['user_ids']	= JWUser::GetFeaturedUserIds(5);
+
+$newest_options['title']		= '看看新来的';
+$newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
+
 $arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong>'))
-					, array ('featured'			, null)
+					, array ('featured'			, array($featured_options) )
+					, array ('featured'			, array($newest_options) )
 				);
 
 if ( ! JWLogin::IsLogined() )

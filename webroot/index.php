@@ -50,11 +50,18 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
 
 
 <?php 
-$arr_menu 			= array(	array ('head'			, array('<h3>请登陆！</h3>'))
-								, array ('login'		, null)
-								, array ('register'		, null)
-								, array ('featured'		, null)
-							);
+$featured_options['user_ids']	= JWUser::GetFeaturedUserIds(5);
+
+$newest_options['title']		= '看看新来的';
+$newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
+
+
+$arr_menu 	= array( array ('head'			, array('<h3>请登陆！</h3>'))
+					, array ('login'		, null)
+					, array ('register'		, null)
+					, array ('featured'		, array($featured_options) )
+					, array ('featured'		, array($newest_options) )
+				);
 
 JWTemplate::sidebar($arr_menu, null) ;
 

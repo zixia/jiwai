@@ -191,6 +191,10 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
+		$user_map = array();
+
+		if ( empty($rows) )
+			return array();
 
 		foreach ( $rows as $row )
 		{

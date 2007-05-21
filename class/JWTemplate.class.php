@@ -551,8 +551,10 @@ _HTML_;
 
 			if ( 'sms'==$device )
 				$device='手机';
-			//else
-			//	$device=strtoupper($device);
+			else if ( 'gtalk'==$device )
+				$device='GTalk';
+			else
+				$device=strtoupper($device);
 
 
 			$formated_status 	= JWStatus::FormatStatus($status);

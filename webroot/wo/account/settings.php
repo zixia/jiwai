@@ -130,7 +130,7 @@ _HTML_;
 _HTML_;
 		JWSession::SetInfo('notice', $notice_html);
 
-		header ( "Location: /wo/account/setting" );
+		header ( "Location: /wo/account/settings" );
 	}
 }
 

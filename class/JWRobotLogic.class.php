@@ -102,7 +102,7 @@ class JWRobotLogic {
 		else
 		{
 			// 非注册用户（在Device表中没有的设备）
-			$reply_robot_msg 	= self::CreateAccount($robotMsg);
+			$reply_robot_msg 	= self::CreateAccount($robotMsg, true);
 		}
 
 		if ( empty($reply_robot_msg) ) {
@@ -206,7 +206,7 @@ _STR_;
 	/*
 	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
 	 */
-	static public function CreateAccount($robotMsg)
+	static public function CreateAccount($robotMsg, $toRegister=false)
 	{
 		$address = $robotMsg->GetAddress();
 		$type	 = $robotMsg->GetType();
@@ -249,6 +249,12 @@ _STR_;
 
 			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的JiWai用户名。访问http://jiwai.de/了解更多。");
 		}
+
+		/*
+		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
+	 	 */
+		if ( ! $toRegister )
+			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的JiWai用户名。访问http://jiwai.de/了解更多。");
 
 
 		/*
@@ -316,6 +322,9 @@ _STR_;
 			
 		}
 
+		/*
+		 *	尝试了这么多个用户名都不行，加个日期尾巴看看
+		 */
 		if ( ! $is_valid_name )
 		{
 			$month_day = date("md");
@@ -342,7 +351,7 @@ _STR_;
 			$new_user_row['email'] = $address;
 		
 	
-		// TODO 增加标志，允许用户去 Web 上注册用户
+		// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
 		$new_user_id =  JWUser::Create($new_user_row);
 
 		if ( $new_user_id )

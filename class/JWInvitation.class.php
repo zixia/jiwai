@@ -54,7 +54,7 @@ class JWInvitation {
 	{
 		$idUser		= intval($idUser);
 
-		if ( !is_int($idUser) )
+		if ( 0>=$idUser )
 			throw new JWException('id not int');
 
 		if ( ! JWDevice::IsValid($address,$type) ){
@@ -79,7 +79,7 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWLog::Instance()->Log(LOG_ERR, $e.toText() );
+			JWLog::Instance()->Log(LOG_ERR, $e.getMessage() );
 			return null;
 		}
 

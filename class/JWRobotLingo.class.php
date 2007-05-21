@@ -311,7 +311,7 @@ _STR_;
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row) )
+		if ( empty($address_device_db_row['idUser']) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
@@ -370,7 +370,7 @@ _STR_;
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row) )
+		if ( empty($address_device_db_row['idUser']) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
@@ -445,6 +445,8 @@ _STR_;
 
 		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
 
+		if ( empty($address_user_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 		/*
 	 	 *	解析命令参数
@@ -1088,10 +1090,20 @@ _STR_;
 		}
 
 		$address_user_row	= JWUser::GetUserInfo($address_user_id);
+		$is_web_user		= JWUser::IsWebUser($address_user_row['idUser']);
 	
-		$body = <<<_STR_
-$address_user_row[nameFull] ($address_user_row[nameScreen])
+		if ( $is_web_user )
+		{
+			$body = <<<_STR_
+您是$address_user_row[nameFull] ($address_user_row[nameScreen])，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。
 _STR_;
+		}
+		else
+		{
+			$body = <<<_STR_
+您是$address_user_row[nameScreen]，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。Web登录？请来 http://jiwai.de/wo/account/complete
+_STR_;
+		}
 
 		$robot_reply_msg = new JWRobotMsg();
 		
