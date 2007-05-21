@@ -208,12 +208,15 @@ class JWSns {
 		 */
 		if ( is_string($message) )
 		{
-			$im_message = $sms_message = $email_message = $message;
+			$im_message 	= $message;
+			$sms_message 	= $message;
+			$email_message 	= $message;
 		}
 		else
 		{
-			$im_message = $sms_message = $message['im'];
-			$email_message = $message['email'];
+			$sms_message 	= $message['im'];
+			$im_message 	= $message['im'];
+			$email_message 	= $message['email'];
 		}
 
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
@@ -221,12 +224,6 @@ class JWSns {
 
 		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
-
-		$im_message 	= '';
-		$sms_message 	= '';
-		$email_message 	= '';
-
-
 
 
 		switch ( $type )

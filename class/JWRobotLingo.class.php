@@ -191,13 +191,11 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS 帐号、NAO 帐号、FOLLOW 帐号、LEAVE 帐号、INVITE 1380013800
+命令：ON、OFF、WHOIS帐号、NAO帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
 _STR_;
 
-		if ( 'sms'!=$robotMsg->GetType() )
-			$body .= "（或聊天软件帐号）";
+			
 
-		$body .="。了解更多？登录 http://jiwai.de ！";
 
 		$robot_reply_msg = new JWRobotMsg();
 		
@@ -536,9 +534,9 @@ _STR_;
 			$friend_user_db_row = JWUser::GetUserInfo($invitee_address);
 			if ( empty($friend_user_db_row) ) 
 			{
-				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，我太笨了。您添加的"
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，您添加的"
 												. "${user_input_invitee_address}我不认识，"
-												. "请您输入手机号码或邮件地址。了解更多？发送 HELP。"
+												. "请您输入叽歪帐号或手机号、邮件地址。了解更多？发送 HELP。"
 											);
 			}
 
@@ -564,7 +562,9 @@ _STR_;
 			return JWRobotLogic::ReplyMsg($robotMsg, $msg);
 
 		}
-		else if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
+
+
+		if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
 		{
 			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，我太笨了。您添加的 $user_input_invitee_address 我不认识，请您输入手机号码或邮件地址。了解更多？发送 HELP。");
 		}

@@ -240,7 +240,7 @@ class JWRobotMsg {
 		if ( empty($address) || empty($type) )
 		{
 			if ( ! $this->IsValid() )
-				return null;
+				throw new JWException('msg not valid');
 			
 			return $this->mType . '__' 
 							. $this->mAddress
@@ -253,7 +253,6 @@ class JWRobotMsg {
 			return "${type}__${address}__${sec}_$usec";
 		}
 	}
-
 
 
 }

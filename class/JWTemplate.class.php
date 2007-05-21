@@ -551,8 +551,8 @@ _HTML_;
 
 			if ( 'sms'==$device )
 				$device='手机';
-			else
-				$device=strtoupper($device);
+			//else
+			//	$device=strtoupper($device);
 
 
 			$formated_status 	= JWStatus::FormatStatus($status);
@@ -690,45 +690,55 @@ _HTML_;
 <?php
 	}
 
-	static function sidebar_featured()
+	
+	/*
+	 *
+	 *	@param	array	$options	$options['title'] = title
+									$optoins['user_ids'] = array(1,2,3,4)
+	 *
+	 */
+	static function sidebar_featured($options)
 	{
-?>
+		if ( empty($options['user_ids']) )
+			return;
 
+		$user_ids = $options['user_ids'];
+		
+		if ( !is_array($user_ids) )
+		{
+			JWLog::LogFuncName("user_ids is not array");
+			return;
+		}
+
+		if ( isset($options['title']) )
+			$title = $options['title'];
+		else
+			$title = '叽歪de推荐';
+
+		echo <<<_HTML_
   		<ul class="featured">
-			<li><strong>叽歪de推荐</strong></li>
+			<li><strong>$title</strong></li>
+_HTML_;
 
-			<li>
-				<a href="/dev"><img alt="JiWai.de Developer" height="24" src="/dev/picture" width="24" /></a>
-				<a href="/dev">JiWai.de Developer</a>
-			</li>
+		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
+		$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($user_ids);
 
-			<li>
-				<a href="/jessica"><img alt="jessica" height="24" src="/jessica/picture" width="24" /></a>
-				<a href="/jessica">Jessica</a>
-			</li>
+		foreach ( $user_ids as $user_id )
+		{
+			$user_db_row 		= $user_db_rows			[$user_id];
+			$user_icon_url		= $user_icon_url_rows	[$user_id];
 
+			echo <<<_HTML_
 			<li>
-				<a href="/maxinyu"><img alt="Ma Xinyu" height="24" src="/maxinyu/picture" width="24" /></a>
-				<a href="/maxinyu">daodao</a>
+				<a href="/$user_db_row[nameScreen]/"><img alt="$user_db_row[nameFull]" height="24" src="$user_icon_url" width="24" /></a>
+				<a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a>
 			</li>
+_HTML_;
+		}
 
-			<li>
-				<a href="/zixia"><img alt="Li Zhuohuan" height="24" src="/zixia/picture" width="24" /></a>
-				<a href="/zixia">Li Zhuohuan</a>
-			</li>
-
-			<li>
-				<a href="/nullgate"><img alt="Nullgate" height="24" src="/nullgate/picture" width="24" /></a>
-				<a href="/nullgate">Nullgate</a>
-			</li>
-
-			<li>
-				<a href="/zany"><img alt="zany zeng" height="24" src="/zany/picture" width="24" /></a>
-				<a href="/zany">Zany Zeng</a>
-			</li>
+		echo <<<_HTML_
 		</ul>
-
-<?php
+_HTML_;
 	}
 
 
@@ -1163,7 +1173,7 @@ _HTML_;
 							, 'device_im'	=> array ( '/wo/devices/?im'			, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification', '通知')
 							, 'picture'		=> array ( '/wo/account/picture'	, '头像')
-							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')
+//							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
@@ -1255,7 +1265,11 @@ _MSG_;
 <div class="yft" style="margin:1em; padding:1em">
 $msg
 </div>
-<script type="text/javascript">JiWai.Yft(".yft",1);</script>
+<script type="text/javascript">
+window.addEvent('domready', function(){
+	JiWai.Yft(".yft",1);
+});
+</script>
 _HTML_;
 
 	}

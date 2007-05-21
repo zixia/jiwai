@@ -354,7 +354,7 @@ _STR_;
 			JWSns::FinishInvitation($new_user_id, $invitation_id);
 
 			$body = <<<_STR_
-欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"到99118816来获取您的更新吧。发送HELP可以了解更多JiWai功能。 
+欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。发送HELP可以了解更多JiWai功能。 
 _STR_;
 		}
 		else

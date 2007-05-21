@@ -620,5 +620,40 @@ _SQL_;
 		$condition = array( 'isWebUser'	=> ($isWebUser ? 'Y' : 'N') );
 		return JWDB::UpdateTableRow('User', $idUser, $condition);
 	}
+
+	/*
+	 *	//TODO
+	 */
+	static public function GetFeaturedUserIds()
+	{
+		return array(11,65,19,105,29);
+	}
+
+	static public function GetNewestUserIds($max=5)
+	{
+		$max = intval($max);
+
+		if ( 0==$max )
+			$max = 5;
+
+		$sql = <<<_SQL_
+SELECT	id as idUser
+FROM	User
+WHERE	idPicture IS NOT NULL
+		ORDER BY timeCreate desc
+LIMIT	$max
+_SQL_;
+
+		$user_ids = array();
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		foreach ( $rows as $row )
+		{
+			array_push($user_ids,$row['idUser']);
+		}
+
+		return $user_ids;
+	}
 }
 ?>

@@ -108,7 +108,7 @@ class JWMail {
 
 		$message_head = preg_replace("/\n/s",' ',$message);
 		$message_head = substr($message_head,0,40);
-		JWLog::Instance()->Log(LOG_INFO,"JWMail::SendMail($from, $to, $subject, [$message_head ...])");
+		JWLog::Instance()->Log(LOG_INFO,"JWMail::SendMail($from, $to, $subject,...)");
 
 
 		if ( 'UTF-8'!=$options['encoding'] )
