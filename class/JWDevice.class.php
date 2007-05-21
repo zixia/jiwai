@@ -208,8 +208,19 @@ _SQL_;
 		}
 		
 		// 建立的时候可以指定免验证
-		if ( $isVerified ) 	$secret = '';
-		else 				$secret = self::GenSecret();
+		if ( $isVerified ) {
+		 	$secret = '';
+		} else {
+			switch ($type)
+			{
+				case 'sms':
+					$secret = self::GenSecret(4,JWDevice::CHAR_NUM);
+					break;
+				default:
+					$secret = self::GenSecret();
+					break;
+			}
+		}
 
 		// 慎用 REPLACE，会改变主键值！(replace = delete & insert)
 		// 使用REPLACE的原因：如果有其他用户误填写了地址，需要帮助用户更新到自己名下。

@@ -30,7 +30,7 @@ $logined_user_id 	= $logined_user_info['id'];
 JWTemplate::ShowActionResultTips();
 
 
-$invitation_ids		= JWInvitation::GetInvitationIdsFromUser($logined_user_info['id']);
+$invitation_ids		= JWInvitation::GetInvitationIdsFromUser($logined_user_info['id'],100);
 $invitation_rows	= JWInvitation::GetInvitationDbRowsByIds($invitation_ids);
 
 $not_registered_invitation_ids	= array();

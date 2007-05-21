@@ -1069,20 +1069,21 @@ _HTML_;
 
 		<ul>
 <?php
-		if ( !$imActived )
-		{
-			echo <<<_HTML_
-			<li><a href="/wo/devices/?im">启用聊天软件！</a></li>
-_HTML_;
-		}
-
 		if ( !$smsActived )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/devices/?sms">启用手机短信！</a></li>
+			<li><a href="/wo/devices/?sms">绑定手机！</a></li>
 _HTML_;
 		}
-		
+	
+		if ( !$imActived )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/devices/?im">绑定聊天软件！</a></li>
+_HTML_;
+		}
+
+	
 		echo "</ul>";
 	}
 
