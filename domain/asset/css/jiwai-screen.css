@@ -198,8 +198,8 @@ a:hover {color:#333;}
   #footer a:hover {color:#222;}
   #footer .rss {position:absolute;right:0;top:16px;padding:5px 23px 5px 8px;display:block;background:#84AF00 url(rss.gif) no-repeat 90% 50%;color:#FF9;text-transform:uppercase;text-decoration:none;}
   #footer .more {position:absolute;right:7.5em;top:16px;padding:5px 23px 5px 8px;display:block;background:#505F23 url(expand.gif) no-repeat 93% 50%;color:#FF9;text-decoration:none;}
-  #footer ul {text-align: center; }
-  #footer ul li { display: inline; padding: 10px }
+  #footer ul { text-align: center; }
+  #footer ul li { display: inline; padding: 10px; }
 
 
   body.normal #flaginfo {background: url(http://asset.jiwai.de/img/flag.gif) no-repeat 0 0;position:absolute;left:50%;top:105px;margin-left:-499px;text-align:right;width:89px;height:26px;color:#FFF;text-transform:uppercase;font-size:11px;padding:2px 4px 0 0;font-weight:bold;}
