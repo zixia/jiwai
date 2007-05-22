@@ -55,7 +55,7 @@ $arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</stron
 				);
 
 if ( ! JWLogin::IsLogined() )
-	array_push ($arr_menu, array('register', null));
+	array_push ($arr_menu, array('register', array(true)));
 
 JWTemplate::sidebar($arr_menu, null);
 ?>

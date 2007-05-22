@@ -31,12 +31,16 @@
 			<robot>robot/</robot>
 			<msn>msn/</msn>
 			<sms>sms/</sms>
+			<gtalk>gtalk/</gtalk>
+			<newsmth>newsmth/</newsmth>
 		</queue>
 		<quarantine>
 			<root>/var/cache/tmpfs/jiwai/quarantine/</root>
 			<robot>robot/</robot>
 			<msn>msn/</msn>
 			<sms>sms/</sms>
+			<gtalk>gtalk/</gtalk>
+			<newsmth>newsmth/</newsmth>
 		</quarantine>
 
 		<mo>mo/</mo>

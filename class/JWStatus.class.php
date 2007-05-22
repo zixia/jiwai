@@ -139,12 +139,12 @@ _SQL_;
 
 		$sql = <<<_SQL_
 SELECT
-		Status.id	as idStatus
-		, User.id as idUser
+		 Status.id	as idStatus
+		,Status.idUser as idUser
 FROM	
-		Status, User
+		Status
 WHERE	
-		User.id IN
+		Status.idUser IN
 		(
 			SELECT	idFriend
 			FROM	Friend
@@ -154,7 +154,6 @@ WHERE
 				SELECT $idUser as idFriend
 		)
 		AND Status.timeCreate > (NOW()-INTERVAL 1 WEEK)
-		AND Status.idUser=User.id
 ORDER BY
 		Status.timeCreate desc
 LIMIT 
@@ -166,6 +165,7 @@ _SQL_;
 		if ( !empty($rows) )
 		{
 			// 装换rows, 返回 idStatus / idUser 的 array
+			// TODO 这样 create_function 会有内存泄露，应使用 JWFunction 进行一次性生成管理
 			$status_ids = array_map(	create_function(
 													'$row'
 													, 'return $row["idStatus"];'
@@ -446,6 +446,42 @@ _HTML_;
 SELECT	COUNT(*) as num
 FROM	Status
 WHERE	idUser=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
+
+	/*
+	 *	24小时以内的 idUser 和好友们的更新
+
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum for $idUser's friends
+	 */
+	static public function GetStatusNumFromFriends($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$sql = <<<_SQL_
+SELECT      
+        COUNT(1) as num
+FROM
+        Status
+WHERE
+        Status.timeCreate > (NOW()-INTERVAL 24 HOUR)
+        AND Status.idUser IN
+        (
+            SELECT  idFriend
+            FROM    Friend
+            WHERE   idUser=$idUser
+
+            UNION
+                SELECT $idUser as idFriend
+        )
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 

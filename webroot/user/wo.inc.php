@@ -3,6 +3,15 @@
 //$debug = JWDebug::instance();
 //$debug->init();
 
+/*
+ *	可能会接收到从 index.php 过来的全局变量 
+		$g_user_with_friends 
+		$g_user_default
+		$g_page_user_id
+ */
+
+$page_user_id		= $g_page_user_id;
+
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
@@ -29,32 +38,28 @@ $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 		<div id="wrapper">
 
 <?php
-if ( empty($error_html) )
-	$error_html	= JWSession::GetInfo('error');
-
-if ( empty($notice_html) )
-	$notice_html	= JWSession::GetInfo('notice');
+JWTemplate::ShowActionResultTips();
 
 
-if ( !empty($error_html) )
+if ( $g_user_with_friends )
 {
-		echo <<<_HTML_
-			<div class="notice">$error_html</div>
-_HTML_;
+	// 显示用户和好友的
+	$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
+
+	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+
+	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+}
+else
+{
+	// 显示用户自己的
+	$user_status_num= JWStatus::GetStatusNum($page_user_id);
+
+	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+
+	$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 }
 
-if ( !empty($notice_html) )
-{
-		echo <<<_HTML_
-			<div class="notice">$notice_html</div>
-_HTML_;
-}
-
-$user_status_num= JWStatus::GetStatusNum($page_user_id);
-
-$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
-
-$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
@@ -71,31 +76,38 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 
 ?>
 
-<?php JWTemplate::tab_menu() ?>
+<?php 
+$menu_list = array (
+		 '和朋友们'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/with_friends")
+		,'以前的'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/")
+	);
+
+if ( $g_user_with_friends )
+	$menu_list['和朋友们']['active'] = true;
+else
+	$menu_list['以前的']['active'] = true;
+
+
+JWTemplate::tab_menu($menu_list) 
+?>
 
 			<div class="tab">
 
 <?php JWTemplate::tab_header( array() ) ?>
 
-<?php JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>false)) ?>
+<?php 
+if ( !isset($g_user_with_friends) )
+	$g_user_with_friends = false;
+
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>$g_user_with_friends)) 
+?>
   
 <?php JWTemplate::pagination($pagination) ?>
 
-<?php JWTemplate::rss() ?>
-			</div><!-- tab -->
+<?php JWTemplate::rss( $g_user_with_friends ? 'friends' : 'user'
+						,$page_user_id) ?>
 
-  			<script type="text/javascript">
-//<![CDATA[  
-/*new PeriodicalExecuter(function() { new Ajax.Request('/account/refresh?last_check=' + $('timeline').getElementsByTagName('tr')[0].id.split("_")[1], 
-    {
-      asynchronous:true, 
-      evalScripts:true,
-      onLoading: function(request) { Effect.Appear('timeline_refresh', {duration:0.3 }); },
-      onComplete: function(request) { Element.hide('timeline_refresh'); }
-    })}, 120);
-*/
-  //]]>
-			</script>
+			</div><!-- tab -->
 
 		</div><!-- wrapper -->
 	</div><!-- content -->

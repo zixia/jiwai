@@ -68,6 +68,7 @@ switch ( $func )
 		break;
 		
 	case 'friends':
+		// 用户好友列表
 		require_once(dirname(__FILE__) . "/friends.inc.php");
 		user_friends($page_user_id);	
 		break;
@@ -77,8 +78,12 @@ switch ( $func )
 		user_favourites($page_user_id);	
 		break;
 
-
+	case 'with_friends':
+		$g_user_with_friends 	= true;
+		// fall to default
 	default:
+		$g_user_default 		= true;
+		$g_page_user_id			= $page_user_id;
 		require_once(dirname(__FILE__) . "/wo.inc.php");
 		break;
 }

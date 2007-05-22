@@ -53,13 +53,13 @@ class JWRobotLogic {
 	{
 		if (empty ($robotMsg))
 		{
-			JWLog::Instance()->Log(LOG_CRIT, 'JWRobotLogic::process_mo received a empty msg' );
+			JWLog::LogFuncName(LOG_CRIT, 'received a empty msg' );
 			return null;
 		}
 		
 		if ( ! $robotMsg->IsValid() )
 		{
-			JWLog::Instance()->Log(LOG_CRIT, 'JWRobotLogic::process_mo received a invalid msg' );
+			JWLog::LogFuncName(LOG_CRIT, 'received a invalid msg' );
 			return false;
 		}
 

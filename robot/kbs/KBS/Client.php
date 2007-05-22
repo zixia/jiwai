@@ -50,7 +50,7 @@ class KBS_Client {
 	}
 	function login() {
 		$this->loggedin = false;
-		$r = $this->post('/bbslogin.php', array('id'=>$this->username, 'passwd'=>$this->password, 'kick_multi'=>'1'));
+		$r = $this->post('/bbslogin2.php', array('id'=>$this->username, 'passwd'=>$this->password, 'kick_multi'=>'1'));
 		if ($this->isError($r)) return false;
 		$this->loggedin = true;
 		return $this->loggedin;

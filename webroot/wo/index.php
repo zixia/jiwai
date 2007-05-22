@@ -7,9 +7,6 @@ JWLogin::MustLogined();
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
 
-
-$debug = JWDebug::instance();
-$debug->init();
 ?>
 
 <html>
@@ -49,31 +46,59 @@ _HTML_;
   			</p-->
 
 
-<?php JWTemplate::tab_menu() ?>
+<?php 
+if ( !isset($g_show_user_archive) )
+	$g_show_user_archive = false;;
+
+$menu_list = array (
+		 '历史'	=> array('active'=>false	,'url'=>"/wo/account/archive")
+		,'最新'	=> array('active'=>false	,'url'=>"/wo/")
+	);
+
+if ( $g_show_user_archive )
+	$menu_list['历史']['active'] = true;
+else
+	$menu_list['最新']['active'] = true;
+
+JWTemplate::tab_menu($menu_list) 
+?>
 
 			<div class="tab">
 
-<?php JWTemplate::tab_header( array() ) ?>
+<?php 
+
+JWTemplate::tab_header( array() ) 
+?>
 
 <?php 
 // when show archive, we set $show_archive=true, then include this file.
-if ( !isset($show_user_archive) )
-	$show_user_archive = false;;
 
-if ( $show_user_archive )
-	$status_data = JWStatus::GetStatusIdsFromUser($logined_user_id);
+//die(var_dump($_REQUEST));
+if ( $g_show_user_archive )
+{
+	// 只显示用户自己的
+	$user_status_num= JWStatus::GetStatusNum($logined_user_id);
+	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+	$status_data 	= JWStatus::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+}
 else
-	$status_data = JWStatus::GetStatusIdsFromFriends($logined_user_id);
+{
+	// 显示用户和好友的
+	$user_status_num= JWStatus::GetStatusNumFromFriends($logined_user_id);
+	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+	$status_data 	= JWStatus::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
+}
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
   
-JWTemplate::pagination() 
+JWTemplate::pagination($pagination);
+
 ?>
 
-<?php JWTemplate::rss() ?>
+<?php JWTemplate::rss('user',$logined_user_id) ?>
 			</div><!-- tab -->
 
   			<script type="text/javascript">

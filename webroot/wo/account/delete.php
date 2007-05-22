@@ -7,7 +7,6 @@
 */
 
 require_once('../../../jiwai.inc.php');
-JWDebug::init();
 
 JWLogin::MustLogined();
 
@@ -20,8 +19,10 @@ if ( isset($_REQUEST['commit']) )
 	 * Update User Databse
 	 */
 
-	if ( JWUser::Delete($user_info['id']) )
-		header ( "Location: /" );
+	JWLogin::Logout();
+
+	if ( JWUser::Destroy($user_info['id']) )
+		header ( "Location: /public_timeline/" );
 
 	$contact_url = JWTemplate::GetConst('UrlContactUs');
 

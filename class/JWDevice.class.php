@@ -57,9 +57,11 @@ class JWDevice {
 
 		switch ( $type ){
 			case 'sms':
-				return preg_match('/^\+?\d+$/',$address);
+				return preg_match('/^\+?\d+$/'			,$address);
 			case 'qq':
-				return preg_match('/^\d+$/',$address);
+				return preg_match('/^\d+$/'				,$address);
+			case 'newsmth':
+				return preg_match('/^\w+@newsmth.net$/'	,$address);
 
 			case 'msn':		
 				// im check email address

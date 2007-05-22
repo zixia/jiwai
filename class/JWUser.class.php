@@ -312,11 +312,10 @@ _SQL_;
 	static public function Destroy( $idUser )
 	{
 		$sql = <<<_SQL_
-DELETE 	FROM USER
+DELETE 	FROM User
 WHERE	id=$idUser
 _SQL_;
-		// TODO
-		return true;
+		return JWDB::Execute($sql);
 	}
 
 

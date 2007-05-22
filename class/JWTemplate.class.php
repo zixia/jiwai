@@ -125,7 +125,7 @@ _HTML_;
 		<h2><a class="header" href="/">叽歪de</a></h2>
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
-			<li class="first"><a href="/wo/">叽歪一下</a></li>
+			<li class="first"><a href="/wo/">首页</a></li>
 			<li><a href="/<?php echo $nameScreen ?>/">我的档案</a></li>
 			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
@@ -285,16 +285,34 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 	}
 
 
-	static public function tab_menu()
+	/*
+	 *	显示 tab 方式的列表
+	 *
+	 *	@param	array	$menuArr	菜单数据，结构如下：
+									array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
+	 */
+	static public function tab_menu( $menuArr )
 	{
-?>
+		if ( empty($menuArr) )
+		{
+			JWLog::LogFuncName(LOG_CRIT, "need param menuArr") ;
+			return;
+		}
 
-			<ul class="tabMenu">
-				<li><a href="/wo/account/archive">历史</a></li>
-				<li class="active"><a href="/wo/">最近</a></li>
-			</ul>
+		echo "<ul class='tabMenu'>";
 
-<?php
+		foreach ( $menuArr as $menu => $options )
+		{
+			$url 		= $options['url'];
+			$is_active	= $options['active'];
+
+			if ( $is_active )
+				echo "<li class='active'><a href='$url'>$menu</a></li>\n";
+			else
+				echo "<li><a href='$url'>$menu</a></li>\n";
+		}
+
+		echo "</ul>\n";
 	}
 
 
@@ -619,12 +637,35 @@ if ( isset($current_user_id) )
 ?>
 				</table>
 
+  			<script type="text/javascript">
+//<![CDATA[  
+
+/*
+(function() { new Ajax('/wo/status/timeline_refresh?last_check=' + $('timeline').getElementsByTagName('tr')[0].id.split("_")[1], 
+    {
+      	async:true
+		,evalScripts:true
+		,onRequest: function() { $('timeline_refresh').effect('opacity', {duration:300}).start(0,1); }
+		,onSuccess: function() { $('timeline_refresh').setStyle('display','none'); }
+    }).request()
+}).periodical(2000);
+*/
+
+//]]>
+			</script>
+
+
 <?php
 	}
 
 
 	static public function pagination( $pagination )
 	{
+		if ( empty($pagination) )
+		{
+			JWLog::LogFuncName(LOG_CRIT,'empty pagination, need fix');
+			return;
+		}
 		/*
 		 * 	下面的 utf8 字符无法在 securecrt 里面正常显示，但是是对的
 		 *	直接拷贝、黏贴即可（或者用 linux xwin 下面的 term）
@@ -1188,14 +1229,36 @@ _HTML_;
 	}
 
 
-	static public function rss ()
+	/*
+	 *	显示 rss 的 link
+	 *	@param	string	$type	选择为 'user' 'friends' 'public_timeline'
+	 *	@param	int		$id		user_id，如果是 public_timeline 则无作用
+	 */
+	static public function rss ( $type, $id )
 	{
-?>
-				<div class="statuses_options odd">
-   			 		<a class="rss" href="http://api.jiwai.de/statuses/public_timeline.rss">RSS</a>
-				</div>
+   		$rss_url = "http://api.jiwai.de/statuses/";
 
-<?php
+		switch ( $type )
+		{
+			case 'friends':
+				$rss_url .= "${type}_timeline/$id.rss";
+				break;
+			case 'user':
+				$rss_url .= "${type}_timeline/$id.rss";
+				break;
+
+			case 'public_timeline':
+				// fallto default
+			default:
+				$rss_url .= "public_timeline.rss";
+				break;
+		}
+
+		echo <<<_HTML_
+				<div class="statuses_options odd">
+   			 		<a class="rss" href="$rss_url">RSS</a>
+				</div>
+_HTML_;
 	}
 
 
