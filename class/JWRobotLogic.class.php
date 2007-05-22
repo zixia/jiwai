@@ -67,8 +67,8 @@ class JWRobotLogic {
 		$type		= $robotMsg->GetType();
 		$body 		= $robotMsg->GetBody();
 
-		$msg = sprintf("%-35s: %s\n", "MO($type://$address)", $body);
-		echo iconv('UTF-8', 'GBK', $msg);
+		// echo
+		printf("%-35s: %s\n", "MO($type://$address)", $body);
 
 		/*
 		 *	一个 MO 消息有如下几种状态：
@@ -113,7 +113,7 @@ class JWRobotLogic {
 									. ")"
 							, $reply_robot_msg->GetBody() );
 		}
-		echo iconv('UTF-8', 'GBK', $msg);
+		echo $msg;
 
 		return $reply_robot_msg;
 	}

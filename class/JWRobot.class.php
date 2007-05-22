@@ -238,8 +238,7 @@ class JWRobot {
 	{
 		self::Instance();
 
-		$msg = "JiWai总控机器人已经进入主循环，可以处理MO/MT数据了...\n";
-		echo iconv('UTF-8','GBK',$msg);
+		echo "JiWai总控机器人已经进入主循环，可以处理MO/MT数据了...\n";
 
 		while ( true ){
 			try{

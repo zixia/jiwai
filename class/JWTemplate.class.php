@@ -308,7 +308,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 */
 
 		if ( !array_key_exists('title',$vars) )	
-			$vars['title'] = '<a href="/wo/">你</a>和<a href="/wo/friends/">朋友们</a>都在做什么?';
+			$vars['title'] = '你和<a href="/wo/friends/">你的朋友们</a>在做什么?';
 
 		if ( !array_key_exists('title2',$vars) )	
 			$vars['title2'] = '每分钟更新一次。';
@@ -625,9 +625,11 @@ if ( isset($current_user_id) )
 
 	static public function pagination()
 	{
+//«
 ?>
 
 				<div class="pagination">
+<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="bl"><a href="./lookup?start=0&month=5&day=21&yr=2007&hl=zh-CN&zx=Jm0pKwpUo4s">??最新</a></td><td class="bl"><a href="./lookup?start=8034&month=9&day=1&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">??较新</a></td><td>???</td><td class="bl"><a href="./lookup?start=8062&month=8&day=30&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">较早??</a></td><td class="bl"><a href="./lookup?start=8064&month=8&day=30&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">最早??</a></td></tr></tbody></table>
   					<ul>
   						<li class="nextpage">
 	   	 					<a href="/wo/?page=2">前一页 &#187;</a>
