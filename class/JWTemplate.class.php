@@ -391,12 +391,20 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 
 
-		if ( 'sms'==$device )
-			$device='手机';
-		else if ( 'gtalk'==$device )
-			$device='GTalk';
-		else
-			$device=strtoupper($device);
+		switch ( $device )
+		{
+			case 'sms':
+				$device='手机';
+				break;
+			case 'gtalk':
+				$device='GTalk';
+				break;
+			case 'newsmth':
+				$device='水木社区';
+				break;
+			default:
+				$device=strtoupper($device);
+		}
 
 	
 		$current_user_id	= JWLogin::GetCurrentUserId();
@@ -580,13 +588,20 @@ _HTML_;
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 			$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
-
-			if ( 'sms'==$device )
-				$device='手机';
-			else if ( 'gtalk'==$device )
-				$device='GTalk';
-			else
-				$device=strtoupper($device);
+			switch ( $device )
+			{
+				case 'sms':
+					$device='手机';
+					break;
+				case 'gtalk':
+					$device='GTalk';
+					break;
+				case 'newsmth':
+					$device='水木社区';
+					break;
+				default:
+					$device=strtoupper($device);
+			}
 
 
 			$formated_status 	= JWStatus::FormatStatus($status);
