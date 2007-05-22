@@ -14,6 +14,7 @@ class KBS_Client {
 		$this->username = $username;
 		$this->password = $password;
 		$this->conn = new HTTP_Client();
+		$this->conn->enableHistory(false);
 		if ($login) $this->login();
 	}
 
