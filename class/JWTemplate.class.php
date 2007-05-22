@@ -389,7 +389,15 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		{
 			$status		= "迄今为止还没有更新过！";
 		}
-	
+
+
+		if ( 'sms'==$device )
+			$device='手机';
+		else if ( 'gtalk'==$device )
+			$device='GTalk';
+		else
+			$device=strtoupper($device);
+
 	
 		$current_user_id	= JWLogin::GetCurrentUserId();
 
