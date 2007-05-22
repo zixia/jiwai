@@ -10,6 +10,23 @@ $name_screen = JWUser::GetUserInfo( JWLogin::GetCurrentUserId(), 'nameScreen' );
 
 $sms_or_im = isset($_REQUEST['im'])?'im':'sms';
 
+$im_type 		= $aDeviceInfo['im']['type'];
+$im_name		= JWDevice::GetNameFromType($im_type);
+
+switch ( $im_type )
+{
+	case 'newsmth':
+		$im_robot = 'JiWai';
+		break;
+	case 'qq':
+		$im_robot = '229516989';
+		break;
+
+	default:
+		$im_robot = 'wo@jiwai.de';
+		break;
+}
+
 ?>
 <html>
 
@@ -175,6 +192,7 @@ else
 
 							<select name="device[type]">
 								<option value="gtalk">GTalk</option>
+								<option value="newsmth">水木社区</option>
 								<option value="msn">MSN（我们很快会支持QQ！）</option>
 <!--
 								<option value="qq">QQ</option>
@@ -188,7 +206,6 @@ else
 
 <?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified 
 
-		$im_type = strtoupper($aDeviceInfo['im']['type']) ;
 ?>
 
 
@@ -196,9 +213,9 @@ else
 							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
 						</h4>
 
-  						<p><!--直接点击无法验证？-->请用 <strong><?php echo $im_type?></strong> 将
+  						<p><!--直接点击无法验证？-->请在 <strong><?php echo $im_name?></strong> 上，将
 							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
-								<strong>wo@jiwai.de</strong>
+								<strong><?php echo $im_robot?></strong>
 							 加为你的 <strong><?php echo $im_type?></strong> 好友，然后将如下验证码发送给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
   						</p>
@@ -242,7 +259,7 @@ else
 
 						<p><small>
 							发送更新到：<strong>
-								<a href="xmpp:wo@jiwai.de">wo@jiwai.de</a></strong>
+								<?php echo $im_name?> </strong> 上的 <strong> <?php echo $im_robot?> </strong>
 						</small></p>
 
 

@@ -585,5 +585,30 @@ _SQL_;
 		
 		return $device_address_rows;
 	}
+
+
+	/*
+	 *	根据 Device Type 返回好看的字符串
+	 */
+	static public function GetNameFromType($type)
+	{
+		switch ( $type )
+		{
+			case 'sms':
+				$name='手机';
+				break;
+			case 'gtalk':
+				$name='GTalk';
+				break;
+			case 'newsmth':
+				$name='水木社区';
+				break;
+			default:
+				$name=strtoupper($type);
+		}
+
+		return $name;
+	}
+
 }
 ?>

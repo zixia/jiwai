@@ -391,22 +391,8 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 
 
-		switch ( $device )
-		{
-			case 'sms':
-				$device='手机';
-				break;
-			case 'gtalk':
-				$device='GTalk';
-				break;
-			case 'newsmth':
-				$device='水木社区';
-				break;
-			default:
-				$device=strtoupper($device);
-		}
+		$device				= JWDevice::GetNameFromType($device);
 
-	
 		$current_user_id	= JWLogin::GetCurrentUserId();
 
 ?>
@@ -588,21 +574,7 @@ _HTML_;
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 			$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
-			switch ( $device )
-			{
-				case 'sms':
-					$device='手机';
-					break;
-				case 'gtalk':
-					$device='GTalk';
-					break;
-				case 'newsmth':
-					$device='水木社区';
-					break;
-				default:
-					$device=strtoupper($device);
-			}
-
+			$device		= JWDevice::GetNameFromType($device);
 
 			$formated_status 	= JWStatus::FormatStatus($status);
 

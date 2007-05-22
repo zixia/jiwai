@@ -9,6 +9,11 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 
 	$aDeviceInfo = $_REQUEST['device'];
 
+
+	if ( 'newsmth'==$aDeviceInfo['type'] &&  ! preg_match('/@/',$aDeviceInfo['address']) )
+		$aDeviceInfo['address'] .= '@newsmth.net';
+
+
 	$is_succ = JWDevice::Create($idUser
 							, $aDeviceInfo['address']
 							, $aDeviceInfo['type'] );
@@ -16,10 +21,8 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 	$address	= $aDeviceInfo['address'];
 	$type		= strtoupper($aDeviceInfo['type']);
 
-	if ( 'SMS' == $type )
-	{
-		$type = '手机';
-	}
+
+	$type 	= JWDevice::GetNameFromType($type);
 
 	$error_html = '';
 	$notice_html = '';
