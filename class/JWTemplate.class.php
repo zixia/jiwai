@@ -623,22 +623,63 @@ if ( isset($current_user_id) )
 	}
 
 
-	static public function pagination()
+	static public function pagination( $pagination )
 	{
-//«
-?>
+		/*
+		 * 	下面的 utf8 字符无法在 securecrt 里面正常显示，但是是对的
+		 *	直接拷贝、黏贴即可（或者用 linux xwin 下面的 term）
+最新: «
+较新: ‹
+较早: ›
+最早: »
+		 */
 
+		$is_show_newest = $pagination->IsShowNewest();
+		$newest_page_no = $pagination->GetNewestPageNo();
+
+		$is_show_newer 	= $pagination->IsShowNewer();
+		$newer_page_no	= $pagination->GetNewerPageNo();
+
+		$is_show_older 	= $pagination->IsShowOlder();
+		$older_page_no	= $pagination->GetOlderPageNo();
+
+		$is_show_oldest = $pagination->IsShowOldest();
+		$oldest_page_no	= $pagination->GetOldestPageNo();
+
+		echo <<<_HTML_
 				<div class="pagination">
-<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="bl"><a href="./lookup?start=0&month=5&day=21&yr=2007&hl=zh-CN&zx=Jm0pKwpUo4s">??最新</a></td><td class="bl"><a href="./lookup?start=8034&month=9&day=1&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">??较新</a></td><td>???</td><td class="bl"><a href="./lookup?start=8062&month=8&day=30&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">较早??</a></td><td class="bl"><a href="./lookup?start=8064&month=8&day=30&yr=2005&hl=zh-CN&zx=Jm0pKwpUo4s">最早??</a></td></tr></tbody></table>
-  					<ul>
-  						<li class="nextpage">
-	   	 					<a href="/wo/?page=2">前一页 &#187;</a>
-  						</li>
-  					</ul>
+<style type="text/css">
+.bl {
+font-size:10pt;
+padding:5px;
+}
+</style>
+
+<table cellspacing="0" cellpadding="0" border="0">
+<tbody>
+<tr>
+_HTML_;
+
+		if ( $is_show_newest )
+			echo "<td class='bl odd'><a href='?page=$newest_page_no'>« 最新</a></td>\n";
+
+		if ( $is_show_newer )
+			echo "<td class='bl odd'><a href='?page=$newer_page_no'>‹ 较新</a></td>\n";
+
+		echo '<td class="bl"></td>';
+
+		if ( $is_show_older )
+			echo "<td class='bl odd'><a href='?page=$older_page_no'>较早 ›</a></td>\n";
+		
+		if ( $is_show_oldest )
+			echo "<td class='bl odd'><a href='?page=$oldest_page_no'>最早 »</a></td>\n";
+
+		echo <<<_HTML_
+</tr></tbody></table>
+
 				</div>
+_HTML_;
 
-
-<?php
 	}
 
 	/*
@@ -1150,9 +1191,9 @@ _HTML_;
 	static public function rss ()
 	{
 ?>
-				<span class="statuses_options">
+				<div class="statuses_options odd">
    			 		<a class="rss" href="http://api.jiwai.de/statuses/public_timeline.rss">RSS</a>
-				</span>
+				</div>
 
 <?php
 	}

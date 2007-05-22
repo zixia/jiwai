@@ -169,6 +169,7 @@ a:hover {color:#333;}
 
 
 .pagination {
+	margin-top: 10px;
 	float: right;
 }
 .pagination li {
@@ -177,12 +178,13 @@ a:hover {color:#333;}
 }
 
 .statuses_options {
-	padding: 7px;
+	padding: 5px;
+	margin-top:10px;
+	width: 60px;
 }
 
 .rss {
-	background:#84AF00 url(http://asset.jiwai.de/img/rss.gif) no-repeat scroll 90% 50%;
-	color:#FFFF99;
+	background:transparent url(http://asset.jiwai.de/img/rss.gif) no-repeat scroll 90% 50%;
 	padding:5px 23px 5px 8px;
 	right:0pt;
 	text-decoration:none;
@@ -234,7 +236,7 @@ h2.thumb, h2.thumb a {
 	display:block;
 	font-size:2em;
 	font-weight:bold;
-	line-height:2em;
+	line-height:1.5em;
 	padding:7px;
 	margin-right: 15px;
 }

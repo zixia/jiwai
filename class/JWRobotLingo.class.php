@@ -546,7 +546,7 @@ _STR_;
 
 			if ( JWFriend::IsFriend($address_user_id, $friend_user_id) )
 			{
-				$msg = "您已经是${invitee_address}的好友了。";
+				$msg = "好消息！${invitee_address}已经是您的好友了，不用重复添加啦。";
 			}
 			else
 			{

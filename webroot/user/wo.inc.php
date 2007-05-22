@@ -6,6 +6,7 @@
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
+//die(var_dump($_REQUEST));
 //die( var_dump($page_user_id));
 //die( var_dump($logined_user_info));
 ?>
@@ -49,15 +50,24 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 
-$status_data 	= JWStatus::GetStatusIdsFromUser($page_user_id, JWStatus::DEFAULT_STATUS_NUM+1);
+$user_status_num= JWStatus::GetStatusNum($page_user_id);
+
+$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+
+$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+
+
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
+$head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
+$head_status_rows 	= JWStatus::GetStatusDbRowsByIds($head_status_data['status_ids']);
+$head_status_id 	= @array_shift($head_status_data['status_ids']); 
+
 // 取出一个
-$head_status_id = @array_shift($status_data['status_ids']); 
 
 //die(var_dump($page_user_id));
-JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$status_rows[$head_status_id] );
+JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_rows[$head_status_id] );
 
 ?>
 
@@ -69,7 +79,7 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$status_rows[$
 
 <?php JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>false)) ?>
   
-<?php JWTemplate::pagination() ?>
+<?php JWTemplate::pagination($pagination) ?>
 
 <?php JWTemplate::rss() ?>
 			</div><!-- tab -->
