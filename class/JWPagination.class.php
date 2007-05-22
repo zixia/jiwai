@@ -68,7 +68,7 @@ class JWPagination {
 
 	public function IsShowOlder()
 	{
-		if ( $this->mCurrentPageNo <  $this->GetOldestPageNo()-2 )
+		if ( $this->mCurrentPageNo <  $this->GetOldestPageNo()-1 )
 			return true;
 
 		return false;
