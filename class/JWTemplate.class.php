@@ -62,16 +62,16 @@ class JWTemplate {
 
 	<title>叽歪de / 这一刻，你在做什么？</title>
 
-	<link rel="start" href="http://JiWai.de/" title="叽歪de我" />
+	<link rel="start" href="http://JiWai.de/" title="首页" />
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪de" />
 
-	<meta name="keywords" content="叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, tiny blog, blog, im nick, nick, log, 记录, 写下" />
+	<meta name="keywords" content="叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下" />
 
-	<meta name="description" content="叽歪de - 记录、并与朋友分享你每天的点滴。" />
+	<meta name="description" content="叽歪de - 随时随地的记录，并与朋友分享你每天的点滴。" />
 
 	<meta name="author" content="JiWai.de, 叽歪de, 叽歪" />
 
@@ -126,8 +126,7 @@ _HTML_;
 <?php if ( strlen($nameScreen) ){ ?>
 		<ul>
 			<li class="first"><a href="/wo/">首页</a></li>
-			<li><a href="/<?php echo $nameScreen ?>/">我的档案</a></li>
-			<li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
+			<li><a href="/<?php echo $nameScreen ?>/">我de档案</a></li> <li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/account/settings">设置</a></li>
@@ -151,12 +150,12 @@ _HTML_;
 	<ul>
 		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved</li>
 
-		<li><a href="/help/aboutus">关于我们</a></li>
-		<li><a href="/help/contact">联系我们</a></li>
+		<li><a href="http://help.jiwai.de/AboutUs">关于我们</a></li>
+		<li><a href="http://help.jiwai.de/ContactUs">联系我们</a></li>
 		<li><a href="http://blog.jiwai.de/">Blog</a></li>
-		<li><a href="/help/api">API</a></li>
-		<li><a href="/help">帮助</a></li>
-		<li><a href="http://help.jiwai.de/tos">使用协议</a></li>
+		<li><a href="http://help.jiwai.de/Api">API</a></li>
+		<li><a href="http://help.jiwai.de/">帮助</a></li>
+		<li><a href="http://help.jiwai.de/TOS">使用协议</a></li>
 
 	</ul>
 </div>
@@ -382,6 +381,7 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$status		= $statusRow['status'];
 			$timeCreate	= $statusRow['timeCreate'];
 			$device		= $statusRow['device'];
+			$device		= JWDevice::GetNameFromType($device);
 	
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 		}
@@ -391,7 +391,6 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 
 
-		$device				= JWDevice::GetNameFromType($device);
 
 		$current_user_id	= JWLogin::GetCurrentUserId();
 
@@ -1181,7 +1180,7 @@ _HTML_;
 			return;
 
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
-		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByIds($friendIds);
+		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByIds($friendIds,'thumb24');
 
 		echo <<<_HTML_
   		<div id="friend">

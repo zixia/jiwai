@@ -65,6 +65,8 @@ class JWRobotLingo {
 			,'INVITE'	=>	'ADD'
 
 			,'NAO'		=>	'NUDGE'
+			,'NAONAO'	=>	'NUDGE'
+			,'NN'		=>	'NUDGE'
 
 			,'REMOVE'	=>	'DELETE'
 
@@ -191,7 +193,7 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS帐号、NAO帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
+命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
 _STR_;
 
 			

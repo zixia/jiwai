@@ -383,21 +383,22 @@ _SQL_;
 		 */
 
 		$skip_url_regex = 	 '#'
-							.'(http://komoo.cn)'
+							.'(fanfou.com)'
+							.'|(komoo.cn)'
 							.'#'
 						;
 
 		if ( !preg_match($skip_url_regex,$status)
-				&& preg_match(	'/'
+				&& preg_match(	'#'
 									// head_str
 									. '^(.*?)'
-									. 'http:\/\/'
+									. 'http://'
 										// url_domain
 										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
 										// url_path
 										. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
 									// tail_str
-									. '(.*)$/'
+									. '(.*)$#'
 							, $status
 							, $matches 
 						) )

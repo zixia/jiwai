@@ -41,6 +41,10 @@ $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 JWTemplate::ShowActionResultTips();
 
 
+if ( !isset($g_user_with_friends) )
+	$g_user_with_friends = false;
+
+
 if ( $g_user_with_friends )
 {
 	// 显示用户和好友的

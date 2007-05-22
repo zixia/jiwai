@@ -113,6 +113,7 @@ while (1) {
 			$newsmth_user = $matches[1];
 
 			$c->sendMessage( $newsmth_user, $body );
+			$robot_msg->Destroy();
 		}
 	}
 

@@ -281,7 +281,8 @@ class HTTP_Client
                 return $res;
             }
         }
-        return $this->_performRequest($request);
+        $r = $this->_performRequest($request);
+        return $r;
     }
 
 
