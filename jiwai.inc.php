@@ -54,9 +54,9 @@ define('CONFIG_CACHE',	CACHE_ROOT . 'config/config.xml.php');
 define('ERROR_LOGFILE',	CACHE_ROOT . 'err/ERR_{Date}_{Type}_{Code}.log');
 
 define('EXCEPTION_LOG', true);
-define('EXCEPTION_DISPLAY', true);
+define('EXCEPTION_DISPLAY', false);
 define('ERROR_LOG', true);
-define('ERROR_DISPLAY', true);
+define('ERROR_DISPLAY', false);
 
 if (!defined('CONSOLE'))
 	define('CONSOLE',	false);
