@@ -396,7 +396,7 @@ _SQL_;
 	{
 		$device_row = JWDevice::GetDeviceDbRowById($idDevice);
 
-		if ( empty($device_rows) )
+		if ( empty($device_row) )
 			return false;
 
 		return $idUser==$device_row['idUser'];
