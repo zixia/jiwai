@@ -45,23 +45,27 @@ if ( !isset($g_user_with_friends) )
 	$g_user_with_friends = false;
 
 
+/*
+ *	使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
+ *
+ */
 if ( $g_user_with_friends )
 {
 	// 显示用户和好友的
 	$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
 
-	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+	$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
 
-	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 }
 else
 {
 	// 显示用户自己的
 	$user_status_num= JWStatus::GetStatusNum($page_user_id);
 
-	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+	$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
 
-	$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+	$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 }
 
 

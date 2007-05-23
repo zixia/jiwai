@@ -74,6 +74,7 @@ JWTemplate::tab_header( array() )
 // when show archive, we set $show_archive=true, then include this file.
 
 //die(var_dump($_REQUEST));
+
 if ( $g_show_user_archive )
 {
 	// 只显示用户自己的
