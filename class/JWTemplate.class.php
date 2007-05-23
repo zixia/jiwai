@@ -555,7 +555,7 @@ _HTML_;
 		if ( !isset($options['trash']) )
 			$options['trash'] 	= true;
 		if ( !isset($options['uniq']) )
-			$options['uniq']	= false;
+			$options['uniq']	= 0;
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 ?>
@@ -569,10 +569,10 @@ _HTML_;
 			$user_id 	= $statusRows[$status_id]['idUser'];
 
 			// 如果设置了一个用户只显示一条，则跳过
-			if ( $options['uniq'] && isset($user_showed[$user_id]) )
+			if ( $options['uniq']>0 && $user_showed[$user_id]>=$options['uniq'] )
 				continue;
 			else
-				$user_showed[$user_id] = true;
+				$user_showed[$user_id] += 1;
 				
 			$name_screen= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];

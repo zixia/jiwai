@@ -34,7 +34,7 @@ $status_data 	= JWStatus::GetStatusIdsFromPublic();
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-$options	= array ( 'uniq'=>true );
+$options	= array ( 'uniq'=>2 );
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
 ?>
   

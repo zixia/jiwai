@@ -77,5 +77,10 @@ class KBS_Client {
 		}
 		return $r;
 	}
+	function checkLogin() {
+		$r = $this->get('/bbsplan.php');
+		if ($this->isError($r)) $this->loggedin = false;
+		return $this->loggedin;
+	}
 }
 ?>
