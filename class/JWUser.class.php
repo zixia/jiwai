@@ -475,11 +475,13 @@ _SQL_;
 	 */
 	static public function SetIcon($idUser, $idPicture=null)
 	{
-		// set 0 to disable
-		if ( null===$idPicture )
-			return JWDB::UpdateTableRow( 'User', $idUser, array ('idPicture' => '') );
 
 		$idUser = intval($idUser);
+
+		// set 0 to disable
+		if ( null===$idPicture )
+			return JWDB::UpdateTableRow( 'User', $idUser, array ('idPicture' => null) );
+
 		$idPicture = intval($idPicture);
 
 		if ( 0>=$idPicture || 0>=$idPicture )

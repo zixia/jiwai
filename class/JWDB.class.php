@@ -285,7 +285,9 @@ class JWDB {
 				$sql .= " , ";
 			}
 
-			if ( is_int($v) )
+			if ( is_null($v) )
+				$sql .= "$k=NULL";
+			else if ( is_int($v) )
 				$sql .= "$k=$v";
 			else
 				$sql .= "$k='" . self::EscapeString($v) . "'";

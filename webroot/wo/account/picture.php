@@ -84,7 +84,7 @@ _HTML_;
 else if ( isset($_REQUEST['delete'] ) )
 {
 	// User set empty picture
-	JWUser::SetPicture();
+	JWUser::SetIcon($user_info['idUser']);
 	$notice_html = <<<_HTML_
 <li>头像删除成功。您将不会出现在<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</li>
 _HTML_;
