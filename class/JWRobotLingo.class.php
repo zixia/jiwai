@@ -771,6 +771,25 @@ _STR_;
 _STR_;
 
 		/*
+		 *	获取发送者的 idUser
+		 */
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+
+
+		$address_device_id		= JWDevice::GetDeviceIdByAddress( array('address'=>$address,'type'=>$type) );
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowById	($address_device_id);
+
+		// 用户没有注册过
+		if ( empty($address_device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+
+		$address_user_id		= $address_device_db_row['idUser'];
+
+
+
+		/*
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
@@ -791,18 +810,6 @@ _STR_;
 
 		if ( 'none'==$send_via_device )
 			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
-
-		/*
-		 *	获取发送者的 idUser
-		 */
-		$address 	= $robotMsg->GetAddress();	
-		$type 		= $robotMsg->GetType();	
-
-
-		$address_device_id		= JWDevice::GetDeviceIdByAddress( array('address'=>$address,'type'=>$type) );
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowById	($address_device_id);
-
-		$address_user_id		= $address_device_db_row['idUser'];
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
 			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
