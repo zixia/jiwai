@@ -418,11 +418,15 @@ font-size:0.4em;
 				</small>
 _HTML_;
 }
+
+		$status_result 	= JWStatus::FormatStatus($status);
+		$status			= $status_result['status'];
+		$replyto		= $status_result['replyto'];
 ?>
 			</h2>
 
 			<div class="desc">
-	  			<p><?php echo htmlspecialchars($status)?></p>
+	  			<p><?php echo $status?></p>
 	  			<p class="meta">
 <?php 
 if ( isset($statusRow) ) 
