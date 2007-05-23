@@ -10,22 +10,27 @@ $name_screen = JWUser::GetUserInfo( JWLogin::GetCurrentUserId(), 'nameScreen' );
 
 $sms_or_im = isset($_REQUEST['im'])?'im':'sms';
 
-$im_type 		= $aDeviceInfo['im']['type'];
-$im_name		= JWDevice::GetNameFromType($im_type);
 
-switch ( $im_type )
+if ( isset($aDeviceInfo['im']['type']) )
 {
-	case 'newsmth':
-		$im_robot = 'JiWai';
-		break;
-	case 'qq':
-		$im_robot = '229516989';
-		break;
+	$im_type 		= $aDeviceInfo['im']['type'];
+	$im_name		= JWDevice::GetNameFromType($im_type);
 
-	default:
-		$im_robot = 'wo@jiwai.de';
-		break;
+	switch ( $im_type )
+	{
+		case 'newsmth':
+			$im_robot = 'JiWai';
+			break;
+		case 'qq':
+			$im_robot = '229516989';
+			break;
+
+		default:
+			$im_robot = 'wo@jiwai.de';
+			break;
+	}
 }
+
 
 ?>
 <html>
@@ -67,23 +72,7 @@ width:12em;
 JWTemplate::UserSettingNav("device_$sms_or_im"); 
 ?>
 
-<?php
-$error_html		= JWSession::GetInfo('error');
-$notice_html	= JWSession::GetInfo('notice');
-
-if ( isset($error_html) )
-{
-	echo <<<_ERR_
-		<p class="notice">$error_html</p>
-_ERR_;
-}
-else if ( isset($notice_html) )
-{
-	echo <<<_INFO_
-		<p class="notice">$notice_html</p>
-_INFO_;
-}
-?>
+<?php JWTemplate::ShowActionResultTips() ?>
 	
 			<p>通过你的手机和即时聊天软件来感受更多叽歪de乐趣！现在就绑定你的手机或QQ、MSN、GTalk吧！</p>
 

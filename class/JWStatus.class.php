@@ -140,6 +140,12 @@ _SQL_;
 		if ( 0>=$idUser || 0>=$num )
 			throw new JWException('must int');
 
+		$friend_ids = JWFriend::GetFriendIds($idUser);
+		
+		array_push($friend_ids, $idUser);
+
+		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
+
 		$sql = <<<_SQL_
 SELECT
 		 Status.id	as idStatus
@@ -147,15 +153,7 @@ SELECT
 FROM	
 		Status
 WHERE	
-		Status.idUser IN
-		(
-			SELECT	idFriend
-			FROM	Friend
-			WHERE	idUser=$idUser
-			
-			UNION
-				SELECT $idUser as idFriend
-		)
+		Status.idUser IN ($condition_in)
 		AND Status.timeCreate > (NOW()-INTERVAL 1 WEEK)
 ORDER BY
 		Status.timeCreate desc
@@ -208,13 +206,13 @@ _SQL_;
 
 		$sql = <<<_SQL_
 SELECT		
-			Status.id	as idStatus
-			,User.id		as idUser
+			Status.id		as idStatus
+			,Status.idUser	as idUser
 FROM		
 			Status, User
 WHERE		
 			Status.idUser=User.id
-			AND User.idPicture>0
+			AND User.idPicture IS NOT NULL
 ORDER BY 	
 			Status.timeCreate desc
 LIMIT 		$start,$num
@@ -470,6 +468,12 @@ _SQL_;
 		if ( !is_int($idUser) )
 			throw new JWException('must be int');
 
+		$friend_ids = JWFriend::GetFriendIds($idUser);
+
+		array_push($friend_ids, $idUser);
+
+		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
+
 		$sql = <<<_SQL_
 SELECT      
         COUNT(1) as num
@@ -477,15 +481,7 @@ FROM
         Status
 WHERE
         Status.timeCreate > (NOW()-INTERVAL 24 HOUR)
-        AND Status.idUser IN
-        (
-            SELECT  idFriend
-            FROM    Friend
-            WHERE   idUser=$idUser
-
-            UNION
-                SELECT $idUser as idFriend
-        )
+        AND Status.idUser IN ($condition_in)
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 

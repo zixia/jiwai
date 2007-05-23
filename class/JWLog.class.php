@@ -100,9 +100,22 @@ LOG_DEBUG debug-level message
 
 	static public function LogFuncName($priority, $message)
 	{
-		$curr_trace = array_shift(debug_backtrace());
+		$backtrace = debug_backtrace();
+	
+		if ( 1<count($backtrace) )
+		{
+			$curr_trace = $backtrace[1];
 
-		$prefix = $curr_trace['class'] . '::' . $curr_trace['function'] . ' ';
+			if ( isset($curr_trace['class']) )	$prefix = $curr_trace['class'];
+			else								$prefix = $curr_trace['file'] . ':' . $curr_trace['line'];
+
+			$prefix .=  '::' . $curr_trace['function'] . ' ';
+		}
+		else
+		{
+			$curr_trace = $backtrace[0];
+			$prefix = $curr_trace['file'] . ':' . $curr_trace['line'] . ' ';
+		}
 
 		self::Log($priority, "$prefix $message");
 	}

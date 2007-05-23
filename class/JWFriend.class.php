@@ -138,7 +138,7 @@ class JWFriend {
 	 * 	Get ids of whom is $idUser's friend.
 	 *	@return array	array of friend id list
 	 */
-	static function GetFriendIds($idUser, $numMax=40, $start=0)
+	static function GetFriendIds($idUser, $numMax=9999, $start=0)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
@@ -159,7 +159,7 @@ _SQL_;
 
 		if ( empty($arr_result) )
 		{
-			return null;
+			return array();
 		}
 
 		$arr_friend_id = array();

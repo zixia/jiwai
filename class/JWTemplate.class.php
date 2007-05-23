@@ -1003,13 +1003,21 @@ _HTML_;
 				echo "<li>位置: " . htmlspecialchars($aUserInfo['location']) . "</li>\n";
 			if ( !empty($aUserInfo['url']) )
 			{
-				if ( !preg_match('/^\w+:\/\//',$aUserInfo['url']) )
-					$aUserInfo['url'] = 'http://' . $aUserInfo['url'];
+				$url = $aUserInfo['url'];
 
-				echo "<li>网站:  <a href='" . htmlspecialchars($aUserInfo['url']) . "'"
+				if ( !preg_match('/^\w+:\/\//',$url) )
+					$url = 'http://' . $url;
+
+				$max_url_len = 23;
+				if ( strlen($url) > $max_url_len )
+					$show_url = substr($url, 0, $max_url_len-3 ) . '...';
+				else
+					$show_url = $url;
+
+				echo "<li>网站:  <a href='" . htmlspecialchars($url) . "'"
 											. " rel='" . htmlspecialchars($aUserInfo['nameFull']) . "'"
 											. " target='_blank' "
-											. ">" . htmlspecialchars($aUserInfo['url']) . "</a></li>\n";
+											. ">" . htmlspecialchars($show_url) . "</a></li>\n";
 			}
 ?>
 		</ul>
