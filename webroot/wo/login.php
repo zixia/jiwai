@@ -5,7 +5,8 @@ require_once('../../jiwai.inc.php');
 
 $err = '';
 
-if ( array_key_exists('username_or_email',$_REQUEST) ){
+if ( array_key_exists('username_or_email',$_REQUEST) )
+{
 	$idUser = JWUser::GetUserFromPassword($_REQUEST['username_or_email'],$_REQUEST['password']);
 
 	if ( $idUser )
@@ -30,8 +31,8 @@ if ( array_key_exists('username_or_email',$_REQUEST) ){
 			JWSns::CreateFriends( $idUser, $reciprocal_user_ids, true );
 		}
 
-
 		if ( isset($_SESSION['login_redirect_url']) ){
+			unset($_SESSION['login_redirect_url']);
 			header("Location: " . $_SESSION['login_redirect_url']);
 		}else{
 			header("Location: /wo/");
@@ -73,7 +74,7 @@ if ( !empty($err) ){
 	如果您已经通过手机使用了叽歪de服务，<a href="/wo/account/complete">请来这里</a>。我们将帮助您在网站上注册。
 </p>
 
-<form action="/wo/login" method="post" name="f">
+<form method="post" name="f">
   <fieldset>
   	<table cellspacing="0">
   		<tr>
