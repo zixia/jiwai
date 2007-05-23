@@ -99,9 +99,9 @@ _HTML_;
 
 
 <ul id="accessibility">
-    <li>
+    <!--li>
       您正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
-    </li>
+    </li-->
 	<li>
 		<a href="#navigation" accesskey="2">跳转到导航目录</a>
 	</li>
@@ -569,10 +569,10 @@ _HTML_;
 			$user_id 	= $statusRows[$status_id]['idUser'];
 
 			// 如果设置了一个用户只显示一条，则跳过
-			if ( $options['uniq']>0 && $user_showed[$user_id]>=$options['uniq'] )
+			if ( $options['uniq']>0 && @$user_showed[$user_id]>=$options['uniq'] )
 				continue;
 			else
-				$user_showed[$user_id] += 1;
+				@$user_showed[$user_id] += 1;
 				
 			$name_screen= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];
@@ -1168,14 +1168,14 @@ _HTML_;
 		if ( !$smsActived )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/devices/?sms">绑定手机！</a></li>
+			<li><a href="/wo/devices/?sms">启用手机！</a></li>
 _HTML_;
 		}
 	
 		if ( !$imActived )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/devices/?im">绑定聊天软件！</a></li>
+			<li><a href="/wo/devices/?im">启用聊天软件！</a></li>
 _HTML_;
 		}
 
