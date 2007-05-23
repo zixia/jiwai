@@ -123,7 +123,7 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 					<table>
 						<tr>
 							<th>
-								<label for="email_addresses">Email 地址</label><br />
+								<label for="email_addresses"><nobr>Email 地址</nobr></label><br />
 							</th>			
 							<td>
 
@@ -133,7 +133,7 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 							</td>
 						</tr>
 						<tr id="mutualrow" style="display:none">
-		  					<th><label for="mutualcheck">大家互为朋友？</label></th>
+		  					<th><label for="mutualcheck">互为朋友？</label></th>
 		  					<td>
 
 		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" /><br />
