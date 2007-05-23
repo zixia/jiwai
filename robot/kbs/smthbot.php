@@ -77,7 +77,7 @@ function checkSendQueue() {
 
 require_once 'KBS/Client.php';
 
-$c = new KBS_Client('http://www.newsmth.net', 'JiWai', '123789');
+$c = new KBS_Client('http://www4.newsmth.net', 'JiWai', '123789');
 while (!$c->loggedin) {
 	echo "Login failed, wait and retry\n";
 	sleep(15);

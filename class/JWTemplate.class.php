@@ -542,18 +542,20 @@ _HTML_;
 	 * @param 	array	$statusIds	array(1,2,3);
 	 * @param 	array	$userRows	user[id]=row
 	 * @param 	array	$statusRows	status[id]=row
-	 * @param	array	showItem	array ( 'icon' => true ) 
+	 * @param	array	$options	array ( 'icon' => true ) 
 	 * @return	
 	 */
-	static public function Timeline($statusIds, $userRows, $statusRows, $showItem=null )
+	static public function Timeline($statusIds, $userRows, $statusRows, $options=null )
 	{
 		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
 
-		if ( !isset($showItem['icon']) )
-			$showItem['icon'] 		= true;
-		if ( !isset($showItem['trash']) )
-			$showItem['trash'] 	= true;
+		if ( !isset($options['icon']) )
+			$options['icon'] 	= true;
+		if ( !isset($options['trash']) )
+			$options['trash'] 	= true;
+		if ( !isset($options['uniq']) )
+			$options['uniq']	= false;
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 ?>
@@ -561,9 +563,17 @@ _HTML_;
 				<table class="doing" id="timeline" cellspacing="0" cellpadding="0">    
 <?php
 		$n=0;
+		$user_showed = array();
 		foreach ( $statusIds as $status_id ){
 //die(var_dump($aStatusList));
 			$user_id 	= $statusRows[$status_id]['idUser'];
+
+			// 如果设置了一个用户只显示一条，则跳过
+			if ( $options['uniq'] && isset($user_showed[$user_id]) )
+				continue;
+			else
+				$user_showed[$user_id] = true;
+				
 			$name_screen= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];
 			$status		= $statusRows[$status_id]['status'];
@@ -581,14 +591,14 @@ _HTML_;
 			$status				= $formated_status['status'];
 ?>
 					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $status_id;?>">
-<?php if ( $showItem['icon'] ){ ?>
+<?php if ( $options['icon'] ){ ?>
 						<td class="thumb">
 							<a href="/<?php echo $name_screen;?>"><img alt="<?php echo $name_full;?>" 
 									src="<?php echo $photo_url?>" width="48" height="48"/></a>
 						</td>
 <?php } ?>
 						<td>	
-<?php if ( $showItem['icon'] ){ ?>
+<?php if ( $options['icon'] ){ ?>
 							<strong>
 								<a href="/<?php echo $name_screen?>" 
 										title="<?php echo $name_full?>"><?php echo $name_screen?></a>
@@ -613,7 +623,7 @@ if ( isset($current_user_id) )
 	if ( $current_user_id!=$user_id ){
 		// 不是自己的status可以收藏
 		// 现在可以收藏自己的
-	}else if ($showItem['trash']){
+	}else if ($options['trash']){
 		//是自己的 status 可以删除
 		echo self::TrashAction($status_id);
 	}
@@ -782,7 +792,7 @@ _HTML_;
 	/*
 	 *
 	 *	@param	array	$options	$options['title'] = title
-									$optoins['user_ids'] = array(1,2,3,4)
+									$options['user_ids'] = array(1,2,3,4)
 	 *
 	 */
 	static function sidebar_featured($options)

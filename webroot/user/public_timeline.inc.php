@@ -34,7 +34,8 @@ $status_data 	= JWStatus::GetStatusIdsFromPublic();
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows) 
+$options	= array ( 'uniq'=>true );
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
 ?>
   
 			</div><!-- tab -->

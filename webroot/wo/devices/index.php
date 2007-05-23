@@ -216,7 +216,7 @@ else
   						<p><!--直接点击无法验证？-->请在 <strong><?php echo $im_name?></strong> 上，将
 							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
 								<strong><?php echo $im_robot?></strong>
-							 加为你的 <strong><?php echo $im_type?></strong> 好友，然后将如下验证码发送给她即可：
+							 加为你的 <strong><?php echo $im_type?></strong> 好友，然后将如下验证码发送消息给她即可：
      						<code><?php echo $aDeviceInfo['im']['secret']?></code>
   						</p>
 
