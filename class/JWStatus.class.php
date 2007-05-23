@@ -55,6 +55,9 @@ class JWStatus {
 		if ( 0>=$time )
 			$time = time();
 
+		// 去掉回车，替换为空格
+		$status = preg_replace('[\r\n]',' ',$status);
+
 		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate) "
 								. " values (?,?,?,FROM_UNIXTIME(?))" ) ){
 			if ( $result = $stmt->bind_param("isss"
@@ -398,7 +401,7 @@ _SQL_;
 										// url_path
 										. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
 									// tail_str
-									. '(.*)$#'
+									. '(.*)$#is'
 							, $status
 							, $matches 
 						) )

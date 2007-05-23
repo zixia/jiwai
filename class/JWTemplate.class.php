@@ -391,7 +391,6 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		}
 
 
-
 		$current_user_id	= JWLogin::GetCurrentUserId();
 
 ?>
@@ -434,6 +433,12 @@ if ( isset($statusRow) )
 	echo <<<_HTML_
   					<a href="/$name_screen/statuses/$status_id">$duration</a>
   					来自 $device
+_HTML_;
+
+	if (!empty($replyto))
+		echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+
+	echo <<<_HTML_
 					<span id="status_actions_$status_id">
 _HTML_;
 }

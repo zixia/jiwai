@@ -380,8 +380,14 @@ class JWSns {
 
 		if ( !empty($follower_ids) )
 		{
-			$user_name_screen = JWUser::GetUserInfo($idUser, 'nameScreen');
-			JWNudge::NudgeUserIds($follower_ids, "$user_name_screen: $status");
+			$user_name_screen 	= JWUser::GetUserInfo($idUser, 'nameScreen');
+			$send_via_device	= JWUser::GetSendViaDevice($idUser);
+
+			// we now avoid to send update notice to sms,
+			// coz it will spend our money ( MT fee )
+			if ( 'sms'!=$send_via_device ) 
+				JWNudge::NudgeUserIds($follower_ids, "$user_name_screen: $status");
+
 		}
 
 		return JWStatus::Create($idUser,$status,$device,$time);

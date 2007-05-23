@@ -11,7 +11,7 @@ if ( JWLogin::IsLogined() )
 <?php JWTemplate::html_head() ?>
 
 
-<body class="account" id="front">
+<body class="front" id="front">
 
 
 <?php JWTemplate::accessibility() ?>
@@ -30,7 +30,7 @@ if ( JWLogin::IsLogined() )
 
 <?php JWTemplate::tab_header( array( 'title'	=>	'看看<a href="' 
 													. JWTemplate::GetConst('UrlPublicTimeline')
-													. '">大家</a>都在忙些什么？'
+													. '">大家</a>都在做些什么？'
 									, 'title2'	=>	'' 
 							) )
 ?>
