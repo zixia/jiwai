@@ -19,6 +19,14 @@
 		<div id="wrapper">
 
 
+			<span class="ytf" style="font-family: 黑体">
+				<h2><a href="http://help.jiwai.de/NewUserGuide" target="_blank">第一次来，不知道如何叽歪？很容易，来这里吧！</a></h2>
+			</span>
+			<script type="text/javascript">
+				JiWai.Yft(".ytf");
+			</script>
+
+
 <?php JWTemplate::ShowActionResultTips(); ?>
 
 
