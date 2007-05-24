@@ -1289,11 +1289,13 @@ _HTML_;
 
 		if ( empty(self::$msJWConst) )
 		{
-			self::$msJWConst = array (	'UrlContactUs'			=>	'/wo/help/contact_us'
+			self::$msJWConst = array (	'UrlContactUs'			=>	'http://help.jiwai.de/ContactUs'
 										,'UrlRegister'			=>	'/wo/account/create'
 										,'UrlPublicTimeline'	=>	'/public_timeline/'
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'
+
+										,'UrlHelpGadget'		=>	'http://help.jiwai.de/Gadget'
 
 										,'UrlStrangerPicture'	=>	'http://asset6.jiwai.de/img/stranger.gif'
 								);

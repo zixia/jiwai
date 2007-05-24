@@ -29,7 +29,6 @@ if ( !empty($_REQUEST['thumb']) ){
 }else{
 	$thumb = 24;
 }
-$hidefollow	= @$_REQUEST['hidefollow'];
 $gadget_div	= @$_REQUEST['gadget_div'];
 if ( isset($_REQUEST['encoding']) )
 	$encoding	= @$_REQUEST['encoding'];
@@ -53,7 +52,7 @@ switch ($pathParam[0])
 			$idUser		= $matches[1];
 			$fileExt	= $matches[2];
 
-			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div, $encoding, $hidefollow);
+			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div, $encoding);
 			
 		}
 		else
@@ -76,7 +75,7 @@ switch ($pathParam[0])
 exit(0);
 
 
-function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId, $encoding, $hidefollow)
+function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId, $encoding)
 {
 	if ( empty($themeName) )
 		$themeName = 'iChat';
@@ -164,17 +163,10 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 		$asset_number++;
 	} while (0<$count);
 
+
 	$css_template = rawurlencode($css_template);
 
-//die(var_dump($hidefollow));
-	if ( empty($hidefollow) )
-		$hidefollow = 'false';
-	else
-		$hidefollow = 'true';
-
 	$js_output = <<<_JS_
-
-var hidefollow = $hidefollow;
 
 var jiwai_de_html_head = document.getElementsByTagName('head')[0];
 
@@ -299,14 +291,6 @@ function jiwai_de_callback(statuses)
 		}
 	}
 
-	if ( !hidefollow )
-	{
-		statuses_html += "<!-- [$idUser] [$statusSelector] [$themeName] [$countMax] -->";
-
-		statuses_html += "<div clear='both' align='center'>";
-		statuses_html += "<a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]</a>";
-		statuses_html += " <a href='http://JiWai.de/' target='_blank'><img style='vertical-align:middle' src='http://asset.jiwai.de/img/icon_ji_16x16.gif' alt='叽歪de' border='0'></a></div>";
-	}
 
 	statuses_div 			= document.createElement('div');
 	statuses_div.innerHTML 	= statuses_html;

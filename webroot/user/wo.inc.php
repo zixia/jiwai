@@ -86,12 +86,12 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 
 <?php 
 $menu_list = array (
-		 '和朋友们'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/with_friends")
+		 '和朋友们(24小时内)'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/with_friends")
 		,'以前的'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/")
 	);
 
 if ( $g_user_with_friends )
-	$menu_list['和朋友们']['active'] = true;
+	$menu_list['和朋友们(24小时内)']['active'] = true;
 else
 	$menu_list['以前的']['active'] = true;
 

@@ -610,5 +610,15 @@ _SQL_;
 		return $name;
 	}
 
+
+	/*
+	 *	检查 device 是否已经由用户验证激活
+	 */
+	static public function IsActived($idDevice)
+	{
+		$device_db_row = JWDevice::GetDeviceDbRowById($idDevice);
+		return empty($device_db_row['secret']);
+	}
+
 }
 ?>

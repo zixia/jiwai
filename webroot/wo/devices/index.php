@@ -132,7 +132,7 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
 										?> value="nothing">关闭</option>
   								<option  <?php if ('direct_messages'==$aDeviceInfo['sms']['enabledFor']) 
 											echo 'selected="selected" ';
-										?> value="direct_messages">站内消息</option>
+										?> value="direct_messages">只收悄悄话</option>
 							</select>
 							<input name="commit" type="submit" value="保存" />
 						</form>
@@ -239,7 +239,7 @@ else
 										?>value="nothing">关闭</option>
   								<option <?php if ('direct_messages'==$aDeviceInfo['im']['enabledFor']) 
 											echo 'selected="selected" ';
-										?>value="direct_messages">站内消息</option>
+										?>value="direct_messages">只收悄悄话</option>
 							</select>
 
 							<input name="commit" value="保存" type="submit">

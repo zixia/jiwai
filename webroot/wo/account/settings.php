@@ -53,7 +53,7 @@ if ( isset($new_user_info) )
 	{
 		$arr_changed['nameScreen'] = $nameScreen;
 
-		if ( !JWUser::IsValidName($nameScreen) )
+		if ( 4>strlen($nameScreen) || !JWUser::IsValidName($nameScreen) )
 		{
 			$error_html .= <<<_HTML_
 <li>帐号 <strong>$nameScreen</strong> 需由最短为5位的字母、数字、下划线和小数点组成，且不能短于6个字符。</li>
@@ -245,7 +245,7 @@ _HTML_;
 						</td>
 					</tr>
 
-					<tr>
+					<!-- 暂时隐藏 tr>
 						<th></th>
 						<td>
 <?php
@@ -261,7 +261,7 @@ _HTML_;
 							<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</small></p>
 						</td>
 
-					</tr>
+					</tr-->
 					<tr>
 						<th></th>
 						<td><input name="commit" type="submit" value="保存" /></td>

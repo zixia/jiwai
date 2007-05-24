@@ -131,7 +131,7 @@ _POD_;
 
 }
 
-JWDB::close();
+JWDB::Close();
 ?>
 
 <html>
@@ -278,18 +278,17 @@ function validate_form(form)
 							<p><small>最小尺寸为48x48（jpg, gif, png）。（如果你上传头像图片，你将会出现在“<a href="/<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
 						</td>
 					</tr>
-					<tr>
+					<!-- 暂时隐藏 tr>
 						<th>
 						</th>
 						<td>
 							<input id="user_protected" name="user[protected]" type="checkbox" value="1" <?php if(array_key_exists('protected',$aUserInfo)) echo ' checked ';?>  />
-							<!--input name="user[protected]" type="hidden" value="N" /--> 
 							<label for="user_protected">不公开我的更新</label>
 							<p><small>
 								只允许被我加为好友的人阅读我的更新。如果选中上面的方框，你的更新将不会出现在“叽歪de大家”中。
 							</small></p>
 						</td>
-					</tr>
+					</tr-->
 					<tr>
 						<th></th>
 						<td>

@@ -808,6 +808,7 @@ _STR_;
 
 		$send_via_device	= JWUser::GetSendViaDeviceByUserId($friend_user_id);
 
+		// TODO 要考虑判断用户的 device 是否已经通过验证激活
 		if ( 'none'==$send_via_device )
 			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 

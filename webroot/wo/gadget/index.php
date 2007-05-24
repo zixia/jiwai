@@ -2,6 +2,9 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
+define('DEFAULT_GADGET_COUNT', 3);
+define('DEFAULT_GADGET_THEME', 'iChat');
+
 JWLogin::MustLogined();
 $user	= JWUser::GetCurrentUserInfo();
 $idUser	= $user['id'];
@@ -9,7 +12,7 @@ $idUser	= $user['id'];
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
-<div id="$div_id"><script type="text/javascript" src="http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&hidefollow=0&gadget_div=$div_id"></script></div>
+<div><div id="$div_id"><script type='text/javascript' src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&encoding=utf-8&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]</a></div></div>
 _HTML_;
 
 if ( isset($_REQUEST['gadget']) )
@@ -18,21 +21,40 @@ if ( isset($_REQUEST['gadget']) )
 	
 	$gadget = $_REQUEST['gadget'];
 
-	if ( !isset($gadget['hidefollow']) )
-		$gadget['hidefollow']='';
+	if ( isset($gadget['hidefollow']) )
+		$gadget['hidefollow']=true;
+	else
+		$gadget['hidefollow']=false;
 
 	$div_id = "JiWai_de__gadget_timeline_$gadget[selector]_$gadget[count]_$gadget[theme]_$gadget[encoding]_$idUser";
 
-	$gadget_script_html = 	 "<div id='$div_id'>"
+	$gadget_script_html = 	"<div>";
+
+	$gadget_script_html	.= 	"<div id='$div_id'>"
 							."<script type='text/javascript' src='http://api.jiwai.de/gadget/timeline/$idUser.js"
 									."?selector=$gadget[selector]"
 									."&count=$gadget[count]"
 									."&theme=$gadget[theme]"
 									."&thumb=$gadget[pictsize]"
 									."&encoding=$gadget[encoding]"
-									."&hidefollow=$gadget[hidefollow]"
 									."&gadget_div=$div_id"
-							."'></script></div>";
+							."'></script>"
+							."</div>";
+						;
+
+	$gadget_script_html .= "<div style='font: 0px/0px sans-serif;clear: both;display: block'> </div>";
+
+	if ( ! $gadget['hidefollow'] )
+	{
+			$gadget_script_html .= "<div clear='both' style='text-align:center'>"
+									."<a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>"
+									."订阅$user[nameFull]</a>"
+									."</div>";
+								;
+	}
+
+	$gadget_script_html	.= "</div>";
+
 }
 
 $theme_list	= array ( 	 'DOS_Box'			=> false
@@ -110,31 +132,32 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 								最近	
 								<select id="gadget_count" name="gadget[count]">
 <?php
+// default value
+if ( !isset($gadget['count']) )
+	$gadget['count'] = DEFAULT_GADGET_COUNT;
+
 for ( $n=1; $n<=20; $n++ )
 {
 	if ( $n>7 && $n%5 )
 		continue;
 
-	$selected = "";
-
-	if ( !isset($gadget['count']) ){
-		if ( 3==$n ){
-			$selected = " 'selected' ";
-		}
-	}else if ( $n==$gadget['count'] ){
-		$selected = " 'selected' ";
+	if ( $n==$gadget['count'] ){
+		$selected = " selected='selected' ";
+	} else {
+		$selected = "";
 	}
 
 	echo "\t\t\t\t\t<option value='$n' $selected>$n</option>\n";
 }
-	if ( isset($gadget['count']) ){
-		if (40==$gadget['count'] )
-			$selected = " 'selected' ";
-	}else{
-		$selected = "";
-	}
 
-	echo "\t\t\t\t\t\t<option value='40' $selected >40</option>"
+if (40==$gadget['count'] ) {
+	$selected = " selected='selected' ";
+} else {
+	$selected = "";
+}
+
+echo "\t\t\t\t\t\t<option value='40' $selected >40</option>\n"
+
 ?>
 								</select>
 								条
@@ -187,16 +210,16 @@ function cmp($a, $b)
 
 uksort($theme_list, "cmp");
 
+if ( !isset($gadget['theme']) )
+	$gadget['theme'] = DEFAULT_GADGET_THEME;
+
 foreach ( $theme_list as $theme => $is_release ) 
 { 
 	$release = $is_release ? 'Beta' : 'Alpha';
 	$selected = '';
 
-	if ( !isset($gadget['theme']) ){
-		if ( 'iChat'==$theme )
-			$selected = "selected";
-	}else if ( $gadget['theme']==$theme ){
-		$selected = "selected";
+	if ( $gadget['theme']==$theme ){
+		$selected = " selected='selected' ";
 	}
 
 	echo <<<_HTML_
@@ -242,7 +265,7 @@ _HTML_;
    				<br/>
 			</form>
 
-			<h3>不明白怎么用？看看 <a href="/about?topic=gadget">窗可贴指南</a>。</h3>
+			<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
 
 		</td>
 		<td width="20">

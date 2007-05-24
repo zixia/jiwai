@@ -67,11 +67,19 @@ class JWDB {
 
 	}
 
-	static public function close()
+	/**
+	* Destructing method, write everything left
+	*
+	*/
+	function __destruct()
 	{
-		return ;
-		//XXX need to deal with more conditions. use function init_db? provent to init_db every time?
-		if (isset(self::$mysqli_link__)){
+		self::Close();
+	}
+
+	static public function Close()
+	{
+		if (isset(self::$mysqli_link__))
+		{
 			self::$mysqli_link__->close();
 			self::$mysqli_link__ = null;
 		}

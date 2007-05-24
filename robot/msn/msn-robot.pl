@@ -300,7 +300,8 @@ sub on_message {
 #[Client-Name: Gaim/2.0.0beta6
 #Chat-Logging: Y
 #]
-  return if $message=~m#^Client-Name:[\w\d\s\/\-:.]+$#sig ;
+# Client-Name: Miranda IM 0.6.8 Unicode (MSN v.0.6.0.2)
+  return if $message=~m#^Client-Name:[\w\d\s\/\-:\.]+#sig ;
 
 # MIME-Version: 1.0
 #Content-Type: text/x-bobo

@@ -11,7 +11,11 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 	if ( $idUser )
 	{
-		JWLogin::Login($idUser, $_REQUEST['remember_me']);
+		if ( isset($_REQUEST['remember_me']) )
+			$remember_me = true;
+		else
+			$remember_me = false;
+		JWLogin::Login($idUser, $remember_me);
 
 
 		$invitation_id = @$_REQUEST['invitation_id'];
@@ -32,8 +36,8 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 		}
 
 		if ( isset($_SESSION['login_redirect_url']) ){
-			unset($_SESSION['login_redirect_url']);
 			header("Location: " . $_SESSION['login_redirect_url']);
+			unset($_SESSION['login_redirect_url']);
 		}else{
 			header("Location: /wo/");
 		}
