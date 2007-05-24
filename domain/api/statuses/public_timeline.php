@@ -132,6 +132,7 @@ function public_timeline_rss_n_atom($options)
 	$feed = new JWFeed( array (	'title'		=> '叽歪广场'
 							, 'url'		=> 'http://JiWai.de/public_timeline/'
 							, 'desc'	=> '所有人叽歪de更新都在这里！'
+							, 'ttl'		=> 1
 						) );
 
 	foreach ( $status_data['status_ids'] as $status_id )
