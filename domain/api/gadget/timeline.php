@@ -216,7 +216,7 @@ function relative_time(time_value)
 
 function jiwai_de_get_message_html(status)
 {
-	var status_html = status.text.replace(/(http:\/\/)([^\/]+)([^\s]*)/, "<a href='$1$2$3' target='_blank'>$1$2/...</a>");
+	var status_html = status.text.replace(/(http:\/\/)([^\/ ]+)([^\s]*)/, "<a href='$1$2$3' target='_blank'>$1$2/...</a>");
 	return status_html
 			+ " <a href='http://jiwai.de/" + status.user.screen_name + "/statuses/" + status.id + "' target='_blank'><small>" 
 			+ relative_time(status.created_at)
