@@ -1,4 +1,5 @@
 <?php
+require_once("../../jiwai.inc.php");
 /**
  * The Wikka mainscript.
  * 

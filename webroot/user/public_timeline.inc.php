@@ -3,7 +3,47 @@
 ?>
 <html>
 
-<?php JWTemplate::html_head() ?>
+<?php 
+
+$status_data 	= JWStatus::GetStatusIdsFromPublic();
+$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+
+$keywords 		= '叽歪de广场 ';
+$user_showed 	= array();
+foreach ( $user_rows  as $user_id=>$user_row )
+{
+	if ( isset($user_showed[$user_id]) )
+		continue;
+	else
+		$user_showed[$user_id] = true;
+
+	$keywords .= "$user_row[nameScreen]($user_row[nameFull]) ";
+}
+
+$description = '叽歪de广场 ';
+foreach ( $status_data['status_ids'] as $status_id )
+{
+	$description .= $status_rows[$status_id]['status'];
+	if ( mb_strlen($description,'UTF-8') > 140 )
+	{
+			$description = mb_substr($description,0,140,'UTF-8');
+			break;
+	}
+}
+
+$options = array(	 'title'		=> '叽歪广场'
+					,'keywords'		=> htmlspecialchars($keywords)
+					,'description'	=> htmlspecialchars($description)
+					,'author'		=> htmlspecialchars($keywords)
+					,'rss_url'		=> 'http://api.jiwai.de/status/public_timeline.rss'
+					,'rss_title'	=> '叽歪de - 叽歪广场 [RSS]'
+					,'refresh_time'	=> '60'
+					,'refresh_url'	=> ''
+			);
+
+JWTemplate::html_head($options) ;
+?>
 
 
 <body class="status" id="public_timeline">
@@ -38,9 +78,6 @@
 ?>
 
 <?php 
-$status_data 	= JWStatus::GetStatusIdsFromPublic();
-$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 $options	= array ( 'uniq'=>2 );
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 

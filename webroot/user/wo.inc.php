@@ -21,25 +21,7 @@ $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 ?>
 <html>
 
-<?php JWTemplate::html_head() ?>
-
-<body class="normal">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-
-<div class="separator"></div>
-
-<div id="container">
-	<!-- div id="flaginfo">zixia</div -->
-<!-- google_ad_section_start -->
-	<div id="content">
-		<div id="wrapper">
-
-<?php
-JWTemplate::ShowActionResultTips();
-
+<?php 
 
 if ( !isset($g_user_with_friends) )
 	$g_user_with_friends = false;
@@ -79,7 +61,66 @@ $head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
 $head_status_rows 	= JWStatus::GetStatusDbRowsByIds($head_status_data['status_ids']);
 $head_status_id 	= @array_shift($head_status_data['status_ids']); 
 
-// 取出一个
+
+/*
+ *	设置 html header
+ */
+$keywords 		= <<<_STR_
+$page_user_info[nameScreen]($page_user_info[nameFull]) - $page_user_info[bio] $page_user_info[location] 
+_STR_;
+
+$description = "叽歪de$page_user_info[nameFull] ";
+$description .= @$head_status_rows[$head_status_id]['status'];
+
+foreach ( $status_data['status_ids'] as $status_id )
+{
+	$description .= $status_rows[$status_id]['status'];
+	if ( mb_strlen($description,'UTF-8') > 140 )
+	{
+			$description = mb_substr($description,0,140,'UTF-8');
+			break;
+	}
+}
+
+
+$rss			= array ( 	 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
+									,'title'	=> "$page_user_info[nameFull] (RSS)"
+								)
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss"
+									,'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)"
+								)
+						);
+
+$options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[nameFull]"
+					,'keywords'		=> htmlspecialchars($keywords)
+					,'description'	=> htmlspecialchars($description)
+					,'author'		=> htmlspecialchars($keywords)
+					,'rss'			=> $rss
+					,'refresh_time'	=> '60'
+					,'refresh_url'	=> ''
+			);
+
+JWTemplate::html_head($options) ;
+
+?>
+
+<body class="normal">
+
+<?php JWTemplate::accessibility() ?>
+
+<?php JWTemplate::header() ?>
+
+<div class="separator"></div>
+
+<div id="container">
+	<!-- div id="flaginfo">zixia</div -->
+<!-- google_ad_section_start -->
+	<div id="content">
+		<div id="wrapper">
+
+<?php
+JWTemplate::ShowActionResultTips();
+
 
 //die(var_dump($page_user_id));
 JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_rows[$head_status_id] );

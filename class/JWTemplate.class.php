@@ -57,28 +57,53 @@ class JWTemplate {
 		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js' );
 
 		$title = '叽歪de / ';
-		if ( isset($options['title']) )		$title .= $options['title'];
-		else								$title .= '这一刻，你在做什么？';
+		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
+		else								$title .= $options['title'];
 
-		if ( isset($options['keywords']) )	$keywords = $options['keywords'];
-		else								$keywords = <<<_STR_
+		if ( empty($options['keywords']) )	$keywords = <<<_STR_
 叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下
 _STR_;
+		else								$keywords = $options['keywords'];
 
-		if ( isset($options['description']) )	$description = $options['description'];
-		else									$description = <<<_STR_
+		if ( empty($options['description']) )	$description = <<<_STR_
 叽歪de - 随时随地的记录，并与朋友分享你每天的点滴。
 _STR_;
+		else									$description = $options['description'];
+
+		if ( empty($options['author']) )	$author = '叽歪de <wo@jiwai.de>';
+		else								$author = $options['author'];
 
 
-		if ( isset($options['author']) )	$author = $options['author'];
-		else								$author = '叽歪de <wo@jiwai.de>';
+		$rss_html = <<<_HTML_
+<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+_HTML_;
 
-		if ( isset($options['rss_url']) )	$rss_url = $options['rss_url'];
-		else								$rss_url = 'http://feeds.feedburner.com/jiwai';
+		if ( !empty($options['rss']) )	
+		{
+			$rss_html = '';
+			foreach ( $options['rss'] as $rss_item )
+			{
+				$rss_html .= <<<_HTML_
+<link rel="alternate" title="$rss_item[title]" href="$rss_item[url]" />
 
-		if ( isset($options['rss_title']) )	$rss_title = $options['rss_title'];
-		else								$rss_title = '叽歪de - [RSS]';
+_HTML_;
+			}
+		}
+
+		if ( empty($options['refresh_time']) )	$refresh_time 	= null;
+		else									$refresh_time 	= $options['refresh_time'];
+
+
+		if ( empty($options['refresh_url']) )	$refresh_url	= $_SERVER['SCRIPT_URI'];
+		else									$refresh_url	= $options['refresh_url'];
+
+		if ( null===$refresh_time )
+			$refresh_html = '';
+		else
+			$refresh_html = <<<_HTML_
+<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url">
+_HTML_;
+
 
 		echo <<<_HTML_
 <head>
@@ -89,7 +114,9 @@ _STR_;
 	<meta name="keywords" content="$keywords" />
 	<meta name="description" content="$description" />
 	<meta name="author" content="$author" />
-	<link rel="alternate" title="$rss_title" href="$rss_url" />
+	$rss_html
+	$refresh_html
+
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/gif" />

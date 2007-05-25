@@ -1,3 +1,5 @@
+</div>
+
 <div class="footer">
 <?php 
 $logined_user_info = $this->GetUser();

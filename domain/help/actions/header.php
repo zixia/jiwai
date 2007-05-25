@@ -39,3 +39,5 @@ if ($this->GetMethod() != 'edit') {
 		} 
 	?> 	
 </div>
+
+<div style="width:700px; overflow:hidden">
