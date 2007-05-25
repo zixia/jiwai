@@ -70,6 +70,9 @@ switch ($pathParam[0])
 		if ( preg_match('/^\.(\w+)$/',$pathParam,$matches) )
 			$output_type = strtolower($matches[1]);
 
+		if ( empty($output_type) )
+			$output_type = 'rss';
+
 		switch ($output_type)
 		{
 			case 'atom':
