@@ -50,11 +50,11 @@ v1.7	07-18-04
 	added a switch to select an external stylesheet (thanks to Pascal Van Hecke)
 	changed default content-type to application/xml
 	added character encoding setting
-	fixed numerous smaller bugs (thanks to Sören Fuhrmann of golem.de)
+	fixed numerous smaller bugs (thanks to SÃ¶ren Fuhrmann of golem.de)
 	improved changing ATOM versions handling (thanks to August Trometer)
-	improved the UniversalFeedCreator's useCached method (thanks to Sören Fuhrmann of golem.de)
-	added charset output in HTTP headers (thanks to Sören Fuhrmann of golem.de)
-	added Slashdot namespace to RSS 1.0 (thanks to Sören Fuhrmann of golem.de)
+	improved the UniversalFeedCreator's useCached method (thanks to SÃ¶ren Fuhrmann of golem.de)
+	added charset output in HTTP headers (thanks to SÃ¶ren Fuhrmann of golem.de)
+	added Slashdot namespace to RSS 1.0 (thanks to SÃ¶ren Fuhrmann of golem.de)
 
 v1.6	05-10-04
 	added stylesheet to RSS 1.0 feeds
@@ -72,7 +72,7 @@ v1.6 beta	02-28-04
 	considered beta due to some internal changes
 
 v1.5.1	01-27-04
-	fixed some RSS 1.0 glitches (thanks to Stéphane Vanpoperynghe)
+	fixed some RSS 1.0 glitches (thanks to StÃ©phane Vanpoperynghe)
 	fixed some inconsistencies between documentation and code (thanks to Timothy Martin)
 
 v1.5	01-06-04
@@ -668,23 +668,23 @@ class FeedCreator extends HtmlDescribable {
 		
 		$pos = strrpos($string,".");
 		if ($pos>=$length-4) {
-			$string = substr($string,0,$length-4);
+			$string = mb_substr($string,0,$length-4);
 			$pos = strrpos($string,".");
 		}
 		if ($pos>=$length*0.4) {
-			return substr($string,0,$pos+1)." ...";
+			return mb_substr($string,0,$pos+1)." ...";
 		}
 		
 		$pos = strrpos($string," ");
 		if ($pos>=$length-4) {
-			$string = substr($string,0,$length-4);
+			$string = mb_substr($string,0,$length-4);
 			$pos = strrpos($string," ");
 		}
 		if ($pos>=$length*0.4) {
-			return substr($string,0,$pos)." ...";
+			return mb_substr($string,0,$pos)." ...";
 		}
 		
-		return substr($string,0,$length-4)." ...";
+		return mb_substr($string,0,$length-4)." ...";
 			
 	}
 	
@@ -750,7 +750,7 @@ class FeedCreator extends HtmlDescribable {
 	 */
 	function _generateFilename() {
 		$fileInfo = pathinfo($_SERVER["PHP_SELF"]);
-		return substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".xml";
+		return mb_substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".xml";
 	}
 	
 	
@@ -859,8 +859,8 @@ class FeedDate {
 		if (preg_match("~(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s+)?(\\d{1,2})\\s+([a-zA-Z]{3})\\s+(\\d{4})\\s+(\\d{2}):(\\d{2}):(\\d{2})\\s+(.*)~",$dateString,$matches)) {
 			$months = Array("Jan"=>1,"Feb"=>2,"Mar"=>3,"Apr"=>4,"May"=>5,"Jun"=>6,"Jul"=>7,"Aug"=>8,"Sep"=>9,"Oct"=>10,"Nov"=>11,"Dec"=>12);
 			$this->unix = mktime($matches[4],$matches[5],$matches[6],$months[$matches[2]],$matches[1],$matches[3]);
-			if (substr($matches[7],0,1)=='+' OR substr($matches[7],0,1)=='-') {
-				$tzOffset = (substr($matches[7],0,3) * 60 + substr($matches[7],-2)) * 60;
+			if (mb_substr($matches[7],0,1)=='+' OR mb_substr($matches[7],0,1)=='-') {
+				$tzOffset = (mb_substr($matches[7],0,3) * 60 + mb_substr($matches[7],-2)) * 60;
 			} else {
 				if (strlen($matches[7])==1) {
 					$oneHour = 3600;
@@ -883,8 +883,8 @@ class FeedDate {
 		}
 		if (preg_match("~(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(.*)~",$dateString,$matches)) {
 			$this->unix = mktime($matches[4],$matches[5],$matches[6],$matches[2],$matches[3],$matches[1]);
-			if (substr($matches[7],0,1)=='+' OR substr($matches[7],0,1)=='-') {
-				$tzOffset = (substr($matches[7],0,3) * 60 + substr($matches[7],-2)) * 60;
+			if (mb_substr($matches[7],0,1)=='+' OR mb_substr($matches[7],0,1)=='-') {
+				$tzOffset = (mb_substr($matches[7],0,3) * 60 + mb_substr($matches[7],-2)) * 60;
 			} else {
 				if ($matches[7]=="Z") {
 					$tzOffset = 0;
@@ -919,7 +919,7 @@ class FeedDate {
 	 */
 	function iso8601() {
 		$date = gmdate("Y-m-d\TH:i:sO",$this->unix);
-		$date = substr($date,0,22) . ':' . substr($date,-2);
+		$date = mb_substr($date,0,22) . ':' . mb_substr($date,-2);
 		if (TIME_ZONE!="") $date = str_replace("+00:00",TIME_ZONE,$date);
 		return $date;
 	}
@@ -1417,7 +1417,7 @@ class MBOXCreator extends FeedCreator {
 			$linlen = strlen($line); 
 			$newline = ""; 
 			for($i = 0; $i < $linlen; $i++) { 
-				$c = substr($line, $i, 1); 
+				$c = mb_substr($line, $i, 1); 
 				$dec = ord($c); 
 				if ( ($dec == 32) && ($i == ($linlen - 1)) ) { // convert space at eol only 
 					$c = "=20"; 
@@ -1474,7 +1474,7 @@ class MBOXCreator extends FeedCreator {
 	 */
 	function _generateFilename() {
 		$fileInfo = pathinfo($_SERVER["PHP_SELF"]);
-		return substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".mbox";
+		return mb_substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".mbox";
 	}
 }
 
@@ -1678,7 +1678,7 @@ class HTMLCreator extends FeedCreator {
 	 */
 	function _generateFilename() {
 		$fileInfo = pathinfo($_SERVER["PHP_SELF"]);
-		return substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".html";
+		return mb_substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".html";
 	}
 }	
 
@@ -1717,7 +1717,7 @@ class JSCreator extends HTMLCreator {
 	 */
 	function _generateFilename() {
 		$fileInfo = pathinfo($_SERVER["PHP_SELF"]);
-		return substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".js";
+		return mb_substr($fileInfo["basename"],0,-(strlen($fileInfo["extension"])+1)).".js";
 	}
 	
 }	
