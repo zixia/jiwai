@@ -70,7 +70,9 @@ else
 
 
 
-$status_rows	= JWStatus::GetStatusDbRowsByIds( array($status_data['status_ids'],$page_user_id) );
+$status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
+
+array_push($status_data['user_ids'],$page_user_id);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 $head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
