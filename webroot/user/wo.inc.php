@@ -110,7 +110,7 @@ $options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[na
 					,'description'	=> htmlspecialchars($description)
 					,'author'		=> htmlspecialchars($keywords)
 					,'rss'			=> $rss
-					,'refresh_time'	=> '60'
+					,'refresh_time'	=> '600'
 					,'refresh_url'	=> ''
 			);
 

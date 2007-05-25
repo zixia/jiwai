@@ -67,7 +67,7 @@ a:hover {color:#333;}
 #container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333;background:transparent;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
 
 
-#content {width:100%; float:left; margin:20px 0 0 -225px; border-right:1px solid #9C0; line-height:2em; overflow:hidden; }
+#content {width:100%; float:left; margin:10px 0 0 -225px; border-right:1px solid #9C0; line-height:2em; overflow:hidden; }
   #content #wrapper { margin: 10px 0; margin-left:235px; padding:0 0 1em 20px;}
   #content ul {margin:0;padding:0 1.5em;}
   #content #permalink h2 { background:transparent url(http://asset.jiwai.de/img/arr.gif) no-repeat scroll 335px 0pt; font-size:2em; padding:16px 0pt 5px 321px; }

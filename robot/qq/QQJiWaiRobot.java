@@ -127,27 +127,6 @@ public class QQJiWaiRobot implements IQQListener {
 		}
 	}
 	
-	public void run() {
-		try {
-			for (Map.Entry<Integer, String> entry : friends.entrySet()) {
-				log("friend " + entry.getKey().toString() + " " + entry.getValue());
-				client.sendIM(entry.getKey(), msg.getBytes());
-				System.out.println("entry.getKey(): " + entry.getKey());
-				client.sendIM(918999, msg.getBytes());
-				//zizz();
-			}
-			for (Map.Entry<Integer, String> entry : clusters.entrySet()) {
-				log("cluster " + entry.getKey().toString() + " " + entry.getValue());
-				//client.sendClusterIM(entry.getKey(), msg);
-				//zizz();
-			}
-		} catch (Exception e) {
-			log(e);
-		}
-		client.sendIM(918999, "你好".getBytes());
-		zizz();
-	}
-
 	/**
 	 * read config
 	 */
@@ -197,18 +176,6 @@ public class QQJiWaiRobot implements IQQListener {
 
 	private void log(Exception e) {
 		e.printStackTrace();
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		//logger.info("Enter main");
-		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
-		qq_robot.run();
-		log(qq_robot.toString());
-		//logger.info("Exit main");
-		System.exit(0);
 	}
 
 	public void qqEvent(QQEvent e) {
@@ -280,6 +247,7 @@ public class QQJiWaiRobot implements IQQListener {
 	}
 
 	private void processFriendOnline(QQEvent e) {
+/*
 		try {
 			GetOnlineOpReplyPacket p = (GetOnlineOpReplyPacket) e.getSource();
 			for (FriendOnlineEntry f : p.onlineFriends) {
@@ -301,29 +269,12 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
-		
-	}
-
-	private void processNormalIM(QQEvent e) {
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
-			ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
-			NormalIM m = p.normalIM;
-			String senderName = friends.get(p.normalHeader.sender);
-			if (senderName == null) senderName = "";
-			log(sdf.format(new Date(p.normalHeader.sendTime)) + "["
-					+ p.normalHeader.sender
-					+ " "
-					+ senderName
-					+ "]"
-					+ new String(m.messageBytes));
-		} catch (Exception ex) {
-			log(ex);
-		}
+*/
 		
 	}
 
 	private void processClusterIM(QQEvent e) {
+/*
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
 			ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
@@ -351,10 +302,11 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
-		
+*/
 	}
 
 	private void processMemberInfo(QQEvent e) {
+/*
 		try {
 			ClusterCommandReplyPacket p = (ClusterCommandReplyPacket) e.getSource();
 			for (Object o : p.memberInfos) {
@@ -364,9 +316,11 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
+*/
 	}
 
 	private void processClusterInfo(QQEvent e) {
+/*
 		try {
 			ClusterCommandReplyPacket p = (ClusterCommandReplyPacket) e
 					.getSource();
@@ -377,9 +331,11 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
+*/
 	}
 
 	private void processGroupFriend(QQEvent e) {
+/*
 		try {
 			DownloadGroupFriendReplyPacket p = (DownloadGroupFriendReplyPacket) e
 					.getSource();
@@ -398,9 +354,11 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
+*/
 	}
 
 	private void processFriendList(QQEvent e) {
+/*
 		try {
 			GetFriendListReplyPacket p = (GetFriendListReplyPacket) e
 					.getSource();
@@ -416,7 +374,63 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
+*/
 	}
+
+	private void processNormalIM(QQEvent e) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
+			ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
+			NormalIM m = p.normalIM;
+
+			Integer	sender_account 	= p.normalHeader.sender;
+			//String 	sender_name 	= friends.get(p.normalHeader.sender);
+			//if (senderName == null) senderName = "";
+
+			
+			log(sdf.format(new Date(p.normalHeader.sendTime)) + "["
+					+ p.normalHeader.sender
+					+ " "
+					+ senderName
+					+ "]"
+					+ new String(m.messageBytes,"GBK"));
+
+		} catch (Exception ex) {
+			log(ex);
+		}
+
+		
+	}
+
+	
+	private void checkMtQueue()
+	{
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		//logger.info("Enter main");
+		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
+		while ( true )
+		{
+			qq_robot.run();
+			qq_robot.zizz();
+		}
+	}
+
+	public void run() {
+		try 
+		{
+	
+			client.sendIM(p.normalHeader.sender, (new String("You said: ") + new String(m.messageBytes,"GBK")).getBytes("GBK") );
+			client.sendIM(918999, (new String("Hello, World! 哈哈").getBytes("GBK")));
+		} catch (Exception e) {
+			log(e);
+		}
+	}
+
 
 }
 
