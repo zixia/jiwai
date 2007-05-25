@@ -140,7 +140,7 @@ a:hover {color:#333;}
 .bg_tab_top_mid {height:35px; background: url(http://asset.jiwai.de/img/bg_tab_top_mid.gif) repeat-x 0 0; }
 .bg_tab_top_right {padding:0px; width:7px; height:35px; background: url(http://asset.jiwai.de/img/bg_tab_top_right.gif) no-repeat 0 0; }
 
-.bg_tab_top_mid h2 {vertical-align:bottom} /* FIXME 文字太考上了，这行无效 */
+.bg_tab_top_mid h2 {margin-bottom: -7px}
 .bg_tab_top2_left {padding:0px; width:9px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_left.gif) no-repeat top right;}
 .bg_tab_top2_right {padding:0px; height:22px; background: #F0F7D9 url(http://asset.jiwai.de/img/bg_tab_top2_right.gif) repeat-x 0 0; }
 

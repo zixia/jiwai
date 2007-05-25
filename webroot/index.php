@@ -24,11 +24,11 @@ if ( JWLogin::IsLogined() )
 		<div id="wrapper">
 
 
-			<h2>拥有你自己的语录。直播你的生活和思想：<em>这一刻，你在做什么？</em>通过手机发送短信，QQ，MSN，Gtalk或直接登录叽歪de网站，即时记录点滴瞬间。You are the reporter, and let us be your media.</h2>
+			<h2 style="font-size:18px">拥有你自己的语录。直播你的生活和思想：<em>这一刻，你在做什么？</em>通过手机发送短信，QQ，MSN，Gtalk或直接登录叽歪de网站，即时记录点滴瞬间。You are the reporter, and let us be your media.</h2>
 
 			<br>
 			<span class="ytf" style="font-family: 黑体">
-				<h2><a href="http://help.jiwai.de/NewUserGuide" target="_blank">第一次来，不知道如何叽歪？很容易，来这里吧！</a></h2>
+				<h2 style="font-size:18px"><a href="http://help.jiwai.de/NewUserGuide" target="_blank">第一次来，不知道如何叽歪？很容易，来这里吧！</a></h2>
 			</span>
 			<script type="text/javascript">
 				JiWai.Yft(".ytf");
