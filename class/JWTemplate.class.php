@@ -48,44 +48,59 @@ class JWTemplate {
 		//throw new JWException("JWTemplate no need construct, use static method pls.");
 	}
 
-	static public function html_head()
+	
+	static public function html_head( $options=null )
 	{
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js' );
 
+		$title = '叽歪de / ';
+		if ( isset($options['title']) )		$title .= $options['title'];
+		else								$title .= '这一刻，你在做什么？';
+
+		if ( isset($options['keywords']) )	$keywords = $options['keywords'];
+		else								$keywords = <<<_STR_
+叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下
+_STR_;
+
+		if ( isset($options['description']) )	$description = $options['description'];
+		else									$description = <<<_STR_
+叽歪de - 随时随地的记录，并与朋友分享你每天的点滴。
+_STR_;
+
+
+		if ( isset($options['author']) )	$author = $options['author'];
+		else								$author = '叽歪de <wo@jiwai.de>';
+
+		if ( isset($options['rss_url']) )	$rss_url = $options['rss_url'];
+		else								$rss_url = 'http://feeds.feedburner.com/jiwai';
+
+		if ( isset($options['rss_title']) )	$rss_title = $options['rss_title'];
+		else								$rss_title = '叽歪de - [RSS]';
+
 		echo <<<_HTML_
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
-	<title>叽歪de / 这一刻，你在做什么？</title>
-
-	<link rel="start" href="http://JiWai.de/" title="首页" />
+	<title>$title</title>
+	<meta name="keywords" content="$keywords" />
+	<meta name="description" content="$description" />
+	<meta name="author" content="$author" />
+	<link rel="alternate" title="$rss_title" href="$rss_url" />
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
-
-	<meta name="ICBM" content="40.4000, 116.3000" />
-	<meta name="DC.title" content="叽歪de" />
-
-	<meta name="keywords" content="叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下" />
-
-	<meta name="description" content="叽歪de - 随时随地的记录，并与朋友分享你每天的点滴。" />
-
-	<meta name="author" content="JiWai.de, 叽歪de, 叽歪" />
-
-	<meta name="copyright" content="copyright 2007 http://jiwai.de" />
-
-	<meta name="robots" content="all" />
-
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/gif" />
-	
-	<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
-
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 
+	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
+	<meta name="ICBM" content="40.4000, 116.3000" />
+	<meta name="DC.title" content="叽歪de" />
+	<meta name="copyright" content="copyright 2007 http://jiwai.de" />
+	<meta name="robots" content="all" />
 </head>
 
 _HTML_;
@@ -150,12 +165,13 @@ _HTML_;
 	<ul>
 		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved</li>
 
-		<li><a href="http://help.jiwai.de/AboutUs">关于我们</a></li>
-		<li><a href="http://help.jiwai.de/ContactUs">联系我们</a></li>
-		<li><a href="http://blog.jiwai.de/">Blog</a></li>
-		<li><a href="http://help.jiwai.de/Api">API</a></li>
-		<li><a href="http://help.jiwai.de/">帮助</a></li>
-		<li><a href="http://help.jiwai.de/TOS">使用协议</a></li>
+		<li><a href="http://help.jiwai.de/AboutUs" 			target="_blank">关于我们</a></li>
+		<li><a href="http://help.jiwai.de/ContactUs" 		target="_blank">联系我们</a></li>
+		<li><a href="http://help.jiwai.de/MediaComments" 	target="_blank">媒体和掌声</a></li>
+		<li><a href="http://blog.jiwai.de/" 				target="_blank">Blog</a></li>
+		<li><a href="http://help.jiwai.de/Api"				target="_blank">API</a></li>
+		<li><a href="http://help.jiwai.de/"					target="_blank">帮助</a></li>
+		<li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li>
 
 	</ul>
 </div>

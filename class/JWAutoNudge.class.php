@@ -116,13 +116,14 @@ _SQL_;
 		$id_status_last_day_processed = self::GetIdStatusLastDayProcessed();
 
 		$sql = <<<_SQL_
-SELECT	distinct idUser
-FROM	Status
+SELECT	DISTINCT idUser
+FROM	Status AS last
 WHERE	id BETWEEN $id_status_last_day_processed AND $id_status_before_24h
-		AND idUser NOT IN
+		AND NOT EXISTS
 		(
-			SELECT 	idUser from Status
-			WHERE	id BETWEEN $id_status_before_24h AND $id_status_max
+			SELECT 	1 from Status as new
+			WHERE	id BETWEEN $id_status_before_24h+1 AND $id_status_max
+					AND last.idUser=new.idUser
 		)
 _SQL_;
 
@@ -130,11 +131,37 @@ _SQL_;
 
 		$id_users_need_nudge = array();
 
-		if ( !empty($result_array) ) {
-			foreach ( $result_array as $result ) {
-				array_push($id_users_need_nudge, $result['idUser']);
-			}
+		if ( empty($result_array) ) 
+			return array();
+
+		foreach ( $result_array as $result ) {
+			array_push($id_users_need_nudge, $result['idUser']);
 		}
+
+		JWLog::Instance()->Log(LOG_INFO,"JWAutoNudge::GetIdUserNudgeDay found " 
+									. count($id_users_need_nudge) . " user(s) no update in near 24H");
+
+		/*
+		 *	查看用户设置是否 AutoNudge
+		 */
+		$condition_in = JWDB::GetInConditionFromArray($id_users_need_nudge);
+		$sql = <<<_SQL_
+SELECT	id as idUser
+FROM	User
+WHERE	id IN ( $condition_in )
+		AND noticeAutoNudge='Y'
+_SQL_;
+
+		$result_array = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($result_array) )
+			return array();
+
+		$id_users_need_nudge = array();
+		foreach ( $result_array as $result ) {
+			array_push($id_users_need_nudge, $result['idUser']);
+		}
+
 
 		// 将已经处理过的 idStatus 记录到 Nudge 表的 idStatusLastDay中，
 		// 下次处理之处理 > idStatusLastDay 的
