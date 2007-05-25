@@ -213,8 +213,8 @@ function user_timeline_rss_n_atom($options)
 				'title'		=> $user['nameFull'] . ' - ' . $status_rows[$status_id]['status']
 				, 'desc'	=> $user['nameFull'] . ' - ' . $status_rows[$status_id]['status']
 				, 'date'	=> $status_rows[$status_id]['timeCreate']
-				, 'guid'	=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
-				, 'url'		=> "http:/JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
+				, 'guid'	=> "http://JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
+				, 'url'		=> "http://JiWai.de/" . $user['nameScreen'] ."/statuses/". $status_rows[$status_id]['idStatus']
 				, 'author'	=> $user['nameFull']
 			) );
 	}
