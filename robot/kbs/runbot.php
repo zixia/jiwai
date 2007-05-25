@@ -1,4 +1,7 @@
 <?php
+if (!defined('BBS_MUTE')) 
+define('BBS_MUTE', false);
+
 require_once '../../jiwai.inc.php';
 
 /*
@@ -107,7 +110,7 @@ while (1) {
 		foreach($r as $m) pushRecvQueue($m['user'], $m['text'], $m['time']);
 	}
 
-	$robot_msgs = checkSendQueue();
+	$robot_msgs = BBS_MUTE ? array() : checkSendQueue();
 
 	if ( count($robot_msgs) ) {
 		$idle_circle = 0; // maybe other new msg! goto work.
@@ -123,13 +126,14 @@ while (1) {
 			$newsmth_user = $matches[1];
 
 			$c->sendMessage( $newsmth_user, $body );
+			echo "Sent to $newsmth_user\n";
 			$robot_msg->Destroy();
 		}
 	}
 
-	if (!$this->checkLogin()) {
+	if (!$c->checkLogin()) {
 		echo "Offline, try relogin.\n";
-		$this->login();
+		$c->login();
 		$idle_circle = 0;
 	}
 }
