@@ -199,7 +199,7 @@ function user_timeline_rss_n_atom($options)
 
 	$feed_img	= JWFeed::FeedImage($img_options);
 
-	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull']
+	$feed = new JWFeed( array (	'title'		=> '叽歪de / ' . $user['nameFull']
 							, 'url'		=> $user_url
 							, 'desc'	=> $user['nameFull'] . '的叽歪'
 							, 'ttl'		=> 40

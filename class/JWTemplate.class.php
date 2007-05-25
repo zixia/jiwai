@@ -70,12 +70,12 @@ _STR_;
 _STR_;
 		else									$description = $options['description'];
 
-		if ( empty($options['author']) )	$author = '叽歪de <wo@jiwai.de>';
+		if ( empty($options['author']) )	$author = htmlspecialchars('叽歪de <wo@jiwai.de>');
 		else								$author = $options['author'];
 
 
 		$rss_html = <<<_HTML_
-<link rel="alternate"  type="application/rss+xml" ttitle="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 _HTML_;
 
 		if ( !empty($options['rss']) )	
@@ -101,7 +101,7 @@ _HTML_;
 			$refresh_html = '';
 		else
 			$refresh_html = <<<_HTML_
-<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url">
+<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
 
 
@@ -259,7 +259,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeypress="return (event.which == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeypress="if(event.ctrlKey && window.event.keyCode==13){return $('doingForm').submit();} else return (event.which == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
 					<div class="submit">
@@ -798,8 +798,8 @@ _HTML_;
     			</div>
 
     			<div>
-    				<label for="password">密码</label>
-					<br>
+    				<label for="pass">密码</label>
+					<br />
     				<input id="pass" name="password" type="password" style="width:158px"/>
     			</div>
 
@@ -1001,7 +1001,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/leave/$arr_user_info[id]">离开</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/leave/$arr_user_info[id]">退定</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -1393,14 +1393,17 @@ _HTML_;
 		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 
-		if ( preg_match('#((alpha)|(beta))\.jiwai\.de#i',$_SERVER["HTTP_HOST"],$matches) )
+		$domain = 'jiwai.de';
+
+		if ( empty($_SERVER['HTTP_HOST']) )
+		{
+			JWLog::Log(LOG_CRIT, "GetAssetUrl($absUrlPath) can't find HTTP_HOST");
+		}
+		else if ( preg_match('#((alpha)|(beta))\.jiwai\.de#i',$_SERVER["HTTP_HOST"],$matches) )
 		{
 			$domain		= "$matches[1].jiwai.de";
 		}
-		else
-		{
-			$domain		= 'jiwai.de';
-		}
+
 
 		// 同一个文件，总会被分配到同一个 n 上。
 		$n = crc32($absUrlPath) % $asset_num_max;

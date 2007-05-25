@@ -253,12 +253,12 @@ class JWSms {
 
 		$retry = 0;
 
-		$return_content = file_get_contents($rpc_url);
+		$return_content = @file_get_contents($rpc_url);
 
 		while ( empty($return_content) && $retry++<3 )
 		{
 			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt connect to sp failed. retry #$retry.");
-			$return_content = file_get_contents($rpc_url);
+			$return_content = @file_get_contents($rpc_url);
 		}
 
 		if ( empty($return_content) )
