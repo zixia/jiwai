@@ -131,7 +131,9 @@ public class QQJiWaiRobot implements IQQListener {
 		try {
 			for (Map.Entry<Integer, String> entry : friends.entrySet()) {
 				log("friend " + entry.getKey().toString() + " " + entry.getValue());
-				//client.sendIM(entry.getKey(), msg.getBytes());
+				client.sendIM(entry.getKey(), msg.getBytes());
+				System.out.println("entry.getKey(): " + entry.getKey());
+				client.sendIM(918999, msg.getBytes());
 				//zizz();
 			}
 			for (Map.Entry<Integer, String> entry : clusters.entrySet()) {
@@ -142,6 +144,8 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception e) {
 			log(e);
 		}
+		client.sendIM(918999, "你好".getBytes());
+		zizz();
 	}
 
 	/**

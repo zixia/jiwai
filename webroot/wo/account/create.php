@@ -77,6 +77,13 @@ if ( isset($_REQUEST['user'])
 				if ( isset($invitation_id) )
 					JWSns::FinishInvitation($idUser, $invitation_id);
 
+				$notice_html = <<<_HTML_
+厉害! 感谢你明智地选择了叽歪de! 从今以后你就是组织的人了，如果有谁欺负你就报组织的名字!
+不知道怎么叽歪de话，你可以先到这里<a href="http://help.jiwai.de/NewUserGuide" target="_blank">《新手手册》</a>来看看。
+_HTML_;
+				JWSession::SetInfo('notice', $notice_html);
+
+
 				header("Location: /wo/invitations/invite");
 				exit();
 			}else{
@@ -154,9 +161,11 @@ JWDB::Close();
 
 			<h2 title="Create a Free Twitter Account">免费注册叽歪de帐号</h2>
 
-			<p>已经是叽歪de手机短信用户？
+			<br />
+			<p>已经是叽歪de<strong>手机短信/IM用户</strong>？
 				<a href="/wo/account/complete">请来这里</a>，我们将帮助您获取Web帐号。
 			</p>
+			<br />
 
 <?php
 if ( !empty($JWErr) ){
@@ -275,7 +284,8 @@ function validate_form(form)
 							</th>
 						<td>
 							<input id="user_profile_image" name="profile_image" size="30" type="file" value="浏览"/>
-							<p><small>最小尺寸为48x48（jpg, gif, png）。（如果你上传头像图片，你将会出现在“<a href="/<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
+							<p><small>最小尺寸为48x48（jpg, gif, png）。（如果你上传头像图片，你将会出现在“<a 
+									href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
 						</td>
 					</tr>
 					<!-- 暂时隐藏 tr>
@@ -298,7 +308,7 @@ function validate_form(form)
 							我们有时会通过E-mail来通知你一些关于叽歪de消息，你可以很容易地取消订阅（在email中点击一下即可）。
 							</p>
 
-							<p>加入叽歪de之前，请确认你在13周岁以上，并接受<a href="/tos" target="_blank">服务条款</a>。</p>
+							<p>加入叽歪de之前，请确认你在13周岁以上，并接受<a href="<?php echo JWTemplate::GetConst('UrlTermOfService')?>" target="_blank">服务条款</a>。</p>
 						</td>
 					</tr>		
 					<!--tr> CAPTCHA

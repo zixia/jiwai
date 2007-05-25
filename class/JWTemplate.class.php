@@ -1335,6 +1335,8 @@ _HTML_;
 			self::$msJWConst = array (	'UrlContactUs'			=>	'http://help.jiwai.de/ContactUs'
 										,'UrlRegister'			=>	'/wo/account/create'
 										,'UrlPublicTimeline'	=>	'/public_timeline/'
+										,'UrlTermOfService'		=>	'http://help.jiwai.de/TOS'
+
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'
 
