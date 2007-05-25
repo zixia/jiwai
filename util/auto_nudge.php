@@ -31,6 +31,7 @@
 define ('CONSOLE',true);
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
+echo date("Y-m-d h:m:s", time()) . " AutoNudge start\n";
 
 $idStatusLastDay = JWAutoNudge::GetIdStatusLastDayProcessed();
 
@@ -50,14 +51,14 @@ foreach ( $nudge_user_ids as $idUser )
 {
 	$user_info = JWUser::GetUserInfo($idUser);
 
-	echo "$user_info[nameScreen]\n";
-
-}
-
-$nudge_message = <<<_NUDGE_
-JiWai挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
+	$nudge_message = <<<_NUDGE_
+小叽挠挠了您一下，提醒您更新JiWai！回复本消息既可更新。回复HELP了解更多。您的叽歪档案在: http://jiwai.de/$user_info[nameScreen]/ 
 _NUDGE_;
 
-JWNudge::NudgeUserIds($nudge_user_ids, $nudge_message, 'nudge');
+	echo "$nudge_message\n";
 
+	JWNudge::NudgeUserIds(array($idUser), $nudge_message, 'nudge');
+}
+
+echo date("Y-m-d h:m:s", time()) . " AutoNudge done\n";
 ?>
