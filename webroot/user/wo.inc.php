@@ -83,11 +83,25 @@ foreach ( $status_data['status_ids'] as $status_id )
 }
 
 
-$rss			= array ( 	 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
+$rss			= array ( 	
+							// User TimeLine RSS & Atom
+							 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
 									,'title'	=> "$page_user_info[nameFull] (RSS)"
+									,'type'		=> "rss"
 								)
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom"
+									,'title'	=> "$page_user_info[nameFull] (Atom)"
+									,'type'		=> "atom"
+								)
+
+							// Friends TimeLine RSS & Atom
 							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss"
 									,'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)"
+									,'type'		=> "rss"
+								)
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom"
+									,'title'	=> "$page_user_info[nameFull]和朋友们 (Atom)"
+									,'type'		=> "atom"
 								)
 						);
 

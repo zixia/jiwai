@@ -75,7 +75,7 @@ _STR_;
 
 
 		$rss_html = <<<_HTML_
-<link rel="alternate" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+<link rel="alternate"  type="application/rss+xml" ttitle="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 _HTML_;
 
 		if ( !empty($options['rss']) )	
@@ -84,7 +84,7 @@ _HTML_;
 			foreach ( $options['rss'] as $rss_item )
 			{
 				$rss_html .= <<<_HTML_
-<link rel="alternate" title="$rss_item[title]" href="$rss_item[url]" />
+	<link rel="alternate" type="application/$rss_item[type]+xml" title="$rss_item[title]" href="$rss_item[url]" />
 
 _HTML_;
 			}
@@ -114,7 +114,7 @@ _HTML_;
 	<meta name="keywords" content="$keywords" />
 	<meta name="description" content="$description" />
 	<meta name="author" content="$author" />
-	$rss_html
+$rss_html
 	$refresh_html
 
 
