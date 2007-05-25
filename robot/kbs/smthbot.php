@@ -1,4 +1,10 @@
 <?php
+define('BBS_URL',      'http://www4.newsmth.net');
+define('BBS_ID',       'JiWai');
+define('BBS_PASSWD',   '123789');
+define('BBS_JWNAME',   'newsmth');
+define('BBS_JWDOMAIN', 'newsmth.net');
+
 require_once '../../jiwai.inc.php';
 
 /*
@@ -28,8 +34,8 @@ function pushRecvQueue($user, $text, $time) {
 
 	echo "Got from $user: $text\n";
 
-	$address 	= "$user@newsmth.net";
-	$type		= "newsmth";
+	$address 	= $user.'@'.BBS_JWDOMAIN;
+	$type		= BBS_JWNAME;
 
 	$robot_msg = new JWRobotMsg();
 	$robot_msg->Set( $address, $type, $text );
@@ -77,24 +83,34 @@ function checkSendQueue() {
 
 require_once 'KBS/Client.php';
 
-$c = new KBS_Client('http://www4.newsmth.net', 'JiWai', '123789');
-while (!$c->loggedin) {
-	echo "Login failed, wait and retry\n";
-	sleep(15);
-	$c->login();
-}
-echo "Logged in.\n";
+$c = new KBS_Client(BBS_URL, BBS_ID, BBS_PASSWD);
 
 $idle_circle = 0; 				// default 0 ms, work hard.;
 $idle_circle_max = 1000 * 15; 	// 15 s
 
 while (1) {
-	print "."; // means a loop
+	while (!$c->loggedin) {
+		echo "Login failed, wait and retry\n";
+		sleep(10);
+		$c->login();
+	}
+	print "sleep $idle_circle ms\n";
+	// 根据刚刚是否有任务，决定睡多久
+	if ( 0==$idle_circle ) {
+		$idle_circle++;
+	} else {
+		$idle_circle *= 4; // 对水木宽容一些
+
+		if ( $idle_circle > $idle_circle_max )
+			$idle_circle = $idle_circle_max;
+
+		usleep($idle_circle * 1000);
+	}
 
 	$r = $c->receiveMessage();
 	if ($r){
 		$idle_circle = 0; // maybe other new msg! goto work.
-		 foreach($r as $m) pushRecvQueue($m['user'], $m['text'], $m['time']);
+		foreach($r as $m) pushRecvQueue($m['user'], $m['text'], $m['time']);
 	}
 
 	$robot_msgs = checkSendQueue();
@@ -117,17 +133,10 @@ while (1) {
 		}
 	}
 
-print "$idle_circle \n";
-	// 根据刚刚是否有任务，决定睡多久
-	if ( 0==$idle_circle ) {
-		$idle_circle++;
-	} else {
-		$idle_circle *= 4; // 对水木宽容一些
-
-		if ( $idle_circle > $idle_circle_max )
-			$idle_circle = $idle_circle_max;
-
-		usleep($idle_circle * 1000);
+	if (!$this->checkLogin()) {
+		echo "Offline, try relogin.\n";
+		$this->login();
+		$idle_circle = 0;
 	}
 }
 
