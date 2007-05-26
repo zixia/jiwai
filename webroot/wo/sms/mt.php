@@ -2,7 +2,7 @@
 $debug = false;
 
 if ( ! $debug )
-	die "Unauthorized.";
+	die ("Unauthorized.");
 
 
 $ERROR_CODE = array(	52	=> 'HE_ERR_MSG'
