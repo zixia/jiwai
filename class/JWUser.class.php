@@ -595,15 +595,12 @@ _SQL_;
 	{
 		$idUser = JWDB::CheckInt($idUser);
 
-		switch ( $device )
+		$supported_device_types = JWDevice::GetSupportedDeviceTypes();
+
+		if ( ! in_array($device, $supported_device_types) )
 		{
-			case	'sms':	// valid, fall down
-			case	'im':	// valid, fall down
-			case	'none':	// valid.
-				break;
-			default:
-				$device='none';
-				break;
+			JWLog::LogFuncName(LOG_CRIT, "SetSendViaDevice($idUser,$device) unsupported");
+			$device = 'none';
 		}
 
 		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));

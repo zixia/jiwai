@@ -8,7 +8,9 @@ if ( JWLogin::IsLogined() )
 ?>
 <html>
 
-<?php JWTemplate::html_head() ?>
+<?php 
+JWTemplate::html_head();
+?>
 
 
 <body class="front" id="front">

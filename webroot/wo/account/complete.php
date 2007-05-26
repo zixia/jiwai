@@ -137,10 +137,14 @@ function IsAddressBelongsToName($address,$name)
 	if ( empty($device_row) )
 		return false;
 
-	if ( $address!=@$device_row['sms']['address'] 
-			&& $address!=@$device_row['im']['address'] )
-		return false;
+	$ims = array_keys($device_row);
 
-	return true;
+	foreach ( $ims as $im )
+	{
+		if ( $address==$device_row[$im]['address'] )
+			return true;
+	}
+
+	return false;
 }
 ?>

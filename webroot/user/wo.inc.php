@@ -36,9 +36,9 @@ if ( $g_user_with_friends )
 	// 显示用户和好友的
 	$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
 
-	$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
+	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
 
-	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 }
 else
 {

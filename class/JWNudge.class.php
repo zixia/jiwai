@@ -56,55 +56,18 @@ class JWNudge {
 			$user_row	= $user_rows	[$user_id];
 			$device_row	= @$device_rows	[$user_id];
 
-			// device_num 只可能：0:没有，1:有一个（im or sms），2:两个都有（im and sms）
-			$device_num = count(@array_keys($device_row));
-
+			if ( empty($device_row) )
+				continue;
 			
-			switch( $device_num ) 
-			{	
-				case 0:
-					// 如果用户没有 sms / im ，处理下一个
-					continue;
-					break;
+			$device_send_via = $user_row['deviceSendVia'];
 
-				case 1:
-					$device_type	= array_keys($device_row);
-					$device_type	= $device_type[0];
-
-					if ( $device_type==$user_row['deviceSendVia'] ) {
-						JWNudge::NudgeDevice( $device_row, $device_type, $message, $messageType );
-					} else {
-						JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
+			if ( isset($device_row[$device_send_via]) )
+				JWNudge::NudgeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
+			else
+				JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
 											."[$user_row[deviceSendVia]]"
- 											."not equal for the only device type"
-											. "[$device_type] for user id[$user_id], skiped."
-										);
-					}
-
-					break;
-				
-				case 2:
-					// 用户有 im & sms, fall to default
-				default:
-					switch ( $user_row['deviceSendVia'] )
-					{
-						case 'sms':
-							// legal, fall to im
-						case 'im':
-							JWNudge::NudgeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
-							break;
-
-						case 'none':
-							//fall to default
-						default:
-							JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds skip User.deviceSendVia none for idUser"
-												. "[$user_id]"
-										);
-
-							break;
-					}
-					break;
-			}
+ 											."not exist in the device for user id[$user_id], skiped."
+								);
 		}
 		return true;
 	}
@@ -113,15 +76,15 @@ class JWNudge {
 	/*
 	 *	向一个 device 上发送消息
 	 *	@param	array	$deviceRow	JWDevice::GetDeviceRowsByUserIds 的返回结构
-	 *	@param	string	$smsOrIm	{'sms'|'im'}
+	 *	@param	string	$type	{'sms'|'msn',...}
 	 *	@param	string	$message
 	 *	@param	string	$messageType	{'nudge'|'direct_messages'}
 	 */
-	static public function NudgeDevice( $deviceRow, $smsOrIm, $message, $messageType )
+	static public function NudgeDevice( $deviceRow, $type, $message, $messageType )
 	{
 		// 对特定的 device ( sms / im） - 查看 Device.enabledFor:
 		// enabledFor 可能有三个值: everything / nothing / direct_messages
-		switch ( $deviceRow[$smsOrIm]['enabledFor'] )
+		switch ( $deviceRow[$type]['enabledFor'] )
 		{
 			case 'direct_messages':
 				if ( 'direct_messages'!=$messageType )
@@ -131,19 +94,18 @@ class JWNudge {
 			case 'everything':
 
 				// 检查设备是否已经验证通过
-				$is_verified= $deviceRow[$smsOrIm]['verified'];
+				$is_verified= $deviceRow[$type]['verified'];
 				if ( !$is_verified )
 				{
 					JWLog::Log(LOG_INFO, "JWNudge::Nudge skip unverfied device for idUser"
-										. '[' . $deviceRow[$smsOrIm]['idUser'] . ']'
-										. ' of device [' . $deviceRow[$smsOrIm]['type']
-											. ':' .  $deviceRow[$smsOrIm]['address']
+										. '[' . $deviceRow[$type]['idUser'] . ']'
+										. ' of device [' . $type
+											. ':' .  $deviceRow[$type]['address']
 								);
 					break;
 				}
 
-				$type		= $deviceRow[$smsOrIm]['type'];
-				$address 	= $deviceRow[$smsOrIm]['address'];
+				$address 	= $deviceRow[$type]['address'];
 
 				JWRobot::SendMtRaw($address, $type, $message);
 
@@ -153,9 +115,9 @@ class JWNudge {
 				// fall to default
 			default:
 				JWLog::Log(LOG_INFO, "JWNudge::Nudge skip Device.enabledFor nothing for idUser"
-									. '[' . $deviceRow[$smsOrIm]['idUser'] . ']'
-									. ' of device [' . $deviceRow[$smsOrIm]['type']
-										. ':' .  $deviceRow[$smsOrIm]['address']
+									. '[' . $deviceRow[$type]['idUser'] . ']'
+									. ' of device [' . $type
+										. ':' .  $deviceRow[$type]['address']
 							);
 				break;
 		}

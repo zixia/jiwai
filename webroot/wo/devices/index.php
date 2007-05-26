@@ -5,31 +5,12 @@ JWLogin::MustLogined();
 
 JWDebug::init();
 
-$aDeviceInfo = JWDevice::GetDeviceRowByUserId( JWLogin::GetCurrentUserId() );
-$name_screen = JWUser::GetUserInfo( JWLogin::GetCurrentUserId(), 'nameScreen' );
+$name_screen 	= JWUser::GetUserInfo( JWLogin::GetCurrentUserId(), 'nameScreen' );
+
+$device_row 	= JWDevice::GetDeviceRowByUserId( JWLogin::GetCurrentUserId() );
+
 
 $sms_or_im = isset($_REQUEST['im'])?'im':'sms';
-
-if ( isset($aDeviceInfo['im']['type']) )
-{
-	$im_type 		= $aDeviceInfo['im']['type'];
-	$im_name		= JWDevice::GetNameFromType($im_type);
-
-	switch ( $im_type )
-	{
-		case 'newsmth':
-			$im_robot = 'JiWai';
-			break;
-		case 'qq':
-			$im_robot = '229516989';
-			break;
-
-		default:
-			$im_robot = 'wo@jiwai.de';
-			break;
-	}
-}
-
 
 ?>
 <html>
@@ -68,7 +49,7 @@ width:12em;
 
 
 <?php 
-JWTemplate::UserSettingNav("device_$sms_or_im"); 
+JWTemplate::UserSettingNav("device"); 
 ?>
 
 <?php JWTemplate::ShowActionResultTips() ?>
@@ -76,16 +57,16 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
 			<p>通过你的手机和即时聊天软件来感受更多叽歪de乐趣！现在就绑定你的手机或QQ、MSN、GTalk吧！</p>
 
 			<table class="device" cellspacing="0">
+
+
 <?php if ( 'im'!=$sms_or_im ) { // start SMS_setting ?>
-				<tr class="<?php if( empty($aDeviceInfo['sms']['verified']) 
-										|| !$aDeviceInfo['sms']['verified'] ) echo 'not_verified'?>">
+				<tr class="<?php if( !$device_row['sms']['verified'] ) echo 'not_verified'?>">
   					<td class="thumb"><img alt="手机短信" src="http://asset.jiwai.de/img/phone.png" /></td>
 
 					<td>
           				<h3>手机号码</h3>
 
-<?php if ( !isset($aDeviceInfo['sms']) || null==$aDeviceInfo['sms']) { // no sms at all 
-?>
+<?php if ( empty($device_row['sms']) ) { // no sms at all ?>
 						<form action="/wo/devices/create" id="create_device" method="post">
   
 
@@ -94,22 +75,22 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
     						<input name="commit" type="submit" value="保存" />
 							<p><small>例如：13800138000(移动) 或 13300133000(联通)
 								<!-- FIXME: 手机设置的帮助URL -->
-								[<a href="http://jiwai.de/help/">?</a>]</small>
+								[<a href="http://help.jiwai.de/NewUserGuide">?</a>]</small>
 							</p>
   
 						</form>
 
-<?php } else if ( ! $aDeviceInfo['sms']['verified'] ){ // sms not verified ?>
-            			<h4>为了验证您的手机号码(<?php echo $aDeviceInfo['sms']['address']?>)，请将如下验证码发送到短信特服号：
-      						<strong> <?php echo JWDevice::GetMobileSpNo($aDeviceInfo['sms']['address']) ?> </strong>
-							<code><?php echo $aDeviceInfo['sms']['secret']?></code>
+<?php } else if ( ! $device_row['sms']['verified'] ){ // sms not verified ?>
+            			<h4>为了验证您的手机号码(<?php echo $device_row['sms']['address']?>)，请将如下验证码发送到短信特服号：
+      						<strong> <?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']) ?> </strong>
+							<code><?php echo $device_row['sms']['secret']?></code>
 						</h4>
 
 						<p>注意：<strong>免费</strong>通过手机短信更新叽歪de内容。发送短信到叽歪de特服号，跟日常短信一样，只需付给你的手机运营商一条普通短信的费用。 </p>
   
 
 						<small>
-							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to"><div><input name="_method" type="hidden" value="delete" /><input onclick="return confirm('请确认删除手机号码：<?php echo $aDeviceInfo['sms']['address']?>');" type="submit" value="删除，然后重新设置？" /></div></form></small>
+							<form method="post" action="/wo/devices/destroy/<?php echo $device_row['sms']['idDevice']?>" class="button-to"><div><input name="_method" type="hidden" value="delete" /><input onclick="return confirm('请确认删除手机号码：<?php echo $device_row['sms']['address']?>');" type="submit" value="删除，然后重新设置？" /></div></form></small>
 
     
   </td>
@@ -118,19 +99,19 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
 <?php }else{ // already verified ?>
 
 
-						<h3> <?php echo $aDeviceInfo['sms']['address']?> </h3>
+						<h3> <?php echo $device_row['sms']['address']?> </h3>
 
 						通知：
 
-						<form action="/wo/devices/enable/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="device_control" id="device_<?php echo $aDeviceInfo['sms']['idDevice']?>_updates_form" method="post">
+						<form action="/wo/devices/enable/<?php echo $device_row['sms']['idDevice']?>" class="device_control" id="device_<?php echo $device_row['sms']['idDevice']?>_updates_form" method="post">
 							<select name="device[enabled_for]">
-  								<option <?php if ('everything'==$aDeviceInfo['sms']['enabledFor']) 
+  								<option <?php if ('everything'==$device_row['sms']['enabledFor']) 
 											echo 'selected="selected" ';
 										?> value="everything">开启</option>
-  								<option <?php if ('nothing'==$aDeviceInfo['sms']['enabledFor']) 
+  								<option <?php if ('nothing'==$device_row['sms']['enabledFor']) 
 											echo 'selected="selected" ';
 										?> value="nothing">关闭</option>
-  								<option  <?php if ('direct_messages'==$aDeviceInfo['sms']['enabledFor']) 
+  								<option  <?php if ('direct_messages'==$device_row['sms']['enabledFor']) 
 											echo 'selected="selected" ';
 										?> value="direct_messages">只收悄悄话</option>
 							</select>
@@ -138,16 +119,16 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
 						</form>
 
 						<p><small>手机短信发送到: 
-      						<strong> <?php echo JWDevice::GetMobileSpNo($aDeviceInfo['sms']['address']) ?> </strong>
+      						<strong> <?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']) ?> </strong>
 						</small></p>
 
 						<p>注意：<strong>免费</strong>通过手机短信更新叽歪de内容。发送短信到叽歪de特服号，跟日常短信一样，只需付给你的手机运营商一条普通短信的费用。 </p>
 
 						<small>
-							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['sms']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $device_row['sms']['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" type="hidden" value="delete" />
-									<input onclick="return confirm('请确认删除手机号码：<?php echo $aDeviceInfo['sms']['address']?>');" type="submit" value="删除?" />	
+									<input onclick="return confirm('请确认删除手机号码：<?php echo $device_row['sms']['address']?>');" type="submit" value="删除?" />	
 								</div>
 							</form>
 						</small>
@@ -162,82 +143,83 @@ JWTemplate::UserSettingNav("device_$sms_or_im");
 } // end SMS_setting 
 else
 { // start IM_setting
+	$supported_ims = JWDevice::GetSupportedDeviceTypes();
+
+	// 用来记录已经绑定的 im 
+	$binded_ims	= array();
+
+	foreach ( $supported_ims as $im ) 
+	{
+		if ( 'sms'==$im )
+			continue;
+
+		if ( isset($device_row[$im]) )	
+			array_push($binded_ims, $im);
+	}
+
+	$non_binded_ims	= array_diff($supported_ims, $binded_ims);
+
+	foreach ( $binded_ims as $im )
+	{
+
+		$im_robot 	= JWDevice::GetRobotFromType($im);
+		$im_name 	= JWDevice::GetNameFromType	($im);
 ?>
 
-				<tr class="<?php if ( empty($aDeviceInfo['im']['verified'])
-										|| !$aDeviceInfo['im']['verified']) echo 'not_verified'?>">
+				<tr class="<?php if ( !$device_row[$im]['verified']) echo 'not_verified'?>">
   					<td class="thumb"><img alt="Im" src="http://asset.jiwai.de/img/im.png" /></td>
   					<td>
-          				<h3>聊天(IM)帐号</h3>
+          				<h3><?php echo $im_name?>帐号</h3>
 
 
-<?php if ( empty($aDeviceInfo['im']) ) { // no im at all ?>
 
-
-						<form action="/wo/devices/create" id="create_device" method="post">
-  
-    						<input id="device_address" name="device[address]" size="30" type="text" />
-
-							<select name="device[type]">
-								<option value="gtalk">GTalk</option>
-								<option value="newsmth">水木社区</option>
-								<option value="msn">MSN（我们很快会支持QQ！）</option>
-<!--
-								<option value="qq">QQ</option>
-								<option value="jabber">Jabber</option>
--->
-							</select>
-    						<input name="commit" type="submit" value="保存" />
-  
-						</form>
-
-
-<?php } else if ( ! $aDeviceInfo['im']['verified'] ){ // not verified 
-
+<?php 
+		if ( ! $device_row[$im]['verified'] )
+		{ // not verified 
 ?>
 
+  						<h4>请验证你的<?php echo $im_name?>帐号：<?php echo $device_row[$im]['address']?></h4>
 
-  						<h4><!--请点击-->验证你的聊天(IM)帐号 (<?php echo $im_type . ":" . $aDeviceInfo['im']['address']?>): 
-							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
-						</h4>
-
-  						<p><!--直接点击无法验证？-->请在 <strong><?php echo $im_name?></strong> 上，将
-							<!--a href="xmpp:wo@jiwai.de?message;body=<?php echo $aDeviceInfo['im']['secret']?>">wo@jiwai.de</a-->
-								<strong><?php echo $im_robot?></strong>
-							 加为你的 <strong><?php echo $im_type?></strong> 好友，然后将如下验证码发送消息给她即可：
-     						<code><?php echo $aDeviceInfo['im']['secret']?></code>
+  						<p>
+							1、请在<strong><?php echo $im_name?></strong>上，将<strong><?php echo $im_robot?></strong>加为你的<strong><?php echo $im_name?></strong>好友；<br />
+							2、将如下验证码通过<strong><?php echo $im_name?></strong>发送消息给她进行验证：
+     						<code><?php echo $device_row[$im]['secret']?></code>
   						</p>
 
 						<small>
-							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $device_row[$im]['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" value="delete" type="hidden">
-									<input onclick="return confirm('请你确认删除帐号：<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>')" 
+									<input onclick="return confirm('请你确认删除帐号：<?php echo $im_name . ":" . $device_row[$im]['address']?>')" 
 											value="删除，然后重新设置？" type="submit">
 								</div>
 							</form>
 						</small>
 
 
-<?php }else{ // already verified ?>
+<?php 	
+		}
+		else
+		{ // already verified 
+?>
 
 
-						<h3> <?php echo $aDeviceInfo['im']['address'] 
-										. "(" . $aDeviceInfo['im']['type'] . ")" ?> </h3>
+						<h3> <?php echo $device_row[$im]['address'] 
+										. "($im_name)" ?> </h3>
 
 						通知：
 			
-						<form action="/wo/devices/enable/<?php echo $aDeviceInfo['im']['idDevice']?>" class="device_control" 
-								id="device_<?php echo $aDeviceInfo['im']['idDevice']?>_updates_form" method="post">
+						<form action="/wo/devices/enable/<?php echo $device_row[$im]['idDevice']?>" class="device_control" 
+								id="device_<?php echo $device_row[$im]['idDevice']?>_updates_form" method="post">
 
 							<select name="device[enabled_for]">
-  								<option <?php if ('everything'==$aDeviceInfo['im']['enabledFor']) 
+  								<option <?php if ('everything'==$device_row[$im]['enabledFor']) 
 											echo 'selected="selected" ';
 										?>value="everything">开启</option>
-  								<option <?php if ('nothing'==$aDeviceInfo['im']['enabledFor']) 
+  								<option <?php if ('nothing'==$device_row[$im]['enabledFor']) 
 											echo 'selected="selected" ';
 										?>value="nothing">关闭</option>
-  								<option <?php if ('direct_messages'==$aDeviceInfo['im']['enabledFor']) 
+  								<option <?php if ('direct_messages'==$device_row[$im]['enabledFor']) 
 											echo 'selected="selected" ';
 										?>value="direct_messages">只收悄悄话</option>
 							</select>
@@ -252,24 +234,65 @@ else
 
 
 						<small>
-							<form method="post" action="/wo/devices/destroy/<?php echo $aDeviceInfo['im']['idDevice']?>" class="button-to">
+							<form method="post" action="/wo/devices/destroy/<?php echo $device_row[$im]['idDevice']?>" class="button-to">
 								<div>
 									<input name="_method" value="delete" type="hidden">
-									<input onclick="return confirm('请确认删除帐号：<?php echo strtoupper($aDeviceInfo['im']['type']) . ":" . $aDeviceInfo['im']['address']?>？');" 
+									<input onclick="return confirm('请确认删除帐号：<?php echo "$im_name: " . $device_row[$im]['address']?>？');" 
 											value="删除？" type="submit">
 								</div>
 							</form>
 						</small>
 
 
-<?php } // end im active judge ?>
-
-<?php 
-} // end IM_setting 
-?>
+<?php 	} // end im active judge ?>
 
 					</td>
 				</tr>
+<?php
+	}	// end foreach binded im
+
+	// 对于系统支持，用户还没有绑定的 IM，做出列表
+	if ( count($non_binded_ims) )
+	{
+?>
+				<tr class="not_verified">
+  					<td class="thumb"><img alt="Im" src="http://asset.jiwai.de/img/im.png" /></td>
+  					<td>
+          				<h3>聊天(IM)帐号</h3>
+
+						<form action="/wo/devices/create" id="create_device" method="post">
+  
+    						<input id="device_address" name="device[address]" size="30" type="text" />
+
+							<select name="device[type]">
+<?php
+		foreach ( $non_binded_ims as $im )
+		{
+			if ( 'sms'==$im )
+				continue;
+
+			$im_name = JWDevice::GetNameFromType($im);
+			echo <<<_HTML_
+								<option value="$im">$im_name</option>
+_HTML_;
+		}
+?>
+							</select>
+    						<input name="commit" type="submit" value="保存" />
+  
+						</form>
+
+
+					</td>
+				</tr>
+
+<?
+	}
+		
+} // end IM_setting 
+?>
+
+
 			</table>
 
 

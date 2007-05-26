@@ -106,8 +106,7 @@ class JWDevice {
 	/*
 	 *	批量处理用户的 device 信息，返回一个较为复杂结构的数组，结构如下
 	 *	@return 	device_info
-	 *					[$idUser][sms]
-	 *					[$idUser][im]
+	 *					[$idUser][$type]
 										[idDevice]	int
 	 *									[address]	string
 	 *									[secret]	string
@@ -138,19 +137,15 @@ _SQL_;
 
 		foreach ( $db_rows as $db_row )
 		{
-			$user_id = $db_row['idUser'];
+			$user_id 	= $db_row['idUser'];
+			$type 		= $db_row['type'];
 
 			if ( empty($db_row['enabledFor']) )
 				$db_row['enabledFor'] = 'nothing';
 
-			// 按照 sms / msn / gtalk 等进行分类数组存放
-			if ( $db_row['type'] === 'sms' ){
-				$device_rows[$user_id]['sms'] 				= $db_row;
-				$device_rows[$user_id]['sms']['verified'] 	= empty($db_row['secret']);
-			}else{ // qq/msn/gtalk/jaber...
-				$device_rows[$user_id]['im'] 				= $db_row;
-				$device_rows[$user_id]['im']['verified'] 	= empty($db_row['secret']);
-			}
+
+			$device_rows[$user_id][$type] 				= $db_row;
+			$device_rows[$user_id][$type]['verified'] 	= empty($db_row['secret']);
 		}
 
 		return $device_rows;
@@ -159,12 +154,11 @@ _SQL_;
 
 	/*
 	 *	@return 	device_info
-	 *					[sms][idDevice]
-	 *					[sms][address]
-	 *					[sms][secret]
-	 *					[sms][verified]
-						[sms][enabledFor]
-	 *				so as [im]
+	 *					[type][idDevice]
+	 *					[type][address]
+	 *					[type][secret]
+	 *					[type][verified]
+						[type][enabledFor]
 	 */
 	static public function GetDeviceRowByUserId( $idUser )
 	{
@@ -588,6 +582,30 @@ _SQL_;
 
 
 	/*
+	 *	根据 Device Type 返回机器人帐号
+	 */
+	static public function GetRobotFromType($type)
+	{
+		switch ( $type )
+		{
+			case 'sms':
+				$name='99118816(移动) 83188816(联通)';
+				break;
+			case 'newsmth':
+				$name='JiWai';
+				break;
+			case 'qq':
+				$name='229516989(很快会更换短号码)';
+				break;
+			default:
+				$name='wo@jiwai.de';
+		}
+
+		return $name;
+	}
+
+
+	/*
 	 *	根据 Device Type 返回好看的字符串
 	 */
 	static public function GetNameFromType($type)
@@ -599,6 +617,9 @@ _SQL_;
 				break;
 			case 'gtalk':
 				$name='GTalk';
+				break;
+			case 'jabber':
+				$name='Jabber';
 				break;
 			case 'newsmth':
 				$name='水木社区';
@@ -620,5 +641,9 @@ _SQL_;
 		return empty($device_db_row['secret']);
 	}
 
+	static public function GetSupportedDeviceTypes()
+	{
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'jabber' );
+	}
 }
 ?>

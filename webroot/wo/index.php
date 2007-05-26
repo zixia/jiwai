@@ -122,21 +122,21 @@ JWTemplate::pagination($pagination);
 $arr_count_param	= JWSns::GetUserState($logined_user_id);
 
 
-$arr_device_active	= JWDevice::GetDeviceRowByUserId($logined_user_id);
+$device_row			= JWDevice::GetDeviceRowByUserId($logined_user_id);
 
 $active_options = array();
 
-if ( isset($arr_device_active['im']) 
-							&& $arr_device_active['im']['verified']  )
+$supported_device_types = JWDevice::GetSupportedDeviceTypes();
+
+foreach ( $supported_device_types as $type )
 {
-	$active_options['im']	= true;
+	if ( isset($device_row[$type]) 
+				&& $device_row[$type]['verified']  )
+		$active_options[$type]	= true;
+	else
+		$active_options[$type] 	= false;
 }
 
-if ( isset($arr_device_active['sms']) 
-							&& $arr_device_active['sms']['verified'] )
-{
-	$active_options['sms']	= true;
-}
 
 $arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
 

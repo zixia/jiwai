@@ -61,7 +61,7 @@ class JWTemplate {
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下
+叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下
 _STR_;
 		else								$keywords = $options['keywords'];
 
@@ -103,6 +103,11 @@ _HTML_;
 			$refresh_html = <<<_HTML_
 <meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
+
+
+		// SEO attack to fanfou.com
+		$keywords 		.= "是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否";
+		$description	.= "类似网站有饭否(你今天饭否?是否饭了,吃饭否,有没有饭否,什么时候饭否,要不要饭否的意思)";
 
 
 		echo <<<_HTML_
@@ -1171,28 +1176,37 @@ _HTML_;
 
 	/*
 	 *	显示通知信息发送到的位置，以及激活界面（如果有未激活的设备的话）
-	 *	@param	array	$activeOptions	array('im'=>, 'sms'=>)
+	 *	@param	array	$activeOptions	array('msn'=>, 'sms'=>, ...)
 	 *	@param	string	$viaDevice		'sms' or 'im' or 'web'
 	 */
 	static function sidebar_jwvia($activeOptions, $viaDevice)
 	{
-		$smsActived	=	isset($activeOptions['sms']) 	? true : false;
-		$imActived	=	isset($activeOptions['im']) 	? true : false;
+		$supported_device_types = JWDevice::GetSupportedDeviceTypes();
 
+		$has_active_device = false;
+
+		foreach ( $supported_device_types as $type )
+		{
+			if ( $activeOptions[$type] )
+			{
+				$has_active_device = true;
+				break;
+			}
+		}
 ?>
 		<ul>
 			<li>
 				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
 					<fieldset>
 <?php 
-		if ( $smsActived || $imActived ) 
+		if ( $has_active_device ) 
 		{ 
 ?>
-						<h4>发送通知消息到:</h4>
+						<h4 style="font-size: 12px">发送通知消息到:</h4>
 <?php 
 		}
 
-		if ( $smsActived )
+		if ( $activeOptions['sms'] )
 		{
 ?>
 						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').send()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
@@ -1201,16 +1215,26 @@ _HTML_;
 <?php
 		}
 						
-		if ( $imActived )
-		{
-?>
-						<input id="current_user_send_via_im" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ('im'==$viaDevice) echo ' checked="checked" '; ?> value="im" />
-						<label for="current_user_send_via_im">聊天软件</label>
 
+		$has_active_device_im = false;
+		foreach ( $supported_device_types as $type )
+		{
+			if ( 'sms'==$type )	continue;
+
+			$im_name = JWDevice::GetNameFromType($type);
+
+			if ( $activeOptions[$type] )
+			{
+				$has_active_device_im = true;
+?>
+						<input id="current_user_send_via_<?php echo $type?>" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ($type==$viaDevice) echo ' checked="checked" '; ?> value="<?php echo $type?>" />
+						<label for="current_user_send_via_<?php echo $type?>"><?php echo $im_name?></label>
 <?php
+			}
+
 		}
 
-		if ( $smsActived || $imActived )
+		if ( $has_active_device )
 		{
 ?>
 						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('none'==$viaDevice) echo ' checked="checked" '; ?> value="none" />
@@ -1225,14 +1249,15 @@ _HTML_;
 
 		<ul>
 <?php
-		if ( !$smsActived )
+		if ( !$activeOptions['sms'] )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/devices/?sms">启用手机！</a></li>
+			<li><a href="/wo/devices/?sms">启用手机短信！</a></li>
 _HTML_;
 		}
 	
-		if ( !$imActived )
+		
+		if ( !$has_active_device_im )
 		{
 			echo <<<_HTML_
 			<li><a href="/wo/devices/?im">启用聊天软件！</a></li>
@@ -1354,8 +1379,9 @@ _HTML_;
 	{
 		$arr_menu = array ( 'account'		=> array ( '/wo/account/settings'	, '帐号' )
 							, 'password'	=> array ( '/wo/account/password'	, '密码')
-							, 'device_sms'	=> array ( '/wo/devices/?sms'		, '手机短信')
-							, 'device_im'	=> array ( '/wo/devices/?im'			, '聊天软件')
+							//, 'device'		=> array ( '/wo/devices/'			, '手机短信/聊天软件')
+							, 'device_sms'  => array ( '/wo/devices/?sms'           , '手机短信')
+							, 'device_im'  => array ( '/wo/devices/?im'           , '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification', '通知')
 							, 'picture'		=> array ( '/wo/account/picture'	, '头像')
 //							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')

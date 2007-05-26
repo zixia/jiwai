@@ -56,7 +56,7 @@ alert('ok');
 			yft_element.effect(
 				'background-color'
 				,{
-				 	duration: 5000
+				 	duration: 3000
 					,transition: Fx.Transitions.Quad.easeOut
 				}
 			).start(
@@ -68,7 +68,7 @@ alert('ok');
 					(
 					 	'background-color'
 						,{
-						 	duration: 1500
+						 	duration: 1000
 							,transition: Fx.Transitions.Bounce.easeOut
 						}
 					).start(yellow_color,orig_color)

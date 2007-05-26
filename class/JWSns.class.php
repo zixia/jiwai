@@ -409,12 +409,7 @@ class JWSns {
 		$user_id = JWDevice::Verify($address , $type , $secret);
 		
 		if ( $user_id )
-		{
-			if ( 'sms'!=$type )
-				$type = 'im';
-
 			$ret = JWUser::SetSendViaDevice($user_id, $type);
-		}
 
 		if ( !$ret )
 			return false;
@@ -438,8 +433,6 @@ class JWSns {
 			return false;
 		}
 
-		if ( 'sms'!=$type )
-			$type = 'im';
 
 		if ( ! JWUser::SetSendViaDevice($idUser, $type) )
 			JWLog::LogFuncName(LOG_CRIT, "JWUser::SetSendViaDevice($idUser, $type) failed."); 
@@ -456,28 +449,15 @@ class JWSns {
 	{
 		$ret = false;
 
-		$device_rows 	= JWDevice::GetDeviceDbRowsByIds(array($idDevice));
-		$device_row		= $device_rows[$idDevice];
+		$device_row 	= JWDevice::GetDeviceDbRowById($idDevice);
 
 		$user_id				= $device_row['idUser'];
 		$destroy_device_type	= $device_row['type'];
 
 		$send_via_device	= JWUser::GetSendViaDevice($user_id);
 
-		if ( 'none'!=$send_via_device )
-		{
-			$device_map		= JWDevice::GetDeviceRowsByUserIds(array($user_id));
-			$device_info	= $device_map[$user_id];
-
-			$device_types		= array_keys($device_info);
-			$left_device_types	= array_diff($device_types, array($destroy_device_type) );
-
-			if ( !empty($left_device_types) ){
-				JWUser::SetSendViaDevice( $user_id, array_shift($left_device_types) );
-			} else {
+		if ( $destroy_device_type==$send_via_device )
 				JWUser::SetSendViaDevice( $user_id, 'none');
-			}
-		}
 
 		return JWDevice::Destroy($idDevice);
 	}
