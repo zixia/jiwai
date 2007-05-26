@@ -251,6 +251,7 @@ else
 	}	// end foreach binded im
 
 	// 对于系统支持，用户还没有绑定的 IM，做出列表
+	$non_binded_ims = array_diff($non_binded_ims, array('sms'));
 	if ( count($non_binded_ims) )
 	{
 ?>
@@ -267,9 +268,6 @@ else
 <?php
 		foreach ( $non_binded_ims as $im )
 		{
-			if ( 'sms'==$im )
-				continue;
-
 			$im_name = JWDevice::GetNameFromType($im);
 			echo <<<_HTML_
 								<option value="$im">$im_name</option>
