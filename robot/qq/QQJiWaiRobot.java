@@ -410,7 +410,7 @@ public class QQJiWaiRobot implements IQQListener {
 				+ " " + address + ": " + body );
 
 		
-		Long 	time_millis, sec, msec;
+		long 	time_millis, sec, msec;
 		String	file_path_name;
 		File	msg_file;
 
@@ -443,6 +443,7 @@ public class QQJiWaiRobot implements IQQListener {
 	
 	private LinkedList jiwaiQueueMt()
 	{
+//ArrayList
 
 		LinkedList robot_msgs = new LinkedList();
 		
@@ -524,6 +525,28 @@ public class QQJiWaiRobot implements IQQListener {
 	 */
 	public static void main(String[] args) 
 	{
+
+/* by nullgate 2007-05-26
+		org.apache.log4j.net.SyslogAppender ap = new org.apache.log4j.net.SyslogAppender(new org.apache.log4j.PatternLayout(),16<<3);
+
+		ap.setSyslogHost("127.0.0.1");
+
+		ap.setThreshold(org.apache.log4j.Level.DEBUG);
+
+
+
+//		ap.setFacility("LOCAL0");
+		System.out.println(ap.getFacility()+"|"+ap.getSyslogHost()+""+ap.getThreshold());
+
+		Logger log = Logger.getLogger("");
+
+		log.addAppender(ap);
+
+		log.debug("shit");
+
+		System.exit(0);
+*/
+
 		log("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
 		log("Created robot");
