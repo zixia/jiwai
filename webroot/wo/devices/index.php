@@ -228,8 +228,7 @@ else
 						</form>
 
 						<p><small>
-							发送更新到：<strong>
-								<?php echo $im_name?> </strong> 上的 <strong> <?php echo $im_robot?> </strong>
+							发送更新消息给：<strong><?php echo $im_name?></strong>上的<strong><?php echo $im_robot?></strong>(不要发邮件)
 						</small></p>
 
 

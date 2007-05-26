@@ -643,7 +643,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'jabber' );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth'/*, 'jabber'*/ );
 	}
 }
 ?>

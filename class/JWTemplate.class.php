@@ -384,7 +384,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 						<td class="bg_tab_top_left">
 						</td>
 						<td class="bg_tab_top_mid">
-							<h2><?php echo $vars['title']; ?></h2>
+							<h2 style="font-size:18px"><?php echo $vars['title']; ?></h2>
 						</td>
 						<td class="bg_tab_top_right">
 						</td>
