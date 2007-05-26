@@ -32,6 +32,12 @@ import edu.tsinghua.lumaqq.qq.packets.in.GetFriendListReplyPacket;
 import edu.tsinghua.lumaqq.qq.packets.in.GetOnlineOpReplyPacket;
 import edu.tsinghua.lumaqq.qq.packets.in.ReceiveIMPacket;
 
+// zixia used:
+import java.util.LinkedList;
+import java.io.File;
+import java.io.FileReader;
+import java.util.regex.*;
+
 public class QQJiWaiRobot implements IQQListener {
 	private QQClient client;
 	private QQUser user;
@@ -58,6 +64,9 @@ public class QQJiWaiRobot implements IQQListener {
 	private Hashtable<Integer, String> onlines;
 	private String msg;
 	private boolean onlineFinished = false;
+
+	private String	mPathMo = null;
+	private String	mPathMt = null;
 
 //	private static final Logger logger = org.apache.log4j.Logger.getLogger(QQJiWaiRobot.class);
 
@@ -161,6 +170,10 @@ public class QQJiWaiRobot implements IQQListener {
 				useProxy = false;
 			}
 			msg = config.getProperty("msg", "test");
+
+			mPathMo = config.getProperty("path_mo");
+			mPathMt = config.getProperty("path_mt");
+
 			return true;
 		} catch (Exception e) {
 			log(e);
@@ -247,7 +260,6 @@ public class QQJiWaiRobot implements IQQListener {
 	}
 
 	private void processFriendOnline(QQEvent e) {
-/*
 		try {
 			GetOnlineOpReplyPacket p = (GetOnlineOpReplyPacket) e.getSource();
 			for (FriendOnlineEntry f : p.onlineFriends) {
@@ -269,7 +281,6 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
-*/
 		
 	}
 
@@ -335,7 +346,6 @@ public class QQJiWaiRobot implements IQQListener {
 	}
 
 	private void processGroupFriend(QQEvent e) {
-/*
 		try {
 			DownloadGroupFriendReplyPacket p = (DownloadGroupFriendReplyPacket) e
 					.getSource();
@@ -354,11 +364,9 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
-*/
 	}
 
 	private void processFriendList(QQEvent e) {
-/*
 		try {
 			GetFriendListReplyPacket p = (GetFriendListReplyPacket) e
 					.getSource();
@@ -374,26 +382,19 @@ public class QQJiWaiRobot implements IQQListener {
 		} catch (Exception ex) {
 			log(ex);
 		}
-*/
 	}
 
 	private void processNormalIM(QQEvent e) {
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
 			ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
 			NormalIM m = p.normalIM;
 
-			Integer	sender_account 	= p.normalHeader.sender;
+			Integer	sender_address 	= p.normalHeader.sender;
 			//String 	sender_name 	= friends.get(p.normalHeader.sender);
 			//if (senderName == null) senderName = "";
 
-			
-			log(sdf.format(new Date(p.normalHeader.sendTime)) + "["
-					+ p.normalHeader.sender
-					+ " "
-					+ senderName
-					+ "]"
-					+ new String(m.messageBytes,"GBK"));
+			//client.sendIM(sender_address,m.messageBytes);
+			jiwaiQueueMo(sender_address, new String(m.messageBytes,"GBK"), p.normalHeader.sendTime);
 
 		} catch (Exception ex) {
 			log(ex);
@@ -402,32 +403,179 @@ public class QQJiWaiRobot implements IQQListener {
 		
 	}
 
-	
-	private void checkMtQueue()
+	private void jiwaiQueueMo(Integer address, String body, long timestamp)
 	{
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
+		log( sdf.format(new Date(timestamp)) 
+				+ " " + address + ": " + body );
+
+		
+		Long 	time_millis, sec, msec;
+		String	file_path_name;
+		File	msg_file;
+
+		do 
+		{
+			time_millis  = System.currentTimeMillis();
+			sec  = time_millis/1000;
+			msec = time_millis - (time_millis/1000)*1000;
+			file_path_name = mPathMo + "qq__" + address + "__" + sec + "_" + msec;
+			msg_file = new File(file_path_name);
+		} while ( msg_file.exists() );
+
+		String	file_content;
+
+		file_content = "ADDRESS: qq://" + address + "\n";
+		file_content += "\n";
+		file_content += body;
+
+		try {
+			FileWriter fw = new FileWriter(msg_file);
+			fw.write(file_content);
+			fw.close();
+		} catch ( Exception e ) {
+			log ( "file writer exception for " + file_path_name );
+		}
+
+		//log ( file_path_name );
+		//log ( file_content );
+	}
+	
+	private LinkedList jiwaiQueueMt()
+	{
+
+		LinkedList robot_msgs = new LinkedList();
+		
+		Hashtable<String, String>	robot_msg = new Hashtable<String, String>();
+
+		try {
+			File files[] = new File(mPathMt).listFiles();
+			String	file_name;
+			String	file_content;
+			char[]	buf = new char[1024];
+
+			Pattern pattern;
+			Matcher matcher;
+
+			String 	head, body, address;
+
+			for (int i = 0; i < files.length; i++) 
+			{
+				if ( !files[i].isFile() )	continue;
+
+				file_name = files[i].getName();
+
+				if ( 0!=file_name.indexOf("qq__") )
+				{
+					files[i].delete();
+					log("jiwaiQueueMt found unknown file: " + file_name + ", skipped & deleted");
+					continue;
+				}
+
+	  			//log("There is a file " + files[i].getName() + " in this diretory");
+
+				int n = (new FileReader(files[i])).read(buf,0,1024);
+				file_content = new String(buf, 0, n);
+
+				//log(file_content);
+
+				pattern = Pattern.compile("(.+?)\\n\\n(.+)");
+				matcher = pattern.matcher(file_content);
+
+				if ( ! matcher.find())
+				{
+					log ( "jiwaiQueueMt fount un-parse data: " + file_content + ", skiped & deleted" );
+					files[i].delete();
+					continue;
+				}
+
+				head = matcher.group(1);
+				body = matcher.group(2);
+
+				pattern = Pattern.compile("ADDRESS:\\s+qq://(\\d+)", Pattern.CASE_INSENSITIVE);
+				matcher = pattern.matcher(head);
+
+				if ( !matcher.find() )
+				{
+					log ( "jiwaiQueueMt fount un-parse head data: " + head + ", skiped & deleted" );
+					files[i].delete();
+					continue;
+				}
+
+				address = matcher.group(1);
+
+				robot_msg.put("address"	, address		);
+				robot_msg.put("body"	, body.trim()	);
+				robot_msg.put("file"	, files[i].getCanonicalPath() );
+
+				robot_msgs.add(robot_msg.clone());
+			}
+
+		} catch ( Exception e ) {
+			log ( "jiwaiQueueMt readdir failed" );
+		}
+
+		return robot_msgs;
+		
 	}
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		//logger.info("Enter main");
+	public static void main(String[] args) 
+	{
+		log("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
-		while ( true )
-		{
-			qq_robot.run();
-			qq_robot.zizz();
-		}
+		log("Created robot");
+		qq_robot.run();
+		System.exit(0);
 	}
 
-	public void run() {
-		try 
+	public void run() 
+	{
+		log ( "runed" );
+		LinkedList 					robot_msgs;
+		Hashtable<String, String>	robot_msg;
+		Integer						address;
+		String						body, file;
+
+		while ( true )
 		{
-	
-			client.sendIM(p.normalHeader.sender, (new String("You said: ") + new String(m.messageBytes,"GBK")).getBytes("GBK") );
-			client.sendIM(918999, (new String("Hello, World! 哈哈").getBytes("GBK")));
-		} catch (Exception e) {
-			log(e);
+			System.out.print(".");
+			robot_msgs 	= jiwaiQueueMt();
+
+			while ( ! robot_msgs.isEmpty()  )
+			{
+				System.out.print("*");
+				//log ( "fount new mt msg" );
+
+				robot_msg = (Hashtable<String, String>) robot_msgs.removeFirst();
+
+				
+				try {
+					address = new Integer(robot_msg.get("address"));
+					body	= robot_msg.get("body");
+					file	= robot_msg.get("file");
+				
+					//client.sendIM(918999,(new String("你好").getBytes("GBK")));
+					//body = new String("您好好");
+
+					client.sendIM(address,body.getBytes("GBK"));
+
+					(new File(file)).delete();
+
+					log( new String("MT: ") + address + ": [" + body + "]" );
+
+				} catch ( Exception e ) {
+					log ( "iconv failed" );
+				}
+			}
+
+			try {
+				Thread.sleep(3000);
+			} catch (Exception e) {
+			}
+			//break;
 		}
 	}
 
