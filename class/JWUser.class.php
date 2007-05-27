@@ -556,7 +556,7 @@ _SQL_;
 			if ( isset($user_rows[$user_id]['deviceSendVia']) )
 				$send_via_device_rows[$user_id] = $user_rows[$user_id]['deviceSendVia'];
 			else
-				$send_via_device_rows[$user_id] = 'none';
+				$send_via_device_rows[$user_id] = 'web';
 		}
 
 		return $send_via_device_rows;
@@ -584,7 +584,7 @@ _SQL_;
 		if ( isset($user_rows[$idUser]['deviceSendVia']) )
 			return $user_rows[$idUser]['deviceSendVia'];
 		else
-			return 'none';
+			return 'web';
 	}
 
 	/*
@@ -597,10 +597,10 @@ _SQL_;
 
 		$supported_device_types = JWDevice::GetSupportedDeviceTypes();
 
-		if ( !in_array($device, $supported_device_types) && 'none'!=$device )
+		if ( !in_array($device, $supported_device_types) && 'web'!=$device )
 		{
 			JWLog::LogFuncName(LOG_CRIT, "SetSendViaDevice($idUser,$device) unsupported");
-			$device = 'none';
+			$device = 'web';
 		}
 
 		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));

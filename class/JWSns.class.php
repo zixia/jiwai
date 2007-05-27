@@ -72,7 +72,7 @@ class JWSns {
 			JWMail::SendMailNoticeNewFriend($userRow, $friendRow);
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]),\tnotification email "
-											. ( $need_notice_mail ? 'sent. ' : 'none')
+											. ( $need_notice_mail ? 'sent. ' : 'web')
 								);
 	
 		/* 
@@ -241,6 +241,7 @@ class JWSns {
 				JWMail::SendMailInvitation($user_row, $address, $email_message, $code_invite);
 				break;
 
+			case 'newsmth':
 			case 'sms':
 				// 机器人给设备发送消息
 				JWRobot::SendMtRaw($address, $type, $sms_message);
@@ -300,7 +301,7 @@ class JWSns {
 			// 反向也是朋友，则可以 direct_message / nudge
 			if ( $friend_relation[$friend_id][$idUser] )
 			{
-				if ( 'none'!=$send_via_device_rows[$friend_id] )
+				if ( 'web'!=$send_via_device_rows[$friend_id] )
 					$action_rows[$friend_id]['nudge']		= true;
 
 				// TODO $action_rows[$friend_id]['d']			= true;
@@ -457,7 +458,7 @@ class JWSns {
 		$send_via_device	= JWUser::GetSendViaDevice($user_id);
 
 		if ( $destroy_device_type==$send_via_device )
-				JWUser::SetSendViaDevice( $user_id, 'none');
+				JWUser::SetSendViaDevice( $user_id, 'web');
 
 		return JWDevice::Destroy($idDevice);
 	}

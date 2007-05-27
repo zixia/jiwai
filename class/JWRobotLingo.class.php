@@ -270,10 +270,10 @@ _STR_;
 
 		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
 
-		$ret = JWUser::SetSendViaDevice($user_id, 'none');
+		$ret = JWUser::SetSendViaDevice($user_id, 'web');
 			
 		if ( ! $ret )
-			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'none'...) failed");
+			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
 
 
 		$body = <<<_STR_
@@ -801,7 +801,7 @@ _STR_;
 		$send_via_device	= JWUser::GetSendViaDeviceByUserId($friend_user_id);
 
 		// TODO 要考虑判断用户的 device 是否已经通过验证激活
-		if ( 'none'==$send_via_device )
+		if ( 'web'==$send_via_device )
 			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
@@ -1103,7 +1103,7 @@ _STR_;
 		else
 		{
 			$body = <<<_STR_
-您是$address_user_row[nameScreen]，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。Web登录？请来 http://jiwai.de/wo/account/complete
+您是$address_user_row[nameScreen]，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。设置密码请来这里：http://jiwai.de/wo/account/complete
 _STR_;
 		}
 

@@ -27,7 +27,7 @@ _HTML_;
 
 		$send_via_device	= JWUser::GetSendViaDeviceByUserId($nudged_user_id);
 
-		if ( 'none'==$send_via_device )
+		if ( 'web'==$send_via_device )
 		{
 			$notice_html = <<<_HTML_
 $nudged_user_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？

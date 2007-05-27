@@ -61,7 +61,7 @@ class JWTemplate {
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, jiwaide, tiny blog, blog, im nick, nick, log, 记录, 写下
+叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, 碎碎念, 絮絮叨叨, 絮叨 jiwaide, tiny blog, im nick, 记录, 写下
 _STR_;
 		else								$keywords = $options['keywords'];
 
@@ -106,8 +106,8 @@ _HTML_;
 
 
 		// SEO attack to fanfou.com
-		$keywords 		.= "是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否";
-		$description	.= "类似网站有饭否(你今天饭否?是否饭了,吃饭否,有没有饭否,什么时候饭否,要不要饭否的意思)";
+		$keywords 		.= " - 是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否, are you fanfou?";
+		$description	.= " - 就像常问的吃饭了否(你今天饭否? fanfou today? 是否饭了,吃饭否,有没有饭否,is fanfou?什么时候饭否,when fanfou? 要不要饭否的意思)";
 
 
 		echo <<<_HTML_
@@ -1237,7 +1237,7 @@ _HTML_;
 		if ( $has_active_device )
 		{
 ?>
-						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('none'==$viaDevice) echo ' checked="checked" '; ?> value="none" />
+						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('web'==$viaDevice) echo ' checked="checked" '; ?> value="web" />
 						<label for="current_user_send_via_none">网页</label>
 <?php
 		}

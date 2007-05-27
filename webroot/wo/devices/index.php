@@ -164,6 +164,9 @@ else
 
 		$im_robot 	= JWDevice::GetRobotFromType($im);
 		$im_name 	= JWDevice::GetNameFromType	($im);
+
+		if ( 'gtalk'==$im )
+			$im_name = "GTalk(Jabber)";
 ?>
 
 				<tr class="<?php if ( !$device_row[$im]['verified']) echo 'not_verified'?>">
@@ -181,8 +184,17 @@ else
   						<h4>请验证你的<?php echo $im_name?>帐号：<?php echo $device_row[$im]['address']?></h4>
 
   						<p>
+<?php
+		if ( 'qq'==$im )
+		{
+			echo <<<_HTML_
+							点击这里 <a target=blank href=tencent://message/?uin=$im_robot&Site=叽歪一下吧！&Menu=yes><img border="0" SRC=http://wpa.qq.com/pa?p=1:$im_robot:1 alt="点击这里打开QQ" title="点击这里打开QQ"></a>直接打开聊天窗口；<br />
+_HTML_;
+		}
+?>
 							1、请在<strong><?php echo $im_name?></strong>上，将<strong><?php echo $im_robot?></strong>加为你的<strong><?php echo $im_name?></strong>好友；<br />
-							2、将如下验证码通过<strong><?php echo $im_name?></strong>发送消息给她进行验证：
+							2、将如下验证码通过<strong><?php echo $im_name?></strong>发送<strong>短消息</strong>给她进行验证：<br />
+
      						<code><?php echo $device_row[$im]['secret']?></code>
   						</p>
 
@@ -228,7 +240,7 @@ else
 						</form>
 
 						<p><small>
-							发送更新消息给：<strong><?php echo $im_name?></strong>上的<strong><?php echo $im_robot?></strong>(不要发邮件)
+							发送更新短消息给：<strong><?php echo $im_name?></strong>上的<strong><?php echo $im_robot?></strong>(不要发邮件)
 						</small></p>
 
 
@@ -252,6 +264,7 @@ else
 
 	// 对于系统支持，用户还没有绑定的 IM，做出列表
 	$non_binded_ims = array_diff($non_binded_ims, array('sms'));
+
 	if ( count($non_binded_ims) )
 	{
 ?>
@@ -266,11 +279,22 @@ else
 
 							<select name="device[type]">
 <?php
+		$is_first = true;
 		foreach ( $non_binded_ims as $im )
 		{
 			$im_name = JWDevice::GetNameFromType($im);
+
+			if ( $is_first )
+			{
+				$im_sologon = "(我们很快会支持Skype)";
+				$is_first = false;
+			}
+			else
+			{
+				$im_sologon = "";
+			}
 			echo <<<_HTML_
-								<option value="$im">$im_name</option>
+								<option value="$im">$im_name$im_sologon</option>
 _HTML_;
 		}
 ?>
