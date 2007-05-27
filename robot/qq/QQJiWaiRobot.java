@@ -96,9 +96,13 @@ public class QQJiWaiRobot implements IQQListener {
 			onlines = new Hashtable<Integer, String>();
 			
 			user = new QQUser(qqno, qqpass);
+/*
+			by zixia 2007-05-27 不允许隐身
+
 			if (initHide) {
 				user.setStatus(QQ.QQ_LOGIN_MODE_HIDDEN);
 			}
+*/
 			client = new QQClient();
 			client.addQQListener(this);
 			user.setUdp(udp);
