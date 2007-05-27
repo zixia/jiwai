@@ -423,9 +423,6 @@ _SQL_;
 				$user_id 	= $device_row['idUser'];
 				$type		= $device_row['type'];
 
-				if ( $type!='sms' )
-					$type = 'im';
-
 				JWUser::SetSendViaDevice($user_id, $type);
 
 				break;

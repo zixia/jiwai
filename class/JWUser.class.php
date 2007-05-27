@@ -597,7 +597,7 @@ _SQL_;
 
 		$supported_device_types = JWDevice::GetSupportedDeviceTypes();
 
-		if ( ! in_array($device, $supported_device_types) )
+		if ( !in_array($device, $supported_device_types) && 'none'!=$device )
 		{
 			JWLog::LogFuncName(LOG_CRIT, "SetSendViaDevice($idUser,$device) unsupported");
 			$device = 'none';

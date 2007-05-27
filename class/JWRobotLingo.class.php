@@ -228,13 +228,10 @@ _STR_;
 		$device_id	= $address_device_db_row['idDevice'];
 
 		
-		if ( 'sms'==$type )
-			$ret = JWUser::SetSendViaDevice($user_id, 'sms');
-		else
-			$ret = JWUser::SetSendViaDevice($user_id, 'im');
+		$ret = JWUser::SetSendViaDevice($user_id, $type);
 			
 		if ( ! $ret )
-			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWUser::SetSendViaDevice($user_id, ...) failed");
+			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWUser::SetSendViaDevice($user_id,$type ...) failed");
 
 
 		$ret = JWDevice::SetDeviceEnabledFor($device_id, 'everything');
@@ -273,17 +270,10 @@ _STR_;
 
 		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
 
-/*
-		if ( 'sms'==$type && isset($device_for_user['im']) ) {
-			// 如果关闭的是 sms，而用户又有 im 帐号绑定
-			$ret = JWUser::SetSendViaDevice($user_id, 'im');
-		} else {
-		}
-*/
-			$ret = JWUser::SetSendViaDevice($user_id, 'none');
+		$ret = JWUser::SetSendViaDevice($user_id, 'none');
 			
 		if ( ! $ret )
-			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,...) failed");
+			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'none'...) failed");
 
 
 		$body = <<<_STR_
