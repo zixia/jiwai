@@ -366,9 +366,10 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 	static public function tab_header( $vars=null )
 	{
 /*
-		title2 长了之后，会莫名其妙的影响 tab 布局
+		//title2 长了之后，会莫名其妙的影响 tab 布局
 		$vars=array('title'=>'最新动态 - 大家在做什么？' 
-						, 'title2'=>'你想叽歪呀，你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
+						//, 'title2'=>'你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
+						, 'title2'	=>	'你想叽歪你就说嘛，'
 				);
 */
 

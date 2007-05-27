@@ -37,6 +37,7 @@ var JiWai =
 
 	Yft		: function (selector, hideSecs) 
 	{
+		return;
 /*
 (function(){alert(1);return this;}).delay(1000);
 
