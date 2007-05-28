@@ -1,4 +1,5 @@
 run: QQJiWaiRobot.class
+#	/usr/java/jdk1.5.0_11/bin/java -cp LumaQQ.jar:log4j.jar:. -Dqq.no=418888 -Dqq.pass=Beta@JiWai741de QQJiWaiRobot
 	/usr/java/jdk1.5.0_11/bin/java -cp LumaQQ.jar:log4j.jar:. -Dqq.no=229516989 -Dqq.pass=Beta@JiWai741de QQJiWaiRobot
 
 QQJiWaiRobot.class: QQJiWaiRobot.java

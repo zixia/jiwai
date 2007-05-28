@@ -60,7 +60,7 @@ JWTemplate::UserSettingNav("device");
 
 
 <?php if ( 'im'!=$sms_or_im ) { // start SMS_setting ?>
-				<tr class="<?php if( !$device_row['sms']['verified'] ) echo 'not_verified'?>">
+				<tr class="<?php if( empty($device_row['sms']) || !$device_row['sms']['verified'] ) echo 'not_verified'?>">
   					<td class="thumb"><img alt="手机短信" src="http://asset.jiwai.de/img/phone.png" /></td>
 
 					<td>

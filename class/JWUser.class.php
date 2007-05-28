@@ -628,7 +628,7 @@ _SQL_;
 	 */
 	static public function GetFeaturedUserIds()
 	{
-		return array(706,11,218,2);
+		return array(706,11,760,2);
 	}
 
 	static public function GetNewestUserIds($max=5)
