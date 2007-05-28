@@ -623,13 +623,6 @@ _SQL_;
 		return JWDB::UpdateTableRow('User', $idUser, $condition);
 	}
 
-	/*
-	 *	//TODO
-	 */
-	static public function GetFeaturedUserIds()
-	{
-		return array(706,11,760,2);
-	}
 
 	static public function GetNewestUserIds($max=5)
 	{

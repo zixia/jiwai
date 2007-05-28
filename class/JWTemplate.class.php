@@ -846,30 +846,40 @@ _HTML_;
 <?php
 	}
 
-	
 	/*
 	 *
 	 *	@param	array	$options	$options['title'] = title
 									$options['user_ids'] = array(1,2,3,4)
 	 *
 	 */
-	static function sidebar_featured($options)
+	static function sidebar_featured($options=null)
 	{
-		if ( empty($options['user_ids']) )
-			return;
+		$featured_user_info	= JWUser::GetUserInfo('featured');
+		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], 5);
 
-		$user_ids = $options['user_ids'];
-		
-		if ( !is_array($user_ids) )
-		{
-			JWLog::LogFuncName("user_ids is not array");
+		if ( empty($status_row['status_ids']) )
 			return;
-		}
 
 		if ( isset($options['title']) )
 			$title = $options['title'];
 		else
-			$title = '叽歪de推荐';
+			$title = '推荐';
+
+		$status_db_row 		= JWStatus::GetStatusDbRowsByIds($status_row['status_ids']);
+
+		$user_ids 			= array();
+		foreach ( $status_row['status_ids'] as $status_id )
+		{
+			$status = $status_db_row[$status_id]['status'];
+			if ( ! preg_match('/^(\S+)/', $status, $matches) )
+				continue;
+
+			$user_info = JWUser::GetUserInfo($matches[1]);
+			if ( empty($user_info) )
+				continue;
+
+			array_push($user_ids, $user_info['idUser']);
+		}
 
 		echo <<<_HTML_
   		<ul class="featured">
@@ -888,6 +898,77 @@ _HTML_;
 			<li>
 				<a href="/$user_db_row[nameScreen]/"><img alt="$user_db_row[nameFull]" height="24" src="$user_icon_url" width="24" /></a>
 				<a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a>
+			</li>
+_HTML_;
+		}
+
+		echo <<<_HTML_
+		</ul>
+_HTML_;
+	}
+
+
+	/*
+	 *
+	 *	@param	array	$options	$options['title'] = title
+									$options['user_name'] = 'blog'
+	 *
+	 */
+	static function sidebar_announce($options)
+	{
+		if ( empty($options['user_name']) )
+			return;
+		else
+			$user_name = $options['user_name'];
+		
+		if ( empty($options['num']) )
+			$num = 3;
+		else
+			$num = $options['num'];
+
+		if ( empty($options['title']) )
+			$title = '叽歪de公告';
+		else
+			$title = $options['title'];
+
+
+		$user_db_row	= JWUser::GetUserInfo($user_name);
+
+		if ( empty($user_db_row) )
+			return;
+
+		$user_status_ids = JWStatus::GetStatusIdsFromUser($user_db_row['idUser'], $num );
+
+		if ( empty($user_status_ids['status_ids']) )
+			return;
+
+		echo <<<_HTML_
+  		<ul class="featured" style="padding:5px;">
+			<li><strong>$title</strong></li>
+_HTML_;
+
+		$status_db_row = JWStatus::GetStatusDbRowsByIds($user_status_ids['status_ids']);
+
+		foreach ( $user_status_ids['status_ids'] as $status_id )
+		{
+			$status = $status_db_row[$status_id]['status'];
+
+			$status = preg_replace("/\s+/",'',$status);
+
+			if ( ! preg_match("#^(\S+?)-?(http://\S+)$#", $status, $matches) )
+				continue;
+
+			$desc 	= $matches[1];
+			$url 	= $matches[2];
+
+			$max_len = 14;
+
+			if ( mb_strlen($desc) > $max_len )
+				$desc = mb_substr($desc,0,$max_len-3) . "...";
+
+			echo <<<_HTML_
+			<li style="padding-top:3px">
+				- <a href="$url" target="_blank">$desc</a>
 			</li>
 _HTML_;
 		}

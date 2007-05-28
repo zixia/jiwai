@@ -48,7 +48,7 @@ JWTemplate::html_head();
 ?>
 
 <?php 
-$status_data = JWStatus::GetStatusIdsFromPublic();
+$status_data = JWStatus::GetStatusIdsFromPublic(30);
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
@@ -63,15 +63,23 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $opti
 
 
 <?php 
-$featured_options['user_ids']	= JWUser::GetFeaturedUserIds(5);
+$featured_options	= array();
 
 $newest_options['title']		= '看看新来的';
 $newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
+
+$blog_options['user_name']	= 'blog';
+$blog_options['title']		= '最新博文';
+
+$announce_options['user_name']	= 'team';
+$announce_options['title']		= '公告';
 
 
 $arr_menu 	= array( array ('head'			, array('<h3>请登陆！</h3>'))
 					, array ('login'		, null)
 					, array ('register'		, null)
+					, array ('announce'		, array($announce_options) )
+					, array ('announce'		, array($blog_options) )
 					, array ('featured'		, array($featured_options) )
 					, array ('featured'		, array($newest_options) )
 				);

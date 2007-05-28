@@ -82,6 +82,8 @@ sub jiwai_queue_mo {
 
 	return unless ( $email && $msg );
 
+	return if ( $email eq 'thw416@hotmail.com' );
+
 	my $queue_file;
 
 	do {
