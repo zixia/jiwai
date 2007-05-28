@@ -99,10 +99,12 @@ $blog_options['title']		= '最新博文';
 $announce_options['user_name']	= 'team';
 $announce_options['title']		= '公告';
 
+$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds() );
+
 $arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong>'))
 					, array ('announce'		, array($announce_options) )
 					, array ('announce'		, array($blog_options) )
-					, array ('featured'			, array() )
+					, array ('featured'			, array($featured_options) )
 					, array ('featured'			, array($newest_options) )
 				);
 

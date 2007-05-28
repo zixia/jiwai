@@ -63,7 +63,7 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $opti
 
 
 <?php 
-$featured_options	= array();
+$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds() );
 
 $newest_options['title']		= '看看新来的';
 $newest_options['user_ids']		= JWUser::GetNewestUserIds(5);

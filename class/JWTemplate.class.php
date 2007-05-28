@@ -852,34 +852,23 @@ _HTML_;
 									$options['user_ids'] = array(1,2,3,4)
 	 *
 	 */
-	static function sidebar_featured($options=null)
+	static function sidebar_featured($options)
 	{
-		$featured_user_info	= JWUser::GetUserInfo('featured');
-		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], 5);
-
-		if ( empty($status_row['status_ids']) )
+		if ( empty($options['user_ids']) )
 			return;
+
+		$user_ids = $options['user_ids'];
+		
+		if ( !is_array($user_ids) )
+		{
+			JWLog::LogFuncName("user_ids is not array");
+			return;
+		}
 
 		if ( isset($options['title']) )
 			$title = $options['title'];
 		else
 			$title = '推荐';
-
-		$status_db_row 		= JWStatus::GetStatusDbRowsByIds($status_row['status_ids']);
-
-		$user_ids 			= array();
-		foreach ( $status_row['status_ids'] as $status_id )
-		{
-			$status = $status_db_row[$status_id]['status'];
-			if ( ! preg_match('/^(\S+)/', $status, $matches) )
-				continue;
-
-			$user_info = JWUser::GetUserInfo($matches[1]);
-			if ( empty($user_info) )
-				continue;
-
-			array_push($user_ids, $user_info['idUser']);
-		}
 
 		echo <<<_HTML_
   		<ul class="featured">
@@ -906,6 +895,7 @@ _HTML_;
 		</ul>
 _HTML_;
 	}
+
 
 
 	/*

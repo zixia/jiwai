@@ -624,6 +624,35 @@ _SQL_;
 	}
 
 
+	static public function GetFeaturedUserIds($max=5)
+	{
+		$featured_user_info	= JWUser::GetUserInfo('featured');
+		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], 5);
+
+		if ( empty($status_row['status_ids']) )
+			return;
+
+		$status_db_row		= JWStatus::GetStatusDbRowsByIds($status_row['status_ids']);
+
+		$user_ids 			= array();
+
+		foreach ( $status_row['status_ids'] as $status_id )
+		{
+			$status = $status_db_row[$status_id]['status'];
+			if ( ! preg_match('/^(\S+)/', $status, $matches) )
+				continue;
+
+			$user_info = JWUser::GetUserInfo($matches[1]);
+			if ( empty($user_info) )
+				continue;
+
+			array_push($user_ids, $user_info['idUser']);
+		}
+
+		return $user_ids;
+	}
+
+
 	static public function GetNewestUserIds($max=5)
 	{
 		$max = intval($max);
