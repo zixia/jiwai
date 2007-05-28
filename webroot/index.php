@@ -69,7 +69,7 @@ $newest_options['title']		= '看看新来的';
 $newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
 
 $blog_options['user_name']	= 'blog';
-$blog_options['title']		= '最新博文';
+$blog_options['title']		= '叽歪de博客最新主题';
 
 $announce_options['user_name']	= 'team';
 $announce_options['title']		= '公告';

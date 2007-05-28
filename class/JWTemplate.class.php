@@ -485,7 +485,12 @@ if ( isset($statusRow) )
 _HTML_;
 
 	if (!empty($replyto))
-		echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+	{
+		if ( empty($statusRow['idStatusReplyTo']) )
+			echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+		else
+			echo " <a href='/$replyto/statuses/$statusRow[idStatusReplyTo]'>给 ${replyto} 的回复</a> ";
+	}
 
 	echo <<<_HTML_
 					<span id="status_actions_$status_id">
@@ -637,6 +642,7 @@ _HTML_;
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
+			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 			$photo_url	= JWPicture::GetUserIconUrl($user_id);
@@ -668,7 +674,15 @@ _HTML_;
 							<span class="meta">
 								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
 								来自于 <?php echo $device?> 
-								<?php if (!empty($replyto) ) echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> " ?>
+<?php 
+		if (!empty($replyto) )
+		{
+			if ( empty($reply_id) )
+				echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+			else
+				echo " <a href='/$replyto/statuses/$reply_id'>给 ${replyto} 的回复</a> " ;
+		}
+?>
 
 								<span id="status_actions_<?php echo $status_id?>">
 
@@ -917,7 +931,7 @@ _HTML_;
 			$num = $options['num'];
 
 		if ( empty($options['title']) )
-			$title = '叽歪de公告';
+			$title = '公告';
 		else
 			$title = $options['title'];
 

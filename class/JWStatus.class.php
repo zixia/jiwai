@@ -42,6 +42,33 @@ class JWStatus {
 	{
 	}
 
+	/*
+	 *	根据 status 的 @zixia 打头内容，获取 zixia 最新的一条 status 的 id，
+	 */
+	static public function GetReplayId($status)
+	{
+		if ( empty($status) )
+			return null;
+
+		if ( ! preg_match('/^@(\w+)\s/',$status, $matches) )
+			return null;
+
+		$reply_to_user = $matches[1];
+
+		$user_db_row	= JWUser::GetUserInfo($reply_to_user);
+
+
+		if ( empty($user_db_row) )
+			return null;
+
+		$reply_to_status_id = JWStatus::GetMaxIdStatusByUserId($user_db_row['idUser']);
+
+		if ( empty($reply_to_status_id) )
+			return null;
+
+		return $reply_to_status_id;
+	}
+
 
 	/*
 	 *	@param	int	$time	unixtime
@@ -58,13 +85,16 @@ class JWStatus {
 		// 去掉回车，替换为空格
 		$status = preg_replace('[\r\n]',' ',$status);
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate) "
-								. " values (?,?,?,FROM_UNIXTIME(?))" ) ){
-			if ( $result = $stmt->bind_param("isss"
+		$reply_status_id	= JWStatus::GetReplayId($status);
+
+		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo) "
+								. " values (?,?,?,FROM_UNIXTIME(?),?)" ) ){
+			if ( $result = $stmt->bind_param("isssi"
 											, $idUser
 											, $status
 											, $device
 											, $time
+											, $reply_status_id
 								) ){
 				if ( $stmt->execute() ){
 					$stmt->close();
@@ -265,6 +295,7 @@ SELECT
 		, status
 		, UNIX_TIMESTAMP(Status.timeCreate) AS timeCreate
 		, device
+		, idStatusReplyTo
 FROM	Status
 WHERE	Status.id IN ($condition_in)
 _SQL_;
@@ -517,6 +548,27 @@ _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 		return $row['idMax'];
 	}
+
+	/*
+	 *	获取用户的最大 idStatus
+	 */
+	static public function GetMaxIdStatusByUserId($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		$sql = <<<_SQL_
+SELECT	MAX(id) as idMax
+FROM	Status
+WHERE	idUser=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		if ( empty($row) )
+			return 0;
+
+		return $row['idMax'];
+	}
+
 
 }
 ?>
