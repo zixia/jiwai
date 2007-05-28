@@ -296,7 +296,7 @@ function get_user_timeline_array($options)
 	foreach ( $status_data['status_ids'] as $status_id )
 	{
 
-		$status_array['created_at']			= date("r",$status_rows[$status_id]['timeCreate']);
+		$status_array['created_at']			= date("D M d H:i:s O Y",$status_rows[$status_id]['timeCreate']);
 		$status_array['id']					= intval($status_rows[$status_id]['idStatus']);
 		$status_array['text']				= $status_rows[$status_id]['status'];
 

@@ -302,7 +302,7 @@ function get_friends_timeline_array($options)
 	{
 		$user_id	= intval($status_rows[$status_id]['idUser']);
 
-		$status_array['created_at']			= date("r",$status_rows[$status_id]['timeCreate']);
+		$status_array['created_at']			= date("D M d H:i:s O Y",$status_rows[$status_id]['timeCreate']);
 		$status_array['id']					= intval($status_id);
 		$status_array['text']				= $status_rows[$status_id]['status'];
 
