@@ -12,7 +12,7 @@ $idUser	= $user['id'];
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
-<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]</a></div></div>
+<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]<img src="http://asset.jiwai.de/img/favicon.gif" style="align:middle; border:0" /></a></div></div>
 _HTML_;
 
 if ( isset($_REQUEST['gadget']) )
@@ -52,7 +52,9 @@ if ( isset($_REQUEST['gadget']) )
 
 			$gadget_script_html .= "<div clear='both' style='text-align:center'>"
 									."<a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>"
-									."$sub_user_str</a>"
+									."$sub_user_str"
+									."<img src='http://asset.jiwai.de/img/favicon.gif' border='0' />"
+									."</a>"
 									."</div>";
 								;
 	}
