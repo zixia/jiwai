@@ -30,10 +30,7 @@ if ( !empty($_REQUEST['thumb']) ){
 	$thumb = 24;
 }
 $gadget_div	= @$_REQUEST['gadget_div'];
-if ( isset($_REQUEST['encoding']) )
-	$encoding	= @$_REQUEST['encoding'];
-else
-	$encoding 	= 'UTF-8';
+
 
 // rewrite param, may incluce the file ext name and user id/name
 $pathParam	= $_REQUEST['pathParam'];
@@ -52,7 +49,7 @@ switch ($pathParam[0])
 			$idUser		= $matches[1];
 			$fileExt	= $matches[2];
 
-			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div, $encoding);
+			gadget($idUser, $selector, $theme, $count, $thumb, $gadget_div);
 			
 		}
 		else
@@ -75,7 +72,7 @@ switch ($pathParam[0])
 exit(0);
 
 
-function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId, $encoding)
+function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $gadgetDivId)
 {
 	if ( empty($themeName) )
 		$themeName = 'iChat';
@@ -103,7 +100,6 @@ function gadget($idUser, $statusSelector, $themeName, $countMax, $thumbSize, $ga
 							. "?count=$countMax"
 							. "&thumb=$thumbSize"
 							. "&callback=jiwai_de_callback"
-							. "&encoding=$encoding"
 						;
 
 
@@ -311,11 +307,7 @@ jiwai_de_html_head.appendChild(gadget_data_js);
 
 _JS_;
 
-	header ("Content-Type: text/javascript; Charset: $encoding");
-	if ( 'UTF-8'==strtoupper($encoding) ){
-		die ($js_output);
-	}
-
-	die (mb_convert_encoding($js_output, $encoding, "UTF-8"));
+	header ("Content-Type: text/javascript; Charset: UTF-8");
+	die ($js_output);
 }
 ?>
