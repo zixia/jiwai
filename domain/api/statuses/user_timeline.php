@@ -27,12 +27,6 @@ else if ( array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER) )
 if ( array_key_exists('thumb',$_REQUEST) )
 	$thumb	= $_REQUEST['thumb'];
 
-// encoding, default UTF-8
-if ( array_key_exists('encoding',$_REQUEST) )
-	$encoding	= $_REQUEST['encoding'];
-else
-	$encoding	= 'UTF-8';
-
 
 // auth
 if ( isset($_SERVER['PHP_AUTH_USER']) ) 
@@ -68,7 +62,6 @@ $options	= array (
 					, 'since_id'=> @$since_id
 					, 'since'	=> @$since
 					, 'callback'=> @$callback
-					, 'encoding'=> $encoding
 
 				);
 
@@ -309,15 +302,6 @@ function get_user_timeline_array($options)
 		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($user_id, "thumb$options[thumb]");
 		$status_array['user']['url']		= $user['url'];
 		$status_array['user']['protected']	= $user['protected']==='Y' ? true : false;
-
-		if ( 'UTF-8'!=$options['encoding'] )
-		{
-			$status_array['text']				= mb_convert_encoding($status_rows[$status_id]['status']	
-																			,$options['encoding'],'UTF-8');
-			$status_array['user']['name']		= mb_convert_encoding($user['nameFull']	,$options['encoding'],'UTF-8');
-			$status_array['user']['location']	= mb_convert_encoding($user['location']	,$options['encoding'],'UTF-8');
-			$status_array['user']['description']= mb_convert_encoding($user['bio']		,$options['encoding'],'UTF-8');
-		}
 
 		array_push($statuses_array, $status_array);
 	}
