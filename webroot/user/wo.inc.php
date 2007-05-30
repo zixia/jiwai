@@ -15,6 +15,19 @@ $page_user_id		= $g_page_user_id;
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
+
+$show_protected_content = true;
+
+if ( $logined_user_info['idUser']!=$page_user_id 
+		&& JWUser::IsProtected($page_user_id) )
+{
+	if ( empty($logined_user_info) )
+		$show_protected_content= false;
+	else if ( ! JWFriend::IsFriend($page_user_id, $logined_user_info['idUser']) )
+		$show_protected_content= false;
+}
+
+
 //die(var_dump($_REQUEST));
 //die( var_dump($page_user_id));
 //die( var_dump($logined_user_info));
@@ -137,7 +150,10 @@ JWTemplate::ShowActionResultTips();
 
 
 //die(var_dump($page_user_id));
-JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_rows[$head_status_id] );
+JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_rows[$head_status_id]
+						, null // options
+						, $show_protected_content 
+					);
 
 ?>
 
@@ -153,24 +169,36 @@ else
 	$menu_list['以前的']['active'] = true;
 
 
-JWTemplate::tab_menu($menu_list) 
+if ( $show_protected_content )
+	JWTemplate::tab_menu($menu_list) 
 ?>
 
 			<div class="tab">
 
-<?php JWTemplate::tab_header( array() ) ?>
+<?php 
+if ( $show_protected_content )
+	JWTemplate::tab_header( array() ) 
+?>
 
 <?php 
 if ( !isset($g_user_with_friends) )
 	$g_user_with_friends = false;
 
-JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>$g_user_with_friends)) 
+// 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
+if ( $show_protected_content )
+	JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>$g_user_with_friends)) 
+
 ?>
   
-<?php JWTemplate::pagination($pagination) ?>
+<?php 
+if ( $show_protected_content )
+	JWTemplate::pagination($pagination) 
+?>
 
-<?php JWTemplate::rss( $g_user_with_friends ? 'friends' : 'user'
-						,$page_user_id) ?>
+<?php 
+if ( $show_protected_content )
+	JWTemplate::rss( $g_user_with_friends ? 'friends' : 'user' ,$page_user_id) 
+?>
 
 			</div><!-- tab -->
 

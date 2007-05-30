@@ -17,7 +17,7 @@ class JWFollower {
 	 */
 	static private $msInstance;
 
-	const	DEFAULT_FOLLOWER_MAX	= 20;
+	const	DEFAULT_FOLLOWER_MAX	= 9999;
 	/**
 	 * Instance of this singleton class
 	 *

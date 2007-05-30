@@ -49,6 +49,13 @@ class JWTemplate {
 	}
 
 	
+	static public function html_doctype( $options=null )
+	{
+		echo <<<_HTML_
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+_HTML_;
+	}
+
 	static public function html_head( $options=null )
 	{
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
@@ -195,7 +202,7 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved</li>
+		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved 京ICP证020015号</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" 			target="_blank">关于我们</a></li>
 		<li><a href="http://help.jiwai.de/ContactUs" 		target="_blank">联系我们</a></li>
@@ -414,9 +421,8 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 	}
 
 
-	static public function StatusHead($idUser, $userRow, $statusRow, $options=null)
+	static public function StatusHead($idUser, $userRow, $statusRow, $options=null, $isOpen=true)
 	{
-
 		$name_screen 	= $userRow['nameScreen'];
 		$name_full		= $userRow['nameFull'];
 		$photo_url 		= JWPicture::GetUserIconUrl($idUser);
@@ -424,7 +430,20 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 		if ( !isset($options['trash']) )
 			$options['trash'] = true;
 
-		if ( ! empty($statusRow) )
+
+		$device		= 'WEB';
+		if ( ! $isOpen )
+		{
+			$status		= <<<_HTML_
+我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser">加我为好友。</a>
+_HTML_;
+
+		}
+		else if ( empty($statusRow) )
+		{
+			$status		= "迄今为止还没有更新过！";
+		}
+		else	
 		{
 			$status_id 	= $statusRow['idStatus'];
 			$status		= $statusRow['status'];
@@ -433,10 +452,11 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 			$device		= JWDevice::GetNameFromType($device);
 	
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
-		}
-		else	
-		{
-			$status		= "迄今为止还没有更新过！";
+
+
+			$status_result 	= JWStatus::FormatStatus($status);
+			$status			= $status_result['status'];
+			$replyto		= $status_result['replyto'];
 		}
 
 
@@ -467,9 +487,6 @@ font-size:0.4em;
 _HTML_;
 }
 
-		$status_result 	= JWStatus::FormatStatus($status);
-		$status			= $status_result['status'];
-		$replyto		= $status_result['replyto'];
 ?>
 			</h2>
 
@@ -477,7 +494,7 @@ _HTML_;
 	  			<p><?php echo $status?></p>
 	  			<p class="meta">
 <?php 
-if ( isset($statusRow) ) 
+if ( $isOpen && isset($statusRow) ) 
 {
 	echo <<<_HTML_
   					<a href="/$name_screen/statuses/$status_id">$duration</a>
@@ -497,7 +514,7 @@ _HTML_;
 _HTML_;
 }
 
-if ( isset($statusRow) && isset($current_user_id) )	
+if ( $isOpen && isset($statusRow) && isset($current_user_id) )	
 {
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
@@ -1101,7 +1118,7 @@ _HTML_;
 		if ( isset($action['add']) )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friends/create/$arr_user_info[id]">添加</a> $arr_user_info[nameScreen]</li>
+			<li><a href="/wo/friendships/create/$arr_user_info[id]">添加</a> $arr_user_info[nameScreen]</li>
 _HTML_;
 		}
 
@@ -1109,7 +1126,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/destroy/$arr_user_info[id]" 
+				<a href="/wo/friendships/destroy/$arr_user_info[id]" 
 						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
@@ -1279,24 +1296,25 @@ _HTML_;
 				break;
 			}
 		}
-?>
-		<ul>
-			<li>
-				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
-					<fieldset>
-<?php 
+
 		if ( $has_active_device ) 
 		{ 
 ?>
+
+		<ul class="featured">
+			<li>
+				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
+					<fieldset>
 						<h4 style="font-size: 12px">发送通知消息到:</h4>
 <?php 
 		}
 
-		if ( $activeOptions['sms'] )
+		$logined_user_id = JWLogin::GetCurrentUserId();
+		if ( $activeOptions['sms'] && JWUser::IsSubSms($logined_user_id) )
 		{
 ?>
 						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').send()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
-						<label for="current_user_send_via_sms">手机</label>
+						<label for="current_user_send_via_sms">手机</label><br />
 
 <?php
 		}
@@ -1314,7 +1332,7 @@ _HTML_;
 				$has_active_device_im = true;
 ?>
 						<input id="current_user_send_via_<?php echo $type?>" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ($type==$viaDevice) echo ' checked="checked" '; ?> value="<?php echo $type?>" />
-						<label for="current_user_send_via_<?php echo $type?>"><?php echo $im_name?></label>
+						<label for="current_user_send_via_<?php echo $type?>"><?php echo $im_name?></label><br />
 <?php
 			}
 
@@ -1327,14 +1345,26 @@ _HTML_;
 						<label for="current_user_send_via_none">网页</label>
 <?php
 		}
+
+		if ( $has_active_device ) 
+		{ 
 ?>
 					</fieldset>
 				</form>	
 			</li>
 		</ul>
-
-		<ul>
 <?php
+		}
+?>
+
+<?php
+		if ( !$activeOptions['sms'] && !$has_active_device_im )
+		{
+?>
+		<ul class="featured">
+<?php
+		}
+
 		if ( !$activeOptions['sms'] )
 		{
 			echo <<<_HTML_
@@ -1351,7 +1381,10 @@ _HTML_;
 		}
 
 	
-		echo "</ul>";
+		if ( !$activeOptions['sms'] && !$has_active_device_im )
+		{
+			echo "</ul>";
+		}
 	}
 
 

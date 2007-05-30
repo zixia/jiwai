@@ -195,7 +195,7 @@ function user_timeline_rss_n_atom($options)
 	$feed = new JWFeed( array (	'title'		=> '叽歪de / ' . $user['nameFull']
 							, 'url'		=> $user_url
 							, 'desc'	=> $user['nameFull'] . '的叽歪'
-							, 'ttl'		=> 40
+							, 'ttl'		=> 300
 							, 'language'=> 'zh_CN'
 							, 'img'		=> $feed_img
 						) );

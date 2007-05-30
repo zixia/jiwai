@@ -132,9 +132,13 @@ foreach ( $supported_device_types as $type )
 {
 	if ( isset($device_row[$type]) 
 				&& $device_row[$type]['verified']  )
+	{	
 		$active_options[$type]	= true;
+	}
 	else
+	{
 		$active_options[$type] 	= false;
+	}
 }
 
 

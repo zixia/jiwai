@@ -606,6 +606,20 @@ _SQL_;
 		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));
 	}
 
+	static public function IsProtected($idUser)
+	{
+		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		return ('Y'==$user_db_row['protected']);
+	}
+
+
+	static public function IsSubSms($idUser)
+	{
+		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		return ('Y'==$user_db_row['isSubSms']);
+	}
+
+
 	static public function IsWebUser($idUser)
 	{
 		$user_db_row = JWUser::GetUserDbRowById($idUser);
@@ -664,6 +678,7 @@ _SQL_;
 SELECT	id as idUser
 FROM	User
 WHERE	idPicture IS NOT NULL
+		AND protected<>'Y'
 		ORDER BY timeCreate desc
 LIMIT	$max
 _SQL_;

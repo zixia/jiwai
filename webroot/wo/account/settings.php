@@ -245,7 +245,7 @@ _HTML_;
 						</td>
 					</tr>
 
-					<!-- 暂时隐藏 tr>
+					<tr>
 						<th></th>
 						<td>
 <?php
@@ -261,7 +261,7 @@ _HTML_;
 							<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</small></p>
 						</td>
 
-					</tr-->
+					</tr>
 					<tr>
 						<th></th>
 						<td><input name="commit" type="submit" value="保存" /></td>

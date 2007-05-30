@@ -243,6 +243,7 @@ FROM
 WHERE		
 			Status.idUser=User.id
 			AND User.idPicture IS NOT NULL
+			AND User.protected<>'Y'
 ORDER BY 	
 			Status.timeCreate desc
 LIMIT 		$start,$num

@@ -288,7 +288,7 @@ function validate_form(form)
 									href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
 						</td>
 					</tr>
-					<!-- 暂时隐藏 tr>
+					<tr>
 						<th>
 						</th>
 						<td>
@@ -298,7 +298,7 @@ function validate_form(form)
 								只允许被我加为好友的人阅读我的更新。如果选中上面的方框，你的更新将不会出现在“叽歪de大家”中。
 							</small></p>
 						</td>
-					</tr-->
+					</tr>
 					<tr>
 						<th></th>
 						<td>

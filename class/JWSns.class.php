@@ -116,6 +116,16 @@ class JWSns {
 		return true;
 	}
 
+	/*
+	 *	@param	array or int	$idFriends	好友 id(s)
+	 *	申请将 idFriends 添加为 idUser 的好友
+	 */
+	static public function CreateFriendRequest($idUser, $idFriend)
+	{
+		return JWFriendRequest::Create($idUser, $idFriend);
+	}
+
+
 
 	/*
 	 *	将 idFollower 添加为 idUser 的粉丝，并负责处理相关逻辑（是否允许添加粉丝，发送通知邮件等）
@@ -391,14 +401,22 @@ class JWSns {
 			// coz it will spend our money ( MT fee )
 
 			// get them all for cache.
-			$user_rows		= JWUser::GetUserDbRowsByIds($follower_ids);
+			$follower_user_rows		= JWUser::GetUserDbRowsByIds($follower_ids);
 
 			$nudge_follower_ids = array();
 			foreach ( $follower_ids as $follower_id )
 			{
 				$send_via_device	= JWUser::GetSendViaDevice($follower_id);
-				if ( 'sms'!=$send_via_device ) 
+
+				if ( 'sms'==$send_via_device ) 
+				{
+					if ( JWUset::IsSubSms($follower_id) )
+						array_push($nudge_follower_ids, $follower_id);
+				}
+				else
+				{
 					array_push($nudge_follower_ids, $follower_id);
+				}
 			}
 
 			JWNudge::NudgeUserIds($nudge_follower_ids, "$user_name_screen: $status");

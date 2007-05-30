@@ -203,7 +203,7 @@ function friends_timeline_rss_n_atom($options)
 	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
 							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
 							, 'desc'	=> $user['nameFull'] . '和朋友们的叽歪'
-							, 'ttl'		=> 20
+							, 'ttl'		=> 120
 							, 'language'=> 'zh_CN'
 							, 'img'		=> $feed_img
 						) );
