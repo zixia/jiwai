@@ -4,11 +4,6 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
-$error_html = <<<_HTML_
-哎呀！这个邀请代码好像不是我们发放的。
-<a href="/">返回首页</a>
-_HTML_;
-
 if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 {
 	$invite_code	= $matches[1];
@@ -18,17 +13,12 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 
 	if ( empty($inviter_id) )
 	{
-		$error_html = <<<_HTML_
-哎呀！介个邀请代码貌似不是我们发放的。（<a href="http://www.google.com/search?q=$invite_code" target="_blank">Google一下？</a>）
+		header('Location: /wo/account/create');
+		exit(0);
+	}
 
-<h2><a href="/wo/account/create">直接注册免费的JiWai帐号，请点这里 >></a></h2>
-_HTML_;
-	}
-	else
-	{
-		$inviter_id = $invitation_info['idUser'];
-		$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
-	}
+	$inviter_id = $invitation_info['idUser'];
+	$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
 }
 ?>
 
@@ -50,8 +40,13 @@ _HTML_;
 		
 		
 <?php
-if ( isset($inviter_user_info) )
-{	// 有效邀请代码
+if ( ! isset($inviter_user_info) )
+{
+		header('Location: /wo/account/create');
+		exit(0);
+}
+
+	// 有效邀请代码
 	$inviter_name_full 	= $inviter_user_info['nameFull'];
 	$inviter_icon_url 	= JWPicture::GetUserIconUrl($inviter_user_info['id']);
 	echo <<<_HTML_
@@ -156,11 +151,7 @@ _HTML_;
   		echo "<h3>您是${inviter_name_full}的第一位好友！</h3>";
 	}
 
-} // end 有效邀请代码
-else
-{ // 无效邀请代码
-	echo $error_html;
-}
+  // end 有效邀请代码
 ?>
 
 			</div><!-- wrapper -->
