@@ -334,6 +334,11 @@ _STR_;
 											. "请您确认输入了正确的叽歪帐号。了解更多？发送 HELP。"
 										);
 	
+		if ( ! JWFriend::IsFriend($followe_user_db_row['idUser'], $address_user_id) )
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，您只可以订阅好友的更新。通过ADD ${followe}命令添加好友。"
+											. "了解更多？发送 HELP。"
+										);
+			
 
 		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
@@ -551,12 +556,38 @@ _STR_;
 			}
 			else
 			{
-				JWSns::CreateFriends	( $address_user_id	,array($friend_user_id) );
-				JWSns::CreateFollowers	( $friend_user_id	,array($address_user_id) );
+				$is_protected = JWUser::IsProtected		( $friend_user_id );
 
-				$msg = <<<_STR_
-搞定了！我们已经帮您向${invitee_address}发送了好友添加请求。
+				if ( $is_protected )
+				{
+					if ( JWFriendRequest::IsExist($address_user_id, $friend_user_id) )
+					{
+						$msg = <<<_STR_
+您向${invitee_address}发送的添加好友请求，他还没有回应，再等等看吧。
 _STR_;
+					}
+					else if ( JWSns::CreateFriendRequest($address_user_id, $friend_user_id) )
+					{
+						$msg = <<<_STR_
+搞定了！我们已经帮您向${invitee_address}发送了好友添加请求，希望能够很快得到${invitee_address}的回应。
+_STR_;
+					}
+					else
+					{
+						$msg = <<<_STR_
+哎呀！由于系统故障，发送好友请求失败了……请稍后再试吧。
+_STR_;
+					}
+				}
+				else	// not protected
+				{
+					JWSns::CreateFriends	( $address_user_id	,array($friend_user_id) );
+					JWSns::CreateFollowers	( $friend_user_id	,array($address_user_id) );
+
+					$msg = <<<_STR_
+搞定了！已经将${invitee_address}添加为您的好友啦！
+_STR_;
+				}
 			}
 
 			/*
