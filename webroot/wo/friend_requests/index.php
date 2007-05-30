@@ -5,6 +5,15 @@ JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
+
+
+$friend_ids			= JWFriendRequest::GetUserIds($logined_user_info['id'], 20);
+
+if ( empty($friend_ids) )
+{
+	header ( "Location: /wo/" );
+	exit(0);
+}
 ?>
 
 <html>
@@ -34,7 +43,6 @@ JWTemplate::ShowActionResultTips();
 <table id="timeline" class="doing" cellspacing="0">
 
 <?php
-$friend_ids			= JWFriendRequest::GetRequestFriendIdsByUserId	($logined_user_info['id'], 20);
 
 $friend_db_rows		= JWUser::GetUserDbRowsByIds($friend_ids);
 $friend_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($friend_ids);

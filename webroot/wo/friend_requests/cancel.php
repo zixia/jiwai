@@ -6,7 +6,7 @@ JWLogin::MustLogined();
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
-function do_friend_request_deny()
+function do_friend_request_cancel()
 {
 	$logined_user_id =JWLogin::GetCurrentUserId();
 
@@ -23,7 +23,7 @@ _HTML_;
 
 	$friend_user_name = JWUser::GetUserInfo($friend_id, 'nameScreen');
 
-	$is_succ = JWFriendRequest::Destroy($friend_id, $logined_user_id);
+	$is_succ = JWFriendRequest::Destroy($logined_user_id, $friend_id);
 
 	if ( ! $is_succ )
 	{
@@ -34,12 +34,12 @@ _HTML_;
 	}
 
 	$notice_html = <<<_HTML_
-您拒绝了添加${friend_user_name}为好友请求。
+您取消了添加${friend_user_name}为好友请求。
 _HTML_;
 	return array('notice_html'=>$notice_html);
 }
 
-$info = do_friend_request_deny();
+$info = do_friend_request_cancel();
 
 if ( !empty($info['error_html']) )
 	JWSession::SetInfo('error',$info['error_html']);

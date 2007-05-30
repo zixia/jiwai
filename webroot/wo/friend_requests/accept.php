@@ -35,7 +35,7 @@ _HTML_;
 		return array('error_html'=>$error_html);
 	} 
 
-	$is_succ = JWFriendRequest::Destroy($logined_user_id, $friend_id);
+	$is_succ = JWFriendRequest::Destroy($friend_id, $logined_user_id);
 
 	if ( ! $is_succ )
 	{
