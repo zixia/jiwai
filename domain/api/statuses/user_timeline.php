@@ -108,7 +108,18 @@ switch ($pathParam[0])
 	case '/':
 		if ( preg_match('#^/(?P<idUser>\d+)\.?(?P<fileExt>\w*)$#',$pathParam,$matches) )
 		{
-			$options['idUser'] = intval($matches['idUser']);
+			$options['idUser'] = JWDB::CheckInt($matches['idUser']);
+
+			$user_info 		= JWUser::GetUserInfo($options['idUser']);
+			$is_protected 	= JWUser::IsProtected($options['idUser']);
+
+			if ( $is_protected )
+			{
+				// TODO
+				header('WWW-Authenticate: Basic realm="' . $user_info['nameScreen'] . '"');
+				header('HTTP/1.0 401 Unauthorized');
+				exit(0);
+			}
 
 			$output_type = strtolower($matches['fileExt']);
 
