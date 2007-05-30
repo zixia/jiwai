@@ -694,5 +694,15 @@ _SQL_;
 
 		return $user_ids;
 	}
+
+	static public function IsAdmin($idUser)
+	{
+		$admin_user_db_row = JWUser::GetUserInfo('adm');
+
+		if ( $admin_user_db_row['idUser']==$idUser )
+			return true;
+
+		return false;
+	}
 }
 ?>

@@ -285,8 +285,10 @@ class JWSns {
 			throw new JWException('must array');
 
 
-		$friend_relation	= JWFriend::IsFriends		($idUser, $idFriends	,true);
-		$follower_relation	= JWFollower::IsFollowers	($idUser, $idFriends	,true);
+		$friend_relation		= JWFriend::IsFriends				($idUser, $idFriends	,true);
+		$follower_relation		= JWFollower::IsFollowers			($idUser, $idFriends	,true);
+
+		$request_friend_ids		= JWFriendRequest::GetFriendIds		($idUser);
 
 		$send_via_device_rows	= JWUser::GetSendViaDeviceRowsByUserIds($idFriends);
 
@@ -302,9 +304,14 @@ class JWSns {
 				else
 					$action_rows[$friend_id]['follow']	= true;
 			}
+			else if ( in_array($friend_id, $request_friend_ids) )
+			{
+				$action_rows[$friend_id]['cancel']	= true;
+			}
 			else if ( $idUser!=$friend_id )
 			{
  				// not friend, and not myself
+
 				$action_rows[$friend_id]['add']		= true;
 			}
 
@@ -323,7 +330,6 @@ class JWSns {
 
 
 	/*
-	 	@过期函数	替代为 GetUserActions
 
 	 *	检查 $idUser 可以对 $idFriend 做哪些 Sns 操作
 	 *	$return	array	actions	array 	keys: 	add/remove(friend) follow/leave nudge/d
@@ -331,37 +337,12 @@ class JWSns {
 	 */
 	static public function GetUserAction($idUser, $idFriend)
 	{
-		if ( empty($idUser) || empty($idFriend) )
+		$arr = JWSns::GetUserActions($idUser, array($idFriend));
+
+		if ( empty($arr) )
 			return array();
 
-		$action = array();
-
-		if ( $idUser==$idFriend )
-			return $action;
-
-		if ( JWFriend::IsFriend($idUser, $idFriend) )
-		{
-			$action['remove']		= true;
-
-			if ( JWFollower::IsFollower($idFriend, $idUser) )
-				$action['leave']	= true;
-			else
-				$action['follow']	= true;
-		}
-		else if ( $idUser!=$idFriend )
-		{
- 			// not friend, and not myself
-			$action['add']		= true;
-		}
-
-		// 反向也是朋友，则可以 direct_message / nudge
-		if ( JWFriend::IsFriend($idFriend,$idUser) )
-		{
-			$action['nudge']		= true;
-			$action['d']			= true;
-		}
-
-		return $action;
+		return $arr[$idFriend];
 	}
 
 	/*
@@ -410,7 +391,7 @@ class JWSns {
 
 				if ( 'sms'==$send_via_device ) 
 				{
-					if ( JWUset::IsSubSms($follower_id) )
+					if ( JWUser::IsSubSms($follower_id) )
 						array_push($nudge_follower_ids, $follower_id);
 				}
 				else

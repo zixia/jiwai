@@ -520,7 +520,7 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
 	echo self::FavouriteAction($status_id,$is_fav);
-	if ( $current_user_id==$idUser 
+	if ( ( $current_user_id==$idUser || JWUser::IsAdmin($current_user_id) )
 			&& $options['trash'] )
 	{
 		echo self::TrashAction($status_id);
@@ -710,10 +710,9 @@ if ( isset($current_user_id) )
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
 	echo self::FavouriteAction($status_id,$is_fav);
-	if ( $current_user_id!=$user_id ){
-		// 不是自己的status可以收藏
-		// 现在可以收藏自己的
-	}else if ($options['trash']){
+	if ( ( JWUser::IsAdmin($current_user_id) || $current_user_id==$user_id  )
+			&& $options['trash'] )
+	{
 		//是自己的 status 可以删除
 		echo self::TrashAction($status_id);
 	}
@@ -1042,6 +1041,7 @@ _HTML_;
 		self::sidebar_register();
 		self::sidebar_featured();
 		self::sidebar_status()
+		self::sidebar_friend_req()
 		self::sidebar_count()
 		self::sidebar_jwvia()
 		self::sidebar_search()
@@ -1112,6 +1112,13 @@ _HTML_;
 			<li>
 				<a href="/wo/friends/leave/$arr_user_info[id]">退定</a> $arr_user_info[nameScreen]
 			</li>
+_HTML_;
+		}
+
+		if ( isset($action['cancel']) )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消</a> $arr_user_info[nameScreen]</li>
 _HTML_;
 		}
 
@@ -1208,6 +1215,22 @@ _HTML_;
 	}
 
 		
+	static function sidebar_friend_req( $num )
+	{
+		if ( empty($num) )
+			return;
+
+		echo <<<_HTML_
+		<ul class="featured">
+			<li>
+				<a href="/wo/friend_requests/">${num}个好友添加请求！</a>
+			</li>
+		</ul>
+
+_HTML_;
+	}
+
+
 	static function sidebar_count( $countInfo=null, $user='wo' )
 	{
 		echo <<<_HTML_

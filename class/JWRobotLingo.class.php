@@ -328,6 +328,13 @@ _STR_;
 		 */
 		$followe_user_db_row = JWUser::GetUserInfo( $followe );
 
+		if ( empty($followe_user_db_row) )
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，您订阅的"
+											. "${followe}我不认识，"
+											. "请您确认输入了正确的叽歪帐号。了解更多？发送 HELP。"
+										);
+	
+
 		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
 
@@ -390,7 +397,7 @@ _STR_;
 
 
 		$body = <<<_STR_
-您已离开$followe_user_db_row[nameFull]，取消了对他的订阅。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW $followe_user_db_row[nameScreen]可恢复订阅。
+您已退定了$followe_user_db_row[nameFull]。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW $followe_user_db_row[nameScreen]可恢复订阅。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -806,7 +813,7 @@ _STR_;
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
 			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
-											."不能随便挠挠他，呵呵。等他加你为好友再挠吧!");
+											."不能随便挠挠，呵呵。等你被加为好友再挠吧!");
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
 
@@ -964,7 +971,7 @@ _STR_;
 			 *		邀请者(Accept的用户)不存在？
 			 */
 			$body = <<<_STR_
-哎呀！没有找到这个用户($inviter_name)，是不是他（她）改名了？。发送HELP了解更多。
+哎呀！没有找到这个用户($inviter_name)，是不是改名了？。发送HELP了解更多。
 _STR_;
 		}
 

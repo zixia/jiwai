@@ -274,10 +274,7 @@ _STR_;
 			// 如果是手机用户或者QQ用户 
 			if ( preg_match('/^\d+$/',$user_name) )
 			{
-				if ( JWDevice::IsValid($user_name,'sms') )
-					$user_name = 'sms' . $user_name;
-				else
-					$user_name = 'qq' . $user_name;
+				$user_name = $robotMsg->GetType() . $user_name;
 			}
 			else
 			{

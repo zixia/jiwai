@@ -145,7 +145,10 @@ $arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
 
 $via_device			= JWUser::GetSendViaDevice($logined_user_id);
 
+$friend_request_num	= JWFriendRequest::GetUserNum($logined_user_id);
+
 $arr_menu 			= array(	array ('status'			, array($logined_user_info))
+								, array ('friend_req'	, array($friend_request_num))
 								, array ('count'		, array($arr_count_param))
 								, array ('jwvia'		, array($active_options, $via_device))
 								, array ('friend'		, array($arr_friend_list))

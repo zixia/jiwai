@@ -80,7 +80,7 @@ if ( JWLogin::IsLogined() )
 	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['idStatus']);
 
 	echo JWTemplate::FavouriteAction($status_info['idStatus'],$is_fav);
-	if ( $id_user_logined==$idPageUser ) {
+	if ( JWUser::IsAdmin($id_user_logined) || $id_user_logined==$idPageUser ) {
 		echo JWTemplate::TrashAction($idStatus);
 	}
 }

@@ -57,10 +57,7 @@ class JWFriend {
 	 */
 	static function IsFriends($idUser, $idFriends, $biDirection=false)
 	{
-		$idUser = intval($idUser);
-
-		if ( 0>=$idUser )
-			throw new JWException('must int');
+		$idUser = JWDB::CheckInt($idUser);
 
 		if ( empty($idFriends) )
 			return array();

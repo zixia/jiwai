@@ -26,7 +26,7 @@ _HTML_;
 	// 如果页面用户设置了保护，并且页面用户没有添加当前登录用户位好友，则需要发送验证请求
 	if ( JWUser::IsProtected($idPageUser) && !JWFriend::IsFriend($idPageUser, $idLoginedUser) )
 	{
-		if ( JWFriendRequest::IsFriendRequestExist($idPageUser, $idLoginedUser) )
+		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
 			$notice_html =<<<_HTML_
 您向${page_user_name}发送的添加好友请求，他还没有回应，再等等吧。
@@ -34,7 +34,7 @@ _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 				
-		$is_succ = JWSns::CreateFriendRequest($idPageUser, $idLoginedUser);
+		$is_succ = JWSns::CreateFriendRequest($idLoginedUser, $idPageUser);
 
 		if ($is_succ )
 		{
