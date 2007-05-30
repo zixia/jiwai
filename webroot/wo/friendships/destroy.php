@@ -16,7 +16,11 @@ if ( is_int($idLoginedUser) )
 
 		$page_user_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
 
-		if ( JWSns::DestroyFriends($idLoginedUser, array($idPageUser)) )
+		$bidirection = false;
+		if ( JWUser::IsProtected($idLoginedUser) )
+			$bidirection = true;
+
+		if ( JWSns::DestroyFriends($idLoginedUser, array($idPageUser), $bidirection) )
 		{
 			$notice_html = <<<_HTML_
 ${page_user_name}已经不再是您的好友了。
