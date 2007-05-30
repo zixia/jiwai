@@ -119,4 +119,6 @@ JWSession::Instance();
 // use for strftime
 setlocale(LC_ALL, 'zh_CN.UTF-8');
 mb_internal_encoding("UTF-8");
+
+JWTemplate::html_doctype();
 ?>
