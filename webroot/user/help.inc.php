@@ -12,7 +12,74 @@ $help_user_id	= $help_user_info['idUser'];
 
 <html>
 
-<?php JWTemplate::html_head() ?>
+<?php 
+
+// 显示自己和回复自己的
+
+$user_status_num= JWStatus::GetStatusNumFromSelfNReplies($help_user_id);
+$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+$status_data 	= JWStatus::GetStatusIdsFromSelfNReplies($help_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+
+
+$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+
+
+/*
+ *	设置 html header
+ */
+$keywords 		= <<<_STR_
+$help_user_info[nameScreen]($help_user_info[nameFull]) - $help_user_info[bio] $help_user_info[location] 
+_STR_;
+
+$description = "叽歪de$help_user_info[nameFull] ";
+$description .= @$head_status_rows[$head_status_id]['status'];
+
+foreach ( $status_data['status_ids'] as $status_id )
+{
+	$description .= $status_rows[$status_id]['status'];
+	if ( mb_strlen($description,'UTF-8') > 140 )
+	{
+			$description = mb_substr($description,0,140,'UTF-8');
+			break;
+	}
+}
+
+
+$rss			= array ( 	
+							// User TimeLine RSS & Atom
+							 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
+									,'title'	=> "$help_user_info[nameFull] (RSS)"
+									,'type'		=> "rss"
+								)
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom"
+									,'title'	=> "$help_user_info[nameFull] (Atom)"
+									,'type'		=> "atom"
+								)
+
+							// Friends TimeLine RSS & Atom
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss"
+									,'title'	=> "$help_user_info[nameFull]和朋友们 (RSS)"
+									,'type'		=> "rss"
+								)
+							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom"
+									,'title'	=> "$help_user_info[nameFull]和朋友们 (Atom)"
+									,'type'		=> "atom"
+								)
+						);
+
+$options = array(	 'title'		=> "$help_user_info[nameScreen] / $help_user_info[nameFull]"
+					,'keywords'		=> htmlspecialchars($keywords)
+					,'description'	=> htmlspecialchars($description)
+					,'author'		=> htmlspecialchars($keywords)
+					,'rss'			=> $rss
+					,'refresh_time'	=> '0'
+					,'refresh_url'	=> ''
+			);
+
+
+JWTemplate::html_head($options) ;
+?>
 
 <body class="normal">
 
@@ -68,16 +135,6 @@ JWTemplate::tab_header( array('title'=>'这一刻，大家都想告诉叽歪de�
 // when show archive, we set $show_archive=true, then include this file.
 
 //die(var_dump($_REQUEST));
-
-// 显示自己和回复自己的
-
-$user_status_num= JWStatus::GetStatusNumFromSelfNReplies($help_user_id);
-$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
-$status_data 	= JWStatus::GetStatusIdsFromSelfNReplies($help_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-
-
-$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
   
