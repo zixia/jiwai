@@ -902,7 +902,7 @@ $friend_user_row[nameFull]，注册时间：$register_date
 _STR_;
 
 		if ( !empty($friend_user_row['bio']) )
-			$body .= "，简介：$friend_user_row[bio]";
+			$body .= "，自述：$friend_user_row[bio]";
 
 		if ( !empty($friend_user_row['location']) )
 			$body .= "，位置：$friend_user_row[location]";

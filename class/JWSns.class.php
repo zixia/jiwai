@@ -387,6 +387,11 @@ class JWSns {
 			$nudge_follower_ids = array();
 			foreach ( $follower_ids as $follower_id )
 			{
+				array_push($nudge_follower_ids, $follower_id);
+
+/*
+		我们现在暂时允许所有的用户都可以通过手机接收下行订阅
+	手机用户数据
 				$send_via_device	= JWUser::GetSendViaDevice($follower_id);
 
 				if ( 'sms'==$send_via_device ) 
@@ -398,6 +403,7 @@ class JWSns {
 				{
 					array_push($nudge_follower_ids, $follower_id);
 				}
+*/
 			}
 
 			JWNudge::NudgeUserIds($nudge_follower_ids, "$user_name_screen: $status");

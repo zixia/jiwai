@@ -197,7 +197,10 @@ _SQL_;
 	static public function SaveUserIcon($idUser, $absFilePathName)
 	{
 		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
+		{
+			unlink ( $absFilePathName );
 			return ;
+		}
 
 		$file_name 	= $matches['file_name'];
 		$file_ext 	= $matches['file_ext'];
@@ -229,8 +232,11 @@ _SQL_;
 
 		if ( ! self::ConvertPictureBig( 	 $absFilePathName
 											,($abs_storage_root . $rel_picture_path_name)) ){
+			unlink ( $absFilePathName );
 			return false;
 		}
+
+		unlink ( $absFilePathName );
 
 		if ( ! self::ConvertThumbnail48(	 ($abs_storage_root . $rel_picture_path_name)
 											,($abs_storage_root . $rel_thumb48_path_name)) ){

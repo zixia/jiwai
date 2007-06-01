@@ -399,10 +399,9 @@ _SQL_;
 	static public function FormatStatus ($status)
 	{
 		$replyto	= null;
+
 		if ( preg_match('/^@([\d\w._\-]+)\s/',$status,$matches) )
-		{
-			$replyto = $matches[1];
-		}
+			$replyto 	= $matches[1];
 
 
 		/* 
@@ -458,6 +457,9 @@ _HTML_;
 		{
 			$status = htmlspecialchars($status);
 		}
+
+		if ( ! empty($replyto) )
+			$status		= preg_replace('/^@([\d\w._\-]+)\s/',"@<a href='/$1/'>$1</a> ", $status);
 
 		return array ( 'status'		=> $status
 						, 'replyto'	=> $replyto
