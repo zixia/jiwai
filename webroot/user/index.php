@@ -53,12 +53,6 @@ switch ( $func )
 		break;
 
 	case 'statuses':
-		if ( 'help'===strtolower($nameScreen) )
-		{
-			require_once(dirname(__FILE__) . '/help.inc.php');
-			exit(0);
-		}
-
 		require_once(dirname(__FILE__) . "/statuses.inc.php");
 
 		if ( preg_match('/^(\d+)$/',$param,$matches) )
@@ -88,6 +82,13 @@ switch ( $func )
 		$g_user_with_friends 	= true;
 		// fall to default
 	default:
+		if ( 'help'===strtolower($nameScreen) )
+		{
+			require_once(dirname(__FILE__) . '/help.inc.php');
+			exit(0);
+		}
+
+
 		$g_user_default 		= true;
 		$g_page_user_id			= $page_user_id;
 		require_once(dirname(__FILE__) . "/wo.inc.php");
