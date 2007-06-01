@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
-require_once("../jiwai.inc.php");
+require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
-$sitepath 	= "/vhost/jiwai.de/";
+$sitepath 	= "/vhost/jiwai.de/webroot";
 $website	= "http://jiwai.de";
 
 chdir($sitepath);

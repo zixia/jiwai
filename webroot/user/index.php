@@ -28,6 +28,12 @@ if ( 'public_timeline'===strtolower($nameScreen) )
 	require_once(dirname(__FILE__) . '/public_timeline.inc.php');
 	exit(0);
 }
+if ( 'help'===strtolower($nameScreen) )
+{
+	require_once(dirname(__FILE__) . '/help.inc.php');
+	exit(0);
+}
+
 
 
 // userName/user_id not exist 

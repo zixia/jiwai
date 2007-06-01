@@ -9,10 +9,19 @@ if ( array_key_exists('status', $_REQUEST) ){
 	{
 		$idUser = JWUser::GetCurrentUserInfo('id');
 
+		$help_user_id	= JWUser::GetUserInfo('help', 'idUser');
+
+		if ( preg_match('#\.de/help/$#i', $_SERVER['HTTP_REFERER'])
+				&& $idUser != $help_user_id
+				&& !preg_match('/^@help /',$status) )
+		{
+			$status = '@help ' . $status;
+		}
+
 		if ( !JWSns::UpdateStatus($idUser, $status) )
 			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
 	}
 }
 
-header ("Location: /wo/");
+JWTemplate::RedirectBackToLastUrl("Location: /wo/");
 ?>

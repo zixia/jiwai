@@ -45,7 +45,7 @@ class JWStatus {
 	/*
 	 *	根据 status 的 @zixia 打头内容，获取 zixia 最新的一条 status 的 id，
 	 */
-	static public function GetReplayId($status)
+	static public function GetReplayInfo($status)
 	{
 		if ( empty($status) )
 			return null;
@@ -66,7 +66,9 @@ class JWStatus {
 		if ( empty($reply_to_status_id) )
 			return null;
 
-		return $reply_to_status_id;
+		return array ( 	 'user_id'		=> $user_db_row['idUser']
+						,'status_id'	=> $reply_to_status_id
+					);
 	}
 
 
@@ -85,16 +87,28 @@ class JWStatus {
 		// 去掉回车，替换为空格
 		$status = preg_replace('[\r\n]',' ',$status);
 
-		$reply_status_id	= JWStatus::GetReplayId($status);
+		$reply_info 		= JWStatus::GetReplayInfo($status);
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo) "
-								. " values (?,?,?,FROM_UNIXTIME(?),?)" ) ){
-			if ( $result = $stmt->bind_param("isssi"
+		if ( empty($reply_info) )
+		{ 
+			$reply_status_id	= null;
+			$reply_user_id		= null;
+		}
+		else
+		{
+			$reply_status_id	= $reply_info['status_id'];
+			$reply_user_id		= $reply_info['user_id'];
+		}
+
+		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo) "
+								. " values (?,?,?,FROM_UNIXTIME(?),?,?)" ) ){
+			if ( $result = $stmt->bind_param("isssii"
 											, $idUser
 											, $status
 											, $device
 											, $time
 											, $reply_status_id
+											, $reply_user_id
 								) ){
 				if ( $stmt->execute() ){
 					$stmt->close();
@@ -154,6 +168,134 @@ _SQL_;
 						,'user_ids'		=> array($idUser)
 					);
 	}
+
+
+	/*
+	 *	获取回复用户的 idStatus 
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdsFromSelfNReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		$num	= JWDB::CheckInt($num);
+
+		$sql = <<<_SQL_
+SELECT		 Status.id	as idStatus
+			,Status.idUser	as idUser
+FROM		Status
+WHERE		Status.idUserReplyTo=$idUser
+			OR Status.idUser=$idUser
+ORDER BY 	Status.timeCreate desc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWStatus::GetStatusIdsFromSelfNReplies_idStatus";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $row["idStatus"];';
+			$reduce_function_param 	= '$row';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$status_ids = array_map(	 $func_callable_name
+									,$rows
+								);
+
+
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWStatus::GetStatusIdsFromSelfNReplies_idUser";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $row["idUser"];';
+			$reduce_function_param 	= '$row';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$user_ids = array_map(	 $func_callable_name
+									,$rows
+								);
+
+
+		array_push($user_ids, $idUser);
+
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> $user_ids
+					);
+	}
+
+
+
+	/*
+	 *	获取回复用户的 idStatus 
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdsFromReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		$num	= JWDB::CheckInt($num);
+
+		$sql = <<<_SQL_
+SELECT		Status.id	as idStatus
+FROM		Status
+WHERE		Status.idUserReplyTo=$idUser
+ORDER BY 	Status.timeCreate desc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $row["idStatus"];';
+			$reduce_function_param 	= '$row';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$status_ids = array_map(	 $func_callable_name
+									,$rows
+								);
+
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> array($idUser)
+					);
+	}
+
 
 
 	/*
@@ -487,6 +629,46 @@ _SQL_;
 
 		return $row['num'];
 	}
+
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum for replies to $idUser
+	 */
+	static public function GetStatusNumFromReplies($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Status
+WHERE	idUserReplyTo=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum for replies to $idUser
+	 */
+	static public function GetStatusNumFromSelfNReplies($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Status
+WHERE	idUserReplyTo=$idUser
+		OR idUser=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
 
 
 	/*

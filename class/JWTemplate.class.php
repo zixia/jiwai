@@ -205,15 +205,14 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007 叽歪de - JiWai.de, all rights reserved 京ICP证020015号</li>
+		<li class="first">&copy; 2007 叽歪de</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" 			target="_blank">关于我们</a></li>
-		<li><a href="http://help.jiwai.de/ContactUs" 		target="_blank">联系我们</a></li>
 		<li><a href="http://help.jiwai.de/MediaComments" 	target="_blank">媒体和掌声</a></li>
 		<li><a href="http://blog.jiwai.de/" 				target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api"				target="_blank">API</a></li>
 		<li><a href="http://help.jiwai.de/"					target="_blank">帮助</a></li>
-		<li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li>
+		<!--li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li-->
 
 	</ul>
 </div>
@@ -360,13 +359,14 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 
 		foreach ( $menuArr as $menu => $options )
 		{
+			$name 		= $options['name'];
 			$url 		= $options['url'];
 			$is_active	= $options['active'];
 
 			if ( $is_active )
-				echo "<li class='active'><a href='$url'>$menu</a></li>\n";
+				echo "<li class='active'><a href='$url'>$name</a></li>\n";
 			else
-				echo "<li><a href='$url'>$menu</a></li>\n";
+				echo "<li><a href='$url'>$name</a></li>\n";
 		}
 
 		echo "</ul>\n";
@@ -1511,6 +1511,8 @@ _HTML_;
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'
 
+										,'UrlHelp'				=>	'http://help.jiwai.de/'
+										,'UrlHelpComments'		=>	'/help/'
 										,'UrlHelpGadget'		=>	'http://help.jiwai.de/Gadget'
 
 										,'UrlStrangerPicture'	=>	'http://asset6.jiwai.de/img/stranger.gif'
@@ -1567,6 +1569,7 @@ _HTML_;
 		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 
+
 		$domain = 'jiwai.de';
 
 		if ( empty($_SERVER['HTTP_HOST']) )
@@ -1584,7 +1587,6 @@ _HTML_;
 
 		//we use more then one domain name to down load asset in parallel
 		return "http://asset${n}.$domain$absUrlPath?$timestamp";
-
 	}
 
 

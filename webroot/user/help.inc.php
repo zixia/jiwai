@@ -1,5 +1,4 @@
 <?php
-require_once(dirname(__FILE__) . '/../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
@@ -7,6 +6,8 @@ JWLogin::MustLogined();
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
 
+$help_user_info	= JWUser::GetUserInfo('help');
+$help_user_id	= $help_user_info['idUser'];
 ?>
 
 <html>
@@ -39,30 +40,19 @@ _HTML_;
 <?php JWTemplate::ShowActionResultTips() ?>
 
 
-<?php JWTemplate::updater() ?>
+<?php 
+$options = array ( 'default_text' => '@help ' );
+JWTemplate::updater($options) ;
+?>
 
   			<!-- p class="notice">
-  				IM is down at the moment.  We're working on restoring it.  Thanks for your patience!
   			</p-->
 
 
 <?php 
-$active_tab = 'friends';
-
-if ( isset($g_show_user_archive) && $g_show_user_archive)
-	$active_tab = 'archive';
-
-if ( isset($g_replies) && $g_replies )
-	$active_tab = 'replies';
-
-
 $menu_list = array (
-		 'archive'	=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/account/archive")
-		,'replies'	=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
-		,'friends'	=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
+		'archive_n_replies'	=> array('active'=>true	,'name'=>'叽歪de留言板'	,'url'=>"/help/")
 	);
-
-$menu_list[$active_tab]['active'] = true;
 
 JWTemplate::tab_menu($menu_list) 
 ?>
@@ -71,7 +61,7 @@ JWTemplate::tab_menu($menu_list)
 
 <?php 
 
-JWTemplate::tab_header( array() ) 
+JWTemplate::tab_header( array('title'=>'这一刻，大家都想告诉叽歪de什么呢？') ) 
 ?>
 
 <?php 
@@ -79,30 +69,12 @@ JWTemplate::tab_header( array() )
 
 //die(var_dump($_REQUEST));
 
-switch ( $active_tab )
-{
-	case 'archive':
-		// 只显示用户自己的
-		$user_status_num= JWStatus::GetStatusNum($logined_user_id);
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
-		$status_data 	= JWStatus::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		break;
-	case 'replies':
-		// 显示回复自己的
-		$user_status_num= JWStatus::GetStatusNumFromReplies($logined_user_id);
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
-		$status_data 	= JWStatus::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+// 显示自己和回复自己的
 
-		break;
-	default:
-	case 'friends':
-		// 显示用户和好友的
-		$user_status_num= JWStatus::GetStatusNumFromFriends($logined_user_id);
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
-		$status_data 	= JWStatus::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		break;
+$user_status_num= JWStatus::GetStatusNumFromSelfNReplies($help_user_id);
+$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+$status_data 	= JWStatus::GetStatusIdsFromSelfNReplies($help_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-}
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
@@ -113,7 +85,7 @@ JWTemplate::pagination($pagination);
 
 ?>
 
-<?php JWTemplate::rss('user',$logined_user_id) ?>
+<?php JWTemplate::rss('user',$help_user_id) ?>
 			</div><!-- tab -->
 
   			<script type="text/javascript">
@@ -133,10 +105,10 @@ JWTemplate::pagination($pagination);
 	</div><!-- content -->
 
 <?php 
-$arr_count_param	= JWSns::GetUserState($logined_user_id);
+$arr_count_param	= JWSns::GetUserState($help_user_id);
 
 
-$device_row			= JWDevice::GetDeviceRowByUserId($logined_user_id);
+$device_row			= JWDevice::GetDeviceRowByUserId($help_user_id);
 
 $active_options = array();
 
@@ -156,16 +128,10 @@ foreach ( $supported_device_types as $type )
 }
 
 
-$arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
+$arr_friend_list	= JWFriend::GetFriendIds($help_user_id);
 
-$via_device			= JWUser::GetSendViaDevice($logined_user_id);
-
-$friend_request_num	= JWFriendRequest::GetUserNum($logined_user_id);
-
-$arr_menu 			= array(	array ('status'			, array($logined_user_info))
-								, array ('friend_req'	, array($friend_request_num))
+$arr_menu 			= array(	array ('status'			, array($help_user_info))
 								, array ('count'		, array($arr_count_param))
-								, array ('jwvia'		, array($active_options, $via_device))
 								, array ('friend'		, array($arr_friend_list))
 							);
 	

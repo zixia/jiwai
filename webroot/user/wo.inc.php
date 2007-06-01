@@ -37,33 +37,39 @@ if ( $logined_user_info['idUser']!=$page_user_id
 
 <?php 
 
-if ( !isset($g_user_with_friends) )
-	$g_user_with_friends = false;
+$active_tab = 'archive';
+
+if ( isset($g_user_with_friends) && $g_user_with_friends )
+	$active_tab = 'friends';
 
 
 /*
  *	使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
  *
  */
-if ( $g_user_with_friends )
+switch ( $active_tab )
 {
-	// 显示用户和好友的
-	$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
+	default:
+	case 'archive':
+		// 显示用户自己的
+		$user_status_num= JWStatus::GetStatusNum($page_user_id);
+		$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
+		$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		break;
 
-	$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+	case 'replies':
+		die("UNSUPPORT");
+		break;
 
-	$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+	case 'friends':
+		// 显示用户和好友的
+		$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
+
+		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+
+		$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		break;
 }
-else
-{
-	// 显示用户自己的
-	$user_status_num= JWStatus::GetStatusNum($page_user_id);
-
-	$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
-
-	$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
-}
-
 
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
@@ -160,14 +166,18 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 
 <?php 
 $menu_list = array (
-		 '和朋友们(24小时内)'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/with_friends")
-		,'以前的'	=> array('active'=>false	,'url'=>"/$page_user_info[nameScreen]/")
+		 'friends'	=> array(	 'active'	=> false	
+								,'name'		=> "和朋友们(24小时内)"
+								,'url'		=> "/$page_user_info[nameScreen]/with_friends"
+							)
+		,'archive'	=> array(	 'active'	=> false
+								,'name'		=> "以前的"
+								,'url'		=> "/$page_user_info[nameScreen]/"
+							)
 	);
 
-if ( $g_user_with_friends )
-	$menu_list['和朋友们(24小时内)']['active'] = true;
-else
-	$menu_list['以前的']['active'] = true;
+$menu_list[$active_tab]['active'] = true;
+//die(var_dump($menu_list));
 
 
 if ( $show_protected_content )

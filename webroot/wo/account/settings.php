@@ -226,12 +226,12 @@ _HTML_;
 						</td>
 					</tr>
 					<tr>
-						<th><label for="user_bio">简介：</label></th>
+						<th><label for="user_bio">自述：</label></th>
 						<td>
 							<input id="user_bio" maxlength="80" name="user[bio]" size="30" type="text" value="<?php echo isset($new_user_info)
                                                         ? $new_user_info['bio']
                                                         : $user_info['bio']?>" />
-							<p><small>一句话（不超过70个汉字）的个人简介</small></p>
+							<p><small>一句话（不超过70个汉字）的自我说明</small></p>
 						</td>
 					</tr>
 					<tr>
@@ -254,7 +254,7 @@ _HTML_;
 							<input <?php echo isset($new_user_info)
                                                         ? ('Y'==@$new_user_info['protected']?' checked ':'')
                                                         : ('Y'==$user_info['protected'] ? ' checked ' : '')?> id="user_protected" name="user[protected]" type="checkbox" value="Y" />
-							<label for="user_protected">设为私密</label>
+							<label for="user_protected">只对我de好友公开</label>
 
 							<p><small>只允许被我加为好友的人看到我的更新。如果选择了这项设置，你将不会出现在
 							<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</small></p>

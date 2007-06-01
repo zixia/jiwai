@@ -12,7 +12,7 @@ $idUser	= $user['id'];
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
-<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>订阅$user[nameFull]<img src="http://asset.jiwai.de/img/favicon.gif" style="align:middle; border:0" /></a></div></div>
+<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>$user[nameFull]的叽歪档案<img src="http://asset.jiwai.de/img/favicon.gif" style="align:middle; border:0" /></a></div></div>
 _HTML_;
 
 if ( isset($_REQUEST['gadget']) )
@@ -45,7 +45,7 @@ if ( isset($_REQUEST['gadget']) )
 
 	if ( ! $gadget['hidefollow'] )
 	{
-			$sub_user_str = "订阅" . $user['nameFull'];
+			$sub_user_str = $user['nameFull'] . '的叽歪档案';
 
 			if ( isset($gadget['encoding']) && 'UTF-8'!=strtoupper($gadget['encoding']) )
 				$sub_user_str = mb_convert_encoding($sub_user_str, $gadget['encoding'], "UTF-8");
@@ -190,7 +190,7 @@ echo "\t\t\t\t\t\t<option value='40' $selected >40</option>\n"
    							<label><input type="checkbox" name="gadget[hidefollow]" value="1";
 										<?php	if ( !empty($gadget['hidefollow']) ) 
 													echo " checked='checked' ";
-										?>/>不显示订阅链接</label><br/><br/>
+										?>/>不显示叽歪de档案</label><br/><br/>
 							<br/>
    						</td>
 					</tr>
