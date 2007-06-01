@@ -114,9 +114,11 @@ _HTML_;
 
 
 		// SEO attack to fanfou.com
-		$keywords 		.= " - 是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否, are you fanfou?";
-		$description	.= " - 就像常问的吃饭了否(你今天饭否? fanfou today? 是否饭了,吃饭否,有没有饭否,is fanfou?什么时候饭否,when fanfou? 要不要饭否的意思)";
-
+		if ( '/'!=$_SERVER['SCRIPT_URL'])
+		{
+			$keywords 		.= " - 是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否, are you fanfou?";
+			$description	.= " - 就像常问的吃饭了否(你今天饭否? fanfou today? 是否饭了,吃饭否,有没有饭否,is fanfou?什么时候饭否,when fanfou? 要不要饭否的意思)";
+		}
 
 		echo <<<_HTML_
 <head>
@@ -458,6 +460,7 @@ _HTML_;
 			$status_result 	= JWStatus::FormatStatus($status);
 			$status			= $status_result['status'];
 			$replyto		= $status_result['replyto'];
+
 		}
 
 
@@ -1157,7 +1160,7 @@ _HTML_;
 			<li>名字: <?php echo htmlspecialchars($aUserInfo['nameFull'])?></li>
 <?php
 			if ( !empty($aUserInfo['bio']) )
-				echo "<li>简介: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
+				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
 			if ( !empty($aUserInfo['location']) )
 				echo "<li>位置: " . htmlspecialchars($aUserInfo['location']) . "</li>\n";
 			if ( !empty($aUserInfo['url']) )
