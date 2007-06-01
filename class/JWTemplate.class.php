@@ -187,7 +187,7 @@ _HTML_;
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/account/settings">设置</a></li>
-			<li><a href="http://help.jiwai.de/">帮助</a></li>
+			<li><a href="/help/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
 		</ul>
 <?php } ?>

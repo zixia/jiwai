@@ -131,6 +131,7 @@ foreach ( $supported_device_types as $type )
 $arr_friend_list	= JWFriend::GetFriendIds($help_user_id);
 
 $arr_menu 			= array(	array ('status'			, array($help_user_info))
+								, array ('user_info'	, array($help_user_info))
 								, array ('count'		, array($arr_count_param))
 								, array ('friend'		, array($arr_friend_list))
 							);
