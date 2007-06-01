@@ -120,6 +120,4 @@ JWSession::Instance();
 setlocale(LC_ALL, 'zh_CN.UTF-8');
 mb_internal_encoding("UTF-8");
 
-if ( ! CONSOLE )
-	JWTemplate::html_doctype();
 ?>

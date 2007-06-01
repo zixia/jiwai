@@ -1,5 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
+JWTemplate::html_doctype();
 
 
 $name_len_min = 5;

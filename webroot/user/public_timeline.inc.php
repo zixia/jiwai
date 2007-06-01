@@ -1,4 +1,5 @@
 <?php
+JWTemplate::html_doctype();
 ?>
 <html>
 

@@ -1,6 +1,8 @@
 <?php
 function user_status($idPageUser, $idStatus)
 {
+	JWTemplate::html_doctype();
+
 	$status_rows	= JWStatus::GetStatusDbRowsByIds(array($idStatus));
 	$status_info	= $status_rows[$idStatus];
 

@@ -1,11 +1,13 @@
 <?php
+require_once('../../../jiwai.inc.php');
+JWTemplate::html_doctype();
+
 /*
 @header("Expires: Thu, 19 Nov 1981 08:52:00 GMT");
 @header("Cache-Control: no-store, no-cache, must-revalidate");
 @header("Pragma: no-cache");
 */
 
-require_once('../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 

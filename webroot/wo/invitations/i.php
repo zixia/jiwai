@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
+JWTemplate::html_doctype();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 

@@ -1,4 +1,6 @@
 <?php
+JWTemplate::html_doctype();
+
 //$debug = JWDebug::instance();
 //$debug->init();
 

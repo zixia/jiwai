@@ -1,6 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWDebug::init();
+JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 

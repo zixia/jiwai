@@ -1,5 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
+JWTemplate::html_doctype();
 
 define('DEFAULT_GADGET_COUNT', 3);
 define('DEFAULT_GADGET_THEME', 'iChat');

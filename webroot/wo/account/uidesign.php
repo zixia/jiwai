@@ -1,3 +1,7 @@
+<?php
+require_once('../../jiwai.inc.php');
+JWTemplate::html_doctype();
+?>
 
 建设中... :P
 
