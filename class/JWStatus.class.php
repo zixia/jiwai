@@ -258,10 +258,11 @@ _SQL_;
 		$num	= JWDB::CheckInt($num);
 
 		$sql = <<<_SQL_
-SELECT		Status.id	as idStatus
+SELECT		 id				as idStatus
+			,idUser
 FROM		Status
-WHERE		Status.idUserReplyTo=$idUser
-ORDER BY 	Status.timeCreate desc
+WHERE		idUserReplyTo=$idUser
+ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
@@ -274,7 +275,7 @@ _SQL_;
 		/*
 		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
 		 */
-		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies";
+		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies_idStatus";
 		$func_callable_name	= JWFunction::Get($func_key_name);
 
 		if ( empty($func_callable_name) )
@@ -291,8 +292,32 @@ _SQL_;
 									,$rows
 								);
 
+
+		/*
+		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
+		 */
+		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies_idUser";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $row["idUser"];';
+			$reduce_function_param 	= '$row';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$user_ids = array_map(	 $func_callable_name
+									,$rows
+								);
+
+
+		array_push($user_ids, $idUser);
+
 		return array (	'status_ids'	=> $status_ids
-						,'user_ids'		=> array($idUser)
+						,'user_ids'		=> $user_ids
 					);
 	}
 
