@@ -5,7 +5,6 @@
 @header("Pragma: no-cache");
 */
 
-die("FT");
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
