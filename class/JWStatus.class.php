@@ -409,6 +409,7 @@ FROM
 			Status, User
 WHERE		
 			Status.idUser=User.id
+			AND Status.idUserReplyTo IS NULL
 			AND User.idPicture IS NOT NULL
 			AND User.protected<>'Y'
 ORDER BY 	
