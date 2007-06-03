@@ -6,6 +6,7 @@ use POSIX;
 # use Fcntl qw (:flock); # import LOCK_* constants
 use Sys::Syslog;
 use Linux::Inotify2;
+use Carp::Heavy;
 
 use Data::Dumper;
 
