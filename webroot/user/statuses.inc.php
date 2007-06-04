@@ -17,8 +17,9 @@ function user_status($idPageUser, $idStatus)
 
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
+	$formated_status 	= JWStatus::FormatStatus($status_info['status']);
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html>
 
 <?php JWTemplate::html_head() ?>
@@ -53,7 +54,7 @@ background: transparent url()
 					<!-- google_ad_section_start -->
 
     				<h1>
-    		  			<?php echo htmlspecialchars($status_info['status'])?>
+    		  			<?php echo $formated_status['status'] ?>
     				</h1>
 
 <?php
@@ -86,6 +87,18 @@ if ( JWLogin::IsLogined() )
 		echo JWTemplate::TrashAction($idStatus);
 	}
 }
+
+	$replyto = $formated_status['replyto'];
+
+	if (!empty($replyto))
+	{
+		if ( empty($status_info['idStatusReplyTo']) )
+			echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+		else
+			echo " <a href='/$replyto/statuses/$status_info[idStatusReplyTo]'>给 ${replyto} 的回复</a> ";
+	}
+
+
 ?>
 							</span>
     					</span>

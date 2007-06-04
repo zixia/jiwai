@@ -603,23 +603,30 @@ _SQL_;
 							, $matches 
 						) )
 		{
-			//var_dump($matches);
+			//die(var_dump($matches));
 			$head_str		= htmlspecialchars($matches[1]);
 			$url_domain		= htmlspecialchars($matches[2]);
 			$url_path		= htmlspecialchars($matches[3]);
 			$tail_str		= htmlspecialchars($matches[4]);
 
-			if (!empty($url_path) && '/'!=$url_path[0])
+
+			/*
+			 *	检查 url path 是否为真正的 url path
+	 	 	 */
+			if (!empty($url_path) && preg_match('#[^/:]#', $url_path[0]) )
 			{
 				$tail_str = $url_path . $tail_str;
 				$url_path = '';
 			}
 
+
 			$url_str		= <<<_HTML_
 <a href="#" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
 						this.href='http://$url_domain$url_path';">http://$url_domain/...</a>
 _HTML_;
-			$status 		= $head_str . $url_str . $tail_str;
+			$status 		= htmlspecialchars($head_str) . $url_str . htmlspecialchars($tail_str);
+
+//$status = htmlspecialchars($status);
 		}
 		else
 		{
