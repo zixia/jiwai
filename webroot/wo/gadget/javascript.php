@@ -90,7 +90,11 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 		<div id="wrapper" style="margin: 1em 1em">
 
 
-			<h2><?php echo $user['nameFull']?>的窗可贴</h2>
+			<h2><?php echo $user['nameScreen']?>的窗可贴</h2>
+
+<?php JWTemplate::UserGadgetNav('javascript'); ?>
+<br />
+
 			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
 
         	<div class="indent" style="margin:2em 0 1em 0">

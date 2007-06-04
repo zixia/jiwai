@@ -24,9 +24,13 @@ $user_info	= JWUser::GetUserInfo($user_id);
 		<div id="wrapper" style="margin: 1em 1em">
 
 
-			<h2><?php echo $user_info['nameFull']?>的窗可贴</h2>
-			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
+			<h2><?php echo $user_info['nameScreen']?>的窗可贴</h2>
 
+<?php JWTemplate::UserGadgetNav('flash'); ?>
+
+
+<br />
+			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
 
 <div style="width:600px;text-align:center">
 	<embed pluginspage="http://www.macromedia.com/go/getflashplayer" 
