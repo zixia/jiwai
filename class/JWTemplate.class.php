@@ -277,7 +277,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeypress="if(event.ctrlKey && window.event.keyCode==13){return $('doingForm').submit();} else return (event.which == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey && event.keyCode==13){return $('submit').click();} else return (event.which == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
 					<div class="submit">
@@ -309,17 +309,23 @@ $('status').focus()
 			<script type="text/javascript">
 //<![CDATA[
 
-	// FIXME: IE???
+i=0;
 	function getStatusTextCharLengthMax(value)
 	{
-		return 140;
-	  if (value.match(/[^\u00-\u7F]/))
-	  {
+		i++;
+		/*
+	  	 * if (/[^\x00-\xff]/g.test(value))
+		 * 这个工作不稳定，一下子匹配中文，一下子不配配中文……
+		 */
+
+	  	// ascii msg
+		if (escape(value).indexOf("%u") < 0)
+	  	{
+			return 140;
+	  	}
+
 		// chinese msg;
-		return 70;
-	  }
-	  // ascii msg
-	  return 140;
+	  	return 70;
 	}
 // onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
 
