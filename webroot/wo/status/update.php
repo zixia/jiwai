@@ -9,6 +9,10 @@ if ( array_key_exists('status', $_REQUEST) ){
 	{
 		$idUser = JWUser::GetCurrentUserInfo('id');
 
+
+		/*
+		 *	为了 /help/ 留言板的更新都自动加上 @help
+		 */
 		$help_user_id	= JWUser::GetUserInfo('help', 'idUser');
 
 		if ( preg_match('#\.de/help/$#i', $_SERVER['HTTP_REFERER'])
@@ -17,6 +21,8 @@ if ( array_key_exists('status', $_REQUEST) ){
 		{
 			$status = '@help ' . $status;
 		}
+
+
 
 		if ( !JWSns::UpdateStatus($idUser, $status) )
 			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");

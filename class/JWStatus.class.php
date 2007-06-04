@@ -45,7 +45,7 @@ class JWStatus {
 	/*
 	 *	根据 status 的 @zixia 打头内容，获取 zixia 最新的一条 status 的 id，
 	 */
-	static public function GetReplayInfo($status)
+	static public function GetReplyInfo($status)
 	{
 		if ( empty($status) )
 			return null;
@@ -87,7 +87,7 @@ class JWStatus {
 		// 去掉回车，替换为空格
 		$status = preg_replace('[\r\n]',' ',$status);
 
-		$reply_info 		= JWStatus::GetReplayInfo($status);
+		$reply_info 		= JWStatus::GetReplyInfo($status);
 
 		if ( empty($reply_info) )
 		{ 

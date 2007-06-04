@@ -371,8 +371,21 @@ class JWSns {
 	 */
 	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null )
 	{
-		// FIXME: Follower 最多可以有多少位？
-		$follower_ids = JWFollower::GetFollowerIds($idUser);
+		$reply_info	= JWStatus::GetReplyInfo($status);
+
+		/*
+		 *	如果是 @user 的更新，只发送给 user
+		 *	否则发送给所有的 follower
+	 	 */
+		if ( !empty($reply_info) )
+		{
+			$follower_ids = array($reply_info['user_id']);
+		}
+		else
+		{
+			// FIXME: Follower 最多可以有多少位？
+			$follower_ids = JWFollower::GetFollowerIds($idUser);
+		}
 
 		if ( !empty($follower_ids) )
 		{
@@ -382,7 +395,7 @@ class JWSns {
 			// coz it will spend our money ( MT fee )
 
 			// get them all for cache.
-			$follower_user_rows		= JWUser::GetUserDbRowsByIds($follower_ids);
+			//$follower_user_rows		= JWUser::GetUserDbRowsByIds($follower_ids);
 
 			$nudge_follower_ids = array();
 			foreach ( $follower_ids as $follower_id )
