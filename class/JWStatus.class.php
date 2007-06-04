@@ -624,7 +624,7 @@ _SQL_;
 <a href="#" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
 						this.href='http://$url_domain$url_path';">http://$url_domain/...</a>
 _HTML_;
-			$status 		= htmlspecialchars($head_str) . $url_str . htmlspecialchars($tail_str);
+			$status 		= $head_str . $url_str . $tail_str;
 
 //$status = htmlspecialchars($status);
 		}
