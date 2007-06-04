@@ -19,7 +19,8 @@ $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
 $show_protected_content = true;
 
-if ( $logined_user_info['idUser']!=$page_user_id 
+if ( !JWUser::IsAdmin($logined_user_info['idUser'])
+		&& $logined_user_info['idUser']!=$page_user_id 
 		&& JWUser::IsProtected($page_user_id) )
 {
 	if ( empty($logined_user_info) )

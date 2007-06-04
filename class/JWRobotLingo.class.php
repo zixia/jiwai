@@ -170,7 +170,7 @@ class JWRobotLingo {
 	static function	Lingo_Help($robotMsg)
 	{
 		$body = <<<_STR_
-告诉JiWai这一刻你在做什么，我们会让你的朋友们知道！想要更多帮助，回复TIPS。
+告诉JiWai这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。
 _STR_;
 
 		if ( 'sms'==$robotMsg->GetType() )
@@ -241,7 +241,7 @@ _STR_;
 
 
 		$body = <<<_STR_
-搞定了！你在做什么呢？任何时候发送OFF都可以随时关掉通知。
+搞定了！您在做什么呢？任何时候发送OFF都可以随时关掉通知。
 _STR_;
 
 		$robot_reply_msg = new JWRobotMsg();
@@ -843,14 +843,14 @@ _STR_;
 			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
-			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，你还不是$friend_user_db_row[nameFull]的好友呢，"
-											."不能随便挠挠，呵呵。等你被加为好友再挠吧!");
+			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，您还不是$friend_user_db_row[nameFull]的好友呢，"
+											."不能随便挠挠，呵呵。等您被加为好友再挠吧!");
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
 
 
 		$nudge_message = <<<_NUDGE_
-$address_user_db_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
+$address_user_db_row[nameScreen]挠挠了您一下，提醒您更新JiWai！回复本消息既可更新您的JiWai。
 _NUDGE_;
 
 		JWNudge::NudgeUserIds(array($friend_user_db_row['idUser']), $nudge_message, 'nudge');

@@ -50,7 +50,7 @@ class JWStatus {
 		if ( empty($status) )
 			return null;
 
-		if ( ! preg_match('/^@(\w+)\s/',$status, $matches) )
+		if ( ! preg_match('/^@([\w\.\-\_]+)/',$status, $matches) )
 			return null;
 
 		$reply_to_user = $matches[1];
@@ -568,7 +568,7 @@ _SQL_;
 	{
 		$replyto	= null;
 
-		if ( preg_match('/^@([\d\w._\-]+)\s/',$status,$matches) )
+		if ( preg_match('/^@([\w\._\-]+)/',$status,$matches) )
 			$replyto 	= $matches[1];
 
 
@@ -627,7 +627,7 @@ _HTML_;
 		}
 
 		if ( ! empty($replyto) )
-			$status		= preg_replace('/^@([\d\w._\-]+)\s/',"@<a href='/$1/'>$1</a> ", $status);
+			$status		= preg_replace('/^@([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", $status);
 
 		return array ( 'status'		=> $status
 						, 'replyto'	=> $replyto

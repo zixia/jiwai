@@ -107,8 +107,12 @@ _HTML_;
 <?php JWTemplate::ShowActionResultTips() ?>
 
 
+<h3>这里是叽歪de留言板，欢迎给叽歪de留言！先看看<a href="<?php echo JWTemplate::GetConst('UrlFaq')?>" target="_blank">常见问题</a></h3>
+
+<br />
+
 <?php 
-$options = array ( 'default_text' => '@help ' );
+$options = array ( 'title' => '这一刻，你想对叽歪de说些什么？' );
 JWTemplate::updater($options) ;
 ?>
 

@@ -187,7 +187,7 @@ _HTML_;
 			<li><a href="/wo/gadget/">窗可贴</a></li>
 			<li><a href="/wo/invitations/invite">邀请</a></li>
 			<li><a href="/wo/account/settings">设置</a></li>
-			<li><a href="/help/">留言板</a></li>
+			<li><a href="/help/">帮助</a></li>
 			<li><a href="/wo/logout">退出</a></li>
 		</ul>
 <?php } ?>
@@ -247,15 +247,19 @@ function run_google()
 	}
 
 
-	static public function updater()
+	static public function updater($options)
 	{
+		if ( empty($options['title']) )
+			$title = '这一刻，你在做什么？';
+		else
+			$title = $options['title'];
 ?>
 			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="new Ajax.Request('/status/update', {asynchronous:true, evalScripts:true, onComplete:function(request){$('status').value = ''; updateStatusTextCharCounter($('status').value);$('submit').disabled = false;$('submit_loading').style.display='none';Effect.Appear('chars_left_notice', {duration:0.5});}, onLoading:function(request){$('submit').disabled = true;Effect.Appear('submit_loading', {duration:0.3});$('chars_left_notice').style.display='none';}, parameters:Form.serialize(this)}); return false;">
 				<fieldset>
 					<div class="bar even">
 						<h3>
 							<label for="status">
-								这一刻，你在做什么？
+								<?php echo $title?>
 							</label>
 						</h3>
 						<span id="chars_left_notice">
@@ -1507,6 +1511,7 @@ _HTML_;
 										,'UrlRegister'			=>	'/wo/account/create'
 										,'UrlPublicTimeline'	=>	'/public_timeline/'
 										,'UrlTermOfService'		=>	'http://help.jiwai.de/TOS'
+										,'UrlFaq'				=>	'http://help.jiwai.de/FAQs'
 
 										,'UrlError404'			=>	'/wo/error/404'
 										,'UrlError500'			=>	'/wo/error/500'

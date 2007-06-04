@@ -2,6 +2,8 @@
 <?php
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
+echo date("Y-m-d H:i:s", time()) . " sitemap start\n";
+
 $sitepath 	= "/vhost/jiwai.de/webroot";
 $website	= "http://jiwai.de";
 
@@ -85,4 +87,7 @@ fclose($handle);
 
 unlink ( "sitemap.xml.gz" );
 system("gzip sitemap.xml");
+
+
+echo date("Y-m-d H:i:s", time()) . " sitemap done\n";
 ?>

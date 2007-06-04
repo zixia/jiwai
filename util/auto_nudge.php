@@ -31,7 +31,7 @@
 define ('CONSOLE',true);
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
-echo date("Y-m-d h:m:s", time()) . " AutoNudge start\n";
+echo date("Y-m-d H:i:s", time()) . " AutoNudge start\n";
 
 $idStatusLastDay = JWAutoNudge::GetIdStatusLastDayProcessed();
 
@@ -60,5 +60,5 @@ _NUDGE_;
 	JWNudge::NudgeUserIds(array($idUser), $nudge_message, 'nudge');
 }
 
-echo date("Y-m-d h:m:s", time()) . " AutoNudge done\n";
+echo date("Y-m-d H:i:s", time()) . " AutoNudge done\n";
 ?>
