@@ -247,7 +247,7 @@ function run_google()
 	}
 
 
-	static public function updater($options)
+	static public function updater($options=null)
 	{
 		if ( empty($options['title']) )
 			$title = '这一刻，你在做什么？';
