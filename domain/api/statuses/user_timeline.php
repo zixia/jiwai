@@ -187,7 +187,7 @@ function user_timeline_rss_n_atom($options)
 	$status_data	= JWStatus::GetStatusIdsFromUser($user_id, $count);
 	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
-	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds(array($user_id),'thumb48');
+	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds(array($user_id),'thumb48');
 
 	$user			= $user_rows[$user_id];
 	$user_icon_url	= $user_icon_url_rows[$user_id];

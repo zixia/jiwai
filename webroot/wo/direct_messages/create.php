@@ -37,7 +37,6 @@ if ( empty($receiver_user_row)
 	exit(0);
 }
 
-
 /*
  *	如果提交了消息内容
  *
@@ -100,11 +99,20 @@ _HTML_;
 	<div id="content">
 		<div id="wrapper">
 
+<style type="text/css">
+#content #doingForm .bar {
+line-height:2.5em;
+padding:0pt 10px;
+position:relative;
+}
+</style>
+
+
 
 
 <form action="/wo/direct_messages/create/<?php echo $receiver_user_id?>" id="doingForm" method="post" name="f">
 	<fieldset>
-		<div class="bar">
+		<div class="bar odd">
 			<h3><label for="doing">发送给 <a href="/<?php echo $receiver_user_row['nameScreen']?>"><?php echo $receiver_user_row['nameScreen']?></a> 悄悄话。</label></h3>
 
 			<span>

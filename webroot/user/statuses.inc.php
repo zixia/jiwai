@@ -10,8 +10,7 @@ function user_status($idPageUser, $idStatus)
 
 	if ( $status_info['idUser']!==$idPageUser )
 	{
-		$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
-		header ( "Location: " . JWTemplate::GetConst("UrlError404") );
+		JWTemplate::RedirectTo404NotFound();
 		exit(0);
 	}
 

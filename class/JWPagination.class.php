@@ -42,7 +42,7 @@ class JWPagination {
 
 	public function IsShowNewest()
 	{
-		if ( $this->mCurrentPageNo > 1 )
+		if ( $this->mCurrentPageNo > 2 )
 			return true;
 
 		return false;
@@ -55,7 +55,7 @@ class JWPagination {
 
 	public function IsShowNewer()
 	{
-		if ( $this->mCurrentPageNo > 2 )
+		if ( $this->mCurrentPageNo > 1 )
 			return true;
 
 		return false;
@@ -68,7 +68,7 @@ class JWPagination {
 
 	public function IsShowOlder()
 	{
-		if ( $this->mCurrentPageNo <  $this->GetOldestPageNo()-1 )
+		if ( $this->mCurrentPageNo <  $this->GetOldestPageNo() )
 			return true;
 
 		return false;
@@ -81,7 +81,7 @@ class JWPagination {
 
 	public function IsShowOldest()
 	{
-		if ( $this->mCurrentPageNo < $this->GetOldestPageNo() )
+		if ( $this->mCurrentPageNo < $this->GetOldestPageNo()-1 )
 			return true;
 
 		return false;

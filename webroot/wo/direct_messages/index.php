@@ -6,6 +6,11 @@ JWLogin::MustLogined();
 
 $logined_user_id 	= JWLogin::GetCurrentUserId();
 $logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
+
+if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
+	$message_box_type = JWMessage::SENT;
+else
+	$message_box_type = JWMessage::INBOX;
 ?>
 
 <?php JWTemplate::html_head() ?>
@@ -22,18 +27,25 @@ $logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
 	<div id="content">
 		<div id="wrapper">
 
+<style type="text/css">
+#content #doingForm .bar {
+line-height:2.5em;
+padding:0pt 10px;
+position:relative;
+}
+</style>
 
 <?php JWTemplate::ShowActionResultTips() ?>
 
 <form action="/wo/direct_messages/create" id="doingForm" method="post" name="f">
 	<fieldset>
-		<div class="bar">
+		<div class="bar odd">
 			<h3><label for="doing">发送给 <select id="user_id" name="user[id]">
 
 <?php
-$friend_ids = JWFriend::GetFriendIds($logined_user_id);
+$be_friend_ids = JWFriend::GetBeFriendIds($logined_user_id);
 
-$friend_rows	= JWUser::GetUserDbRowsByIds($friend_ids);
+$friend_rows	= JWUser::GetUserDbRowsByIds($be_friend_ids);
 
 function cmp($a, $b)
 {
@@ -41,9 +53,9 @@ function cmp($a, $b)
    	return strcmp(strtolower($friend_rows[$a]["nameScreen"]), strtolower($friend_rows[$b]["nameScreen"]));
 }
 
-usort($friend_ids, "cmp");
+usort($be_friend_ids, "cmp");
 
-foreach ( $friend_ids as $friend_id )
+foreach ( $be_friend_ids as $friend_id )
 {
 	$friend_row = $friend_rows[$friend_id];
 	echo <<<_HTML_
@@ -105,20 +117,28 @@ $('status-field-char-counter').innerHTML = 140 - $('text').value.length;
 </script>
 
 <?php
-$active_tab = 'inbox';
-
 $menu_list = array (
-		 'sent'		=> array('active'=>false	,'name'=>'发件箱'	,'url'=>"/wo/direct_messages/sent")
-		,'inbox'	=> array('active'=>false	,'name'=>'收件箱'	,'url'=>"/wo/direct_messages")
+		 JWMessage::SENT		=> array('active'=>false	,'name'=>'发件箱'	,'url'=>"/wo/direct_messages/sent")
+		,JWMessage::INBOX		=> array('active'=>false	,'name'=>'收件箱'	,'url'=>"/wo/direct_messages/")
 	);
 
-$menu_list[$active_tab]['active'] = true;
+$menu_list[$message_box_type]['active'] = true;
 
 JWTemplate::tab_menu($menu_list) ;
-JWTemplate::tab_header(  array(	 'title'=>'发给您的悄悄话' 
-								,'title2'=>''
-						) 
-					) ;
+
+$options = array ( 'title2'=>'' );
+switch ( $message_box_type )
+{
+	default:
+	case JWMessage::INBOX:
+		$options['title'] = '您收到的悄悄话';
+		break;
+	case JWMessage::SENT:
+		$options['title'] = '您发送的悄悄话';
+		break;
+}
+
+JWTemplate::tab_header( $options );
 ?>
 
 <div class="tab">
@@ -128,8 +148,15 @@ JWTemplate::tab_header(  array(	 'title'=>'发给您的悄悄话'
 <?php
 $n=0;
 
-//$message_info 		= JWMessage::GetMessageIdsFromUser	($logined_user_id, JWMessage::INBOX);
-$message_info 		= JWMessage::GetMessageIdsFromUser	($logined_user_id, JWMessage::SENT);
+$message_num		= JWMessage::GetMessageNum 			($logined_user_id, $message_box_type);
+
+$pagination			= new JWPagination					($message_num, @$_REQUEST['page']);
+
+$message_info 		= JWMessage::GetMessageIdsFromUser	(	 $logined_user_id
+															,$message_box_type
+															,$pagination->GetNumPerPage()
+															,$pagination->GetStartPos()
+														);
 
 $message_ids		= $message_info['message_ids'];
 $user_ids			= $message_info['user_ids'];
@@ -144,7 +171,17 @@ foreach ( $message_ids as $message_id )
 	//die(var_dump($message_ids));
 	$message_db_row 	= $message_db_rows[$message_id];
 	
-	$user_id 			= $message_db_row['idUserReceiver'];
+	switch ($message_box_type)
+	{
+		default:
+		case JWMessage::INBOX:
+			$user_id 			= $message_db_row['idUserSender'];
+			break;
+		case JWMessage::SENT:
+			$user_id 			= $message_db_row['idUserReceiver'];
+			break;
+	}
+			
 
 	$user_db_row		= $user_db_rows		[$user_id];
 	$photo_url			= $photo_url_rows	[$user_id];
@@ -187,116 +224,11 @@ _HTML_;
 }
 
 ?>
-<tr class="odd">
-	<td class="status_actions">
-		<ul>
-		<li><a href="/direct_messages/destroy/3195462" onclick="return confirm('确认您要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="http://assets0.twitter.com/images/icon_trash.gif?1180755379" /></a></li>
-		</li>
-		</ul>
-	</td>
-
-	<td class="thumb">
-		<a href="http://twitter.com/xinyu19"><img alt="_____" src="http://assets3.twitter.com/system/user/profile_image/774107/normal/_____.jpg?1171560596" /></a>
-	</td>
-	<td>
-		<strong><a href="http://twitter.com/xinyu19">maxinyu</a></strong>
-		hihi
-		
-		<span class="meta">
-			<span class="meta">
-									 03:33 PM May 29, 2007
-							</span>
-
-		|
-			<a href="/direct_messages/create/774107">message xinyu19</a>
-		</span>
-	</td>
-</tr>
-
-
-<tr class="even">
-	<td class="status_actions">
-		<ul>
-		<li><a href="/direct_messages/destroy/1871282" onclick="return confirm('Sure you want to delete this message? There is NO undo!');"><img alt="Icon_trash" border="0" src="http://assets0.twitter.com/images/icon_trash.gif?1180755379" /></a></li>
-
-		</li>
-		</ul>
-	</td>
-	<td class="thumb">
-		<a href="http://twitter.com/DAODAO19"><img alt="Default_profile_image_normal" src="http://assets1.twitter.com/images/default_profile_image_normal.gif?1180755379" /></a>
-	</td>
-	<td>
-		<strong><a href="http://twitter.com/DAODAO19">DAODAO19</a></strong>
-
-		老公坏蛋
-		
-		<span class="meta">
-			<span class="meta">
-									about 1 month ago
-							</span>
-			|
-			<a href="/direct_messages/create/5533532">message DAODAO19</a>
-		</span>
-	</td>
-</tr>
-
-
-<tr class="odd">
-	<td class="status_actions">
-		<ul>
-		<li><a href="/direct_messages/destroy/1736192" onclick="return confirm('Sure you want to delete this message? There is NO undo!');"><img alt="Icon_trash" border="0" src="http://assets0.twitter.com/images/icon_trash.gif?1180755379" /></a></li>
-		</li>
-		</ul>
-	</td>
-	<td class="thumb">
-
-		<a href="http://twitter.com/xinyu19"><img alt="_____" src="http://assets3.twitter.com/system/user/profile_image/774107/normal/_____.jpg?1171560596" /></a>
-	</td>
-	<td>
-		<strong><a href="http://twitter.com/xinyu19">maxinyu</a></strong>
-		lg you r so cute
-		
-		<span class="meta">
-			<span class="meta">
-									 09:35 PM April 26, 2007
-							</span>
-
-			|
-			<a href="/direct_messages/create/774107">message xinyu19</a>
-		</span>
-	</td>
-</tr>
-
-
-<tr class="even">
-	<td class="status_actions">
-		<ul>
-		<li><a href="/direct_messages/destroy/451871" onclick="return confirm('Sure you want to delete this message? There is NO undo!');"><img alt="Icon_trash" border="0" src="http://assets0.twitter.com/images/icon_trash.gif?1180755379" /></a></li>
-
-		</li>
-		</ul>
-	</td>
-	<td class="thumb">
-		<a href="http://twitter.com/xinyu19"><img alt="_____" src="http://assets3.twitter.com/system/user/profile_image/774107/normal/_____.jpg?1171560596" /></a>
-	</td>
-	<td>
-		<strong><a href="http://twitter.com/xinyu19">maxinyu</a></strong>
-
-		kiss....
-		
-		<span class="meta">
-			<span class="meta">
-									 06:45 PM March 18, 2007
-							</span>
-			|
-			<a href="/direct_messages/create/774107">message xinyu19</a>
-		</span>
-	</td>
-</tr>
-
   	
 	</table>
 	
+<?php JWTemplate::pagination($pagination); ?>
+
 </div>
 
 

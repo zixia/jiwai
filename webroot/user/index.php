@@ -33,8 +33,7 @@ if ( 'public_timeline'===strtolower($nameScreen) )
 // userName/user_id not exist 
 if ( empty($page_user_id) || empty($nameScreen) )
 {
-	$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
-	header ( "Location: " . JWTemplate::GetConst("UrlError404") );
+	JWTemplate::RedirectTo404NotFound();
 	exit(0);
 }
 
@@ -62,8 +61,8 @@ switch ( $func )
 		}
 		else
 		{
-			$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
-			header ( "Location: " . JWTemplate::GetConst("UrlError404") );
+			JWTemplate::RedirectTo404NotFound();
+			exit(0);
 		}
 		break;
 		
