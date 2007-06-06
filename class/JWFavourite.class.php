@@ -75,6 +75,7 @@ class JWFavourite {
 SELECT	idStatus
 FROM	Favourite
 WHERE	idUser=$idUser
+ORDER BY id DESC
 LIMIT	$start,$numMax
 _SQL_;
 

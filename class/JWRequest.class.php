@@ -42,15 +42,14 @@ class JWRequest {
 
 	static public function GetProxyIp()
 	{
-		if ($_SERVER["HTTP_X_FORWARDED_FOR"]) 
-		{
-  			if ($_SERVER["HTTP_CLIENT_IP"]) 
-  				$proxy = $_SERVER["HTTP_CLIENT_IP"];
-			 else
-  				$proxy = $_SERVER["REMOTE_ADDR"];
+		if (empty($_SERVER["HTTP_X_FORWARDED_FOR"])) 
+			return null;
 
-			return $proxy;
-		}
+  		if (!empty($_SERVER["HTTP_CLIENT_IP"])) 
+  			return $_SERVER["HTTP_CLIENT_IP"];
+
+		if (!empty($_SERVER["REMOTE_ADDR"]))
+			return $_SERVER["REMOTE_ADDR"];
 
 		return null;
 	}
@@ -58,19 +57,16 @@ class JWRequest {
 
 	static public function GetClientIp()
 	{
-		if ($_SERVER["HTTP_X_FORWARDED_FOR"]) 
-		{
-			$ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-		}
-		else
-		{
-			if ($_SERVER["HTTP_CLIENT_IP"])
-  				$ip = $_SERVER["HTTP_CLIENT_IP"];
-			else
-  				$ip = $_SERVER["REMOTE_ADDR"];
-		}
+		if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"])) 
+			return $_SERVER["HTTP_X_FORWARDED_FOR"];
 
-		return $ip;
+		if (!empty($_SERVER["HTTP_CLIENT_IP"]))
+  			return $_SERVER["HTTP_CLIENT_IP"];
+
+		if (!empty($_SERVER["REMOTE_ADDR"]))
+			return $_SERVER["REMOTE_ADDR"];
+
+		return null;
 	}
 
 }

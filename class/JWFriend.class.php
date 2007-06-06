@@ -149,6 +149,7 @@ SELECT	idFriend
 FROM	Friend
 WHERE	idUser=$idUser
 		AND idFriend IS NOT NULL
+ORDER BY id DESC
 LIMIT	$start,$numMax
 _SQL_;
 
