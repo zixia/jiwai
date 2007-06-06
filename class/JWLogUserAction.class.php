@@ -16,6 +16,8 @@ class JWLogUserAction {
 	 */
 	static private $msInstance;
 
+	static private $msClientIp;
+	static private $msProxyIp;
 
 	/**
 	 * Instance of this singleton class
@@ -38,6 +40,8 @@ class JWLogUserAction {
 	 */
 	function __construct()
 	{
+		self::$msClientIp 	= JWRequest::GetClientIp();
+		self::$msProxyIp 	= JWRequest::GetProxyIp();
 	}
 
 	static public function OnLogin($idUser)
@@ -46,8 +50,10 @@ class JWLogUserAction {
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
-SET			 action='login'
+SET			 action	='login'
 			,idUser	= $idUser
+			,ip 	= INET_ATON('self::$msClientIp')
+			,proxy 	= INET_ATON('self::$msProxyIp')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -61,6 +67,8 @@ _SQL_;
 INSERT INTO	LogUserAction
 SET			 action='rememberlogin'
 			,idUser	= $idUser
+			,ip 	= INET_ATON('self::$msClientIp')
+			,proxy 	= INET_ATON('self::$msProxyIp')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -76,6 +84,8 @@ _SQL_;
 INSERT INTO	LogUserAction
 SET			 action='logout'
 			,idUser	= $idUser
+			,ip 	= INET_ATON('self::$msClientIp')
+			,proxy 	= INET_ATON('self::$msProxyIp')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -90,6 +100,8 @@ _SQL_;
 INSERT INTO	LogUserAction
 SET			 action='rememberme'
 			,idUser	= $idUser
+			,ip 	= INET_ATON('self::$msClientIp')
+			,proxy 	= INET_ATON('self::$msProxyIp')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -105,6 +117,8 @@ _SQL_;
 INSERT INTO	LogUserAction
 SET			 action='forgetme'
 			,idUser	= $idUser
+			,ip 	= INET_ATON('self::$msClientIp')
+			,proxy 	= INET_ATON('self::$msProxyIp')
 _SQL_;
 
 		JWDB::Execute($sql);
