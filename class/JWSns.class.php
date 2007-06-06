@@ -321,7 +321,7 @@ class JWSns {
 				if ( 'web'!=$send_via_device_rows[$friend_id] )
 					$action_rows[$friend_id]['nudge']		= true;
 
-				// TODO $action_rows[$friend_id]['d']			= true;
+				$action_rows[$friend_id]['d']			= true;
 			}
 
 		}

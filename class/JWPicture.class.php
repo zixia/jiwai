@@ -119,7 +119,7 @@ _SQL_;
 	}
 	
 
-	static public function GetUserIconUrlRowsByIds($idUsers, $picSize='thumb48')
+	static public function GetUserIconUrlRowsByUserIds($idUsers, $picSize='thumb48')
 	{
 		if ( empty($idUsers) )
 			return array();

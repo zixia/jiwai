@@ -75,12 +75,12 @@ Class JWSession {
 	{
 		if ( isset($_SESSION["__JiWai__Info__$infoType"]) )
 		{
-			$html_str = $_SESSION["__JiWai__Info__$infoType"];
+			$info_str = $_SESSION["__JiWai__Info__$infoType"];
 
 			if ( $useOnce )
 				unset ($_SESSION["__JiWai__Info__$infoType"]);
 
-			return $html_str;
+			return $info_str;
 		}
 
 		return null;

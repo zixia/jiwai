@@ -280,6 +280,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 			</form>
 
 <script type="text/javascript">
+//<![CDATA[
 $('submit').onmouseover = function(){
 	this.className += "Hovered"; 
 }
@@ -287,7 +288,7 @@ $('submit').onmouseover = function(){
 $('submit').onmouseout = function(){
 	this.className = this.className.replace(/Hovered/g, "");
 }
-
+//]]>
 </script>
 
 
@@ -913,7 +914,7 @@ _HTML_;
 _HTML_;
 
 		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($user_ids);
+		$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
 
 		foreach ( $user_ids as $user_id )
 		{
@@ -1424,7 +1425,7 @@ _HTML_;
 			return;
 
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
-		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByIds($friendIds,'thumb24');
+		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByUserIds($friendIds,'thumb24');
 
 		echo <<<_HTML_
   		<div id="friend">
@@ -1726,7 +1727,7 @@ _HTML_;
 
 		$n = 0;
 		$list_user_rows				= JWUser::GetUserDbRowsByIds			($idListUsers);
-		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($idListUsers);
+		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($idListUsers);
 
 		$action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
 
@@ -1768,8 +1769,16 @@ _HTML_;
 		echo "</table>";
 	}
 
+	static public function RedirectTo404NotFound()
+	{
+		$_SESSION['404URL'] = $_SERVER['SCRIPT_URI'];
 
-	static public function RedirectBackToLastUrl($defaultReturnRul=null)
+		header("Location: " . JWTemplate::GetConst('UrlError404') );
+		exit(0);
+	}
+
+
+	static public function RedirectBackToLastUrl($defaultReturnRul='/')
 	{
 		$url = $defaultReturnRul;
 

@@ -493,11 +493,14 @@ _SQL_;
 		return $status_db_rows[$idStatus];
 	}
 
-	static public function GetTimeDesc ($unixtime)
+	/*
+	 *	@param	bool	$forceDate	是否强制显示日期时间
+	 */
+	static public function GetTimeDesc ($unixtime, $forceDate=false)
 	{
 
 		$duration = time() - $unixtime;
-		if ( $duration > 2*86400 ){
+		if ( $forceDate || $duration > 2*86400 ){
 			return strftime("%Y-%m-%d 周%a %H:%M",$unixtime);
 		}else if ( $duration > 86400 ){
 			return strftime("%Y-%m-%d %H:%M",$unixtime);
