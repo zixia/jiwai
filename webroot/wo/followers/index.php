@@ -13,7 +13,7 @@ $page_user_info		= $logined_user_info;
 
 $follower_ids			= JWFollower::GetFollowerIds($page_user_info['id']);
 $follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
-$follower_icon_url_rows = JWPicture::GetUserIconUrlRowsByIds($follower_ids);
+$follower_icon_url_rows = JWPicture::GetUserIconUrlRowsByUserIds($follower_ids);
 
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 

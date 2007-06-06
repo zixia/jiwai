@@ -20,7 +20,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 
 $friend_ids			= JWFriend::GetFriendIds	($page_user_info['id']);
 $friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
-$friend_icon_url_rows = JWPicture::GetUserIconUrlRowsByIds($friend_ids);
+$friend_icon_url_rows = JWPicture::GetUserIconUrlRowsByUserIds($friend_ids);
 
 $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 ?>

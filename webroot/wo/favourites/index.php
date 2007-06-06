@@ -27,7 +27,7 @@ $status_rows	= JWStatus::GetStatusDbRowsByIds($status_ids);
 $user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
 $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
 
-$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($user_ids);
+$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
 ?>
 
 <html>

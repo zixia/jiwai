@@ -46,7 +46,7 @@ JWTemplate::ShowActionResultTips();
 <?php
 
 $friend_db_rows		= JWUser::GetUserDbRowsByIds($friend_ids);
-$friend_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds($friend_ids);
+$friend_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($friend_ids);
 $n = 0;
 
 foreach ( $friend_ids as $friend_id )
