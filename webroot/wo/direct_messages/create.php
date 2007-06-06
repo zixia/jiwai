@@ -18,6 +18,10 @@ if ( preg_match('/^\/(\d+)$/',@$_REQUEST['pathParam'] ,$matches) )
 {
 	$receiver_user_id	= $matches[1];
 }
+else if ( preg_match('/^\/(\w+)$/',@$_REQUEST['pathParam'] ,$matches) )
+{
+	$receiver_user_id	= JWUser::GetUserInfo($matches[1],'idUser');
+}
 else if ( isset($_REQUEST['user']['id']) )
 {
 	$receiver_user_id	= $_REQUEST['user']['id'];
@@ -52,10 +56,10 @@ if ( isset($_REQUEST['text']) )
 		$error_html = <<<_HTML_
 哎呀！请不要发送空消息！
 _HTML_;
-	}else if ( JWMessage::Create(	 $logined_user_id
-									,$receiver_user_id
-									,$message
-								)
+	}else if ( JWSns::CreateMessage(	 $logined_user_id
+										,$receiver_user_id
+										,$message
+									)
 			)
 	{
 		$notice_html = <<<_HTML_

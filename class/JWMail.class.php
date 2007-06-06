@@ -271,6 +271,36 @@ class JWMail {
 					);
 	}
 
+	/*
+	 *	$user 将 $friend 新加为好友，给 $friend 发送一封通知信
+ 	 *	@param	array	user	user_info的结构
+ 	 *	@param	array	friend	user_info的结构
+ 	 *	@param	string	message	direct message
+ 	 */
+	static public function SendMailNoticeDirectMessage($sender, $receiver, $message, $device)
+	{
+		if ( !JWUser::IsValidEmail($receiver['email']) )
+			return;
+
+		$template_file	= 'NoticeDirectMessage.tpl';
+
+		$template_data = self::LoadTemplate($template_file);
+		$template_data = self::RenderTemplate($template_data,$receiver,$sender);
+	
+		$template_data = preg_replace('/%DirectMessage.message%/i'	,$message	,$template_data);
+		$template_data = preg_replace('/%DirectMessage.device%/i'	,$device	,$template_data);
+
+		$template_info = self::ParseTemplate($template_data);
+
+//die(var_dump($template_info));
+		
+		return self::SendMail(	 $template_info['from']
+						,$receiver['email']
+						,$template_info['subject']
+						,$template_info['html']
+					);
+	}
+
 
 }
 ?>

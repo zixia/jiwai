@@ -42,6 +42,38 @@ class JWSns {
 
 
 	/*
+	 *	发送 direct message，并发送通知邮件
+	 *	@param	int		$idUserSender
+	 *	@param	int		$idUserReceiver
+	 *	@param	string	$message
+	 */
+	static public function CreateMessage($idUserSender, $idUserReceiver, $message, $device='web', $time=null)
+	{
+		if ( ! JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) )
+		{
+			JWLog::LogFuncName("JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) failed");
+			return false;
+		}
+
+		$notice_settings 	= JWUser::GetNotification($idUserReceiver);
+		$need_notice_mail	= ('Y'==$notice_settings['send_new_direct_text_email']);
+
+		$sender_row 	= JWUser::GetUserInfo($idUserSender);
+		$receiver_row 	= JWUser::GetUserInfo($idUserReceiver);
+
+		if ( $need_notice_mail )
+			JWMail::SendMailNoticeDirectMessage($sender_row, $receiver_row, $message, JWDevice::GetNameFromType($device) );
+
+		JWLog::Instance()->LogFuncName(LOG_INFO, "JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) "
+											.",\tnotification email "
+											. ( $need_notice_mail ? 'sent. ' : 'web')
+								);
+	
+		return true;
+	}
+
+
+	/*
 	 *	根据详细信息建立两个人的好友关系
 	 *	@param	array	$userRow
 	 *	@param	array	$friendRow

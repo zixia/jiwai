@@ -1091,18 +1091,54 @@ _STR_;
 	 */
 	static function	Lingo_D($robotMsg)
 	{
-		$body = <<<_STR_
-尚未支持，请明天再试吧。http://JiWai.de/
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType() ;
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		if ( empty($device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		$address_user_id	= $device_db_row['idUser'];
+
+		$help = <<<_STR_
+D命令帮助：D 帐号 悄悄话。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
+		$param_body = $robotMsg->GetBody();
 
-		return $robot_reply_msg;
+		if ( ! preg_match('/^\w+\s+(\w+)\s+(.+)$/i',$param_body,$matches) )
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
+
+		$friend_name 	= $matches[1];
+		$message_text	= $matches[2];
+
+		$friend_row	= JWUser::GetUserInfo($friend_name);
+
+		if ( empty($friend_row) )
+		{
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！没有找到 ${friend_name} 这个用户。了解更多？发送 HELP。");
+		}
+
+		$friend_id = $friend_row['idUser'];
+
+		if ( !JWFriend::IsFriend($friend_id, $address_user_id) )
+		{
+			if ( JWFriend::IsFriend($address_user_id, $friend_id) )
+			{
+				JWRobotLogic::ReplyMsg($robotMsg, "哎呀！您现在还不在${friend_name}的好友列表中，无法悄悄话他(她)。:-(");
+			}
+			else
+			{
+				JWRobotLogic::ReplyMsg($robotMsg, "您还不在${friend_name}的好友列表中，无法悄悄话。"
+									."您可以发送ADD ${friend_name}将${friend_name}添加为好友，然后期待也被对方添加为好友啦！");
+			}
+		}
+		
+
+		JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type);
+
+		return null;
 	}
 
 
