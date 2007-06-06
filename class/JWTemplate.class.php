@@ -1098,7 +1098,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/direct_messages/create/$arr_user_info[id]">消息</a> $arr_user_info[nameScreen]
+				<a href="/wo/direct_messages/create/$arr_user_info[id]">悄悄话</a> $arr_user_info[nameScreen]
 			</li>
 _HTML_;
 		}
@@ -1247,7 +1247,7 @@ _HTML_;
 		if ( 'wo'==$user )
 		{
 			echo <<<_HTML_
-			<li id="message_count"><a href="/$user/direct_messages/">消息: $countInfo[pm]</a></li>
+			<li id="message_count"><a href="/$user/direct_messages/">悄悄话: $countInfo[pm]</a></li>
 _HTML_;
 		}
 
