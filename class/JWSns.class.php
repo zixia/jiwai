@@ -69,6 +69,9 @@ class JWSns {
 											. ( $need_notice_mail ? 'sent. ' : 'web')
 								);
 	
+		
+		JWNudge::NudgeUserIds(array($idUserReceiver), "$sender_row[nameScreen]: $message");
+
 		return true;
 	}
 
