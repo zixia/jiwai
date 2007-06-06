@@ -243,7 +243,7 @@ function user_timeline_xml($options)
 	$statuses	= get_user_timeline_array($options);
 
 
-	$xml .= '<?xml version="1.0" encoding="UTF-8"?>';
+	$xml  = '<?xml version="1.0" encoding="UTF-8"?>';
 	$xml .= "\n<statuses>\n";
 
 
