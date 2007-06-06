@@ -46,14 +46,19 @@ class JWLogUserAction {
 
 	static public function OnLogin($idUser)
 	{
+		self::Instance();
+
+		$ip 	= self::$msClientIp;
+		$proxy 	= self::$msProxyIp;
+
 		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
 SET			 action	='login'
 			,idUser	= $idUser
-			,ip 	= INET_ATON('self::$msClientIp')
-			,proxy 	= INET_ATON('self::$msProxyIp')
+			,ip 	= INET_ATON('$ip')
+			,proxy 	= INET_ATON('$proxy')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -61,14 +66,19 @@ _SQL_;
 
 	static public function OnRememberLogin($idUser)
 	{
+		self::Instance();
+
+		$ip 	= self::$msClientIp;
+		$proxy 	= self::$msProxyIp;
+
 		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
 SET			 action='rememberlogin'
 			,idUser	= $idUser
-			,ip 	= INET_ATON('self::$msClientIp')
-			,proxy 	= INET_ATON('self::$msProxyIp')
+			,ip 	= INET_ATON('$ip')
+			,proxy 	= INET_ATON('$proxy')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -78,14 +88,19 @@ _SQL_;
 
 	static public function OnLogout($idUser)
 	{
+		self::Instance();
+
+		$ip 	= self::$msClientIp;
+		$proxy 	= self::$msProxyIp;
+
 		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
 SET			 action='logout'
 			,idUser	= $idUser
-			,ip 	= INET_ATON('self::$msClientIp')
-			,proxy 	= INET_ATON('self::$msProxyIp')
+			,ip 	= INET_ATON('$ip')
+			,proxy 	= INET_ATON('$proxy')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -94,14 +109,19 @@ _SQL_;
 
 	static public function OnRememberMe($idUser)
 	{
+		self::Instance();
+
+		$ip 	= self::$msClientIp;
+		$proxy 	= self::$msProxyIp;
+
 		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
 SET			 action='rememberme'
 			,idUser	= $idUser
-			,ip 	= INET_ATON('self::$msClientIp')
-			,proxy 	= INET_ATON('self::$msProxyIp')
+			,ip 	= INET_ATON('$ip')
+			,proxy 	= INET_ATON('$proxy')
 _SQL_;
 
 		JWDB::Execute($sql);
@@ -111,14 +131,19 @@ _SQL_;
 
 	static public function OnForgetMe($idUser)
 	{
+		self::Instance();
+
+		$ip 	= self::$msClientIp;
+		$proxy 	= self::$msProxyIp;
+
 		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 INSERT INTO	LogUserAction
 SET			 action='forgetme'
 			,idUser	= $idUser
-			,ip 	= INET_ATON('self::$msClientIp')
-			,proxy 	= INET_ATON('self::$msProxyIp')
+			,ip 	= INET_ATON('$ip')
+			,proxy 	= INET_ATON('$proxy')
 _SQL_;
 
 		JWDB::Execute($sql);
