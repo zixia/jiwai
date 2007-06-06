@@ -1126,11 +1126,11 @@ _STR_;
 		{
 			if ( JWFriend::IsFriend($address_user_id, $friend_id) )
 			{
-				JWRobotLogic::ReplyMsg($robotMsg, "哎呀！您现在还不在${friend_name}的好友列表中，无法悄悄话他(她)。:-(");
+				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！您现在还不在${friend_name}的好友列表中，无法悄悄话他(她)。:-(");
 			}
 			else
 			{
-				JWRobotLogic::ReplyMsg($robotMsg, "您还不在${friend_name}的好友列表中，无法悄悄话。"
+				return JWRobotLogic::ReplyMsg($robotMsg, "您还不在${friend_name}的好友列表中，无法悄悄话。"
 									."您可以发送ADD ${friend_name}将${friend_name}添加为好友，然后期待也被对方添加为好友啦！");
 			}
 		}
