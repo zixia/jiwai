@@ -113,13 +113,6 @@ _HTML_;
 _HTML_;
 
 
-		// SEO attack to fanfou.com
-		if ( '/'!=$_SERVER['SCRIPT_URL'])
-		{
-			$keywords 		.= " - 是否饭了, 吃饭否, 有没有饭否, 什么时候饭否,要不要饭否, are you fanfou?";
-			$description	.= " - 就像常问的吃饭了否(你今天饭否? fanfou today? 是否饭了,吃饭否,有没有饭否,is fanfou?什么时候饭否,when fanfou? 要不要饭否的意思)";
-		}
-
 		echo <<<_HTML_
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

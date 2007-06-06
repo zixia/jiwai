@@ -52,6 +52,9 @@ class JWLogin {
 
 		$_SESSION['idUser'] = $idUser;
 
+		JWLogUserAction::OnLogin($idUser);
+
+
 		if ( $isRememberMe )
 			self::SetRememberUser();
 		else
@@ -63,8 +66,15 @@ class JWLogin {
 
 	static public function Logout()
 	{
+		if ( ! JWLogin::IsLogined() )
+			return;
+
+		$user_id = $_SESSION['idUser'];
+
 		self::ForgetRemembedUser();
 		unset ($_SESSION['idUser']);
+
+		JWLogUserAction::OnLogout($user_id);
 	}
 
 
@@ -95,6 +105,7 @@ class JWLogin {
 		if ( isset($idUser) )
 		{
 			$_SESSION['idUser'] = $idUser;
+			JWLogUserAction::OnRememberLogin($idUser);
 			return true;
 		}
 		
@@ -165,23 +176,25 @@ class JWLogin {
 	 */
 	static function SetRememberUser()
 	{
-		$id_user = self::GetCurrentUserId();
+		$user_id = self::GetCurrentUserId();
 
-		if ( empty($id_user) )
+		if ( empty($user_id) )
 			return false;
 			
 		$secret = JWDevice::GenSecret(32,JWDevice::CHAR_ALL);
 
-		if ( ! self::SaveRememberMe($id_user,$secret) )
+		if ( ! self::SaveRememberMe($user_id,$secret) )
 		{
 			setcookie('JiWai_de_remembered_user_id'		, '' , time()-3600	, '/');
 			setcookie('JiWai_de_remembered_user_code'	, '' , time()-3600	, '/');
 			return false;
 		}
 
-		setcookie('JiWai_de_remembered_user_id', 	$id_user, time() + 31536000	, '/');
+		setcookie('JiWai_de_remembered_user_id', 	$user_id, time() + 31536000	, '/');
 		setcookie('JiWai_de_remembered_user_code',	$secret	, time() + 31536000	, '/');
 		
+		JWLogUserAction::OnRememberMe($user_id);
+
 		return true;
 	}
 
@@ -201,7 +214,6 @@ class JWLogin {
 		
 		if ( isset($id_user) || isset($secret) )
 			self::DelRememberMe($id_user,$secret);
-
 
 		return true;
 	}
@@ -249,6 +261,8 @@ class JWLogin {
 		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
 			return true;
 		
+		JWLogUserAction::OnForgetMe($idUser);
+
 		return JWDB::DelTableRow('RememberMe', array (	'idUser'	=> intval($idUser)
 														, 'secret'	=> $secret
 												) );
