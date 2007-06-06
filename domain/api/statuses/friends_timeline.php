@@ -195,6 +195,9 @@ function friends_timeline_rss_n_atom($options)
 
 	$status_data	= JWStatus::GetStatusIdsFromFriends($master_user_id,$count);
 	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+
+	array_push($status_data['user_ids'], $master_user_id);
+
 	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByIds(array($master_user_id),'thumb48');
 
