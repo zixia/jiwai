@@ -1102,7 +1102,7 @@ _STR_;
 		$address_user_id	= $device_db_row['idUser'];
 
 		$help = <<<_STR_
-D命令帮助：D 帐号 悄悄话。有问题吗？上 http://JiWai.de/ 看看吧。
+D命令帮助：D 帐号 您想说的悄悄话。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
 
 		$param_body = $robotMsg->GetBody();

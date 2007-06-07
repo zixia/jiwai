@@ -334,6 +334,9 @@ _SQL_;
 		if ( empty($userInfo['isWebUser']) )
 			$userInfo['isWebUser']='Y';
 
+		if ( empty($userInfo['protected']) )
+			$userInfo['protected']='N';
+
 		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,isWebUser)"
 								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
 			if ( $result = $stmt->bind_param("sssssss"
