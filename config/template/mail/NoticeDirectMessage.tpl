@@ -1,4 +1,4 @@
-SUBJECT: %Friend.nameScreen%从%DirectMessage.device%发送给您的悄悄话
+SUBJECT: %Friend.nameScreen%发送给您的悄悄话
 FROM: %Friend.nameFull% <noreply@jiwai.de>
 
 %DirectMessage.message%

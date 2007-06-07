@@ -391,13 +391,13 @@ class JWSns {
 	static public function GetUserState($idUser)
 	{
 		//TODO
-		//$num_pm			= JWMessage::GetMessageNum($idUser);
+		$num_pm			= JWMessage::GetMessageNum($idUser);
 		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
 		$num_friend		= JWFriend::GetFriendNum($idUser);
 		$num_follower	= JWFollower::GetFollowerNum($idUser);
 		$num_status		= JWStatus::GetStatusNum($idUser);
 
-		return array(	'pm'			=> 0
+		return array(	'pm'			=> $num_pm
 						, 'fav'			=> $num_fav
 						, 'friend'		=> $num_friend
 						, 'follower'	=> $num_follower

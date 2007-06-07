@@ -198,7 +198,13 @@ if ( !isset($g_user_with_friends) )
 
 // 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
 if ( $show_protected_content )
-	JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>$g_user_with_friends)) 
+	JWTemplate::Timeline(	 $status_data['status_ids']
+							,$user_rows
+							,$status_rows
+							,array(	 'icon'	=> $g_user_with_friends
+									,'protected'=>true
+							 )
+						) ;
 
 ?>
   

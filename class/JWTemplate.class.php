@@ -644,6 +644,8 @@ _HTML_;
 			$options['trash'] 	= true;
 		if ( !isset($options['uniq']) )
 			$options['uniq']	= 0;
+		if ( !isset($options['protected']) )
+			$options['protected']	= false;
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 ?>
@@ -656,6 +658,9 @@ _HTML_;
 //die(var_dump($aStatusList));
 			$user_id 	= $statusRows[$status_id]['idUser'];
 
+			if ( $options['protected'] && JWUser::IsProtected($user_id) )
+				continue;
+				
 			// 如果设置了一个用户只显示一条，则跳过
 			if ( $options['uniq']>0 && @$user_showed[$user_id]>=$options['uniq'] )
 				continue;

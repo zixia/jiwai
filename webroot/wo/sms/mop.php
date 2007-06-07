@@ -67,6 +67,10 @@ function mop_mo()
 
 		//error_log ( "mop.php mop_mo received urlencode msg: [$arg_msg]" );
 		
+		/*
+		 *	FIXME
+		 *	被拆分成多条的短信
+		 */ 
 		$arg_msg = preg_replace('/^(%3F)+/', '', $arg_msg);
 
 		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
