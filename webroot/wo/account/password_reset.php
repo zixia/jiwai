@@ -22,7 +22,7 @@ JWTemplate::html_doctype();
 
 <p>请输入您的 Email 地址，我们将把密码重设的链接发给您。</p>
 
-<form action="/account/resend_password" method="post" name="f">
+<form action="/wo/account/resend_password" method="post" name="f">
 <fieldset>
 <table>
 	<tr>
