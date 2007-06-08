@@ -188,10 +188,10 @@ WHERE		(
 			Status.idUserReplyTo=$idUser
 			OR Status.idUser=$idUser
 			)
+			AND Status.idUser<>1927 -- XXX block youyouwan
 ORDER BY 	Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
-			//-- AND Status.idUser<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -415,11 +415,11 @@ WHERE
 			AND Status.idUserReplyTo IS NULL
 			AND User.idPicture IS NOT NULL
 			AND User.protected<>'Y'
+			AND User.id<>1927 -- XXX block youyouwan
 ORDER BY 	
 			Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
-			//-- AND User.id<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
