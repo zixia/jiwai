@@ -155,7 +155,10 @@ class Connection(xmlstream.Client):
 
     def send(self, what):
         """Sends a jabber protocol element (Node) to the server"""
-        xmlstream.Client.write(self,unicode(what))
+        try:
+            xmlstream.Client.write(self,unicode(what))
+        except:
+            pass
 
     def dispatch(self, root_node ):
         """Called internally when a 'protocol element' is recieved.
@@ -364,7 +367,10 @@ class Client(Connection):
 
     def send(self, what):
         """Sends a jabber protocol element (Node) to the server"""
-        xmlstream.Client.write(self,unicode(what))
+        try:
+            xmlstream.Client.write(self,unicode(what))
+        except:
+            pass
 
     def sendInitPresence(self):
         """Sends an empty presence protocol element to the
