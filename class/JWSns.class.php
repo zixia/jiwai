@@ -121,10 +121,11 @@ class JWSns {
 	 	 *	idUser 添加 friend_id 为好友后，idUser 应该自动成为 idFriend 的 Follower。
 		 *	所以，被follow的人是 friend_id
 		 *	2007-05-24 暂时取消这个功能，由用户主动follow.
+		 *	2007-06-07 回复这个功能，自动follow.
+		*/
 
 		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
 			self::CreateFollower($friendRow, $userRow);
-		*/
 
 		return true;
 	}
