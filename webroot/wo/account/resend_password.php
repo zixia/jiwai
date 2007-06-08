@@ -1,6 +1,15 @@
 <?php
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
+
+if ( isset($_REQUEST['email']) )
+{
+	$email = $_REQUEST['email'];
+//Instructions for resetting your password have been emailed.
+
+//Oh, snap! We couldn't find you!
+}
+
 ?>
 <html>
 
@@ -38,15 +47,13 @@ JWTemplate::html_doctype();
 $('email').focus();
 //]]>
 </script>
-		</div></div><hr />
-
-			
 		
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
 </div><!-- #container -->
+
 <hr class="separator" />
 
 <?php JWTemplate::footer() ?>

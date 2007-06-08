@@ -69,12 +69,12 @@ _HTML_;
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, 碎碎念, 絮絮叨叨, 絮叨 jiwaide, tiny blog, im nick, 记录, 写下
+叽歪网, 唧歪网, 叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, 碎碎念, 絮絮叨叨, 絮叨 jiwaide, tiny blog, im nick, 记录, 写下
 _STR_;
 		else								$keywords = $options['keywords'];
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 随时随地的记录，并与朋友分享你每天的点滴。
+叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。
 _STR_;
 		else									$description = $options['description'];
 
@@ -853,7 +853,7 @@ _HTML_;
     			</div>
 
     			<input id="remember_me" name="remember_me" type="checkbox" value="1" checked style="margin-top:4px"/> <label for="remember_me">记住我</label>
-    			<small><a href="/account/resend_password">忘记?</a></small>
+    			<small><a href="/wo/account/resend_password">忘记?</a></small>
     			<input id="submit" name="commit" type="submit" value="登录" />
     		</fieldset>
 		</form>
@@ -955,7 +955,7 @@ _HTML_;
 			$user_name = $options['user_name'];
 		
 		if ( empty($options['num']) )
-			$num = 3;
+			$num = 5;
 		else
 			$num = $options['num'];
 

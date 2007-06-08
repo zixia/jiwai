@@ -641,10 +641,10 @@ _SQL_;
 	}
 
 
-	static public function GetFeaturedUserIds($max=5)
+	static public function GetFeaturedUserIds($max=10)
 	{
 		$featured_user_info	= JWUser::GetUserInfo('featured');
-		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], 5);
+		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], $max);
 
 		if ( empty($status_row['status_ids']) )
 			return;
