@@ -342,7 +342,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 			</script>
 
 		<p class="notice">
-			叽歪de MSN 机器人目前正在偷懒，我们会很快将她找回来的。<br />
+			叽歪de MSN 机器人美眉目前正在偷懒，我们会很快将她找回来的。<br />
 			请您先暂时使用 Web / QQ / GTalk 进行更新。
 		</p>
 <?php
