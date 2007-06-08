@@ -184,11 +184,14 @@ _SQL_;
 SELECT		 Status.id	as idStatus
 			,Status.idUser	as idUser
 FROM		Status
-WHERE		Status.idUserReplyTo=$idUser
+WHERE		(
+			Status.idUserReplyTo=$idUser
 			OR Status.idUser=$idUser
+			)
 ORDER BY 	Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
+			//-- AND Status.idUser<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -416,6 +419,7 @@ ORDER BY
 			Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
+			//-- AND User.id<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
