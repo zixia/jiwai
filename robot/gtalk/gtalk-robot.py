@@ -300,7 +300,7 @@ def messageCB(con,msg):
 			global suppressing
 			suppressing=0
 # zixia
-			jiwai_queue_mo(getdisplayname(msg.getFrom()),msg.getBody())
+			jiwai_queue_mo(getjid(msg.getFrom()),msg.getBody())
 
 #			sendtoall('<%s> %s' % (getdisplayname(msg.getFrom()),msg.getBody()),
 #				butnot=[getdisplayname(msg.getFrom())],
