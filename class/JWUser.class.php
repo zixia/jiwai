@@ -228,7 +228,7 @@ _SQL_;
 	{
 		if ( preg_match('/@/',$value) )
 			$by_what = 'email';
-		if ( preg_match('/^\d+$/',$value) )
+		else if ( preg_match('/^\d+$/',$value) )
 			$by_what = 'idUser';
 		else
 			$by_what = 'nameScreen';

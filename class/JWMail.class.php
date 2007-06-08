@@ -271,11 +271,12 @@ class JWMail {
 					);
 	}
 
+
 	/*
-	 *	$user 将 $friend 新加为好友，给 $friend 发送一封通知信
- 	 *	@param	array	user	user_info的结构
- 	 *	@param	array	friend	user_info的结构
- 	 *	@param	string	message	direct message
+	 *	$sender 发送悄悄话 $message 给 $receiver，并给 $friend 发送一封通知信
+ 	 *	@param	array	sender		user_info的结构
+ 	 *	@param	array	receiver	user_info的结构
+ 	 *	@param	string	message		direct message
  	 */
 	static public function SendMailNoticeDirectMessage($sender, $receiver, $message, $device)
 	{
@@ -296,6 +297,35 @@ class JWMail {
 		
 		return self::SendMail(	 $template_info['from']
 						,$receiver['email']
+						,$template_info['subject']
+						,$template_info['html']
+					);
+	}
+
+
+	/*
+	 *	向 $user 发送重置密码的邮件
+ 	 *	@param	array	user		user_info的结构
+ 	 *	@param	string	secret		密码
+ 	 */
+	static public function ResendPassword($user, $url)
+	{
+		if ( !JWUser::IsValidEmail($user['email'],true) )
+			return;
+
+		$template_file	= 'ResetPassword.tpl';
+
+		$template_data = self::LoadTemplate($template_file);
+		$template_data = self::RenderTemplate($template_data,$user,$user);
+	
+		$template_data = preg_replace('/%RESET_PASSWORD_URL%/i'	,$url	,$template_data);
+
+		$template_info = self::ParseTemplate($template_data);
+
+//die(var_dump($template_info));
+		
+		return self::SendMail(	 $template_info['from']
+						,$user['email']
 						,$template_info['subject']
 						,$template_info['html']
 					);

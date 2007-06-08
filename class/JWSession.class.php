@@ -58,6 +58,8 @@ Class JWSession {
 			case 'info':
 				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
+			case 'reset_password':
+				//fall down
 			case 'invitation_id':
 				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;

@@ -70,12 +70,14 @@ class JWSns {
 								);
 	
 		
-		JWNudge::NudgeUserIds(array($idUserReceiver), "$sender_row[nameScreen]: $message "
-													."（可直接回复“"
-													."D $sender_row[nameScreen] 您想说的悄悄话"
-													."”"
-													."）"
-												);
+		JWNudge::NudgeUserIds(	 array($idUserReceiver)
+								,"$sender_row[nameScreen]: $message "
+									."（可直接回复“"
+									."D $sender_row[nameScreen] 您想说的悄悄话"
+									."”"
+									."）"
+								,'direct_messages'
+							);
 
 		return true;
 	}
@@ -355,7 +357,7 @@ class JWSns {
 				$action_rows[$friend_id]['add']		= true;
 			}
 
-			// 反向也是朋友，则可以 direct_message / nudge
+			// 反向也是朋友，则可以 direct_messages / nudge
 			if ( $friend_relation[$friend_id][$idUser] )
 			{
 				if ( 'web'!=$send_via_device_rows[$friend_id] )
@@ -610,6 +612,23 @@ class JWSns {
 		}
 
 		return true;
+	}
+
+
+	static public function ResendPassword($idUser)
+	{
+        $secret = JWDevice::GenSecret(32,JWDevice::CHAR_ALL);
+
+        if ( ! JWLogin::SaveRememberMe($idUser,$secret) )
+			return false;
+
+		$user_db_row = JWUser::GetUserInfo($idUser);
+
+		$url = JWTemplate::GetConst('UrlResetPassword');
+
+		$url .= '/' . $secret;
+
+		JWMail::ResendPassword($user_db_row, $url);
 	}
 
 }

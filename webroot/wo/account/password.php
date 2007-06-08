@@ -15,6 +15,17 @@ JWLogin::MustLogined();
 $user_info		= JWUser::GetCurrentUserInfo();
 $is_web_user	= JWUser::IsWebUser($user_info['idUser']);
 
+$is_reset_password	= JWSession::GetInfo('reset_password', false);
+
+if ( $is_web_user && !$is_reset_password )
+{
+	$verify_corrent_password = true;
+}
+else
+{
+	$verify_corrent_password = false;
+}
+
 
 //die(var_dump(JWUser::IsWebUser($user_info['idUser'])));
 
@@ -24,7 +35,7 @@ if ( isset($_REQUEST['password']) )
 	$password 				= trim( @$_REQUEST['password'] );
 	$password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
 
-	if ( $is_web_user
+	if ( $verify_corrent_password
 			&& (	empty($current_password) 
 					|| empty($password)
 					|| empty($password_confirmation) 
@@ -42,7 +53,7 @@ _HTML_;
 _HTML_;
 	}
 
-	if ( $is_web_user &&
+	if ( $verify_corrent_password &&
 			! JWUser::VerifyPassword($user_info['id'], $current_password) )
 	{
 			$error_html .= <<<_HTML_
@@ -70,6 +81,10 @@ _HTML_;
 _HTML_;
 			if ( !$is_web_user )
 				JWUser::SetWebUser($user_info['idUser']);
+
+			// 重设密码成功，现在清理掉重设密码的标志
+			if ( $is_reset_password	)
+				JWSession::GetInfo('reset_password');
 
 			JWSession::SetInfo('notice', $notice_html);
 		}
@@ -130,7 +145,7 @@ _HTML_;
 			<form action="/wo/account/password" method="post" name="f">
 				<fieldset>
 					<table cellspacing="0">
-<?php if ( $is_web_user ) { ?>
+<?php if ( $verify_corrent_password ) { ?>
 						<tr>
 							<th><label for="current_password">当前密码：</label></th>
 

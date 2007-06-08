@@ -137,7 +137,7 @@ class JWLogin {
 			return null;
 		
 
-		if ( ! self::LoadRememberMe($idUser,$secret) )
+		if ( null==self::LoadRememberMe($secret) )
 		{
 			setcookie('JiWai_de_remembered_user_id',	'', time()-3600, '/');
 			setcookie('JiWai_de_remembered_user_code',	'', time()-3600, '/');
@@ -224,7 +224,9 @@ class JWLogin {
 	static function SaveRememberMe($idUser, $secret)
 	{
 		
-		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
+		$idUser = JWDB::CheckInt($idUser);
+
+		if ( empty($secret) )
 			return false;
 
 		return JWDB::SaveTableRow('RememberMe', array (	'idUser'	=>	intval($idUser)
@@ -235,18 +237,19 @@ class JWLogin {
 
 	/*
 	 *	检查数据库中是否存在 remember 信息
-	 * @return bool
+	 * @return int	$idUser，没有则返回 null
 	 */
-	static function LoadRememberMe($idUser, $secret)
+	static function LoadRememberMe($secret)
 	{
-		if ( empty($idUser) || empty($secret) || (!is_numeric($idUser)) )
+		if ( empty($secret) )
 			return false;
 		
+		$row = JWDB::GetTableRow('RememberMe', array('secret'=>$secret));
 
-		return JWDB::ExistTableRow('RememberMe', array (	'idUser'	=> intval($idUser)
-													, 'secret'	=> $secret
-												)
-						);
+		if ( empty($row) )
+			return null;
+
+		return $row['idUser'];
 	}
 
 

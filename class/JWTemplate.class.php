@@ -1518,7 +1518,10 @@ _HTML_;
 		{
 			self::$msJWConst = array (	'UrlContactUs'			=>	'http://help.jiwai.de/ContactUs'
 										,'UrlRegister'			=>	'/wo/account/create'
+										,'UrlLogin'				=>	'/wo/login'
+										,'UrlResetPassword'		=>	'http://jiwai.de/wo/account/confirm_password_reset'
 										,'UrlPublicTimeline'	=>	'/public_timeline/'
+
 										,'UrlTermOfService'		=>	'http://help.jiwai.de/TOS'
 										,'UrlFaq'				=>	'http://help.jiwai.de/FAQs'
 

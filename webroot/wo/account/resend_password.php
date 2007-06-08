@@ -5,9 +5,28 @@ JWTemplate::html_doctype();
 if ( isset($_REQUEST['email']) )
 {
 	$email = $_REQUEST['email'];
-//Instructions for resetting your password have been emailed.
 
-//Oh, snap! We couldn't find you!
+	if ( JWUser::IsValidEmail($email, true) )
+		$user_db_row = JWUser::GetUserInfo($email);
+
+
+	if ( !empty($user_db_row) )
+	{
+		JWSns::ResendPassword($user_db_row['idUser']);
+
+		$notice_html = <<<_HTML_
+重新设置您密码的说明已经发送到您的邮箱，请查收。
+_HTML_;
+		JWSession::SetInfo('notice', $notice_html);
+
+		header("Location: " . JWTemplate::GetConst('UrlLogin') );
+		exit(0);
+	}
+
+	$notice_html = <<<_HTML_
+哎呀！我们没有找到您的邮件地址！
+_HTML_;
+
 }
 
 ?>
@@ -26,6 +45,14 @@ if ( isset($_REQUEST['email']) )
 	<div id="content">
 		<div id="wrapper">
 
+<?php
+if ( !empty($notice_html) )
+	echo <<<_HTML_
+<p class="notice">
+$notice_html;
+</p>
+_HTML_;
+?>
 
 			<h2>忘记了？</h2>
 

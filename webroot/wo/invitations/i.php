@@ -11,13 +11,15 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 	$invitation_info	= JWInvitation::GetInvitationInfoByCode($invite_code);
 
 
+	$inviter_id = $invitation_info['idUser'];
+
 	if ( empty($inviter_id) )
 	{
 		header('Location: /wo/account/create');
 		exit(0);
 	}
 
-	$inviter_id = $invitation_info['idUser'];
+
 	$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
 }
 ?>

@@ -151,6 +151,7 @@ SELECT	idFollower
 FROM	Follower
 WHERE	idUser=$idUser
 		AND idFollower IS NOT NULL
+		ORDER BY id DESC
 LIMIT	$numMax
 _SQL_;
 
