@@ -1577,7 +1577,7 @@ _HTML_;
 							, 'device_im'  => array ( '/wo/devices/?im'           		, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification'		, '通知')
 							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
-							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
+							//, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
