@@ -69,7 +69,7 @@ _HTML_;
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪网, 唧歪网, 叽歪de, 叽歪的, 唧歪de, 唧歪的, 叽叽歪歪, 唧唧歪歪, 迷你博客, 碎碎念, 絮絮叨叨, 絮叨 jiwaide, tiny blog, im nick, 记录, 写下
+叽歪网,唧歪网,叽歪de,叽歪的,矶歪de,唧歪de,唧歪的,叽叽歪歪,唧唧歪歪,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwaide,tiny blog,im nick
 _STR_;
 		else								$keywords = $options['keywords'];
 
@@ -341,11 +341,14 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 //]]>
 			</script>
 
+<?php
+/*
 		<p class="notice">
 			叽歪de MSN 机器人美眉目前正在偷懒，我们会很快将她找回来的。<br />
 			请您先暂时使用 Web / QQ / GTalk 进行更新。
 		</p>
-<?php
+*/
+
 	}
 
 
@@ -1567,14 +1570,14 @@ _HTML_;
 
 	static public function UserSettingNav($activeMenu='account')
 	{
-		$arr_menu = array ( 'account'		=> array ( '/wo/account/settings'	, '帐号' )
-							, 'password'	=> array ( '/wo/account/password'	, '密码')
-							//, 'device'		=> array ( '/wo/devices/'			, '手机短信/聊天软件')
-							, 'device_sms'  => array ( '/wo/devices/?sms'           , '手机短信')
-							, 'device_im'  => array ( '/wo/devices/?im'           , '聊天软件')
-							, 'notification'=> array ( '/wo/account/notification', '通知')
-							, 'picture'		=> array ( '/wo/account/picture'	, '头像')
-//							, 'uidesign'	=> array ( '/wo/account/uidesign'	, '界面')
+		$arr_menu = array ( 'account'		=> array ( '/wo/account/settings'			, '帐号' )
+							, 'password'	=> array ( '/wo/account/password'			, '密码')
+							//, 'device'		=> array ( '/wo/devices/'				, '手机短信/聊天软件')
+							, 'device_sms'  => array ( '/wo/devices/?sms'           	, '手机短信')
+							, 'device_im'  => array ( '/wo/devices/?im'           		, '聊天软件')
+							, 'notification'=> array ( '/wo/account/notification'		, '通知')
+							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
+							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
