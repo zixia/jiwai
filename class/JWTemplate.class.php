@@ -256,7 +256,7 @@ function run_google()
 							</label>
 						</h3>
 						<span id="chars_left_notice">
-							还可输入: <strong id="status-field-char-counter"></strong>个字。
+							还可输入: <strong id="status-field-char-counter"></strong>个字符。
 						</span>
 						<span style="display:none" id="submit_loading">
 							<script type="text/javascript">
@@ -398,7 +398,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 			$vars['title'] = '你和<a href="/wo/friends/">你的朋友们</a>在做什么?';
 
 		if ( !array_key_exists('title2',$vars) )	
-			$vars['title2'] = '每分钟更新一次。';
+			$vars['title2'] = '每分钟自动刷新一次。';
 ?>
 
 				<table class="layout_table" cellpadding="0" cellspacing="0" width="100%">
