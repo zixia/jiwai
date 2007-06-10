@@ -590,7 +590,7 @@ _SQL_;
 		 */
 
 		$skip_url_regex = 	 '#'
-							.'(fanfou.com)'
+		//					.'(fanfou.com)'
 							.'|(komoo.cn)'
 							.'#'
 						;
