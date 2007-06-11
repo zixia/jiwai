@@ -380,6 +380,10 @@ else
 		// BEGIN *** Register ***
 		else // otherwise, proceed to registration
 		{
+			/*
+			 *	禁止注册
+			 */
+			die("please contact zixia@zixia.net, thank you.");
 			$name = trim($_POST['name']);
 			$email = trim($this->GetSafeVar('email', 'post'));
 			$password = $_POST['password'];
