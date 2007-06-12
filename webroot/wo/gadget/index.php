@@ -17,7 +17,10 @@ $user_info		= JWUser::GetCurrentUserInfo();
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="account" id="gadget">
 

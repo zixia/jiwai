@@ -76,7 +76,10 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="account" id="gadget">
 

@@ -10,7 +10,10 @@ $user_info	= JWUser::GetUserInfo($user_id);
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="account" id="gadget">
 
@@ -32,6 +35,8 @@ $user_info	= JWUser::GetUserInfo($user_id);
 <br />
 			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
 
+<h4>叽歪de你自己</h4>
+
 <div style="width:600px;text-align:center">
 	<embed pluginspage="http://www.macromedia.com/go/getflashplayer" 
 			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
@@ -42,6 +47,20 @@ $user_info	= JWUser::GetUserInfo($user_id);
 	</embed>
 </div>
 	
+
+<hr class="separator" />
+
+<h4>叽歪de你和你的朋友们</h4>
+
+<div style="width:530px;text-align:center">
+	<embed pluginspage=" http://www.macromedia.com/go/getflashplayer" 
+			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
+			src=" http://asset.jiwai.de/gadget/flash/friends_gadget_maker.swf"
+			type="application/x-shockwave-flash" 
+			height="600" width="530" wmode="transparent" 
+			name="jiwai_badge"/>
+	</embed>
+</div>
 
  		</div><!-- wrapper -->
 	</div><!-- content -->
