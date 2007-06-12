@@ -486,7 +486,7 @@ var MooRainbow = new Class({
 		var ok = new Element('input', {
 			'styles': {'position': 'absolute'},
 			'type': 'button',
-			'value': 'Select',
+			'value': '就选它了~',
 			'class': prefix + 'okButton'
 		}).inject(box);
 		
