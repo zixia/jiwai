@@ -24,13 +24,12 @@ if( ! $unFriendUser ){
 $unFriendId = $unFriendUser['id'];
 
 //FriendShip Check, If no friend relation, return 403
-if( false === JWFriend::IsFriend($idUser, $unFriendId) ){
-	Header("HTTP/1.1 403 Access Denied");
+if( true === JWFriend::IsFriend($idUser, $unFriendId) ){
 	exit;
 }
 
 //Destroy the friendship of idUser & unFriendId
-JWFriend::Destroy($idUser, $unFriendId);
+JWFriend::Create($idUser, $unFriendId);
 
 switch( $type ){
 	case 'json':
