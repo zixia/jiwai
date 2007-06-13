@@ -49,7 +49,7 @@ function initMap() {
 window.onload = function(){
 	initMap();
 	JiWaiTimeline.init();
-	setInterval(JiWaiTimeline.heartbeat, 5000);
+	setInterval(JiWaiTimeline.heartbeat, 10000);
 
 }
 
