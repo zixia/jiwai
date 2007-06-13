@@ -103,6 +103,8 @@ public class QQJiWaiRobot implements IQQListener {
 				user.setStatus(QQ.QQ_LOGIN_MODE_HIDDEN);
 			}
 */
+			user.setStatus(QQ.QQ_LOGIN_MODE_NORMAL);
+
 			client = new QQClient();
 			client.addQQListener(this);
 			user.setUdp(udp);
@@ -211,8 +213,8 @@ public class QQJiWaiRobot implements IQQListener {
 			log("changed status ok.");
 			if (state == 1) {
 				state = 2;
-				client.getFriendList();
-				client.downloadFriend(0);
+				//client.getFriendList();
+				//client.downloadFriend(0);
 			}
 			break;
 		case QQEvent.QQ_CHANGE_STATUS_FAIL:
@@ -449,7 +451,7 @@ public class QQJiWaiRobot implements IQQListener {
 	{
 //ArrayList
 
-		LinkedList robot_msgs = new LinkedList();
+		LinkedList<Hashtable> robot_msgs = new LinkedList<Hashtable>();
 		
 		Hashtable<String, String>	robot_msg = new Hashtable<String, String>();
 
@@ -513,7 +515,7 @@ public class QQJiWaiRobot implements IQQListener {
 				robot_msg.put("body"	, body.trim()	);
 				robot_msg.put("file"	, files[i].getCanonicalPath() );
 
-				robot_msgs.add(robot_msg.clone());
+				robot_msgs.add((Hashtable)robot_msg.clone());
 			}
 
 		} catch ( Exception e ) {
