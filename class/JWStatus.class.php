@@ -590,10 +590,11 @@ _SQL_;
 		 */
 
 		$skip_url_regex = 	 '#'
-		//					.'(fanfou.com)'
-							.'|(komoo.cn)'
+							.'(komoo.cn)'
+							.'|(fanfou.com)'
 							.'#'
 						;
+		$status = preg_replace('/[\n\r]/' ,' ', $status);
 
 		if ( !preg_match($skip_url_regex,$status)
 				&& preg_match(	'#'
