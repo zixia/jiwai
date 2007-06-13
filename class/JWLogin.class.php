@@ -272,6 +272,20 @@ class JWLogin {
 	}
 
 
-
+	/*
+	 *  用于 API请求的认证 无需参数传递，通过Cookie(Remember)及Http Auth登录 
+	 * 
+	 */
+	static function getLoggedUserId(){
+		if( self::IsLogined() ){
+			return intval( $_SESSION['idUser'] );
+		}
+		if( isset( $_SERVER['PHP_AUTH_USER'] ) ){
+			$username_or_email = $_SERVER['PHP_AUTH_USER'];
+			$password = $_SERVER['PHP_AUTH_PW'];
+			return JWUser::GetUserFromPassword( $username_or_email, $password );
+		}
+		return null;
+	}
 }
 ?>

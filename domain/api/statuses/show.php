@@ -5,7 +5,8 @@ require_once(dirname(__FILE__).'/arrayxml.php');
 $pathParam = null;
 $id = null;
 $type = null;
-extract($_REQUEST);
+# by zixia: add EXTR_IF_EXISTS
+extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
