@@ -17,7 +17,15 @@ class JWApi{
 	  * Get Authed UserId for API
 	  */
 	static function GetAuthedUserId(){
-		return JWLogin::getLoggedUserId();
+		if( JWLogin::IsLogined() ){
+			return intval( $_SESSION['idUser'] );
+		}
+		if( isset( $_SERVER['PHP_AUTH_USER'] ) ){
+			$username_or_email = $_SERVER['PHP_AUTH_USER'];
+			$password = $_SERVER['PHP_AUTH_PW'];
+			return JWUser::GetUserFromPassword( $username_or_email, $password );
+		}
+		return null;
 	}
 	
 	/**
