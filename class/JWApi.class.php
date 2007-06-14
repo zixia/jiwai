@@ -56,9 +56,8 @@ class JWApi{
 		$uInfo['description'] = $user['bio'];
 		$uInfo['location'] = $user['location'];
 		$uInfo['url'] = $user['url'];
-		$uInfo['protected'] = $user['protected']=='Y' ? true:false;
-		$uInfo['profile_image_url'] = $user['idPicture'];
-		
+		$uInfo['protected'] = $user['protected']=='Y' ? true : false;
+		$uInfo['profile_image_url'] = JWPicture::GetUserIconUrl( $user['id'],'thumb48');
 		return $uInfo;
 	}
 
@@ -82,8 +81,8 @@ class JWApi{
 		}
 		foreach ($array as $key=>$value) {
 			$key = strtolower($key);
-			if($value===false) 
-				$value='false';
+
+			if($value===false) $value='false';
 
 			if (is_array($value)) { // 大于一层的 assoc array
 				//Add by seek 2007-06-14 4:45
@@ -93,6 +92,7 @@ class JWApi{
 				. self::ArrayToXml($value, $level+1, $subTagName)
 				. str_repeat("\t",$level)."</$key>\n";
 			} else { // 一层的 assoc array
+				$value = self::RemoveInvalidChar( $value );
 				if (htmlspecialchars($value)!=$value) {
 					$xml .= str_repeat("\t",$level)
 					."<$key><![CDATA[$value]]></$key>\n";
@@ -122,6 +122,13 @@ class JWApi{
 			default:
 				return null;
 		}
+	}
+
+	/**
+	  * Remove Invalid Control Char which will coz XML Breakdown.
+	  */
+	static public function RemoveInvalidChar($value){
+		return $value = preg_replace('/[\x00-\x09\x0b\x0c\x0e-\x19]/U',"",$value);   
 	}
 }
 ?>
