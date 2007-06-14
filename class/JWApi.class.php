@@ -87,9 +87,17 @@ class JWApi{
 			if (is_array($value)) { // 大于一层的 assoc array
 				//Add by seek 2007-06-14 4:45
 				$subTagName = self::_GetXmlSubTagName($key);
+				if( null != $subTagName ){
+					$_subXml = null;
+					foreach($value as $sv){
+						$_subXml .= self::ArrayToXml($value, $level+1, $subTagName);
+					}
+				}else{
+					$_subXml = self::ArrayToXml($value, $level+1 );
+				}
 				$xml .= str_repeat("\t",$level)
 				."<$key>\n"
-				. self::ArrayToXml($value, $level+1, $subTagName)
+				. $_subXml
 				. str_repeat("\t",$level)."</$key>\n";
 			} else { // 一层的 assoc array
 				$value = self::RemoveInvalidChar( $value );
