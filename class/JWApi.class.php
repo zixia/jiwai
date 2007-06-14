@@ -81,6 +81,26 @@ class JWApi{
 		return $outInfo;
 	}
 
+	/**
+	  * Rebuild Message output, compatiable with twitter
+	  */
+	static function ReBuildMessage(&$message){
+		$mInfo = array();
+
+		$mInfo['id'] = isset($message['id']) ? $message['id'] : $message['idMessage'];
+		$mInfo['text'] = $message['message'];
+		$mInfo['sender_id'] = $message['idUserSender'];
+		$mInfo['recipient_id'] = $message['idUserReceiver'];
+		$mInfo['create_at'] = date("D M d H:i:s O Y",$message['timeCreate']);
+
+		$screenNameSenderUser = JWUser::GetUserInfo( $message['idUserSender'], 'nameScreen' );
+		$screenNameReceiverUser = JWUser::GetUserInfo( $message['idUserReceiver'], 'nameScreen' );
+		$mInfo['sender_screen_name'] = $screenNameSenderUser;
+		$mInfo['recipient_screen_name'] = $screenNameReceiverUser;
+		
+		return $mInfo;
+	}
+
 	static function ArrayToXml($array, $level=1, $topTagName=''){
 		$xml = '';
 		if( $topTagName ){
