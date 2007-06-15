@@ -108,6 +108,9 @@ class JWApi{
 			$level += 1;
 		}
 		foreach ($array as $key=>$value) {
+			if( is_numeric($key) ){
+				$key = self::_GetXmlSubTagName($topTagName);
+			}
 			$key = strtolower($key);
 
 			if($value===false) $value='false';
