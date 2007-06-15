@@ -1,11 +1,5 @@
 <?php
 require_once('../../../jiwai.inc.php');
-/*
-if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
-	header_405();
-}
-*/
-
 $pathParam = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 
