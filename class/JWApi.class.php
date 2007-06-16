@@ -159,6 +159,8 @@ class JWApi{
 				return 'status';
 			case 'friends':
 				return 'friend';
+			case 'direct_messages':
+				return 'direct_message';
 			default:
 				return null;
 		}
