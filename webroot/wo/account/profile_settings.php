@@ -164,6 +164,7 @@ _HTML_;
 foreach ( $color_ids as $color_id )
 {
 	$k = preg_replace('/^user_/','',$color_id);
+
 	echo <<<_HTML_
 
 	var default_bg_color = new Color('$user[$k]');

@@ -41,6 +41,7 @@ class JWDesign {
 		if ( empty($db_row) )
 		{
 			$this->mIsDesigned = false;
+			$this->InitDefaultColor();
 			return;
 		}
 
@@ -55,6 +56,19 @@ class JWDesign {
 
 		$this->mIsDesigned = true;
 	}
+
+	function InitDefaultColor()
+	{
+		$this->mBackgroundColor = 'FFFFFF';
+		$this->mUseBackgroundImage = null;
+		$this->mBackgroundTile = false;
+		$this->mTextColor = '333333';
+		$this->mNameColor = '000000';
+		$this->mLinkColor = '669900';
+		$this->mSidebarFillColor = 'C3E169';
+		$this->mSidebarBorderColor = '87BC44';
+	}
+
 
 	private function GetDbRow()
 	{
@@ -174,6 +188,8 @@ class JWDesign {
 
 			if ( $this->mBackgroundTile )
 				$tile = " repeat ";
+			else
+				$tile = " no-repeat ";
 
 			$background_url_css = <<<_CSS_
 url($background_url) fixed $tile top left;
@@ -201,7 +217,7 @@ _CSS_;
 	body {
 		color: #$this->mTextColor;
 		background-color: #$this->mBackgroundColor;
-		background: $background_url_css
+		background: #$this->mBackgroundColor $background_url_css
 	}
 	
 	#sidebar {
