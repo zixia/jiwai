@@ -36,7 +36,8 @@ if ( empty($page_user_info) )
 
 <head>
 <?php 
-JWTemplate::html_head();
+$options = array ( 'ui_user_id'=>$page_user_info['idUser']);
+JWTemplate::html_head($options);
 ?>
 </head>
 

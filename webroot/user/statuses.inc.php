@@ -122,6 +122,9 @@ else
 				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
 			</h2>
 
+<?php
+if ( 0 ) { // commemt google ad sense
+?>
 			<div id="ad">
 <script type="text/javascript"><!--
 google_ad_client = "pub-8383497624729613";
@@ -163,6 +166,10 @@ alert(google_ad_width);
 }
 */
 </script>
+
+<?php
+}	//google ad sense comment end -->
+?>
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
