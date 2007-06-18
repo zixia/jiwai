@@ -104,6 +104,7 @@ class JWApi{
 	static function ArrayToXml($array, $level=1, $topTagName=''){
 		$xml = '';
 		if( $topTagName ){
+			$xml .= str_repeat("\t",$level);
 			$xml .= "<$topTagName>\n";
 			$level += 1;
 		}
@@ -143,6 +144,7 @@ class JWApi{
 			}
 		}
 		if( $topTagName ){
+			$xml .= str_repeat("\t",$level-1);
 			$xml .= "</$topTagName>\n";
 		}
 		return $xml;

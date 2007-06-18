@@ -119,6 +119,7 @@ _HTML_;
 		/*
 		 *	强制不使用自定义界面，设置为 false 即可
 		 */
+		$ui_css = '';
 		if ( false!==$options['ui_user_id'] && !empty($options['ui_user_id']) )
 		{
 			$ui = new JWDesign($options['ui_user_id']);
