@@ -21,15 +21,7 @@ function user_status($idPageUser, $idStatus)
 
 <html>
 
-<?php JWTemplate::html_head() ?>
-
-<body class="status" id="show">
-
-<?php //JWTemplate::accessibility() ?>
-
-<?php //JWTemplate::header() ?>
-
-<div class="separator"></div>
+<head>
 
 <style type="text/css">
 h2.thumb, h2.thumb a {
@@ -39,6 +31,21 @@ color:#000000;
 background: transparent url()
 }
 </style>
+
+
+<?php 
+$head_options = array ( 'ui_user_id'=>$idPageUser );
+JWTemplate::html_head($head_options) ;
+?>
+</head>
+
+<body class="status" id="show">
+
+<?php //JWTemplate::accessibility() ?>
+
+<?php //JWTemplate::header() ?>
+
+<div class="separator"></div>
 
 <div id="container">
 	<div id="content">

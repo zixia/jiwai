@@ -13,7 +13,10 @@ else
 	$message_box_type = JWMessage::INBOX;
 ?>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="direct_messages" id="direct_messages">
 
@@ -164,7 +167,10 @@ $user_ids			= $message_info['user_ids'];
 $message_db_rows 	= JWMessage::GetMessageDbRowsByIds	($message_ids);
 $user_db_rows 		= JWUser::GetUserDbRowsByIds		($user_ids);
 
-$photo_url_rows		= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
+$picture_ids        = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
+$picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
+
+//$photo_url_rows		= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
 
 foreach ( $message_ids as $message_id )
 {
@@ -184,7 +190,11 @@ foreach ( $message_ids as $message_id )
 			
 
 	$user_db_row		= $user_db_rows		[$user_id];
-	$photo_url			= $photo_url_rows	[$user_id];
+
+	$user_picture_id    = @$user_db_row['idPicture'];
+	$photo_url      = JWTemplate::GetConst('UrlStrangerPicture');
+	if ( $user_picture_id )
+		$photo_url		= $picture_url_row[$user_picture_id];
 
 	$tr_class	= $n++%2?'even':'odd';
 

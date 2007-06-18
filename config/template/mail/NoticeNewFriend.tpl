@@ -18,3 +18,4 @@ FROM: 叽歪de <noreply@jiwai.de>
 
 --
 您可在 http://JiWai.de/wo/account/notification 关闭邮件通知
+(这是一封自动产生的email，请勿回复)

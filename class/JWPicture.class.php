@@ -16,7 +16,7 @@ class JWPicture {
 	 */
 	static $msInstance;
 
-	static $msUserPath = "user/";
+	static $msPicturePath = "picture/";
 
 	/**
 	 * Instance of this singleton class
@@ -42,157 +42,217 @@ class JWPicture {
 	}
 
 
-	/*
-	 *	根据 idUser 获取 Picture Row 的详细信息
-	 *	@param	array	idUser
-	 * 	@return	array	以 idUser 为 key 的 picture row
-	 * 
-	 */
-	static public function GetPictureDbRowsByIds( $idUsers )
+	static public function Destroy($idPicture)
 	{
-		if ( empty($idUsers) )
-			return array();
+		//我们要为每一条更新保留头像，所以不能轻易删除数据库中的图片
 
-		if ( !is_array($idUsers) )
-			throw new JWException('must array');
-
-		$condition_in = JWDB::GetInConditionFromArray($idUsers);
-
-		$sql = <<<_SQL_
-SELECT	*, id as idPicture
-FROM	Picture
-WHERE	idUser IN ($condition_in)
-_SQL_;
-
-		$rows = JWDB::GetQueryResult($sql,true);
-
-		if ( empty($rows) ) {
-			$picture_map = array();
-		} else {
-			foreach ( $rows as $row ) {
-				$picture_map[$row['idUser']] 	= $row;
-			}
-		}
-
-		return $picture_map;
-	}
+		$idPictures = JWDB::CheckInt($idPictures);
 
 
-	/*
-	 *	过期函数
-	 * supprot 'ICON' class only.
-	 *	return	array	row of table Picture
-	 */
-	static public function GetPictureByUserId($idUser)
-	{
-		$idUser = intval($idUser);
-		
-		if ( 0>=$idUser )
-			throw new JWException('must int');
+/*
+ *	删除文件？定期做垃圾回收吧
+ *
+		$picture_path	= JWPicture::GetPathRel($idPicture);
+		$abs_path		= JWFile::GetStorageAbsRoot() . $picture_path;
 
-		$sql = <<<_SQL_
-SELECT	*, id as idPicture
-FROM	Picture
-WHERE	idUser=$idUser
-		AND class='ICON'
-_SQL_;
-
-		return JWDB::GetQueryResult($sql);
-	}
-
-
-	static private function GetUserIconFullPathNameRowsByIds($idUsers, $picSize='thumb48')
-	{
-		$abs_storage_root	= JWFile::GetStorageAbsRoot();
-
-		$picture_rows		= JWPicture::GetPictureDbRowsByIds($idUsers);
-
-		foreach ( $idUsers as $user_id )
+		if ( ! unlink ( $file_full_path_name ) )
 		{
-			$abs_pathname		= $abs_storage_root
-									. self::$msUserPath . $user_id . '/profile_image/'
-									. $picSize . "." . $picture_row[$user_id]['fileExt'];
-			$path_map[$user_id] = $abs_pathname;
+			JWLog::LogFuncName(LOG_CRIT, "unlink($file_full_path_name) failed");;
+		}
+ */
+
+		return JWDB::DelTableRow('Picture', array('id'=>$idPicture));
+	}
+
+
+	static private function GetPathRel($idPicture)
+	{
+		$idPicture = JWDB::CheckInt($idPicture);
+
+		self::Instance();
+
+		/*
+		 *	根据 id 将目录进行2层存储
+		 */
+		$d1 = intval($idPicture/(1000*1000));
+		$d2 = intval( ($idPicture%(1000*1000)) / (1000) );
+		$d3 = $idPicture % 1000;
+
+		$hash_path = "$d1/$d2/$d3/";
+		return self::$msPicturePath . $hash_path;
+	}
+
+
+	static private function GetFullPathNameRowByIds($idPictures, $picSize='thumb48')
+	{
+		self::Instance();
+
+		$db_rows = JWPicture::GetDbRowsByIds($idPictures);
+
+		foreach ( $idPictures as $picture_id )
+		{
+			$picture_row = $db_rows[$picture_id];
+			$user_id 	=  $picture_row['idUser'];
+
+
+			/*
+			 *	构造目录结构
+			 */
+			$abs_path			= 	 JWFile::GetStorageAbsRoot() 
+									.JWPicture::GetPathRel($picture_id);
+
+			$abs_pathname		= $abs_path . $picSize . '.' . $picture_row['fileExt'];
+
+
+			$path_map[$picture_id] = $abs_pathname;
 		}
 
 		return $path_map;
 	}
 	
 
-	static public function GetUserIconUrlRowsByUserIds($idUsers, $picSize='thumb48')
-	{
-		if ( empty($idUsers) )
-			return array();
-
-		$picture_rows 	= self::GetPictureDbRowsByIds($idUsers);
-		
-		foreach ( $idUsers as $user_id )
-		{
-			if ( isset($picture_rows[$user_id]) ) // 用户上传了头像
-			{
-				$url_rows[$user_id] = "http://JiWai.de/"
-								. $picture_rows[$user_id]['idUser']
-								. "/picture/$picSize/"
-								. $picture_rows[$user_id]['fileName']
-								. '.'
-								. $picture_rows[$user_id]['fileExt']
-								. "?"
-								. $picture_rows[$user_id]['idPicture'];
-			}
-			else	// 用户没有头像
-			{
-				$url_rows[$user_id] = JWTemplate::GetConst('UrlStrangerPicture');
-			}
-		}
-		return $url_rows;
-	}
-
-	/*
-	 * 过期函数，未来删除
-	 * @param 	int		idUser
-	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
-	 * @return 	string	url of picture
-	 */
-	static public function GetUserIconUrl($idUser, $picSize='thumb48')
-	{
-		$picture_info	= self::GetPictureByUserId($idUser);
-
-		// TODO return JWTemplate::GetAssetUrl() . 
-		return "http://JiWai.de/$idUser/picture/$picSize/$picture_info[fileName].$picture_info[fileExt]?$picture_info[id]";
-		//return JWTemplate::GetAssetUrl("/system/user/profile_image/$idUser");
-	}
-
-
 	/*
 	 *
-	 * 过期函数，未来删除
-	 * 	@desprited
 	 * @param	string	picture type (jpg | gif)
 	 * @param	string	picture size (picture | thumb48 | thumb24)
 	 * @param	int		idUser, null if current user.
 
 	 * @return string	filename with full path
 	 */
-	static public function GetUserIconFullPathName($idUser, $picSize='thumb48')
+	static public function GetFullPathNameById($idPicture, $picSize='thumb48')
 	{
-		self::Instance();
+		$rows = JWPicture::GetFullPathNameRowByIds(array($idPicture),$picSize);
+		return $rows[$idPicture];
+	}
 
-		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 
-		$picture_info		= JWPicture::GetPictureByUserId($idUser);
+	/*
+	 *	根据 idPicture 获取 DbRow 的详细信息
+	 *	@param	array	idPicture
+	 * 	@return	array	以 idPicture 为 key 的 picture db row
+	 * 
+	 */
+	static public function GetDbRowsByIds($idPictures)
+	{
+		$return_db_rows = array();
 
-		$abs_pathname		= $abs_storage_root
-								. self::$msUserPath . $idUser . '/profile_image/'
-								. $picSize . "." . $picture_info['fileExt'];
+		if ( empty($idPictures) )
+			return $return_db_rows;
 
-		return $abs_pathname;
+		if ( !is_array($idPictures) )
+			throw new JWException('must array');
+
+		$condition_in = JWDB::GetInConditionFromArray($idPictures);
+
+		$sql = <<<_SQL_
+SELECT
+		*
+		, id as idPicture
+		, UNIX_TIMESTAMP(timeCreate) AS unixtimestamp
+FROM	Picture
+WHERE	id IN ($condition_in)
+_SQL_;
+
+		$db_rows = JWDB::GetQueryResult($sql,true);
+
+
+		if ( !empty($db_rows) ){
+			foreach ( $db_rows as $db_row ) {
+				$return_db_rows[$db_row['id']] = $db_row;
+			}
+		}
+
+		return $return_db_rows;
+	}
+
+	static public function GetDbRowById($idPicture)
+	{
+		$db_rows = JWPicture::GetDbRowsByIds(array($idPicture));
+		return $db_rows[$idPicture];
+	}
+
+	static public function GetUrlRowByIds($idPictures, $picSize='thumb48')
+	{
+		$url_row = array();
+
+		if ( empty($idPictures) )
+			return $url_row;
+
+		$picture_rows 	= JWPicture::GetDbRowsByIds($idPictures);
+		
+		foreach ( $idPictures as $picture_id )
+		{
+			if ( empty($picture_rows[$picture_id]) )
+			{
+				$url_row[$picture_id] = JWTemplate::GetConst('UrlStrangerPicture');
+			}
+			else
+			{
+				$asset_url_path = "/system/user/profile_image/"
+								. $picture_rows[$picture_id]['idUser']
+								. '/' . $picture_id
+								. '/' . $picSize
+								. '/' . $picture_rows[$picture_id]['fileName']
+								. '.'
+								. $picture_rows[$picture_id]['fileExt']
+								;
+				$url_row[$picture_id] = JWTemplate::GetAssetUrl($asset_url_path, false);
+			}
+		}
+
+		return $url_row;
+	}
+
+	static public function GetUrlById($idPicture, $picSize='thumb48')
+	{
+		$url_row = JWPicture::GetUrlRowByIds(array($idPicture),$picSize);
+		return $url_row[$idPicture];
 	}
 
 
 	/*
 	 *
-	 * @return 	int		0 if fail, otherwise return new PK of picture TB
+	 * 过期函数，过期函数，过期函数，未来删除
+	 * 应使用 GetUrlById(idPicture)替换
+	 *
+	 * @param 	int		idUser
+	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
+	 * @return 	string	url of picture
+	 */
+	static public function GetUserIconUrl($idUser, $picSize='thumb48')
+	{
+		$user_db_row	= JWUser::GetUserInfo($idUser);
+
+		$picture_id		= $user_db_row['idPicture'];
+
+		return JWPicture::GetUrlById($picture_id,$picSize);
+	}
+
+
+	/*
+	 *	通过 idUser 和 上载的文件de MD5，检查数据库中，用户是否在以前上传过这个文件（上传过则系统有副本，不用再保存）
+	 *
+	 *	如果存在，返回 Picture 表的 id 主键，供使用。
+	 */	
+	static public function GetIdByMd5($idUser, $md5, $class='ICON')
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		
+		if ( empty($md5) )
+			return 0;
+
+		return JWDB::ExistTableRow('Picture', array(	 'idUser'	=> $idUser
+														,'md5'		=> $md5
+													)
+									);
+	}
+
+
+	/*
+	 *
 	 * @param	string	absFilePathName	user named image file
+
+	 * @return 	int		false if fail, otherwise return new PK of picture TB
 	 */
 	static public function SaveUserIcon($idUser, $absFilePathName)
 	{
@@ -202,18 +262,51 @@ _SQL_;
 			return ;
 		}
 
+
+		/*
+		 *	检查用户是否以前上传过这个图片
+		 */
+		$md5  = md5_file($absFilePathName);
+
+		$picture_id = JWPicture::GetIdByMd5($idUser, $md5, 'ICON');
+
+		if ( $picture_id )
+			return $picture_id;
+
+
 		$file_name 	= $matches['file_name'];
 		$file_ext 	= $matches['file_ext'];
+
+		$dst_file_type = 'jpg';
+		if ( 'gif'==$file_ext )
+			$dst_file_type = 'gif';
 
 
 		self::Instance();
 
+		$sql = <<<_SQL_
+INSERT INTO	Picture
+SET		 idUser=$idUser
+		,class='ICON'
+		,fileName='$file_name'
+		,fileExt='$dst_file_type'
+		,md5='$md5'
+		,timeCreate=NOW()
+_SQL_;
+
+		try {
+			$result = JWDB::Execute($sql);
+		}catch(Exception $e){
+			JWLog::LogFuncName("JWDB::Execute " . $e->getMessage());
+			return 0;
+		}
+
+		$picture_id 	= JWDB::GetInsertedId();
+
+
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
-
-		$rel_path			= self::$msUserPath 
-									. $idUser . '/profile_image/';
-
-		$abs_path			= $abs_storage_root . $rel_path;
+		$picture_path		= self::GetPathRel($picture_id);
+		$abs_path			= $abs_storage_root . $picture_path;
 
 		if ( ! file_exists($abs_path) )
 			mkdir($abs_path,0770,true);
@@ -221,49 +314,42 @@ _SQL_;
 		if ( ! is_writeable($abs_path) )
 			throw new JWException("$user_path unwriteable");
 
-		$dst_file_type = 'jpg';
-		if ( 'gif'==$file_ext )
-			$dst_file_type = 'gif';
-
-		$rel_picture_path_name = $rel_path . "picture." . $dst_file_type;
-		$rel_thumb48_path_name = $rel_path . "thumb48." . $dst_file_type;
-		$rel_thumb24_path_name = $rel_path . "thumb24." . $dst_file_type;
+		$rel_picture_path_name = $picture_path . "picture." . $dst_file_type;
+		$rel_thumb48_path_name = $picture_path . "thumb48." . $dst_file_type;
+		$rel_thumb24_path_name = $picture_path . "thumb24." . $dst_file_type;
 
 
-		if ( ! self::ConvertPictureBig( 	 $absFilePathName
+		$ret = true;
+
+		if ( $ret && ! self::ConvertPictureBig( 	 $absFilePathName
 											,($abs_storage_root . $rel_picture_path_name)) ){
-			unlink ( $absFilePathName );
-			return false;
+			$ret = false;
 		}
 
-		unlink ( $absFilePathName );
 
-		if ( ! self::ConvertThumbnail48(	 ($abs_storage_root . $rel_picture_path_name)
+		if ( $ret && ! self::ConvertThumbnail48(	 ($abs_storage_root . $rel_picture_path_name)
 											,($abs_storage_root . $rel_thumb48_path_name)) ){
-			return false;
+			$ret = false;
 		}
 
-		if ( ! self::ConvertThumbnail24(	 ($abs_storage_root . $rel_thumb48_path_name)
+		if ( $ret && ! self::ConvertThumbnail24(	 ($abs_storage_root . $rel_thumb48_path_name)
 											,($abs_storage_root . $rel_thumb24_path_name)) ){
-			return false;
+			$ret = false;
 		}
 
 		
-		if ( ! JWFile::Save( array($rel_picture_path_name,$rel_thumb48_path_name,$rel_thumb24_path_name) ) )
-			return false;
+		if ( $ret && ! JWFile::Save( array($rel_picture_path_name,$rel_thumb48_path_name,$rel_thumb24_path_name) ) )
+			$ret = false;
 
-		$sql = <<<_SQL_
-REPLACE	Picture
-SET		 idUser=$idUser
-		,class='ICON'
-		,fileName='$file_name'
-		,fileExt='$dst_file_type'
-		,timeCreate=NOW()
-_SQL_;
+		unlink ( $absFilePathName );
 
-		$result = JWDB::Execute($sql);
+		if ( ! $ret )
+		{
+			JWDB::DelTableRow('Picture', array('id'=>$picture_id) );
+			$picture_id = false;
+		}
 
-		return JWDB::GetInsertedId();
+		return $picture_id;
 	}
 
 	static public function ConvertPictureBig($srcFile, $dstFile)
@@ -271,8 +357,12 @@ _SQL_;
 		$srcFile = escapeshellarg($srcFile);
 		$dstFile = escapeshellarg($dstFile);
 
+		/*
+		 *	-coalesce 方式gif缩小的时候出现问题。http://wiki.flux-cms.org/display/BLOG/Resizing+animated+GIFs+with+ImageMagick
+		 */
 		$cmd = <<<_CMD_
 convert $srcFile \\
+  -coalesce \\
   -auto-orient \\
   -thumbnail '500x>' \\
   $dstFile
@@ -328,5 +418,137 @@ _CMD_;
 
 		return 0===$ret;
 	}
+
+	static public function Show($idPicture, $picSize='thumb48')
+	{
+		switch ($picSize)
+		{
+			default:	// fall to thumb48
+				$picSize = 'thumb48';
+
+			case 'origin': // let JWFile choose 
+			case 'picture': // let JWFile choose 
+			case 'thumb48':// let JWFile choose 
+			case 'thumb24':
+				$filename = JWPicture::GetFullPathNameById($idPicture, $picSize);
+
+				$picType = 'gif';
+				if ( !preg_match('/\.gif$/i',$filename) )
+					$picType = 'jpg';
+
+				$fp = @fopen($filename, 'rb');
+
+				if ( false==$fp )
+				{
+					header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
+					exit(0);
+				}
+
+
+				header("Content-Type: image/$picType");
+				header("Content-Length: " . filesize($filename));
+
+				fpassthru($fp);
+
+				break;
+
+		}
+
+		exit(0);
+	}
+
+	/*
+	 *
+	 * @param	string	absFilePathName	user named image file
+
+	 * @return 	int		false if fail, otherwise return new PK of picture TB
+	 */
+	static public function SaveBg($idUser, $absFilePathName)
+	{
+		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
+		{
+			unlink ( $absFilePathName );
+			return ;
+		}
+
+
+		/*
+		 *	检查用户是否以前上传过这个图片
+		 */
+		$md5  = md5_file($absFilePathName);
+
+		$picture_id = JWPicture::GetIdByMd5($idUser, $md5, 'BG');
+
+		if ( $picture_id )
+			return $picture_id;
+
+
+		$file_name 	= $matches['file_name'];
+		$file_ext 	= $matches['file_ext'];
+
+		$dst_file_type = 'jpg';
+		if ( 'gif'==$file_ext )
+			$dst_file_type = 'gif';
+
+
+		self::Instance();
+
+		$sql = <<<_SQL_
+INSERT INTO	Picture
+SET		 idUser=$idUser
+		,class='BG'
+		,fileName='$file_name'
+		,fileExt='$dst_file_type'
+		,md5='$md5'
+		,timeCreate=NOW()
+_SQL_;
+
+		try {
+			$result = JWDB::Execute($sql);
+		}catch(Exception $e){
+			JWLog::LogFuncName("JWDB::Execute " . $e->getMessage());
+			return 0;
+		}
+
+		$picture_id 	= JWDB::GetInsertedId();
+
+
+		$abs_storage_root	= JWFile::GetStorageAbsRoot();
+		$picture_path		= self::GetPathRel($picture_id);
+		$abs_path			= $abs_storage_root . $picture_path;
+
+		if ( ! file_exists($abs_path) )
+			mkdir($abs_path,0770,true);
+
+		if ( ! is_writeable($abs_path) )
+			throw new JWException("$user_path unwriteable");
+		
+		$rel_bg_path_name = $picture_path . "origin." . $dst_file_type;
+
+		$ret = true;
+
+		if ( $ret && ! copy(	 $absFilePathName
+								,$abs_storage_root . $rel_bg_path_name 
+							)
+			)
+		{
+			$ret = false;
+		}
+
+
+		if ( $ret && ! JWFile::Save( array($rel_bg_path_name) ) )
+			$ret = false;
+
+		unlink ( $absFilePathName );
+
+		if ( ! $ret )
+		{
+			JWDB::DelTableRow('Picture', array('id'=>$picture_id) );
+			$picture_id = false;
+		}
+
+		return $picture_id;
+	}
+
 }
 ?>

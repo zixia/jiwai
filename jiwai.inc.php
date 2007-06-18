@@ -44,7 +44,9 @@ define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
  * Path of config cache
  *
  */
-define('CONFIG_CACHE',	CACHE_ROOT . 'config/config.xml.php');
+// XXX by zixia 2006-06-15 临时测试 
+//define('CONFIG_CACHE',	CACHE_ROOT . 'config/config.xml.php');
+define('CONFIG_CACHE',	"/tmp/alpha.xml.php");
 
 
 /**
@@ -92,17 +94,7 @@ function __autoload($class_name) {
 	else
 		$file = LIB_ROOT;
 
-/*
-	$class_file_map = array (	'PhpCaptcha'	=>	'Captcha/Captcha.inc.php'
-								, 'AudioPhpCaptcha'	=>	'Captcha/Captcha.inc.php'
-								, 'PhpCaptchaColour' => 'Captcha/Captcha.inc.php'
-							);
-
-	if ( isset($class_file_map[$class_name]) ) 
-		$file .= $class_file_map[$class_name];
-	else 
-*/
-		$file .= $class_name . '.class.php';
+	$file .= $class_name . '.class.php';
 
 	require_once $file;
 

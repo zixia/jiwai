@@ -55,7 +55,7 @@ _HTML_;
 				JWSession::SetInfo('error',$error_html);
 			}
 
-			unlink ( $user_named_file );
+			@unlink ( $user_named_file );
 		}
 	}
 	else if ( isset($file_info) 
@@ -83,6 +83,9 @@ _HTML_;
 else if ( isset($_REQUEST['delete'] ) )
 {
 	// User set empty picture
+
+	//JWPicture::Destroy($user_info['idPicture']);
+
 	JWUser::SetIcon($user_info['idUser']);
 	$notice_html = <<<_HTML_
 <li>头像删除成功。您将不会出现在<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</li>
@@ -96,7 +99,9 @@ _HTML_;
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
 
 <body class="account" id="picture">
 
@@ -167,7 +172,7 @@ _HTML_;
 							<td>
 								<!--input id="user_profile_image_temp" name="user[profile_image_temp]" type="hidden" -->
 								<input id="user_profile_image" name="profile_image" size="30" type="file" 
-											onclick="upload_button.style.display='block';"/>
+											onclick="if(0<$('user_profile_image').value.length) upload_button.style.display='block';"/>
 								<p><small>为保证您的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
 <?php
 if ( !$has_photo )

@@ -50,7 +50,7 @@ a:hover {color:#333;}
   #navigation {position: relative;margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px}
   #header a.header {display:block;text-indent:-9999px;overflow:hidden;}
   #header a {margin-left:10px;text-decoration:none;color:#fff;font-weight:bold;}
-  #header h2 {width:200px;margin:0;padding:0;background:transparent url(http://asset.jiwai.de/img/jiwai_logo_2.gif) no-repeat top left;}
+  #header h2 {width:200px;margin:0;padding:0;background:transparent url(http://asset.jiwai.de/img/jiwai_logo_3_trans.gif) no-repeat top left;}
   #header h2 a {height:74px;}
 
 #navigation ul {position: absolute; top: 16px; right: 32px; padding: 6px 3px; line-height: 1;}
@@ -64,7 +64,7 @@ a:hover {color:#333;}
     #header li { float:left;}
 */
 
-#container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333;background:transparent;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
+#container { margin:0 auto; /*min-width:755px; max-width:900px; width:95%; */ width:800px; color:#333; background:transparent;border:0px solid #9C0;border-width:0 0px;overflow:hidden;min-height:400px;}
 
 
 #content {width:100%; float:left; margin:10px 0 0 -225px; border-right:1px solid #9C0; line-height:2em; overflow:hidden; }
@@ -154,7 +154,7 @@ a:hover {color:#333;}
 .jiwai_icon_vtab_inner {margin:0; padding:50px; border:1px solid #f00; border-right:0; overflow:hidden}
 
 .buttonSubmit, .buttonSubmitHovered {
-	background:transparent url(http://asset.alpha.jiwai.de/img/form/button_big.gif) no-repeat scroll left top;
+	background:transparent url(http://asset.jiwai.de/img/form/button_big.gif) no-repeat scroll left top;
 	border:medium none;
 	color:#FFFFFF;
 	cursor:pointer;
@@ -213,7 +213,7 @@ h2.thumb, h2.thumb a {
 	color:#000000;
 }
 #content div.desc {
-	background:transparent url(http://asset.alpha.jiwai.de/img/arr2.gif) no-repeat scroll 14px 0px;
+	background:transparent url(http://asset.jiwai.de/img/arr2.gif) no-repeat scroll 14px 0px;
 	margin-top:6px;
 	padding-top:11px;
 }

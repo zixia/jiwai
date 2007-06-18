@@ -11,7 +11,10 @@ $logined_user_id 	= $logined_user_info['id'];
 
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="invitations" id="invitations">
 

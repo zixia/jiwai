@@ -62,19 +62,19 @@ _HTML_;
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
-		$asset_url_js_moo	= self::GetAssetUrl('/js/mootools.v1.1.js' );
+		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.1.js' );
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪网,唧歪网,叽歪de,叽歪的,矶歪de,唧歪de,唧歪的,叽叽歪歪,唧唧歪歪,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwaide,tiny blog,im nick
+叽歪网,唧歪网,叽歪de,叽歪的,矶歪de,唧歪de,唧歪的,叽叽歪歪,唧唧歪歪,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
 _STR_;
-		else								$keywords = $options['keywords'];
+		else								$keywords = "叽歪,叽叽歪歪,唧唧歪歪," . $options['keywords'];
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。
+叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。快来假如我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
 _STR_;
 		else									$description = $options['description'];
 
@@ -112,9 +112,20 @@ _HTML_;
 <meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
 
+	
+		if ( !isset($options['ui_user_id']) )
+			$options['ui_user_id'] = JWLogin::GetCurrentUserId();
+
+		/*
+		 *	强制不使用自定义界面，设置为 false 即可
+		 */
+		if ( false!==$options['ui_user_id'] && !empty($options['ui_user_id']) )
+		{
+			$ui = new JWDesign($options['ui_user_id']);
+			$ui_css = $ui->GetStyleSheet();
+		}
 
 		echo <<<_HTML_
-<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 
@@ -136,7 +147,7 @@ $rss_html
 	<meta name="DC.title" content="叽歪de" />
 	<meta name="copyright" content="copyright 2007 http://jiwai.de" />
 	<meta name="robots" content="all" />
-</head>
+	$ui_css
 
 _HTML_;
 
@@ -210,6 +221,15 @@ _HTML_;
 	</ul>
 </div>
 
+<?php
+		JWTemplate::GoogleAnalytics();
+
+	}
+
+	
+	static public function GoogleAnalytics()
+	{
+		echo <<<_HTML_
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 </script>
 <script type="text/javascript">
@@ -236,7 +256,7 @@ function run_google()
 	urchinTracker();
 }
 </script>
-<?php
+_HTML_;
 	}
 
 
@@ -926,12 +946,19 @@ _HTML_;
 _HTML_;
 
 		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
+		$picture_ids		= JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
+
+		$picture_url_row	= JWPicture::GetUrlRowByIds($picture_ids);
 
 		foreach ( $user_ids as $user_id )
 		{
 			$user_db_row 		= $user_db_rows			[$user_id];
-			$user_icon_url		= $user_icon_url_rows	[$user_id];
+			$user_picture_id	= @$user_db_row['idPicture'];
+
+			$user_icon_url		= JWTemplate::GetConst('UrlStrangerPicture');
+
+			if ( $user_picture_id )
+				$user_icon_url		= $picture_url_row[$user_picture_id];
 
 			echo <<<_HTML_
 			<li>
@@ -1437,7 +1464,9 @@ _HTML_;
 			return;
 
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
-		$friend_icon_url_rows 	= JWPicture::GetUserIconUrlRowsByUserIds($friendIds,'thumb24');
+
+        $picture_ids        	= JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
+        $picture_url_rows   	= JWPicture::GetUrlRowByIds($picture_ids);
 
 		echo <<<_HTML_
   		<div id="friend">
@@ -1446,9 +1475,14 @@ _HTML_;
 
 		foreach ( $friendIds as $friend_id )
 		{
-			$friend_info 	= $friend_rows[$friend_id];
-			$picture_url	= $friend_icon_url_rows[$friend_id];
-			
+			$friend_info 		= $friend_rows[$friend_id];
+
+			$picture_url		= JWTemplate::GetConst('UrlStrangerPicture');
+
+			$friend_picture_id	= @$friend_info['idPicture'];
+            if ( $friend_picture_id )
+                $picture_url	= $picture_url_rows[$friend_picture_id];
+
 			echo <<<_HTML_
 			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
 
@@ -1577,7 +1611,7 @@ _HTML_;
 							, 'device_im'  => array ( '/wo/devices/?im'           		, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification'		, '通知')
 							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
-							//, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
+							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
@@ -1601,7 +1635,7 @@ _HTML_;
 	 *	@param	path		the path of asset.jiwai.de/$path
 	 *	@return	URL			the url ( domain name & path )
 	 */
-	static public function GetAssetUrl($absUrlPath)
+	static public function GetAssetUrl($absUrlPath, $mtime=true)
 	{
 		JWTemplate::Instance();
 
@@ -1611,7 +1645,6 @@ _HTML_;
 			throw new JWException('must have path');
 
 		$asset_path	= JW_ROOT . 'domain/asset';
-		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 
 
@@ -1629,6 +1662,11 @@ _HTML_;
 
 		// 同一个文件，总会被分配到同一个 n 上。
 		$n = crc32($absUrlPath) % $asset_num_max;
+
+		if ( !$mtime )
+			return "http://asset${n}.$domain$absUrlPath";
+
+		$timestamp 	= filemtime("$asset_path$absUrlPath");
 
 		//we use more then one domain name to down load asset in parallel
 		return "http://asset${n}.$domain$absUrlPath?$timestamp";
@@ -1742,16 +1780,23 @@ _HTML_;
 
 		$n = 0;
 		$list_user_rows				= JWUser::GetUserDbRowsByIds			($idListUsers);
-		$list_user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($idListUsers);
+
+        $picture_ids        = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
+        $picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);
 
 		$action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
 
+//die(var_dump($picture_url_row));
 //die(var_dump($action_rows));
 		foreach ( $idListUsers as $list_user_id )
 		{
 			$list_user_row			= $list_user_rows			[$list_user_id];
-			$list_user_icon_url		= $list_user_icon_url_rows	[$list_user_id];
 
+           	$list_user_picture_id   = @$list_user_row['idPicture'];
+
+			$list_user_icon_url     = JWTemplate::GetConst('UrlStrangerPicture');
+            if ( $list_user_picture_id )
+                $list_user_icon_url      = $picture_url_row[$list_user_picture_id];
 
 			$odd_even			= ($n++ % 2) ? 'odd' : 'even';
 

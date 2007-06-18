@@ -57,7 +57,7 @@ class JWDevice {
 
 		switch ( $type ){
 			case 'sms':
-				return preg_match('/^\+?\d+$/'			,$address);
+				return preg_match('/^\d{11}$/'			,$address);
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -210,7 +210,14 @@ _SQL_;
 			switch ($type)
 			{
 				case 'sms':
-					$secret = self::GenSecret(4,JWDevice::CHAR_NUM);
+
+					/*
+					 *	保证不生成全部为 0 的验证码：在移动方面，这个验证码是退订的指令
+					 */
+					do { 
+						$secret = self::GenSecret(4,JWDevice::CHAR_NUM);
+					} while ( preg_match('/^0+$/',$secret) );
+
 					break;
 				default:
 					$secret = self::GenSecret();

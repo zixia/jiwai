@@ -143,12 +143,12 @@ JWDB::Close();
 
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
 
 <body class="account" id="create">
 
-<?php JWTemplate::html_head() ?>
-	
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>

@@ -78,8 +78,11 @@ $options = array(	 'title'		=> "$help_user_info[nameScreen] / $help_user_info[na
 			);
 
 
-JWTemplate::html_head($options) ;
 ?>
+
+<head>
+<?php JWTemplate::html_head($options) ?>
+</head>
 
 <body class="normal">
 

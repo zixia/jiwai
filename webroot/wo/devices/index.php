@@ -16,7 +16,10 @@ $sms_or_im = isset($_REQUEST['im'])?'im':'sms';
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="device" id="device">
 

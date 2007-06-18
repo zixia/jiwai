@@ -27,7 +27,7 @@ class JWMail {
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWFile
+	 * @return JWMail
 	 */
 	static public function &Instance()
 	{

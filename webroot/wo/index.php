@@ -11,7 +11,13 @@ $logined_user_id 	= $logined_user_info['id'];
 
 <html>
 
-<?php JWTemplate::html_head() ?>
+<head>
+<?php 
+$options = array (	'ui_user_id'	=> $logined_user_id );
+JWTemplate::html_head($options);
+?>
+</head>
+
 
 <body class="normal">
 

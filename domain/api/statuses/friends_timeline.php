@@ -199,10 +199,16 @@ function friends_timeline_rss_n_atom($options)
 	array_push($status_data['user_ids'], $master_user_id);
 
 	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
-	$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds(array($master_user_id),'thumb48');
+
+	$picture_ids       = JWFunction::GetColArrayFromRows($user_rows, 'idPicture');
+	$picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);                     
 
 	$user			= $user_rows[$master_user_id];
-	$user_icon_url	= $user_icon_url_rows[$master_user_id];
+
+	$user_icon_url	= JWTemplate::GetConst('UrlStrangerPicture');
+	if ( $user['idPicture'] )
+		$user_icon_url = $picture_url_row[$user['idPicture']];
+
 	$user_url		= 'http://JiWai.de/' . $user['nameScreen'] . '/';
 
 	$img_options	= array ( 	 'url'			=>	$user_icon_url

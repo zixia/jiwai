@@ -80,5 +80,57 @@ class JWFile {
 		// TODO: save a file to remote(furture) storage system here.
 		return true;
 	}
+
+
+	/**
+	* Removes the directory and all its contents.
+	* 
+	* @param string the directory name to remove
+	* @param boolean whether to just empty the given directory, without deleting the given directory.
+	* @return boolean True/False whether the directory was deleted.
+	*/
+	function DeleteDirectory($dirname,$emptyOnly=false) 
+	{
+		// 太危险了，还是把这个函数封装起来吧。
+		// 定期用程序检查作文件系统的垃圾回收吧。
+		throw new JWException("封印！");
+
+		if (!is_dir($dirname))
+			return false;
+
+		$dscan = array(realpath($dirname));
+		$darr = array();
+		while (!empty($dscan)) 
+		{
+			$dcur = array_pop($dscan);
+			$darr[] = $dcur;
+			if ($d=opendir($dcur)) 
+			{
+				while ($f=readdir($d)) 
+				{
+					if ($f=='.' || $f=='..')
+						continue;
+					$f=$dcur.'/'.$f;
+					if (is_dir($f))
+						$dscan[] = $f;
+					else
+						unlink($f);
+				}
+				closedir($d);
+			}
+		}
+
+		$i_until = ($emptyOnly)? 1 : 0;
+		for ($i=count($darr)-1; $i>=$i_until; $i--) 
+		{
+			echo "\nDeleting '".$darr[$i]."' ... ";
+			if (rmdir($darr[$i]))
+				echo "ok";
+			else
+				echo "FAIL";
+		}
+		return (($emptyOnly)? (count(scandir)<=2) : (!is_dir($dirname)));
+	}
+
 }
 ?>

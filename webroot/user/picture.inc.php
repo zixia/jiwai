@@ -5,38 +5,8 @@ function user_picture($idUser, $picSize)
 	if ( empty($picSize) )
 		$picSize = 'thumb48';
 
+	$user_db_row = JWUser::GetUserInfo($idUser);
 
-	switch ($picSize)
-	{
-		case 'picture': // let JWFile choose 
-		case 'thumb48':// let JWFile choose 
-		case 'thumb24':
-			$filename = JWPicture::GetUserIconFullPathName($idUser, $picSize);
-
-			$picType = 'gif';
-			if ( !preg_match('/\.gif$/i',$filename) )
-				$picType = 'jpg';
-
-			$fp = @fopen($filename, 'rb');
-
-			if ( false==$fp )
-			{
-				header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
-				exit(0);
-			}
-
-
-			header("Content-Type: image/$picType");
-			header("Content-Length: " . filesize($filename));
-
-			fpassthru($fp);
-
-			break;
-
-		default:
-			throw new JWException("unsupport size $picSize");
-	}
-
-	exit(0);
+	JWPicture::Show($user_db_row['idPicture'], $picSize);
 }
 ?>

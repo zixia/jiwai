@@ -13,7 +13,9 @@ $page_user_info		= $logined_user_info;
 
 $follower_ids			= JWFollower::GetFollowerIds($page_user_info['id']);
 $follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
-$follower_icon_url_rows = JWPicture::GetUserIconUrlRowsByUserIds($follower_ids);
+
+$picture_ids        = JWFunction::GetColArrayFromRows($follower_user_rows, 'idPicture');
+$picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
 
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 
@@ -21,7 +23,10 @@ $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="followers" id="followers">
 
@@ -59,7 +64,13 @@ if ( isset($follower_ids) )
 	foreach ( $follower_ids as $follower_id )
 	{
 		$follower_info		= $follower_user_rows[$follower_id];
-		$follower_icon_url	= $follower_icon_url_rows[$follower_id];
+
+		$follower_picture_id= @$follower_info['idPicture'];
+
+		$follower_icon_url  = JWTemplate::GetConst('UrlStrangerPicture');
+
+		if ( $follower_picture_id )
+			$follower_icon_url	= $picture_url_row[$follower_picture_id];
 
 		$odd_even			= ($n++ % 2) ? 'odd' : 'even';
 

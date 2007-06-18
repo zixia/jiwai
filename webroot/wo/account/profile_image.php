@@ -34,7 +34,11 @@ if ( empty($page_user_info) )
 ?>
 <html>
 
-<?php JWTemplate::html_head() ?>
+<head>
+<?php 
+JWTemplate::html_head();
+?>
+</head>
 
 <body class="account" id="profile_image">
 

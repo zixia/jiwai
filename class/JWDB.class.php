@@ -95,7 +95,12 @@ class JWDB {
 
 	static public function EscapeString( $string )
 	{
-		return self::GetDb()->escape_string($string);
+		try {
+			return self::GetDb()->escape_string($string);
+		}catch(Exception $e){
+			JWDB::Close();
+			throw new JWException( "DB escape_string" );
+		}
 	}
 
 	static public function GetInsertedId()
@@ -112,6 +117,7 @@ class JWDB {
 		if ( $result = $db->query($sql) ){
 			return $result;
 		}else{
+			JWDB::Close();
 			throw new JWException( "DB Query" );
 		}
 		// XXX here unreachable 
@@ -146,6 +152,7 @@ class JWDB {
 			}
 
 		}else{
+			JWDB::Close();
 			throw new JWException( "DB Query" );
 		}
 
@@ -181,6 +188,7 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
@@ -218,6 +226,7 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
@@ -266,11 +275,51 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
 
 		return true;
+	}
+
+
+	/*
+	 * @return bool
+			succ / fail
+	 */
+	static public function ReplaceTableRow( $tableName, $conditionArray )
+	{
+		$db = self::GetDb();
+
+		$sql = "REPLACE $tableName SET ";
+		
+		$first = true;
+		foreach ( $conditionArray as $k => $v ){
+			if ( !$first ){
+				$sql .= " , ";
+			}
+
+			if ( is_null($v) )
+				$sql .= "$k=NULL";
+			else if ( is_int($v) )
+				$sql .= "$k=$v";
+			else
+				$sql .= "$k='" . self::EscapeString($v) . "'";
+
+			if ( $first = true )
+				$first = false;
+		}
+
+		$result = $db->query ($sql);
+
+		if ( !$result ){
+			JWDB::Close();
+			throw new JWException ("DB Error: " . $db->error);
+			return false;
+		}
+
+		return $result;
 	}
 
 
@@ -309,6 +358,7 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
@@ -349,6 +399,7 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}
@@ -552,6 +603,7 @@ class JWDB {
 		$result = $db->query ($sql);
 
 		if ( !$result ){
+			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
 		}

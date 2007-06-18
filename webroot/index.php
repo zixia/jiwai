@@ -8,9 +8,11 @@ if ( JWLogin::IsLogined() )
 ?>
 <html>
 
+<head>
 <?php 
 JWTemplate::html_head();
 ?>
+</head>
 
 
 <body class="front" id="front">
@@ -48,7 +50,7 @@ JWTemplate::html_head();
 ?>
 
 <?php 
-$status_data = JWStatus::GetStatusIdsFromPublic(30);
+$status_data = JWStatus::GetStatusIdsFromPublic(10);
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
@@ -75,13 +77,14 @@ $announce_options['user_name']	= 'team';
 $announce_options['title']		= '公告';
 
 
-$arr_menu 	= array( array ('head'			, array('<h3>请登陆！</h3>'))
-					, array ('login'		, null)
-					, array ('register'		, null)
-					, array ('announce'		, array($announce_options) )
-					, array ('announce'		, array($blog_options) )
-					, array ('featured'		, array($featured_options) )
-					, array ('featured'		, array($newest_options) )
+$arr_menu 	= array( 
+					 array ('head'			, array('<h3>请登陆！</h3>'))
+					,array ('register'		, null)
+					,array ('login'		, null)
+					,array ('announce'		, array($announce_options) )
+					,array ('announce'		, array($blog_options) )
+					,array ('featured'		, array($featured_options) )
+					,array ('featured'		, array($newest_options) )
 				);
 
 JWTemplate::sidebar($arr_menu, null) ;

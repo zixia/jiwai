@@ -88,7 +88,10 @@ _HTML_;
 
 ?>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 
 <body class="direct_messages" id="create">

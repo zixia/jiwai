@@ -137,7 +137,10 @@ _HTML_;
 ?>
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="account" id="settings">
 

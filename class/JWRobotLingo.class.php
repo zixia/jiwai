@@ -398,6 +398,9 @@ _STR_;
 		 */
 		$followe_user_db_row = JWUser::GetUserInfo( $followe );
 
+		if ( empty($followe_user_db_row) )
+			return JWRobotLogic::ReplyMsg($robotMsg, $help);
+
 		JWSns::DestroyFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
 

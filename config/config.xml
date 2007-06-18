@@ -47,8 +47,9 @@
 		<mt>mt/</mt>
 
 		<storage>
-			<root>/var/www/vhost/jiwai.de/domain/asset/system/</root>
+			<root>/750/reiserfs/jiwai/</root>
 			<user>user/</user>
+			<picture>picture/</picture>
 		</storage>
 		<mail>
 			<template>/var/www/vhost/alpha.jiwai.de/config/template/mail/</template>

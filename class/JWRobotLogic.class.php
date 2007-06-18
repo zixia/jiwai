@@ -57,6 +57,7 @@ class JWRobotLogic {
 			return null;
 		}
 		
+//var_dump($robotMsg);
 		if ( ! $robotMsg->IsValid() )
 		{
 			JWLog::LogFuncName(LOG_CRIT, 'received a invalid msg' );

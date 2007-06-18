@@ -188,10 +188,11 @@ WHERE		(
 			Status.idUserReplyTo=$idUser
 			OR Status.idUser=$idUser
 			)
-			AND Status.idUser<>1927 -- XXX block youyouwan
 ORDER BY 	Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
+
+		//AND Status.idUser<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -199,47 +200,8 @@ _SQL_;
 			return array();
 
 
-		/*
-		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
-		 */
-		$func_key_name 		= "JWStatus::GetStatusIdsFromSelfNReplies_idStatus";
-		$func_callable_name	= JWFunction::Get($func_key_name);
-
-		if ( empty($func_callable_name) )
-		{
-			$reduce_function_content = 'return $row["idStatus"];';
-			$reduce_function_param 	= '$row';
-			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
-
-			JWFunction::Set($func_key_name, $func_callable_name);
-		}
-	
-		// 装换rows, 返回 id 的 array
-		$status_ids = array_map(	 $func_callable_name
-									,$rows
-								);
-
-
-		/*
-		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
-		 */
-		$func_key_name 		= "JWStatus::GetStatusIdsFromSelfNReplies_idUser";
-		$func_callable_name	= JWFunction::Get($func_key_name);
-
-		if ( empty($func_callable_name) )
-		{
-			$reduce_function_content = 'return $row["idUser"];';
-			$reduce_function_param 	= '$row';
-			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
-
-			JWFunction::Set($func_key_name, $func_callable_name);
-		}
-	
-		// 装换rows, 返回 id 的 array
-		$user_ids = array_map(	 $func_callable_name
-									,$rows
-								);
-
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
 
 		array_push($user_ids, $idUser);
 
@@ -275,47 +237,8 @@ _SQL_;
 			return array();
 
 
-		/*
-		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
-		 */
-		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies_idStatus";
-		$func_callable_name	= JWFunction::Get($func_key_name);
-
-		if ( empty($func_callable_name) )
-		{
-			$reduce_function_content = 'return $row["idStatus"];';
-			$reduce_function_param 	= '$row';
-			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
-
-			JWFunction::Set($func_key_name, $func_callable_name);
-		}
-	
-		// 装换rows, 返回 id 的 array
-		$status_ids = array_map(	 $func_callable_name
-									,$rows
-								);
-
-
-		/*
-		 *	根据参数，创建 reduce_function，并存入 JWFunction 以备下次使用
-		 */
-		$func_key_name 		= "JWStatus::GetStatusIdsFromReplies_idUser";
-		$func_callable_name	= JWFunction::Get($func_key_name);
-
-		if ( empty($func_callable_name) )
-		{
-			$reduce_function_content = 'return $row["idUser"];';
-			$reduce_function_param 	= '$row';
-			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
-
-			JWFunction::Set($func_key_name, $func_callable_name);
-		}
-	
-		// 装换rows, 返回 id 的 array
-		$user_ids = array_map(	 $func_callable_name
-									,$rows
-								);
-
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
 
 		array_push($user_ids, $idUser);
 
@@ -363,27 +286,13 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
+
+		$status_ids = array();
+		$user_ids = array();
 		if ( !empty($rows) )
 		{
-			// 装换rows, 返回 idStatus / idUser 的 array
-			// TODO 这样 create_function 会有内存泄露，应使用 JWFunction 进行一次性生成管理
-			$status_ids = array_map(	create_function(
-													'$row'
-													, 'return $row["idStatus"];'
-												)
-										, $rows
-									);
-			$user_ids 	= array_map(	create_function(
-													'$row'
-													, 'return $row["idUser"];'
-													)
-										, $rows
-									);
-		}
-		else
-		{
-			$status_ids = array();
-			$user_ids = array();
+			$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+			$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
 		}
 
 		return array ( 	 'status_ids'	=> $status_ids
@@ -415,27 +324,16 @@ WHERE
 			AND Status.idUserReplyTo IS NULL
 			AND User.idPicture IS NOT NULL
 			AND User.protected<>'Y'
-			AND User.id<>1927 -- XXX block youyouwan
 ORDER BY 	
 			Status.timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
+			//AND User.id<>1927 -- XXX block youyouwan
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
-		// 装换rows, 返回 id 的 array
-		$status_ids = array_map(	create_function(
-												'$row'
-												, 'return $row["idStatus"];'
-											)
-							, $rows
-						);
-		$user_ids 	= array_map(	create_function(
-												'$row'
-												, 'return $row["idUser"];'
-											)
-							, $rows
-						);
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
 
 		return array ( 	 'status_ids'	=> $status_ids
 						,'user_ids'		=> $user_ids

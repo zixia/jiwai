@@ -72,6 +72,7 @@ switch ( $active_tab )
 		break;
 }
 
+//die(var_dump($status_data));
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
 
@@ -90,12 +91,12 @@ $keywords 		= <<<_STR_
 $page_user_info[nameScreen]($page_user_info[nameFull]) - $page_user_info[bio] $page_user_info[location] 
 _STR_;
 
-$description = "叽歪de$page_user_info[nameFull] ";
+$description = "叽歪de $page_user_info[nameFull] ";
 $description .= @$head_status_rows[$head_status_id]['status'];
 
 foreach ( $status_data['status_ids'] as $status_id )
 {
-	$description .= $status_rows[$status_id]['status'];
+	$description .= ' '.$status_rows[$status_id]['status'];
 	if ( mb_strlen($description,'UTF-8') > 140 )
 	{
 			$description = mb_substr($description,0,140,'UTF-8');
@@ -133,11 +134,14 @@ $options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[na
 					,'rss'			=> $rss
 					,'refresh_time'	=> '600'
 					,'refresh_url'	=> ''
+					,'ui_user_id'	=> $page_user_id
 			);
 
-JWTemplate::html_head($options) ;
-
 ?>
+<head>
+<?php JWTemplate::html_head($options); ?>
+</head>
+
 
 <body class="normal">
 
@@ -202,7 +206,7 @@ if ( $show_protected_content )
 							,$user_rows
 							,$status_rows
 							,array(	 'icon'	=> $g_user_with_friends
-									,'protected'=>true
+									,'protected'=>!$show_protected_content
 							 )
 						) ;
 

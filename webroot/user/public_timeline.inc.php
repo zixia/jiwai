@@ -5,7 +5,7 @@ JWTemplate::html_doctype();
 
 <?php 
 
-$status_data 	= JWStatus::GetStatusIdsFromPublic(30);
+$status_data 	= JWStatus::GetStatusIdsFromPublic(10);
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
@@ -42,8 +42,11 @@ $options = array(	 'title'		=> '叽歪广场'
 					,'refresh_url'	=> ''
 			);
 
-JWTemplate::html_head($options) ;
 ?>
+
+<head>
+<?php JWTemplate::html_head($options) ?>
+</head>
 
 
 <body class="status" id="public_timeline">
@@ -101,15 +104,17 @@ $announce_options['title']		= '公告';
 
 $featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds() );
 
-$arr_menu = array(	array ('head'			, array('JiWai.de <strong>叽歪广场</strong>'))
-					, array ('announce'		, array($announce_options) )
-					, array ('announce'		, array($blog_options) )
-					, array ('featured'			, array($featured_options) )
-					, array ('featured'			, array($newest_options) )
+$arr_menu = array(	
+					 array ('announce'		, array($announce_options) )
+					,array ('announce'		, array($blog_options) )
+					,array ('featured'			, array($featured_options) )
+					,array ('featured'			, array($newest_options) )
 				);
 
 if ( ! JWLogin::IsLogined() )
-	array_push ($arr_menu, array('register', array(true)));
+	array_unshift ($arr_menu, array('register', array(true)));
+
+array_unshift($arr_menu, array ('head'	, array('JiWai.de <strong>叽歪广场</strong>')));
 
 JWTemplate::sidebar($arr_menu, null);
 ?>

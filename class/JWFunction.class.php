@@ -88,5 +88,34 @@ Class JWFunction {
 	{
 		print var_dump(self::$msFunctionList);
 	}
+
+	/*
+	 *	2007-06-14
+	 *	从一个 Rows 数据结构中，将所有的 column name 抽取出来成为一个 array
+	 *	如： 	$rows[1] = array ( k1=>v1, k2=>v2 )
+	 *			$rows[2] = array ( k1=>v3, k2=>v4 )
+	 *	调用 GetColArrayFromRows($rows, 'k1') 则会得到 array ( v1, v3 );
+	 */
+	public static function GetColArrayFromRows($rows, $colKeyName)
+	{
+		$func_key_name 		= "JWFunction::GetColArrayFromRows_$colKeyName";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $row["' . $colKeyName . '"];';
+			$reduce_function_param 	= '$row';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$ids = array_map(	 $func_callable_name
+							,$rows
+						);
+
+		return $ids;
+	}
 }
 ?>

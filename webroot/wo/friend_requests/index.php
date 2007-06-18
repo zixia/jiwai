@@ -19,7 +19,10 @@ if ( empty($friend_ids) )
 
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 <body class="friend_requests" id="friend_requests">
 
@@ -46,13 +49,21 @@ JWTemplate::ShowActionResultTips();
 <?php
 
 $friend_db_rows		= JWUser::GetUserDbRowsByIds($friend_ids);
-$friend_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($friend_ids);
+
+$picture_ids        = JWFunction::GetColArrayFromRows($friend_db_rows, 'idPicture');
+$picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
+
 $n = 0;
 
 foreach ( $friend_ids as $friend_id )
 {
 	$friend_db_row		= $friend_db_rows[$friend_id];
-	$friend_icon_url	= $friend_icon_url_rows[$friend_id];
+
+	$friend_picture_id  = @$friend_db_row['idPicture'];
+	$friend_icon_url    = JWTemplate::GetConst('UrlStrangerPicture');
+
+	if ( $friend_db_row['idPicture'] )
+		$friend_icon_url	= $picture_url_row[$friend_db_row['idPicture']];
 
 	$odd_even			= ($n++ % 2) ? 'odd' : 'even';
 

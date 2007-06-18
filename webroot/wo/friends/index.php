@@ -11,23 +11,35 @@ JWLogin::MustLogined();
  */
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
+$head_options = array();
+
 if ( isset($g_user_friends) && $g_user_friends ) {
 	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
+	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
 	$page_user_info		= $logined_user_info;
 }
 
 $friend_ids			= JWFriend::GetFriendIds	($page_user_info['id']);
 $friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
-$friend_icon_url_rows = JWPicture::GetUserIconUrlRowsByUserIds($friend_ids);
+
+/*
+$picture_ids        = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPicture');
+$picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
+*/
+
+
 
 $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 ?>
 
 <html>
 
-<?php JWTemplate::html_head() ?>
+<head>
+<?php JWTemplate::html_head($head_options) ?>
+</head>
+
 
 <body class="friends" id="friends">
 

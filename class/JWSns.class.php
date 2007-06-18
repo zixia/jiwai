@@ -296,6 +296,7 @@ class JWSns {
 
 			case 'newsmth':
 			case 'sms':
+			case 'qq':
 				// 机器人给设备发送消息
 				JWRobot::SendMtRaw($address, $type, $sms_message);
 				break;

@@ -26,9 +26,11 @@ JWLog::Log(LOG_CRIT, "404URL: $url");
 JWTemplate::html_doctype();
 
 
-JWTemplate::html_head();
 
 ?>
+<head>
+<?php JWTemplate::html_head() ?>
+</head>
 
 
 

@@ -50,7 +50,10 @@ _HTML_;
 
 <html>
 
+<head>
 <?php JWTemplate::html_head() ?>
+</head>
+
 
 	  <script type="text/javascript">
   function onLJLoading() {

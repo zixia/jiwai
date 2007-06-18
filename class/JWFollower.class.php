@@ -257,6 +257,7 @@ _SQL_;
 INSERT INTO	Follower
 SET 		idUser			= $idUser
 			, idFollower	= $idFollower
+			, timeCreate	= NOW()
 _SQL_;
 
 		try {

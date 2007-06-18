@@ -12,9 +12,12 @@ JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
+$head_options = array();
+
 if ( isset($g_user_favourites) && $g_user_favourites ) {
 	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
+	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
 	$page_user_info		= $logined_user_info;
 }
@@ -27,12 +30,14 @@ $status_rows	= JWStatus::GetStatusDbRowsByIds($status_ids);
 $user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
 $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
 
-$user_icon_url_rows	= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
 ?>
 
 <html>
 
-<?php JWTemplate::html_head() ?>
+<head>
+<?php JWTemplate::html_head($head_options) ?>
+</head>
+
 
 <body class="favourings" id="favourings">
 
