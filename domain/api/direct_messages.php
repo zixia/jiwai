@@ -1,16 +1,18 @@
 <?php
-require_once("../../jiwai.inc.php");
+// 放到最前面吧，防止覆盖 jiwai.inc.php
 $pathParam = null;
 $since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? 
 	$_SERVER['HTTP_IF_MODIFIED_SINCE'] : null;
 extract($_REQUEST, EXTR_IF_EXISTS);
+
+require_once("../../jiwai.inc.php");
 
 $idUser = JWApi::getAuthedUserId();
 if( ! $idUser ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
 $messageIds = JWMessage::GetMessageIdsFromUser($idUser);
-$messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
+$messages 	= JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower($pathParam);
 switch( $type ){
