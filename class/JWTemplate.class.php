@@ -460,7 +460,12 @@ document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_thro
 	{
 		$name_screen 	= $userRow['nameScreen'];
 		$name_full		= $userRow['nameFull'];
-		$photo_url 		= JWPicture::GetUserIconUrl($idUser);
+
+		if ( !empty($statusRow['idPicture']) )
+			$photo_url	= JWPicture::GetUrlById($statusRow['idPicture']);
+		else
+			$photo_url	= JWPicture::GetUserIconUrl($idUser);
+	
 
 		if ( !isset($options['trash']) )
 			$options['trash'] = true;
@@ -709,7 +714,11 @@ _HTML_;
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
-			$photo_url	= JWPicture::GetUserIconUrl($user_id);
+
+			if ( !empty($statusRows[$status_id]['idPicture']) )
+				$photo_url	= JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
+			else
+				$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
 			$device		= JWDevice::GetNameFromType($device);
 

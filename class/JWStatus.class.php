@@ -100,15 +100,20 @@ class JWStatus {
 			$reply_user_id		= $reply_info['user_id'];
 		}
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo) "
-								. " values (?,?,?,FROM_UNIXTIME(?),?,?)" ) ){
-			if ( $result = $stmt->bind_param("isssii"
+		$user_db_row = JWUser::GetUserDbRowById($idUser);
+
+		$picture_id = $user_db_row['idPicture'];
+
+		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo,idPicture) "
+								. " values (?,?,?,FROM_UNIXTIME(?),?,?,?)" ) ){
+			if ( $result = $stmt->bind_param("isssiii"
 											, $idUser
 											, $status
 											, $device
 											, $time
 											, $reply_status_id
 											, $reply_user_id
+											, $picture_id
 								) ){
 				if ( $stmt->execute() ){
 					$stmt->close();
@@ -367,6 +372,7 @@ SELECT
 		, UNIX_TIMESTAMP(Status.timeCreate) AS timeCreate
 		, device
 		, idStatusReplyTo
+		, idPicture
 FROM	Status
 WHERE	Status.id IN ($condition_in)
 _SQL_;

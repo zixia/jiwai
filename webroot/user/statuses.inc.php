@@ -111,8 +111,14 @@ if ( JWLogin::IsLogined() )
     				</p>
     			</div>
 
+<?php
+if ( !empty($status_info['idPicture']) )
+	$photo_url	= JWPicture::GetUrlById($status_info['idPicture']);
+else
+	$photo_url	= JWPicture::GetUserIconUrl($page_user_info['idUser']);
+?>
 			<h2 class="thumb">
-				<a href="/<?php echo $page_user_info['nameScreen']?>/"><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'thumb48')?>" /></a>
+				<a href="/<?php echo $page_user_info['nameScreen']?>/"><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo $photo_url?>" /></a>
 				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
 			</h2>
 
