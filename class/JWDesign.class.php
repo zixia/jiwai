@@ -233,7 +233,18 @@ _CSS_;
 	}
 	#side .notify {border: 1px solid #$this->mSidebarBorderColor;}
 	#side .actions {border: 1px solid #$this->mSidebarBorderColor;}
-	h2.thumb, h2.thumb a {color: #$this->mTextColor;}
+	h2.thumb, h2.thumb a {color: #$this->mNameColor;}
+
+/*
+	.bg_tab_top_left {background: #$this->mSidebarFillColor;}
+	.bg_tab_top_mid {background: #$this->mSidebarFillColor;}
+	.bg_tab_top_right {background: #$this->mSidebarFillColor;}
+
+	.bg_tab_top_mid h2 {background: #$this->mSidebarFillColor;}
+	.bg_tab_top2_left {background: #$this->mSidebarFillColor;}
+	.bg_tab_top2_right {background: #$this->mSidebarFillColor;}
+*/
+
 </style>
 _CSS_;
 	}

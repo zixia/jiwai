@@ -109,6 +109,7 @@ _HTML_;
 }
 else
 {
+//die(var_dump($ui));
 	$ui->GetBackgroundColor	($user['profile_background_color']);
 	$ui->GetUseBackgroundImage($user['profile_use_background_image']);
 	$ui->GetBackgroundTile	($user['profile_background_tile']);
@@ -311,7 +312,7 @@ _HTML_;
 		<th><label for="user_profile_name_color">名字颜色：</label></th>
 
 		<td><input id="user_profile_name_color" name="user[profile_name_color]" size="30" type="text" 
-				value="<?php echo $user['profile_text_color']?>" /></td>
+				value="<?php echo $user['profile_name_color']?>" /></td>
 	</tr>
 	<tr>
 		<th><label for="user_profile_link_color">链接颜色：</label></th>
