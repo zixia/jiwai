@@ -5,7 +5,7 @@ JWTemplate::html_doctype();
 
 <?php 
 
-$status_data 	= JWStatus::GetStatusIdsFromPublic(10);
+$status_data 	= JWStatus::GetStatusIdsFromPublic(30);
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
@@ -82,7 +82,9 @@ $options = array(	 'title'		=> '叽歪广场'
 
 <?php 
 
-$options	= array ( 'uniq'=>2 );
+$options	= array ( 	 'uniq'		=> 2
+						,'nummax'	=> 10
+					 );
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
 ?>
   

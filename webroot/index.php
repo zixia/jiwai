@@ -50,12 +50,15 @@ JWTemplate::html_head();
 ?>
 
 <?php 
-$status_data = JWStatus::GetStatusIdsFromPublic(10);
+$status_data = JWStatus::GetStatusIdsFromPublic(30);
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-$options		= array ( 'uniq' => 1 );
+$options	= array ( 	 'uniq'		=> 1
+						,'nummax'	=> 10
+					 );
+
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options);
 ?>
   

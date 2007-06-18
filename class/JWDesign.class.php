@@ -214,6 +214,9 @@ _CSS_;
 	#navigation ul {
 		background-color: #$this->mBackgroundColor;
 	}
+	#header a {
+		color: #$this->mLinkColor;
+	}
 	body {
 		color: #$this->mTextColor;
 		background-color: #$this->mBackgroundColor;

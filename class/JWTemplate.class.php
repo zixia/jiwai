@@ -672,6 +672,8 @@ _HTML_;
 			$options['trash'] 	= true;
 		if ( !isset($options['uniq']) )
 			$options['uniq']	= 0;
+		if ( !isset($options['nummax']) )
+			$options['nummax']	= 0;
 		if ( !isset($options['protected']) )
 			$options['protected']	= false;
 
@@ -689,6 +691,10 @@ _HTML_;
 			if ( $options['protected'] && JWUser::IsProtected($user_id) )
 				continue;
 				
+			// 最多显示的条数已经达到
+			if ( $options['nummax'] && $n >= $options['nummax'] )
+				break;
+
 			// 如果设置了一个用户只显示一条，则跳过
 			if ( $options['uniq']>0 && @$user_showed[$user_id]>=$options['uniq'] )
 				continue;
