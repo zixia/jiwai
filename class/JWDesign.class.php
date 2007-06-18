@@ -59,7 +59,7 @@ class JWDesign {
 
 	function InitDefaultColor()
 	{
-		$this->mBackgroundColor = 'FFFFFF';
+		$this->mBackgroundColor = '000000';
 		$this->mUseBackgroundImage = null;
 		$this->mBackgroundTile = false;
 		$this->mTextColor = '333333';
@@ -69,6 +69,10 @@ class JWDesign {
 		$this->mSidebarBorderColor = '87BC44';
 	}
 
+	public function Destroy()
+	{
+		return JWDB::DelTableRow('Design', array('idUser'=>$this->mUserId));
+	}
 
 	private function GetDbRow()
 	{
