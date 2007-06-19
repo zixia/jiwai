@@ -75,7 +75,7 @@ class JWApi{
 	  
 	static function ReBuildStatus(&$status){
 		$outInfo = array();
-		$outInfo['create_at'] = date("D M d H:i:s O Y",$status['timeCreate']);
+		$outInfo['created_at'] = date("D M d H:i:s O Y",$status['timeCreate']);
 		$outInfo['text'] = $status['status'];
 		$outInfo['id'] = $status['idStatus'];
 		return $outInfo;
@@ -91,7 +91,7 @@ class JWApi{
 		$mInfo['text'] = $message['message'];
 		$mInfo['sender_id'] = $message['idUserSender'];
 		$mInfo['recipient_id'] = $message['idUserReceiver'];
-		$mInfo['create_at'] = date("D M d H:i:s O Y",$message['timeCreate']);
+		$mInfo['created_at'] = date("D M d H:i:s O Y",$message['timeCreate']);
 
 		$screenNameSenderUser = JWUser::GetUserInfo( $message['idUserSender'], 'nameScreen' );
 		$screenNameReceiverUser = JWUser::GetUserInfo( $message['idUserReceiver'], 'nameScreen' );
