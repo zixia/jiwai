@@ -231,8 +231,9 @@ _CSS_;
 		background-color: #$this->mSidebarFillColor;
 		border: 1px solid #$this->mSidebarBorderColor;
 	}
-	#side .notify {border: 1px solid #$this->mSidebarBorderColor;}
-	#side .actions {border: 1px solid #$this->mSidebarBorderColor;}
+	#sidebar .notify {border: 1px solid #$this->mSidebarBorderColor;}
+	#sidebar .featured {border: 1px solid #$this->mSidebarBorderColor;}
+	#sidebar .actions {border: 1px solid #$this->mSidebarBorderColor;}
 	h2.thumb, h2.thumb a {color: #$this->mNameColor;}
 
 /*
