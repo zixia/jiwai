@@ -14,6 +14,50 @@ class JWApi{
 	const AUTH_HTTP = 1;
 	
 	/**
+	  * HttpCode
+	  */
+	static private $mHttpCode = array(
+		"201" => "Created",
+		"202" => "Accepted",
+		"203" => "Non-Authoritative Information",
+		"204" => "No Content",
+		"205" => "Reset Content",
+		"206" => "Partial Content",
+		"300" => "Multiple Choices",
+		"301" => "Moved Permanently",
+		"302" => "Found",
+		"303" => "See Other",
+		"304" => "Not Modified",
+		"305" => "Use Proxy",
+		"306" => "(Unused)",
+		"307" => "Temporary Redirect",
+		"400" => "Bad Request",
+		"401" => "Unauthorized",
+		"402" => "Payment Required",
+		"403" => "Forbidden",
+		"404" => "Not Found",
+		"405" => "Method Not Allowed",
+		"406" => "Not Acceptable",
+		"407" => "Proxy Authentication Required",
+		"408" => "Request Timeout",
+		"409" => "Conflict",
+		"410" => "Gone",
+		"411" => "Length Required",
+		"412" => "Precondition Failed",
+		"413" => "Request Entity Too Large",
+		"414" => "Request-URI Too Long",
+		"415" => "Unsupported Media Type",
+		"416" => "Requested Range Not Satisfiable",
+		"417" => "Expectation Failed",
+		"500" => "Internal Server Error",
+		"501" => "Not Implemented",
+		"502" => "Bad Gateway",
+		"503" => "Service Unavailable",
+		"504" => "Gateway Timeout",
+		"505" => "HTTP Version Not Supported",
+		);	
+	
+	/**
 	  * Get Authed UserId for API
 	  */
 	static function GetAuthedUserId(){
@@ -110,8 +154,7 @@ class JWApi{
 		}
 		foreach ($array as $key=>$value) {
 			if( is_numeric($key) ){
-				$keySub = self::_GetXmlSubTagName($topTagName);
-				$key = $keySub ? $keySub : $key;
+				$key = self::_GetXmlSubTagName($topTagName);
 			}
 			$key = strtolower($key);
 
@@ -157,7 +200,7 @@ class JWApi{
 		switch($key){
 			case 'users':
 				return 'user';
-			case 'statues':
+			case 'statuses':
 				return 'status';
 			case 'friends':
 				return 'friend';
@@ -173,6 +216,21 @@ class JWApi{
 	  */
 	static public function RemoveInvalidChar($value){
 		return $value = preg_replace('/[\x00-\x09\x0b\x0c\x0e-\x19]/U',"",$value);   
+	}
+
+	/**
+	  * Render HTTP_Code, then exit;
+	  */
+	static public function OutHeader($code=404, $exit=true, $string=null){
+		if( isset(self::$mHttpCode[$code]) ){
+			Header("HTTP/1.1 $code ".self::$mHttpCode[$code]);
+		}
+		if( null != $string ) {
+			echo $string;
+		}
+		if( $exit ){
+			exit;
+		}
 	}
 }
 ?>
