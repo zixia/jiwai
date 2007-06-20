@@ -16,19 +16,23 @@ if( !$idUser ){
   */
 $idMessage = $type = null;
 @list($idMessage, $type)= explode('.', trim( $pathParam, '/' ));
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
+
 if( !$idMessage ) {
-	header_400();
+	JWApi::OutHeader(400, true);
 }
 $unMessage = JWMessage::GetMessageDbRowById( $idMessage );
 if( !$unMessage ) {
-	header_404();
+	JWApi::OutHeader(404, true);
 }
 
 /**
   * message's owner check 
   */
 if( $unMessage['idUserReceiver'] != $idUser ) {
-	header_403();
+	JWApi::OutHeader(403, true);
 }
 
 /**
@@ -39,11 +43,14 @@ if( JWMessage::Destroy($idMessage) ){
 		case 'xml':
 			renderXmlReturn($unMessage);
 		break;
-		default:
+		case 'json':
 			renderJsonReturn($unMessage);
+		break;
+		default:
+			JWApi::OutHeader(400, true);
 	}	
 }else{
-	header_500();
+	JWApi::OutHeader(500, true);
 }
 
 function renderXmlReturn($message){
@@ -57,26 +64,5 @@ function renderXmlReturn($message){
 function renderJsonReturn($message){
 	$oMessage = JWApi::RebuildMessage($message);
 	echo json_encode( $oMessage );
-}
-
-function header_405(){
-	Header("HTTP/1.1 405 Method Not Allowed");
-	exit;
-}
-function header_404(){
-	Header("HTTP/1.1 404 Not Found");
-	exit;
-}
-function header_403(){
-	Header("HTTP/1.1 403 Access Denied");
-	exit;
-}
-function header_400(){
-	Header("HTTP/1.1 400 Bad Request");
-	exit;
-}
-function header_500(){
-	Header("HTTP/1.1 500 Server Internal Error");
-	exit;
 }
 ?>

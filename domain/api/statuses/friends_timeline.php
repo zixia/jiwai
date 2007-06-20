@@ -1,302 +1,106 @@
 <?php
 require_once("../../../jiwai.inc.php");
+$callback = null;
+$count = 20;
+$since_id = null;
+$since = null;
+$thumb = 48;
+$pathParam = null;
+extract( $_REQUEST, EXTR_IF_EXISTS );
+$since = ($since) ? $since :  ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null );
 
-//die(var_dump($_SERVER));
-// json callback
-if ( array_key_exists('callback',$_REQUEST) )
-	$callback	= $_REQUEST['callback'];
-
-// return num
-if ( array_key_exists('count',$_REQUEST) )
-	$count		= $_REQUEST['count'];
-else
-	$count		= 20;
-
-// since_id: only return the status with id >= since_id;
-if ( array_key_exists('since_id',$_REQUEST) )
-	$since_id	= $_REQUEST['since_id'];
-
-// since: HTTP-formatted date, only return the status with newer then since.
-if ( array_key_exists('since',$_REQUEST) )
-	$since		= $_REQUEST['since'];
-else if ( array_key_exists('HTTP_IF_MODIFIED_SINCE',$_SERVER) )
-	$since		= $_SERVER['HTTP_IF_MODIFIED_SINCE'];
-
-
-// thumb: thumb size: 48 / 24
-if ( array_key_exists('thumb',$_REQUEST) )
-	$thumb	= $_REQUEST['thumb'];
-
-// encoding, default UTF-8
-if ( array_key_exists('encoding',$_REQUEST) )
-	$encoding	= $_REQUEST['encoding'];
-else
-	$encoding	= 'UTF-8';
-
-
-// auth
-if ( isset($_SERVER['PHP_AUTH_USER']) ) 
-{
-	$http_user	= $_SERVER['PHP_AUTH_USER'];
-	$http_pass	= $_SERVER['PHP_AUTH_PW'];
+@list($idUser, $type) = explode('.', trim( $pathParam, '/' ));
+if( !in_array($type, array('xml','json','atom','rss'))){
+	JWApi::OutHeader(406, true);
 }
 
+if( !$idUser && $idUser=JWApi::GetAuthedUserId() ){
+	JWApi::RenderAuth( JWApi::AUTH_HTTP );
+}
 
+$user = JWUser::GetUserInfo( $idUser );
+if( !$user ){
+	JWApi::OutHeader(404, true);
+}
+$idUser = $user['id'];
 
-// rewrite param, may incluce the file ext name and user id/name
-$pathParam	= $_REQUEST['pathParam'];
+$options = array(
+		'count' => intval($count),
+		'since_id' => intval($since_id),
+		'since' => $since,
+		'thumb' => $thumb,
+		'callback' => $callback,
+		'idUser' => $idUser,
+		);
 
-
-##################### params done ####################################
-# count 			default 20
-# since_id  		Optional.  Returns only public statuses with an ID greater than 
-#					(that is, more recent than) the specified ID.  Ex:
-# since 			HTTP-formatted date
-# 					If-Modified-Since HTTP_HEADER HTTP-formatted date
-# id 				nameScreen or #id
-# callback 			JSON only, callback function name.
-#
-# pathParam			string, part of url request.
-#################################################################
-
-$options	= array (
-					'type'		=> JWFeed::RSS20
-					, 'thumb'	=> @$thumb
-
-					// compatible with twitter
-					, 'count'	=> $count
-					, 'since_id'=> @$since_id
-					, 'since'	=> @$since
-					, 'callback'=> @$callback
-					, 'encoding'=> $encoding
-
-				);
-
-switch ($pathParam[0])
-{
-	case '.': // use HTTP AUTH
-
-		// TODO
-		die("NOT SUPPORTED $pathParam");
-
-		// http://api.jiwai.de/statuses/public_timeline.rss
-		if ( preg_match('/^\.(\w+)$/',$pathParam,$matches) )
-			$output_type = strtolower($matches[1]);
-
-		if ( empty($output_type) )
-			$output_type = 'rss';
-
-		switch ($output_type)
-		{
-			case 'atom':
-				$options['type']	= JWFeed::ATOM;
-				public_timeline_rss_n_atom($options);
-				break;
-			case 'rss':
-				$options['type']	= JWFeed::RSS20;
-				public_timeline_rss_n_atom($options);
-				break;
-			case 'json':
-				$statuses	= get_friends_timeline_array($options);
-
-				if ( empty($options['callback']) )
-					echo json_encode($statuses);
-				else
-					echo $options['callback'] . '(' . json_encode($statuses) . ')';
-
-				break;
-			case 'xml':
-				public_timeline_xml($options);
-				break;
-			default: 
-				break;
-		}
-		break;
-	case '/':
-		if ( preg_match('#^/(?P<idUser>\d+)\.?(?P<fileExt>\w*)$#',$pathParam,$matches) )
-		{
-			$options['idUser'] = JWDB::CheckInt($matches['idUser']);
-
-			$user_info 		= JWUser::GetUserInfo($options['idUser']);
-			$is_protected = JWUser::IsProtected($options['idUser']);
-
-			if ( $is_protected )
-			{
-				// TODO
-				header('WWW-Authenticate: Basic realm="' . $user_info['nameScreen'] . '"');
-				header('HTTP/1.0 401 Unauthorized');
-				exit(0);
-			}
-
-
-			$output_type = strtolower($matches['fileExt']);
-
-			switch ($output_type)
-			{
-				case 'atom':
-					$options['type']	= JWFeed::ATOM;
-					friends_timeline_rss_n_atom($options);
-					break;
-				case 'rss':
-					$options['type']	= JWFeed::RSS20;
-					friends_timeline_rss_n_atom($options);
-					break;
-				case 'json':
-					$statuses	= get_friends_timeline_array($options);
-
-					if ( empty($options['callback']) )
-						$json_str = json_encode($statuses);
-					else
-						$json_str = $options['callback'] . '(' . json_encode($statuses) . ')';
-
-					echo $json_str;
-					break;
-				case 'xml':
-					friends_timeline_xml($options);
-					break;
-				default: 
-					break;
-			}
-		}
-		else
-		{
-			// XXX
-			die("ARG ERR");
-		}
-		
-		break;
+switch($type){
+	case 'xml':
+		renderXmlReturn($options);
+	break;
+	case 'json':
+		renderJsonReturn($options);
+	break;
+	case 'atom':
+		renderFeedReturn($options, JWFeed::ATOM);
+	break;
+	case 'rss':
+		renderFeedReturn($options, JWFeed::RSS20);
+	break;
 	default:
-		break;
+		JWApi::OutHeader(406, true);
 }
 
-exit(0);
+function renderXmlReturn($options){
 
-###############################################################
-# functions here.
-###############################################################
+	$statuses = getFriendsTimelineStatuses( $options, true );
 
-/*
- * 	output friends timeline rss
- *	@param	array	options, include:
-					count, since_id, since
-					idUser
- *
- */
-function friends_timeline_rss_n_atom($options)
-{
-	$count	= intval($options['count']);
-	if ( 0>=$count )
-		$count = JWStatus::DEFAULT_STATUS_NUM;
+	header('Content-Type: application/xml; charset=utf-8');
+	$xmlString .= '<?xml version="1.0" encoding="UTF-8"?>';
+	$xmlString .= JWApi::ArrayToXml($statuses, 0, 'statuses');
 
-	//TODO: since_id / since
-	
-	//$statuses	= JWStatus::GetStatusListFriends($options['idUser'],$count);
-	$master_user_id	= intval($options['idUser']);
+	echo $xmlString;
+}
 
-	$status_data	= JWStatus::GetStatusIdsFromFriends($master_user_id,$count);
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-
-	array_push($status_data['user_ids'], $master_user_id);
-
-	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
-
-	$picture_ids       = JWFunction::GetColArrayFromRows($user_rows, 'idPicture');
-	$picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);                     
-
-	$user			= $user_rows[$master_user_id];
-
-	$user_icon_url	= JWTemplate::GetConst('UrlStrangerPicture');
-	if ( $user['idPicture'] )
-		$user_icon_url = $picture_url_row[$user['idPicture']];
-
-	$user_url		= 'http://JiWai.de/' . $user['nameScreen'] . '/';
-
-	$img_options	= array ( 	 'url'			=>	$user_icon_url
-								,'link'			=>	$user_url
-								,'title'		=>	$user['nameScreen']
-								,'width'		=>	48
-								,'height'		=>	48
-								,'description'	=>	$user['nameFull']
-							);
-
-	$feed_img	= JWFeed::FeedImage($img_options);
-
-	$feed = new JWFeed( array (	'title'		=> '叽歪de' . $user['nameFull'] . '和朋友们'
-							, 'url'		=> 'http://JiWai.de/' . $user['nameScreen'] . '/'
-							, 'desc'	=> $user['nameFull'] . '和朋友们的叽歪'
-							, 'ttl'		=> 120
-							, 'language'=> 'zh_CN'
-							, 'img'		=> $feed_img
-						) );
-
-	foreach ( $status_data['status_ids'] as $status_id )
-	{
-		$user_id	= intval($status_rows[$status_id]['idUser']);
-
-		$desc 	= $user_rows[$user_id]['nameFull'] .' - '. $status_rows[$status_id]['status'];
-
-		$url	= "http:/JiWai.de/". $user_rows[$user_id]['nameScreen'] ."/statuses/$status_id";
-
-		//Add by seek 2007-06-14
-		$desc = JWApi::RemoveInvalidChar( $desc );
-		$feed->AddItem(array( 
-				'title'		=> $desc
-				, 'desc'	=> $desc
-				, 'date'	=> $status_rows[$status_id]['timeCreate']
-				, 'guid'	=> $url
-				, 'url'		=> $url
-				, 'author'	=> $user_rows[$user_id]['nameFull']
-			) );
+function renderJsonReturn($options){
+	$statuses = getFriendsTimelineStatuses( $options, true );
+	if( $options['callback'] ){
+		echo $options['callback'].'('. json_encode($statuses) .')';
+	}else{
+		echo json_encode($statuses);
 	}
+}
 
-	//Valid parameters are RSS0.91, RSS1.0, RSS2.0, PIE0.1 (deprecated),
-	// MBOX, OPML, ATOM, ATOM1.0, ATOM0.3, HTML, JS
+function renderFeedReturn($options, $feedType=JWFeed::ATOM){
 
-	$feed->OutputFeed($options['type']);
+	$statuses = getFriendsTimelineStatuses( $options, false );
+
+	$feed = new JWFeed(array(
+				'title'	=> '叽歪广场' ,
+			       	'url'	=> 'http://JiWai.de/public_timeline/' , 
+				'desc'	=> '所有人叽歪de更新都在这里！' , 
+				'ttl'	=> 40,
+				)); 
+
+	foreach ( $statuses as $status ){
+		$feed->AddItem(array( 
+				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'date'	=> $status['timeCreate'] , 
+				'author'=> $status['user']['nameFull'] , 
+				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
+				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'],
+				));
+	}
+	$feed->OutputFeed($feedType);
 	exit(0);
 }
 
-
 /*
- * 	output user timeline  in xml format
- *	@param	array	options, include:
-					count, since_id, since, callback
-					idUser
+ * 	return public timeline as a array
+ *	@param	array	options, include: count, since_id, since
  *
  */
-function friends_timeline_xml($options)
-{
-	$statuses	= get_friends_timeline_array($options);
-
-
-	$xml .= '<?xml version="1.0" encoding="UTF-8"?>';
-	$xml .= "\n<statuses>\n";
-
-
-	foreach ($statuses as $status)
-	{
-		$xml .= "\t<status>\n";
-		$xml .= JWApi::ArrayToXml($status,2);
-		$xml .= "\t</status>\n";
-	}
-
-	
-	$xml .= "</statuses>\n";
-
-	header('Content-Type: application/xml; charset=utf-8');
-	echo $xml;
-}
-
-
-/*
- * 	return friends timeline as a array
- *	@param	array	options, include:
-					count, since_id, since
-					idUser
- *
- */
-function get_friends_timeline_array($options)
-{
+function getFriendsTimelineStatuses($options, $needReBuild=false){
 	/* Twitter compatible */
 
 	$count	= intval($options['count']);
@@ -305,56 +109,23 @@ function get_friends_timeline_array($options)
 
 	//TODO: since_id / since
 
-	/* Twitter compatible */
-	
-	if ( !empty($options['thumb']) && 48!=$options['thumb'] ) {
-		$options['thumb'] = 24;
-	}else{
-		$options['thumb'] = 48;
-	}
-
-	//$statuses	= JWStatus::GetStatusListFriends($options['idUser'], $count);
-	$master_user_id	= intval($options['idUser']);
-
-	$status_data	= JWStatus::GetStatusIdsFromFriends($master_user_id,$count);
+	$status_data    = JWStatus::GetStatusIdsFromFriends($options['idUser'],$count);
 	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
 
-	$statuses_array								= array();
+	$statuses = array();
 
-	foreach ( $status_data['status_ids'] as $status_id )
-	{
-		$user_id	= intval($status_rows[$status_id]['idUser']);
-
-		$status_array['created_at']			= date("D M d H:i:s O Y",$status_rows[$status_id]['timeCreate']);
-		$status_array['id']					= intval($status_id);
-		$status_array['text']				= $status_rows[$status_id]['status'];
-
-		$status_array['user']['id']			= $user_id;
-		$status_array['user']['name']		= $user_rows[$user_id]['nameFull'];
-		$status_array['user']['screen_name']= $user_rows[$user_id]['nameScreen'];
-		$status_array['user']['location']	= $user_rows[$user_id]['location'];
-		$status_array['user']['description']= $user_rows[$user_id]['bio'];
-
-		$status_array['user']['profile_image_url']= JWPicture::GetUserIconUrl($user_id, "thumb$options[thumb]");
-		$status_array['user']['url']		= $user_rows[$user_id]['url'];
-		$status_array['user']['protected']	= $user_rows[$user_id]['protected']==='Y' ? true : false;
-
-		if ( 'UTF-8'!=$options['encoding'] )
-		{
-			$status_array['text']				= mb_convert_encoding($status_rows[$status_id]['status']	
-																			,$options['encoding'],'UTF-8');
-			$status_array['user']['name']		= mb_convert_encoding($user_rows[$user_id]['nameFull']	
-																			,$options['encoding'],'UTF-8');
-			$status_array['user']['location']	= mb_convert_encoding($user_rows[$user_id]['location']	
-																			,$options['encoding'],'UTF-8');
-			$status_array['user']['description']= mb_convert_encoding($user_rows[$user_id]['bio']		
-																			,$options['encoding'],'UTF-8');
-		}
-
-		array_push($statuses_array, $status_array);
+	foreach ( $status_data['status_ids'] as $status_id ){
+		$user_id = intval($status_rows[$status_id]['idUser']);
+		
+		$statusInfo = ($needReBuild) ?
+		       	JWApi::ReBuildStatus( $status_rows[$status_id] ) : $status_rows[$status_id];
+		$userInfo   = ($needReBuild) ?
+			JWApi::ReBuildUser($user_rows[$user_id]) : $user_rows[$user_id];
+		$statusInfo['user'] = $userInfo;
+		$statuses[] = $statusInfo;
 	}
 
-	return $statuses_array;
+	return $statuses;
 }
 ?>

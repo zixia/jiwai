@@ -6,10 +6,13 @@ extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);
 }
 
 @list($nameOrId, $type) = explode( ".", $pathParam, 2);
+if( !in_array($type, array('json','xml'))){
+	JWApi::OutHeader(406, true);
+}
 
 $idUser = JWApi::GetAuthedUserId();
 if( ! $idUser ){
@@ -18,19 +21,19 @@ if( ! $idUser ){
 
 $unFriendUser = JWUser::GetUserInfo( $nameOrId, null );
 if( ! $unFriendUser ){
-	Header("HTTP/1.1 404 Not Found");
-	exit;
+	JWApi::OutHeader(404, true);
 }
 $unFriendId = $unFriendUser['id'];
 
 //FriendShip Check, If no friend relation, return 403
 if( false === JWFriend::IsFriend($idUser, $unFriendId) ){
-	Header("HTTP/1.1 403 Access Denied");
-	exit;
+	JWApi::OutHeader(403, true);
 }
 
 //Destroy the friendship of idUser & unFriendId
-JWFriend::Destroy($idUser, $unFriendId);
+if( false == JWFriend::Destroy($idUser, $unFriendId) ){
+	JWApi::OutHeader(500, true);
+}
 
 switch( $type ){
 	case 'json':
@@ -40,7 +43,7 @@ switch( $type ){
 		renderXmlReturn($unFriendUser);
 	break;
 	default:
-	exit;
+		JWApi::OutHeader(406, true);
 }
 
 function getUserLastStatus($user){

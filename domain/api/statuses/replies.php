@@ -6,11 +6,14 @@ extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);
 }
 
 $authed = false;
 @list($_, $type) = explode( ".", $pathParam, 2);
+if( !in_array( $type, array('json','xml','atom','rss') )){
+	JWApi::OutHeader(406, true);
+}
 
 $idUser = JWApi::GetAuthedUserId();
 if( !$idUser ){
@@ -31,7 +34,7 @@ switch( $type ){
 		renderFeedStatuses($idUser, JWFeed::RSS20);
 	break;
 	default:
-		exit;
+		JWApi::OutHeader(406, true);
 }
 
 function renderJsonStatuses($idUser){
@@ -44,7 +47,7 @@ function renderXmlStatuses($idUser){
 
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	$xmlString .= JWApi::ArrayToXml( $statusesWithUser, 0, "statues" );
+	$xmlString .= JWApi::ArrayToXml( $statusesWithUser, 0, "statuses" );
 	echo $xmlString;
 }
 
@@ -83,7 +86,10 @@ function getStatusesWithUser($idUser, $needReBuild=true){
 	$statuses = JWStatus::GetStatusDbRowsByIds( $statusIds['status_ids'] );
 	$statusesWithUser = array();
 	$userTemp = array();
-	foreach( $statuses as $s ){
+	foreach( $statusIds['status_ids'] as $sid ){
+		$s = isset($statuses[$sid]) ? $statuses[$sid] : null;
+		if( !$s )
+			continue;
 		$oInfo = $needReBuild ? JWApi::ReBuildStatus( $s ) : $s;
 		if( false === isset( $userTemp[$s['idUser']] ) ){
 			$user = JWUser::GetUserInfo($s['idUser']);

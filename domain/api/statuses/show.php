@@ -4,15 +4,17 @@ require_once("../../../jiwai.inc.php");
 $pathParam = null;
 $id = null;
 $type = null;
-# by zixia: add EXTR_IF_EXISTS
 extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);	
 }
 
 @list($id, $type) = explode( ".", $pathParam, 2);
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
 
 if( is_numeric($id) ){
 	switch( $type ){
@@ -23,8 +25,10 @@ if( is_numeric($id) ){
 		renderXmlStatuses($id);
 	break;
 	default:
-		exit;
+		JWApi::OutHeader(406, true);
 	}
+}else{
+	JWApi::OutHeader(406, true);
 }
 
 function renderJsonStatuses($id){

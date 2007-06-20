@@ -1,7 +1,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
-	header_405();
+	JWApi::OutHeader(405,true);
 }
 
 $status = null;
@@ -9,9 +9,14 @@ extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
 $type = trim( $pathParam, '.' );
-if( !$status ) {
-	header_400();
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
 }
+
+if( !$status ) {
+	JWApi::OutHeader(400,true);
+}
+$status = mb_convert_encoding( $status, "UTF-8", "GB2312,UTF-8");
 
 $idUser = JWApi::GetAuthedUserId();
 if( ! $idUser ){
@@ -29,10 +34,14 @@ if(JWStatus::Create($idUser, $status, $device, $time=null)){
 		case 'xml':
 			renderXmlReturn($status);
 		break;
-		default:
+		case 'json':
 			renderJsonReturn($status);
+		break;
+		default:
+			JWApi::OutHeader(406, true);
 	}	
 }else{
+	JWApi::OutHeader(500, true);
 }
 
 function renderXmlReturn($status){
@@ -54,14 +63,5 @@ function renderJsonReturn($status){
 	$oStatus['user'] = $userInfo;
 
 	echo json_encode( $oStatus );
-}
-
-function header_405(){
-	Header("HTTP/1.1 405 Method Not Allowed");
-	exit;
-}
-function header_400(){
-	Header("HTTP/1.1 400 Bad Request");
-	exit;
 }
 ?>

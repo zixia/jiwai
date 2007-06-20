@@ -6,10 +6,13 @@ extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);
 }
 
 @list($nameOrId, $type) = explode( ".", $pathParam, 2);
+if( !in_array($type, array('xml','json')) ){
+	JWApi::OutHeader(406, true);
+}
 
 $idUser = JWApi::GetAuthedUserId();
 if( ! $idUser ){
@@ -18,8 +21,7 @@ if( ! $idUser ){
 
 $unFriendUser = JWUser::GetUserInfo( $nameOrId, null );
 if( ! $unFriendUser ){
-	Header("HTTP/1.1 404 Not Found");
-	exit;
+	JWApi::OutHeader(404, true);
 }
 $unFriendId = $unFriendUser['id'];
 

@@ -1,10 +1,10 @@
 <?php
+require_once("../../../jiwai.inc.php");
+
 $pathParam = null;
 $since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? 
 	$_SERVER['HTTP_IF_MODIFIED_SINCE'] : null;
 extract($_REQUEST, EXTR_IF_EXISTS);
-
-require_once("../../../jiwai.inc.php");
 
 $idUser = JWApi::getAuthedUserId();
 if( ! $idUser ){
@@ -14,6 +14,13 @@ $messageIds = JWMessage::GetMessageIdsFromUser($idUser);
 $messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower($pathParam);
+if( !in_array( $type, array('json','xml','atom','rss') )){
+	JWApi::OutHeader(406, true);
+}
+if( !$user || !$text ) {
+	JWApi::OutHeader(400, true);
+}
+
 switch( $type ){
 	case 'xml':
 		renderXmlReturn( $messages );
@@ -28,7 +35,7 @@ switch( $type ){
 		renderFeedReturn( $messages, $idUser, JWFeed::RSS20);
 	break;
 	default:
-		renderFeedReturn( $messages, $idUser, JWFeed::RSS20 );
+		JWApi::OutHeader(406, true);
 }
 
 function rebuildMessages( $messages, $needReBuild=true ){

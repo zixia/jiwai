@@ -16,19 +16,23 @@ if( !$idUser ){
   */
 $idStatus = $type = null;
 @list($idStatus, $type)= explode('.', trim( $pathParam, '/' ));
-if( !$idStatus ) {
-	header_400();
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
+
+if( !$idStatus || !is_numeric($idStatus) ) {
+	JWApi::OutHeader(400, true);
 }
 $unStatus = JWStatus::GetStatusDbRowById( $idStatus );
 if( !$unStatus ) {
-	header_404();
+	JWApi::OutHeader(404, true);
 }
 
 /**
   * status's owner check 
   */
 if( $unStatus['idUser'] != $idUser ) {
-	header_403();
+	JWApi::OutHeader(403, true);
 }
 
 /**
@@ -39,11 +43,14 @@ if( JWStatus::Destroy($idStatus) ){
 		case 'xml':
 			renderXmlReturn($unStatus);
 		break;
-		default:
+		case 'json':
 			renderJsonReturn($unStatus);
+		break;
+		default:
+			JWApi::OutHeader(406, true);	
 	}	
 }else{
-	header_500();
+	JWApi::OutHeader(500, true);
 }
 
 function renderXmlReturn($status){
@@ -64,26 +71,5 @@ function renderJsonReturn($status){
 	$userInfo = JWApi::ReBuildUser( $user );
 	$oStatus['user'] = $userInfo;
 	echo json_encode( $oStatus );
-}
-
-function header_405(){
-	Header("HTTP/1.1 405 Method Not Allowed");
-	exit;
-}
-function header_404(){
-	Header("HTTP/1.1 404 Not Found");
-	exit;
-}
-function header_403(){
-	Header("HTTP/1.1 403 Access Denied");
-	exit;
-}
-function header_400(){
-	Header("HTTP/1.1 400 Bad Request");
-	exit;
-}
-function header_500(){
-	Header("HTTP/1.1 500 Server Internal Error");
-	exit;
 }
 ?>

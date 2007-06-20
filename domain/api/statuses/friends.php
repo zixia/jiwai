@@ -6,11 +6,14 @@ extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400,true);
 }
 
 $authed = false;
 @list($id, $type) = explode( ".", $pathParam, 2);
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
 if( !$id ) {
 	$idUser = JWApi::GetAuthedUserId();
 	if( !$idUser ){
@@ -18,7 +21,11 @@ if( !$id ) {
 	}
 	$authed = true;
 }else{
-	$idUser = is_numeric($id) ? intval($id) : JWUser::GetUserInfo($id, 'id');
+	$_cUser = JWUser::GetUserInfo( $id );
+	if( !$_cUser ){
+		JWApi::OutHeader(404, true);
+	}
+	$idUser = $_cUser['id'];
 }
 
 switch( $type ){
@@ -29,7 +36,7 @@ switch( $type ){
 		renderXmlStatuses($idUser);
 	break;
 	default:
-		exit;
+		JWApi::OutHeader(406, true);
 }
 
 function renderJsonStatuses($idUser){

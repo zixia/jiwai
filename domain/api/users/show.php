@@ -1,15 +1,17 @@
 <?php
 require_once("../../../jiwai.inc.php");
-error_reporting(E_ALL);
 
 $pathParam = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);
 }
 @list($idUserOrName, $type) = explode( ".", $pathParam, 2);
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
 
 /** This API need Authed User, no matter show self/other's extends info. */
 $idAuthedUser = JWApi::GetAuthedUserId();
@@ -24,7 +26,7 @@ if( !$idUserOrName ){
 
 $user = JWUser::GetUserInfo( $idUserOrName );
 if( !$user ){
-	header_404();
+	JWApi::OutHeader(404, true);
 }
 
 switch( $type ){
@@ -35,6 +37,7 @@ switch( $type ){
 		renderJsonRentru($user);
 	break;
 	default:
+		JWApi::OutHeader(406, true);
 	break;
 }
 
@@ -95,11 +98,6 @@ function getUserExtendWithStatus($user){
 	$userInfo['status'] = $statusInfo;
 
 	return $userInfo;
-}
-
-function header_404(){
-	Header("HTTP/1.1 404 Not Found");
-	exit;
 }
 
 ?>

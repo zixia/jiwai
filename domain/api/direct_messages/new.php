@@ -1,30 +1,35 @@
 <?php
 require_once('../../../jiwai.inc.php');
 if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
-	header_405();
+	JWApi::OutHeader(405, true);
 }
 
 $user = $text = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
-$type = trim( $pathParam, '.' );
+$type = trim( strtolower($pathParam), '.' );
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
+
 if( !$user || !$text ) {
-	header_400();
+	JWApi::OutHeader(400, true);
 }
 
 $idUserSender = JWApi::GetAuthedUserId();
 if( ! $idUserSender ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
+
 $device = 'web';
 $timeCreate = date("Y-m-d H:i:s");
-$idUserReceiver = JWUser::GetUserInfo( $user, 'id' );
-$text = urlDecode( $text );
-if( !$idUserReceiver ){
-	header_400();
+$userReceiver = JWUser::GetUserInfo( $user );
+if( !$userReceiver ){
+	JWApi::OutHeader(404, true);
 }
-
+$idUserReceiver = $userReceiver['id'];
+$text = urlDecode( $text );
 if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device, $time=null)){
 	$insertedId = JWDB::GetInsertedId();
 	$message = JWMessage::GetMessageDbRowById( $insertedId );
@@ -32,10 +37,13 @@ if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device, $time=null)
 		case 'xml':
 			renderXmlReturn($message);
 		break;
-		default:
+		case 'json':
 			renderJsonReturn($message);
+		default:
+			JWApi::OutHeader(406, true);
 	}	
 }else{
+	JWApi::OutHeader(500, true);
 }
 
 function renderXmlReturn($message){
@@ -49,14 +57,5 @@ function renderXmlReturn($message){
 function renderJsonReturn($message){
 	$oMessage = JWApi::RebuildMessage($message);
 	echo json_encode( $oMessage );
-}
-
-function header_405(){
-	Header("HTTP/1.1 405 Method Not Allowed");
-	exit;
-}
-function header_400(){
-	Header("HTTP/1.1 400 Bad Request");
-	exit;
 }
 ?>

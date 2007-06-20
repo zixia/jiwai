@@ -6,11 +6,14 @@ extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
-	exit;
+	JWApi::OutHeader(400, true);
 }
 
 $authed = false;
 @list($_, $type) = explode( ".", $pathParam, 2);
+if( !in_array( $type, array('json','xml') )){
+	JWApi::OutHeader(406, true);
+}
 
 switch( $type ){
 	case 'json':
@@ -20,7 +23,7 @@ switch( $type ){
 		renderXmlStatuses();
 	break;
 	default:
-		exit;
+		JWApi::OutHeader(406, true);
 }
 
 function renderJsonStatuses(){
