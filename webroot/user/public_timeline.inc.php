@@ -5,7 +5,7 @@ JWTemplate::html_doctype();
 
 <?php 
 
-$status_data 	= JWStatus::GetStatusIdsFromPublic(30);
+$status_data 	= JWStatus::GetStatusIdsFromPublic(100);
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
