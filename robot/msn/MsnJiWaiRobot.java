@@ -44,7 +44,10 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	public static String mDisplayName = null;
 
 	public static MsnMessenger messenger = null;
-	
+
+	public static Pattern patternFile = null;
+	public static Pattern patternHead = null;
+
 	public static Hashtable<String,String> onlineList = new Hashtable<String,String>();
 
 	static {
@@ -73,6 +76,11 @@ public class MsnJiWaiRobot extends MsnAdapter {
 		mQueuePathMo = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mo" + File.separator;
 		mQueuePathMt = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mt" + File.separator;
 						
+		/** pre compiled pattern */
+		patternFile = Pattern.compile("(.+?)\\n\\n(.+)");
+		patternHead = Pattern.compile("ADDRESS:\\s+msn://(.+)",
+						Pattern.CASE_INSENSITIVE);
+
 	}
 
 	protected void initMessenger(MsnMessenger messenger) {
@@ -222,7 +230,6 @@ public class MsnJiWaiRobot extends MsnAdapter {
 			String file_content;
 			char[] buf = new char[1024];
 
-			Pattern pattern;
 			Matcher matcher;
 
 			String head, body, address;
@@ -248,8 +255,7 @@ public class MsnJiWaiRobot extends MsnAdapter {
 
 				// log(file_content);
 
-				pattern = Pattern.compile("(.+?)\\n\\n(.+)");
-				matcher = pattern.matcher(file_content);
+				matcher = patternFile.matcher(file_content);
 
 				if (!matcher.find()) {
 					log("jiwaiQueueMt fount un-parse data: " + file_content
@@ -261,9 +267,7 @@ public class MsnJiWaiRobot extends MsnAdapter {
 				head = matcher.group(1);
 				body = matcher.group(2);
 
-				pattern = Pattern.compile("ADDRESS:\\s+msn://(.+)",
-						Pattern.CASE_INSENSITIVE);
-				matcher = pattern.matcher(head);
+				matcher = patternHead.matcher(head);
 
 				if (!matcher.find()) {
 					log("jiwaiQueueMt fount un-parse head data: " + head
