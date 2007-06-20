@@ -14,7 +14,7 @@ if( !in_array($type, array('xml','json','atom','rss'))){
 	JWApi::OutHeader(406, true);
 }
 
-if( !$idUser && $idUser=JWApi::GetAuthedUserId() ){
+if( !$idUser && !($idUser=JWApi::GetAuthedUserId()) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
 
