@@ -1668,7 +1668,8 @@ _HTML_;
 
 		if ( empty($_SERVER['HTTP_HOST']) )
 		{
-			JWLog::Log(LOG_CRIT, "GetAssetUrl($absUrlPath) can't find HTTP_HOST");
+			$ip = JWRequest::GetClientIp();
+			JWLog::Log(LOG_CRIT, "[$ip] GetAssetUrl($absUrlPath) can't find HTTP_HOST");
 		}
 		else if ( preg_match('#((alpha)|(beta))\.jiwai\.de#i',$_SERVER["HTTP_HOST"],$matches) )
 		{
