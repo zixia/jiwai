@@ -12,14 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jml.event.*;
-import net.sf.jml.exception.*;
 import net.sf.jml.message.*;
-import net.sf.jml.protocol.*;
-import net.sf.jml.protocol.incoming.*;
-import net.sf.jml.protocol.outgoing.*;
-import net.sf.jml.message.p2p.*;
-import net.sf.jml.protocol.msnftp.*;
-import net.sf.jml.util.*;
 
 import net.sf.jml.impl.*;
 import net.sf.jml.*;
@@ -126,29 +119,23 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	}
 
 	public void contactStatusChanged(MsnMessenger messenger, MsnContact contact) {
-		/*String oldName = contact.getOldDisplayName();
-		String nowName = contact.getDisplayName();
-		*/
-		/*if (!oldName.equals(nowName)
-				&& !(
-						onlineList.containsKey(contact.getEmail().getEmailAddress())
-						&& onlineList.get(contact.getEmail().getEmailAddress()).equals("nowName")
-				)
-				
-		) {
-			log(contact.getEmail() + " Change name To: " + nowName);
-			writeMoMessage(contact.getEmail().toString(), nowName, System
-					.currentTimeMillis(), true);
-		}
 		
-		if( contact.getStatus().getDisplayStatus().equals("OFFLINE")){
-			onlineList.remove(contact.getEmail().getEmailAddress());
-		}*/
+		String oldName = contact.getOldDisplayName();
+		String nowName = contact.getDisplayName();
+		String oldStatus = contact.getOldStatus().getDisplayStatus();
+		String nowStatus = contact.getStatus().getDisplayStatus();
+		String email = contact.getEmail().getEmailAddress();
+
+		if( nowStatus.equals("ONLINE") && false == oldName.equals( nowName ) && oldStatus.equals(nowStatus) ){
+			log( email +"(Nick:" + oldName +"->" +nowName+ ", Status:"+oldStatus+"->"+nowStatus+")" );
+		}
 	}
 
 	public void instantMessageReceived(MsnSwitchboard switchboard,
             MsnInstantMessage message,
             MsnContact contact){
+		boolean p = true;
+		if( p )return;
 			writeMoMessage(contact.getEmail().getEmailAddress(), message.getContent(), System
 				.currentTimeMillis(),false);
 	}
@@ -311,24 +298,20 @@ public class MsnJiWaiRobot extends MsnAdapter {
 					System.out.print("*");
 					// log ( "fount new mt msg" );
 					robot_msg = (Hashtable<String, String>) robot_msgs.removeFirst();
-					try {
-						address = robot_msg.get("address");
-						body = robot_msg.get("body");
-						file = robot_msg.get("file");
+					
+					address = robot_msg.get("address");
+					body = robot_msg.get("body");
+					file = robot_msg.get("file");
 
-						sendTextMessage(address, body);
+					sendTextMessage(address, body);
 
-						(new File(file)).delete();
+					(new File(file)).delete();
 
-						log(new String("MT: ") + address + ": [" + body + "]");
-
-					} catch (Exception e) {
-						log("iconv failed");
-					}
+					log(new String("MT: ") + address + ": [" + body + "]");
 				}
 
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(500);
 				} catch (Exception e) {
 				}
 				// break;
