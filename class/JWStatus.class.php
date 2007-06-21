@@ -471,11 +471,12 @@ _SQL_;
 
 	/*
 	 *	@param	string	status
+	 *	@param	bool	jsLink	使用 js 做链接，如果是 flase 则使用 html link
 	 *
 	 *	@return	array	formated status & other info
 	 *					array ( 'status' => ..., 'replyto' => ... );
 	 */
-	static public function FormatStatus ($status)
+	static public function FormatStatus ($status, $jsLink=true)
 	{
 		$replyto	= null;
 
@@ -532,10 +533,23 @@ _SQL_;
 			}
 
 
-			$url_str		= <<<_HTML_
+			if ( $jsLink )
+			{
+				$url_str		= <<<_HTML_
 <a href="#" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path'); 
 						this.href='http://$url_domain$url_path';">http://$url_domain/...</a>
 _HTML_;
+			}
+			else
+			{
+				$url_str		= <<<_HTML_
+<a href="http://$url_domain$url_path" 
+		target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');"
+		>http://$url_domain/...</a>
+_HTML_;
+
+			}
+
 			$status 		= $head_str . $url_str . $tail_str;
 
 //$status = htmlspecialchars($status);
