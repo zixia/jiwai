@@ -235,7 +235,7 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWLog::Instance()->Log(LOG_ERR, $e );
+			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
 			return false;
 		}
 
@@ -253,11 +253,8 @@ _SQL_;
 	 */
 	static public function Create($idUser, $idFriend)
 	{
-		$idUser 	= intval($idUser);
-		$idFriend 	= intval($idFriend);
-
-		if ( 0>=$idFriend || 0>=$idUser )
-			throw new JWException("id not int");
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idFriend 	= JWDB::CheckInt($idFriend);
 
 		$sql = <<<_SQL_
 INSERT INTO	Friend
@@ -272,7 +269,7 @@ _SQL_;
 		}
 		catch(Exception $e)
 		{
-			JWLog::Instance()->Log(LOG_ERR, $e );
+			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
 			return false;
 		}
 

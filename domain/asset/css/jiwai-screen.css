@@ -13,7 +13,7 @@ form {margin:0;padding:0;}
 input:focus textarea:focus {background-color:#F4FFE4}
 
 fieldset input[type="text"], fieldset input[type="password"], fieldset select, fieldset checkbox, fieldset textarea {
-						margin-right: 3px; border: 1px solid #aaa; padding: 4px 2px; font-size: 1em; }
+						margin-right: 3px; border: 1px solid #aaa; padding: 4px 2px 4px 18px; font-size: 1em; }
 fieldset input[type="text"], fieldset input[type="password"] { width: 12em; }
 fieldset.user_search {margin-bottom: 3px;}
 fieldset.user_search .friend {border: 2px solid red;}
@@ -92,7 +92,7 @@ a:hover {color:#333;}
   #sidebar fieldset {border:0;margin:0;padding:0 0px ;}
 
   #sidebar .signin {}
-    #sidebar .signin input[type="text"], #sidebar .signin input[type="password"] {width:158px;border:1px solid #9C0;font-size:16px;padding:2px 4px;margin-bottom:2px;}
+    #sidebar .signin input[type="text"], #sidebar .signin input[type="password"] {width:158px;border:1px solid #9C0;font-size:16px;padding:2px 4px 2px 18px;margin-bottom:2px;}
 	#sidebar .signin label {padding-left: 1px;}
 	#sidebar .signin #remember_me {display: block; float: left; margin-right: 4px;}
 	#sidebar .signin div {margin: 2px 0 4px;}
@@ -274,3 +274,11 @@ font-weight:normal;
 }
 
 #front h2 em { background-color: yellow; font-style: normal; }
+
+input.openid_login {
+   background: url(http://openid.net/login-bg.gif) no-repeat;
+   background-color: #fff;
+   background-position: 0 50%;
+   color: #000;
+   padding-left: 18px;
+}

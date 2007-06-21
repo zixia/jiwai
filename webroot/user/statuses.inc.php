@@ -17,6 +17,17 @@ function user_status($idPageUser, $idStatus)
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
 	$formated_status 	= JWStatus::FormatStatus($status_info['status']);
+
+	$protected = false;
+	if ( JWUser::IsProtected($idPageUser) )
+	{
+		$protected = true;
+		if ( ! empty($logined_user_info) )
+		{
+			if ( JWFriend::IsFriend($idPageUser, $logined_user_info['idUser']) )
+				$protected = false;
+		}
+	}
 ?>
 
 <html>
@@ -59,6 +70,18 @@ JWTemplate::html_head($head_options) ;
 
 					<!-- google_ad_section_start -->
 
+<?php
+if ( $protected )
+{
+	echo <<<_HTML_
+    				<h1>
+    		  			我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$page_user_info[idUser]">加我为好友。</a>
+    				</h1>
+_HTML_;
+}
+else
+{
+?>
     				<h1>
     		  			<?php echo $formated_status['status'] ?>
     				</h1>
@@ -109,6 +132,9 @@ if ( JWLogin::IsLogined() )
 							</span>
     					</span>
     				</p>
+<?php
+}	// if protected
+?>
     			</div>
 
 <?php

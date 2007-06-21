@@ -262,78 +262,9 @@ _STR_;
 		 */
 		$param_body = $robotMsg->GetBody();
 
-		$user_name = preg_replace("/[^\w]+/"	,""	,$param_body);
-		$user_name = preg_replace("/^\d+/"		,""	,$user_name);
-		
+		$user_name	= JWUser::GetPossibleName($param_body, $robotMsg->GetAddress(), $robotMsg->GetType());
+
 		if ( empty($user_name) )
-		{
-			// 从邮件中取用户名，并进行特殊字符处理
-			$user_name = $robotMsg->GetAddress();
-			$user_name = preg_replace("/@.*/"	,""	,$user_name);
-			$user_name = preg_replace("/\./"	,""	,$user_name);
-
-			// 如果是手机用户或者QQ用户 
-			if ( preg_match('/^\d+$/',$user_name) )
-			{
-				$user_name = $robotMsg->GetType() . $user_name;
-			}
-			else
-			{
-				$user_name = preg_replace("/^\d+/"	,""	,$user_name);
-			}
-		}
-		
-
-		/*
-		 *	处理名字过短的问题
-		 *	如果是3个字符的名字，那么通过
-		 *	如果是1、2个字符的名字，则随机填充到4个字符
-		 */
-		$user_name_len = strlen($user_name);
-
-		if ( 3>$user_name_len )
-		{
-			for ( $n=$user_name_len; $n<4; $n++ )
-				$user_name .= rand(0,9);
-		}
-
-		$is_valid_name = false;
-
-		if ( ! JWUser::IsExistName($user_name) )
-		{
-			$is_valid_name = true;
-		}
-		else
-		{
-			$n = 1;
-			while ( $n++ < 30 )
-			{
-				if ( ! JWUser::IsExistName("$user_name$n") )
-				{
-					$user_name .= $n;
-
-					$is_valid_name = true;
-					break;
-				}
-			}
-			
-		}
-
-		/*
-		 *	尝试了这么多个用户名都不行，加个日期尾巴看看
-		 */
-		if ( ! $is_valid_name )
-		{
-			$month_day = date("md");
-			if ( ! JWUser::IsExistName("$user_name$month_day") )
-			{
-				$user_name 	.= $month_day;
-
-				$is_valid_name = true;
-			}
-		}
-
-		if ( ! $is_valid_name )
 			return self::ReplyMsg($robotMsg, "哎呀！您选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
 
 	
@@ -360,7 +291,7 @@ _STR_;
 			JWSns::FinishInvitation($new_user_id, $invitation_id);
 
 			$body = <<<_STR_
-欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。发送HELP可以了解更多JiWai功能。 
+欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。发送HELP可以了解更多JiWai功能。登录Web请来这里：http://jiwai.de/wo/account/complete，进行密码设置。
 _STR_;
 		}
 		else

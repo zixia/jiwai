@@ -8,7 +8,16 @@ $err = '';
 
 if ( array_key_exists('username_or_email',$_REQUEST) )
 {
-	$idUser = JWUser::GetUserFromPassword($_REQUEST['username_or_email'],$_REQUEST['password']);
+	$username_or_email  = $_REQUEST['username_or_email'];
+	$password			= $_REQUEST['password'];
+
+	if ( JWOpenid::IsPossibleOpenid($username_or_email) )
+	{
+		JWOpenidConsumer::AuthRedirect($username_or_email);
+		// if it return, mean $username_or_email is not a valid openid url.
+	}
+
+	$idUser = JWUser::GetUserFromPassword($username_or_email, $password);
 
 	if ( $idUser )
 	{
@@ -86,8 +95,8 @@ if ( !empty($err) ){
   <fieldset>
   	<table cellspacing="0">
   		<tr>
-  			<th><label for="username_or_email">帐号或 Email</label></th>
-  			<td><input id="username_or_email" name="username_or_email" type="text" /></td>
+  			<th><label for="username_or_email">帐号 / Email</label></th>
+  			<td><input id="username_or_email" class="openid_login" name="username_or_email" type="text" /></td>
   		</tr>
   		<tr>
   			<th><label for="password">密码</label></th>

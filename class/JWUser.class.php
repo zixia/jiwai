@@ -442,8 +442,10 @@ _SQL_;
 		{
 			self::$msReservedNames = array (	
 												'all'				=> true
+												, 'alpha'			=> true
 												, 'api'				=> true
 												, 'asset'			=> true
+												, 'beta'			=> true
 												, 'blog'			=> true
 												, 'bug'				=> true
 												, 'faq'				=> true
@@ -706,6 +708,97 @@ _SQL_;
 			return true;
 
 		return false;
+	}
+
+	static public function GetPossibleName($nameInput, $email=null, $type=null)
+	{
+		# get rid of openid http
+		if ( preg_match('#^http://#',$nameInput) )
+		{
+			$user_name = preg_replace("#^http://#"	,""	,$nameInput);
+
+			$user_name = preg_replace("#/.+#"	,""	,$user_name);
+			$user_name = preg_replace("#\.#"	,"_"	,$user_name);
+		}
+		else
+		{	$user_name = $nameInput;
+		}
+
+		$user_name = preg_replace("/[^\w]+/"	,""	,$user_name);
+		$user_name = preg_replace("/^\d+/"		,""	,$user_name);
+		
+		if ( empty($user_name) && !empty($email) )
+		{
+			// 从邮件中取用户名，并进行特殊字符处理
+			$user_name = $email;
+			$user_name = preg_replace("/@.*/"	,""	,$user_name);
+			$user_name = preg_replace("/\./"	,""	,$user_name);
+
+			// 如果是手机用户或者QQ用户 
+			if ( preg_match('/^\d+$/',$user_name) )
+			{
+				$user_name = $type . $user_name;
+			}
+			else
+			{
+				$user_name = preg_replace("/^\d+/"	,""	,$user_name);
+			}
+		}
+		
+
+		/*
+		 *	处理名字过短的问题
+		 *	如果是3个字符的名字，那么通过
+		 *	如果是1、2个字符的名字，则随机填充到4个字符
+		 */
+		$user_name_len = strlen($user_name);
+
+		if ( 3>$user_name_len )
+		{
+			for ( $n=$user_name_len; $n<4; $n++ )
+				$user_name .= rand(0,9);
+		}
+
+		$is_valid_name = false;
+
+		if ( ! JWUser::IsExistName($user_name) )
+		{
+			$is_valid_name = true;
+		}
+		else
+		{
+			$n = 1;
+			while ( $n++ < 30 )
+			{
+				if ( ! JWUser::IsExistName("$user_name$n") )
+				{
+					$user_name .= $n;
+
+					$is_valid_name = true;
+					break;
+				}
+			}
+			
+		}
+
+		/*
+		 *	尝试了这么多个用户名都不行，加个日期尾巴看看
+		 */
+		if ( ! $is_valid_name )
+		{
+			$month_day = date("md");
+			if ( ! JWUser::IsExistName("$user_name$month_day") )
+			{
+				$user_name 	.= $month_day;
+
+				$is_valid_name = true;
+			}
+		}
+
+		if ( !$is_valid_name )
+			return null;
+
+		return $user_name;
 	}
 }
 ?>

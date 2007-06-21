@@ -69,14 +69,14 @@ _HTML_;
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽歪网,唧歪网,叽歪de,叽歪的,矶歪de,唧歪de,唧歪的,叽叽歪歪,唧唧歪歪,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
+叽叽歪歪,唧唧歪歪,叽歪网,歪歪,唧唧,叽叽,唧歪网,矶歪de,唧歪de,唧歪的,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
 _STR_;
-		else								$keywords = "叽歪,叽叽歪歪,唧唧歪歪," . $options['keywords'];
+		else								$keywords = "叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽," . $options['keywords'];
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。快来假如我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
+叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
 _STR_;
-		else									$description = $options['description'];
+		else									$description = $options['description'] . ",叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽" ;
 
 		if ( empty($options['author']) )	$author = htmlspecialchars('叽歪de <wo@jiwai.de>');
 		else								$author = $options['author'];
@@ -886,7 +886,7 @@ _HTML_;
 				<div>
 					<label for="username_or_email">帐号 / Email</label>
 					<br>
-					<input id="email" name="username_or_email" type="text" style="width:158px"/>
+					<input id="email" name="username_or_email" type="text" class="openid_login" style="width:158px"/>
     			</div>
 
     			<div>
