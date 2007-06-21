@@ -154,7 +154,7 @@ class JWApi{
 		}
 		foreach ($array as $key=>$value) {
 			if( is_numeric($key) ){
-				$key = self::_GetXmlSubTagName($topTagName);
+				$key = self::_GetXmlSubTagName($topTagName,$key);
 			}
 			$key = strtolower($key);
 
@@ -196,7 +196,7 @@ class JWApi{
 	/**
 	  * Private function, just for build xml.
 	  */
-	static private function _GetXmlSubTagName($key=null){
+	static private function _GetXmlSubTagName($key=null, $default=null){
 		switch($key){
 			case 'users':
 				return 'user';
@@ -207,7 +207,7 @@ class JWApi{
 			case 'direct_messages':
 				return 'direct_message';
 			default:
-				return null;
+				return $default;
 		}
 	}
 
