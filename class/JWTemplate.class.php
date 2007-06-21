@@ -291,7 +291,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey && event.keyCode==13){return $('submit').click();} else return (event.keyCode == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey && event.keyCode==13){return $('submit').click();} /*else return (event.keyCode == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));*/" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
 					<div class="submit">
