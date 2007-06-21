@@ -16,7 +16,7 @@ function user_status($idPageUser, $idStatus)
 
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
-	$formated_status 	= JWStatus::FormatStatus($status_info['status']);
+	$formated_status 	= JWStatus::FormatStatus($status_info['status'],false);
 
 	$protected = false;
 	if ( JWUser::IsProtected($idPageUser) )
