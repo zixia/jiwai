@@ -100,7 +100,7 @@ if ( !empty($err) ){
   		</tr>
   		<tr>
   			<th><label for="password">密码</label></th>
-  			<td><input id="password" name="password" type="password" /> <small><a href="/wo/account/resend_password">忘记?</a></small></td>
+  			<td><input id="password" name="password" type="password" style="width:158px"/> <small><a href="/wo/account/resend_password">忘记?</a></small></td>
   		</tr>
   		<tr>
   			<th></th>

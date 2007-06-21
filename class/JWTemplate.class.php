@@ -886,7 +886,7 @@ _HTML_;
 				<div>
 					<label for="username_or_email">帐号 / Email</label>
 					<br>
-					<input id="email" name="username_or_email" type="text" class="openid_login" style="width:158px"/>
+					<input id="email" name="username_or_email" type="text" class="openid_login"><!-- style="width:158px"/-->
     			</div>
 
     			<div>
