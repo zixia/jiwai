@@ -65,7 +65,8 @@ switch($type){
 function renderXmlReturn($options){
 
 	$statuses = getUserTimelineStatuses( $options, true );
-
+	
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= '<?xml version="1.0" encoding="UTF-8"?>';
 	$xmlString .= JWApi::ArrayToXml($statuses, 0, 'statuses');
