@@ -43,6 +43,8 @@ switch( $type ){
 
 function renderXmlReturn($user){
 	$userInfo = getUserExtendWithStatus( $user );
+
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $userInfo, 0 , 'user');

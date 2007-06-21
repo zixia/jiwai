@@ -44,7 +44,8 @@ function renderJsonStatuses($idUser){
 
 function renderXmlStatuses($idUser){
 	$statusesWithUser = getStatusesWithUser( $idUser );
-
+	
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $statusesWithUser, 0, "statuses" );

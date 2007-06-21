@@ -55,6 +55,8 @@ if( JWMessage::Destroy($idMessage) ){
 
 function renderXmlReturn($message){
 	$oMessage = JWApi::RebuildMessage($message);
+
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $oMessage, 0, 'direct_message' );

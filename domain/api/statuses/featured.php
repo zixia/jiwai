@@ -33,6 +33,8 @@ function renderJsonStatuses(){
 
 function renderXmlStatuses(){
 	$featuredWithStatus = getFeaturedWithStatus(  );
+
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $featuredWithStatus, 1, "users" );

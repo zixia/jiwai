@@ -41,10 +41,10 @@ switch($type){
 		renderJsonReturn($options);
 	break;
 	case 'atom':
-		renderFeedReturn($options, JWFeed::ATOM);
+		renderFeedReturn($options, $user, JWFeed::ATOM);
 	break;
 	case 'rss':
-		renderFeedReturn($options, JWFeed::RSS20);
+		renderFeedReturn($options, $user, JWFeed::RSS20);
 	break;
 	default:
 		JWApi::OutHeader(406, true);
@@ -53,7 +53,8 @@ switch($type){
 function renderXmlReturn($options){
 
 	$statuses = getFriendsTimelineStatuses( $options, true );
-
+	
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= '<?xml version="1.0" encoding="UTF-8"?>';
 	$xmlString .= JWApi::ArrayToXml($statuses, 0, 'statuses');
@@ -70,14 +71,14 @@ function renderJsonReturn($options){
 	}
 }
 
-function renderFeedReturn($options, $feedType=JWFeed::ATOM){
+function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 
 	$statuses = getFriendsTimelineStatuses( $options, false );
 
 	$feed = new JWFeed(array(
-				'title'	=> '叽歪广场' ,
-			       	'url'	=> 'http://JiWai.de/public_timeline/' , 
-				'desc'	=> '所有人叽歪de更新都在这里！' , 
+				'title'	=> '叽歪 / '.$user['nameFull'].'和朋友们' ,
+			       	'url'	=> 'http://JiWai.de/'.$user['nameScreen'].'/with_friends/', 
+				'desc'	=> $user['nameFull'].'和朋友们的叽歪de更新' , 
 				'ttl'	=> 40,
 				)); 
 

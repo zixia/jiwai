@@ -53,10 +53,10 @@ switch($type){
 		renderJsonReturn($options);
 	break;
 	case 'atom':
-		renderFeedReturn($options, JWFeed::ATOM);
+		renderFeedReturn($options, $user, JWFeed::ATOM);
 	break;
 	case 'rss':
-		renderFeedReturn($options, JWFeed::RSS20);
+		renderFeedReturn($options, $user, JWFeed::RSS20);
 	break;
 	default:
 		JWApi::OutHeader(406, true);
@@ -83,14 +83,14 @@ function renderJsonReturn($options){
 	}
 }
 
-function renderFeedReturn($options, $feedType=JWFeed::ATOM){
+function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 
 	$statuses = getUserTimelineStatuses( $options, false );
 
 	$feed = new JWFeed(array(
-				'title'	=> '叽歪广场' ,
-			       	'url'	=> 'http://JiWai.de/public_timeline/' , 
-				'desc'	=> '所有人叽歪de更新都在这里！' , 
+				'title'	=> '叽歪 / '. $user['nameFull'],
+			       	'url'	=> 'http://JiWai.de/'.$user['nameScreen'] , 
+				'desc'	=> $user['nameFull'].'的叽歪de更新' , 
 				'ttl'	=> 40,
 				)); 
 

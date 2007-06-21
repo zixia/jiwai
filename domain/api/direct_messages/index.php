@@ -53,7 +53,8 @@ function renderJsonReturn( $messages ){
 
 function renderXmlReturn( $messages ){
 	$messages = rebuildMessages( $messages );
-
+	
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $messages, 0, 'direct_messages' );
