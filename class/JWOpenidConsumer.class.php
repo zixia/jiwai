@@ -31,8 +31,8 @@ class JWOpenidConsumer
 
 	static private $msConsumer;
 
-	const URL_TRUST_ROOT 	= 'http://alpha.jiwai.de';
-	const URL_FINISH_AUTH 	= 'http://alpha.jiwai.de/wo/openid/finish_auth';
+	const URL_TRUST_ROOT 	= 'http://jiwai.de';
+	const URL_FINISH_AUTH 	= 'http://jiwai.de/wo/openid/finish_auth';
 
 	/**
 	 * Instance of this singleton class
