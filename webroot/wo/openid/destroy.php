@@ -15,7 +15,7 @@ if ( $logined_user_id )
 	{
 		$openid_id = $match[1];
 
-		if ( ! JWOpenId::IsUserOwnId($logined_user_id, $openid_id) )
+		if ( ! JWOpenid::IsUserOwnId($logined_user_id, $openid_id) )
 		{
 			JWTemplate::RedirectTo404NotFound();
 		}
