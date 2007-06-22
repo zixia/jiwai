@@ -135,6 +135,8 @@ $options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[na
 					,'refresh_time'	=> '600'
 					,'refresh_url'	=> ''
 					,'ui_user_id'	=> $page_user_id
+					,'openid_server'	=> "http://alpha.jiwai.de/wo/openid/server"
+					,'openid_delegate'	=> "http://alpha.jiwai.de/$page_user_info[nameScreen]/"
 			);
 
 ?>

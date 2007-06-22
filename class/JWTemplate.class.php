@@ -109,7 +109,7 @@ _HTML_;
 			$refresh_html = '';
 		else
 			$refresh_html = <<<_HTML_
-<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
+	<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
 
 	
@@ -126,6 +126,20 @@ _HTML_;
 			$ui_css = $ui->GetStyleSheet();
 		}
 
+		if ( empty($options['openid_server']) )
+		{
+			$options['openid_server'] = 'http://jiwai.de/wo/openid/server';
+		}
+
+		$openid_html = '';
+		if ( !empty($options['openid_delegate']) )
+		{
+			$openid_html = <<<_HTML_
+	<link rel="openid.server" href="$options[openid_server]" />
+	<link rel="openid.delegate" href="$options[openid_delegate]">
+_HTML_;
+		}
+
 		echo <<<_HTML_
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -135,7 +149,8 @@ _HTML_;
 	<meta name="description" content="$description" />
 	<meta name="author" content="$author" />
 $rss_html
-	$refresh_html
+$refresh_html
+$openid_html
 
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
@@ -1628,6 +1643,7 @@ _HTML_;
 							, 'notification'=> array ( '/wo/account/notification'		, '通知')
 							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
 							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
+							, 'openid'		=> array ( '/wo/openid/'					, 'OpenID')
 						);
 		echo '	<h4 id="settingsNav">';
 		$first = true;

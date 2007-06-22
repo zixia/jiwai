@@ -276,7 +276,7 @@ font-weight:normal;
 #front h2 em { background-color: yellow; font-style: normal; }
 
 input.openid_login {
-   background: url(http://openid.net/login-bg.gif) no-repeat;
+   background: url(http://asset.jiwai.de/img/openid_login_bg.gif) no-repeat;
    background-color: #fff;
    background-position: 0 50%;
    color: #000;

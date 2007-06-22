@@ -216,7 +216,7 @@ class JWSms {
 		$gid	= null;	// 数字，网关ID
 		$pid	= null;	// 数字,产品ID
 		$linkid	= null;	// 如果mo里面有带下来，(没有不填，不要乱填)
-		$func	= 1234; // 数字，长号码，只加自己的扩展号
+		$func	= 8816; // 数字，长号码，只加自己的扩展号
 
 		$func	= '8816';
 
@@ -231,6 +231,7 @@ class JWSms {
 		$moflag		= $mt_type['MT_TYPE_NO_MO'];
 		$msgtype	= $mt_fee['FEE_FREE'];
 		
+		$param		= 'nofilter';
 		
 		// appid=XX&gid=X&dst=1331234567&pid=XX&msg=XXX&linkid=XXX&func=XXX&moflag=X&msgtype=X 
 		$rpc_url = $MT_HTTP_URL_3RD . "?appid=$appid"
@@ -242,7 +243,8 @@ class JWSms {
 							. "&func=$func"
 							. "&moflag=$moflag"
 							. "&msgtype=$msgtype"
-							. "&src=9911881612345" //XXX src ??
+							. "&param=$param"
+							//. "&src=99118816" //mobile src ??
 						;
 
 		if ( isset($msgfmt) )

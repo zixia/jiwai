@@ -272,6 +272,14 @@ class JWLogin {
 	}
 
 
-
+	/*
+	 *	重定向到登录页面，同时设定返回url地址
+	 */
+	static function RedirectToLogin($urlBack='/')
+	{
+		$_SESSION['login_redirect_url'] = $urlBack;
+		header("Location: /wo/login");
+		exit(0);
+	}
 }
 ?>

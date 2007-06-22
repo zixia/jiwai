@@ -2,8 +2,10 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-$logined_user_info	= JWUser::GetCurrentUserInfo();
-
+if ( JWLogin::IsLogined() )
+{
+	JWLogin::Logout();
+}
 
 $address 	= @$_REQUEST['address'];
 $nameScreen	= @$_REQUEST['nameScreen'];

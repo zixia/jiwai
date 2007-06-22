@@ -43,9 +43,24 @@ switch ($response->status)
         	$postcode 	= $sreg['postcode'];
     	}
 
-		$user_id = JWOpenid::GetUserIdFromOpenid($openid);
 
-		if ( $user_id )
+		$openid_id = JWOpenid::GetIdByUrl($openid);
+		$openid_db_row	= JWOpenid::GetDbRowById($openid_id);
+
+		$user_id = $openid_db_row['idUser'];
+
+
+		if ( JWLogin::IsLogined() )
+		{
+			/*
+		 	 *	如果已经登录，那么过去验证openid是为了绑定。
+		 	 */
+			$logined_user_id = JWLogin::GetCurrentUserId();
+			JWOpenid::Create($openid, $logined_user_id);
+			header("Location: /wo/openid/");
+			exit(0);
+		} 
+		else if ( $user_id )
 		{
 			// old user
 			JWLogin::Login($user_id);

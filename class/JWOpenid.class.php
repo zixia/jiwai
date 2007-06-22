@@ -74,13 +74,13 @@ _SQL_;
 			true: 成功 
 			false: 失败
 	 */
-	static public function Destroy($urlOpenid)
+	static public function Destroy($idOpenid)
 	{
-		$urlOpenid 	= JWOpenid::GetCoreUrl($urlOpenid);
+		$idOpenid 	= JWDB::CheckInt($idOpenid);
 
 		$sql = <<<_SQL_
 DELETE FROM	Openid
-WHERE 		urlOpenid='$urlOpenid'
+WHERE 		id=$idOpenid
 _SQL_;
 
 		try
@@ -98,10 +98,27 @@ _SQL_;
 
 
 	/*
-	 *	@param	string	$urlOpenid	openid
-	 *	@return	int		$idUser		null 代表没有这个 openid
+	 *	@param	int		$idUser
+	 *	@return	int		$idOpenid null 代表没有这个 openid
 	 */
-	static public function GetUserIdFromOpenid($urlOpenid)
+	static public function GetIdByUserId($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		$row = JWDB::GetTableRow('Openid', array('idUser'=>$idUser));
+
+		if ( empty($row) )
+			return null;
+
+		return $row['id'];
+	}
+
+
+	/*
+	 *	@param	string	$urlOpenid	openid
+	 *	@return	int		$idOpenid	null 代表没有这个 openid
+	 */
+	static public function GetIdByUrl($urlOpenid)
 	{
 		$core_url = JWOpenid::GetCoreUrl($urlOpenid);
 		$row = JWDB::GetTableRow('Openid', array('urlOpenid'=>$core_url));
@@ -109,7 +126,7 @@ _SQL_;
 		if ( empty($row) )
 			return null;
 
-		return $row['idUser'];
+		return $row['id'];
 	}
 
 	static public function IsPossibleOpenId($usernameOrEmail)
@@ -129,11 +146,70 @@ _SQL_;
 
 	static public function GetFullUrl($url)
 	{
-		if ( !preg_match('#^http://',$url) )
+		if ( !preg_match('#^http://#i',$url) )
 			$url = 'http://' . $url;
 
 		return $url;
 	}
 
+	/*
+	 *	根据 idOpenids 获取 Row 的详细信息
+	 *	@param	array	idOpenids
+	 * 	@return	array	以 idOpenid 为 key 的 db row
+	 * 
+	 */
+	static public function GetDbRowsByIds ($idOpenids)
+	{
+		if ( empty($idOpenids) )
+			return array();
+
+		if ( !is_array($idOpenids) )
+			throw new JWException('must array');
+
+		$idOpenids = array_unique($idOpenids);
+
+		$condition_in = JWDB::GetInConditionFromArray($idOpenids);
+
+		$sql = <<<_SQL_
+SELECT
+		id as idOpenid
+		, idUser
+		, urlOpenid
+		, UNIX_TIMESTAMP(timeCreate) AS timeCreate
+FROM	Openid
+WHERE	id IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+
+		if ( empty($rows) ){
+			$openid_db_rows = array();
+		} else {
+			foreach ( $rows as $row ) {
+				$openid_db_rows[$row['idOpenid']] = $row;
+			}
+		}
+
+		return $openid_db_rows;
+	}
+
+	static public function GetDbRowById ($idOpenid)
+	{
+		$openid_db_rows = JWOpenid::GetDbRowsByIds(array($idOpenid));
+
+		if ( empty($openid_db_rows) )
+			return array();
+
+		return $openid_db_rows[$idOpenid];
+	}
+
+
+	static public function IsUserOwnId($idUser, $idOpenid)
+	{
+		$db_row = JWOpenid::GetDbRowById($idOpenid);
+
+		return $db_row['idUser']==$idUser;
+	}
 }
 ?>

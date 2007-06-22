@@ -2,6 +2,10 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
+if ( JWLogin::IsLogined() )
+{
+	JWLogin::Logout();
+}
 
 $name_len_min = 5;
 
