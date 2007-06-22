@@ -41,8 +41,6 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	public static Pattern patternFile = null;
 	public static Pattern patternHead = null;
 
-	public static Hashtable<String,String> onlineList = new Hashtable<String,String>();
-
 	static {
 		Properties config = new Properties();
 		try {
@@ -134,8 +132,6 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	public void instantMessageReceived(MsnSwitchboard switchboard,
             MsnInstantMessage message,
             MsnContact contact){
-		boolean p = true;
-		if( p )return;
 			writeMoMessage(contact.getEmail().getEmailAddress(), message.getContent(), System
 				.currentTimeMillis(),false);
 	}
@@ -149,16 +145,11 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	
 	public void contactRemovedMe(MsnMessenger messenger,
             MsnContact contact){
-		onlineList.remove(contact.getEmail().getEmailAddress());
+		//todo
 	}
 	
 	public void contactListInitCompleted(MsnMessenger messenger){
-		MsnContact[] contacts = messenger.getContactList().getContacts();
-		for(int i=0;i< contacts.length; i++){
-			if( !contacts[i].getStatus().getDisplayStatus().equals("OFFLINE")){
-				onlineList.put(contacts[i].getEmail().getEmailAddress(), contacts[i].getDisplayName());
-			}
-		}
+		//todo
 	}
 	
 	/** *********** Self Method ******** */
