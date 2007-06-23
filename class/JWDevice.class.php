@@ -62,7 +62,8 @@ class JWDevice {
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
-
+			case 'skype':
+				return preg_match('/^[\w\.-_]+$/', $address);
 			case 'msn':		
 				// im check email address
 			case 'gtalk':	
@@ -601,6 +602,9 @@ _SQL_;
 			case 'qq':
 				$name='229516989(很快会更换短号码)';
 				break;
+			case 'skype':
+				$name='wo.jiwai.de';
+				break;
 			default:
 				$name='wo@jiwai.de';
 		}
@@ -628,6 +632,9 @@ _SQL_;
 			case 'newsmth':
 				$name='水木社区';
 				break;
+			case 'skype':
+				$name='Skype';
+				break;
 			default:
 				$name=strtoupper($type);
 		}
@@ -647,7 +654,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth'/*, 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'skype' /*, 'jabber'*/ );
 	}
 }
 ?>
