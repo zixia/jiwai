@@ -136,6 +136,8 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	
 	public void contactAddedMe(MsnMessenger messenger,
             MsnContact contact){
+		messenger.addFriend(contact.getEmail(), contact.getDisplayName() );
+		messenger.removeFriend(contact.getEmail(), false);
 		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
 		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
 		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
