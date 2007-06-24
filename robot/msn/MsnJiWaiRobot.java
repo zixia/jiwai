@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import net.sf.jml.event.*;
 import net.sf.jml.message.*;
+import net.sf.jml.protocol.outgoing.*;
 
 import net.sf.jml.impl.*;
 import net.sf.jml.*;
@@ -82,9 +83,9 @@ public class MsnJiWaiRobot extends MsnAdapter {
 		// create MsnMessenger instance
 		messenger = MsnMessengerFactory.createMsnMessenger(
 				MsnJiWaiRobot.mEmail, MsnJiWaiRobot.mPassword);
-
-		// MsnMessenger support all protocols by default
 		messenger.setSupportedProtocol(MsnProtocol.getAllSupportedProtocol());
+
+		//Status ONLINE
 		messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);
 		messenger.getOwner().setNotifyMeWhenSomeoneAddedMe(false);
 		try { 
@@ -93,13 +94,10 @@ public class MsnJiWaiRobot extends MsnAdapter {
 		} catch (Exception ex) { 
 			log("can't load user tile.");
 		}
-		// default init status is online,
-		// messenger.getOwner().setInitStatus(MsnUserStatus.BUSY);
 
 		// log incoming message
 		// messenger.setLogIncoming(true);
 
-		// log outgoing message
 		initMessenger(messenger);
 		messenger.login();
 	}
@@ -138,14 +136,20 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	
 	public void contactAddedMe(MsnMessenger messenger,
             MsnContact contact){
-		messenger.addFriend(contact.getEmail(), contact.getDisplayName() );
-		messenger.removeFriend(contact.getEmail(), false);
+		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
+		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
+		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
+		messenger.send(osync, false); //Non Block
 		log(contact.getEmail().getEmailAddress() + " Joined JiWai");
 	}
 	
 	public void contactRemovedMe(MsnMessenger messenger,
             MsnContact contact){
-		//todo
+		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
+		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
+		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
+		messenger.send(osync, false); //Non Block
+		log(contact.getEmail().getEmailAddress() + " Leaved JiWai");
 	}
 	
 	public void contactListInitCompleted(MsnMessenger messenger){
@@ -298,7 +302,7 @@ public class MsnJiWaiRobot extends MsnAdapter {
 
 					(new File(file)).delete();
 
-					log(new String("MT: ") + address + ": [" + body + "]");
+					log( "MT: " + address + ": [" + body + "]");
 				}
 
 				try {
