@@ -1,2 +1,9 @@
-http://dev.goby.tv/svn/goby/kmemcache 
+
+JiWai.de Install Document
+
+
+packages needed:
+
+* kmemcache: http://dev.goby.tv/svn/goby/kmemcache 
+UDP/MultiGet memcache php extesntion.
 
