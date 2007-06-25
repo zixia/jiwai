@@ -326,10 +326,10 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		
 	}
 
-	public boolean MtProcessing(String address, String body, long timestamp){
+	public boolean mtProcessing(MoMtMessage message){
 		try{
-			Integer qqAddress = Integer.valueOf(address);
-			client.sendIM(qqAddress,body.getBytes("GBK"));
+			Integer qqAddress = Integer.valueOf(message.getAddress());
+			client.sendIM(qqAddress, message.getBody().getBytes("GBK"));
 		}catch(Exception e){
 			return false;
 		}
