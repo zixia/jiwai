@@ -208,7 +208,7 @@ if ( $show_protected_content )
 							,$user_rows
 							,$status_rows
 							,array(	 'icon'	=> $g_user_with_friends
-									,'protected'=> ( !$show_protected_content || $logined_user_info['idUser']!=$page_user_id )
+									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
 									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
 							 )
 						) ;
