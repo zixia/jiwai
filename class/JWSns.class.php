@@ -295,6 +295,7 @@ class JWSns {
 				break;
 
 			case 'newsmth':
+			case 'skype':
 			case 'sms':
 			case 'qq':
 				// 机器人给设备发送消息
