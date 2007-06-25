@@ -169,10 +169,11 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		System.out.println(message);
 	}
 
-	public boolean MtProcessing(String email, String body, long timestamp) {
+	public boolean mtProcessing(MoMtMessage msg) {
+		String email = msg.getAddress();
+		String body  = msg.getBody();
 		Email remail = Email.parseStr(email);
 		messenger.sendText(remail, body);
-		log("Send to "+email + ":"+ body);
 		return true;
 	}
 }
