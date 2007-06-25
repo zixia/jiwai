@@ -1,14 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Properties;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jml.event.*;
@@ -18,10 +11,12 @@ import net.sf.jml.protocol.outgoing.*;
 import net.sf.jml.impl.*;
 import net.sf.jml.*;
 
+import de.jiwai.robot.*;
+
 /**
  * @author AKA shwdai@gmail.com
  */
-public class MsnJiWaiRobot extends MsnAdapter {
+public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 
 	public static String mEmail = null;
 
@@ -41,6 +36,10 @@ public class MsnJiWaiRobot extends MsnAdapter {
 
 	public static Pattern patternFile = null;
 	public static Pattern patternHead = null;
+	
+	public final static String DEVICE = "msn";
+	
+	public static MoMtWorker worker = null;
 
 	static {
 		Properties config = new Properties();
@@ -72,9 +71,12 @@ public class MsnJiWaiRobot extends MsnAdapter {
 		patternFile = Pattern.compile("(.+?)\\n\\n(.+)");
 		patternHead = Pattern.compile("ADDRESS:\\s+msn://(.+)",
 						Pattern.CASE_INSENSITIVE);
+		
+		//MoMtWorker
+		worker = new MoMtWorker("msn", mQueuePath);
 
 	}
-
+	
 	protected void initMessenger(MsnMessenger messenger) {
 		messenger.addListener(this);
 	}
@@ -104,6 +106,7 @@ public class MsnJiWaiRobot extends MsnAdapter {
 
 	public static void main(String[] args) throws Exception {
 		MsnJiWaiRobot robot = new MsnJiWaiRobot();
+		worker.setProcessor(robot);
 		robot.start();
 	}
 
@@ -111,7 +114,7 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	public void loginCompleted(MsnMessenger messenger) {
 		log("Login Successed");
 		messenger.getOwner().setDisplayName(mDisplayName);
-		new Thread( new JiWaiMessageProcess()).start();
+		worker.startProcessor();
 	}
 
 	public void contactStatusChanged(MsnMessenger messenger, MsnContact contact) {
@@ -130,12 +133,15 @@ public class MsnJiWaiRobot extends MsnAdapter {
 	public void instantMessageReceived(MsnSwitchboard switchboard,
             MsnInstantMessage message,
             MsnContact contact){
-			writeMoMessage(contact.getEmail().getEmailAddress(), message.getContent(), System
-				.currentTimeMillis(),false);
+		MoMtMessage msg = new MoMtMessage(DEVICE);
+		msg.setAddress(contact.getEmail().getEmailAddress());
+		msg.setBody(message.getContent());
+		worker.saveMoMessage(msg);
 	}
 	
 	public void contactAddedMe(MsnMessenger messenger,
             MsnContact contact){
+		//Add to AL
 		messenger.addFriend(contact.getEmail(), contact.getDisplayName() );
 		messenger.removeFriend(contact.getEmail(), false);
 		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
@@ -163,156 +169,10 @@ public class MsnJiWaiRobot extends MsnAdapter {
 		System.out.println(message);
 	}
 
-	public void sendTextMessage(String email, String body) {
+	public boolean MtProcessing(String email, String body, long timestamp) {
 		Email remail = Email.parseStr(email);
 		messenger.sendText(remail, body);
 		log("Send to "+email + ":"+ body);
-	}
-
-	public void writeMoMessage(String address, String body, long timestamp,
-			boolean nick) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm");
-		log(sdf.format(new Date(timestamp)) + " " + address + ": " + body);
-
-		long time_millis, sec, msec;
-		String file_path_name;
-		File msg_file;
-
-		do {
-			time_millis = System.currentTimeMillis();
-			sec = time_millis / 1000;
-			msec = time_millis - (time_millis / 1000) * 1000;
-			file_path_name = mQueuePathMo + "msn__" + address + "__" + sec
-					+ "_" + msec;
-			msg_file = new File(file_path_name);
-		} while (msg_file.exists());
-
-		String file_content;
-
-		file_content = "ADDRESS: msn://" + address + "\n";
-		file_content += "\n";
-		file_content += body;
-
-		try {
-			FileWriter fw = new FileWriter(msg_file);
-			fw.write(file_content);
-			fw.close();
-		} catch (Exception e) {
-			log("file writer exception for " + file_path_name);
-		}
-	}
-
-	public LinkedList<Hashtable> getQueueMt() {
-		LinkedList<Hashtable> robot_msgs = new LinkedList<Hashtable>();
-
-		Hashtable<String, String> robot_msg = new Hashtable<String, String>();
-
-		try {
-			File files[] = new File(MsnJiWaiRobot.mQueuePathMt).listFiles();
-
-			String file_name;
-			String file_content;
-			char[] buf = new char[1024];
-
-			Matcher matcher;
-
-			String head, body, address;
-
-			for (int i = 0; i < files.length; i++) {
-				if (!files[i].isFile())
-					continue;
-
-				file_name = files[i].getName();
-
-				if (0 != file_name.indexOf("msn__")) {
-					files[i].delete();
-					log("jiwaiQueueMt found unknown file: " + file_name
-							+ ", skipped & deleted");
-					continue;
-				}
-
-				// log("There is a file " + files[i].getName() + " in this
-				// diretory");
-
-				int n = (new FileReader(files[i])).read(buf, 0, 1024);
-				file_content = new String(buf, 0, n);
-
-				// log(file_content);
-
-				matcher = patternFile.matcher(file_content);
-
-				if (!matcher.find()) {
-					log("jiwaiQueueMt fount un-parse data: " + file_content
-							+ ", skiped & deleted");
-					files[i].delete();
-					continue;
-				}
-
-				head = matcher.group(1);
-				body = matcher.group(2);
-
-				matcher = patternHead.matcher(head);
-
-				if (!matcher.find()) {
-					log("jiwaiQueueMt fount un-parse head data: " + head
-							+ ", skiped & deleted");
-					files[i].delete();
-					continue;
-				}
-
-				address = matcher.group(1);
-
-				robot_msg.put("address", address);
-				robot_msg.put("body", body.trim());
-				robot_msg.put("file", files[i].getCanonicalPath());
-
-				robot_msgs.add((Hashtable) robot_msg.clone());
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			log("jiwaiQueueMt readdir failed");
-			System.exit(1);
-		}
-
-		return robot_msgs;
-	}
-
-	@SuppressWarnings("unchecked")
-	class JiWaiMessageProcess implements Runnable {
-
-		public void run() {
-			log("runed");
-			LinkedList robot_msgs;
-			Hashtable<String, String> robot_msg;
-			String address;
-			String body, file;
-
-			while (true) {
-				System.out.print(".");
-				robot_msgs = getQueueMt();
-				while (!robot_msgs.isEmpty()) {
-					System.out.print("*");
-					// log ( "fount new mt msg" );
-					robot_msg = (Hashtable<String, String>) robot_msgs.removeFirst();
-					
-					address = robot_msg.get("address");
-					body = robot_msg.get("body");
-					file = robot_msg.get("file");
-
-					sendTextMessage(address, body);
-
-					(new File(file)).delete();
-
-					log( "MT: " + address + ": [" + body + "]");
-				}
-
-				try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-				}
-				// break;
-			}
-		}
+		return true;
 	}
 }
