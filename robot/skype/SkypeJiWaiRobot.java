@@ -16,7 +16,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	
 	static {
 		Properties config = new Properties();
-		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path","D:\\temp\\"));
+		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path"));
 
 		if (mQueuePath == null) {
 			System.err.println("Please give queue(path) definition!");
@@ -51,7 +51,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	
 	public boolean mtProcessing(MoMtMessage message){
 		try{
-			User.getInstance(message.getAddress()).send(message.getBody());
+			Skype.chat(message.getAddress()).send(message.getBody());
 			return true;
 		}catch(SkypeException e){
 			e.printStackTrace();
