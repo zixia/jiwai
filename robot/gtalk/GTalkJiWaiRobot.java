@@ -62,6 +62,9 @@ public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
 	
 	public void processPacket(Packet p) {
 		Message m = (Message) p;
+		if(-1 == p.getTo().indexOf(mAccount+"@"+mServer)){
+			return;
+		}
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(getFromEmail(m.getFrom()));
 		msg.setBody(m.getBody());
