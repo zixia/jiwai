@@ -45,11 +45,11 @@ int loop = 1;
   * Returns a replystring.
   **********************************/
  char *x11SendToSkype(const char *msg) {
-        Display *display;
-        display = XOpenDisplay(NULL);
+        Display *display = XOpenDisplay(NULL);
 	if(x11sendMessageInternal(skype_win,msg, display, dummyWindow) == 0){
 		printf("x11SendToSkype failed\r\n");
 	} 
+	XCloseDisplay(display);
 	return NULL; 
  } 
 
