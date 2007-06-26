@@ -68,11 +68,11 @@ class JWRobotMsg {
 		}
 
 		$body = null;
-		$lines = explode("\n", $p );
+		$lines = explode("\n", $raw_msg_content );
 		$contentBegin = false;
 
 		foreach( $lines as $line ){
-			if( $contentBegin = true ){
+			if( true==$contentBegin ){
 				$body .= "$line\n";
 				continue;
 			}
@@ -85,7 +85,7 @@ class JWRobotMsg {
 		$this->mBody		= $body;
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
-		if( $this->_SetPropertiesByTagHeads() ){
+		if( !$this->_SetPropertiesByTagHeads() ){
 			throw new JWException('Essential properties[address/device] not given');
 		}
 

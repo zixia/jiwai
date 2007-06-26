@@ -84,7 +84,10 @@ class JWStatus {
 
 		//Sinature logic
 		if( $isSignature == 'Y' && in_array($device,array('gtalk','msn')) ){
-			$device_data = GetDeviceRowByUserId( $idUser );
+			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
+
+			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
+
 			if( !empty( $device_data ) 
 					&& $device_data['isSignatureRecord'] == 'Y' 
 					&& strncasecmp($device_data['signature'],$status,140)

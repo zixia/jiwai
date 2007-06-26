@@ -118,16 +118,29 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	}
 
 	public void contactStatusChanged(MsnMessenger messenger, MsnContact contact) {
-		
-		String oldName = contact.getOldDisplayName();
-		String nowName = contact.getDisplayName();
-		String oldStatus = contact.getOldStatus().getDisplayStatus();
-		String nowStatus = contact.getStatus().getDisplayStatus();
+			
+		String signature = ((MsnContactImpl)contact).getPersonalMessage().trim();
+		String status = contact.getStatus().getStatus();
+		String oldStatus = contact.getOldStatus().getStatus();
 		String email = contact.getEmail().getEmailAddress();
-
-		if( nowStatus.equals("ONLINE") && false == oldName.equals( nowName ) && oldStatus.equals(nowStatus) ){
-			log( email +"(Nick:" + oldName +"->" +nowName+ ", Status:"+oldStatus+"->"+nowStatus+")" );
+		
+		//ONline OR OFFline
+		if( ( status.equals("FLN") || status.equals("NLN") ) && oldStatus != status ){
+			MoMtMessage message = new MoMtMessage(DEVICE);
+			message.setMsgtype(MoMtMessage.TYPE_ONOROFF);
+			message.setAddress(email);
+			message.setBody(status);
+			//	worker.saveMoMessage(message);
 		}
+		
+		//Signature
+		if( signature != null && false == signature.equals("") ){
+			MoMtMessage message = new MoMtMessage(DEVICE);
+			message.setMsgtype(MoMtMessage.TYPE_SIG);
+			message.setAddress(email);
+			message.setBody(signature);
+			//	worker.saveMoMessage(message);
+		}	
 	}
 
 	public void instantMessageReceived(MsnSwitchboard switchboard,

@@ -1,15 +1,16 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Calendar;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smackx.*;
 
 import de.jiwai.robot.*;
 
-public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
+public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProcessor {
 
 	public static final String TALK_SERVER = "talk.google.com";
 	public static final int TALK_PORT = 5222;
@@ -60,9 +61,29 @@ public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
 		return from;
 	}
 	
+	public boolean accept(Packet p){
+		return true;
+	}
+	
 	public void processPacket(Packet p) {
-		Message m = (Message) p;
-		if(-1 == p.getTo().indexOf(mAccount+"@"+mServer)){
+		if( p instanceof Presence ){
+			processPresence((Presence) p);
+		}else if( p instanceof Message){
+			processMessage((Message) p);
+		}
+	}
+	
+	/**
+	 * Process Normal MO
+	 * @param m
+	 */
+	private void processMessage(Message m){
+		String body = m.getBody();
+		if( false == m.getType().toString().equals(Message.Type.chat.toString())
+				|| 0 != m.getTo().indexOf(mAccount+"@"+mServer)
+				|| body == null
+				|| body.trim().equals("")
+				){
 			return;
 		}
 		MoMtMessage msg = new MoMtMessage(DEVICE);
@@ -70,6 +91,24 @@ public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
 		msg.setBody(m.getBody());
 		worker.saveMoMessage(msg);
 	}
+	
+	/**
+	 * Process Presence Package
+	 * @param p
+	 */
+	private void processPresence(Presence p){
+		if( null == p.getStatus() )
+			return;
+		String status = p.getStatus().trim();
+		if( status.equals("") )
+			return;
+		MoMtMessage msg = new MoMtMessage(DEVICE);
+		msg.setAddress(getFromEmail(p.getFrom()));
+		msg.setMsgtype(MoMtMessage.TYPE_SIG);
+		msg.setBody(status);
+		worker.saveMoMessage(msg);
+	}
+	
 
 	public static void main(String args[]) {
 		GTalkJiWaiRobot gtalk_robot = new GTalkJiWaiRobot();
@@ -90,18 +129,18 @@ public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
 			con.sendPacket(presence);
 			
 			//Listener
-			con.addPacketListener( gtalk_robot , new PacketTypeFilter(Message.class));
+			con.addPacketListener(gtalk_robot , gtalk_robot);
 			
 			//Block Listen mo/mt
 			worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
 			worker.run();
 			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			log(e.getLocalizedMessage());
 		}
 	}
 	
-	public static void senPresence(){
+	public static void sendPresence(){
 		Presence presence = new Presence(Presence.Type.available);
 		presence.setStatus(mStatus);
 		presence.setMode(Presence.Mode.chat);
@@ -115,7 +154,7 @@ public class GTalkJiWaiRobot implements PacketListener, MoMtProcessor {
 		return true;
 	}
 	
-	public static void log(String e) {
-		System.out.println(e);
+	public static void log(String event) {
+		System.out.println(Calendar.getInstance().getTime().toString() + " " +  event);
 	}
 }

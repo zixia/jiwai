@@ -63,7 +63,7 @@ class JWDevice {
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
 			case 'skype':
-				return preg_match('/^[\w\.-_]+$/', $address);
+				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
 				// im check email address
 			case 'gtalk':	
