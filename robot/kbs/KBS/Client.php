@@ -9,6 +9,7 @@ class KBS_Client {
 	protected $password;
 	protected $conn;
 	public $loggedin = false;
+
 	function __construct($url, $username, $password, $login = true) {
 		$this->url = $url;
 		$this->username = $username;
