@@ -79,28 +79,7 @@ class JWStatus {
 	{
 		$db = JWDB::Instance()->GetDb();
 
-		// 去掉回车，替换为空格 , shwdai moved here from below..
 		$status = preg_replace('[\r\n]',' ',$status);
-
-		//Sinature logic
-		if( $isSignature == 'Y' && in_array($device,array('gtalk','msn')) ){
-			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
-
-			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
-
-			if( !empty( $device_data ) 
-					&& $device_data['isSignatureRecord'] == 'Y' 
-					&& strncasecmp($device_data['signature'],$status,140)
-			  ){
-				JWDB::UpdateTableRow('Device', $device_data['idDevice'], array(
-							'signature'=>$status
-							));
-			}else{
-				return true;
-			}
-		}else{
-			$isSignature = 'N';
-		}
 
 		$time = intval($time);
 

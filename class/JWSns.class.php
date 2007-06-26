@@ -416,6 +416,18 @@ class JWSns {
 	 */
 	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null, $isSignature='N')
 	{
+		//For remove \n\r
+		$status = preg_replace('/[\n\r]/' ,' ', $status);
+
+		/*
+		 * check signature change
+		 */
+		if( 'Y' == $isSignature ) {
+			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
+				return true;
+			}
+		}
+
 		$reply_info	= JWStatus::GetReplyInfo($status);
 
 		/*

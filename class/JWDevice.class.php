@@ -641,7 +641,31 @@ _SQL_;
 
 		return $name;
 	}
+	
+	/**
+	  * 检查签名是否一次合法需被记录的更新
+	  */
+	static public function IsSignatureChanged($idUser, $device, $status){
+		//Sinature logic
+		if( in_array($device,array('gtalk','msn')) ){
+			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
 
+			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
+
+			if ( $device_data['isSignatureRecord'] != 'Y' )
+				return false;
+
+			if( !empty( $device_data ) 
+					&& strncasecmp($device_data['signature'],$status,140)
+			  ){
+				JWDB::UpdateTableRow('Device', intval($device_data['idDevice']), array(
+							'signature'=>$status
+							));
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/*
 	 *	检查 device 是否已经由用户验证激活
