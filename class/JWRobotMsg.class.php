@@ -15,9 +15,15 @@ class JWRobotMsg {
 	 */
 	private $mAddress	= null;
 	private $mType		= null;
+	private $mMsgtype	= null;
 	private $mBody		= null;
 	private $mFile		= null;
 	private $mCreateTime	= null;
+
+	/**
+	 * A hash array used to store Message Head Tag from File 
+	 */
+	private $headTags = array();
 
 	/**
 	 * if this instance can be modifyed.
@@ -55,33 +61,33 @@ class JWRobotMsg {
 
 		$raw_msg_content = file_get_contents( $fileName );
 
-		if ( false===file_get_contents($fileName) )
+		if ( false===$raw_msg_content )
 		{
 			JWLog::Instance()->Log(LOG_ERR, "[$fileName] read failed");
 			return false;
 		}
 
-		if ( ! preg_match('/^(.+?)\n\n(.+)$/s', $raw_msg_content, $matches) )
-		{
-			
-			JWLog::Instance()->Log(LOG_ERR, "parse_msg($raw_msg_content) parse format failed");
-			return false;
+		$body = null;
+		$lines = explode("\n", $p );
+		$contentBegin = false;
+
+		foreach( $lines as $line ){
+			if( $contentBegin = true ){
+				$body .= "$line\n";
+				continue;
+			}
+			if( ! $line ) {
+				$contentBegin = true ;
+			}else{
+				$this->_SetHeadTagByLine($line);
+			}
 		}
-
-		$head = $matches[1];
-		$body = $matches[2];
-
-		if ( ! preg_match('/^ADDRESS: ([^\/]+):\/\/(.+)$/',$head,$matches) ){
-			// ie: msn://zixia@zixia.net
-			throw new JWException("parse_msg($head) parse ADDRESS: failed");
-		}
-
-		$this->mType		= $matches[1];
-		$this->mAddress		= $matches[2];
-
 		$this->mBody		= $body;
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
+		if( $this->_SetPropertiesByTagHeads() ){
+			throw new JWException('Essential properties[address/device] not given');
+		}
 
 		// we prevent modify a RoboMsg which load from the file.
 		// when we need to create a RobotMsg, we must create a new one
@@ -122,6 +128,18 @@ class JWRobotMsg {
 			throw new JWException('cant modify readonly msg');
 
 		$this->mAddress = $address;
+		$this->mIsValid = null;
+	}
+	public function GetMsgtype()
+	{
+		return $this->mMsgtype;
+	}
+	public function SetMsgtype($msgtype)
+	{
+		if ( $this->mReadOnly )
+			throw new JWException('cant modify readonly msg');
+
+		$this->mMsgtype = $msgtype;
 		$this->mIsValid = null;
 	}
 	public function GetType()
@@ -190,11 +208,12 @@ class JWRobotMsg {
 		if ( empty($this->mFile) || ! $this->IsValid() )
 			throw new JWException("can't save msg");
 
-
-		$file_contents = 	 "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n"
-							."\n"
-							.$this->mBody
-						;
+		$file_contents =  "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n";
+		if( $this->mMsgtype != null ) {
+			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
+		}
+		$file_contents .= "\n";
+		$file_contents .= $this->mBody ;
 
 		$ret = true;
 
@@ -254,6 +273,48 @@ class JWRobotMsg {
 		}
 	}
 
+	private function _SetHeadTagByPair($tagName=null, $value=null){
+		if( null == $tagName )
+			return;
+		$this->headTags[ strtoupper( $tagName ) ] = $value;
+	}
 
+	private function _SetHeadTagByLine($lineString=null){
+		if( null == $lineString )
+			return;
+		if( preg_match( '/^(\w+): (.+)$/', $lineString, $matches ) ){
+			$this->headTags[ strtoupper($matches[1]) ] = $matches[2];
+		}	
+	}
+
+	private function _SetPropertiesByTagHeads(){
+		//Device and Address
+		$deviceAndAddress = $this->_GetHeadTag('Address');
+		if( null == $deviceAndAddress )
+			return false;
+		@list( $device, $address ) = explode('://', $deviceAndAddress );
+		if( ! $device || ! $address )
+			return false;
+
+		//MSGTYPE
+		$msgtype = $this->_GetHeadTag('MsgType');
+		
+		//Set properties
+		$this->mAddress = $address ;
+		$this->mType	= $device ;
+		$this->mMsgtype = $msgtype ;
+
+		return true;
+	}
+
+	private function _GetHeadTag($tagName=null){
+		if ( $tagName == null )
+			return null;
+		$tagName = strtoupper( $tagName );
+		if( isset( $this->headTags[$tagName] ) ){
+			return $this->headTags[ $tagName ];
+		}
+		return null;
+	}
 }
 ?>

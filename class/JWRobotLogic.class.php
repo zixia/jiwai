@@ -73,6 +73,7 @@ class JWRobotLogic {
 
 		/*
 		 *	一个 MO 消息有如下几种状态：
+		 	仅当msgtype为空时
 				if ( 是机器人指令 )
 				else if (是用户绑定的设备)
 				else //不是用户绑定的设备
@@ -87,32 +88,41 @@ class JWRobotLogic {
 		 *
 		 *
 		 */
-		$lingo_func		= JWRobotLingo::GetLingoFunctionFromMsg($robotMsg);
+		$robotMsgtype = $robotMsg->getMsgtype();
+		$lingo_func = ( null == $robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
+			JWRobotLingo::GetLingoFunctionFromMsg($robotMsg) : null;
 
 		if ( !empty($lingo_func) )
 		{
 			$reply_robot_msg 	= call_user_func($lingo_func, $robotMsg);
-		}
-		else if ( JWDevice::IsExist($address, $type, false) )
+
+		}else if( $robotMsgtype == 'ONOROFF' ) {  // FOR user online/offline msg
+
+			return null;
+
+		} else if ( JWDevice::IsExist($address, $type, false) )
 		{
 			// 设备已经设置，(false 代表包含未激活的设备)
 			// 		1、user JiWai status
 			//		2、verify code
-			$reply_robot_msg	= self::ProcessMoStatus($robotMsg);
+			$reply_robot_msg = self::ProcessMoStatus($robotMsg);
 		}
-		else
+		else 
 		{
 			// 非注册用户（在Device表中没有的设备）
-			$reply_robot_msg 	= self::CreateAccount($robotMsg, true);
+			if( $robotMsgtype == null || $robotMsgtype == 'NORMAL' )
+				$reply_robot_msg = self::CreateAccount($robotMsg, true);
+			else
+				$reply_robot_msg = null; 
 		}
 
 		if ( empty($reply_robot_msg) ) {
 			$msg = "MT: none\n";
 		} else {
 			$msg = sprintf("%-35s: %s\n", "MT(" . $reply_robot_msg->GetType()
-									. "://" . $reply_robot_msg->GetAddress()
-									. ")"
-							, $reply_robot_msg->GetBody() );
+						. "://" . $reply_robot_msg->GetAddress()
+						. ")"
+						, $reply_robot_msg->GetBody() );
 		}
 		echo $msg;
 
@@ -126,7 +136,16 @@ class JWRobotLogic {
 		$address	= $robotMsg->GetAddress();
 		$type		= $robotMsg->GetType();
 		$body		= $robotMsg->GetBody();
+		$msgtype	= $robotMsg->GetMsgtype();
 
+
+		//Todo 2007-06-26
+		$status_msgtype = array(null,'NORMAL','SIG');
+		if( ! in_array( $msgtype, $status_msgtype ) ){
+			//to do;
+			return null; 
+		}
+		$isSignature = ( $msgtype=='SIG' ) ? 'Y' : 'N';
 
 		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -149,7 +168,7 @@ class JWRobotLogic {
 			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
-			if ( JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time ) )
+			if ( JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature) )
 			{	// succeed posted, keep silence
 				return null;
 			}
