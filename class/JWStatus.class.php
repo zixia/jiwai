@@ -89,6 +89,9 @@ class JWStatus {
 					&& $device_data['isSignatureRecord'] == 'Y' 
 					&& strncasecmp($device_data['signature'],$status,140)
 			  ){
+				JWDB::UpdateTableRow('Device', $device_data['idDevice'], array(
+							'signature'=>$status
+							));
 			}else{
 				return true;
 			}
