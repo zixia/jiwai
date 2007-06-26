@@ -75,17 +75,31 @@ class JWStatus {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status, $device='web', $time=null )
+	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
 	{
 		$db = JWDB::Instance()->GetDb();
+
+		// 去掉回车，替换为空格 , shwdai moved here from below..
+		$status = preg_replace('[\r\n]',' ',$status);
+
+		//Sinature logic
+		if( $isSignature == 'Y' && in_array($device,array('gtalk','msn')) ){
+			$device_data = GetDeviceRowByUserId( $idUser );
+			if( !empty( $device_data ) 
+					&& $device_data['isSignatureRecord'] == 'Y' 
+					&& strncasecmp($device_data['signature'],$status,140)
+			  ){
+			}else{
+				return true;
+			}
+		}else{
+			$isSignature = 'N';
+		}
 
 		$time = intval($time);
 
 		if ( 0>=$time )
 			$time = time();
-
-		// 去掉回车，替换为空格
-		$status = preg_replace('[\r\n]',' ',$status);
 
 		$reply_info 		= JWStatus::GetReplyInfo($status);
 
@@ -104,9 +118,9 @@ class JWStatus {
 
 		$picture_id = $user_db_row['idPicture'];
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo,idPicture) "
-								. " values (?,?,?,FROM_UNIXTIME(?),?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("isssiii"
+		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo,idPicture,isSignature) "
+								. " values (?,?,?,FROM_UNIXTIME(?),?,?,?,?)" ) ){
+			if ( $result = $stmt->bind_param("isssiiis"
 											, $idUser
 											, $status
 											, $device
@@ -114,6 +128,7 @@ class JWStatus {
 											, $reply_status_id
 											, $reply_user_id
 											, $picture_id
+											, $isSignature
 								) ){
 				if ( $stmt->execute() ){
 					$stmt->close();
@@ -373,6 +388,7 @@ SELECT
 		, device
 		, idStatusReplyTo
 		, idPicture
+		, isSignature
 FROM	Status
 WHERE	Status.id IN ($condition_in)
 _SQL_;

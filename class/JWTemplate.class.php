@@ -503,9 +503,10 @@ _HTML_;
 			$status_id 	= $statusRow['idStatus'];
 			$status		= $statusRow['status'];
 			$timeCreate	= $statusRow['timeCreate'];
+			$sign		= $statusRow['isSignature'] == 'Y' ? '签名' : '';
 			$device		= $statusRow['device'];
 			$device		= JWDevice::GetNameFromType($device);
-	
+			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
 
@@ -554,7 +555,7 @@ if ( $isOpen && isset($statusRow) )
 {
 	echo <<<_HTML_
   					<a href="/$name_screen/statuses/$status_id">$duration</a>
-  					来自 $device
+  					来自 $device $sign
 _HTML_;
 
 	if (!empty($replyto))
@@ -727,6 +728,8 @@ _HTML_;
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
+			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?
+						'签名' : '';
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
@@ -761,7 +764,7 @@ _HTML_;
 			
 							<span class="meta">
 								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
-								来自于 <?php echo $device?> 
+								来自于 <?php echo "$device $sign"?> 
 <?php 
 		if (!empty($replyto) )
 		{

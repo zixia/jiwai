@@ -414,7 +414,7 @@ class JWSns {
 	/*
 	 *
 	 */
-	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null )
+	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null, $isSignature='N')
 	{
 		$reply_info	= JWStatus::GetReplyInfo($status);
 
@@ -468,7 +468,7 @@ class JWSns {
 
 		}
 
-		return JWStatus::Create($idUser,$status,$device,$time);
+		return JWStatus::Create($idUser,$status,$device,$time, $isSignature);
 	}
 
 
