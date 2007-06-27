@@ -60,16 +60,12 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	}
 	
 	static private class MyTimerTask extends TimerTask{
-		static int first = 0;
 		static final String RESETIDLETIMER = "RESETIDLETIMER";
 		public void run(){
-			if ( first > 0 ){
-				try{
-					connector.execute(RESETIDLETIMER);
-				}catch(Exception e){
-				}
+			try{
+				connector.execute(RESETIDLETIMER);
+			}catch(Exception e){
 			}
-			first ++;
 		}
 	}
 }
