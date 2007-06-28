@@ -199,7 +199,7 @@ _HTML_;
 ?>
 
 
-								<input style="display:none" id="upload_button" name="save" type="submit" value="上载" onclick="if(0==$('user_profile_image').value.length){alert('请先选择头像文件，然后点击上载即可成功。如需删除头像，请点击<删除>按钮。'); return false}else{return true;}"/>
+								<input style="display:block" id="upload_button" name="save" type="submit" value="上载" onclick="if(0==$('user_profile_image').value.length){alert('请先选择头像文件，然后点击上载即可成功。如需删除头像，请点击<删除>按钮。'); return false}else{return true;}"/>
 							</td>
 						</tr>
 					</table>
