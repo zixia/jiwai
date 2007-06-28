@@ -620,6 +620,8 @@ _SQL_;
 
 	static public function IsSubSms($idUser)
 	{
+		return true;
+
 		$user_db_row = JWUser::GetUserDbRowById($idUser);
 		return ('Y'==$user_db_row['isSubSms']);
 	}
