@@ -420,7 +420,7 @@ _SQL_;
 	}
 
 
-	static public function SetDeviceEnabledFor($idDevice, $enabledFor)
+	static public function SetDeviceEnabledFor($idDevice, $enabledFor, $isSignatureRecord='Y')
 	{
 		$idDevice	= JWDB::CheckInt($idDevice);
 
@@ -447,7 +447,10 @@ _SQL_;
 		}
 
 
-		return JWDB::UpdateTableRow('Device', $idDevice, array('enabledFor'=>$enabledFor));
+		return JWDB::UpdateTableRow('Device', $idDevice, array(
+					'enabledFor'=>$enabledFor,
+					'isSignatureRecord'=>$isSignatureRecord,
+					));
 	}
 
 
