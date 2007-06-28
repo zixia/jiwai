@@ -154,10 +154,13 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private void processFriendSignatureChange(QQEvent e){
 		
 		ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
-		String signature = p.signature;
+		String signature = p.signature.trim();
 		int senderQQ = p.signatureOwner;
 		
-		if( senderQQ != 16256732 && senderQQ != 918999 )
+		//if( senderQQ != 16256732 && senderQQ != 918999 )
+		//	return;
+
+		if( signature.equals("") )
 			return;
 		
 		MoMtMessage msg = new MoMtMessage(DEVICE);

@@ -103,13 +103,13 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		if( status.equals("") )
 			return;
 	
-		if( false == getFromEmail(p.getFrom()).equals("shwdai@gmail.com")
-			&& false == getFromEmail(p.getFrom()).equals("freewizard@gmail.com")
-			&& false == getFromEmail(p.getFrom()).equals("zixia@zixia.net")
-			&& false == getFromEmail(p.getFrom()).equals("daodao@jiwai.de")
-		){
-			return;
-		}		
+		//if( false == getFromEmail(p.getFrom()).equals("shwdai@gmail.com")
+		//	&& false == getFromEmail(p.getFrom()).equals("freewizard@gmail.com")
+		//	&& false == getFromEmail(p.getFrom()).equals("zixia@zixia.net")
+		//	&& false == getFromEmail(p.getFrom()).equals("daodao@jiwai.de")
+		//){
+		//	return;
+		//}		
 
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(getFromEmail(p.getFrom()));

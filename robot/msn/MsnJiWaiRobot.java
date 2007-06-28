@@ -136,10 +136,10 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		//Signature
 		if( signature != null 
 			&& false == signature.equals("") 
-			&&  ( email.equals("shwdai@msn.com")
-				|| email.equals("zixia@zixia.net")
-				|| email.equals("freewizard@msn.com")
- 			)
+		//	&&  ( email.equals("shwdai@msn.com")
+		//		|| email.equals("zixia@zixia.net")
+		//		|| email.equals("freewizard@msn.com")
+ 		//	)
 		){
 			MoMtMessage message = new MoMtMessage(DEVICE);
 			message.setMsgtype(MoMtMessage.TYPE_SIG);
