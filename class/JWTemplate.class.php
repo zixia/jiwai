@@ -69,12 +69,12 @@ _HTML_;
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
-叽叽歪歪,唧唧歪歪,叽歪网,歪歪,唧唧,叽叽,唧歪网,矶歪de,唧歪de,唧歪的,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
+叽叽歪歪,唧唧歪歪,叽歪网,歪歪,唧唧,叽叽,唧歪网,矶歪de,唧歪de,唧歪的,微博客,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
 _STR_;
 		else								$keywords = "叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽," . $options['keywords'];
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
+叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的微博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
 _STR_;
 		else									$description = $options['description'] . ",叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽" ;
 
@@ -192,7 +192,7 @@ _HTML_;
 	}
 
 
-	static public function header()
+	static public function header($showMenu=true)
 	{
 		$nameScreen = JWUser::GetCurrentUserInfo('nameScreen');
 ?>
@@ -200,7 +200,7 @@ _HTML_;
 <div id="header">
 	<div id="navigation">
 		<h2><a class="header" href="/">叽歪de</a></h2>
-<?php if ( strlen($nameScreen) ){ ?>
+<?php if ( $showMenu && strlen($nameScreen) ){ ?>
 		<ul>
 			<li class="first"><a href="/wo/">首页</a></li>
 			<li><a href="/<?php echo $nameScreen ?>/">我de档案</a></li> <li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>

@@ -843,7 +843,7 @@ _STR_;
 
 		// TODO 要考虑判断用户的 device 是否已经通过验证激活
 		if ( 'web'==$send_via_device )
-			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]现在不想被挠挠。。。要不稍后再试吧？");
+			return JWRobotLogic::ReplyMsg($robotMsg, "$friend_user_db_row[nameFull]已经关闭了通知，不想被挠挠。。。要不您稍后再试吧？");
 
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) )
 			return JWRobotLogic::ReplyMsg($robotMsg, "对不起，您还不是$friend_user_db_row[nameFull]的好友呢，"

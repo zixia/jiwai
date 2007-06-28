@@ -1,7 +1,6 @@
 <?php
 /*
  * @author: Seek
- * $Rev: 10;
  */
 
 if(!defined('TPL_FILE_SUFFIX')) define('TPL_FILE_SUFFIX','.tpl');

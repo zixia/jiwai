@@ -455,6 +455,7 @@ _SQL_;
 												, 'm'				=> true
 												, 'mashup'			=> true
 												, 'public_timeline'	=> true
+												, 'root'			=> true
 												, 'sms'				=> true
 												, 'team'			=> true
 												, 'twitter'			=> true

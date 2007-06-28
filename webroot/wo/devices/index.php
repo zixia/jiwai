@@ -290,7 +290,8 @@ _HTML_;
 
 			if ( $is_first )
 			{
-				$im_sologon = "(我们很快会支持Skype)";
+				// 有新 IM 的预告可以放在这里
+				$im_sologon = "";
 				$is_first = false;
 			}
 			else

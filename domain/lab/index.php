@@ -30,7 +30,7 @@ JWTemplate::html_head($options);
 
 <?php JWTemplate::accessibility() ?>
 
-<?php //JWTemplate::header() ?>
+<?php JWTemplate::header(false) ?>
 <div class="separator"></div>
 
 <div id="container">

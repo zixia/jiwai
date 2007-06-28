@@ -13,16 +13,21 @@ function do_create()
 	$param = $_REQUEST['pathParam'];
 	if ( ! preg_match('/^\/(\d+)$/',$param,$match) )
 	{
+/*		$error_html =<<<_HTML_
+哎呀！系统路径好像不太正确……
+_HTML_;
+		return array('error_html'=>$error_html);*/
+		$idPageUser = JWUser::GetUserInfo(trim(substr($param, 1)),'id');
+	} else {
+		$idPageUser = intval($match[1]);
+	}
+	$page_user_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
+	if (!$page_user_name) {
 		$error_html =<<<_HTML_
 哎呀！系统路径好像不太正确……
 _HTML_;
 		return array('error_html'=>$error_html);
 	}
-
-	$idPageUser = intval($match[1]);
-
-	$page_user_name	= JWUser::GetUserInfo($idPageUser,'nameFull');
-
 	// 如果页面用户设置了保护，并且页面用户没有添加当前登录用户位好友，则需要发送验证请求
 	if ( JWUser::IsProtected($idPageUser) && !JWFriend::IsFriend($idPageUser, $idLoginedUser) )
 	{
