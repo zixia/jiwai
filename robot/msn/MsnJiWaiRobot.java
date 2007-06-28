@@ -187,7 +187,28 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		String email = msg.getAddress();
 		String body  = msg.getBody();
 		Email remail = Email.parseStr(email);
-		messenger.sendText(remail, body);
+		
+		//We dont want to send typing control message
+		if( false == sendText(remail, body) ){
+			messenger.sendText(remail, body);
+		}
 		return true;
+	}
+	
+	
+	private boolean sendText(final Email email, final String text) {
+		if (email == null || text == null)
+			return true;
+		MsnSwitchboard[] switchboards = messenger.getActiveSwitchboards();
+		for (int i = 0; i < switchboards.length; i++) {
+			if (switchboards[i].containContact(email)
+					&& switchboards[i].getAllContacts().length == 1) {
+				MsnInstantMessage instanceMessage = new MsnInstantMessage();
+				instanceMessage.setContent(text);
+				switchboards[i].sendMessage(instanceMessage);
+				return true;
+			}
+		}
+		return false;
 	}
 }
