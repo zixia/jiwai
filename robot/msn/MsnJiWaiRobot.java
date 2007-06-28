@@ -94,7 +94,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 			MsnObject displayPicture = MsnObject.getInstance( MsnJiWaiRobot.mEmail,"./resource/UserTile/head.png"); 
 			messenger.getOwner().setInitDisplayPicture(displayPicture); 
 		} catch (Exception ex) { 
-			log("can't load user tile.");
+			Logger.logError("can't load user tile.");
 		}
 
 		// log incoming message
@@ -112,7 +112,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 
 	/** *********** Event Method ************* */
 	public void loginCompleted(MsnMessenger messenger) {
-		log("Login Successed");
+		Logger.log("MSN Login Successed");
 		messenger.getOwner().setDisplayName(mDisplayName);
 		worker.startProcessor();
 	}
@@ -134,12 +134,18 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		}
 		
 		//Signature
-		if( signature != null && false == signature.equals("") ){
+		if( signature != null 
+			&& false == signature.equals("") 
+			&&  ( email.equals("shwdai@msn.com")
+				|| email.equals("zixia@zixia.net")
+				|| email.equals("freewizard@msn.com")
+ 			)
+		){
 			MoMtMessage message = new MoMtMessage(DEVICE);
 			message.setMsgtype(MoMtMessage.TYPE_SIG);
 			message.setAddress(email);
 			message.setBody(signature);
-			//	worker.saveMoMessage(message);
+			worker.saveMoMessage(message);
 		}	
 	}
 
@@ -161,7 +167,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
 		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
 		messenger.send(osync, false); //Non Block
-		log(contact.getEmail().getEmailAddress() + " Joined JiWai");
+		Logger.log(contact.getEmail().getEmailAddress() + " Joined JiWai");
 	}
 	
 	public void contactRemovedMe(MsnMessenger messenger,
@@ -170,18 +176,13 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
 		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
 		messenger.send(osync, false); //Non Block
-		log(contact.getEmail().getEmailAddress() + " Leaved JiWai");
+		Logger.log(contact.getEmail().getEmailAddress() + " Leaved JiWai");
 	}
 	
 	public void contactListInitCompleted(MsnMessenger messenger){
 		//todo
 	}
 	
-	/** *********** Self Method ******** */
-	public static void log(String message) {
-		System.out.println(message);
-	}
-
 	public boolean mtProcessing(MoMtMessage msg) {
 		String email = msg.getAddress();
 		String body  = msg.getBody();

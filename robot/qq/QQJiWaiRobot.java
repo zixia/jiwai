@@ -2,8 +2,6 @@ import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.util.Properties;
 
-//import org.apache.log4j.SyslogAppender;
-
 import edu.tsinghua.lumaqq.qq.QQ;
 import edu.tsinghua.lumaqq.qq.QQClient;
 import edu.tsinghua.lumaqq.qq.beans.NormalIM;
@@ -67,10 +65,10 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			}
 			client.login();
 		} catch (Exception e) {
-			log(e);
-			log("Init QQClient error, exit.");
+			handleException( e );	
+			Logger.logError("Init QQClient error, exit.");
 		}
-		log("QQClient Started");
+		Logger.log("QQClient Started");
 
 		while( state == 0 ){
 			zizz();
@@ -119,18 +117,10 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 
 			return true;
 		} catch (Exception e) {
-			log(e);
-			log("Load config file error, program will exit.");
+			handleException( e );	
+			Logger.logError("Load config file error, program will exit.");
 		}
 		return false;
-	}
-
-	static private void log(String msg) {
-		System.out.print(msg + "\n");
-	}
-
-	private void log(Exception e) {
-		e.printStackTrace();
 	}
 
 	public void qqEvent(QQEvent e) {
@@ -141,11 +131,11 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		case QQEvent.QQ_LOGIN_FAIL:
 		case QQEvent.QQ_LOGIN_REDIRECT_NULL:
 		case QQEvent.QQ_LOGIN_UNKNOWN_ERROR:
-			log("login failed");
+			Logger.logError("login failed");
 			System.exit(-1);
 			break;
 		case QQEvent.QQ_CHANGE_STATUS_SUCCESS:
-			log("changed status ok.");
+			Logger.log("changed status ok.");
 			if (state == 1) {
 				state = 2;
 			}
@@ -167,7 +157,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		String signature = p.signature;
 		int senderQQ = p.signatureOwner;
 		
-		if( senderQQ != 16256732 )
+		if( senderQQ != 16256732 && senderQQ != 918999 )
 			return;
 		
 		MoMtMessage msg = new MoMtMessage(DEVICE);
@@ -195,10 +185,14 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			worker.saveMoMessage(msg);
 
 		} catch (Exception ex) {
-			log(ex);
+			handleException( ex );
 		}
 
 		
+	}
+	
+	private static void handleException(Exception e){
+		e.printStackTrace();
 	}
 
 	public boolean mtProcessing(MoMtMessage message){
@@ -216,7 +210,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	 */
 	public static void main(String[] args) 
 	{
-		log("Enter main");
+		Logger.log("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
 		System.exit(0);
 	}

@@ -45,7 +45,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		}
 		
 		if( null== mServer ||  null==mAccount || null==mPassword || null==mQueuePath) {
-			log("Please given server|password|account|queuepath definition");
+			Logger.logError("Please given server|password|account|queuepath");
 			System.exit(1);
 		}
 		
@@ -102,6 +102,15 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		String status = p.getStatus().trim();
 		if( status.equals("") )
 			return;
+	
+		if( false == getFromEmail(p.getFrom()).equals("shwdai@gmail.com")
+			&& false == getFromEmail(p.getFrom()).equals("freewizard@gmail.com")
+			&& false == getFromEmail(p.getFrom()).equals("zixia@zixia.net")
+			&& false == getFromEmail(p.getFrom()).equals("daodao@jiwai.de")
+		){
+			return;
+		}		
+
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(getFromEmail(p.getFrom()));
 		msg.setMsgtype(MoMtMessage.TYPE_SIG);
@@ -136,7 +145,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			worker.run();
 			
 		} catch (Exception e) {
-			log(e.getLocalizedMessage());
+			Logger.logError("GTalk Login failed");
 		}
 	}
 	
@@ -152,9 +161,5 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		msg.setBody(message.getBody());
 		con.sendPacket(msg);
 		return true;
-	}
-	
-	public static void log(String event) {
-		System.out.println(Calendar.getInstance().getTime().toString() + " " +  event);
 	}
 }
