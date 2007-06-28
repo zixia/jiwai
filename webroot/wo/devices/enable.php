@@ -6,6 +6,8 @@ JWLogin::MustLogined();
 $user_id	= JWLogin::GetCurrentUserId();
 $pathParam 	= $_REQUEST['pathParam'];
 
+$isSignatureRecord = isset($_REQUEST['isSignatureRecord']) ? 'Y' : 'N';
+
 
 if ( !preg_match('/(\d+)/',$pathParam, $matches) )
 {
@@ -25,7 +27,7 @@ if ( isset($_REQUEST['device']) )
 {
 	$enabled_for	= $_REQUEST['device']['enabled_for'];
 
-	JWDevice::SetDeviceEnabledFor($device_id,$enabled_for);
+	JWDevice::SetDeviceEnabledFor($device_id,$enabled_for,$isSignatureRecord);
 }
 	
 JWTemplate::RedirectBackToLastUrl('/wo/devices/');

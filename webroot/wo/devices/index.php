@@ -223,11 +223,15 @@ _HTML_;
 						<h3> <?php echo $device_row[$im]['address'] 
 										. "($im_name)" ?> </h3>
 
-						通知：
+						<form action="/wo/devices/enable/<?php echo $device_row[$im]['idDevice']?>" class="device_control" id="device_<?php echo $device_row[$im]['idDevice']?>_updates_form" method="post">
+							通知：<?
+							if( in_array($im, array("gtalk","msn","qq"))){
+							?>
+								<input type="checkbox" name="isSignatureRecord" value="Y" <?= ( ($device_row[$im]['isSignatureRecord']=='Y') ? 'checked' : '' ) ?>/>允许记录我的IM签名更新
+							<?
+							}
+							?><br/>
 			
-						<form action="/wo/devices/enable/<?php echo $device_row[$im]['idDevice']?>" class="device_control" 
-								id="device_<?php echo $device_row[$im]['idDevice']?>_updates_form" method="post">
-
 							<select name="device[enabled_for]">
   								<option <?php if ('everything'==$device_row[$im]['enabledFor']) 
 											echo 'selected="selected" ';
