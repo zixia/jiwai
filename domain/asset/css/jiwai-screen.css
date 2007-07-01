@@ -29,6 +29,7 @@ fieldset th {
 fieldset th, fieldset td, #timeline td {
 	padding:7px 3px;
 	vertical-align:top;
+	word-break:break-all;
 }
 
 
