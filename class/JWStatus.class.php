@@ -497,7 +497,7 @@ _SQL_;
 
 		$skip_url_regex = 	 '#'
 							.'(komoo.cn)'
-							.'|(fanfou.com)'
+			#				.'|(fanfou.com)'
 							.'#'
 						;
 		$status = preg_replace('/[\n\r]/' ,' ', $status);
