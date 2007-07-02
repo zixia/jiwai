@@ -213,6 +213,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	 */
 	public static void main(String[] args) 
 	{
+		Logger.initialize(DEVICE);
 		Logger.log("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
 		System.exit(0);

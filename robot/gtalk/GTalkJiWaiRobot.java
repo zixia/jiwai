@@ -28,6 +28,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static MoMtWorker worker = null;
 	
 	static {
+		Logger.initialize(DEVICE);
 		Properties config = new Properties();
 		try {
 			config.load(new FileInputStream("config.ini"));

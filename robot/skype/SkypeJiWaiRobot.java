@@ -16,6 +16,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	
 	
 	static {
+		Logger.initialize(DEVICE);
 		Properties config = new Properties();
 		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path"));
 

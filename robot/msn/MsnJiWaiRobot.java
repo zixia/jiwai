@@ -33,15 +33,13 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public static String mDisplayName = null;
 
 	public static MsnMessenger messenger = null;
-
-	public static Pattern patternFile = null;
-	public static Pattern patternHead = null;
 	
 	public final static String DEVICE = "msn";
 	
 	public static MoMtWorker worker = null;
 
 	static {
+		Logger.initialize(DEVICE);
 		Properties config = new Properties();
 		try {
 			config.load(new FileInputStream("config.ini"));
@@ -67,11 +65,6 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		mQueuePathMo = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mo" + File.separator;
 		mQueuePathMt = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mt" + File.separator;
 						
-		/** pre compiled pattern */
-		patternFile = Pattern.compile("(.+?)\\n\\n(.+)");
-		patternHead = Pattern.compile("ADDRESS:\\s+msn://(.+)",
-						Pattern.CASE_INSENSITIVE);
-		
 		//MoMtWorker
 		worker = new MoMtWorker("msn", mQueuePath);
 
