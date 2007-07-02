@@ -91,7 +91,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);
 		messenger.getOwner().setNotifyMeWhenSomeoneAddedMe(false);
 		try { 
-			MsnObject displayPicture = MsnObject.getInstance( MsnJiWaiRobot.mEmail,"./resource/UserTile/head.png"); 
+			MsnObject displayPicture = MsnObject.getInstance( MsnJiWaiRobot.mEmail,"./resource/UserTile/jiwai.jpg"); 
 			messenger.getOwner().setInitDisplayPicture(displayPicture); 
 		} catch (Exception ex) { 
 			Logger.logError("can't load user tile.");

@@ -9,7 +9,8 @@ while ($line=JWConsole::getline()){
 
 	if ( ! preg_match('/^(\d+)\s+(.+)$/', $line, $matches) )
 	{
-		echo "ERR parse\n";
+		$line = preg_replace('[\r\n]','',$line);
+		echo "ERR parse [$line]\n";
 		continue;
 	}
 
