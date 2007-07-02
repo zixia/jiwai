@@ -183,7 +183,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		
 		//We dont want to send typing control message
 		if( false == sendText(remail, body) ){
-			messenger.sendText(remail, body);
+			try {
+				messenger.sendText(remail, body);
+			}catch(Exception e){
+				Logger.logError("[MT] ["+DEVICE+"://"+email+"] Session closed");	
+				return false;
+			}
 		}
 		return true;
 	}
