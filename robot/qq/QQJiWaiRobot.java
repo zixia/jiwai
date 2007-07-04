@@ -225,11 +225,12 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 				if(m[i]==0x33){
 					i++;
 					if(i>=len) break;
-					int extLen = m[i]+1;
-					i += 32+1+extLen;
+					int extLen = m[i] - '0' + 1; //base form '0' => 1, '1'=>2 ....
+
+					i += 32 + 1 + extLen + 1;  //md5_len, 1(.) , extlen
 					if(i>=len) break;
-					int shortLen = m[i] - 'A';
-					if(i>=len) break;
+					int shortLen = m[i] - 'A'; //base from 'A' => 0, ....
+
 					i += shortLen;
 					continue;
 				}
