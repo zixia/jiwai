@@ -1,5 +1,6 @@
 <?php
 JWTemplate::html_doctype();
+$q = isset($_REQUEST['q']) ? $_REQUEST['q'] : null;
 
 //$debug = JWDebug::instance();
 //$debug->init();
@@ -43,6 +44,8 @@ $active_tab = 'archive';
 if ( isset($g_user_with_friends) && $g_user_with_friends )
 	$active_tab = 'friends';
 
+if( $func == 'search' )
+	$active_tab = 'search';
 
 /*
  *	使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
@@ -69,6 +72,22 @@ switch ( $active_tab )
 		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
 
 		$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		break;
+	case 'search':
+		$searchStatus = new JWSearchStatus();
+
+		$p = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+		$searchStatus->setPageNo( $p );
+
+		$searchStatus->setInSite("jiwai.de/".$page_user_info['nameScreen']."/statuses/");
+		$searchStatus->execute($q);
+
+		$user_status_num = $searchStatus->getTotalSize();
+		$pagination	= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$user_ids = array($page_user_id); 
+
+		$status_ids = $searchStatus->getStatusIds();
+		$status_data = array('user_ids'=>$user_ids, 'status_ids'=>$status_ids);
 		break;
 }
 
@@ -181,7 +200,13 @@ $menu_list = array (
 								,'name'		=> "以前的"
 								,'url'		=> "/$page_user_info[nameScreen]/"
 							)
+		,'search'	=> array(	'active' => false
+								,'name'		=> "搜索结果"
+								,'url'		=> "/$page_user_info[nameScreen]/search?q=".urlEncode($_REQUEST['q']))
 	);
+
+if( $active_tab !== 'search' ) 
+	unset( $menu_list['search'] );
 
 $menu_list[$active_tab]['active'] = true;
 //die(var_dump($menu_list));
@@ -217,7 +242,7 @@ if ( $show_protected_content )
   
 <?php 
 if ( $show_protected_content )
-	JWTemplate::pagination($pagination) 
+	JWTemplate::pagination($pagination, $q===null ? null : array('q'=>$q) );
 ?>
 
 <?php 
@@ -250,6 +275,7 @@ $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
 								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
 								, array ('action'	, array($user_action_row,$page_user_info['id']))
+								, array ('search'	, array($page_user_info['nameScreen'], $q))
 								, array ('friend'	, array($arr_friend_list))
 							);
 

@@ -1,7 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/../../jiwai.inc.php');
 JWTemplate::html_doctype();
-
 JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
@@ -61,12 +60,19 @@ if ( isset($g_show_user_archive) && $g_show_user_archive)
 if ( isset($g_replies) && $g_replies )
 	$active_tab = 'replies';
 
+if ( isset($g_search) && $g_search )
+	$active_tab = 'search';
+
 
 $menu_list = array (
-		 'archive'	=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/account/archive")
-		,'replies'	=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
-		,'friends'	=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
+		 'archive'=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/account/archive")
+		,'replies'=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
+		,'friends'=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
+		,'search'=> array('active'=>false	,'name'=>'搜索结果'	,'url'=>"/wo/search/statuses?q=".urlEncode($q))
 	);
+
+if( $q === null )
+	unset( $menu_list['search'] );
 
 $menu_list[$active_tab]['active'] = true;
 
@@ -100,6 +106,27 @@ switch ( $active_tab )
 		$status_data 	= JWStatus::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 		break;
+	case 'search':
+		//搜索所有用户的Status更新
+		$searchStatus = new JWSearchStatus();
+
+		$p = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+		$searchStatus->setPageNo( $p );
+
+		$searchStatus->setInSite("jiwai.de/$in_user/statuses/");
+		$searchStatus->execute($eq);
+
+		$user_status_num = $searchStatus->getTotalSize();
+		$pagination	= new JWPagination($user_status_num, @$_REQUEST['page']);
+
+		$user_ids = $searchStatus->getUserIds();
+		if( !empty($user_ids) )
+			$user_ids = JWUser::GetUserIdsByNameScreens( $user_ids );
+		$status_ids = $searchStatus->getStatusIds();
+
+		$status_data = array('user_ids'=>$user_ids, 'status_ids'=>$status_ids);
+		break;
+
 	default:
 	case 'friends':
 		// 显示用户和好友的
@@ -114,8 +141,8 @@ $status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
-  
-JWTemplate::pagination($pagination);
+
+JWTemplate::pagination($pagination, $q===null ? null : array('q'=>$q) );
 
 ?>
 
@@ -168,12 +195,14 @@ $via_device			= JWUser::GetSendViaDevice($logined_user_id);
 
 $friend_request_num	= JWFriendRequest::GetUserNum($logined_user_id);
 
-$arr_menu 			= array(	array ('status'			, array($logined_user_info))
-								, array ('friend_req'	, array($friend_request_num))
-								, array ('count'		, array($arr_count_param))
-								, array ('jwvia'		, array($active_options, $via_device))
-								, array ('friend'		, array($arr_friend_list))
-							);
+$arr_menu 			= array(
+					array ('status'	, array($logined_user_info)) , 
+					array ('friend_req'	, array($friend_request_num)) , 
+					array ('count'		, array($arr_count_param)) , 
+					array ('jwvia'		, array($active_options, $via_device)) ,
+					array ('search'		, array(null, $q)) ,
+				       	array ('friend'		, array($arr_friend_list)) , 
+				);
 	
 JWTemplate::sidebar( $arr_menu );
 ?>

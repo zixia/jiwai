@@ -703,6 +703,84 @@ _SQL_;
 		return $user_ids;
 	}
 
+	static public function GetUserIdsByNameScreens($nameScreens=null){
+		setType($nameScreens, 'array');
+		$nameScreens = array_unique($nameScreens);
+		$in_condition = "'" .(implode("','", $nameScreens)). "'";
+
+		$sql = <<<_SQL_
+SELECT id as idUser
+FROM User 
+WHERE nameScreen in ($in_condition);
+_SQL_;
+
+		$user_ids = array();
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		foreach ( $rows as $row )
+		{
+			array_push($user_ids,$row['idUser']);
+		}
+
+		return $user_ids;
+	}
+
+	static public function GetSearchNameUserIds($key, $limit=100, $offset=0){
+
+		$sql = <<<_SQL_
+SELECT id as idUser
+FROM User 
+WHERE nameScreen like '%$key%' OR nameScreen like '%$key%'
+	OR nameFull like '%$key%' OR nameFull like '%$key%'
+LIMIT	$offset, $limit
+_SQL_;
+
+		$user_ids = array();
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		foreach ( $rows as $row )
+		{
+			array_push($user_ids,$row['idUser']);
+		}
+
+		return $user_ids;
+	}
+
+	static public function GetSearchEmailUserIds($key, $limit=100, $offset=0){
+		$email = strtolower($key);
+		$userEmail = strrev( $email );
+
+		$sql = <<<_SQL_
+SELECT id as idUser
+FROM User
+WHERE email='$userEmail'
+LIMIT	$offset, $limit
+_SQL_;
+
+		$user_ids = array();
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		foreach ( $rows as $row )
+		{
+			array_push($user_ids,$row['idUser']);
+		}
+		
+		//Search email from device
+		$address_user_ids = JWDevice::GetUserIdsByAddress($email, array('msn','gtalk','newsmth'));
+
+		$user_ids = array_merge($user_ids, $address_user_ids);
+		$user_ids = array_unique($user_ids);
+
+		return $user_ids;
+	}
+
+	static public function GetSearchDeviceUserIds($key, $devices=array('sms'), $limit=0,$offset=0){
+		settype($devices, 'array');
+		return JWDevice::GetUserIdsByAddress($key, $devices);
+	}
+
 	static public function IsAdmin($idUser)
 	{
 		$admin_user_db_row = JWUser::GetUserInfo('adm');

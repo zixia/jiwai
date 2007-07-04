@@ -707,6 +707,10 @@ _HTML_;
 		$user_showed = array();
 		foreach ( $statusIds as $status_id ){
 //die(var_dump($aStatusList));
+
+			if( !isset($statusRows[$status_id]) )
+				continue;
+
 			$user_id 	= $statusRows[$status_id]['idUser'];
 
 			if ( $options['protected'] && JWUser::IsProtected($user_id) )
@@ -825,7 +829,7 @@ if ( isset($current_user_id) )
 	}
 
 
-	static public function pagination( $pagination )
+	static public function pagination( $pagination, $qarray=null )
 	{
 		if ( empty($pagination) )
 		{
@@ -853,6 +857,8 @@ if ( isset($current_user_id) )
 		$is_show_oldest = $pagination->IsShowOldest();
 		$oldest_page_no	= $pagination->GetOldestPageNo();
 
+		$prequery = http_build_query($qarray);
+
 		echo <<<_HTML_
 				<div class="pagination">
 <style type="text/css">
@@ -868,18 +874,18 @@ padding:5px;
 _HTML_;
 
 		if ( $is_show_newest )
-			echo "<td class='bl odd'><a href='?page=$newest_page_no'>« 最新</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newest_page_no'>« 最新</a></td>\n";
 
 		if ( $is_show_newer )
-			echo "<td class='bl odd'><a href='?page=$newer_page_no'>‹ 较新</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newer_page_no'>‹ 较新</a></td>\n";
 
 		echo '<td class="bl"></td>';
 
 		if ( $is_show_older )
-			echo "<td class='bl odd'><a href='?page=$older_page_no'>较早 ›</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$older_page_no'>较早 ›</a></td>\n";
 		
 		if ( $is_show_oldest )
-			echo "<td class='bl odd'><a href='?page=$oldest_page_no'>最早 »</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$oldest_page_no'>最早 »</a></td>\n";
 
 		echo <<<_HTML_
 </tr></tbody></table>
@@ -1528,24 +1534,56 @@ _HTML_;
 _HTML_;
 	}
 
-	static function sidebar_search()
+	static function sidebar_search($nameUser=null,$q=null)
 	{
+		$action = "/wo/search/users";
+		$action2 = "/wo/search/statuses";
+
+		if($nameUser) 
+			$action = "/$nameUser/search";
+
 ?>
-		<form action="/users/search" method="post" onsubmit="new Ajax.Updater('friend', '/users/search', {asynchronous:true, evalScripts:true, parameters:'name_number_or_email=' + $('user_search').value}); return false;">
-			<fieldset class="user_search">
-    			<input id="user_search" name="name_number_or_email" onclick="this.value=&quot;&quot;" type="text" value="输入id，email，手机号进行搜索" />
-    			<input src="http://asset.jiwai.de/img/icon_search.gif" type="image" />
-			</fieldset>
-		</form>
-
-		<script type="text/javascript">
-//<![CDATA[
-/*new Form.Element.Observer('user_search', 0.5, function(element, value) {new Ajax.Updater('friends', '/users/search', {asynchronous:true, evalScripts:true, parameters:'name_number_or_email=' + value})})*/
-//]]>
-		</script>
-
-<?php
+<script type="text/javascript">
+	function on_sidebar_search_click(o){
+		if(!$('search_content').value.trim()){
+			$('search_content').value = $('search_content').value.trim();
+			return false;
+		}
+		if(o && o=='s'){
+			$('sidebar_search_form').action = '/wo/search/statuses';
+		}
+		return true;
 	}
+</script>
+<?
+
+		if($nameUser) {
+?>
+		<div style="padding:10px 0 20px 0;">
+			<form action="<?php echo $action?>" method="GET" id="sidebar_search_form">
+				<fieldset class="user_search">
+				<input id="search_content" name="q" onclick="" type="text" value="<?php echo $q ?>" /><br/>
+				<input type="submit" value="搜更新" onclick="return on_sidebar_search_click();"/>
+				</fieldset>
+			</form>
+		</div>
+<?php
+	}else{
+?>
+		<div style="padding:10px 0 20px 0;">
+			<form action="<?php echo $action?>" method="GET" id="sidebar_search_form">
+				<fieldset class="user_search">
+				<input id="search_content" name="q" onclick="" type="text" value="<?php echo $q ?>" /><br/>
+				<input type="submit" value="搜用户" onclick="on_sidebar_search_click();"/>
+				<input type="submit" value="搜更新" onclick="on_sidebar_search_click('s');"/>
+				</fieldset>
+			</form>
+		</div>
+
+<?
+
+	}
+}
 
 
 	/*

@@ -65,7 +65,6 @@ switch ( $func )
 			exit(0);
 		}
 		break;
-		
 	case 'friends':
 		// 用户好友列表
 		require_once(dirname(__FILE__) . "/friends.inc.php");

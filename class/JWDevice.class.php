@@ -588,6 +588,26 @@ _SQL_;
 		return $device_address_rows;
 	}
 
+	static public function GetUserIdsByAddress($key, $type='sms'){
+		settype($type, 'array');
+		$in_type_string = implode("','", $type);
+
+		$sql = <<<_SQL_
+SELECT idUser
+FROM Device
+WHERE address='$key' and type in ('$in_type_string');
+_SQL_;
+
+		$user_ids = array();
+		$rows = JWDB::GetQueryResult($sql,true);
+		foreach ( $rows as $row )
+		{
+			array_push($user_ids,$row['idUser']);
+		}
+
+		return $user_ids;
+	}
+
 
 	/*
 	 *	根据 Device Type 返回机器人帐号
