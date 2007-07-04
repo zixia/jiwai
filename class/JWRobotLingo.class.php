@@ -114,6 +114,7 @@ class JWRobotLingo {
 			throw new JWException('null param?');
 
 		$body = $robotMsg->GetBody();
+		$body = self::ConvertCorner( $body );
 
 		if ( ! preg_match('/^([[:alpha:]]+)\s*(\w*)/',$body,$matches) ) 
 			return false;
@@ -316,6 +317,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -386,6 +388,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -461,6 +464,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -707,6 +711,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -750,6 +755,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -826,6 +832,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -887,6 +894,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -939,6 +947,7 @@ _STR_;
 	 	 *	解析命令参数
 	 	 */
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -1030,6 +1039,7 @@ DENY命令帮助：DENY 帐号。有问题吗？上 http://JiWai.de/ 看看吧�
 _HELP_;
 
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -1109,6 +1119,7 @@ D命令帮助：D 帐号 您想说的悄悄话。有问题吗？上 http://JiWai
 _STR_;
 
 		$param_body = $robotMsg->GetBody();
+		$param_body = self::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s+(.+)$/i',$param_body,$matches) )
 			return JWRobotLogic::ReplyMsg($robotMsg, $help);
@@ -1192,6 +1203,30 @@ _STR_;
 							);
 
 		return $robot_reply_msg;
+	}
+	
+	/**
+	 * 将字符串转化为半角，从而支持半角指令
+	 * @param string $string , 
+	 * @return string
+	 */
+	static function ConvertCorner($string){
+		$corner = array(
+			'１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
+			'６' => '6', '７' => '7', '８' => '8', '９' => '9', '０' => '0',
+			'ａ' => 'a', 'ｂ' => 'b', 'ｃ' => 'c', 'ｄ' => 'd', 'ｅ' => 'e',
+			'ｆ' => 'f', 'ｇ' => 'g', 'ｈ' => 'h', 'ｉ' => 'i', 'ｊ' => 'j',
+			'ｋ' => 'k', 'ｌ' => 'l', 'ｍ' => 'm', 'ｎ' => 'n', 'ｏ' => 'o',
+			'ｐ' => 'p', 'ｑ' => 'q', 'ｒ' => 'r', 'ｓ' => 's', 'ｔ' => 't',
+			'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x', 'ｙ' => 'y',
+			'ｚ' => 'z', 'Ａ' => 'A', 'Ｂ' => 'B', 'Ｃ' => 'C', 'Ｄ' => 'D',
+			'Ｅ' => 'E', 'Ｆ' => 'F', 'Ｇ' => 'G', 'Ｈ' => 'H', 'Ｉ' => 'I',
+			'Ｊ' => 'J', 'Ｋ' => 'K', 'Ｌ' => 'L', 'Ｍ' => 'M', 'Ｎ' => 'N',
+			'Ｏ' => 'O', 'Ｐ' => 'P', 'Ｑ' => 'Q', 'Ｒ' => 'R', 'Ｓ' => 'S',
+			'Ｔ' => 'T', 'Ｕ' => 'U', 'Ｖ' => 'V', 'Ｗ' => 'W', 'Ｘ' => 'X',
+			'Ｙ' => 'Y', 'Ｚ' => 'Z', '　' => ' '
+	    	);
+		return str_replace(array_keys($corner), array_values($corner), $string);
 	}
 }
 ?>
