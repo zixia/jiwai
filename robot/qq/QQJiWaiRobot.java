@@ -30,9 +30,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private String proxyType;
 	
 	private int state = 0;
-	private int stepCount = 5;
 	
-	private String	mQueuePath = null;
+	private static String mQueuePath = null;
 	
 	private static MoMtWorker worker = null;
 	
@@ -73,9 +72,6 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		while( state == 0 ){
 			zizz();
 		}
-
-		worker = new MoMtWorker( DEVICE, mQueuePath , this );
-		worker.run();
 	}
 
 	public void zizz() {
@@ -146,6 +142,9 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		case QQEvent.QQ_FRIEND_SIGNATURE_CHANGED:
 			processFriendSignatureChange(e);
 			break;
+		case QQEvent.QQ_REQUEST_SEND_FILE:
+			System.out.println("Accept file");
+			break;
 		default:
 			break;
 		}
@@ -179,11 +178,15 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			NormalIM m = p.normalIM;
 
 			Integer	sender_address 	= p.normalHeader.sender;
-			
+			byte[] messageBytes = stripFace(m.messageBytes);
+			if( messageBytes.length == 0 )
+				return;
+
+			String body = new String(messageBytes,"GBK");
+
 			MoMtMessage msg = new MoMtMessage(DEVICE);
-			
 			msg.setAddress(sender_address.toString());
-			msg.setBody(new String(m.messageBytes,"GBK"));
+			msg.setBody(body);
 
 			worker.saveMoMessage(msg);
 
@@ -192,6 +195,53 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		}
 
 		
+	}
+	
+	/**
+	 * Strip QQface from QQ message which will coz $#@T@#Twfr
+	 */
+	private static byte[] stripFace(byte[] m){
+		if (null==m || m.length==0)
+			return null;
+		
+		int len = m.length;
+		
+		byte[] rew = new byte[m.length];
+		int j=0;
+		for(int i=0; i<m.length;i++){
+			if(m[i] == 0x14){
+				i++;
+				continue;
+			}
+			
+			if(m[i] == 0x15){
+				i++;
+				if(i>=len) break;
+				if(m[i]==0x34){
+					i++;
+					if(i>=len) break;
+					continue;
+				}
+				if(m[i]==0x33){
+					i++;
+					if(i>=len) break;
+					int extLen = m[i]+1;
+					i += 32+1+extLen;
+					if(i>=len) break;
+					int shortLen = m[i] - 'A';
+					if(i>=len) break;
+					i += shortLen;
+					continue;
+				}
+				i--;
+			}
+			rew[j++] = m[i];
+		}
+		
+		byte[] re = new byte[j];
+		System.arraycopy(rew, 0, re, 0, j);
+		
+		return re;
 	}
 	
 	private static void handleException(Exception e){
@@ -216,7 +266,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		Logger.initialize(DEVICE);
 		Logger.log("Enter main");
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
-		System.exit(0);
+		worker = new MoMtWorker( DEVICE, mQueuePath , qq_robot );
+		worker.run();
 	}
 }
 
