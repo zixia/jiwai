@@ -4,15 +4,16 @@ function user_status($idPageUser, $idStatus)
 	JWTemplate::html_doctype();
 
 	$status_rows	= JWStatus::GetStatusDbRowsByIds(array($idStatus));
-	$status_info	= $status_rows[$idStatus];
+	$status_info	= @$status_rows[$idStatus];
 
-	$page_user_info	= JWUser::GetUserInfo($idPageUser);
 
 	if ( $status_info['idUser']!==$idPageUser )
 	{
 		JWTemplate::RedirectTo404NotFound();
 		exit(0);
 	}
+
+	$page_user_info	= JWUser::GetUserInfo($idPageUser);
 
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
