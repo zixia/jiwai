@@ -16,7 +16,7 @@ import de.jiwai.robot.*;
 /**
  * @author AKA shwdai@gmail.com
  */
-public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
+public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable{
 
 	public static String mEmail = null;
 
@@ -74,7 +74,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		messenger.addListener(this);
 	}
 
-	public void start() {
+	public void run() {
 		// create MsnMessenger instance
 		messenger = MsnMessengerFactory.createMsnMessenger(
 				MsnJiWaiRobot.mEmail, MsnJiWaiRobot.mPassword);
@@ -100,7 +100,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public static void main(String[] args) throws Exception {
 		MsnJiWaiRobot robot = new MsnJiWaiRobot();
 		worker.setProcessor(robot);
-		robot.start();
+		robot.run();
 	}
 
 	/** *********** Event Method ************* */
@@ -196,10 +196,9 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 
 	private void doReconnect(){
 		worker.stopProcessor();	
-		start();
+		new Thread(this).start();
 	}
-	
-	
+
 	private boolean sendText(final Email email, final String text) {
 		if (email == null || text == null)
 			return true;
