@@ -187,10 +187,16 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 				messenger.sendText(remail, body);
 			}catch(Exception e){
 				Logger.logError("[MT] ["+DEVICE+"://"+email+"] Session closed");	
+				doReconnect();
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private void doReconnect(){
+		worker.stopProcessor();	
+		start();
 	}
 	
 	
