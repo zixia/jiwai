@@ -428,7 +428,8 @@ class JWSns {
 			}
 		}
 
-		$reply_info	= JWStatus::GetReplyInfo($status);
+		$statusPost = JWRobotLingo::ConvertCorner( $status );
+		$reply_info	= JWStatus::GetReplyInfo($statusPost);
 
 		/*
 		 *	如果是 @user 的更新，只发送给 user
@@ -436,6 +437,7 @@ class JWSns {
 	 	 */
 		if ( !empty($reply_info) )
 		{
+			$status = $statusPost;
 			$follower_ids = array($reply_info['user_id']);
 		}
 		else

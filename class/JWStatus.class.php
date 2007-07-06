@@ -50,13 +50,14 @@ class JWStatus {
 		if ( empty($status) )
 			return null;
 
+		var_dump( $status );
+		
 		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) )
 			return null;
 
 		$reply_to_user = $matches[1];
 
 		$user_db_row	= JWUser::GetUserInfo($reply_to_user);
-
 
 		if ( empty($user_db_row) )
 			return null;
@@ -85,8 +86,9 @@ class JWStatus {
 
 		if ( 0>=$time )
 			$time = time();
-
-		$reply_info 		= JWStatus::GetReplyInfo($status);
+		
+		$statusPost = JWRobotLingo::ConvertCorner($status);
+		$reply_info = JWStatus::GetReplyInfo($statusPost);
 
 		if ( empty($reply_info) )
 		{ 
@@ -95,6 +97,7 @@ class JWStatus {
 		}
 		else
 		{
+			$status = $statusPost;
 			$reply_status_id	= $reply_info['status_id'];
 			$reply_user_id		= $reply_info['user_id'];
 		}
