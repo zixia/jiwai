@@ -283,7 +283,7 @@ _HTML_;
 		else
 			$title = $options['title'];
 ?>
-			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="new Ajax.Request('/status/update', {asynchronous:true, evalScripts:true, onComplete:function(request){$('status').value = ''; updateStatusTextCharCounter($('status').value);$('submit').disabled = false;$('submit_loading').style.display='none';Effect.Appear('chars_left_notice', {duration:0.5});}, onLoading:function(request){$('submit').disabled = true;Effect.Appear('submit_loading', {duration:0.3});$('chars_left_notice').style.display='none';}, parameters:Form.serialize(this)}); return false;">
+			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="$('submit').disabled=true;">
 				<fieldset>
 					<div class="bar even">
 						<h3>
@@ -310,7 +310,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 						</div>
 					</div>
 					<div class="submit">
-						<input id="submit" name="commit" type="submit" class="buttonSubmit" onClick="this.disabled=true; return true;" value="叽歪一下" />
+						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="叽歪一下" />
 					</div>
 				</fieldset>
 			</form>
