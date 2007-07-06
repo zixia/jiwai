@@ -310,7 +310,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 						</div>
 					</div>
 					<div class="submit">
-						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="叽歪一下" />
+						<input id="submit" name="commit" type="submit" class="buttonSubmit" onClick="this.disabled=true; return true;" value="叽歪一下" />
 					</div>
 				</fieldset>
 			</form>
