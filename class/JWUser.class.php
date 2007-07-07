@@ -769,7 +769,7 @@ _SQL_;
 		}
 		
 		//Search email from device
-		$address_user_ids = JWDevice::GetUserIdsByAddress($email, array('msn','gtalk','newsmth'));
+		$address_user_ids = self::GetSearchDeviceUserIds($email, array('msn','gtalk','newsmth'));
 
 		$user_ids = array_merge($user_ids, $address_user_ids);
 		$user_ids = array_unique($user_ids);
@@ -779,7 +779,7 @@ _SQL_;
 
 	static public function GetSearchDeviceUserIds($key, $devices=array('sms'), $limit=0,$offset=0){
 		settype($devices, 'array');
-		return JWDevice::GetUserIdsByAddress($key, $devices);
+		return JWDevice::GetDeviceInfoByAddress($key, $devices, 'idUser');
 	}
 
 	static public function IsAdmin($idUser)
