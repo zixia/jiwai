@@ -112,4 +112,9 @@ JWSession::Instance();
 setlocale(LC_ALL, 'zh_CN.UTF-8');
 mb_internal_encoding("UTF-8");
 
+//for Lighty
+if (empty($_SERVER['SCRIPT_URI']) && !empty($_SERVER['REQUEST_URI'])) {
+	$_SERVER['SCRIPT_URI'] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI'];
+}
+
 ?>
