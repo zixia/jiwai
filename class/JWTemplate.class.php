@@ -829,7 +829,7 @@ if ( isset($current_user_id) )
 	}
 
 
-	static public function pagination( $pagination, $qarray=null )
+	static public function pagination( $pagination, $qarray=array() )
 	{
 		if ( empty($pagination) )
 		{

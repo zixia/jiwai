@@ -68,11 +68,10 @@ $menu_list = array (
 		 'archive'=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/account/archive")
 		,'replies'=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
 		,'friends'=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
-		,'search'=> array('active'=>false	,'name'=>'搜索结果'	,'url'=>"/wo/search/statuses?q=".urlEncode($q))
 	);
 
-if( $q === null )
-	unset( $menu_list['search'] );
+if( !empty($q) )
+		$menu_list['search'] = array('active'=>false	,'name'=>'搜索结果'	,'url'=>"/wo/search/statuses?q=".urlEncode($q));
 
 $menu_list[$active_tab]['active'] = true;
 
@@ -142,7 +141,7 @@ $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
 
-JWTemplate::pagination($pagination, $q===null ? null : array('q'=>$q) );
+JWTemplate::pagination($pagination, empty($q) ? array() : array('q'=>$q) );
 
 ?>
 
@@ -200,7 +199,7 @@ $arr_menu 			= array(
 					array ('friend_req'	, array($friend_request_num)) , 
 					array ('count'		, array($arr_count_param)) , 
 					array ('jwvia'		, array($active_options, $via_device)) ,
-					array ('search'		, array(null, $q)) ,
+					array ('search'		, array(null, isset($q) ? $q : null)) ,
 				       	array ('friend'		, array($arr_friend_list)) , 
 				);
 	
