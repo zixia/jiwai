@@ -157,15 +157,11 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
+
 		if ( !empty($rows) )
 		{
-		// 装换rows, 返回 id 的 array
-			$status_ids = array_map(	create_function(
-												'$row'
-												, 'return $row["idStatus"];'
-											)
-										, $rows
-									);
+			// 装换rows, 返回 id 的 array
+			$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
 		}
 		else
 		{
@@ -461,15 +457,12 @@ _SQL_;
 	 */
 	static public function IsUserOwnStatus ($idUser, $idStatus)
 	{
-		$idUser 	= intval($idUser);
-		$idStatus	= intval($idStatus);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idStatus	= JWDB::CheckInt($idStatus);
 
-		if ( 0>=$idStatus || 0>=$idUser )
-			throw new JWException("must be int! [$idStatus] [$idUser]");
+		$db_row = JWStatus::GetDbRowById($idStatus);
 
-		return JWDB::ExistTableRow('Status', array (	'id'		=> intval($idStatus)
-														,'idUser'	=> intval($idUser)
-											) );
+		return $db_row['idUser']==$idUser;
 	}
 
 

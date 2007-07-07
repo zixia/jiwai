@@ -621,6 +621,7 @@ _SQL_;
 
 	static public function IsSubSms($idUser)
 	{
+		// now we assume all user cis sub sms. (it's free)
 		return true;
 
 		$user_db_row = JWUser::GetUserDbRowById($idUser);
