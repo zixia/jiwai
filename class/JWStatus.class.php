@@ -50,8 +50,6 @@ class JWStatus {
 		if ( empty($status) )
 			return null;
 
-		var_dump( $status );
-		
 		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) )
 			return null;
 
