@@ -458,7 +458,7 @@ _SQL_;
 		$idUser 	= JWDB::CheckInt($idUser);
 		$idStatus	= JWDB::CheckInt($idStatus);
 
-		$db_row = JWStatus::GetDbRowById($idStatus);
+		$db_row = JWStatus::GetStatusDbRowById($idStatus);
 
 		return $db_row['idUser']==$idUser;
 	}
