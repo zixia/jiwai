@@ -208,15 +208,21 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		
 		byte[] rew = new byte[m.length];
 		int j=0;
-		for(int i=0; i<m.length;i++){
+		for(int i=0; i<len; i++){
 			if(m[i] == 0x14){
 				i++;
+				if( i == len ){
+					rew[j++] = 0x14;
+				}
 				continue;
 			}
 			
 			if(m[i] == 0x15){
 				i++;
-				if(i>=len) break;
+				if(i==len) {
+					rew[j++] = 0x15;
+					break;
+				}	
 				if(m[i]==0x34){
 					i++;
 					if(i>=len) break;
