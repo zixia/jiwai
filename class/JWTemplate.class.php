@@ -60,7 +60,7 @@ _HTML_;
 	static public function html_head( $options=null )
 	{
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
-		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.gif'	   );
+		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.1.js' );
 
@@ -154,7 +154,7 @@ $openid_html
 
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
-	<link rel="shortcut icon" href="$asset_url_favicon" type="image/gif" />
+	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 
