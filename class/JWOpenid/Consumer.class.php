@@ -20,12 +20,12 @@ require_once "Auth/OpenID/FileStore.php";
 /**
  * JiWai.de Openid Class
  */
-class JWOpenidConsumer 
+class JWOpenid_Consumer 
 {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWOpenidConsumer
+	 * @var JWOpenid_Consumer
 	 */
 	static private $msInstance;
 
@@ -37,7 +37,7 @@ class JWOpenidConsumer
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWOpenidConsumer
+	 * @return JWOpenid_Consumer
 	 */
 	static public function &Instance()
 	{
@@ -98,8 +98,8 @@ class JWOpenidConsumer
 		// Redirect the user to the OpenID server for authentication.  Store
 		// the token for this authentication so we can verify the response.
 
-		$redirect_url = $auth_request->redirectURL(	 JWOpenidConsumer::URL_TRUST_ROOT
-													,JWOpenidConsumer::URL_FINISH_AUTH
+		$redirect_url = $auth_request->redirectURL(	 JWOpenid_Consumer::URL_TRUST_ROOT
+													,JWOpenid_Consumer::URL_FINISH_AUTH
 										);
 
 		header("Location: ".$redirect_url);

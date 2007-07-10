@@ -53,15 +53,12 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	LogUserAction
-SET			 action	='login'
-			,idUser	= $idUser
-			,ip 	= INET_ATON('$ip')
-			,proxy 	= INET_ATON('$proxy')
-_SQL_;
-
-		JWDB::Execute($sql);
+		return JWDB::SaveTableRow('LogUserAction', array(	 'action'	=> 'login'
+															,'idUser'	=> $idUser
+															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
+															,'proxy'	=> JWDB::MysqlFuncion_Aton($proxy)
+														)
+									);
 	}
 
 	static public function OnRememberLogin($idUser)
@@ -73,16 +70,12 @@ _SQL_;
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	LogUserAction
-SET			 action='rememberlogin'
-			,idUser	= $idUser
-			,ip 	= INET_ATON('$ip')
-			,proxy 	= INET_ATON('$proxy')
-_SQL_;
-
-		JWDB::Execute($sql);
-
+		return JWDB::SaveTableRow( 'LogUserAction',	array(	 'action'	=> 'rememberlogin'
+															,'idUser'	=> $idUser
+															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
+															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
+														)
+									);
 	}
 
 
@@ -95,16 +88,12 @@ _SQL_;
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	LogUserAction
-SET			 action='logout'
-			,idUser	= $idUser
-			,ip 	= INET_ATON('$ip')
-			,proxy 	= INET_ATON('$proxy')
-_SQL_;
-
-		JWDB::Execute($sql);
-
+		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'logout'
+															,'idUser'	=> $idUser
+															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
+															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
+														)
+									);
 	}
 
 	static public function OnRememberMe($idUser)
@@ -116,16 +105,12 @@ _SQL_;
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	LogUserAction
-SET			 action='rememberme'
-			,idUser	= $idUser
-			,ip 	= INET_ATON('$ip')
-			,proxy 	= INET_ATON('$proxy')
-_SQL_;
-
-		JWDB::Execute($sql);
-
+		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'rememberme'
+															,'idUser'	=> $idUser
+															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
+															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
+														)
+									);
 	}
 
 
@@ -138,16 +123,12 @@ _SQL_;
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	LogUserAction
-SET			 action='forgetme'
-			,idUser	= $idUser
-			,ip 	= INET_ATON('$ip')
-			,proxy 	= INET_ATON('$proxy')
-_SQL_;
-
-		JWDB::Execute($sql);
-
+		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'forgetme'
+															,'idUser'	=> $idUser
+															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
+															,'proxy'	=> JWDB::MysqlFuncion_Aton($proxy)
+														)
+									);
 	}
 
 

@@ -162,11 +162,10 @@ class JWStatus {
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_
-SELECT		Status.id	as idStatus
-FROM		Status, User
-WHERE		Status.idUser=User.id
-			AND User.id=$idUser
-ORDER BY 	Status.timeCreate desc
+SELECT		id	as idStatus
+FROM		Status
+WHERE		idUser=$idUser
+ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
@@ -242,7 +241,7 @@ _SQL_;
 		$num	= JWDB::CheckInt($num);
 
 		$sql = <<<_SQL_
-SELECT		 id				as idStatus
+SELECT		 id	as idStatus
 			,idUser
 FROM		Status
 WHERE		idUserReplyTo=$idUser
@@ -324,7 +323,7 @@ _SQL_;
 	 *	获取 public_timeline 的 idStatus 
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromPublic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromPublic($num=self::DEFAULT_STATUS_NUM, $start=0)
 	{
 		$num	= intval($num);
 		$start	= intval($start);
@@ -475,7 +474,7 @@ _SQL_;
 		$idUser 	= JWDB::CheckInt($idUser);
 		$idStatus	= JWDB::CheckInt($idStatus);
 
-		$db_row = JWStatus::GetStatusDbRowById($idStatus);
+		$db_row = self::GetStatusDbRowById($idStatus);
 
 		return $db_row['idUser']==$idUser;
 	}

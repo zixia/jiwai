@@ -24,23 +24,23 @@ if ( isset($_REQUEST['action']) )
 	$action = array_keys($_REQUEST['action']);
 	$action = $action[0];
 
-    $info = JWOpenidServer::GetRequestInfo();
+    $info = JWOpenid_Server::GetRequestInfo();
 	switch ( $action )
 	{
 		case 'accept_always':
-			JWOpenidTrustSite::Create($user_info['idUser'], $confirm_url);
+			JWOpenid_TrustSite::Create($user_info['idUser'], $confirm_url);
 			//fall to accept once after save.
 		case 'accept_once':
 
 			// DoAuth should not return
-    		JWOpenidServer::DoAuth($info);
+    		JWOpenid_Server::DoAuth($info);
 
 			break;
 
 		default:
 			// fall to deny
 		case 'deny':
-    		JWOpenidServer::AuthCancel($info);
+    		JWOpenid_Server::AuthCancel($info);
 			break;
 	}
 }
@@ -85,7 +85,7 @@ JWTemplate::ShowActionResultTips();
 <hr class="separator" />
 
 <?php
-$request = JWOpenidServer::GetRequestInfo();
+$request = JWOpenid_Server::GetRequestInfo();
 ?>
 
 <div>

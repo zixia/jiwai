@@ -99,6 +99,8 @@ function __autoload($class_name) {
 	else
 		$file = LIB_ROOT;
 
+	$class_name = str_replace('_','/',$class_name);
+
 	$file .= $class_name . '.class.php';
 
 	require_once $file;

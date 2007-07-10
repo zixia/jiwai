@@ -47,24 +47,11 @@ class JWOpenid
 
 		$urlOpenid 	= JWOpenid::GetCoreUrl($urlOpenid);
 
-		$sql = <<<_SQL_
-REPLACE	Openid
-SET 	idUser			= $idUser
-		, urlOpenid		= '$urlOpenid'
-		, timeCreate	= NOW()
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::SaveTableRow('Openid', array(	 'idUser'		=> $idUser
+													,'urlOpenid'	=> $urlOpenid
+													,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+												)
+									);
 	}
 
 
@@ -78,22 +65,7 @@ _SQL_;
 	{
 		$idOpenid 	= JWDB::CheckInt($idOpenid);
 
-		$sql = <<<_SQL_
-DELETE FROM	Openid
-WHERE 		id=$idOpenid
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::DelTableRow('Openid', array( 'id'=>$idOpenid ));
 	}
 
 

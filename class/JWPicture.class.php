@@ -284,25 +284,16 @@ _SQL_;
 
 		self::Instance();
 
-		$sql = <<<_SQL_
-INSERT INTO	Picture
-SET		 idUser=$idUser
-		,class='ICON'
-		,fileName='$file_name'
-		,fileExt='$dst_file_type'
-		,md5='$md5'
-		,timeCreate=NOW()
-_SQL_;
-
-		try {
-			$result = JWDB::Execute($sql);
-		}catch(Exception $e){
-			JWLog::LogFuncName("JWDB::Execute " . $e->getMessage());
+		$picture_id = JWDB::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
+															,'class'	=> 'ICON'
+															,'fileName'	=> $file_name
+															,'fileExt'	=> $dst_file_type
+															,'md5'		=> $md5
+															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+														)
+										);
+		if ( empty($picture_id) )
 			return 0;
-		}
-
-		$picture_id 	= JWDB::GetInsertedId();
-
 
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 		$picture_path		= self::GetPathRel($picture_id);
@@ -496,25 +487,16 @@ _CMD_;
 
 		self::Instance();
 
-		$sql = <<<_SQL_
-INSERT INTO	Picture
-SET		 idUser=$idUser
-		,class='BG'
-		,fileName='$file_name'
-		,fileExt='$dst_file_type'
-		,md5='$md5'
-		,timeCreate=NOW()
-_SQL_;
-
-		try {
-			$result = JWDB::Execute($sql);
-		}catch(Exception $e){
-			JWLog::LogFuncName("JWDB::Execute " . $e->getMessage());
+		$picture_id = JWDB::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
+															,'class'	=> 'BG'
+															,'fileName'	=> $file_name
+															,'fileExt'	=> $dst_file_type
+															,'md5'		=> $md5
+															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+														)
+										);
+		if ( empty($picture_id) )
 			return 0;
-		}
-
-		$picture_id 	= JWDB::GetInsertedId();
-
 
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 		$picture_path		= self::GetPathRel($picture_id);

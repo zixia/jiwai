@@ -53,27 +53,14 @@ class JWFriendRequest
 	 */
 	static public function Create($idUser, $idFriend)
 	{
-		$idUser 			= JWDB::CheckInt($idUser);
-		$idFriend= JWDB::CheckInt($idFriend);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idFriend	= JWDB::CheckInt($idFriend);
 
-		$sql = <<<_SQL_
-INSERT INTO	FriendRequest
-SET 		idUser		= $idUser
-			, idFriend	= $idFriend
-			, timeCreate	= NOW()
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::SaveTableRow('FriendRequest', array(	 'idUser'	=> $idUser
+															,'idFriend'	=> $idFriend
+															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+														)
+								);
 	}
 
 
@@ -90,23 +77,10 @@ _SQL_;
 		$idUser		= JWDB::CheckInt($idUser);
 		$idFriend	= JWDB::CheckInt($idFriend);
 
-		$sql = <<<_SQL_
-DELETE FROM	FriendRequest
-WHERE 		idUser=$idUser
-			AND idFriend=$idFriend
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::DelTableRow('FriendRequest', array(	 'idUser'	=> $idUser
+															,'idFriend'	=> $idFriend
+														)
+								);
 	}
 
 

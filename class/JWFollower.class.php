@@ -215,25 +215,13 @@ _SQL_;
 	 */
 	static public function Destroy($idUser, $idFollower)
 	{
-		$idUser 	= intval($idUser);
-		$idFollower = intval($idFollower);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idFollower = JWDB::CheckInt($idFollower);
 
-		if ( (0>=$idFollower) || (0>=$idUser) )
-			throw new JWException("id not int");
-
-		$sql = <<<_SQL_
-DELETE FROM	Follower
-WHERE 		idUser=$idUser
-			AND idFollower=$idFollower
-_SQL_;
-
-		try {
-			$result = JWDB::Execute($sql) ;
-		} catch(Exception $e) {
-			JWLog::Instance()->Log(LOG_ERR, $e );
-			return false;
-		}
-		return true;
+		return JWDB::DelTableRow('Follower', array(	 'idUser'	=> $idUser
+													,'idFollower'	=> $idFollower
+												)
+								);
 	}
 
 
@@ -247,26 +235,14 @@ _SQL_;
 	 */
 	static public function Create($idUser, $idFollower)
 	{
-		$idUser = intval($idUser);
-		$idFollower = intval($idFollower);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idFollower = JWDB::CheckInt($idFollower);
 
-		if ( 0>=$idUser || 0>=$idFollower )
-			throw new JWException('not int');
-
-		$sql = <<<_SQL_
-INSERT INTO	Follower
-SET 		idUser			= $idUser
-			, idFollower	= $idFollower
-			, timeCreate	= NOW()
-_SQL_;
-
-		try {
-			$result = JWDB::Execute($sql) ;
-		} catch(Exception $e) {
-			JWLog::Instance()->Log(LOG_ERR, $e->getTraceAsString() );
-			return false;
-		}
-		return true;
+		return JWDB::SaveTableRow('Follower', array(	 'idUser'		=> $idUser
+														,'idFollower'	=> $idFollower
+														,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+												)
+									);
 	}
 
 	/*

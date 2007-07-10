@@ -9,13 +9,14 @@
 /**
  * JiWai.de File Class
  */
-class JWMemcache {
+class JWMemcache implements JWMemcache_Interface
+{
 	/**
 	 * Instance of this singleton
 	 *
 	 * @var JWMemcache
 	 */
-	static private $msInstance = array();
+	static private $msInstances = array();
 
 	const NONE		= 1;
 	const UDP		= 2;
@@ -41,11 +42,11 @@ class JWMemcache {
 	 */
 	static public function &Instance($cluster='default', $protocol=self::UDP)
 	{
-		if (!isset(self::$msInstance[$cluster])) {
+		if (!isset(self::$msInstances[$cluster])) {
 			$class = __CLASS__;
-			self::$msInstance[$cluster] = new $class($cluster, $protocol);
+			self::$msInstances[$cluster] = new $class($cluster, $protocol);
 		}
-		return self::$msInstance[$cluster];
+		return self::$msInstances[$cluster];
 	}
 
 
@@ -58,10 +59,10 @@ class JWMemcache {
 		switch ( $protocol )
 		{
 			case self::UDP:
-				$this->msMemcacheProtocol = JWMemcacheUdp::Instance($cluster);
+				$this->msMemcacheProtocol = JWMemcache_Udp::Instance($cluster);
 				break;
 			case self::TCP:
-				$this->msMemcacheProtocol = JWMemcacheTcp::Instance($cluster);
+				$this->msMemcacheProtocol = JWMemcache_Tcp::Instance($cluster);
 				break;
 			default:
 				//fall to NONE, disable memcache.
@@ -79,7 +80,7 @@ class JWMemcache {
 	 *	@param	int		$flag
 	 *	@param	int		$expire
 	 */
-	public function Add($key, $var, $flag, $expire)
+	public function Add($key, $var, $flag=0, $expire=0)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
@@ -132,7 +133,7 @@ class JWMemcache {
 		return $this->msMemcacheProtocol->Inc($key,$value);
 	}
 
-	public function Replace($key, $var, $flag, $expire)
+	public function Replace($key, $var, $flag=0, $expire=0)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
@@ -144,7 +145,7 @@ class JWMemcache {
 	}
 
 
-	public function Set($key, $var, $flag, $expire)
+	public function Set($key, $var, $flag=0, $expire=0)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
@@ -152,6 +153,59 @@ class JWMemcache {
 		$this->msLocalCache[$key] = $var;
 
 		return $this->msMemcacheProtocol->Set($key,$var,$flag,$expire);
+	}
+
+
+	/*
+	 *	根据表名、idPk、条件选择、功能函数名，组合出一个唯一的 memcache key
+	 *
+	 *	如：
+			User(id=1)
+			User(nameScreen=zixia)
+			Device(address=zixia@zixia.net,type=gtalk)
+
+			Status[GetStatusIdsFromUser(1)]
+			Status[GetStatusIdsFromUser(1)]
+	 *
+	 *
+	 */
+
+	static public function DbKeys2McKeys($table, $idPks)
+	{
+		$keys = array();
+		foreach ( $idPks as $pk_id )
+		{
+			$keys[] = "$table(id=$pk_id)";
+		}
+		return $keys;
+	}
+
+	static public function McKeys2DbKeys($table, $mcKeys)
+	{
+		$keys = array();
+		foreach ( $mcKeys as $mc_key )
+		{
+			if ( preg_match("/$table\(id=(\d+)\)$/", $mc_key, $matches) )
+			{
+				$keys[] = $1;
+			}
+		}
+		return $keys;
+	}
+
+
+	static public function GetKeyFromPk($table, $idPk)
+	{
+		$key_row = self::GetKeysFromPks($table, array($idPk));
+		return $key_row[$idPk];
+	}
+
+	static public function GetKeyFromCondition($table, $condition, $limit)
+	{
+	}
+
+	static public function GetKeyFromFunction($table, $function, $param=null)
+	{
 	}
 
 }

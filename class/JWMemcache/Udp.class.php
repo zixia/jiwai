@@ -8,7 +8,7 @@
 /**
  * JiWai Memcache Class
  */
-class JWMemcacheUdp implements JWMemcacheInterface{
+class JWMemcache_Udp implements JWMemcache_Interface{
     /**
      * Instance of this singleton
      *
@@ -25,11 +25,11 @@ class JWMemcacheUdp implements JWMemcacheInterface{
      */
     static public function &Instance ($cluster='default')
     {
-        if (!isset(self::$instances__[$cluster])) {
+        if (!isset(self::$msInstances[$cluster])) {
             $class = __CLASS__;
-            self::$instances__[$cluster] = new $class($cluster);
+            self::$msInstances[$cluster] = new $class($cluster);
         }
-        return self::$instances__[$cluster];
+        return self::$msInstances[$cluster];
     }
     
 

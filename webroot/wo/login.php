@@ -13,7 +13,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 	if ( JWOpenid::IsPossibleOpenid($username_or_email) )
 	{
-		JWOpenidConsumer::AuthRedirect($username_or_email);
+		JWOpenid_Consumer::AuthRedirect($username_or_email);
 		// if it return, mean $username_or_email is not a valid openid url.
 	}
 

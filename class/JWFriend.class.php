@@ -213,33 +213,13 @@ _SQL_;
 	 */
 	static public function Destroy($idUser, $idFriend)
 	{
-		if ( !is_int($idUser) )
-			$idUser 	= intval($idUser);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idFriend	= JWDB::CheckInt($idFriend);
 
-		if ( !is_int($idFriend) )
-			$idFriend 	= intval($idFriend);
-
-
-		if ( !is_int($idFriend) || !is_int($idUser ) )
-			throw new JWException("id not int");
-
-		$sql = <<<_SQL_
-DELETE FROM	Friend
-WHERE 		idUser=$idUser
-			AND idFriend=$idFriend
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::DelTableRow('Friend', array(	 'idUser'	=> $idUSer
+													,'idFriend'	=> $idFriend
+												)
+								);
 	}
 
 
@@ -256,24 +236,11 @@ _SQL_;
 		$idUser 	= JWDB::CheckInt($idUser);
 		$idFriend 	= JWDB::CheckInt($idFriend);
 
-		$sql = <<<_SQL_
-INSERT INTO	Friend
-SET 		idUser			= $idUser
-			, idFriend		= $idFriend
-			, timeCreate	= NOW()
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::SaveTableRow('Friend', array(	 'idUser'	=> $idUser
+													,'idFriend'	=> $idFriend
+													,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+												)
+								);
 	}
 
 	/*

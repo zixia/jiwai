@@ -11,11 +11,11 @@ require_once "Auth/OpenID/Server.php";
 /**
  * JiWai.de Openid Class
  */
-class JWOpenidServer {
+class JWOpenid_Server {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWOpenidServer
+	 * @var JWOpenid_Server
 	 */
 	static private $msInstance;
 	static private $msServer;
@@ -25,7 +25,7 @@ class JWOpenidServer {
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWOpenidServer
+	 * @return JWOpenid_Server
 	 */
 	static public function &Instance()
 	{
@@ -43,7 +43,7 @@ class JWOpenidServer {
 	 */
 	function __construct()
 	{
-		$store = JWOpenidServer::GetOpenIdStore();
+		$store = self::GetOpenIdStore();
         self::$msServer =& new Auth_OpenID_Server($store);
 	}
 
@@ -64,7 +64,7 @@ class JWOpenidServer {
 
 	static function  GetServerUrl()
 	{
-		return JWOpenidServer::URL_SERVER;
+		return self::URL_SERVER;
 	}
 
 	/*

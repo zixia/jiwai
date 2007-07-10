@@ -159,8 +159,6 @@ _SQL_;
 			// maybe user be deleted in database.
 			if ( !empty($user_info) )
 				return $user_info;
-			else
-				JWLogin::Logout();
 		}
 
 		JWLogin::Logout();
@@ -311,11 +309,7 @@ _SQL_;
 	 */
 	static public function Destroy( $idUser )
 	{
-		$sql = <<<_SQL_
-DELETE 	FROM User
-WHERE	id=$idUser
-_SQL_;
-		return JWDB::Execute($sql);
+		return JWDB::DelTableRow('User', array(	'id'=>$idUser ));
 	}
 
 

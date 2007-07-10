@@ -4,7 +4,7 @@ require_once "../../../jiwai.inc.php";
 //define('Auth_OpenID_NO_MATH_SUPPORT', true);
 
 // Complete the authentication process using the server's response.
-$response = JWOpenidConsumer::GetCompleteResponse($_GET);
+$response = JWOpenid_Consumer::GetCompleteResponse($_GET);
 
 switch ($response->status)
 {

@@ -44,7 +44,7 @@ if ( isset($_REQUEST['commit']) )
 
 	if ( JWOpenid::IsPossibleOpenid($openid_url) )
 	{
-		JWOpenidConsumer::AuthRedirect($openid_url);
+		JWOpenid_Consumer::AuthRedirect($openid_url);
 		// if it return, mean $username_or_email is not a valid openid url.
 	}
 	else
@@ -108,8 +108,8 @@ _JIWAI_OPENID_;
 
 <?php
 
-$trusted_site_ids 		= JWOpenidTrustSite::GetIdsByUserId($user_info['id']);
-$trusted_site_db_rows 	= JWOpenidTrustSite::GetDbRowsByIds($trusted_site_ids);
+$trusted_site_ids 		= JWOpenid_TrustSite::GetIdsByUserId($user_info['id']);
+$trusted_site_db_rows 	= JWOpenid_TrustSite::GetDbRowsByIds($trusted_site_ids);
 
 if ( count($trusted_site_ids) )
 {

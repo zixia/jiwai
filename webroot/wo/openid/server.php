@@ -12,15 +12,15 @@ ob_end_clean();
 
 // Complete the authentication process using the server's response.
 
-$server = JWOpenidServer::GetServer();
+$server = JWOpenid_Server::GetServer();
 
 $request = Auth_OpenID::fixArgs($_REQUEST);
 $request = $server->decodeRequest($request);
 
 if ($request) 
-	JWOpenidServer::SetRequestInfo($request);
+	JWOpenid_Server::SetRequestInfo($request);
 else
-	$request = JWOpenidServer::GetRequestInfo();
+	$request = JWOpenid_Server::GetRequestInfo();
 
 if (!$request){
 	die("no request");
@@ -31,21 +31,21 @@ if (in_array($request->mode,
              array('checkid_immediate', 'checkid_setup'))) 
 {
 	if ( !preg_match('#jiwai.de/([^/]+)#i',$request->identity,$matches) ){
-		return JWOpenidServer::AuthCancel($request);
+		return JWOpenid_Server::AuthCancel($request);
 	}
 
 	$user_name 		= $matches[1];
 	$user_db_row	= JWUser::GetUserInfo($user_name);
 
 	if ( empty($user_db_row) )
-		return JWOpenidServer::AuthCancel($request);
+		return JWOpenid_Server::AuthCancel($request);
 
-    if (JWOpenidTrustSite::IsTrusted($user_db_row['idUser'], $request->trust_root)) 
+    if (JWOpenid_TrustSite::IsTrusted($user_db_row['idUser'], $request->trust_root)) 
 	{
         $response =& $request->answer(true);
 /*
 	protected user info now.
-        $sreg = JWOpenidServer::GetSregByUserId($user_db_row['idUser']);
+        $sreg = JWOpenid_Server::GetSregByUserId($user_db_row['idUser']);
         if (is_array($sreg)) 
 		{
             foreach ($sreg as $k => $v) {
@@ -54,7 +54,7 @@ if (in_array($request->mode,
         }
 */
     } else if ($request->immediate) {
-        $response =& $request->answer(false, JWOpenidServer::GetServerURL());
+        $response =& $request->answer(false, JWOpenid_Server::GetServerURL());
     } else {
         if (!JWLogin::IsLogined()) {
 			JWLogin::RedirectToLogin('/wo/openid/server');

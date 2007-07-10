@@ -116,13 +116,10 @@ WHERE 		idUser=$idUser
 			AND idStatus=$idStatus
 _SQL_;
 
-		try {
-			$result = JWDB::Execute($sql) ;
-		} catch(Exception $e) {
-			JWLog::Instance()->Log(LOG_ERR, $e);
-			return false;
-		}
-		return true;
+		return JWDB::DelTableRow('Favourite', array(	 'idUser'	=> $idUser
+														,'idStatus'	=> $idStatus
+													)
+								);
 	}
 
 
@@ -136,25 +133,13 @@ _SQL_;
 	 */
 	static public function Create($idUser, $idStatus)
 	{
-		$idUser 	= intval($idUser);
-		$idStatus 	= intval($idStatus);
+		$idUser 	= JWDB::CheckInt($idUser);
+		$idStatus 	= JWDB::CheckInt($idStatus);
 
-		if ( 0>=$idUser || 0>=$idStatus )
-			throw new JWException('not int');
-
-		$sql = <<<_SQL_
-INSERT INTO	Favourite
-SET 		idUser			= $idUser
-			, idStatus	= $idStatus
-_SQL_;
-
-		try {
-			$result = JWDB::Execute($sql) ;
-		} catch(Exception $e) {
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage());
-			return false;
-		}
-		return true;
+		return JWDB::SaveTableRow('Favourite',	array(	 'idUser'	=> $idUser
+												,'idStatus'	=> $idStatus
+											)
+							);
 	}
 
 	/*

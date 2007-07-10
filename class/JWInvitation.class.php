@@ -62,28 +62,14 @@ class JWInvitation {
 			return null;
 		}
 
-
-		$sql = <<<_SQL_
-INSERT INTO	Invitation
-SET 		idUser			= $idUser
-			, address		= '$address'
-			, type			= '$type'
-			, message		= '$message'
-			, code			= '$inviteCode'
-			, timeCreate	= NOW()
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e.getMessage() );
-			return null;
-		}
-
-		return JWDB::GetInsertedId();
+		return JWDB::SaveTableRow('Invitation',	array(	 'idUser'	=> $idUser
+														,'address'	=> $address
+														,'type'		=> $type
+														,'message'	=> $message
+														,'code'		=> $inviteCode
+														,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+													)
+									);
 	}
 
 	/*
@@ -254,6 +240,8 @@ UPDATE		Invitation
 SET			idReciprocal=$idReciprocal
 WHERE		id IN ( $in_condition )
 _SQL_;
+		// 这里用 Execute 是因为有 IN 条件。
+		// 注意 Execute 无法 cache，能不用就不用！
 		return JWDB::Execute($sql);
 	}
 
@@ -326,11 +314,7 @@ _SQL_;
 	{
 		$idInvitation = JWDB::CheckInt($idInvitation);
 
-		$sql = <<<_SQL_
-DELETE FROM	Invitation
-WHERE		id=$idInvitation
-_SQL_;
-		return JWDB::Execute($sql);
+		return JWDB::DelTableRow( 'Invitation', array( 'id'	=> $idInvitation ) );
 	}
 
 }

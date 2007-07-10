@@ -8,11 +8,11 @@
 /**
  * JiWai.de Openid Class
  */
-class JWOpenidTrustSite {
+class JWOpenid_TrustSite {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWOpenidTrustSite
+	 * @var JWOpenid_TrustSite
 	 */
 	static private $msInstance;
 
@@ -20,7 +20,7 @@ class JWOpenidTrustSite {
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWOpenidTrustSite
+	 * @return JWOpenid_TrustSite
 	 */
 	static public function &Instance()
 	{
@@ -44,24 +44,11 @@ class JWOpenidTrustSite {
 	{
 		$idUser 	= JWDB::CheckInt($idUser);
 
-		$sql = <<<_SQL_
-INSERT INTO	OpenidTrustSite
-SET 		 idUser		= $idUser
-			,urlTrusted	= '$urlTrusted'
-			,timeCreate	= NOW()
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::SaveTableRow('OpenidTrustSite', array(	 'idUser'	=> $idUser
+															,'urlTrusted'	=> $urlTrusted
+															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+														)
+									);
 	}
 
 
@@ -74,22 +61,7 @@ _SQL_;
 	{
 		$idTrustSite = JWDB::CheckInt($idTrustSite);
 
-		$sql = <<<_SQL_
-DELETE FROM	OpenidTrustSite
-WHERE 		id	= $idTrustSite
-_SQL_;
-
-		try
-		{
-			$result = JWDB::Execute($sql) ;
-		}
-		catch(Exception $e)
-		{
-			JWLog::Instance()->Log(LOG_ERR, $e->getMessage() );
-			return false;
-		}
-
-		return true;
+		return JWDB::DelTableRow('OpenidTrustSite', array( 'id'=>$idTrustSite ));
 	}
 
 	static public function IsTrusted($idUser, $urlTrusted)
@@ -145,7 +117,7 @@ _SQL_;
 
 	static public function GetDbRowById ($idOpenidTrustSite)
 	{
-		$db_rows = JWOpenidTrustSite::GetDbRowsByIds(array($idOpenidTrustSite));
+		$db_rows = self::GetDbRowsByIds(array($idOpenidTrustSite));
 
 		if ( empty($db_rows) )
 			return array();
@@ -187,7 +159,7 @@ _SQL_;
 
 	static public function IsUserOwnId($idUser, $idOpenidTrustSite)
 	{
-		$db_row = JWOpenidTrustSite::GetDbRowById($idOpenidTrustSite);
+		$db_row = self::GetDbRowById($idOpenidTrustSite);
 
 		return $db_row['idUser']==$idUser;
 	}

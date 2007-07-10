@@ -14,16 +14,16 @@ if ( is_int($logined_user_id) )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$trust_site_id = $match[1];
 
-		if ( ! JWOpenidTrustSite::IsUserOwnId($logined_user_id, $trust_site_id) )
+		if ( ! JWOpenid_TrustSite::IsUserOwnId($logined_user_id, $trust_site_id) )
 		{
 			JWTemplate::RedirectTo404NotFound();
 		}
 
-		$trust_site_db_row = JWOpenidTrustSite::GetDbRowById($trust_site_id);
+		$trust_site_db_row = JWOpenid_TrustSite::GetDbRowById($trust_site_id);
 
 		$trust_site_url = $trust_site_db_row['urlTrusted'];
 
-		if ( JWOpenidTrustSite::Destroy($trust_site_id) )
+		if ( JWOpenid_TrustSite::Destroy($trust_site_id) )
 		{
 			$notice_html = <<<_HTML_
 $trust_site_url 删除成功。

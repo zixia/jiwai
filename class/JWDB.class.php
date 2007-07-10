@@ -9,7 +9,8 @@
 /**
  * JiWai.de Database Class
  */
-class JWDB {
+class JWDB implements JWDB_Interface
+{
 	/**
 	 * Instance of this singleton
 	 *
@@ -22,7 +23,7 @@ class JWDB {
 	 *
 	 * @var JWConfig
 	 */
-	static private $mysqli_link__;
+	static private $msMysqliLink;
 
 	const	DEFAULT_LIMIT_NUM	= 20;
 
@@ -53,7 +54,7 @@ class JWDB {
 		if ( !isset($db_config) )
 			throw new JWException("DB can't find DB Config");
 
-		self::$mysqli_link__ = new mysqli($db_config->host
+		self::$msMysqliLink = new mysqli($db_config->host
 				, $db_config->username
 				, $db_config->passwd
 				, $db_config->dbname
@@ -62,7 +63,7 @@ class JWDB {
 		if (mysqli_connect_errno())
    			throw new JWException("Connect failed: " . mysqli_connect_error());
 
-		if (!self::$mysqli_link__->set_charset("utf8"))
+		if (!self::$msMysqliLink->set_charset("utf8"))
 			throw new JWException("Error loading character set utf8: " . $mysqli->error);
 
 	}
@@ -78,18 +79,18 @@ class JWDB {
 
 	static public function Close()
 	{
-		if (isset(self::$mysqli_link__))
+		if (isset(self::$msMysqliLink))
 		{
-			self::$mysqli_link__->close();
-			self::$mysqli_link__ = null;
+			self::$msMysqliLink->close();
+			self::$msMysqliLink = null;
 		}
 	}
 
-	static public function GetDb()
+	static private function GetDb()
 	{
 		JWDB::Instance();
 
-		return self::$mysqli_link__;
+		return self::$msMysqliLink;
 	}
 
 
@@ -110,6 +111,15 @@ class JWDB {
 		return $db->insert_id;
 	}
 
+
+	/*
+	 *	@deprecated
+	 *
+	 *	不建议使用，能避免使用就避免使用！
+	 *
+	 *	直接执行一条 sql。由于系统无法知道更新了哪个表，所以无法正常的更新 memcache，也无法通知脏数据的更新
+	 *
+	 */
 	static public function Execute( $sql )
 	{
 		$db = self::GetDb();
@@ -129,7 +139,7 @@ class JWDB {
 	 *	@param	bool	need return more then one row?
 	 *	@return	array	row or array of rows
 	 */
-	static public function GetQueryResult( $sql, $more_than_one=false )
+	static public function GetQueryResult( $sql, $moreThanOne=false, $forceReload=false )
 	{
 		//TODO need mysqli_real_escape_string, but it do escape through db server? damn it!
 		$db = self::GetDb();
@@ -138,12 +148,12 @@ class JWDB {
 
 		if ( $result = $db->query($sql) ){
 
-			if ( 0!==$result->num_rows && $more_than_one){
+			if ( 0!==$result->num_rows && $moreThanOne){
 				$aResult = array();
 			}
 
 			while ( $row=$result->fetch_assoc() ){
-				if ( $more_than_one ){ // array of assoc array
+				if ( $moreThanOne ){ // array of assoc array
 					array_push( $aResult, $row );
 				}else{ // assoc array
 					$aResult = $row;
@@ -171,7 +181,8 @@ class JWDB {
 		$sql = "DELETE FROM $table WHERE ";
 		
 		$first = true;
-		foreach ( $condition as $k => $v ){
+		foreach ( $condition as $k => $v )
+		{
 			if ( !$first )
 				$sql .= " AND ";
 
@@ -180,7 +191,7 @@ class JWDB {
 			else
 				$sql .= " $k='" . self::EscapeString($v) . "' ";
 
-			if ( $first = true )
+			if ( $first )
 				$first = false;
 		}
 		// " WHERE $field='$value' AND field2=value2 ");
@@ -202,41 +213,12 @@ class JWDB {
 	 */
 	static public function ExistTableRow( $table, $condition )
 	{
-		$db = self::GetDb();
+		$db_row = self::GetTableRow($table, $condition, 1);
 
-		$sql = "SELECT id FROM $table WHERE ";
-		
-		$first = true;
-		foreach ( $condition as $k => $v ){
-			if ( !$first ){
-				$sql .= " AND ";
-			}
-
-			if ( is_int($v) )
-				$sql .= " $k=$v ";
-			else
-				$sql .= " $k='" . self::EscapeString($v) . "' ";
-
-			if ( $first = true )
-				$first = false;
-		}
-		$sql .= ' LIMIT 1 ';
-		// " WHERE $field='$value' AND field2=value2  LIMIT 1");
-
-		$result = $db->query ($sql);
-
-		if ( !$result ){
-			JWDB::Close();
-			throw new JWException ("DB Error: " . $db->error);
-			return false;
-		}
-
-        if ( $result->num_rows==0 ){
+		if ( empty($db_row) )
 			return 0;
-		}
 
-		$row = $result->fetch_assoc();
-		return $row['id'];
+		return $db_row['id'];
 	}
 
 
@@ -266,7 +248,7 @@ class JWDB {
 			else
 				$val_list .= "'" . self::EscapeString($v) . "'";
 
-			if ( $first = true )
+			if ( $first )
 				$first = false;
 		}
 		$sql .= " ($col_list) values ($val_list) ";
@@ -280,7 +262,7 @@ class JWDB {
 			return false;
 		}
 
-		return true;
+		return self::GetInsertedId();
 	}
 
 
@@ -307,7 +289,7 @@ class JWDB {
 			else
 				$sql .= "$k='" . self::EscapeString($v) . "'";
 
-			if ( $first = true )
+			if ( $first )
 				$first = false;
 		}
 
@@ -337,10 +319,10 @@ class JWDB {
 		$sql = "UPDATE $tableName SET ";
 		
 		$first = true;
-		foreach ( $conditionArray as $k => $v ){
-			if ( !$first ){
+		foreach ( $conditionArray as $k => $v )
+		{
+			if ( !$first )
 				$sql .= " , ";
-			}
 
 			if ( is_null($v) )
 				$sql .= "$k=NULL";
@@ -349,7 +331,7 @@ class JWDB {
 			else
 				$sql .= "$k='" . self::EscapeString($v) . "'";
 
-			if ( $first = true )
+			if ( $first)
 				$first = false;
 		}
 		$sql .= " WHERE id=$idPK";
@@ -636,6 +618,20 @@ class JWDB {
 			self::Execute($sql);
 
 		return;
+	}
+
+
+	/*
+	 *	返回 Mysql NOW() 函数返回的串
+	 */
+	static public function MysqlFuncion_Now()
+	{
+		return date("Y-m-d H:i:s", time());
+	}
+
+	static public function MysqlFuncion_Aton($dottedIp)
+	{
+		return sprintf('%u', ip2long($dotted_name));
 	}
 }
 ?>
