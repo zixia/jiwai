@@ -115,7 +115,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 										 $mc_key
 										,array('JWStatus','GetStatusIdsFromReplies')
 										,array($idUser,$mc_max_offset)
-										,JWDB_Cache::PERMANENT_EXPIRE_SECENDS
+										,$expire_time
 										,true
 									);
 		}

@@ -40,7 +40,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *
 	 * @return JWMemcache
 	 */
-	static public function &Instance($cluster='default', $protocol=self::TCP)
+	static public function &Instance($cluster='default', $protocol=self::UDP)
 	{
 		if (!isset(self::$msInstances[$cluster])) {
 			$class = __CLASS__;
