@@ -76,8 +76,6 @@ class JWStatus {
 	 */
 	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
 	{
-		$db = JWDB::Instance()->GetDb();
-		
 		/* 
 		 * For Create From Status_Quarantine;
 		 */
@@ -121,29 +119,17 @@ class JWStatus {
 			$picture_id = $user_db_row['idPicture'];
 		}
 
-		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo,idPicture,isSignature) "
-								. " values (?,?,?,FROM_UNIXTIME(?),?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("isssiiis"
-											, $idUser
-											, $status
-											, $device
-											, $time
-											, $reply_status_id
-											, $reply_user_id
-											, $picture_id
-											, $isSignature
-								) ){
-				if ( $stmt->execute() ){
-					$stmt->close();
-					return true;
-				}else{
-					JWLog::Instance()->Log(LOG_ERR, $db->error );
-				}
-			}
-		}else{
-			JWLog::Instance()->Log(LOG_ERR, $db->error );
-		}
-		return false;
+		return JWDB_Cache::SaveTableRow('Status',
+							array(	 'idUser'	=> $idUser
+									,'status'	=> $status
+									,'device'	=> $device
+									,'timeCreate'	=> $time
+									,'idStatusReplyTo'	=> $reply_status_id
+									,'idUserReplyTo'	=> $reply_user_id
+									,'idPicture'		=> $picture_id
+									,'isSignature'		=> $isSignature
+							)
+						);
 	}
 
 

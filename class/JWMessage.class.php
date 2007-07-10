@@ -52,8 +52,6 @@ class JWMessage {
 	 */
 	static public function Create( $idUserSender, $idUserReceiver, $message, $device='web', $time=null )
 	{
-		$db = JWDB::Instance()->GetDb();
-
 		$idUserSender 	= JWDB::CheckInt($idUserSender);
 		$idUserReceiver	= JWDB::CheckInt($idUserReceiver);
 
@@ -65,27 +63,14 @@ class JWMessage {
 		// 去掉回车，替换为空格
 		$message = preg_replace('[\r\n]',' ',$message);
 
-		if ( $stmt = $db->prepare( "INSERT INTO Message (idUserSender,idUserReceiver,message,device,timeCreate) "
-								. " values (?,?,?,?,FROM_UNIXTIME(?))" ) )
-		{
-			if ( $result = $stmt->bind_param("iisss"
-											, $idUserSender
-											, $idUserReceiver
-											, $message
-											, $device
-											, $time
-								) ){
-				if ( $stmt->execute() ){
-					$stmt->close();
-					return true;
-				}else{
-					JWLog::Log(LOG_CRIT, $db->error );
-				}
-			}
-		}else{
-			JWLog::Log(LOG_CRIT, $db->error );
-		}
-		return false;
+		return JWDB_Cache::SaveTableRow('Message'
+								,array(	 'idUserSender'		=> $idUserSender
+										,'idUserReceiver'	=> $idUserReceiver
+										,'message'			=> $message
+										,'device'			=> $device
+										,'timeCreate'		=> JWDB::MysqlFuncion_Now($time)
+								)
+							);
 	}
 
 

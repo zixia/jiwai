@@ -56,8 +56,6 @@ class JWUser {
 	 */
 	static public function GetUserFromPassword($name_or_email, $pass)
 	{
-		$db = JWDB::GetDb();
-
 		$name_or_email	= JWDB::EscapeString($name_or_email);
 		$pass 			= JWDB::EscapeString($pass);
 
@@ -320,8 +318,6 @@ _SQL_;
 	 */
 	static public function Create( $userInfo )
 	{
-		$db = JWDB::Instance()->GetDb();
-
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
@@ -331,29 +327,17 @@ _SQL_;
 		if ( empty($userInfo['protected']) )
 			$userInfo['protected']='N';
 
-		if ( $stmt = $db->prepare( "INSERT INTO User (timeCreate,nameScreen,pass,email,nameFull,location,protected,isWebUser)"
-								. " values (NOW(),?,?,?,?,?,?,?)" ) ){
-			if ( $result = $stmt->bind_param("sssssss"
-											, $userInfo['nameScreen']
-											, $userInfo['pass']
-											, strrev(@$userInfo['email']) // 如果是手机注册，则为空
-											, $userInfo['nameFull']
-											, $userInfo['location']
-											, $userInfo['protected']
-											, $userInfo['isWebUser']
-								) )
-			{
-				if ( $stmt->execute() ){
-					$stmt->close();
-					return JWDB::GetInsertedId();
-				}else{
-					JWLog::Instance()->Log(LOG_ERR, $db->error );
-				}
-			}
-		}else{
-			JWLog::Instance()->Log(LOG_ERR, $db->error );
-		}
-		return false;
+		return JWDB_Cache::SaveTableRow(	 'User'
+									,array(	 'timeCreate'	=> JWDB::MysqlFuncion_Now()
+											,'nameScreen'	=> $userInfo['nameScreen']
+											,'pass'			=> $userInfo['pass']
+											,'email'		=> strrev(@$userInfo['email']) // 如果是手机注册，则为空
+											,'nameFull'		=> $userInfo['nameFull']
+											,'location'		=> $userInfo['location']
+											,'protected'	=> $userInfo['protected']
+											,'isWebUser'	=> $userInfo['isWebUser']
+									)
+								);
 	}
 
 	/*

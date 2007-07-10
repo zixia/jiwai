@@ -187,7 +187,7 @@ class JWMemcache implements JWMemcache_Interface
 		{
 			if ( preg_match("/$table\(id=(\d+)\)$/", $mc_key, $matches) )
 			{
-				$keys[] = $1;
+				$keys[] = $matches[1];
 			}
 		}
 		return $keys;

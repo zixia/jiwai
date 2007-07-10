@@ -624,9 +624,12 @@ class JWDB implements JWDB_Interface
 	/*
 	 *	返回 Mysql NOW() 函数返回的串
 	 */
-	static public function MysqlFuncion_Now()
+	static public function MysqlFuncion_Now($timestamp=null)
 	{
-		return date("Y-m-d H:i:s", time());
+		if ( empty($timestamp) )
+			$timestamp = time();
+
+		return date("Y-m-d H:i:s", $timestamp);
 	}
 
 	static public function MysqlFuncion_Aton($dottedIp)

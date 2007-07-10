@@ -11,6 +11,6 @@
  */
 interface JWDB_Cache_Interface 
 {
-	static function OnDirty		( $idPK, $dbRow, $table=null );
+	static function OnDirty		( $dbRow, $table=null );
 }
 ?>
