@@ -436,18 +436,21 @@ _CMD_;
 				if ( !preg_match('/\.gif$/i',$filename) )
 					$picType = 'jpg';
 
-				$fp = @fopen($filename, 'rb');
-
-				if ( false==$fp )
+				if ( !file_exists($filename) )
 				{
 					header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
 					exit(0);
 				}
 
+				header('Content-Type: image/'.$picType);
+				header('Content-Length: '.filesize($filename));
+				header('Last-Modified: '.date(DATE_RFC822, filemtime($filename)));
+				header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
+				header('Pragma: public');
+				//header('X-Sendfile: '.$filename);
+				//header("cache-control: max-age=94608000");
 
-				header("Content-Type: image/$picType");
-				header("Content-Length: " . filesize($filename));
-
+				$fp = fopen($filename, 'rb');
 				fpassthru($fp);
 
 				break;
