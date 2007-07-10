@@ -17,7 +17,7 @@ function ons(){
 <h2>审核更新</h2>
 <!--{include tips}-->
 <!--{if $statusQuarantine}-->
-	<h3>未审核更新信息(每页20条)</h3>
+	<h3>未审核更新信息(每页20条 - 审核完一页再进行下一页)</h3>
 	<form name="exam" action="statusexam" method="POST" onSubmit="return ons();">
 	<input type="submit" name="delete" value="删除">
 	<input type="submit" name="allow" value="审核通过">
@@ -44,6 +44,8 @@ function ons(){
 		<!--{/foreach}-->
 	</table>
 	</form>
+<!--{else}-->
+<h3>没有需要审核的更新</h3>
 <!--{/if}-->
 
 <!--{include footer}-->

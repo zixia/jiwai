@@ -4,7 +4,7 @@ if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/t
 require_once('../../../jiwai.inc.php');
 require_once('./function.php');
 
-function backToGet($stirng=null){
+function backToGet($string=null){
 	setTips( $string );
 	Header('Location: statusexam');
 	exit;
