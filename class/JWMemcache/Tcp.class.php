@@ -40,7 +40,7 @@ class JWMemcache_Tcp implements JWMemcache_Interface{
      * @param string $cluster
      */
     private function __construct($cluster='default') {
-		if ( ! function_exists(memcache_add_server) )
+		if ( ! function_exists('memcache_add_server') )
 			throw new JWException("can't find memcache_add_server function, php ext not loaded?");
 
         //$this->msPool = memc_server_pool(
@@ -77,7 +77,7 @@ class JWMemcache_Tcp implements JWMemcache_Interface{
 												,1
 												,15
 												,true
-												,array('JWMemcacheTcp','FailureCallback')
+												,array('JWMemcache_Tcp','FailureCallback')
 											);
 				$server_count++;
 			}

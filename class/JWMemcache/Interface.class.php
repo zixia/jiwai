@@ -19,8 +19,8 @@ interface JWMemcache_Interface
 
     function Get($key);
 
-	function Dec($key, $value);
-	function Inc($key, $value);
+	function Dec($key, $value=1);
+	function Inc($key, $value=1);
 
     function Del($key, $timeout=0);
 }

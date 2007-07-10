@@ -39,7 +39,7 @@ class JWMemcache_Udp implements JWMemcache_Interface{
      * @param string $cluster
      */
     private function __construct($cluster='default') {
-		if ( ! function_exists(memc_server_pool) )
+		if ( ! function_exists('memc_server_pool') )
 			throw new JWException("can't find memc_server_pool function, php ext not loaded?");
 
         $this->msPool = memc_server_pool(CONFIG_ROOT.'/memcache.'.$cluster);
@@ -63,13 +63,13 @@ class JWMemcache_Udp implements JWMemcache_Interface{
     }
 
  
-	function Dec($key, $value)
+	function Dec($key, $value=1)
 	{
         return memc_dec_key($this->msPool, $key, $value);
 	}
 
 
-	function Inc($key, $value)
+	function Inc($key, $value=1)
 	{
         return memc_inc_key($this->msPool, $key, $value);
 	}

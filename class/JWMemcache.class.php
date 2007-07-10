@@ -40,7 +40,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *
 	 * @return JWMemcache
 	 */
-	static public function &Instance($cluster='default', $protocol=self::UDP)
+	static public function &Instance($cluster='default', $protocol=self::TCP)
 	{
 		if (!isset(self::$msInstances[$cluster])) {
 			$class = __CLASS__;
@@ -95,7 +95,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *	@param	string	$key
 	 *	@param	int		$value
 	 */
-	public function Dec($key, $value)
+	public function Dec($key, $value=1)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
@@ -125,7 +125,7 @@ class JWMemcache implements JWMemcache_Interface
 		return $this->msMemcacheProtocol->Get($key);
 	}
 
-	public function Inc($key, $vlaue)
+	public function Inc($key, $vlaue=1)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
