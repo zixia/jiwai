@@ -200,10 +200,15 @@ $menu_list = array (
 								,'name'		=> "以前的"
 								,'url'		=> "/$page_user_info[nameScreen]/"
 							)
-		,'search'	=> array(	'active' => false
-								,'name'		=> "搜索结果"
-								,'url'		=> "/$page_user_info[nameScreen]/search?q=".urlEncode($_REQUEST['q']))
 	);
+
+if( null!==$q ){
+	$menu_list['search'] = array(	
+			'active' => false , 
+			'name'	=> "搜索结果" ,
+			'url'		=> "/$page_user_info[nameScreen]/search?q=".urlEncode($q)
+			);
+}
 
 if( $active_tab !== 'search' ) 
 	unset( $menu_list['search'] );
@@ -242,7 +247,7 @@ if ( $show_protected_content )
   
 <?php 
 if ( $show_protected_content )
-	JWTemplate::pagination($pagination, $q===null ? null : array('q'=>$q) );
+	JWTemplate::pagination($pagination, (null===$q) ? array() : array('q'=>$q) );
 ?>
 
 <?php 
