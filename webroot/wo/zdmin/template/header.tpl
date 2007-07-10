@@ -12,7 +12,7 @@ td,th{ font-size:14px; }
 .page { width:100%; }
 .clear { clear:both; }
 
-#left { width:180px; float:left; padding:10px; border-right:1px solid #999; margin-right:10px;}
+#left { width:180px; float:left; padding:10px; border-right:1px solid #999;}
 #left h2 { font-size:16px; margin:0px; }
 #left ul { margin:0px; padding:0px; display:block;}
 #left li { margin:5px; list-style:none; display:block; margin:5px;}
@@ -20,7 +20,7 @@ td,th{ font-size:14px; }
 #left li a:hover { font-size:15px; font-weight:bold; }
 #left li.selected a{ font-size:15px; font-weight:bold; color:#F00;}
 
-#main { padding:10px; }
+#main { padding:10px; float:left;clear:right;}
 #main h2 { font-size:20px; margin:0 0 15px 0; }
 #main h3 { font-size:16px; margin:0 0 10px 0; }
 
@@ -40,27 +40,26 @@ td,th{ font-size:14px; }
 	<div id="left">
 		<h2>内容审查</h2>
 		<ul>
-			<li ${$menu_nav=='filterwords'?'class="selected"':''}><a href="/wo/zdmin/filterwords">禁忌词设置</a></li>
-			<li ${$menu_nav=='filterdict'?'class="selected"':''}><a href="/wo/zdmin/filterdict">禁忌词典生成</a></li>
+			<li ${$menu_nav=='filterwords'?'class="selected"':''}><a href="/wo/zdmin/filterwords">禁忌词设置 [Y]</a></li>
 			<li ${$menu_nav=='statusexam'?'class="selected"':''}><a href="/wo/zdmin/statusexam">JiWai更新审查</a></li>
+			<!--li ${$menu_nav=='statusupdate'?'class="selected"':''}><a href="/wo/zdmin/statusupdate">叽歪更新同步 [Y]</a></li-->
 		</ul>
 		<h2>JiWai更新管理</h2>
 		<ul>
-			<li ${$menu_nav=='statusupdate'?'class="selected"':''}><a href="/wo/zdmin/statusupdate">叽歪更新同步</a></li>
+			<li ${$menu_nav=='statuslist'?'class="selected"':''}><a href="/wo/zdmin/statuslist">叽歪更新列表</a></li>
 			<li ${$menu_nav=='statusdelete'?'class="selected"':''}><a href="/wo/zdmin/statusdelete">删除某条更新 [Y]</a></li>
 		</ul>
 		<h2>JiWai用户管理</h2>
 		<ul>
-			<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/wo/zdmin/userquery">用户查询</a></li>
+			<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/wo/zdmin/userquery">用户信息查询 [Y]</a></li>
 			<li ${$menu_nav=='usershield'?'class="selected"':''}><a href="/wo/zdmin/usershield">屏蔽用户列表</a></li>
 			<li ${$menu_nav=='usersetting'?'class="selected"':''}><a href="/wo/zdmin/usersetting">修改用户设置</a></li>
 		</ul>
 		<h2>JiWai运营数据查询</h2>
 		<ul>
-			<li ${$menu_nav=='userstatus'?'class="selected"':''}><a href="/wo/zdmin/userstatus">用户更新查询</a></li>
-			<li ${$menu_nav=='userregistered'?'class="selected"':''}><a href="/wo/zdmin/userregistered">注册用户查询 [Y]</a></li>
+			<li ${$menu_nav=='statuscreate'?'class="selected"':''}><a href="/wo/zdmin/statuscreate">用户更新量汇总 [Y]</a></li>
+			<li ${$menu_nav=='userregistered'?'class="selected"':''}><a href="/wo/zdmin/userregistered">注册用户量汇总 [Y]</a></li>
 			<li ${$menu_nav=='imquery'?'class="selected"':''}><a href="/wo/zdmin/imquery">IM设备查询 [Y]</a></li>
-			<li ${$menu_nav=='smsquery'?'class="selected"':''}><a href="/wo/zdmin/smsquery">手机绑定查询</a></li>
 		</ul>
 	</div>
 	<div id="main">

@@ -4,21 +4,13 @@ if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/t
 require_once('../../../jiwai.inc.php');
 require_once('./function.php');
 
-$id = null;
-extract($_POST, EXTR_IF_EXISTS);
+$updateResult = JWStatusCopyForManager::UpdateToStatus();
 
-if( $_POST ) {
-	if( $id ) {
-		$id = JWDB::CheckInt( $id );
-		JWStatus::Destroy( $id );
-		setTips("删除ID号 : $id 的更新成功!");
-	}
-	Header("Location: statusdelete");
-	exit;
-}
+setTips("管理用更新已经同用户更新数据表同步完成，耗时：". $updateResult['timeCost'] );
 
 $render = new JWHtmlRender();
-$render->display("statusdelete", array(
-			'menu_nav' => 'statusdelete',
+$render->display("statusupdate", array(
+			'menu_nav' => 'statusupdate',
+			'updateResult' => $updateResult,
 			));
 ?>

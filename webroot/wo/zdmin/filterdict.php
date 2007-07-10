@@ -4,21 +4,13 @@ if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/t
 require_once('../../../jiwai.inc.php');
 require_once('./function.php');
 
-$id = null;
-extract($_POST, EXTR_IF_EXISTS);
+$file = './dictionary/filterdict.txt';
 
-if( $_POST ) {
-	if( $id ) {
-		$id = JWDB::CheckInt( $id );
-		JWStatus::Destroy( $id );
-		setTips("删除ID号 : $id 的更新成功!");
-	}
-	Header("Location: statusdelete");
-	exit;
-}
+$fr = file_get_contents( $file );
 
 $render = new JWHtmlRender();
-$render->display("statusdelete", array(
-			'menu_nav' => 'statusdelete',
+$render->display("filterdict", array(
+			'fresult' => $fr,
+			'menu_nav' => 'filter_nav',
 			));
 ?>

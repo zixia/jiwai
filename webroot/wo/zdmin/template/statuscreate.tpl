@@ -7,7 +7,7 @@
 <table class="result" width="300">
 	<tr>
 		<th>日期</th>
-		<th>注册人数</th>
+		<th>发布更新数</th>
 	</tr>
 	<!--{foreach $result as $one}-->
 	<tr ${isWeekend($one['day']) ? 'style="background-color:#CD6;"' : ''}>
