@@ -1,4 +1,14 @@
 <?php
+/**
+ * @package		JiWai.de
+ * @copyright	AKA Inc.
+ * @author	  	zixia@zixia.net
+ * @version		$Id$
+ */
+
+/**
+ * class JWDictFilter
+ */
 class JWDictFilter {
 
 	private $cnWordList = array();
@@ -139,9 +149,12 @@ class JWDictFilter {
 				}
 			}
 		}
+
 		$filterWords = array_unique($filterWords);
-		$filterWordsString = implode("|", $filterWords);
-		$filterWords = explode("|", mb_convert_encoding($filterWordsString, "UTF-8", "GB2312") );
+		if( !empty( $filterWords ) ) {
+			$filterWordsString = implode("|", $filterWords);
+			$filterWords = explode("|", mb_convert_encoding($filterWordsString, "UTF-8", "GB2312") );
+		}
 		return $filterWords;
 	}
 

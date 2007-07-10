@@ -39,6 +39,11 @@ define('LIB_ROOT',	JW_ROOT . 'lib/');
  */
 define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
 
+/**
+ * Filter Dict File
+ */
+define('FILTER_DICT',  JW_ROOT . 'webroot/wo/zdmin/dictionary/filterdict.txt');
+
 
 /**
  * Path of config cache

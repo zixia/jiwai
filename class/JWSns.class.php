@@ -429,7 +429,23 @@ class JWSns {
 		}
 
 		$statusPost = JWRobotLingo::ConvertCorner( $status );
-		$reply_info	= JWStatus::GetReplyInfo($statusPost);
+		$reply_info	= JWStatus::GetReplyInfo($statusPost);	
+		
+		/*
+		 *  判断是否需要Filter，如果需要进入status
+		 *
+		 */
+		if( true )
+		{
+			$idReciever = empty( $reply_info ) ? null : $reply_info['user_id'];
+			$status = empty( $reply_info ) ? $status : $statusPost;
+
+			JWFilterConfig::Normal();
+			if( JWFilterRule::IsNeedFilter($status, $idUser, $idSender, $device) ){
+				JWStatusQuarantine::Create($idUser,$status,$device,$time, $isSignature);
+				return true;
+			}
+		}
 
 		/*
 		 *	如果是 @user 的更新，只发送给 user
@@ -484,7 +500,6 @@ class JWSns {
 
 		return JWStatus::Create($idUser,$status,$device,$time, $isSignature);
 	}
-
 
 	/*
 	 *	验证设备，如果通过验证，则设置最新验证设备为接收设备

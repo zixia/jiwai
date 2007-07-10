@@ -77,32 +77,49 @@ class JWStatus {
 	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
 	{
 		$db = JWDB::Instance()->GetDb();
-
-		$status = preg_replace('[\r\n]',' ',$status);
-
-		$time = intval($time);
-
-		if ( 0>=$time )
-			$time = time();
 		
-		$statusPost = JWRobotLingo::ConvertCorner($status);
-		$reply_info = JWStatus::GetReplyInfo($statusPost);
+		/* 
+		 * For Create From Status_Quarantine;
+		 */
+		if( is_array( $idUser ) ) {
+			$row = $idUser;
+			
+			$idUser = $row['idUser'];
+			$status = $row['status'];
+			$device = $row['device'];
+			$time = $row['timeCreate'];
+			$reply_status_id = $row['idStatusReplyTo'];
+			$reply_user_id = $row['idUserReplyTo'];
+			$picture_id = $row['idPicture'];
+			$isSignature = $row['isSignature'];
+		}else{
 
-		if ( empty($reply_info) )
-		{ 
-			$reply_status_id	= null;
-			$reply_user_id		= null;
+			$status = preg_replace('[\r\n]',' ',$status);
+
+			$time = intval($time);
+
+			if ( 0>=$time )
+				$time = time();
+			
+			$statusPost = JWRobotLingo::ConvertCorner($status);
+			$reply_info = JWStatus::GetReplyInfo($statusPost);
+
+			if ( empty($reply_info) )
+			{ 
+				$reply_status_id	= null;
+				$reply_user_id		= null;
+			}
+			else
+			{
+				$status = $statusPost;
+				$reply_status_id	= $reply_info['status_id'];
+				$reply_user_id		= $reply_info['user_id'];
+			}
+
+			$user_db_row = JWUser::GetUserDbRowById($idUser);
+
+			$picture_id = $user_db_row['idPicture'];
 		}
-		else
-		{
-			$status = $statusPost;
-			$reply_status_id	= $reply_info['status_id'];
-			$reply_user_id		= $reply_info['user_id'];
-		}
-
-		$user_db_row = JWUser::GetUserDbRowById($idUser);
-
-		$picture_id = $user_db_row['idPicture'];
 
 		if ( $stmt = $db->prepare( "INSERT INTO Status (idUser,status,device,timeCreate,idStatusReplyTo,idUserReplyTo,idPicture,isSignature) "
 								. " values (?,?,?,FROM_UNIXTIME(?),?,?,?,?)" ) ){
