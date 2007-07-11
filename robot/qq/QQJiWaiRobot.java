@@ -22,12 +22,6 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private boolean udp;
 	private int qqno;
 	private String qqpass;
-	private boolean useProxy;
-	private String proxyServer;
-	private int proxyPort; 
-	private String proxyUser;
-	private String proxyPass;
-	private String proxyType;
 	
 	private int state = 0;
 	
@@ -38,7 +32,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private static final String DEVICE = "qq";
 	
 	public QQJiWaiRobot() {
-		if (!loadConfig()) {
+		if ( false == loadConfig() ) {
 			return;
 		}
 		
@@ -54,14 +48,6 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			client.setUser(user);
 			client.setConnectionPoolFactory(new PortGateFactory());
 			client.setLoginServer(server);
-			if (useProxy) {
-				client.setProxy(new InetSocketAddress(proxyServer, proxyPort));
-				client.setProxyType(proxyType);
-				if (!proxyUser.equals("")) {
-					client.setProxyUsername(proxyUser);
-					client.setProxyPassword(proxyPass);
-				}
-			}
 			client.login();
 		} catch (Exception e) {
 			handleException( e );	
@@ -85,38 +71,37 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	 * read config
 	 */
 	private boolean loadConfig() {
-		try {
-			Properties config = new Properties();
-			config.load(new FileInputStream("config.ini"));
-			server = config.getProperty("server");
-			if (server == null || server.trim().equals("")) {
-				throw new Exception("cannot find server in config file.");
-			}
-			if (config.getProperty("udp", "0").equals("1")) {
-				udp = true;
-			} else {
-				udp = false;
-			}
-			qqno = Integer.parseInt(System.getProperty("qq.no"));
-			qqpass = config.getProperty("qqpass", System.getProperty("qq.pass"));
-			if (config.getProperty("proxy", "0").equals("1")) {
-				useProxy = true;
-				proxyServer = config.getProperty("proxyserver", "");
-				proxyPort = Integer.parseInt(config.getProperty("proxyport", ""));
-				proxyUser = config.getProperty("proxyuser", "");
-				proxyPass = config.getProperty("proxypass", "");
-				proxyType = config.getProperty("proxytype", "None");
-			} else {
-				useProxy = false;
-			}
-			mQueuePath = config.getProperty("path_queue");
 
-			return true;
-		} catch (Exception e) {
-			handleException( e );	
-			Logger.logError("Load config file error, program will exit.");
+		Properties config = new Properties();
+
+		try {
+			config.load(new FileInputStream("config.ini"));
+		}catch(Exception e){
 		}
-		return false;
+
+		server = config.getProperty( "qq.server", System.getProperty("qq.server") );
+		if (server == null || server.trim().equals("")) {
+			Logger.logError("Can't found qq.server, Program will exit.");
+			System.exit(-1);
+		}
+
+		if ( config.getProperty( "qq.udp", System.getProperty("qq.udp", "0") ).equals("1") ) {
+			udp = true;
+		} else {
+			udp = false;
+		}
+
+		try {
+			qqno = Integer.parseInt( config.getProperty( "qq.no", System.getProperty("qq.no") ) );
+			qqpass = config.getProperty( "qq.pass", System.getProperty("qq.pass") );
+		}catch(Exception ee){
+			Logger.logError("Can't find qq.no, Program will exit.");
+			System.exit(-1);
+		}
+
+		mQueuePath = config.getProperty("path.queue");
+
+		return true;
 	}
 
 	public void qqEvent(QQEvent e) {
