@@ -1555,7 +1555,7 @@ _HTML_;
 		return true;
 	}
 </script>
-<?
+<?php
 
 		if($nameUser) {
 ?>
@@ -1580,7 +1580,7 @@ _HTML_;
 			</form>
 		</div>
 
-<?
+<?php
 
 	}
 }
