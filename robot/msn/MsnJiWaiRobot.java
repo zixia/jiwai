@@ -39,29 +39,25 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 	public static MoMtWorker worker = null;
 
 	static {
+
 		Logger.initialize(DEVICE);
 		Properties config = new Properties();
+
 		try {
 			config.load(new FileInputStream("config.ini"));
-			mPassword = config.getProperty("msn.pass", System
-					.getProperty("msn.pass"));
-			mEmail = config.getProperty("msn.email", System
-					.getProperty("msn.email"));
-			mQueuePath = config.getProperty("queue.path", System
-					.getProperty("queue.path"));
-			mDisplayName = config.getProperty("msn.display.name", System
-					.getProperty("msn.display.name"));
-		} catch (IOException e) {
-			mPassword = System.getProperty("msn.pass");
-			mEmail = System.getProperty("msn.email");
-			mQueuePath = System.getProperty("queue.path");
-			mDisplayName = System.getProperty("msn.display.name", _mDisplayName);
+		}catch(Exception e){
 		}
 
+		mPassword = config.getProperty("msn.pass", System.getProperty("msn.pass"));
+		mEmail = config.getProperty("msn.email", System.getProperty("msn.email"));
+		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path"));
+		mDisplayName = config.getProperty("msn.display.name", System.getProperty("msn.display.name", _mDisplayName));
+
 		if (mEmail == null || mPassword == null || mQueuePath == null) {
-			System.err.println("Please give msn(email,password) and queue(path) definition!");
+			Logger.logError("Please give msn(email,password) and queue(path) definition!");
 			System.exit(1);
 		}
+
 		mQueuePathMo = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mo" + File.separator;
 		mQueuePathMt = mQueuePath + (mQueuePath.endsWith(File.separator)?"":File.separator) + "mt" + File.separator;
 						

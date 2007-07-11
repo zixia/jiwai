@@ -1,8 +1,8 @@
 run: MsnJiWaiRobot.class
-	/usr/java/jdk1.5.0_11/bin/java -cp .:jarlib/cindy.jar:jarlib/commons-logging.jar:jarlib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar -Dmsn.email=wo@jiwai.de -Dmsn.pass=Beta@JiWai741de -Dqueue.path=/var/cache/tmpfs/jiwai/queue/msn -Djiwai.robot.log.dir=/var/cache/tmpfs/jiwai/log MsnJiWaiRobot
+	/usr/java/jdk/bin/java -cp .:../../javaLib/cindy.jar:../../javaLib/commons-logging.jar:../../javaLib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar -Djiwai.robot.log.dir=/var/log/robot MsnJiWaiRobot
 
 MsnJiWaiRobot.class: MsnJiWaiRobot.java
-	/usr/java/jdk1.5.0_11/bin/javac -Xlint:unchecked -cp .:jarlib/cindy.jar:jarlib/commons-logging.jar:jarlib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar MsnJiWaiRobot.java
+	/usr/java/jdk/bin/javac -Xlint:unchecked -cp .:../../javaLib/cindy.jar:../../javaLib/commons-logging.jar:../../javaLib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar MsnJiWaiRobot.java
 
 clean:
 	rm *.class
