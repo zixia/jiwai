@@ -441,7 +441,7 @@ class JWSns {
 			$status = empty( $reply_info ) ? $status : $statusPost;
 
 			JWFilterConfig::Normal();
-			if( JWFilterRule::IsNeedFilter($status, $idUser, $idSender, $device) ){
+			if( JWFilterRule::IsNeedFilter($status, $idUser, $idReciever, $device) ){
 				JWStatusQuarantine::Create($idUser,$status,$device,$time, $isSignature);
 				return true;
 			}
