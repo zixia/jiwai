@@ -154,59 +154,5 @@ class JWMemcache implements JWMemcache_Interface
 
 		return $this->msMemcacheProtocol->Set($key,$var,$flag,$expire);
 	}
-
-
-	/*
-	 *	根据表名、idPk、条件选择、功能函数名，组合出一个唯一的 memcache key
-	 *
-	 *	如：
-			User(id=1)
-			User(nameScreen=zixia)
-			Device(address=zixia@zixia.net,type=gtalk)
-
-			Status[GetStatusIdsFromUser(1)]
-			Status[GetStatusIdsFromUser(1)]
-	 *
-	 *
-	 */
-
-	static public function DbKeys2McKeys($table, $idPks)
-	{
-		$keys = array();
-		foreach ( $idPks as $pk_id )
-		{
-			$keys[] = "$table(id=$pk_id)";
-		}
-		return $keys;
-	}
-
-	static public function McKeys2DbKeys($table, $mcKeys)
-	{
-		$keys = array();
-		foreach ( $mcKeys as $mc_key )
-		{
-			if ( preg_match("/$table\(id=(\d+)\)$/", $mc_key, $matches) )
-			{
-				$keys[] = $matches[1];
-			}
-		}
-		return $keys;
-	}
-
-
-	static public function GetKeyFromPk($table, $idPk)
-	{
-		$key_row = self::GetKeysFromPks($table, array($idPk));
-		return $key_row[$idPk];
-	}
-
-	static public function GetKeyFromCondition($table, $condition, $limit)
-	{
-	}
-
-	static public function GetKeyFromFunction($table, $function, $param=null)
-	{
-	}
-
 }
 ?>

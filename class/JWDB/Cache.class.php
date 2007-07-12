@@ -28,7 +28,17 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	static private $msMemcache;
 
 
-	/*
+	/**
+	 *	大数据集的个数阀值
+	 *
+	 *	对大数据集，即使我们可以永久 cache，也只应该  cache 一段时间，节省资源。
+	 *	除非这个数据集非常的常用
+	 *
+	 *	目前设置： 1000 个
+	 */
+	const NUM_LARGE_DATASET = 1000;
+
+	/**
 	 *	降低并发访问数据库的 Cache 时间
 	 *
 	 *	对于同样的数据库请求，我们在 MIN_EXPIRE_SECENDS 中，只获取一次
@@ -38,7 +48,19 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 */
 	const TEMPORARY_EXPIRE_SECENDS = 1;
 
-	/*
+
+	/**
+	 *	可以永久 Cache ，但是数据量很大，永久 Cache 会浪费资源，所以给出一个合理的过期时间
+	 *
+	 *	比如一个用户有 10000000 条更新，我们取 id 的时候，看最后一页的时候会全部取出来。
+	 *	这时候就没有必要一直 cache，不会一直有人看的。超时过期即可
+	 *
+	 *	目前设置： 3600s = 1Hour
+	 */
+	const PERMANENT_EXPIRE_SECENDS_LARGE_DATA	= 3600;
+
+
+	/**
 	 *	永久 Cache 时间
 	 *
 	 *	我们认为可以永久 Cache 的数据，使用这个过期时间。
@@ -47,6 +69,8 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 *	864000 - 10天
 	 */
 	const PERMANENT_EXPIRE_SECENDS = 864000;
+
+
 	/**
 	 * Instance of this singleton class
 	 *
@@ -81,6 +105,111 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 
 
 	/**
+	 *	对 DbRow 的 memcache 通用处理函数
+	 *
+ 	 *	@param	string				$table		数据库表名
+ 	 *	@param	array				$ids		数据库主键 id 的数组列表
+ 	 *	@param	callable function	$function	如果 memcache 中没有数据，则通过这个函数进行获取
+ 	 *	@param	bool				$forceReload	强制刷新 memcache
+ 	 *
+	 */
+	static public function GetCachedDbRowsByIds($table, $ids, $function=null, $forceReload=false)
+	{
+		if ( empty($function) )
+			$function = array( ("JW".$table), "GetDbRowsByIds");
+
+		if ( ! method_exists($function) )
+			throw new JWException("function $function[0]::$function[1] not exists.");
+
+ 		/*
+		 *	Stage 1. 根据 ids 获取 memcache 的 keys
+		 */
+		$mc_keys 		= self::GetCacheKeysByIds('Status', $idStatuses);
+
+		$key_map_mc2db	= array_combine($mc_keys	,$idStatuses);
+
+		/*
+		 *	Stage 1.1 通过 memcache 尝试获取数据
+		 */
+		$hit_mc_rows = self::$msMemcache->Get($mc_keys);
+		$hit_mc_keys = array_keys($hit_mc_rows);
+
+		$hit_ids = JWFunction::GetMappedArray($hit_mc_keys, $key_map_mc2db);
+
+		/*
+		 *	Stage 1.2 将 memcache 返回数据中的 memcache key 转化为 db key
+		 */
+		$hit_db_rows = array();
+		foreach ( $hit_mc_keys as $hit_mc_key )
+		{
+			$hit_db_rows[ $key_map_mc2db[$hit_mc_key] ] = $hit_mc_rows[$hit_mc_key];
+		}
+
+		/*
+		 *	Stage 1.3 如果 memcache 返回了所有数据，则完全命中，返回数据后结束。
+		 */
+		if ( count($hit_ids)==count($idStatuses) )
+		{
+			return $hit_db_rows;
+		}
+
+
+		/*
+		 *	Stage 2. memcache 没有完全命中（或没有命中），我们需要从数据库中获取数据，先算出哪些 id 没有命中 cache
+		 */
+		$unhit_ids	= array_diff($idStatuses, $hit_ids);
+		$unhit_mc_keys		= array_diff($mc_keys	, $hit_mc_keys);
+
+		/*
+		 *	Stage 2.1 准备开始获取数据。为了避免同一台服务器上多个进程同时获取memcache数据，我们在进入之前设置一个 mutex 
+		 */
+		$mutex = new JWMutex( array($table,$unhit_ids) );
+		$mutex->Acquire();
+
+		/*
+		 *	Stage 2.2 成功获取 Mutex，这时候再次检查刚刚 unhit 的数据是否现在已经有了。因为在获取 Mutex 的时候，可能有其他进程已经将数据进行设置了。
+		 */
+		$retry_hit_mc_rows 	= self::$msMemcache->Get($unhit_mc_keys);
+
+		/*
+		 *	Stage 2.3 如果得到了完整数据，则释放 Mutex，返回数据
+		 */
+		if ( count($retry_hit_mc_rows)==count($unhit_mc_keys) )
+		{
+			$mutex->Release();
+
+			foreach ( $unhit_mc_keys as $unhit_mc_key )
+			{
+				$hit_db_rows[ $key_map_mc2db[$unhit_mc_key] ] = $retry_hit_mc_rows[$unhit_mc_key];
+			}
+
+			return $hit_db_rows;
+		}
+
+		/*
+		 *	Stage 2.4 仍然没有完整数据，则进行数据库查询 TODO 刚刚有可能能得到几个数据，可以再次 diff 提高性能
+		 */
+		$db_rows = call_user_func($function,$unhit_ids);
+
+		foreach ( $unhit_mc_keys as $unhit_mc_key )
+		{
+			self::$msMemcache->Set($unhit_mc_key, $db_rows[ $key_map_mc2db[$unhit_mc_key] ]);
+
+			$hit_db_rows[ $key_map_mc2db[$unhit_mc_key] ] 	= $db_rows[ $key_map_mc2db[$unhit_mc_key] ];
+		}
+
+		/*
+		 *	Stage 2.5 释放 Mutex，返回完整数据
+		 */
+		$mutex->Release();
+
+		/*
+	 	 *	Stage 3. 返回完整数据
+		 */
+		return $hit_db_rows;
+	}
+
+	/**
 	 *	获取 $mcKey 的值：如果在 memcache 中，就直接返回；如果不在，就通过函数得到结果，设置 memcache 后返回。
 	 *	使用了 mutex 防止多个进程设置同一个 mcKey
 	 *
@@ -90,7 +219,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 *	@param	int				$timeExpire	memcache 过期时间
 	 *	@param	bool			$forceReload	不管是否已经有 cache，强制重新 Load，刷新 memcache 的值
 	 */
-	static function GetCachedValue($mcKey, $function, $param, $timeExpire=self::TEMPORARY_EXPIRE_SECENDS, $forceReload=false)
+	static function GetCachedValueByKey($mcKey, $function, $param, $timeExpire=self::TEMPORARY_EXPIRE_SECENDS, $forceReload=false)
 	{
 		self::Instance();
 
@@ -135,6 +264,9 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		/**
 		 *	从数据库中获取数据
 		 */
+		if ( ! method_exists($function) )
+			throw new JWException("function $function[0]::$function[1] not exists.");
+
 		$db_result = call_user_func($function,$param);
 
 		self::$msMemcache->Set($key, $db_row, 0, $timeExpire);
@@ -174,7 +306,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 				2. 同时保证，对于同一个 $sql，在1s种内，只会被执行1次（我们假设1s不会影响用户对实时更新的感觉）
 	 	 */
 
-		$mc_key = JWMemcache::GetKeyFromFunction("JWDB::GetQueryResult", array($sql,$moreThanOne));
+		$mc_key = self::GetCacheKeyByFunction("JWDB::GetQueryResult", array($sql,$moreThanOne));
 
 		return self::GetCachedValue(	 $mc_key
 										,array('JWDB','GetQueryResult')
@@ -312,7 +444,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		 */
 		if ( isset($condition['id']) )
 		{
-			$key 	= self::$msMemcache->GetKeyFromPk($table, $condition['id']);
+			$mc_key 	= self::$msMemcache->GetKeyFromPk($table, $condition['id']);
 
 			return self::GetCachedValue(	 $mc_key
 											,array('JWDB','GetTableRow')
@@ -326,7 +458,14 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		 *	条件中没有主键，不知道如何更新 cache 所以不能 cache（直到我们想明白如何将通用的条件查询转换为对 memcache 数据的更新）
 		 *	这样过期可能会带来不同步的问题，先不 cache.
 		 */
-		return JWDB::GetTableRow($table,$condition,$limit);
+		$mc_key	= self::GetCacheKeyByCondition($table,$condition,$limit);
+
+		return self::GetCachedValue(	 $mc_key
+										,array('JWDB','GetTableRow')
+										,array($table,$condition,$limit)
+										,self::TEMPORARY_EXPIRE_SECENDS
+									);
+
 	}
 
 	/*
@@ -367,5 +506,72 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		}
 		throw new JWException('some err occoured! you should not reach here!');
 	}
+
+
+	/**
+	 *	根据表名、idPk、条件选择、功能函数名，组合出一个唯一的 memcache key
+	 *
+	 *	如：
+			TB:User(id=1)
+			TB:User(nameScreen=zixia)
+			TB:Device(address=zixia@zixia.net,type=gtalk)
+
+			FN:JWStatus::GetStatusIdsFromUser(1)
+			FN:Status::GetStatusIdsFromUser(1)
+	 *
+	 *
+	 */
+
+	/**
+	 *	返回 db ids 映射的 memcache ids
+	 *
+	 *	@param	string			$table	数据库表名
+	 *	@param	array of int	$idPks	数据库表的主键数组
+	 *	@return	array of string	$mc_keys	memcache 的 keys，和参数是一一对应关系
+	 */
+	static public function GetCacheKeysByIds($table, $idPks)
+	{
+		$keys = array();
+		foreach ( $idPks as $pk_id )
+		{
+			$keys[] = "TB:$table(id=$pk_id)";
+		}
+		return $keys;
+	}
+
+	/**
+	 *	将数据库主键映射为 memcache key
+	 *
+	 */
+	static public function GetCacheKeyById($table, $idPk)
+	{
+		$mc_keys = self::GetCacheKeysByIds($table,array($idPk));
+		return $mc_keys[0];
+	}
+
+	/**
+	 *	根据一个条件得到 key：只能作防止并发的 TEMPORARY_EXPIRE_SECENDS 设置，因为目前还没有清晰的逻辑能够正确的使其过期
+	 *
+	 */
+	static public function GetCacheKeyByCondition($table, $condition, $limit)
+	{
+		$condition 	= sort($condition);
+
+		$mc_key 	= "TB:$table(" . serialize($condition) . "):$limit";
+
+		return $mc_key;
+	}
+
+	static public function GetCacheKeyByFunction($function, $param=null)
+	{
+		$param 		= sort($param);
+
+		$mc_key 	= "FN:$function(" . serialize($param) . ")";
+
+		return $mc_key;
+
+	}
+
+
 }
 ?>

@@ -117,5 +117,36 @@ Class JWFunction {
 
 		return $ids;
 	}
+
+
+	/**
+	 *	2007-07-10
+	 *	将一个数组 array ，按照 map array 映射为 values 的另外一个 array
+	 *	如： 	$items 	= array ( 1,2,3 )
+	 *			$map	= array ( 1=>10, 2=>40, 3=>90 )
+	 *	调用 GetMappedArray($items, $map) 则会得到 array ( 10,40,90 )
+	 */
+	public static function GetMappedArray($items, $map)
+	{
+		$func_key_name 		= "JWFunction::GetMappedArray";
+		$func_callable_name	= JWFunction::Get($func_key_name);
+
+		if ( empty($func_callable_name) )
+		{
+			$reduce_function_content = 'return $map["' . $item . '"];';
+			$reduce_function_param 	= '$item';
+			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
+
+			JWFunction::Set($func_key_name, $func_callable_name);
+		}
+	
+		// 装换rows, 返回 id 的 array
+		$mapped_array = array_map(	 $func_callable_name
+									,$items
+								);
+
+		return $mapped_array;
+	}
+
 }
 ?>
