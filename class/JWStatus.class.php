@@ -119,11 +119,11 @@ class JWStatus {
 			$picture_id = $user_db_row['idPicture'];
 		}
 
-		return JWDB_Cache::SaveTableRow('Status',
+		return JWDB::SaveTableRow('Status',
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
-									,'timeCreate'	=> $time
+									,'timeCreate'	=> Date('Y-m-d H:i:s',$time)
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
@@ -138,7 +138,7 @@ class JWStatus {
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
@@ -147,10 +147,19 @@ class JWStatus {
 		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
 			throw new JWException('must int');
 
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
+
 		$sql = <<<_SQL_
 SELECT		id	as idStatus
 FROM		Status
 WHERE		idUser=$idUser
+		$condition_other
 ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
@@ -258,11 +267,19 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
 		$idUser	= intval($idUser);
 		$num	= intval($num);
 		$start	= intval($start);
+		
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
 
 		if ( 0>=$idUser || 0>=$num )
 			throw new JWException('must int');
@@ -282,6 +299,7 @@ FROM
 WHERE	
 		Status.idUser IN ($condition_in)
 		AND Status.timeCreate > (NOW()-INTERVAL 1 WEEK)
+		$condition_other
 ORDER BY
 		Status.timeCreate desc
 LIMIT 
@@ -309,13 +327,21 @@ _SQL_;
 	 *	获取 public_timeline 的 idStatus 
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromPublic($num=self::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromPublic($num=self::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
 		$num	= intval($num);
 		$start	= intval($start);
 
 		if ( !is_int($num) || !is_int($start) )
 			throw new JWException('must int');
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND Status.id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND Status.timeCreate > '$timeSince'";
+		}
 
 		$sql = <<<_SQL_
 SELECT		
@@ -328,6 +354,7 @@ WHERE
 			AND Status.idUserReplyTo IS NULL
 			AND User.idPicture IS NOT NULL
 			AND User.protected<>'Y'
+			$condition_other
 ORDER BY 	
 			Status.timeCreate desc
 LIMIT 		$start,$num

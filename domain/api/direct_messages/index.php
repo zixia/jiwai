@@ -10,15 +10,14 @@ $idUser = JWApi::getAuthedUserId();
 if( ! $idUser ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
-$messageIds = JWMessage::GetMessageIdsFromUser($idUser);
+
+$timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
+$messageIds = JWMessage::GetMessageIdsFromUser($idUser,JWMessage::INBOX,JWMessage::DEFAULT_MESSAGE_NUM,$start=0,$timeSince);
 $messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower($pathParam);
 if( !in_array( $type, array('json','xml','atom','rss') )){
 	JWApi::OutHeader(406, true);
-}
-if( !$user || !$text ) {
-	JWApi::OutHeader(400, true);
 }
 
 switch( $type ){
