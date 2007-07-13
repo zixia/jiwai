@@ -245,6 +245,8 @@ class JWDB implements JWDB_Interface
 
 			if ( is_int($v) )
 				$val_list .= "$v";
+			else if ( $v === null )
+				$val_list .= "NULL";
 			else
 				$val_list .= "'" . self::EscapeString($v) . "'";
 
