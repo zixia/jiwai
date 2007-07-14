@@ -29,12 +29,15 @@ class JWMutex {
 		if ( empty($key) )
 			throw new JWException('need key!');
 
+		// 转换为正整数
 		if ( is_int($key) )
-			$this->msSemResource = sem_get( $key, 1 );
+			$uint_key = abs($key);
 		else if ( is_object($key) || is_array($key) )
-			$this->msSemResource = sem_get( crc32(md5(serialize($key))), 1 );
+			$uint_key = sprintf( '%u', crc32(md5(serialize($key))) );
 		else
-			$this->msSemResource = sem_get( crc32($key), 1 );
+			$uint_key = sprintf( '%u', crc32($key) );
+
+		$this->msSemResource = sem_get( $uint_key, 1 );
 	
 		if ( empty($this->msSemResource) )
 			throw new JWException('sem resource limit exceed!');
