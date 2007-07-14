@@ -14,7 +14,6 @@ interface JWDB_Interface
 	static function SaveTableRow	( $table, $condition );
 	static function DelTableRow		( $table, $condition );
 	static function ExistTableRow	( $table, $condition );
-	static function ReplaceTableRow	( $table, $condition );
 	static function UpdateTableRow	( $table, $idPK, $condition);
 	static function GetTableRow		( $table, $condition, $limit=1 );
 

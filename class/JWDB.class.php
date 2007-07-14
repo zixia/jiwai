@@ -272,6 +272,7 @@ class JWDB implements JWDB_Interface
 	 * @return bool
 			succ / fail
 	 */
+/* 7/14/07 zixia: 作废，无法正确得到 OnDirty 的 db_row
 	static public function ReplaceTableRow( $tableName, $conditionArray )
 	{
 		$db = self::GetDb();
@@ -305,6 +306,7 @@ class JWDB implements JWDB_Interface
 
 		return $result;
 	}
+*/
 
 
 	/*
@@ -636,7 +638,7 @@ class JWDB implements JWDB_Interface
 
 	static public function MysqlFuncion_Aton($dottedIp)
 	{
-		return sprintf('%u', ip2long($dotted_name));
+		return sprintf('%u', ip2long($dottedIp));
 	}
 }
 ?>

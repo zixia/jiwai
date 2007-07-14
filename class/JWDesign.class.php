@@ -81,7 +81,13 @@ class JWDesign {
 
 	public function Save()
 	{
-		return JWDB::ReplaceTableRow('Design', array ( 
+		JWDB::DelTableRow(	 'Design'
+							,array ( 
+				 				'idUser'				=> $this->mUserId
+							)
+						);
+
+		return JWDB::SaveTableRow('Design', array ( 
 				 'idUser'				=> $this->mUserId
 				,'colorBackground'		=> $this->mBackgroundColor
 				,'idPictureBackground'	=> $this->mUseBackgroundImage

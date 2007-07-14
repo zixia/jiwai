@@ -119,11 +119,11 @@ class JWStatus {
 			$picture_id = $user_db_row['idPicture'];
 		}
 
-		return JWDB::SaveTableRow('Status',
+		return JWDB_Cache::SaveTableRow('Status',
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
-									,'timeCreate'	=> Date('Y-m-d H:i:s',$time)
+									,'timeCreate'		=> Date('Y-m-d H:i:s',$time)
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
@@ -155,8 +155,12 @@ class JWStatus {
 			$condition_other .= " AND timeCreate > '$timeSince'";
 		}
 
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
 		$sql = <<<_SQL_
-SELECT		id	as idStatus
+SELECT		 id
+			,id as idStatus
 FROM		Status
 WHERE		idUser=$idUser
 		$condition_other
@@ -164,7 +168,7 @@ ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 
 		if ( !empty($rows) )
@@ -190,31 +194,35 @@ _SQL_;
 	 */
 	static public function GetStatusIdsFromSelfNReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
-		$idUser	= JWDB::CheckInt($idUser);
-		$num	= JWDB::CheckInt($num);
+		$idUser	= JWDB_Cache::CheckInt($idUser);
+		$num	= JWDB_Cache::CheckInt($num);
 
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
 		$sql = <<<_SQL_
-SELECT		 Status.id	as idStatus
-			,Status.idUser	as idUser
+SELECT		 id
+			,id	as idStatus
+			,idUser
 FROM		Status
 WHERE		(
-			Status.idUserReplyTo=$idUser
-			OR Status.idUser=$idUser
+			idUserReplyTo=$idUser
+			OR idUser=$idUser
 			)
-ORDER BY 	Status.timeCreate desc
+ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
 		//AND Status.idUser<>1927 -- XXX block youyouwan
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
 			return array();
 
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
-		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
+		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 
 		array_push($user_ids, $idUser);
 
@@ -232,11 +240,15 @@ _SQL_;
 	 */
 	static public function GetStatusIdsFromReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
-		$idUser	= JWDB::CheckInt($idUser);
-		$num	= JWDB::CheckInt($num);
+		$idUser	= JWDB_Cache::CheckInt($idUser);
+		$num	= JWDB_Cache::CheckInt($num);
 
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
 		$sql = <<<_SQL_
-SELECT		 id	as idStatus
+SELECT		 id
+			,id	as idStatus
 			,idUser
 FROM		Status
 WHERE		idUserReplyTo=$idUser
@@ -244,14 +256,14 @@ ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
 			return array();
 
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
-		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
+		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 
 		array_push($user_ids, $idUser);
 
@@ -288,25 +300,29 @@ _SQL_;
 		
 		array_push($friend_ids, $idUser);
 
-		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
+		$condition_in = JWDB_Cache::GetInConditionFromArray($friend_ids);
 
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
 		$sql = <<<_SQL_
 SELECT
-		 Status.id	as idStatus
-		,Status.idUser as idUser
+		 id
+		,id	as idStatus
+		,idUser as idUser
 FROM	
 		Status
 WHERE	
-		Status.idUser IN ($condition_in)
-		AND Status.timeCreate > (NOW()-INTERVAL 1 WEEK)
+		idUser IN ($condition_in)
+		AND timeCreate > (NOW()-INTERVAL 1 WEEK)
 		$condition_other
 ORDER BY
-		Status.timeCreate desc
+		timeCreate desc
 LIMIT 
 		$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 
 		$status_ids = array();
@@ -314,7 +330,7 @@ _SQL_;
 		if ( !empty($rows) )
 		{
 			$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
-			$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
+			$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 		}
 
 		return array ( 	 'status_ids'	=> $status_ids
@@ -361,16 +377,30 @@ LIMIT 		$start,$num
 _SQL_;
 			//AND User.id<>1927 -- XXX block youyouwan
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
-		$user_ids 	= JWFunction::GetColArrayFromRows($rows, 'idUser');
+		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 
 		return array ( 	 'status_ids'	=> $status_ids
 						,'user_ids'		=> $user_ids
 					);
 	}
 
+
+	/*
+	 *	规范命名方式，以后都应该是 GetDbRowsByIds 或者 GetDbRowById，不用在函数名称中加数据库表名
+	 */
+	static public function GetDbRowsByIds ($idStatuses)
+	{
+		return self::GetStatusDbRowsByIds($idStatuses);
+	}
+
+	static public function GetDbRowById ($idStatus)
+	{
+		$db_rows = self::GetDbRowByIds(array($idStatus));
+		return $db_rows[$idStatus];
+	}
 
 	/*
 	 *	根据 idStatus 获取 Row 的详细信息
@@ -388,23 +418,19 @@ _SQL_;
 
 		$idStatuses = array_unique($idStatuses);
 
-		$condition_in = JWDB::GetInConditionFromArray($idStatuses);
+		$condition_in = JWDB_Cache::GetInConditionFromArray($idStatuses);
 
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
 		$sql = <<<_SQL_
-SELECT
-		id as idStatus
-		, idUser
-		, status
-		, UNIX_TIMESTAMP(Status.timeCreate) AS timeCreate
-		, device
-		, idStatusReplyTo
-		, idPicture
-		, isSignature
+SELECT	 *
+		,id as idStatus
 FROM	Status
-WHERE	Status.id IN ($condition_in)
+WHERE	id IN ($condition_in)
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 
 		if ( empty($rows) ){
@@ -433,10 +459,15 @@ _SQL_;
 	 */
 	static public function GetTimeDesc ($unixtime, $forceDate=false)
 	{
+		/*
+		 *	传入的 unixtime 可能是数据库的 datatime 格式
+	 	 */
+		if ( ! is_numeric($unixtime) )
+			$unixtime = strtotime($unixtime);
 
 		$duration = time() - $unixtime;
 		if ( $forceDate || $duration > 2*86400 ){
-			return strftime("%Y-%m-%d 周%a %H:%M",$unixtime);
+			return strftime("%Y-%m-%d 周%a %h:%m",$unixtime);
 		}else if ( $duration > 86400 ){
 			return strftime("%Y-%m-%d %H:%M",$unixtime);
 			//return "1 天前";
@@ -468,11 +499,9 @@ _SQL_;
 	 */
 	static public function Destroy ($idStatus)
 	{
-		if ( !is_numeric($idStatus) ){
-			throw new JWException("must be numeric! [$idStatus]");
-		}
+		$idStatus = JWDB_Cache::CheckInt($idStatus);
 
-		return JWDB::DelTableRow('Status', array (	'id'	=> intval($idStatus) ));
+		return JWDB_Cache::DelTableRow('Status', array (	'id'	=> $idStatus ));
 	}
 
 
@@ -484,10 +513,13 @@ _SQL_;
 	 */
 	static public function IsUserOwnStatus ($idUser, $idStatus)
 	{
-		$idUser 	= JWDB::CheckInt($idUser);
-		$idStatus	= JWDB::CheckInt($idStatus);
+		$idUser 	= JWDB_Cache::CheckInt($idUser);
+		$idStatus	= JWDB_Cache::CheckInt($idStatus);
 
 		$db_row = self::GetStatusDbRowById($idStatus);
+
+		if ( empty($db_row) )
+			return false;
 
 		return $db_row['idUser']==$idUser;
 	}
@@ -608,7 +640,7 @@ SELECT	COUNT(*) as num
 FROM	Status
 WHERE	idUser=$idUser
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 
 		return $row['num'];
 	}
@@ -620,14 +652,14 @@ _SQL_;
 	 */
 	static public function GetStatusNumFromReplies($idUser)
 	{
-		$idUser = JWDB::CheckInt($idUser);
+		$idUser = JWDB_Cache::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
 FROM	Status
 WHERE	idUserReplyTo=$idUser
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 
 		return $row['num'];
 	}
@@ -639,7 +671,7 @@ _SQL_;
 	 */
 	static public function GetStatusNumFromSelfNReplies($idUser)
 	{
-		$idUser = JWDB::CheckInt($idUser);
+		$idUser = JWDB_Cache::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
@@ -647,7 +679,7 @@ FROM	Status
 WHERE	idUserReplyTo=$idUser
 		OR idUser=$idUser
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 
 		return $row['num'];
 	}
@@ -671,7 +703,7 @@ _SQL_;
 
 		array_push($friend_ids, $idUser);
 
-		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
+		$condition_in = JWDB_Cache::GetInConditionFromArray($friend_ids);
 
 		$sql = <<<_SQL_
 SELECT      
@@ -682,7 +714,7 @@ WHERE
         Status.timeCreate > (NOW()-INTERVAL 24 HOUR)
         AND Status.idUser IN ($condition_in)
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 
 		return $row['num'];
 	}
@@ -698,7 +730,7 @@ SELECT	MAX(id) as idStatus
 FROM	Status
 _SQL_;
 
-		$result = JWDB::GetQueryResult($sql);
+		$result = JWDB_Cache::GetQueryResult($sql);
 		return $result['idStatus'];
 	}
 
@@ -713,7 +745,7 @@ SELECT	MAX(id) as idMax
 FROM	Status
 WHERE	timeCreate < FROM_UNIXTIME($unixtime)
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 		return $row['idMax'];
 	}
 
@@ -722,14 +754,14 @@ _SQL_;
 	 */
 	static public function GetMaxIdStatusByUserId($idUser)
 	{
-		$idUser = JWDB::CheckInt($idUser);
+		$idUser = JWDB_Cache::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 SELECT	MAX(id) as idMax
 FROM	Status
 WHERE	idUser=$idUser
 _SQL_;
-		$row = JWDB::GetQueryResult($sql);
+		$row = JWDB_Cache::GetQueryResult($sql);
 
 		if ( empty($row) )
 			return 0;

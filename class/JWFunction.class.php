@@ -125,27 +125,40 @@ Class JWFunction {
 	 *	如： 	$items 	= array ( 1,2,3 )
 	 *			$map	= array ( 1=>10, 2=>40, 3=>90 )
 	 *	调用 GetMappedArray($items, $map) 则会得到 array ( 10,40,90 )
+	 *	注意：要严格保证顺序
 	 */
 	public static function GetMappedArray($items, $map)
 	{
+		$result_items = array();
+
+		foreach ( $items as $item )
+		{
+			$result_items[] = $map[$item];
+		}
+
+		return $result_items;
+/*
+ * 没有找到能够一次性解决这个问题的 php 函数
+ * 只好是用 foreach 了
 		$func_key_name 		= "JWFunction::GetMappedArray";
 		$func_callable_name	= JWFunction::Get($func_key_name);
 
 		if ( empty($func_callable_name) )
 		{
-			$reduce_function_content = 'return $map["' . $item . '"];';
-			$reduce_function_param 	= '$item';
+			$reduce_function_content = 'return $map[$val];';
+			$reduce_function_param 	= '$val, $key, $map';
 			$func_callable_name 	= create_function( $reduce_function_param,$reduce_function_content );
 
 			JWFunction::Set($func_key_name, $func_callable_name);
 		}
 	
 		// 装换rows, 返回 id 的 array
-		$mapped_array = array_map(	 $func_callable_name
-									,$items
-								);
+		array_walk(	 $items
+					,$func_callable_name, $map
+				);
 
-		return $mapped_array;
+		return $items;
+*/
 	}
 
 }

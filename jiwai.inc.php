@@ -124,4 +124,5 @@ if (empty($_SERVER['SCRIPT_URI']) && !empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['SCRIPT_URI'] = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI'];
 }
 
+
 ?>

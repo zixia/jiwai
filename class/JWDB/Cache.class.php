@@ -11,7 +11,7 @@
 /**
  * JiWai.de Database Class
  */
-class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
+class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 {
 	/**
 	 * Instance of this singleton
@@ -115,18 +115,18 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 */
 	static public function GetCachedDbRowsByIds($table, $ids, $function=null, $forceReload=false)
 	{
+		if ( empty($ids) )
+			return null;
+
 		if ( empty($function) )
 			$function = array( ("JW".$table), "GetDbRowsByIds");
-
-		if ( ! method_exists($function) )
-			throw new JWException("function $function[0]::$function[1] not exists.");
 
  		/*
 		 *	Stage 1. 根据 ids 获取 memcache 的 keys
 		 */
-		$mc_keys 		= self::GetCacheKeysByIds('Status', $idStatuses);
+		$mc_keys 		= self::GetCacheKeysByIds($table, $ids);
 
-		$key_map_mc2db	= array_combine($mc_keys	,$idStatuses);
+		$key_map_mc2db	= array_combine($mc_keys	,$ids);
 
 		/*
 		 *	Stage 1.1 通过 memcache 尝试获取数据
@@ -136,6 +136,11 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 
 		$hit_ids = JWFunction::GetMappedArray($hit_mc_keys, $key_map_mc2db);
 
+/*
+(var_dump($key_map_mc2db));
+(var_dump($hit_mc_keys));
+die(var_dump($hit_ids));
+*/
 		/*
 		 *	Stage 1.2 将 memcache 返回数据中的 memcache key 转化为 db key
 		 */
@@ -148,7 +153,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		/*
 		 *	Stage 1.3 如果 memcache 返回了所有数据，则完全命中，返回数据后结束。
 		 */
-		if ( count($hit_ids)==count($idStatuses) )
+		if ( count($hit_ids)==count($ids) )
 		{
 			return $hit_db_rows;
 		}
@@ -157,13 +162,17 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		/*
 		 *	Stage 2. memcache 没有完全命中（或没有命中），我们需要从数据库中获取数据，先算出哪些 id 没有命中 cache
 		 */
-		$unhit_ids	= array_diff($idStatuses, $hit_ids);
-		$unhit_mc_keys		= array_diff($mc_keys	, $hit_mc_keys);
+		$unhit_ids		= array_diff($ids		, $hit_ids);
+		$unhit_mc_keys	= array_diff($mc_keys	, $hit_mc_keys);
+
+
+		if ( ! method_exists($function[0],$function[1]) )
+			throw new JWException("function $function[0]::$function[1] not exists.");
 
 		/*
 		 *	Stage 2.1 准备开始获取数据。为了避免同一台服务器上多个进程同时获取memcache数据，我们在进入之前设置一个 mutex 
 		 */
-		$mutex = new JWMutex( array($table,$unhit_ids) );
+		$mutex = new JWMutex( $unhit_mc_keys );
 		$mutex->Acquire();
 
 		/*
@@ -221,14 +230,15 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 */
 	static function GetCachedValueByKey($mcKey, $function, $param, $timeExpire=self::TEMPORARY_EXPIRE_SECENDS, $forceReload=false)
 	{
+
 		self::Instance();
 
-		$mc_val = null;
+		$mc_val = false;
 
 		if ( !$forceReload )
 			$mc_val = self::$msMemcache->Get($mcKey);
 
-		if ( !empty($mc_val) )
+		if ( false!==$mc_val)
 			return $mc_val;
 
 		/*
@@ -255,7 +265,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		/**
 		 *	如果 Cache was set just before we acquired the mutex，释放 Mutex 后返回数据
 		 */
-		if ( !empty($mc_val) )
+		if ( false!==$mc_val)
 		{
 			$mutex->Release();
 			return $mc_val;
@@ -264,12 +274,17 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		/**
 		 *	从数据库中获取数据
 		 */
-		if ( ! method_exists($function) )
+		if ( ! method_exists($function[0],$function[1]) )
 			throw new JWException("function $function[0]::$function[1] not exists.");
 
-		$db_result = call_user_func($function,$param);
+		$db_result = call_user_func_array($function,$param);
 
-		self::$msMemcache->Set($key, $db_row, 0, $timeExpire);
+/*
+if ( $function[1] == 'GetStatusIdsFromFriends' && $forceReload )
+die(var_dump($db_result));
+*/
+
+		self::$msMemcache->Set($mcKey, $db_result, 0, $timeExpire);
 
 		/**
 		 *	释放 Mutex
@@ -280,17 +295,62 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	}
 
 
-	static public function GetMaxOffset($offset)
+	/**
+	 *	根据 $num 推算出一个大于 $num 的数字，为下次访问做预取。
+	 *	@param	int	$num	
+	 *
+	 *	@seealso	IsCachedCountEnough
+	 *
+	 *	注意： 这个函数中的逻辑，返回的 $max_num 必须可以被 100 整除！
+	 *			目的是为了解决在翻页中，到了最后一页的时候，系统希望获取的 $num + $start 一定是大于实际数据库中存在的数据的。
+	 *			我们可以通过 memcache 中的数据个数是否可以被 100 整除，来判断是否还有后续的数据。
+	 */
+	static public function GetMaxCacheNum($num)
 	{
-		if ( $offset<100 )
-			$offset = 100;
-		elseif ( $offset<1000 )
-			$offset = 1000;
+		if ( $num<100 )
+			$num = 100;
+		elseif ( $num<1000 )
+			$num = 1000;
 		else
-			$offset = ( intval($offset/1000)+1 ) * 1000;
+			$num = ( intval($num/1000)+1 ) * 1000;
 
-		return $offset;
+		//这个函数中的逻辑：返回的 $max_num 必须可以被 100 整除！ (see also IsCachedCountEnough)
+		assert($num%100==0);
+
+		return $num;
 	}
+
+	
+	/**
+	 *	检查从 memcached 中取出来的数据是否足够我们所需
+	 *	因为我们在存 cache 的时候，会忽略掉 $num,$start，直接将 self::GetMaxCacheNum($start+$num) 个数据存入 cache
+	 *	这个时候，下次再从 memcache 中获取 cache 数据的时候，可能得到的数据不足，所以需要判断。
+	 *
+	 *	@param	int		$numCached	在 memcache 中取到的数据个数
+	 *	@param	int		$numNeeded	需要的个数
+	 *	@return	bool	$is_enough	是否足够
+	 *	@seealso	GetMaxCacheNum
+	 */
+	static public function IsCachedCountEnough($numCached,$numNeeded)
+	{
+//echo "IsCachedCountEnough($numCached,$numNeeded)";
+		if ( empty($numCached) )
+		{
+			// cache 里面什么都没有，意味着上次 cache 的时候，从数据库中获取的结果集就是空。不用再次重新查找
+			return true;
+		}
+
+		if ( $numCached % 100 )
+		{
+			// 不能被 100 整除，代表在上次获取数据存入 memcache 的时候，已经得到了数据库的最后一页数据
+			// 所以，不用比较了，直接返回 enough 
+			return true;
+		}
+
+		// 判断 cached 数据是否足够我们所需
+		return $numCached >= $numNeeded;
+	}
+
 
 	/*
 	 *	@param	string	SQL
@@ -301,18 +361,25 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	{
 		self::Instance();
 
+		// call back function & param
+		$ds_function 	= array('JWDB','GetQueryResult');
+		$ds_param		= array($sql,$moreThanOne);
+		// param to make memcache key
+		$mc_param		= $ds_param;
+
+
 		/*	7/10/07 zixia: cache 构思
 				1. 只能通过逻辑进行过期(在 JWDB_Cache_${TableName} 类中实现
 				2. 同时保证，对于同一个 $sql，在1s种内，只会被执行1次（我们假设1s不会影响用户对实时更新的感觉）
 	 	 */
 
-		$mc_key = self::GetCacheKeyByFunction("JWDB::GetQueryResult", array($sql,$moreThanOne));
+		$mc_key = self::GetCacheKeyByFunction($ds_function,$mc_param);
 
-		return self::GetCachedValue(	 $mc_key
-										,array('JWDB','GetQueryResult')
-										,array($sql,$moreThanOne)
-										,self::TEMPORARY_EXPIRE_SECENDS
-									);
+		return self::GetCachedValueByKey(	 $mc_key
+											,$ds_function
+											,$ds_param
+											,self::TEMPORARY_EXPIRE_SECENDS
+										);
 	}
 
 
@@ -340,14 +407,13 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		self::Instance();
 
 		$db_rows 	= self::GetTableRow( $table, $condition, 9999 );
-		$pk_ids		= JWFunction::GetColArrayFromRows($db_rows,'id');
 
 		// 注意顺序：先操作数据库，然后再去 OnDirty
 		$ret = JWDB::DelTableRow($table, $condition);
 
-		foreach ( $pk_ids as $pk_id )
+		foreach ( $db_rows as $db_row )
 		{
-			self::OnDirty($db_rows[$pk_id], $table);
+			self::OnDirty($db_row, $table);
 		}
 			
 		return $ret; 
@@ -375,6 +441,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	 * @return bool
 			succ / fail
 	 */
+/* 7/14/07 zixia: 作废，无法正确得到 OnDirty 的 db_row
 	static public function ReplaceTableRow( $table, $condition)
 	{
 		self::Instance();
@@ -383,9 +450,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		$db_rows 	= self::GetTableRow( $table, $condition, 9999 );
 		$pk_ids		= JWFunction::GetColArrayFromRows($db_rows,'id');
 
-		/*
-		 *	更新老数据
-		 */
+		 //	更新老数据
 		// 注意顺序：先操作数据库，然后再去 OnDirty
 		$ret = JWDB::ReplaceTableRow($table, $condition);
 
@@ -395,9 +460,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		}
 			
 
-		/*
-		 *	更新新数据
-		 */
+		 //	更新新数据
 		$db_rows 	= self::GetTableRow( $table, $condition, 9999 );
 		$pk_ids		= JWFunction::GetColArrayFromRows($db_rows,'id');
 
@@ -408,6 +471,7 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	
 		return $ret; 
 	}
+*/
 
 
 	/*
@@ -444,14 +508,20 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		 */
 		if ( isset($condition['id']) )
 		{
-			$mc_key 	= self::$msMemcache->GetKeyFromPk($table, $condition['id']);
+			$mc_key = self::GetCacheKeyById($table, $condition['id']);
 
-			return self::GetCachedValue(	 $mc_key
-											,array('JWDB','GetTableRow')
-											,array($table,$condition,$limit)
-											,self::PERMANENT_EXPIRE_SECENDS
-										);
+			// 这里只获取一行，存入 memcache。因为有 id 主键，也只会有一行。
+			$mc_val	= self::GetCachedValueByKey(	 $mc_key
+													,array('JWDB','GetTableRow')
+													,array($table,$condition,1)
+													,self::PERMANENT_EXPIRE_SECENDS
+											);
 
+			// 通过 $limit 是否 > 1 来决定返回 db_row 还是 db_rows
+			if ( 1==$limit )
+				return $mc_val;
+				
+			return array($mc_val);
 		}
 
 		/*
@@ -460,11 +530,11 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		 */
 		$mc_key	= self::GetCacheKeyByCondition($table,$condition,$limit);
 
-		return self::GetCachedValue(	 $mc_key
-										,array('JWDB','GetTableRow')
-										,array($table,$condition,$limit)
-										,self::TEMPORARY_EXPIRE_SECENDS
-									);
+		return self::GetCachedValueByKey(	 $mc_key
+											,array('JWDB','GetTableRow')
+											,array($table,$condition,$limit)
+											,self::TEMPORARY_EXPIRE_SECENDS
+										);
 
 	}
 
@@ -477,13 +547,19 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 	{
 		self::Instance();
 
-		$mc_key = JWMemcache::GetKeyFromFunction("JWDB::GetMaxId", $condition);
+		// call back function & param
+		$ds_function 	= array('JWDB','GetMaxId');
+		$ds_param		= array($condition);
+		// param to make memcache key
+		$mc_param		= $ds_param;
 
-		return self::GetCachedValue(	 $mc_key
-										,array('JWDB','GetMaxId')
-										,array($table,$condition)
-										,self::TEMPORARY_EXPIRE_SECENDS
-									);
+		$mc_key = self::GetCacheKeyByFunction($ds_function,$mc_param);
+
+		return self::GetCachedValueByKey(	 $mc_key
+											,$ds_function
+											,$ds_param
+											,self::TEMPORARY_EXPIRE_SECENDS
+										);
 	}
 
 
@@ -562,11 +638,22 @@ class JWDB_Cache implements JWDB_Interface, JWDB_Cache_Interface
 		return $mc_key;
 	}
 
+	/**
+	 *	虽然里面用到了 serilize，但是绝对不要把大量的参数当作 $param 传入。比如一个 1000 个元素的数组，这是不对的。
+	 *	尽量只传进来关键的元素，比如 $idUser。绝对不要传进来 offset / limit 数据。
+	 */
 	static public function GetCacheKeyByFunction($function, $param=null)
 	{
-		$param 		= sort($param);
+		if ( is_array($param) )
+			sort($param);
 
-		$mc_key 	= "FN:$function(" . serialize($param) . ")";
+		$param_string	= serialize($param);
+
+		// memcache key 最大 250，留出 100 给其他字串
+		if ( strlen($param_string)>150 )
+			$param_string = md5($param_string);
+
+		$mc_key 	= "FN:$function[0]::$function[1](" . $param_string . ")";
 
 		return $mc_key;
 

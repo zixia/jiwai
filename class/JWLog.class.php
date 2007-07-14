@@ -14,13 +14,39 @@ class JWLog {
 	 *
 	 * @var JWLog
 	 */
-	static private $msInstance;
+    static private $msInstances=array();
+
+
+	/**
+	 *	用来将模块名对应到相应的 LOG FACILITY 中的映射表
+	 *	如： 'SMS' => LOG_LOCAL1
+	 */
+	static private $msLogFacilityMap ;
+
+	/**
+	 *	当前 syslo 的 facility
+	 */
+	static private $msCurrentFacility;
+
+	
+
+	/**
+	 *	每个 Instance 存储自己 Facility 的变量
+	 */
+	private $msFacility;
+
+	/**
+	 *	每个 Instance 存储自己 Indent 的变量
+	 */
+	private $msIndent;
+
 
 	/**
 	 *
 	 *	@var LOG_* for syslog. LOG_DEBUG is max.
 	 */
-	static private $msVerbose;
+	private $msVerbose;
+
 
 
 	/**
@@ -28,14 +54,32 @@ class JWLog {
 	 *
 	 * @return JWLog
 	 */
-	static public function &Instance($ident="JWPhp")
+	static public function &Instance($module="Php")
 	{
-		if (!isset(self::$msInstance)) 
+		if ( empty(self::$msLogFacilityMap) )
+		{
+			define_syslog_variables();
+
+			self::$msLogFacilityMap = array(
+					 'Php'		=> LOG_LOCAL0
+					,'Sns'		=> LOG_LOCAL1
+					,'Sms'		=> LOG_LOCAL2
+					,'Memcache'	=> LOG_LOCAL3
+					,'Robot'	=> LOG_LOCAL4
+				);
+		}
+
+		if ( isset(self::$msLogFacilityMap[$module]) )
+			$facility = self::$msLogFacilityMap[$module];
+		else
+			$facility = LOG_LOCAL0;
+
+		if (!isset(self::$msInstances[$facility])) 
 		{
 			$class = __CLASS__;
-			self::$msInstance = new $class($ident);
+			self::$msInstances[$facility] = new $class($facility,$module);
 		}
-		return self::$msInstance;
+		return self::$msInstances[$facility];
 	}
 
 
@@ -43,16 +87,15 @@ class JWLog {
 	 * Constructing method, save initial state
 	 *
 	 */
-	function __construct($ident="JWPhp", $facility=null)
+	function __construct($facility=null, $module="Php")
 	{
-		define_syslog_variables();
-
-		if ( !isset($facility) )
+		if ( null===$facility )
 			$facility = LOG_LOCAL0;
 
-		self::$msVerbose	= LOG_DEBUG;
+		$this->msFacility 	= $facility;
+		$this->msIndent		= $module;
 
-		openlog($ident, (LOG_PID | LOG_CONS), $facility);
+		$this->msVerbose	= LOG_DEBUG;
 	}
 
 	function __destruct()
@@ -89,13 +132,16 @@ LOG_DEBUG debug-level message
 	*/
 	static public function Log($priority, $message)
 	{
-		// we use JWLog::Log directly.
-		self::Instance();
+		return syslog($priority,$message);
+	}
 
-		if ( $priority > self::$msVerbose )
-			return;
-
-		return syslog($priority, $message);
+	/**	
+	 *	1、参数更方便：经常忘记写 priority，所以放到后面设置个缺省值
+	 *	2、不是 static 调用，支持不同的 facility & indent
+	 */
+	public function LogMsg($message,$priority=LOG_INFO)
+	{
+		return $this->Syslog($priority,$message);
 	}
 
 	static public function LogFuncName($priority, $message)
@@ -117,7 +163,24 @@ LOG_DEBUG debug-level message
 			$prefix = $curr_trace['file'] . ':' . $curr_trace['line'] . ' ';
 		}
 
-		self::Log($priority, "$prefix $message");
+		return self::Log($priority, "$prefix $message");
+	}
+
+	private function Syslog($priority, $message)
+	{
+		if ( empty(self::$msCurrentFacility) )
+		{
+			openlog($this->msIndent, (LOG_PID | LOG_CONS), $this->msFacility);
+			self::$msCurrentFacility = $this->msFacility;
+		}
+		elseif ( self::$msCurrentFacility!=$this->msFacility )
+		{
+			closelog();
+			openlog($this->msIndent, (LOG_PID | LOG_CONS), $this->msFacility);
+			self::$msCurrentFacility = $this->msFacility;
+		}
+
+		return syslog($priority,$message);
 	}
 }
 ?>

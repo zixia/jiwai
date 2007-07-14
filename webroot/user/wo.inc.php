@@ -56,9 +56,14 @@ switch ( $active_tab )
 	default:
 	case 'archive':
 		// 显示用户自己的
-		$user_status_num= JWStatus::GetStatusNum($page_user_id);
+		//$user_status_num= JWStatus::GetStatusNum($page_user_id);
+		$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
+
 		$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
-		$status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+
+		// use cache $status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+
 		break;
 
 	case 'replies':
@@ -67,11 +72,15 @@ switch ( $active_tab )
 
 	case 'friends':
 		// 显示用户和好友的
-		$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
+
+		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
+		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
 
 		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
 
-		$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+
 		break;
 	case 'search':
 		$searchStatus = new JWSearchStatus();
@@ -93,13 +102,21 @@ switch ( $active_tab )
 
 //die(var_dump($status_data));
 
-$status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
+// use cache $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
+$status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
 
-array_push($status_data['user_ids'],$page_user_id);
+//die(var_dump($status_rows));
+
+$status_data['user_ids'][] = $page_user_id;
+
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-$head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
-$head_status_rows 	= JWStatus::GetStatusDbRowsByIds($head_status_data['status_ids']);
+//$head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
+$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
+
+//$head_status_rows 	= JWStatus::GetStatusDbRowsByIds($head_status_data['status_ids']);
+$head_status_rows 	= JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
+
 $head_status_id 	= @array_shift($head_status_data['status_ids']); 
 
 
@@ -160,7 +177,9 @@ $options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[na
 
 ?>
 <head>
-<?php JWTemplate::html_head($options); ?>
+<?php 
+JWTemplate::html_head($options); 
+?>
 </head>
 
 
@@ -301,3 +320,5 @@ JWTemplate::sidebar( $arr_menu, $page_user_id);
 
 </body>
 </html>
+
+

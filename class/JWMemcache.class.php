@@ -18,6 +18,9 @@ class JWMemcache implements JWMemcache_Interface
 	 */
 	static private $msInstances = array();
 
+	static private $msSyslog;
+
+
 	const NONE		= 1;
 	const UDP		= 2;
 	const TCP		= 3;
@@ -42,6 +45,9 @@ class JWMemcache implements JWMemcache_Interface
 	 */
 	static public function &Instance($cluster='default', $protocol=self::UDP)
 	{
+		if ( empty(self::$msSyslog) )
+			self::$msSyslog = JWLog::Instance('Memcache');
+
 		if (!isset(self::$msInstances[$cluster])) {
 			$class = __CLASS__;
 			self::$msInstances[$cluster] = new $class($cluster, $protocol);
@@ -56,6 +62,8 @@ class JWMemcache implements JWMemcache_Interface
 	 */
 	function __construct($cluster='default', $protocol=self::UDP)
 	{
+		self::$msSyslog->LogMsg("connect to [$cluster] cluster with protocol: " . $protocol);
+
 		switch ( $protocol )
 		{
 			case self::UDP:
@@ -111,18 +119,35 @@ class JWMemcache implements JWMemcache_Interface
 		if ( isset($this->msLocalCache[$key]) )
 			unset($this->msLocalCache[$key]);
 
+		self::$msSyslog->LogMsg("Del($key,$timeout)");
+
 		return $this->msMemcacheProtocol->Del($key,$timeout);
 	}
 
+	/*
+	 *	@param	mixed	$key	可能是一个 key，也可能是 array of keys
+	 *
+	 */
 	public function Get($key)
 	{
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( isset($this->msLocalCache[$key]) )
+
+		if ( !is_array($key) && isset($this->msLocalCache[$key]) )
 			return $this->msLocalCache[$key];
 
-		return $this->msMemcacheProtocol->Get($key);
+
+		//TODO 使用 msLocalCache 处理 array of keys，然后再 diff 后从 memcache 获取，最后 merge 返回
+
+		$val =  $this->msMemcacheProtocol->Get($key);
+
+		if ( false===$val )
+			self::$msSyslog->LogMsg("Get($key) NOT hit");
+		else
+			self::$msSyslog->LogMsg("Get($key) HIT");
+
+		return $val;
 	}
 
 	public function Inc($key, $vlaue=1)
@@ -151,6 +176,8 @@ class JWMemcache implements JWMemcache_Interface
 			return null;
 
 		$this->msLocalCache[$key] = $var;
+
+		self::$msSyslog->LogMsg("Set($key,$var,$flag,$expire)");
 
 		return $this->msMemcacheProtocol->Set($key,$var,$flag,$expire);
 	}

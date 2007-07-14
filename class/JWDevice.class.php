@@ -218,12 +218,15 @@ _SQL_;
 			}
 		}
 
-		// 慎用 REPLACE，会改变主键值！(replace = delete & insert)
-		// 使用REPLACE的原因：如果有其他用户误填写了地址，需要帮助用户更新到自己名下。
 		try
 		{
 			// 如果已经存在 $address / $type，会和uniq key冲突，产生exception
-			JWDB::ReplaceTableRow('Device',array(	 'idUser'	=> $idUser
+			JWDB::DelTableRow('Device',array(	  'type'	=> $type
+												,'address'	=> $address
+											)
+								);
+
+			JWDB::SaveTableRow('Device',array(	 'idUser'	=> $idUser
 													,'type'		=> $type
 													,'address'	=> $address
 													,'secret'	=> $secret

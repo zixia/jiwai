@@ -131,6 +131,11 @@ class JWMemcache_Tcp implements JWMemcache_Interface{
             $this->msMemcache->delete($k, $timeout);
         }
     }
+
+	function Flush()
+	{
+		return $this->msMemcache->flush();
+	}
 }
 
 ?>
