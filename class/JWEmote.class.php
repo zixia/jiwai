@@ -20,11 +20,11 @@ class JWEmote {
 	static function AddSlash_RegExp($s) {
 		return preg_replace('#([\\/\\$\(\\)\\*\\+\\.\\?\\[\\{\\^\\|])#', '\\\$1', $s);
 	}
-	static function RenderJS($theme) {
+	static function RenderJS($theme, $path) {
 		$stmt = 'function emote(str) { return str';
-		$emote = self::LoadEmote($theme);
+		$emote = self::LoadEmote($path);
 		foreach ($emote as $file => $em) {
-			$repl = '<img title="" src="'.$file.'" />';
+			$repl = '<img title="" src="'.JWTemplate::GetAssetUrl(self::EMOTE_PATH.basename($theme).'/'.$file).'" />';
 			foreach ($em as $k=>$e) $em[$k] = htmlspecialchars($e);
 			$patt = self::AddSlash_RegExp($em);
 			$patt = implode('|', $patt);

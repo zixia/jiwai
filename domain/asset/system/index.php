@@ -18,6 +18,6 @@ if ( preg_match('#^user/profile_image/(?P<id_or_name>\w+)/(?P<pic_id>\w+)/(?P<pi
 	$theme = $matches['theme'];
 	$dir = dirname(__FILE__).'/../img/emote/';
 	$file = $dir.$theme.'/theme';
-	JWEmote::RenderJS(file_exists($file) ? $file : $dir.'default/theme');
+	JWEmote::RenderJS($theme, file_exists($file) ? $file : $dir.'default/theme');
 }
 ?>
