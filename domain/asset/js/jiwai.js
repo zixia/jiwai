@@ -92,7 +92,13 @@ alert('ok');
 				}
 			) 
 		}, JiWai ); // end each
+	},
+	smilize: function() {
+		if (!window.emote) return;
+		var f = $('timeline');
+		if (!f) return;
+		f.innerHTML = emote(f.innerHTML);
 	}
-
 }
 
+window.addEvent('domready', JiWai.smilize); 
