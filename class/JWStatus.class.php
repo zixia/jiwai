@@ -74,7 +74,7 @@ class JWStatus {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
+	static public function Create( $idUser, $status=null, $device='web',$time=null,$isSignature='N')
 	{
 		/* 
 		 * For Create From Status_Quarantine;
