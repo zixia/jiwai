@@ -46,8 +46,6 @@ class JWStatusQuarantine {
 	 */
 	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
 	{
-		$db = JWDB::Instance()->GetDb();
-
 		$status = preg_replace('[\r\n]',' ',$status);
 
 		$time = intval($time);
@@ -74,11 +72,11 @@ class JWStatusQuarantine {
 
 		$picture_id = $user_db_row['idPicture'];
 
-		return JWDB_Cache::SaveTableRow('Status_Quarantine',
+		return JWDB::SaveTableRow('Status_Quarantine',
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
-									,'timeCreate'	=> $time
+									,'timeCreate'	=> date('Y-m-d H:i:s', $time)
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
