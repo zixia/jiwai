@@ -60,7 +60,7 @@ class JWMemcache implements JWMemcache_Interface
 	 * Constructing method, save initial state
 	 *
 	 */
-	function __construct($cluster='default', $protocol=self::UDP)
+	function __construct($cluster='default', $protocol=self::TCP)
 	{
 		self::$msSyslog->LogMsg("connect to [$cluster] cluster with protocol: " . $protocol);
 
