@@ -253,9 +253,14 @@ die(var_dump($hit_ids));
 		 *	这样保证，在同一台前端服务器上，对应于某一个 key，最多只有一个进程进行 memcache 的更新
 		 */
 
+
 		$mutex = new JWMutex($mcKey);
 		$mutex->Acquire();
 
+/*
+$mutex->Release();
+return call_user_func_array($function,$param);
+*/
 		/**
 		 *	检查一下，在我们获取到 Mutex 之前，是否已经被其他进程设置好了数据。
 		 */
@@ -359,7 +364,9 @@ die(var_dump($db_result));
 	 */
 	static public function GetQueryResult( $sql, $moreThanOne=false, $forceReload=false )
 	{
+
 		self::Instance();
+
 
 		// call back function & param
 		$ds_function 	= array('JWDB','GetQueryResult');
@@ -374,6 +381,8 @@ die(var_dump($db_result));
 	 	 */
 
 		$mc_key = self::GetCacheKeyByFunction($ds_function,$mc_param);
+
+		//return JWDB::GetQueryResult($sql,$moreThanOne);
 
 		return self::GetCachedValueByKey(	 $mc_key
 											,$ds_function
@@ -633,7 +642,10 @@ die(var_dump($db_result));
 	{
 		$condition 	= sort($condition);
 
-		$mc_key 	= "TB:$table(" . serialize($condition) . "):$limit";
+		$param_string	= serialize($condition);
+		$param_string	= preg_replace('/ +/','_',$param_string);
+
+		$mc_key 	= "TB:$table(" . $param_string . "):$limit";
 
 		return $mc_key;
 	}
@@ -648,6 +660,8 @@ die(var_dump($db_result));
 			sort($param);
 
 		$param_string	= serialize($param);
+
+		$param_string	= preg_replace('/ +/','_',$param_string);
 
 		// memcache key 最大 250，留出 100 给其他字串
 		if ( strlen($param_string)>150 )
