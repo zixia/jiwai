@@ -643,7 +643,7 @@ die(var_dump($db_result));
 		$condition 	= sort($condition);
 
 		$param_string	= serialize($condition);
-		$param_string	= preg_replace('/ +/','_',$param_string);
+		$param_string	= preg_replace('/[\s]+/','_',$param_string);
 
 		$mc_key 	= "TB:$table(" . $param_string . "):$limit";
 
@@ -661,7 +661,7 @@ die(var_dump($db_result));
 
 		$param_string	= serialize($param);
 
-		$param_string	= preg_replace('/ +/','_',$param_string);
+		$param_string	= preg_replace('/[\s]+/','_',$param_string);
 
 		// memcache key 最大 250，留出 100 给其他字串
 		if ( strlen($param_string)>150 )
