@@ -224,7 +224,7 @@ _SQL_;
 
 	static public function GetUserDbRowById( $idUser)
 	{
-		return self::GetDbRowById( $idUser)
+		return self::GetDbRowById( $idUser);
 	}
 
 	/*
