@@ -63,7 +63,6 @@ _HTML_;
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.1.js' );
-		$asset_url_js_emote	= self::GetAssetUrl('/system/emote/themes/default.js', false);
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -157,7 +156,6 @@ $openid_html
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
-	<script type="text/javascript" src="$asset_url_js_emote"></script>
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />

@@ -93,12 +93,17 @@ alert('ok');
 			) 
 		}, JiWai ); // end each
 	},
-	smilize: function() {
-		if (!window.emote) return;
-		var f = $('timeline');
-		if (!f) return;
-		f.innerHTML = emote(f.innerHTML);
+	AddScript: function(src) {
+		var g = document.createElement("script");
+		g.type = "text/javascript";
+		g.src = "http://asset."+location.host+src;
+		document.getElementsByTagName('head')[0].appendChild(g);
+	},
+	AutoEmote: function() {
+		if (!$("timeline")) return;
+		_auto_emote = "timeline";
+		JiWai.AddScript("/system/emote/themes/default.js");
 	}
 }
 
-window.addEvent('domready', JiWai.smilize); 
+window.addEvent('domready', JiWai.AutoEmote); 

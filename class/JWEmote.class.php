@@ -24,13 +24,14 @@ class JWEmote {
 		$stmt = 'function emote(str) { return str';
 		$emote = self::LoadEmote($path);
 		foreach ($emote as $file => $em) {
-			$repl = '<img title="" src="'.JWTemplate::GetAssetUrl(self::EMOTE_PATH.basename($theme).'/'.$file).'" />';
+			$repl = '<img alt="$2" src="'.JWTemplate::GetAssetUrl(self::EMOTE_PATH.basename($theme).'/'.$file).'" />';
 			foreach ($em as $k=>$e) $em[$k] = htmlspecialchars($e);
 			$patt = self::AddSlash_RegExp($em);
 			$patt = implode('|', $patt);
-			$stmt.= ".replace(/(>[^><]+)$patt([^><]+<)/, '$1$repl$2')";
+			$stmt.= ".replace(/(>[^><]+)($patt)([^><]+<)/, '$1$repl$3')";
 		}
-		$stmt.= '; }';
+		$stmt.= "; }\n";
+		//$stmt.= 'if (window._auto_emote) $(window._auto_emote).innerHTML = emote($(window._auto_emote).innerHTML);';
 		header('Content-Type: text/javascript');
 		echo $stmt;
 	}
