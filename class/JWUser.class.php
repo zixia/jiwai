@@ -169,7 +169,7 @@ _SQL_;
 	 * 	@return	array	以 idUser 为 key 的 status row
 	 * 
 	 */
-	static public function GetUserDbRowsByIds( $idUsers)
+	static public function GetDbRowsByIds( $idUsers)
 	{
 		if ( empty($idUsers) )
 			return array();
@@ -202,14 +202,29 @@ _SQL_;
 	}
 
 
-	static public function GetUserDbRowById($idUser)
+	static public function GetDbRowById($idUser)
 	{
-		$user_db_rows = JWUser::GetUserDbRowsByIds(array($idUser));
+		$user_db_rows = self::GetDbRowsByIds(array($idUser));
 
 		if ( empty($user_db_rows) )
 			return array();
 
 		return $user_db_rows[$idUser];
+	}
+
+
+	/*
+	 *	@deprecated 请使用 GetDbRowsByIds
+	 *	兼容老的函数调用
+	 */
+	static public function GetUserDbRowsByIds( $idUsers)
+	{
+		return self::GetDbRowsByIds($idUsers);
+	}
+
+	static public function GetUserDbRowById( $idUser)
+	{
+		return self::GetDbRowById( $idUser)
 	}
 
 	/*
