@@ -18,7 +18,7 @@ if( $_POST ){
 	}
 		
 	if ( $delete ){
-		JWStatusQuarantine::DestroyByIds( $cb ); 	
+		JWStatusQuarantine::DeleteByIds( $cb ); 	
 		backToGet("删除成功～");
 	}
 	
@@ -28,7 +28,7 @@ if( $_POST ){
 	}
 }
 
-$statusQuarantine = JWStatusQuarantine::GetStatusQuarantine(20);
+$statusQuarantine = JWStatusQuarantine::GetStatusQuarantine(JWStatusQuarantine::DEAL_NONE, 20);
 $dictFilter = JWFilterConfig::GetDictFilter();
 
 $render = new JWHtmlRender();
