@@ -615,7 +615,7 @@ _SQL_;
 				$name='JiWai';
 				break;
 			case 'qq':
-				$name='229516989(很快会更换短号码)';
+				$name='229516989';
 				break;
 			case 'skype':
 				$name='wo.jiwai.de';

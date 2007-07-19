@@ -9,8 +9,8 @@
 /**
  * JiWai.de Mutex Class
  *
- *	XXX：需要调整高系统设置的 sem 上限：第三个数字 100 改为 70000
- *	 echo "250     32000   70000      128" > /proc/sys/kernel/sem 
+ *	XXX：需要调整高系统设置的 sem 上限：最后一个数字改为 70000
+	 zixia bbs 的数值： kernel.sem = 16 1120000 128 70000
  *
  */
 class JWMutex {
@@ -43,7 +43,11 @@ class JWMutex {
 	 *	所有的 mutex 会共享 MAX_SEM_NUM 个 sem，为了提高性能，我们允许等待一些和自己无关的 mutex release.
 	 *	设置为 65535 个，可以基本上认为不会有冲突
 	 */
-	const	MAX_SEM_NUM		= 0x0000FFFF;
+	// 正式运营数据大一些
+	//const	MAX_SEM_NUM		= 0x0000FFFF;
+
+	// debug 时小一点
+	const	MAX_SEM_NUM		= 0x000000FF;
 	const	SEM_KEY_PREFIX	= 0xFFFF0000;
 
 	/**

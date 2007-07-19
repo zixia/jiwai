@@ -46,7 +46,7 @@ class JWPicture {
 	{
 		//我们要为每一条更新保留头像，所以不能轻易删除数据库中的图片
 
-		$idPictures = JWDB::CheckInt($idPictures);
+		$idPictures = JWDB_Cache::CheckInt($idPictures);
 
 
 /*
@@ -61,13 +61,13 @@ class JWPicture {
 		}
  */
 
-		return JWDB::DelTableRow('Picture', array('id'=>$idPicture));
+		return JWDB_Cache::DelTableRow('Picture', array('id'=>$idPicture));
 	}
 
 
 	static private function GetPathRel($idPicture)
 	{
-		$idPicture = JWDB::CheckInt($idPicture);
+		$idPicture = JWDB_Cache::CheckInt($idPicture);
 
 		self::Instance();
 
@@ -87,7 +87,10 @@ class JWPicture {
 	{
 		self::Instance();
 
-		$db_rows = JWPicture::GetDbRowsByIds($idPictures);
+		// 7/19/07 zixia: ugly, 不应该在 JWPicture 里面调用 JWDB_Cache_Picture.
+		//$db_rows = self::GetDbRowsByIds($idPictures);
+
+		$db_rows = JWDB_Cache_Picture::GetDbRowsByIds($idPictures);
 
 		foreach ( $idPictures as $picture_id )
 		{
@@ -142,18 +145,17 @@ class JWPicture {
 		if ( !is_array($idPictures) )
 			throw new JWException('must array');
 
-		$condition_in = JWDB::GetInConditionFromArray($idPictures);
+		$condition_in = JWDB_Cache::GetInConditionFromArray($idPictures);
 
 		$sql = <<<_SQL_
 SELECT
 		*
 		, id as idPicture
-		, UNIX_TIMESTAMP(timeCreate) AS unixtimestamp
 FROM	Picture
 WHERE	id IN ($condition_in)
 _SQL_;
 
-		$db_rows = JWDB::GetQueryResult($sql,true);
+		$db_rows = JWDB_Cache::GetQueryResult($sql,true);
 
 
 		if ( !empty($db_rows) ){
@@ -167,7 +169,7 @@ _SQL_;
 
 	static public function GetDbRowById($idPicture)
 	{
-		$db_rows = JWPicture::GetDbRowsByIds(array($idPicture));
+		$db_rows = self::GetDbRowsByIds(array($idPicture));
 		return $db_rows[$idPicture];
 	}
 
@@ -178,7 +180,7 @@ _SQL_;
 		if ( empty($idPictures) )
 			return $url_row;
 
-		$picture_rows 	= JWPicture::GetDbRowsByIds($idPictures);
+		$picture_rows 	= self::GetDbRowsByIds($idPictures);
 		
 		foreach ( $idPictures as $picture_id )
 		{
@@ -236,12 +238,12 @@ _SQL_;
 	 */	
 	static public function GetIdByMd5($idUser, $md5, $class='ICON')
 	{
-		$idUser	= JWDB::CheckInt($idUser);
+		$idUser	= JWDB_Cache::CheckInt($idUser);
 		
 		if ( empty($md5) )
 			return 0;
 
-		return JWDB::ExistTableRow('Picture', array(	 'idUser'	=> $idUser
+		return JWDB_Cache::ExistTableRow('Picture', array(	 'idUser'	=> $idUser
 														,'md5'		=> $md5
 													)
 									);
@@ -284,12 +286,12 @@ _SQL_;
 
 		self::Instance();
 
-		$picture_id = JWDB::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
+		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
 															,'class'	=> 'ICON'
 															,'fileName'	=> $file_name
 															,'fileExt'	=> $dst_file_type
 															,'md5'		=> $md5
-															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+															,'timeCreate'	=> JWDB_Cache::MysqlFuncion_Now()
 														)
 										);
 		if ( empty($picture_id) )
@@ -336,7 +338,7 @@ _SQL_;
 
 		if ( ! $ret )
 		{
-			JWDB::DelTableRow('Picture', array('id'=>$picture_id) );
+			JWDB_Cache::DelTableRow('Picture', array('id'=>$picture_id) );
 			$picture_id = false;
 		}
 
@@ -421,7 +423,7 @@ _CMD_;
 			case 'picture': // let JWFile choose 
 			case 'thumb48':// let JWFile choose 
 			case 'thumb24':
-				$filename = JWPicture::GetFullPathNameById($idPicture, $picSize);
+				$filename = self::GetFullPathNameById($idPicture, $picSize);
 
 				$picType = 'gif';
 				if ( !preg_match('/\.gif$/i',$filename) )
@@ -487,12 +489,12 @@ _CMD_;
 
 		self::Instance();
 
-		$picture_id = JWDB::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
+		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
 															,'class'	=> 'BG'
 															,'fileName'	=> $file_name
 															,'fileExt'	=> $dst_file_type
 															,'md5'		=> $md5
-															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+															,'timeCreate'	=> JWDB_Cache::MysqlFuncion_Now()
 														)
 										);
 		if ( empty($picture_id) )
@@ -528,7 +530,7 @@ _CMD_;
 
 		if ( ! $ret )
 		{
-			JWDB::DelTableRow('Picture', array('id'=>$picture_id) );
+			JWDB_Cache::DelTableRow('Picture', array('id'=>$picture_id) );
 			$picture_id = false;
 		}
 

@@ -1044,7 +1044,7 @@ _HTML_;
 		if ( empty($user_db_row) )
 			return;
 
-		$user_status_ids = JWStatus::GetStatusIdsFromUser($user_db_row['idUser'], $num );
+		$user_status_ids = JWDB_Cache_Status::GetStatusIdsFromUser($user_db_row['idUser'], $num );
 
 		if ( empty($user_status_ids['status_ids']) )
 			return;
@@ -1054,7 +1054,7 @@ _HTML_;
 			<li><strong>$title</strong></li>
 _HTML_;
 
-		$status_db_row = JWStatus::GetStatusDbRowsByIds($user_status_ids['status_ids']);
+		$status_db_row = JWDB_Cache_Status::GetDbRowsByIds($user_status_ids['status_ids']);
 
 		foreach ( $user_status_ids['status_ids'] as $status_id )
 		{
@@ -1357,11 +1357,11 @@ _HTML_;
 
 	static function sidebar_status( $userInfo )
 	{
-		$status_data 	= JWStatus::GetStatusIdsFromUser($userInfo['id'],1);
+		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser($userInfo['id'],1);
 
 		if ( !empty($status_data['status_ids']) )
 		{
-			$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+			$status_rows	= JWDB_Cache_Status::GetStatusDbRowsByIds($status_data['status_ids']);
 			$status_id		= $status_data['status_ids'][0];
 			$current_status	= $status_rows[$status_id]['status'];
 		}

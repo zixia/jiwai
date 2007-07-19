@@ -115,6 +115,8 @@ class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 	 */
 	static public function GetCachedDbRowsByIds($table, $ids, $function=null, $forceReload=false)
 	{
+		self::Instance();
+
 		if ( empty($ids) )
 			return null;
 
@@ -230,7 +232,6 @@ die(var_dump($hit_ids));
 	 */
 	static function GetCachedValueByKey($mcKey, $function, $param, $timeExpire=self::TEMPORARY_EXPIRE_SECENDS, $forceReload=false)
 	{
-
 		self::Instance();
 
 		$mc_val = false;

@@ -8,6 +8,37 @@
 /**
  * JiWai.de Log Class
  */
+
+if(false)
+{
+class JWLog
+{
+	static private $msInstance;
+
+	function __call($a,$b)
+	{
+		return true;
+	}
+
+	static public function Log() {;}
+	static public function LogFuncName() {;}
+
+	static public function Instance()
+	{
+		if (!isset(self::$msInstance) )
+		{
+			$class = __CLASS__;
+			self::$msInstance = new $class;
+		}
+		return self::$msInstance;
+	}
+}
+
+}
+else
+{
+
+
 class JWLog {
 	/**
 	 * Instance of this singleton
@@ -66,6 +97,7 @@ class JWLog {
 					,'Sms'		=> LOG_LOCAL2
 					,'Memcache'	=> LOG_LOCAL3
 					,'Robot'	=> LOG_LOCAL4
+					,'Mutex'	=> LOG_LOCAL5
 				);
 		}
 
@@ -171,10 +203,12 @@ LOG_DEBUG debug-level message
 		if ( empty(self::$msCurrentFacility) )
 		{
 			openlog($this->msIndent, (LOG_PID | LOG_CONS), $this->msFacility);
+//error_log("init syslog");
 			self::$msCurrentFacility = $this->msFacility;
 		}
 		elseif ( self::$msCurrentFacility!=$this->msFacility )
 		{
+//error_log("switch syslog from " . self::$msCurrentFacility . " to " . $this->msFacility . ".");
 			closelog();
 			openlog($this->msIndent, (LOG_PID | LOG_CONS), $this->msFacility);
 			self::$msCurrentFacility = $this->msFacility;
@@ -182,5 +216,7 @@ LOG_DEBUG debug-level message
 
 		return syslog($priority,$message);
 	}
+}
+
 }
 ?>
