@@ -12,16 +12,23 @@ class JWStatusQuarantine {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWStatus
+	 * @var JWStatusQuarantine
 	 */
 	static private $msInstance = null;
 
 	const	DEFAULT_STATUS_NUM	= 20;
 
 	/**
+	 * const quarantine type
+	 */
+	const DEAL_NONE = 1;
+	const DEAL_ALLOWED = 2;
+	const DEAL_DELETED = 3;
+
+	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWStatus
+	 * @return JWStatusQuarantine
 	 */
 	static public function &Instance()
 	{
@@ -44,7 +51,7 @@ class JWStatusQuarantine {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status, $device='web',$time=null,$isSignature='N')
+	static public function Create( $idUser, $status=null, $device='web',$time=null,$isSignature='N')
 	{
 		$status = preg_replace('[\r\n]',' ',$status);
 
@@ -84,17 +91,89 @@ class JWStatusQuarantine {
 							)
 						);
 	}
+
+	/**
+	 * @param $dealStatus, int
+	 * @return mixed
+	 */
+	static public function GetStatusQuarantineNum($dealStatus=JWStatusQuarantine::DEAL_NONE){
+
+		switch($dealStatus){
+			case JWStatusQuarantine::DEAL_NONE:
+				$dealCondition = "dealStatus = 'NONE'";
+			break;
+			case JWStatusQuarantine::DEAL_ALLOWED:
+				$dealCondition = "dealStatus = 'ALLOWED'";
+			break;
+			case JWStatusQuarantine::DEAL_DELETED:
+				$dealCondition = "dealStatus = 'DELETED'";
+			break;
+			default:
+				$dealCondition = "dealStatus = 'NONE'";
+		}
+
+		$sql = <<<SQL
+SELECT COUNT(1) AS count FROM Status_Quarantine
+	WHERE $dealCondition
+SQL;
+		$result = JWDB::GetQueryResult( $sql, false );
+		if( !empty($result) ){
+			return $result['count'];
+		}
+		return 0;
+	}
 	
 	/**
+	 * @param $dealStatus, int
 	 * @param $limit, int
 	 * @param $offset, int
 	 * @return mixed
 	 */
-	static public function GetStatusQuarantine($limit=20,$offset=0){
+	static public function GetStatusQuarantine($dealStatus=JWStatusQuarantine::DEAL_NONE, $limit=20,$offset=0){
+
+		switch($dealStatus){
+			case JWStatusQuarantine::DEAL_NONE:
+				$dealCondition = "dealStatus = 'NONE'";
+			break;
+			case JWStatusQuarantine::DEAL_ALLOWED:
+				$dealCondition = "dealStatus = 'ALLOWED'";
+			break;
+			case JWStatusQuarantine::DEAL_DELETED:
+				$dealCondition = "dealStatus = 'DELETED'";
+			break;
+			default:
+				$dealCondition = "dealStatus = 'NONE'";
+		}
+
 		$sql = <<<SQL
 SELECT * FROM Status_Quarantine
+	WHERE $dealCondition
 	ORDER BY id ASC
 	LIMIT $offset , $limit
+SQL;
+		$result = JWDB::GetQueryResult( $sql, true );
+		return $result;
+	}
+
+	/**
+	 * @param $dealStatus, int
+	 * @param $limit, int
+	 * @param $offset, int
+	 * @return mixed
+	 */
+	static public function GetStatusQuarantineFromUser($idUser=0, $timeSince=null){
+
+		if( ! $idUser )
+			return array();
+		
+		$timeCondition = null;
+		if( $timeSince ) 
+			$timeCondition = " AND timeCreate > '$timeSince' ";
+
+		$sql = <<<SQL
+SELECT * FROM Status_Quarantine
+	WHERE idUser = $idUser $timeCondition
+	ORDER BY id DESC
 SQL;
 		$result = JWDB::GetQueryResult( $sql, true );
 		return $result;
@@ -133,8 +212,6 @@ FROM	Status_Quarantine
 WHERE	Status_Quarantine.id IN ($condition_in)
 _SQL_;
 
-		echo $sql;
-
 		$rows = JWDB::GetQueryResult($sql,true);
 
 
@@ -158,7 +235,37 @@ _SQL_;
 
 		return $status_db_rows[$idStatus];
 	}
-	
+
+	/**
+	 * @param $ids
+	 */
+	static public function SetDealStatusByIds($idStatuses, $dealStatus=JWStatusQuarantine::DEAL_ALLOWED){
+		settype($idStatuses, 'array');
+		if( empty( $idStatuses ) )
+			return true;
+		$idStatusesString = implode( ',', $idStatuses );
+		
+		switch($dealStatus){
+			case JWStatusQuarantine::DEAL_ALLOWED:
+				$dealStatusString = 'ALLOWED';
+			break;
+			case JWStatusQuarantine::DEAL_DELETED:
+				$dealStatusString = 'DELETED';
+			break;
+			default:
+				return true;
+		}
+
+		$sql = <<< __SQL__
+UPDATE Status_Quarantine 
+	SET dealStatus = '$dealStatusString' 
+	WHERE id IN ( $idStatusesString )
+__SQL__;
+
+		JWDB::Execute( $sql );
+
+	}
+
 	/**
 	 * @param $ids
 	 */
@@ -173,7 +280,7 @@ _SQL_;
 	 * @param	int
 	 * @return	bool
 	 */
-	static public function DestroyById ($idStatus)
+	static public function DestroyById ($idStatus, $updateFlag=true)
 	{
 		$idStatus = JWDB::CheckInt( $idStatus );
 		return JWDB::DelTableRow('Status_Quarantine', array (	'id'	=> intval($idStatus) ));
@@ -182,17 +289,38 @@ _SQL_;
 	/**
 	 * @param $ids
 	 */
+	static public function DeleteByIds($idStatuses){
+		settype($idStatuses, 'array');
+		self::SetDealStatusByIds( $idStatuses, JWStatusQuarantine::DEAL_DELETED);
+	}
+
+	/**
+	 * @param	int
+	 * @return	bool
+	 */
+	static public function DeleteById ($idStatus)
+	{
+		$idStatus = JWDB::CheckInt( $idStatus );
+		self::SetDealStatusByIds( $idStatus, JWStatusQuarantine::DEAL_DELETED);
+	}
+
+	/**
+	 * @param $ids
+	 */
 	static public function AllowByIds($idStatuses){
 		settype($idStatuses, 'array');
+		
+		self::SetDealStatusByIds( $idStatuses, JWStatusQuarantine::DEAL_ALLOWED);
+
 		foreach( $idStatuses as $id ){
-			self::AllowById( $id );
+			self::AllowById( $id , false);
 		}
 	}
 
 	/**
 	 * @param string allow
 	 */
-	static public function AllowById($idStatus){
+	static public function AllowById($idStatus , $updateFlag=true){
 
 		$statusRow = self::GetStatusDbRowById( $idStatus );
 
@@ -201,9 +329,13 @@ _SQL_;
 					
 		$createFlag = JWStatus::Create( $statusRow );
 		if( $createFlag ) {
-			self::DestroyById( $statusRow['idStatus'] );
+			//	self::DestroyById( $statusRow['idStatus'] );
 		}else{
 			return false;
+		}
+
+		if( true===$updateFlag ) {
+			self::SetDealStatusByIds( $idStatus, JWStatusQuarantine::DEAL_ALLOWED );
 		}
 			
 		/** Nudge Friends */

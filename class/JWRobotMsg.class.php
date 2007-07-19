@@ -15,6 +15,7 @@ class JWRobotMsg {
 	 */
 	private $mAddress	= null;
 	private $mType		= null;
+	private $mReplyTo	= null;
 	private $mMsgtype	= null;
 	private $mBody		= null;
 	private $mFile		= null;
@@ -209,6 +210,9 @@ class JWRobotMsg {
 			throw new JWException("can't save msg");
 
 		$file_contents =  "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n";
+		if( $this->mReplyTo != null ) {
+			$file_contents .= "REPLYTO: " . $this->mReplyTo . "\n";
+		}
 		if( $this->mMsgtype != null ) {
 			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
 		}
@@ -298,11 +302,13 @@ class JWRobotMsg {
 
 		//MSGTYPE
 		$msgtype = $this->_GetHeadTag('MsgType');
+		$replyTo = $this->_GetHeadTag('ReplyTo');
 		
 		//Set properties
 		$this->mAddress = $address ;
 		$this->mType	= $device ;
 		$this->mMsgtype = $msgtype ;
+		$this->mReplyTo = $replyTo ;
 
 		return true;
 	}

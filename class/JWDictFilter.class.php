@@ -17,9 +17,29 @@ class JWDictFilter {
 	public function __construct() {
 	}
 
+	public static function GetLastModified($wordPath){
+		if( file_exists( $wordPath ) )
+			return filemtime( $wordPath );
+		return 1;
+	}
+
 	public function Load( $wordPath ) {
 		if ( false == empty($this->cnWordList) )
 			return;
+
+		$lastModified = self::GetLastModified( $wordPath );
+		$cacheKey = JWDB_Cache::GetCacheKeyByFunction( array('JWDictFilter', 'Load'), $wordPath );
+		/* 
+		 * Get Loaded Result from Memcache 
+		 */
+		$cacheResult = JWMemcache::Get( $cacheKey ) ;
+		if( is_array($cacheResult) ) {
+			if( $cacheResult['lastModified'] == $lastModified ) {
+				$this->cnWordList = $cacheResult['cn'];	
+				$this->enWordList = $cacheResult['en'];	
+				return;
+			}
+		}
 		
 		if ( $fd = @fopen($wordPath, 'r') ) {
 			while ($line = fgets($fd, 256)) {
@@ -56,6 +76,17 @@ class JWDictFilter {
 			}				
 			fclose($fd);
 		}
+	
+		/*
+   		 * Save Result to MemCache
+		 */		 
+		$cacheResult = array(
+				'cn' => $this->cnWordList,
+				'en' => $this->enWordList,
+				'lastModified' => $lastModified,
+				);
+		JWMemcache::Set( $cacheKey, $cacheResult );
+
 	}
 
 	private function Find($word) {
