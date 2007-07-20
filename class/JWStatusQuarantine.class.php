@@ -98,19 +98,7 @@ class JWStatusQuarantine {
 	 */
 	static public function GetStatusQuarantineNum($dealStatus=JWStatusQuarantine::DEAL_NONE){
 
-		switch($dealStatus){
-			case JWStatusQuarantine::DEAL_NONE:
-				$dealCondition = "dealStatus = 'NONE'";
-			break;
-			case JWStatusQuarantine::DEAL_ALLOWED:
-				$dealCondition = "dealStatus = 'ALLOWED'";
-			break;
-			case JWStatusQuarantine::DEAL_DELETED:
-				$dealCondition = "dealStatus = 'DELETED'";
-			break;
-			default:
-				$dealCondition = "dealStatus = 'NONE'";
-		}
+		$dealCondition = self::GetDealCondition( $dealStatus );
 
 		$sql = <<<SQL
 SELECT COUNT(1) AS count FROM Status_Quarantine
@@ -131,19 +119,7 @@ SQL;
 	 */
 	static public function GetStatusQuarantine($dealStatus=JWStatusQuarantine::DEAL_NONE, $limit=20,$offset=0){
 
-		switch($dealStatus){
-			case JWStatusQuarantine::DEAL_NONE:
-				$dealCondition = "dealStatus = 'NONE'";
-			break;
-			case JWStatusQuarantine::DEAL_ALLOWED:
-				$dealCondition = "dealStatus = 'ALLOWED'";
-			break;
-			case JWStatusQuarantine::DEAL_DELETED:
-				$dealCondition = "dealStatus = 'DELETED'";
-			break;
-			default:
-				$dealCondition = "dealStatus = 'NONE'";
-		}
+		$dealCondition = self::GetDealCondition( $dealStatus );
 
 		$sql = <<<SQL
 SELECT * FROM Status_Quarantine
@@ -161,22 +137,35 @@ SQL;
 	 * @param $offset, int
 	 * @return mixed
 	 */
-	static public function GetStatusQuarantineFromUser($idUser=0, $timeSince=null){
+	static public function GetDbIdsFromUser($idUser=0, $dealStatus=JWStatusQuarantine::DEAL_ALLOWED, $timeSince=null){
 
 		if( ! $idUser )
 			return array();
+		
+		$dealCondition = self::GetDealCondition( $dealStatus );
 		
 		$timeCondition = null;
 		if( $timeSince ) 
 			$timeCondition = " AND timeCreate > '$timeSince' ";
 
 		$sql = <<<SQL
-SELECT * FROM Status_Quarantine
-	WHERE idUser = $idUser $timeCondition
+SELECT  id
+	FROM Status_Quarantine
+	WHERE idUser = $idUser AND $dealCondition
+ 	$timeCondition
 	ORDER BY id DESC
 SQL;
+
 		$result = JWDB::GetQueryResult( $sql, true );
-		return $result;
+		
+		$returnedArray = array();	
+		if( !empty($result) ){
+			foreach($result as $r){
+				$returnedArray[] = $r['id'];
+			}
+		}
+
+		return $returnedArray;
 	}
 
 	/*
@@ -185,7 +174,7 @@ SQL;
 	 * 	@return	array	以 idStatus 为 key 的 status row
 	 * 
 	 */
-	static public function GetStatusDbRowsByIds ($idStatuses)
+	static public function GetDbRowsByIds ($idStatuses)
 	{
 		if ( empty($idStatuses) )
 			return array();
@@ -202,7 +191,7 @@ SELECT
 		id as idStatus
 		, idUser
 		, status
-		, UNIX_TIMESTAMP(Status_Quarantine.timeCreate) AS timeCreate
+		, timeCreate
 		, device
 		, idUserReplyTo
 		, idStatusReplyTo
@@ -226,9 +215,9 @@ _SQL_;
 		return $status_map;
 	}
 
-	static public function GetStatusDbRowById ($idStatus)
+	static public function GetDbRowById ($idStatus)
 	{
-		$status_db_rows = self::GetStatusDbRowsByIds(array($idStatus));
+		$status_db_rows = self::GetDbRowsByIds(array($idStatus));
 
 		if ( empty($status_db_rows) )
 			return array();
@@ -322,7 +311,7 @@ __SQL__;
 	 */
 	static public function AllowById($idStatus , $updateFlag=true){
 
-		$statusRow = self::GetStatusDbRowById( $idStatus );
+		$statusRow = self::GetDbRowById( $idStatus );
 
 		if( empty( $statusRow ) )
 			return true;
@@ -353,6 +342,68 @@ __SQL__;
 		}
 
 		return true;	
+	}
+
+	/**
+	 * @param status_ids
+	 */
+	static public function GetMergedQuarantineStatusFromUser($idUser=0, $oStatusIds=array(), $oStatusRows=array() ){
+
+		if( empty($idUser) || empty($oStatusRows) || empty($oStatusIds) )
+			return array();
+
+		$timeSince = null;
+		$nStatusIds = $oStatusIds;
+		$nStatusRows = $oStatusRows;
+
+		foreach($oStatusRows as $id=>$r){
+			$timeSince = ($timeSince==null) ? $r['timeCreate'] : ( ($timeSince < $r['timeCreate'] ) ? $timeSince : $r['timeCreate'] );
+		}
+
+		$q_ids = JWStatusQuarantine::GetDbIdsFromUser($idUser, JWStatusQuarantine::DEAL_NONE, $timeSince);
+		$q_rows = array();
+		if( !empty( $q_ids ) ){
+			$q_rows = JWStatusQuarantine::GetDbRowsByIds( $q_ids );
+		}
+
+		foreach($q_ids as $id){
+			$nStatusIds[] = 'QID_'.$id;
+		}
+		foreach($q_rows as $k=>$row){
+			$nStatusRows['QID_'.$k] = $row;
+		}
+		
+		$sortedBy = array();
+		foreach($nStatusIds as $id){
+			if( isset( $nStatusRows[$id] ) )
+				$sortedBy[ $id ] = $nStatusRows[$id]['timeCreate'];
+		}
+		arsort($sortedBy);
+		$nStatusIds = array_keys( $sortedBy );
+		
+		return array( 
+				'status_ids' => $nStatusIds,
+				'status_rows' => $nStatusRows,
+			    );
+
+	}
+
+	static private function GetDealCondition( $dealStatus = JWStatusQuarantine::DEAL_ALLOWED ){
+		switch($dealStatus){
+			case JWStatusQuarantine::DEAL_NONE:
+				$dealCondition = "dealStatus = 'NONE'";
+			break;
+			case JWStatusQuarantine::DEAL_ALLOWED:
+				$dealCondition = "dealStatus = 'ALLOWED'";
+			break;
+			case JWStatusQuarantine::DEAL_DELETED:
+				$dealCondition = "dealStatus = 'DELETED'";
+			break;
+			default:
+				$dealCondition = "dealStatus = 'NONE'";
+		}
+
+		return $dealCondition;
 	}
 }
 ?>

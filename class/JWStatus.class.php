@@ -123,7 +123,7 @@ class JWStatus {
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
-									,'timeCreate'		=> Date('Y-m-d H:i:s',$time)
+									,'timeCreate'		=> Date('Y-m-d H:i:s',strtotime($time))
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id

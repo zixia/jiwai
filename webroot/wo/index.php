@@ -5,6 +5,8 @@ JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
 
 ?>
 
@@ -97,7 +99,7 @@ switch ( $active_tab )
 		//$user_status_num= JWStatus::GetStatusNum($logined_user_id);
 		$user_status_num= JWDB_Cache_Status::GetStatusNum($logined_user_id);
 
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination		= new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
@@ -108,7 +110,7 @@ switch ( $active_tab )
 		//$user_status_num= JWStatus::GetStatusNumFromReplies($logined_user_id);
 		$user_status_num= JWDB_Cache_Status::GetStatusNumFromReplies($logined_user_id);
 
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination		= new JWPagination($user_status_num, $page);
 		//$status_data 	= JWStatus::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
@@ -117,14 +119,13 @@ switch ( $active_tab )
 		//搜索所有用户的Status更新
 		$searchStatus = new JWSearchStatus();
 
-		$p = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-		$searchStatus->setPageNo( $p );
+		$searchStatus->setPageNo( $page );
 
 		$searchStatus->setInSite("jiwai.de/$in_user/statuses/");
 		$searchStatus->execute($eq);
 
 		$user_status_num = $searchStatus->getTotalSize();
-		$pagination	= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination	= new JWPagination($user_status_num, $page);
 
 		$user_ids = $searchStatus->getUserIds();
 		if( !empty($user_ids) )
@@ -140,7 +141,7 @@ switch ( $active_tab )
 		//$user_status_num= JWStatus::GetStatusNumFromFriends($logined_user_id);
 		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($logined_user_id);
 
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination		= new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
@@ -150,6 +151,19 @@ switch ( $active_tab )
 
 //$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
+
+
+if( ( $active_tab == 'friends' || $active_tab == 'archive' ) 
+	&& !empty($status_rows) 
+	&& $page == 1
+	) {
+	$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(
+			$logined_user_id, $status_data['status_ids'], $status_rows);
+	if( !empty( $mergedStatusResult ) ) {
+		$status_data['status_ids'] = $mergedStatusResult['status_ids'];
+		$status_rows = $mergedStatusResult['status_rows'];
+	}
+}
 
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
@@ -228,4 +242,3 @@ JWTemplate::sidebar( $arr_menu );
 
 </body>
 </html>
-

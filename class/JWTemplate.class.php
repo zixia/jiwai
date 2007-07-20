@@ -705,9 +705,8 @@ _HTML_;
 <?php
 		$n=0;
 		$user_showed = array();
-		foreach ( $statusIds as $status_id ){
-//die(var_dump($aStatusList));
 
+		foreach ( $statusIds as $status_id ){
 			if( !isset($statusRows[$status_id]) )
 				continue;
 
@@ -767,7 +766,11 @@ _HTML_;
 							<?php echo $status?>
 			
 							<span class="meta">
+								<?php if (is_int($status_id)) {?>
 								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
+								<?php } else {
+									echo $duration;	
+								} ?>
 								来自于 <?php echo "$device $sign"?> 
 <?php 
 		if (!empty($replyto) )
@@ -782,7 +785,7 @@ _HTML_;
 								<span id="status_actions_<?php echo $status_id?>">
 
 <?php	
-if ( isset($current_user_id) )	
+if ( isset($current_user_id) && is_int($status_id) )	
 {
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
@@ -1361,7 +1364,7 @@ _HTML_;
 
 		if ( !empty($status_data['status_ids']) )
 		{
-			$status_rows	= JWDB_Cache_Status::GetStatusDbRowsByIds($status_data['status_ids']);
+			$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 			$status_id		= $status_data['status_ids'][0];
 			$current_status	= $status_rows[$status_id]['status'];
 		}
