@@ -87,7 +87,8 @@ class JWRobotMsg {
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
 		if( !$this->_SetPropertiesByTagHeads() ){
-			throw new JWException('Essential properties[address/device] not given');
+			JWRobot::QuarantineMsg($this);
+			//throw new JWException('Essential properties[address/device] not given');
 		}
 
 		// we prevent modify a RoboMsg which load from the file.
