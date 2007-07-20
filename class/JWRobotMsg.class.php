@@ -15,7 +15,7 @@ class JWRobotMsg {
 	 */
 	private $mAddress	= null;
 	private $mType		= null;
-	private $mReplyTo	= null;
+	private $mServerAddress	= null;
 	private $mMsgtype	= null;
 	private $mBody		= null;
 	private $mFile		= null;
@@ -156,6 +156,18 @@ class JWRobotMsg {
 		$this->mType = $type;
 		$this->mIsValid = null;
 	}
+	public function GetServerAddress()
+	{
+		return $this->mServerAddress;
+	}
+	public function SetServerAddress($serverAddress)
+	{
+		if ( $this->mReadOnly )
+			throw new JWException('cant modify readonly msg');
+
+		$this->mServerAddress = $serverAddress;
+		$this->mIsValid = null;
+	}
 	public function GetBody()
 	{
 		return $this->mBody;
@@ -186,7 +198,7 @@ class JWRobotMsg {
 
 
 
-	public function Set($address, $type, $body, $file=null)
+	public function Set($address, $type, $body, $serverAddress=null, $file=null)
 	{
 		if ( $this->mReadOnly )
 			throw new JWException('cant modify readonly msg');
@@ -194,6 +206,7 @@ class JWRobotMsg {
 		$this->mAddress	= $address;
 		$this->mType	= $type;
 		$this->mBody	= $body;
+		$this->mServerAddress	= $serverAddress;
 		$this->mFile	= $file;
 
 		$this->mIsValid	= $this->IsValid(true);
@@ -211,8 +224,8 @@ class JWRobotMsg {
 			throw new JWException("can't save msg");
 
 		$file_contents =  "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n";
-		if( $this->mReplyTo != null ) {
-			$file_contents .= "REPLYTO: " . $this->mReplyTo . "\n";
+		if( $this->mServerAddress != null ) {
+			$file_contents .= "REPLYTO: " . $this->mServerAddress . "\n";
 		}
 		if( $this->mMsgtype != null ) {
 			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
@@ -303,13 +316,13 @@ class JWRobotMsg {
 
 		//MSGTYPE
 		$msgtype = $this->_GetHeadTag('MsgType');
-		$replyTo = $this->_GetHeadTag('ReplyTo');
+		$serverAddress = $this->_GetHeadTag('ServerAddress');
 		
 		//Set properties
 		$this->mAddress = $address ;
 		$this->mType	= $device ;
 		$this->mMsgtype = $msgtype ;
-		$this->mReplyTo = $replyTo ;
+		$this->mServerAddress = $serverAddress ;
 
 		return true;
 	}

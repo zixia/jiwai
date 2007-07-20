@@ -229,11 +229,19 @@ _STR_;
 	{
 		$address = $robotMsg->GetAddress();
 		$type	 = $robotMsg->GetType();
+		$body	 = $robotMsg->GetBody();
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
 
 		if ( empty($invitation_id) )
 		{
+			
+			/*
+			 * 存下用户注册前发的更新
+			 */
+			$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
+			JWMemcache::Set( $cachedKey, $body );
+
 			/*
 			 *	1 用户没有被邀请过
 			 */
@@ -312,6 +320,14 @@ _STR_;
 			$body = <<<_STR_
 欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。发送HELP可以了解更多JiWai功能。登录Web请来这里：http://jiwai.de/wo/account/complete，进行密码设置。
 _STR_;
+			/*
+			 * 检查用户注册前的更新，将其发出
+			 */
+			$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
+			$status = JWMemcache::Get( $cachedKey );
+			if( !empty( $status ) ){
+				JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
+			}
 		}
 		else
 		{
