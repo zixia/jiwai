@@ -124,7 +124,7 @@ SQL;
 		$sql = <<<SQL
 SELECT * FROM Status_Quarantine
 	WHERE $dealCondition
-	ORDER BY id ASC
+	ORDER BY id DESC
 	LIMIT $offset , $limit
 SQL;
 		$result = JWDB::GetQueryResult( $sql, true );

@@ -785,7 +785,7 @@ _HTML_;
 								<span id="status_actions_<?php echo $status_id?>">
 
 <?php	
-if ( isset($current_user_id) && is_int($status_id) )	
+if ( isset($current_user_id) && is_numeric($status_id) )	
 {
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
 
