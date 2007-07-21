@@ -180,10 +180,10 @@ class JWRobot {
 	}
 
 
-	static function SendMtRaw ($address, $type, $msg)
+	static function SendMtRaw ($address, $type, $msg, $serverAddress=null)
 	{
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($address,$type,$msg);
+		$robot_msg->Set($address,$type,$msg, $serverAddress);
 		self::SendMt($robot_msg);
 	}
 

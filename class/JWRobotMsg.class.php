@@ -225,7 +225,7 @@ class JWRobotMsg {
 
 		$file_contents =  "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n";
 		if( $this->mServerAddress != null ) {
-			$file_contents .= "REPLYTO: " . $this->mServerAddress . "\n";
+			$file_contents .= "SERVERADDRESS: " . $this->mServerAddress . "\n";
 		}
 		if( $this->mMsgtype != null ) {
 			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
@@ -300,7 +300,7 @@ class JWRobotMsg {
 	private function _SetHeadTagByLine($lineString=null){
 		if( null == $lineString )
 			return;
-		if( preg_match( '/^(\w+): (.+)$/', $lineString, $matches ) ){
+		if( preg_match( '/^(\w+):\s+(.+)$/', $lineString, $matches ) ){
 			$this->headTags[ strtoupper($matches[1]) ] = $matches[2];
 		}	
 	}

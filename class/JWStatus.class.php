@@ -85,7 +85,7 @@ class JWStatus {
 			$idUser = $row['idUser'];
 			$status = $row['status'];
 			$device = $row['device'];
-			$time = $row['timeCreate'];
+			$time = strtotime($row['timeCreate']);
 			$reply_status_id = $row['idStatusReplyTo'];
 			$reply_user_id = $row['idUserReplyTo'];
 			$picture_id = $row['idPicture'];
@@ -123,7 +123,7 @@ class JWStatus {
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
-									,'timeCreate'		=> Date('Y-m-d H:i:s',strtotime($time))
+									,'timeCreate'		=> Date('Y-m-d H:i:s',$time)
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
