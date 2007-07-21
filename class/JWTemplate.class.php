@@ -766,7 +766,7 @@ _HTML_;
 							<?php echo $status?>
 			
 							<span class="meta">
-								<?php if (is_int($status_id)) {?>
+								<?php if (is_numeric($status_id)) {?>
 								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
 								<?php } else {
 									echo $duration;	

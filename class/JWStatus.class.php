@@ -467,7 +467,7 @@ _SQL_;
 
 		$duration = time() - $unixtime;
 		if ( $forceDate || $duration > 2*86400 ){
-			return strftime("%Y-%m-%d 周%a %h:%m",$unixtime);
+			return strftime("%Y-%m-%d 周%a %H:%M",$unixtime);
 		}else if ( $duration > 86400 ){
 			return strftime("%Y-%m-%d %H:%M",$unixtime);
 			//return "1 天前";
