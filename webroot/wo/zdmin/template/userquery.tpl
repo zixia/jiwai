@@ -74,7 +74,7 @@
 			<td>{$one['idStatus']}</td>
 			<td>{$one['device']}</td>
 			<td style="text-align:left;padding:10px;">{$one['status']}</td>
-			<td>${date('Y-m-d H:i:s', $one['timeCreate'])}</td>
+			<td>{$one['timeCreate']}</td>
 		</tr>
 		<!--{/foreach}-->
 	</table>
