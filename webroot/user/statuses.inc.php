@@ -25,7 +25,7 @@ function user_status($idPageUser, $idStatus)
 		$protected = true;
 		if ( ! empty($logined_user_info) )
 		{
-			if ( JWFriend::IsFriend($idPageUser, $logined_user_info['idUser']) )
+			if ( JWFriend::IsFriend($idPageUser, $logined_user_info['idUser']) || $logined_user_info['idUser']==$idPageUser )
 				$protected = false;
 		}
 	}
