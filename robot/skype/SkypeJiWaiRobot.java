@@ -11,6 +11,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	public static String mQueuePath = null;
 
 	public static final String DEVICE = "skype";
+	public static final String wo = "wo.jiwai.de";
 	public static MoMtWorker worker = null;
 	public static Connector connector = null;
 	
@@ -51,6 +52,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 			}
 			MoMtMessage msg = new MoMtMessage(DEVICE);
 			msg.setAddress(received.getSenderId());
+			msg.setServerAddress(wo);
 			msg.setBody(received.getContent());
 			worker.saveMoMessage(msg);
 		}

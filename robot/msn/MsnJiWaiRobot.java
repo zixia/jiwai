@@ -115,11 +115,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 		
 		//ONline OR OFFline
 		if( ( status.equals("FLN") || status.equals("NLN") ) && oldStatus != status ){
-			MoMtMessage message = new MoMtMessage(DEVICE);
-			message.setMsgtype(MoMtMessage.TYPE_ONOROFF);
-			message.setAddress(email);
-			message.setBody(status);
-			//	worker.saveMoMessage(message);
+			MoMtMessage msg = new MoMtMessage(DEVICE);
+			msg.setMsgtype(MoMtMessage.TYPE_ONOROFF);
+			msg.setAddress(email);
+			msg.setServerAddress(mEmail);
+			msg.setBody(status);
+			//	worker.saveMoMessage(msg);
 		}
 		
 		//Signature
@@ -130,11 +131,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 		//		|| email.equals("freewizard@msn.com")
  		//	)
 		){
-			MoMtMessage message = new MoMtMessage(DEVICE);
-			message.setMsgtype(MoMtMessage.TYPE_SIG);
-			message.setAddress(email);
-			message.setBody(signature);
-			worker.saveMoMessage(message);
+			MoMtMessage msg = new MoMtMessage(DEVICE);
+			msg.setMsgtype(MoMtMessage.TYPE_SIG);
+			msg.setAddress(email);
+			msg.setServerAddress(mEmail);
+			msg.setBody(signature);
+			worker.saveMoMessage(msg);
 		}	
 	}
 
@@ -143,15 +145,28 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
             MsnContact contact){
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(contact.getEmail().getEmailAddress());
+		msg.setServerAddress(mEmail);
 		msg.setBody(message.getContent());
 		worker.saveMoMessage(msg);
 	}
 	
 	public void contactAddedMe(MsnMessenger messenger,
             MsnContact contact){
-		//Add to AL
-		messenger.addFriend(contact.getEmail(), contact.getDisplayName() );
-		messenger.removeFriend(contact.getEmail(), false);
+
+		//Add to AL only
+		MsnProtocol protocol = messenger.getActualMsnProtocol();
+		if (protocol.after(MsnProtocol.MSNP9)) {
+			OutgoingADC message = new OutgoingADC(protocol);
+			message.setAddtoList(MsnList.AL);
+			message.setEmail(contact.getEmail());
+			messenger.send(message);
+		} else {
+			OutgoingADD message = new OutgoingADD(protocol);
+			message.setAddtoList(MsnList.AL);
+			message.setEmail(contact.getEmail());
+			message.setFriendlyName(contact.getEmail().getEmailAddress());
+			messenger.send(message,false);
+		}
 		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
 		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
 		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant
@@ -161,6 +176,11 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 	
 	public void contactRemovedMe(MsnMessenger messenger,
             MsnContact contact){
+		//Remove From AL
+		OutgoingREM message = new OutgoingREM(messenger.getActualMsnProtocol());
+		message.setRemoveFromList(MsnList.AL);
+		message.setEmail(contact.getEmail());
+		messenger.send(message, false);
 		/* SEND SYN to NS/AS, Let Server Synchorize RL(Reversed List) */
 		OutgoingSYN osync = new OutgoingSYN(messenger.getActualMsnProtocol());
 		osync.setCachedVersion("0 0"); //now simple use "0 0", not very imporant

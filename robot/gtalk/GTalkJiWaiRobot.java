@@ -24,6 +24,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static String mQueuePath = null;
 	public static String _mStatus = "叽歪一下吧！（发送HELP了解更多）";
 	public static String mStatus = null;
+	public static String mAddress = null;
 	
 	public static MoMtWorker worker = null;
 	
@@ -45,6 +46,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			mStatus = System.getProperty("gtalk.status", _mStatus);
 		}
 		
+		mAddress = mAccount + "@" + mServer;
 		if( null== mServer ||  null==mAccount || null==mPassword || null==mQueuePath) {
 			Logger.logError("Please given server|password|account|queuepath");
 			System.exit(1);
@@ -89,6 +91,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		}
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(getFromEmail(m.getFrom()));
+		msg.setServerAddress(mAddress);
 		msg.setBody(m.getBody());
 		worker.saveMoMessage(msg);
 	}
@@ -114,6 +117,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(getFromEmail(p.getFrom()));
+		msg.setServerAddress(mAddress);
 		msg.setMsgtype(MoMtMessage.TYPE_SIG);
 		msg.setBody(status);
 		worker.saveMoMessage(msg);

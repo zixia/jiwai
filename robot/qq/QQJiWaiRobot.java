@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.net.InetSocketAddress;
 import java.util.Properties;
 
 import edu.tsinghua.lumaqq.qq.QQ;
@@ -151,6 +150,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		
 		msg.setAddress(String.valueOf(senderQQ));
 		msg.setBody(signature);
+		msg.setServerAddress(String.valueOf(qqno));
 		msg.setMsgtype(MoMtMessage.TYPE_SIG);
 
 		worker.saveMoMessage(msg);
