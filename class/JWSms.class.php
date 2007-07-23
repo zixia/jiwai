@@ -130,7 +130,7 @@ class JWSms {
 					. " by link [$linkId] through [$gateId]" );
 
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($mobileNo, 'sms', $smsMsg);
+		$robot_msg->Set($mobileNo, 'sms', $smsMsg, '9911'.$serviceNo);
 
 		$robot_msg->SetFile( self::$msQueuePathMo . $robot_msg->GenFileName() );
 
