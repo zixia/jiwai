@@ -436,7 +436,7 @@ class JWSns {
 			}
 		}
 
-		$smssuffix = ( $conference['number'] == null ) ? "66$userInfo[id]" : "1$conference[number]";
+		$smssuffix = ( $conference['number'] == null ) ? "99$userInfo[id]" : "1$conference[number]";
 
 		if( $idUser === $idUserReplyTo )
 			return $smssuffix;
@@ -457,8 +457,8 @@ class JWSns {
 	static public function GetReplyTo($idUser, $serverAddress, $type='sms'){
 		switch( $type ){
 			case 'sms':
-				if( preg_match("/[0-9]{8}(66|1)(\d+)/", $serverAddress, $matches ) ) {
-					$normalMeeting = $matches[1] == 66 ? true : false;
+				if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
+					$normalMeeting = $matches[1] == 99 ? true : false;
 					$userInfo = $conference = null;
 					if( $normalMeeting ){
 						$userInfo = JWUser::GetUserInfo( $matches[2] );
@@ -476,7 +476,7 @@ class JWSns {
 								'status_id' => null,
 								'user_id' => $userInfo['id'],
 								'smssuffix' => $conference['number']==null ? 
-										"66$userInfo[id]" : "1$conference[number]",
+										"99$userInfo[id]" : "1$conference[number]",
 								);
 						return $reply_info;
 					}
@@ -497,7 +497,7 @@ class JWSns {
 				'status_id' => null,
 				'user_id' => $idUser,
 				'smssuffix' => $conference['number']==null ? 
-						"66$userInfo[id]" : "1$conference[number]",
+						"99$userInfo[id]" : "1$conference[number]",
 				);
 	}
 
