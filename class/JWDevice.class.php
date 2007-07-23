@@ -283,7 +283,7 @@ _SQL_;
 		if ( !empty($device_row) ) // Verify PASS
 		{
 			$ret = JWDB::UpdateTableRow(	 'Device'	
-									,$device_row['id']
+									,intval($device_row['id'])
 									,array(	 'secret' => '' )
 								);
 
