@@ -7,7 +7,7 @@ if ( JWLogin::IsLogined() )
 	JWLogin::Logout();
 }
 
-$name_len_min = 5;
+$name_len_min = 4;
 
 $aUserInfo = array();
 $JWErr = '';

@@ -45,7 +45,7 @@ class JWDB_Cache_User implements JWDB_Cache_Interface
 		self::$msMemcache = JWMemcache::Instance();
 	}
 
-	static function OnDirty($idPK, $dbRow, $table=null)
+	static function OnDirty($dbRow, $table=null)
 	{
 		/* 	取出 idPK 的 row，
 		 *	然后依据自己表中的cache逻辑，得到相关其他应该 OnDirty 的 key
@@ -57,6 +57,7 @@ class JWDB_Cache_User implements JWDB_Cache_Interface
 
 		$dirty_keys = array();
 
+		// FIXME
 		array_push( $dirty_keys,	"User(id=$idPK)" );
 		array_push( $dirty_keys,	"User(email=$email)" );
 		array_push( $dirty_keys,	"User(nameScreen=$screen_name)" );
