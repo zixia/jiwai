@@ -357,7 +357,8 @@ _SQL_;
 
 	/*
 	 * @desc	1、英文字母打头（为了方便的区分 nameScreen 和 idUser，禁止nameScreen以数字打头)
-	 *			2、允许数字、字母、"."、"_"、"-"作为帐号字符
+	 *			// desprited 2、允许数字、字母、"."、"_"、"-"作为帐号字符
+				2、允许中文，和/以外一切字符
 	 *			3、在底层，不限制长度
 	 * @param	$name	nameScreen
 	 * @return	bool	valid?
@@ -365,7 +366,12 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		$regexp = '/^[[:alpha:]][\w\d_\-]+$/';
+		//$regexp = '/^[[:alpha:]][\w\d_\-]+$/';
+
+		// we allow chinese name now:
+		// 不允许数字开头
+		// 不允许包含 / 字符
+		$regexp = '#^[^\d][^/]+$#';
 
 		$ret = preg_match($regexp, $name);
 
