@@ -43,7 +43,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *
 	 * @return JWMemcache
 	 */
-	static public function &Instance($cluster='default', $protocol=self::UDP)
+	static public function &Instance($cluster='default', $protocol=self::TCP)
 	{
 		if ( empty(self::$msSyslog) )
 			self::$msSyslog = JWLog::Instance('Memcache');
