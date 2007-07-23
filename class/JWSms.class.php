@@ -250,6 +250,8 @@ class JWSms {
 							//. "&src=99118816" //mobile src ??
 						;
 
+//error_log($rpc_url);
+
 		if ( isset($msgfmt) )
 			$rpc_url .= "&msgfmt=$msgfmt";
 

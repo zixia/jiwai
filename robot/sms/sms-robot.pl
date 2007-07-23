@@ -181,9 +181,8 @@ sub sms_deliver_file {
 	
 
 	my $server_address = '99118816';
-	$server_address = $1 if ( $head=~m#^SERVERADDRESS:\s+(\d+)#sig );
+	$server_address = $1 if ( $head=~m#^SERVERADDRESS:\s+(\d+)$#mi );
 
-	
 	# TODO: really MT
 
 	my $encode_msg = uri_escape($body);

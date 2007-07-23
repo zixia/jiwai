@@ -177,14 +177,7 @@ _STR_;
 		if ( 'sms'==$robotMsg->GetType() )
 			$body .= '本短信服务免费。';
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+		return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -198,16 +191,7 @@ _STR_;
 _STR_;
 
 			
-
-
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+		return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -245,11 +229,8 @@ _STR_;
 搞定了！您在做什么呢？任何时候发送OFF都可以随时关掉通知。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $address , $type , $body );
+		return JWRobotLogic::ReplyMsg($robotMsg, $body);
 
-		return $robot_reply_msg;
 	}
 
 
@@ -281,11 +262,7 @@ _STR_;
 通知消息已关闭。发送ON可开启。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $address , $type , $body );
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -349,14 +326,7 @@ _STR_;
 每当$followe_user_db_row[nameFull]更新，您都会收到消息。如果要撤销，请发送LEAVE $followe_user_db_row[nameScreen]。发送HELP了解更多。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -411,14 +381,7 @@ _STR_;
 您已退定了$followe_user_db_row[nameFull]。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW $followe_user_db_row[nameScreen]可恢复订阅。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -669,14 +632,7 @@ _STR_;
 		}
 
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -731,14 +687,7 @@ _STR_;
 搞定了！$friend_user_row[nameFull]($friend_user_row[nameScreen])已经不再是您的好友了。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -789,14 +738,7 @@ _STR_;
 $friend_user_db_row[nameScreen]: $status
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -869,14 +811,7 @@ _NUDGE_;
 我们已经帮您挠挠了$friend_user_db_row[nameScreen]一下！期待很快能得到您朋友的回应。
 _STR_;
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -922,14 +857,7 @@ _STR_;
 			$body .= "，网站：$friend_user_row[url]";
 
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -1018,14 +946,7 @@ _STR_;
 _STR_;
 		}
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -1088,14 +1009,7 @@ _STR_;
 _STR_;
 		}
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
 
@@ -1195,14 +1109,7 @@ _STR_;
 _STR_;
 		}
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+        return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 	
 	/**
