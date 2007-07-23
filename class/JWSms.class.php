@@ -169,9 +169,8 @@ class JWSms {
 	 * 9911(chn) & 9318(uni) mt
 	 *
 	 */
-	static public function SendMt ($mobileNo, $smsMsg)
+	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816')
 	{
-
 		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
 		//define ('MT_HTTP_URL_TEST',	'http://beta.jiwai.de/wo/dump');
 
@@ -218,7 +217,11 @@ class JWSms {
 		$linkid	= null;	// 如果mo里面有带下来，(没有不填，不要乱填)
 		$func	= 8816; // 数字，长号码，只加自己的扩展号
 
-		$func	= '8816';
+		/**
+		 *	挂上自己的长尾号
+		 * 	turn 99118816123 to 8816123
+		 */
+		$func	= substr($serverAddress, 4);
 
 		/*
 		$pid	= 
