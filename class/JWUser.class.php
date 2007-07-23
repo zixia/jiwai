@@ -463,7 +463,20 @@ _SQL_;
 
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
 	}
+	
+	/*
+	 *	设置用户的会议模式
+ 	 *	@param	idUser		int
+	 *	@param	idConference	int	会议的id，如果设置为null或者0，则为未启用会议模式
+	 *	@return
+	 */
+	static public function SetConference($idUser, $idConference = null)
+	{
 
+		$idUser = intval($idUser);
+
+		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'idConference' => $idConference ) );
+	}
 
 	
 	/*
