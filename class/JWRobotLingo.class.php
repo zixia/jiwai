@@ -190,7 +190,6 @@ _STR_;
 命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
 _STR_;
 
-			
 		return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
 
