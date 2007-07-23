@@ -412,11 +412,99 @@ class JWSns {
 					);
 	}
 	
+	/**
+	 * 获取用户特服号后缀
+	 * @param $idUser int
+	 * @param $sendDevice string default 'web'
+	 * @param $own boolean default false;
+	 */
+	static public function GetSmsSuffix($idUser, $idUserReplyTo, $sendDevice='web' ){
+		$idUser = JWDB::CheckInt( $idUser );
+		$idUserReplyTo = JWDB::CheckInt( $idUserReplyTo );
+
+		$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
+		if( empty( $userInfo )  || $userInfo['idConference'] == null )
+			return null;
+
+		$conference = JWConference::GetDbRowById( $userInfo['idConference'] );
+		if( empty( $conference ) )
+			return null;
+
+		if( $conference['friendOnly'] == 'Y' ) {
+			if( false == JWFriend::IsFriend($idUserReplyTo, $idUser) ) {
+				return null;
+			}
+		}
+
+		$smssuffix = ( $conference['number'] == null ) ? "66$userInfo[id]" : "1$conference[number]";
+
+		if( $idUser === $idUserReplyTo )
+			return $smssuffix;
+		
+		$deviceAllow = explode(',', $conference['deviceAllow'] );
+		if( in_array( $sendDevice, $deviceAllow ) )
+			return $smssuffix;
+
+		return null;
+	}
+
+	/**
+	 * 获取用户特服号后缀
+	 * @param $idUser int
+	 * @param $sendDevice string default 'web'
+	 * @param $own boolean default false;
+	 */
+	static public function GetReplyTo($idUser, $serverAddress, $type='sms'){
+		switch( $type ){
+			case 'sms':
+				if( preg_match("/[0-9]{8}(66|1)(\d+)/", $serverAddress, $matches ) ) {
+					$normalMeeting = $matches[1] == 66 ? true : false;
+					$userInfo = $conference = null;
+					if( $normalMeeting ){
+						$userInfo = JWUser::GetUserInfo( $matches[2] );
+						$conference = JWConference::GetDbRowFromUser( $matches[2] ) ;
+					}else{
+						$conference = JWConference::GetDbRowFromNumber( $matches[2] );
+						if( !empty( $conference ) ){
+							$userInfo = JWUser::GetUserInfo( $conference['id'] );
+						}
+					}
+					
+					//
+					if( $conference && $userInfo && $userInfo['idConference']) {
+						$reply_info = array(
+								'status_id' => null,
+								'user_id' => $userInfo['id'],
+								'smssuffix' => $conference['number']==null ? 
+										"66$userInfo[id]" : "1$conference[number]",
+								);
+						return $reply_info;
+					}
+				}
+			break;
+			default:
+			break;
+		}
+		$userInfo = JWUser::GetUserInfo( $idUser );
+		if( empty( $userInfo ) || null==$userInfo['idConference'] )
+			return array();
+
+		$conference = JWConference::GetDbRowById( $userInfo['idConference'] );
+		if( empty( $conference ) )
+			return array();
+
+		$reply_info = array(
+				'status_id' => null,
+				'user_id' => $idUser,
+				'smssuffix' => $conference['number']==null ? 
+						"66$userInfo[id]" : "1$conference[number]",
+				);
+	}
 
 	/*
-	 *
+	 * 更新用户叽歪嘻嘻，并进行广播
 	 */
-	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null, $isSignature='N')
+	static public function	UpdateStatus( $idUser, $status, $device='web', $time=null, $isSignature='N', $serverAddress=null)
 	{
 		//For remove \n\r
 		$status = preg_replace('/[\n\r]/' ,' ', $status);
@@ -432,12 +520,16 @@ class JWSns {
 
 		$statusPost = JWRobotLingo::ConvertCorner( $status );
 		$reply_info	= JWStatus::GetReplyInfo($statusPost);	
-		
+
+		if( !empty( $reply_info )) {
+			$status = $statusPost;
+		}
+
 		/*
 		 *  判断是否需要Filter，如果需要进入status
 		 *
 		 */
-		if( true )
+		if( true && false )  // 暂时不升级这快，影响较大
 		{
 			$idReciever = empty( $reply_info ) ? null : $reply_info['user_id'];
 			$status = empty( $reply_info ) ? $status : $statusPost;
@@ -449,58 +541,62 @@ class JWSns {
 			}
 		}
 
-		/*
-		 *	如果是 @user 的更新，只发送给 user
-		 *	否则发送给所有的 follower
-	 	 */
-		if ( !empty($reply_info) )
-		{
-			$status = $statusPost;
-			$follower_ids = array($reply_info['user_id']);
-		}
-		else
-		{
-			// FIXME: Follower 最多可以有多少位？
-			$follower_ids = JWFollower::GetFollowerIds($idUser);
-		}
-
-		if ( !empty($follower_ids) )
-		{
-			$user_name_screen 	= JWUser::GetUserInfo($idUser, 'nameScreen');
-
-			// we now avoid to send update notice to sms,
-			// coz it will spend our money ( MT fee )
-
-			// get them all for cache.
-			//$follower_user_rows		= JWUser::GetUserDbRowsByIds($follower_ids);
-
-			$nudge_follower_ids = array();
-			foreach ( $follower_ids as $follower_id )
-			{
-				array_push($nudge_follower_ids, $follower_id);
-
-/*
-		我们现在暂时允许所有的用户都可以通过手机接收下行订阅
-	手机用户数据
-				$send_via_device	= JWUser::GetSendViaDevice($follower_id);
-
-				if ( 'sms'==$send_via_device ) 
-				{
-					if ( JWUser::IsSubSms($follower_id) )
-						array_push($nudge_follower_ids, $follower_id);
-				}
-				else
-				{
-					array_push($nudge_follower_ids, $follower_id);
-				}
-*/
-			}
-
-			JWNudge::NudgeUserIds($nudge_follower_ids, "$user_name_screen: $status");
-
-		}
+		JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
 
 		return JWStatus::Create($idUser,$status,$device,$time, $isSignature);
+	}
+
+
+	static public function ProcessStatusNotify($idUser, $status=null, $reply_info=array(), $device='web', $serverAddress=null){
+		$idUser = JWDB::CheckInt( $idUser );
+		/*
+		 * 判断是否是会议模式相关，目前仅可以从SMS特服号上取出 会议id
+		 * 如果 reply_info 中含有 smssuffix 则一定为会议用户
+		 */
+		if( !empty($reply_info) ) {
+			$reply_info['smssuffix'] = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
+		}
+
+		if( empty($reply_info) ) {
+			$reply_info = JWSns::GetReplyTo( $idUser, $serverAddress, $device );
+		}
+
+		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
+		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
+
+		//Notify Followers
+		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
+	}
+
+	/**
+	 * Nudge updates to follower,consider conference model
+	 * @param $idSender int
+	 * @param $idUserReplyTo int
+	 * @param $status string
+	 * @param $smssuffix 
+	 */
+	static public function NotifyFollower( $idSender, $idUserReplyTo=null, $status=null, $smssuffix=null ){
+		$idSender = JWDB::CheckInt( $idSender );
+
+		if( $smssuffix ) {
+			$status = preg_replace("/^\s?@\s?\w+/", "", $status );
+			$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
+			$status = "$userInfo[nameScreen]: $status";
+			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+		}else if( null == $idUserReplyTo ) {
+			$userInfo = JWUser::GetUserInfo( $idSender );
+			$follower_ids = JWFollower::GetFollowerIds($idSender);
+			$status = "$userInfo[nameScreen]: $status";
+		}else{
+			$userInfo = JWUser::GetUserInfo( $idSender );
+			$follower_ids = array( $idUserReplyTo ) ;
+			$status = "$userInfo[nameScreen]: $status";
+		}
+
+		if( empty( $follower_ids ) ) 
+			return;
+
+		JWNudge::NudgeUserIds( $follower_ids, $status );
 	}
 
 	/*

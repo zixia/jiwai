@@ -67,6 +67,7 @@ class JWRobotLogic {
 		$address	= $robotMsg->GetAddress();
 		$type		= $robotMsg->GetType();
 		$body 		= $robotMsg->GetBody();
+		$serverAddress	= $robotMsg->GetServerAddress();
 
 		// echo
 		printf("%-35s: %s\n", "MO($type://$address)", $body);
@@ -134,6 +135,7 @@ class JWRobotLogic {
 	{
 
 		$address	= $robotMsg->GetAddress();
+		$serverAddress  = $robotMsg->GetServerAddress();
 		$type		= $robotMsg->GetType();
 		$body		= $robotMsg->GetBody();
 		$msgtype	= $robotMsg->GetMsgtype();
@@ -168,7 +170,7 @@ class JWRobotLogic {
 			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
-			if ( JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature) )
+			if ( JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature, $serverAddress) )
 			{	// succeed posted, keep silence
 				return null;
 			}

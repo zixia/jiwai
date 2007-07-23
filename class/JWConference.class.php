@@ -41,6 +41,21 @@ class JWConference {
 	}
 
 	/**
+	 * Get Conference ById
+	 */
+	static public function GetDbRowById($idConference){
+		$idConference = JWDB::CheckInt( $idConference );
+		$sql = <<<_SQL_
+SELECT * FROM Conference
+	WHERE id = $idConference
+_SQL_;
+
+		$row = JWDB::GetQueryResult( $sql, false );
+
+		return $row;
+	}
+
+	/**
 	 * Get User Conference Setting
 	 */
 	static public function GetDbRowFromUser($idUser){
@@ -49,6 +64,26 @@ class JWConference {
 SELECT * FROM Conference
 	WHERE
 		idUser = $idUser
+	LIMIT 1
+_SQL_;
+
+		$row = JWDB::GetQueryResult( $sql, false );
+
+		return $row;
+	}
+
+	/**
+	 * Get Conference Setting By Number
+	 */
+	static public function GetDbRowFromNumber($number){
+		$number = intval( $number );
+		if( $number <=  0 ) 
+			return array();
+
+		$sql = <<<_SQL_
+SELECT * FROM Conference
+	WHERE
+		number = number
 	LIMIT 1
 _SQL_;
 

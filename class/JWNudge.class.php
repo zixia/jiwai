@@ -80,7 +80,7 @@ class JWNudge {
 	 *	@param	string	$message
 	 *	@param	string	$messageType	{'nudge'|'direct_messages'}
 	 */
-	static public function NudgeDevice( $deviceRow, $type, $message, $messageType )
+	static public function NudgeDevice( $deviceRow, $type, $message, $messageType , $nudgeFromIdUser = null)
 	{
 		// 对特定的 device ( sms / im） - 查看 Device.enabledFor:
 		// enabledFor 可能有三个值: everything / nothing / direct_messages
@@ -123,5 +123,23 @@ class JWNudge {
 		}
 	}
 
+	/**
+	 * 这个方法用来判断，发出去的Nudge消息，是否可以直接回复，目前仅仅 Sms 可以通过追加长号码的方法，使得用户，可以直接回复消息给特定的Nudge来源用户
+	 */
+	static public function GetReplyToIdUser( $type, $fromIdUser, $justSms=true) {
+		if( 'sms' !== $type && true === $justSms ) 
+			return null;
+
+		$userInfo = JWUser::GetUserInfo( $fromIdUser );
+
+		/* 
+		 * 用户为会议账户 
+		 */
+		if( $userInfo['idConference'] && true === $justSms ) {
+			return $userInfo['idConference'];
+		}
+
+		return null;
+	}
 }
 ?>

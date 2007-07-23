@@ -64,10 +64,11 @@ class JWStatus {
 
 		if ( empty($reply_to_status_id) )
 			return null;
-
-		return array ( 	 'user_id'		=> $user_db_row['idUser']
-						,'status_id'	=> $reply_to_status_id
-					);
+		
+		return array ( 	 
+				'user_id' 	=> $user_db_row['idUser'], 
+				'status_id'	=> $reply_to_status_id,
+			);
 	}
 
 
