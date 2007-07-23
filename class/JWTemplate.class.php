@@ -1685,6 +1685,7 @@ _HTML_;
 							, 'device_sms'  => array ( '/wo/devices/?sms'           	, '手机短信')
 							, 'device_im'  => array ( '/wo/devices/?im'           		, '聊天软件')
 							, 'notification'=> array ( '/wo/account/notification'		, '通知')
+							, 'meeting'=> array ( '/wo/account/meeting'		, '会议模式')
 							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
 							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
 							, 'openid'		=> array ( '/wo/openid/'					, 'OpenID')
