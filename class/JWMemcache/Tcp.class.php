@@ -128,7 +128,7 @@ class JWMemcache_Tcp implements JWMemcache_Interface{
         if (is_array($key)) {
             foreach ($key as $k) $this->msMemcache->delete($k, $timeout);
         } else {
-            $this->msMemcache->delete($k, $timeout);
+            $this->msMemcache->delete($key, $timeout);
         }
     }
 
