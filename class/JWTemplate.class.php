@@ -74,7 +74,7 @@ _STR_;
 		else								$keywords = "叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽," . $options['keywords'];
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的微博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
+叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk/Skype）和Web，进行组建好友社区并实时与朋友分享的微博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
 _STR_;
 		else									$description = $options['description'] . ",叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽" ;
 
@@ -139,6 +139,7 @@ _HTML_;
 	<link rel="openid.delegate" href="$options[openid_delegate]">
 _HTML_;
 		}
+		$time = time();
 
 		echo <<<_HTML_
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -155,6 +156,7 @@ $openid_html
 
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
+	<script type="text/javascript">window.ServerTime=$time;</script>
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
 
@@ -648,7 +650,9 @@ _HTML_;
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 	//<a href="<?php echo $ajax_url? >" onclick="new Ajax.Request(
+		$html_str = "<img alt=\"$asset_star_alt\" border=\"0\" id=\"status_star_$idStatus\" src=\"$asset_star_url\" class=\"status_favor\" />";
 
+/*
 		$html_str = <<<_HTML_
 	<a href="#" onclick="new Ajax(
 					'$ajax_url'
@@ -668,7 +672,7 @@ _HTML_;
 _HTML_;
 
 		$html_str		= preg_replace('/[\r\n\s]+/', ' ',$html_str);
-
+*/
 //echo "<pre>";die($html_str);
 		return $html_str;
 	}

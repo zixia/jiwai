@@ -44,6 +44,7 @@ if ( ('XMLHttpRequest'==$_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_AJA
 
 	$js_str = <<<_JS_
 $("status_actions_$idStatus").setHTML("$favourite_html");
+JiWai.ApplyFav($("status_actions_$idStatus"));
 _JS_;
 
 	//die($js_str);

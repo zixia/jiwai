@@ -93,17 +93,42 @@ alert('ok');
 			) 
 		}, JiWai ); // end each
 	},
+	AssetUrl: function(src) {
+		return "http://asset."+location.host+src;
+	},
 	AddScript: function(src) {
 		var g = document.createElement("script");
 		g.type = "text/javascript";
-		g.src = "http://asset."+location.host+src;
+		g.src = JiWai.AssetUrl(src);
 		document.getElementsByTagName('head')[0].appendChild(g);
 	},
+	ApplyFav: function(el) {
+		if (el.ev) return;
+		el.ev = true;
+		el.addEvent('click', function(e){
+			var id = el.id.split('_')[2];
+			new Ajax( '/wo/favourites/'+((this.src || this.innerHTML).indexOf('full')==-1 ? 'create' : 'destroy')+'/'+id, {
+				method: 'get',
+				headers: {'AJAX':true},
+				async: true,
+				evalScripts: true,
+				evalResponse: true,
+				onRequest: function() { 
+					$('status_star_'+id).src=JiWai.AssetUrl('/img/icon_throbber.gif') 
+				}
+			}).request();
+		});
+	},
 	AutoEmote: function() {
+		$$('#timeline .status_favor').each(JiWai.ApplyFav);
 		if (!$("timeline")) return;
 		_auto_emote = "timeline";
 		JiWai.AddScript("/system/emote/themes/default.js");
+	},
+	Init : function() {
+		window.TimeOffset = window.ServerTime ? Math.floor((new Date()).getTime()/1000) - window.ServerTime : 0;
+		window.addEvent('domready', JiWai.AutoEmote); 
 	}
 }
 
-window.addEvent('domready', JiWai.AutoEmote); 
+JiWai.Init();
