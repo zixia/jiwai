@@ -349,7 +349,7 @@ _STR_;
 		$robot_reply_msg->Set( $robotMsg->GetAddress()
 								, $robotMsg->GetType()
 								, $message
-								, $robotMsg->GetServerAddress(),
+								, $robotMsg->GetServerAddress()
 							);
 
 		return $robot_reply_msg;
