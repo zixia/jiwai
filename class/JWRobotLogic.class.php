@@ -235,21 +235,24 @@ _STR_;
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
 
+		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
+
 		if ( empty($invitation_id) )
 		{
 			
 			/*
 			 * 存下用户注册前发的更新
 			 */
-			$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
-			JWMemcache::Set( $cachedKey, $body );
+
+			$memcache = JWMemcache::Instance();
+			$memcache->Set( $last_robot_msg_key, $robotMsg, 0, 3600 );
 
 			/*
 			 *	1 用户没有被邀请过
 			 */
 
 			/*
-			 *	为这个用户添加一个缺省的好友：JiwWi
+			 *	为这个用户添加一个缺省的好友：JiWai
 			 */
 		
 			$jiwai_user_db_row = JWUser::GetUserInfo('JiWai');
@@ -293,6 +296,7 @@ _STR_;
 
 		$user_name	= JWUser::GetPossibleName($param_body, $robotMsg->GetAddress(), $robotMsg->GetType());
 
+//die("[$user_name]");
 		if ( empty($user_name) )
 			return self::ReplyMsg($robotMsg, "哎呀！您选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
 
@@ -325,10 +329,22 @@ _STR_;
 			/*
 			 * 检查用户注册前的更新，将其发出
 			 */
-			$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
-			$status = JWMemcache::Get( $cachedKey );
-			if( !empty( $status ) ){
-				JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
+
+			$memcache 					= JWMemcache::Instance();
+			$robot_msg_before_register 	= $memcache->Get( $last_robot_msg_key );
+
+			if( !empty( $robot_msg_before_register ) )
+			{
+				$memcache->Del( $last_robot_msg_key );
+
+				//JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
+				// 7/24/07 zixia: 如果之前的消息有回复，则返回给用户命令操作的返回，而不是注册成功提示。
+				$reply_msg = self::ProcessMo($robot_msg_before_register);
+				if ( ! empty($reply_msg) )
+				{
+					$reply_msg->SetBody( "${user_name}，您好！" . $reply_msg->GetBody() );
+					return $reply_msg;
+				}
 			}
 		}
 		else

@@ -348,7 +348,7 @@ _SQL_;
 											,'pass'			=> $userInfo['pass']
 											,'email'		=> strrev(@$userInfo['email']) // 如果是手机注册，则为空
 											,'nameFull'		=> $userInfo['nameFull']
-											,'location'		=> $userInfo['location']
+											,'location'		=> @$userInfo['location']
 											,'protected'	=> $userInfo['protected']
 											,'isWebUser'	=> $userInfo['isWebUser']
 									)
@@ -818,7 +818,9 @@ _SQL_;
 		{	$user_name = $nameInput;
 		}
 
-		$user_name = preg_replace("/[^\w]+/"	,""	,$user_name);
+		// zixia: 7/24/07 我们允许中文用户名
+		//$user_name = preg_replace("/[^\w]+/"	,""	,$user_name);
+		$user_name = preg_replace("/\s+/"		,""	,$user_name);
 		$user_name = preg_replace("/^\d+/"		,""	,$user_name);
 		
 		if ( empty($user_name) && !empty($email) )
@@ -826,7 +828,7 @@ _SQL_;
 			// 从邮件中取用户名，并进行特殊字符处理
 			$user_name = $email;
 			$user_name = preg_replace("/@.*/"	,""	,$user_name);
-			$user_name = preg_replace("/\./"	,""	,$user_name);
+			//$user_name = preg_replace("/\./"	,""	,$user_name);
 
 			// 如果是手机用户或者QQ用户 
 			if ( preg_match('/^\d+$/',$user_name) )

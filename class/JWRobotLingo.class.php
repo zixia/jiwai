@@ -312,10 +312,14 @@ _STR_;
 											. "请您确认输入了正确的叽歪帐号。了解更多？发送 HELP。"
 										);
 	
-		if ( ! JWFriend::IsFriend($followe_user_db_row['idUser'], $address_user_id) )
+		if ( ! JWFriend::IsFriend($address_user_id, $followe_user_db_row['idUser']) )
+			JWFriend::Create($address_user_id, $followe_user_db_row['idUser']);
+/*
+7/24/07 zixia: 不用添加好友即可直接 follow.
 				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，您只可以订阅好友的更新。通过ADD ${followe}命令添加好友。"
 											. "了解更多？发送 HELP。"
 										);
+*/
 			
 
 		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
@@ -677,6 +681,10 @@ _STR_;
 		 *	获取被删除者的用户信息
 		 */
 		$friend_user_row = JWUser::GetUserInfo( $friend_name );
+
+		if ( empty($friend_user_row) )
+			return JWRobotLogic::ReplyMsg($robotMsg, "没有找到 $friend_name 这个用户。");
+
 
 		JWSns::DestroyFriends	($address_user_id			,array($friend_user_row['idUser']));
 		JWSns::DestroyFollowers	($friend_user_row['idUser']	,array($address_user_id));

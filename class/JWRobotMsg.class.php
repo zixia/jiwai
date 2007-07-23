@@ -83,6 +83,7 @@ class JWRobotMsg {
 				$this->_SetHeadTagByLine($line);
 			}
 		}
+
 		$this->mBody		= $body;
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);

@@ -52,15 +52,19 @@ class JWDB_Cache_User implements JWDB_Cache_Interface
 		 *	接下来一个一个的 OnDirty 过去
 		 */ 
 
+		$pk_id			= $dbRow['id'];
 		$email			= $dbRow['email'];
 		$screen_name	= $dbRow['nameScreen'];
 
 		$dirty_keys = array();
 
 		// FIXME
-		array_push( $dirty_keys,	"User(id=$idPK)" );
-		array_push( $dirty_keys,	"User(email=$email)" );
+		array_push( $dirty_keys,	"User(id=$pk_id)" );
 		array_push( $dirty_keys,	"User(nameScreen=$screen_name)" );
+
+		if ( !empty($email) )
+			array_push( $dirty_keys,	"User(email=$email)" );
+
 
 		foreach ( $dirty_keys as $dirty_key )
 		{

@@ -581,7 +581,8 @@ die(var_dump($db_result));
 				return JWDB_Cache_Picture::OnDirty($dbRow);
 				break;
 			case "User":
-				return JWDB_Cache_User::OnDirty($dbRow);
+				$db_cache_user = JWDB_Cache_User::Instance();
+				return $db_cache_user->OnDirty($dbRow);
 				break;
 			case "Status":
 				return JWDB_Cache_Status::OnDirty($dbRow);
