@@ -84,7 +84,7 @@ class JWRobotMsg {
 			}
 		}
 
-		$this->mBody		= $body;
+		$this->mBody		= trim( $body ); // 去掉末尾行的\n
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
 		if( !$this->_SetPropertiesByTagHeads() ){

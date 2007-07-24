@@ -116,7 +116,7 @@ class JWMemcache_Tcp implements JWMemcache_Interface{
 
 	function Replace($key, $var, $flag=0, $expire=0)
 	{
-        return $this->msMemcache->replace($key, serialize($var), $flag, $expire);
+        return $this->msMemcache->replace($key, $var, $flag, $expire);
 	}
 
 

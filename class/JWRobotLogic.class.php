@@ -308,7 +308,7 @@ _STR_;
 							,'isWebUser'	=> 'N'	// 很重要：设备直接注册的用户，要设置标志，方便未来Web上设置密码
 						);
 
-		if ( 'qq'!=$type && 'sms'!=$type )
+		if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) )
 			$new_user_row['email'] = $address;
 		
 	

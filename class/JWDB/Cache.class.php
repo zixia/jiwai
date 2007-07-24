@@ -128,6 +128,8 @@ class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 		 */
 		$mc_keys 		= self::GetCacheKeysByIds($table, $ids);
 
+		settype( $mc_keys , 'array' );
+		settype( $ids, 'array' );
 		$key_map_mc2db	= array_combine($mc_keys	,$ids);
 
 		/*
@@ -619,6 +621,8 @@ die(var_dump($db_result));
 	static public function GetCacheKeysByIds($table, $idPks)
 	{
 		$keys = array();
+
+		settype( $idPks, 'array' );
 		foreach ( $idPks as $pk_id )
 		{
 			$keys[] = "TB:$table(id=$pk_id)";
