@@ -441,8 +441,19 @@ class JWSns {
 		if( $idUser === $idUserReplyTo )
 			return $smssuffix;
 		
+		switch($sendDevice){
+			case 'web':
+				$deviceType = 'web';
+			break;
+			case 'sms':
+				$deviceType = 'sms';
+			break;
+			default:
+				$deviceType = 'im';
+		}	
+		
 		$deviceAllow = explode(',', $conference['deviceAllow'] );
-		if( in_array( $sendDevice, $deviceAllow ) )
+		if( in_array( $deviceType, $deviceAllow ) )
 			return $smssuffix;
 
 		return null;
