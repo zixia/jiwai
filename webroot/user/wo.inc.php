@@ -1,6 +1,8 @@
 <?php
 JWTemplate::html_doctype();
 $q = isset($_REQUEST['q']) ? $_REQUEST['q'] : null;
+$page = isset( $_REQUEST['page'] ) ? intval( $_REQUEST['page'] ) : 1;
+$page = ( $page < 1 ) ? 1 : $page;
 
 //$debug = JWDebug::instance();
 //$debug->init();
@@ -55,15 +57,17 @@ switch ( $active_tab )
 {
 	default:
 	case 'archive':
-		// 显示用户自己的
-		//$user_status_num= JWStatus::GetStatusNum($page_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
-
-		$pagination		= new JWPagination($user_status_num-1, @$_REQUEST['page']);
-
-		// use cache $status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
-
+		if( $page_user_info['idConference'] ) {
+			//论坛模式用户
+			$user_status_num	= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
+			$pagination		= new JWPagination($user_status_num-1, $page );
+			$status_data 		= JWStatus::GetStatusIdsFromSelfNReplies( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		}else{
+			// 显示用户自己的
+			$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
+			$pagination		= new JWPagination($user_status_num-1, $page);
+			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		}
 		break;
 
 	case 'replies':
@@ -76,7 +80,7 @@ switch ( $active_tab )
 		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
 		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
 
-		$pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination		= new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
@@ -92,7 +96,7 @@ switch ( $active_tab )
 		$searchStatus->execute($q);
 
 		$user_status_num = $searchStatus->getTotalSize();
-		$pagination	= new JWPagination($user_status_num, @$_REQUEST['page']);
+		$pagination	= new JWPagination($user_status_num, $page);
 		$user_ids = array($page_user_id); 
 
 		$status_ids = $searchStatus->getStatusIds();

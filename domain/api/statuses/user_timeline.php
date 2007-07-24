@@ -43,6 +43,7 @@ $options = array(
 		'thumb' => $thumb,
 		'callback' => $callback,
 		'idUser' => $idUser,
+		'idConference' => $user['idConference'],
 		);
 
 switch($type){
@@ -123,7 +124,11 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 	//TODO: since_id / since
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
 
-	$status_data    = JWStatus::GetStatusIdsFromUser($options['idUser'],$count,0,$options['since_id'], $timeSince);
+	if( $options['idConference'] ) {
+		$status_data    = JWStatus::GetStatusIdsFromSelfNReplies($options['idUser'],$count,0 );
+	}else{
+		$status_data    = JWStatus::GetStatusIdsFromUser($options['idUser'],$count,0,$options['since_id'], $timeSince);
+	}
 	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
 

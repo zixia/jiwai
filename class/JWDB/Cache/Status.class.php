@@ -390,7 +390,7 @@ echo "dbRow End. \n";
 
 		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction($ds_function, $mc_param);
 		
-		$expire_time	= JWStatus::PERMANENT_EXPIRE_SECENDS;
+		$expire_time	= JWDB_Cache::PERMANENT_EXPIRE_SECENDS;
 
 		return JWDB_Cache::GetCachedValueByKey(
 									 $mc_key

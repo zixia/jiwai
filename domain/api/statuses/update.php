@@ -27,7 +27,8 @@ $device = 'web';
 $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
 
-if( ( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null) ) > 1 ){
+if( JWSns::UpdateStatus($idUser, $status, $device, $time=null) ){
+	$insertedId = JWDB::GetInsertedId();
 	$status = JWStatus::GetStatusDbRowById( $insertedId );
 	switch($type){
 		case 'xml':
