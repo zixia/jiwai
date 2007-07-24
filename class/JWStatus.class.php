@@ -100,19 +100,30 @@ class JWStatus {
 			if ( 0>=$time )
 				$time = time();
 			
-			$statusPost = JWRobotLingo::ConvertCorner($status);
-			$reply_info = JWStatus::GetReplyInfo($statusPost);
-
-			if ( empty($reply_info) )
-			{ 
-				$reply_status_id	= null;
-				$reply_user_id		= null;
+			// Deal idUser struct as 'idUser:idUserReplyTo' for conference	
+			$idUserReplyTo = null;
+			if( false == is_numeric($idUser) && false !== strpos($idUser, ':') ){
+				@list( $idUser, $idUserReplyTo ) = explode(':', $idUser);
 			}
-			else
-			{
-				$status = $statusPost;
-				$reply_status_id	= $reply_info['status_id'];
-				$reply_user_id		= $reply_info['user_id'];
+			
+			if( null == $idUserReplyTo ) {	
+				$statusPost = JWRobotLingo::ConvertCorner($status);
+				$reply_info = JWStatus::GetReplyInfo($statusPost);
+
+				if ( empty($reply_info) )
+				{ 
+					$reply_status_id	= null;
+					$reply_user_id		= null;
+				}
+				else
+				{
+					$status = $statusPost;
+					$reply_status_id	= $reply_info['status_id'];
+					$reply_user_id		= $reply_info['user_id'];
+				}
+			}else{
+				$reply_user_id = $idUserReplyTo;
+				$reply_status_id = null;
 			}
 
 			$user_db_row = JWUser::GetUserDbRowById($idUser);

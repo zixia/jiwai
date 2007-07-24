@@ -551,10 +551,16 @@ class JWSns {
 				return true;
 			}
 		}
-
-		JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
-
-		return JWStatus::Create($idUser,$status,$device,$time, $isSignature);
+		
+		/* 
+		 * 获得用户自动发给会议特服号的 回复信息，在Status::Create时，需要加上
+		 * 构建新的 idUser , 结构 "idUser:idUserReplyTo", 在 JWStatus::Create时，可以解析
+		 */
+		$idUserReplyTo = JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
+		if( $idUserReplyTo ) {
+			$idUser = "$idUser:$idUserReplyTo";
+		}
+		return JWStatus::Create($idUser,$status,$device,$time, $isSignature, $idUserReplyTo);
 	}
 
 
@@ -577,6 +583,8 @@ class JWSns {
 
 		//Notify Followers
 		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
+
+		return ( $smssuffix == null) ? null : $idUserReplyTo;
 	}
 
 	/**
