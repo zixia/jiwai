@@ -338,7 +338,7 @@ _STR_;
 				$memcache->Del( $last_robot_msg_key );
 
 				//获取用户注册时用的会议用户id，讲会议用户加为自己的好友
-				$reply_info = JWSns::GetReplyInfo( $new_user_id, $robot_msg_before_register->GetServerAddress(), $robot_msg_before_register->GetType() );
+				$reply_info = JWSns::GetReplyTo( $new_user_id, $robot_msg_before_register->GetServerAddress(), $robot_msg_before_register->GetType() );
 				if( !empty($reply_info) && $reply_info['user_id'] != $new_user_id ){
 					JWSns::CreateFriends( $new_user_id, array($reply_info['user_id']) , false );
 				}
