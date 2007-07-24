@@ -227,7 +227,7 @@ _STR_;
 	/*
 	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
 	 */
-	static public function CreateAccount($robotMsg, $toRegister=false)
+	static public function CreateAccount($robotMsg, $toRegister=false, $idUserConference=null)
 	{
 		$address = $robotMsg->GetAddress();
 		$type	 = $robotMsg->GetType();
@@ -337,9 +337,16 @@ _STR_;
 			{
 				$memcache->Del( $last_robot_msg_key );
 
+				//获取用户注册时用的会议用户id，讲会议用户加为自己的好友
+				$reply_info = JWSns::GetReplyInfo( $new_user_id, $robot_msg_before_register->GetServerAddress(), $robot_msg_before_register->GetType() );
+				if( !empty($reply_info) && $reply_info['user_id'] != $new_user_id ){
+					JWSns::CreateFriends( $new_user_id, array($reply_info['user_id']) , false );
+				}
+
 				//JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
 				// 7/24/07 zixia: 如果之前的消息有回复，则返回给用户命令操作的返回，而不是注册成功提示。
 				$reply_msg = self::ProcessMo($robot_msg_before_register);
+				
 				if ( ! empty($reply_msg) )
 				{
 					$reply_msg->SetBody( "${user_name}，您好！" . $reply_msg->GetBody() );
