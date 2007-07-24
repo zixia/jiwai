@@ -224,11 +224,11 @@ _HTML_;
 										. "($im_name)" ?> </h3>
 
 						<form action="/wo/devices/enable/<?php echo $device_row[$im]['idDevice']?>" class="device_control" id="device_<?php echo $device_row[$im]['idDevice']?>_updates_form" method="post">
-							通知：<?
+							通知：<?php
 							if( in_array($im, array("gtalk","msn","qq"))){
 							?>
-								<input type="checkbox" name="isSignatureRecord" value="Y" <?= ( ($device_row[$im]['isSignatureRecord']=='Y') ? 'checked' : '' ) ?>/>允许记录我的IM签名更新
-							<?
+								<input type="checkbox" name="isSignatureRecord" value="Y" <?php echo ( ($device_row[$im]['isSignatureRecord']=='Y') ? 'checked' : '' ); ?>/>允许记录我的IM签名更新
+							<?php
 							}
 							?><br/>
 			
@@ -316,7 +316,7 @@ _HTML_;
 					</td>
 				</tr>
 
-<?
+<?php
 	}
 		
 } // end IM_setting 
