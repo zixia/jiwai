@@ -100,8 +100,6 @@ switch ( $active_tab )
 		break;
 }
 
-//die(var_dump($status_data));
-
 // use cache $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
 
@@ -257,8 +255,9 @@ if ( $show_protected_content )
 							,$user_rows
 							,$status_rows
 							,array(	 'icon'	=> $g_user_with_friends
-									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
 									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
+									//,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
+									,'protected'=> $logined_user_info['idUser']!=$page_user_id
 							 )
 						) ;
 
