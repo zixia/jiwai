@@ -216,7 +216,7 @@ _SQL_;
 		$idUser 	= JWDB::CheckInt($idUser);
 		$idFriend	= JWDB::CheckInt($idFriend);
 
-		return JWDB::DelTableRow('Friend', array(	 'idUser'	=> $idUSer
+		return JWDB::DelTableRow('Friend', array(	 'idUser'	=> $idUser
 													,'idFriend'	=> $idFriend
 												)
 								);
