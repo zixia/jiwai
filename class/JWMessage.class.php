@@ -63,7 +63,7 @@ class JWMessage {
 		// 去掉回车，替换为空格
 		$message = preg_replace('[\r\n]',' ',$message);
 
-		return JWDB_Cache::SaveTableRow('Message'
+		return JWDB::SaveTableRow('Message'
 								,array(	 'idUserSender'		=> $idUserSender
 										,'idUserReceiver'	=> $idUserReceiver
 										,'message'			=> $message
