@@ -590,8 +590,9 @@ class JWSns {
 		if( $idUserReplyTo ) {
 			$userInfoReplyTo = JWUser::GetUserInfo( $idUserReplyTo );
 			if( $userInfoReplyTo['idConference'] && null == $smssuffix )
-				$idUserReplyTo = 'N';
+				return $idUserReplyTo = 'N';
 		}
+
 		return ( $smssuffix == null) ? null : $idUserReplyTo;
 	}
 
