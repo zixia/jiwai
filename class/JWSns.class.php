@@ -583,7 +583,15 @@ class JWSns {
 
 		//Notify Followers
 		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
-
+		
+		/*
+		 * Urgly 处理，当回复用户为 会议用户，且更新用户，不满足会议用户回复条件，设更新的idUserReplyTo为 None;
+		 */
+		if( $idUserReplyTo ) {
+			$userInfoReplyTo = JWUser::GetUserInfo( $idUserReplyTo );
+			if( $userInfoReplyTo['idConference'] && null == $smssuffix )
+				$idUserReplyTo = 'N';
+		}
 		return ( $smssuffix == null) ? null : $idUserReplyTo;
 	}
 

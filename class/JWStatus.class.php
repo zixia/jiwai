@@ -122,7 +122,8 @@ class JWStatus {
 					$reply_user_id		= $reply_info['user_id'];
 				}
 			}else{
-				$reply_user_id = $idUserReplyTo;
+				// idUserReplyTo May be not number, such as 'N', for conference use.
+				$reply_user_id = is_numeric( $idUserReplyTo ) ? intval($idUserReplyTo) : null ;
 				$reply_status_id = null;
 			}
 
