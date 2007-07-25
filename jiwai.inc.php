@@ -66,8 +66,7 @@ define('ERROR_LOG', true);
 define('ERROR_DISPLAY', false);
 
 if (!defined('CONSOLE'))
-	define('CONSOLE',	false);
-
+define('CONSOLE', !isset($_SERVER['REQUEST_URI']));
 
 define('DEBUG',	true);
 define('DEBUG_LOGFILE', CACHE_ROOT . '/debug/DBG_{Date:YmdH}.log');
