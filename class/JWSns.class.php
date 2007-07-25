@@ -560,7 +560,10 @@ class JWSns {
 		if( $idUserReplyTo ) {
 			$idUser = "$idUser:$idUserReplyTo";
 		}
-		return JWStatus::Create($idUser,$status,$device,$time, $isSignature, $idUserReplyTo);
+		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature, $idUserReplyTo);
+		//Refresh facebook profile if necessary
+		if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
+		return $ret;
 	}
 
 
@@ -580,9 +583,6 @@ class JWSns {
 
 		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
-
-		//Refresh facebook profile if necessary
-		if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
 
 		//Notify Followers
 		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
