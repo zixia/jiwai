@@ -73,6 +73,8 @@ class JWDevice {
 			case 'email':
 				// email check email address，为了兼容邮件检查，Device表中没有这种类型
 				return JWUser::IsValidEmail($address,true);
+			case 'facebook':
+				return true;
 
 			default:
 				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
@@ -270,21 +272,27 @@ _SQL_;
 		FIXME: 不应该返回 idUser，应该返回 idDevice
 	 *	@return 	int	idUser	成功返回 idUser，失败返回 false;
 	 */
-	static function Verify($address, $type, $secret)
+	static function Verify($address, $type, $secret, $idUser=0)
 	{
 		//XXX MySQL 5.0 比较英文字符的时候忽略大小写
-		$device_row = JWDB::GetTableRow('Device',array(	'address'	=> $address
+		if ($idUser) {
+			$device_row = JWDB::GetTableRow('Device',array(	'idUser'	=> $idUser
 													,'type'		=> $type
 													,'secret'	=> $secret
 								) );
-
+		} else {
+			$device_row = JWDB::GetTableRow('Device',array(	'address'	=> $address
+													,'type'		=> $type
+													,'secret'	=> $secret
+								) );
+		}
 		$ret = false;
 
 		if ( !empty($device_row) ) // Verify PASS
 		{
 			$ret = JWDB::UpdateTableRow(	 'Device'	
 									,intval($device_row['id'])
-									,array(	 'secret' => '' )
+									,array(	 'secret' => '', 'address' => $address  )
 								);
 
 		}
@@ -647,6 +655,9 @@ _SQL_;
 			case 'newsmth':
 				$name='水木社区';
 				break;
+			case 'facebook':
+				$name='Facebook';
+				break;
 			case 'skype':
 				$name='Skype';
 				break;
@@ -693,7 +704,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'skype' /*, 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'skype', 'facebook' /*, 'jabber'*/ );
 	}
 }
 ?>

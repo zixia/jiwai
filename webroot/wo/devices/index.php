@@ -195,10 +195,18 @@ else
 							点击这里 <a target=blank href=tencent://message/?uin=$im_robot&Site=叽歪一下吧！&Menu=yes><img border="0" SRC=http://wpa.qq.com/pa?p=1:$im_robot:1 alt="点击这里打开QQ" title="点击这里打开QQ"></a>直接打开聊天窗口；<br />
 _HTML_;
 		}
+		if ( 'facebook' == $im) {
+?>
+							1、访问 <a target="_blank" href="http://apps.facebook.com/jiwaide/?verify">JiWai.de @ Facebook</a> 并安装<br />
+							2、输入如下验证码进行验证：<br />
+<?php
+		} else {
 ?>
 							1、请在<strong><?php echo $im_name?></strong>上，将<strong><?php echo $im_robot?></strong>加为你的<strong><?php echo $im_name?></strong>好友；<br />
 							2、将如下验证码通过<strong><?php echo $im_name?></strong>发送<strong>短消息</strong>给她进行验证：<br />
-
+<?php 
+		}
+?>
      						<code><?php echo $device_row[$im]['secret']?></code>
   						</p>
 
@@ -220,7 +228,7 @@ _HTML_;
 ?>
 
 
-						<h3> <?php echo $device_row[$im]['address'] 
+						<h3> <?php echo ( $im=='facebook' ? JWFacebook::GetName($device_row[$im]['address']) : $device_row[$im]['address'] )
 										. "($im_name)" ?> </h3>
 
 						<form action="/wo/devices/enable/<?php echo $device_row[$im]['idDevice']?>" class="device_control" id="device_<?php echo $device_row[$im]['idDevice']?>_updates_form" method="post">
@@ -302,6 +310,7 @@ _HTML_;
 			{
 				$im_sologon = "";
 			}
+			if ($im=='facebook') $im_sologon = ' (无需填写帐号,直接点击保存)';
 			echo <<<_HTML_
 								<option value="$im">$im_name$im_sologon</option>
 _HTML_;
