@@ -686,7 +686,7 @@ _HTML_;
 	 * @param	array	$options	array ( 'icon' => true ) 
 	 * @return	
 	 */
-	static public function Timeline($statusIds, $userRows, $statusRows, $options=null )
+	static public function Timeline($statusIds, $userRows, $statusRows, $options=array() )
 	{
 		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
@@ -775,7 +775,7 @@ _HTML_;
 								<?php } else {
 									echo $duration;	
 								} ?>
-								来自于 <?php echo "$device $sign"?> 
+								来自 <?php echo "$device $sign"?> 
 <?php 
 		if (!empty($replyto) )
 		{
