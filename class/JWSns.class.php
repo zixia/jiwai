@@ -581,6 +581,9 @@ class JWSns {
 		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
 
+		//Refresh facebook profile if necessary
+		if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
+
 		//Notify Followers
 		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
 		
