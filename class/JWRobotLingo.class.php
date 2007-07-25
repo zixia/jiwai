@@ -278,6 +278,7 @@ _STR_;
 		 *	获取发送者的 idUser
 		 */
 		$address 	= $robotMsg->GetAddress();	
+		$serverAddress  = $robotMsg->GetServerAddress();
 		$type 		= $robotMsg->GetType();	
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
@@ -295,10 +296,20 @@ _STR_;
 		$param_body = $robotMsg->GetBody();
 		$param_body = self::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) )
-			return JWRobotLogic::ReplyMsg($robotMsg, $help);
-
-		$followe = $matches[1];
+		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+			/*
+			 * seek 2007/07/25
+			 * 当用户发送follow命令到特服号码，直接follow
+			 */
+			$reply_to = JWSns::GetReplyTo($address_user_id, $serverAddress, $type);
+			if( !empty($reply_to) && $reply_to['smssuffix'] ){
+				$followe = $reply_to['user_id'];
+			}else{
+				return JWRobotLogic::ReplyMsg($robotMsg, $help);
+			}
+		}else{
+			$followe = $matches[1];
+		}
 
 		/*
 		 *	获取被订阅者的用户信息
