@@ -126,39 +126,51 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 
 	public static void main(String args[]) {
 		GTalkJiWaiRobot gtalk_robot = new GTalkJiWaiRobot();
+		worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
+		gtalk_robot.connect();
+		gtalk_robot.run();
+	}
+
+	public void connect(){
 		try {
-			ConnectionConfiguration config = new ConnectionConfiguration(
-					TALK_SERVER, TALK_PORT, mServer);
-			config.setReconnectionAllowed(true);
+			ConnectionConfiguration config = new ConnectionConfiguration(TALK_SERVER, TALK_PORT, mServer);
+			config.setReconnectionAllowed(false);
+			config.setSecurityMode( ConnectionConfiguration.SecurityMode.enabled );
 			config.setSASLAuthenticationEnabled(false);
 			con = new XMPPConnection(config);
 			con.connect();
-			
 			con.login( mAccount , mPassword );
-			
-			//Set Status
+
+			con.addPacketListener(this , this);
+
+			worker.startProcessor();
+
+		}catch(Exception e ){
+			Logger.logError("GTalk Login failed");
+		}
+	}
+
+	public void run(){
+		while( true ) {
+			try{
+				sendPresence();
+				Thread.sleep( 120000 );
+			}catch(Exception e){
+			}
+		}
+	}
+	
+	public void sendPresence(){
+		try {
 			Presence presence = new Presence(Presence.Type.available);
 			presence.setStatus(mStatus);
 			presence.setMode(Presence.Mode.chat);
 			con.sendPacket(presence);
-			
-			//Listener
-			con.addPacketListener(gtalk_robot , gtalk_robot);
-			
-			//Block Listen mo/mt
-			worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
-			worker.run();
-			
-		} catch (Exception e) {
-			Logger.logError("GTalk Login failed");
+			Logger.log("Send Presence Success");
+		}catch(Exception e){
+			worker.stopProcessor();
+			connect();
 		}
-	}
-	
-	public static void sendPresence(){
-		Presence presence = new Presence(Presence.Type.available);
-		presence.setStatus(mStatus);
-		presence.setMode(Presence.Mode.chat);
-		con.sendPacket(presence);
 	}
 
 	public boolean mtProcessing(MoMtMessage message){
