@@ -6,6 +6,7 @@ import commands
 import syslog
 import socket
 import time
+import random
 
 #print time.localtime()
 #print time.strftime("%Y-%m-%d %H:%M:%S")
@@ -22,7 +23,7 @@ def logit(string):
 
 def alert(robotid):
 	'''Syslog'''
-	string = "%s offline/[no reply] get zixia" % (robotid)
+	string = "%s offline" % (robotid)
 	logit( string )
 	'''Smsalert'''
 	#'''
@@ -40,11 +41,14 @@ def alert(robotid):
 	#'''
 
 #### begin #####
+commandTuple = ("nn", "whois", "add", "follow", "leave", "naonao", "get", "nudge", "delete", "nao", "remove", "invite")
+index = random.randint( 0, len( commandTuple ) -1 )
+nowcmd = commandTuple[ index ]
 
 configure = {
 	'gtalk':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar GTalkMonitorRobot",
 	'msn':"/usr/java/jdk/bin/java -cp .:../../javaLib/cindy.jar:../../javaLib/commons-logging.jar:../../javaLib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar MsnMonitorRobot",
-	'jiwai':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar -Dcommand=nn GTalkMonitorRobot",
+	'jiwai':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar -Dcommand=%s GTalkMonitorRobot" % (nowcmd),
 	#'qq':"/usr/java/jdk/bin/java -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwaiMessage.jar QQMonitorRobot",
 }
 
