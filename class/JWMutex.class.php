@@ -54,7 +54,7 @@ class JWMutex {
 	 * Constructing method, save initial state
 	 *
 	 */
-	function __construct($key, $backend=self::FLOCK)
+	function __construct($key, $backend=self::SEM)
 	{
 		if ( empty($key) )
 			throw new JWException('need key!');
@@ -131,7 +131,6 @@ class JWMutex {
 
 	public function Acquire()
 	{
-return true;
 		//$this->mSyslog->LogMsg('Acquiring key ' . $this->mMutexKey);	
 
 		switch ( $this->mBackend )
