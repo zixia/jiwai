@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import sys
+import re
 import os
 import commands
 import syslog
@@ -34,11 +36,16 @@ def alert(robotid):
 		string = "SmsAlert Daemon maybe down"
 		logit( string )
 
+#### begin #####
+
 configure = {
 	'gtalk':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar GTalkMonitorRobot",
 	'msn':"/usr/java/jdk/bin/java -cp .:../../javaLib/cindy.jar:../../javaLib/commons-logging.jar:../../javaLib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar MsnMonitorRobot",
 	'qq':"/usr/java/jdk/bin/java -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwaiMessage.jar QQMonitorRobot",
 }
+
+filepath = os.path.split( sys.argv[0] )[0]
+os.chdir( filepath )
 
 for k,v in configure.iteritems():
 	rv = monitor(v);
