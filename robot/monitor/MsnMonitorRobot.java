@@ -20,6 +20,8 @@ public class MsnMonitorRobot extends MsnAdapter {
 
 	public static String mPassword = null;
 
+	public static String command = null;
+
 	public static MsnMessenger messenger = null;
 	
 	public static String monitor = null;
@@ -49,6 +51,8 @@ public class MsnMonitorRobot extends MsnAdapter {
 			delay = Long.parseLong(config.getProperty("monitor.delay", "60000") );
 		} catch (Exception ee) {
 		}
+
+		command = System.getProperty("command", "help");
 		
 		Logger.log("Load msn.ini success");
 		
@@ -89,7 +93,7 @@ public class MsnMonitorRobot extends MsnAdapter {
 			Timer timer = new Timer();
 			MyTimerTask t = new MyTimerTask();
 			timer.schedule(t, delay);
-			messenger.sendText(Email.parseStr(monitor), "get zixia" );
+			messenger.sendText(Email.parseStr(monitor), command );
 		}
 		hasSent = true;
 	}
@@ -100,14 +104,12 @@ public class MsnMonitorRobot extends MsnAdapter {
 			
 		if ( contact.getEmail().getEmailAddress().equals(monitor) )
 			hasReplied = true;
-
-		if ( contact.getEmail().getEmailAddress().equals("shwdai@msn.com") )
-			hasReplied = true;
 	}
 
 	static private class MyTimerTask extends TimerTask {
 
 		public void run() {
+
 			Logger.log(String.valueOf(hasReplied));
 			if( hasReplied == false ){
 				System.exit(1);

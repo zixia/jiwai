@@ -12,8 +12,7 @@ import org.jivesoftware.smackx.*;
 
 import de.jiwai.robot.Logger;
 
-public class GTalkMonitorRobot extends TimerTask implements PacketListener,
-		PacketFilter {
+public class GTalkMonitorRobot extends TimerTask implements PacketListener, PacketFilter {
 
 	public static final String TALK_SERVER = "talk.google.com";
 
@@ -28,6 +27,8 @@ public class GTalkMonitorRobot extends TimerTask implements PacketListener,
 	public static String mAccount = null;
 
 	public static String mPassword = null;
+
+	public static String command = null;
 
 	public static String monitor = null;
 
@@ -49,6 +50,8 @@ public class GTalkMonitorRobot extends TimerTask implements PacketListener,
 			mAccount = System.getProperty("gtalk.account");
 			mPassword = System.getProperty("gtalk.password");
 		}
+
+		command = System.getProperty("command", "help");
 
 		if (null == mServer || null == mAccount || null == mPassword
 				|| null == monitor) {
@@ -108,10 +111,23 @@ public class GTalkMonitorRobot extends TimerTask implements PacketListener,
 		}
 	}
 
+	
+	public void processMessage(Chat chat, Message message) { 
+		processMessage(message);
+	}
+
 	public void sendPacket() {
-		Message msg = new Message(monitor);
-		msg.setBody("get zixia");
-		con.sendPacket(msg);
+		try{
+				Chat chat = con.getChatManager().createChat( monitor, new MessageListener(){
+					public void processMessage( Chat c, Message m ) {	
+						if (getFromEmail(m.getFrom()).equals(monitor))
+							hasReplied = true;
+					}
+				});
+				chat.sendMessage(command);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {

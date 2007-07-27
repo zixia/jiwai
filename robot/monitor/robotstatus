@@ -22,26 +22,30 @@ def logit(string):
 
 def alert(robotid):
 	'''Syslog'''
-	string = "%s Offline" % (robotid)
+	string = "%s offline/[no reply] get zixia" % (robotid)
 	logit( string )
-	'''Sms Alert'''
+	'''Smsalert'''
+	#'''
 	try:
 		host = '60.28.194.36'
 		port = 50020 
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect( (host,port) )
-		s.send( "GET /alert/%s/offline [robotmonitor]" % (robotid))
+		s.send( "GET /alert/%s/Offline\r\n" % (robotid))
+		s.recv( 10 )
 		s.close()
 	except socket.error, msg:
 		string = "SmsAlert Daemon maybe down"
 		logit( string )
+	#'''
 
 #### begin #####
 
 configure = {
 	'gtalk':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar GTalkMonitorRobot",
 	'msn':"/usr/java/jdk/bin/java -cp .:../../javaLib/cindy.jar:../../javaLib/commons-logging.jar:../../javaLib/jml-1.0b1.jar:../../javaLib/jiwaiMessage.jar MsnMonitorRobot",
-	'qq':"/usr/java/jdk/bin/java -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwaiMessage.jar QQMonitorRobot",
+	'jiwai':"/usr/java/jdk/bin/java -cp .:../../javaLib/jiwaiMessage.jar:../../javaLib/smack.jar:../../javaLib/smackx.jar -Dcommand=nn GTalkMonitorRobot",
+	#'qq':"/usr/java/jdk/bin/java -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwaiMessage.jar QQMonitorRobot",
 }
 
 filepath = os.path.split( sys.argv[0] )[0]
@@ -50,4 +54,6 @@ os.chdir( filepath )
 for k,v in configure.iteritems():
 	rv = monitor(v);
 	print rv[1];
-	if rv[0] != 0 : alert(k)
+	if rv[0] != 0 : 
+		alert(k)
+		break
