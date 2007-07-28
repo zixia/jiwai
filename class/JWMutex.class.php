@@ -43,11 +43,10 @@ class JWMutex {
 	 *	所有的 mutex 会共享 MAX_SEM_NUM 个 sem，为了提高性能，我们允许等待一些和自己无关的 mutex release.
 	 *	设置为 65535 个，可以基本上认为不会有冲突
 	 */
-	// 正式运营数据大一些
-	//const	MAX_SEM_NUM		= 0x0000FFFF;
 
-	// debug 时小一点
-	const	MAX_SEM_NUM		= 0x000000FF;
+	//const	MAX_SEM_NUM		= 0x0000FFFF; 		// 正式运营数据大一些
+	const	MAX_SEM_NUM		= 0x000000FF;		// debug 时小一点
+
 	const	SEM_KEY_PREFIX	= 0xFFFF0000;
 
 	/**
@@ -103,6 +102,20 @@ class JWMutex {
 
 					if ( empty($fp) )
 						throw new JWException("mutex file open failed! [$mutex_file_root]");
+
+					
+					/**
+					 *	如果调试，我们可以记录下具体的 $key 值
+					 */
+
+					/*
+					if ( is_object($key) || is_array($key) )
+						fputs( $fp,serialize($key) );
+					else
+						fputs( $fp,$key );
+
+					fflush($fp);
+					*/
 				}
 
 				$this->mMutexHandle = $fp;

@@ -128,8 +128,10 @@ class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 		 */
 		$mc_keys 		= self::GetCacheKeysByIds($table, $ids);
 
+		// to seek: why settype? by zixia
 		settype( $mc_keys , 'array' );
 		settype( $ids, 'array' );
+
 		$key_map_mc2db	= array_combine($mc_keys	,$ids);
 
 		/*
@@ -140,6 +142,9 @@ class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 
 		$hit_ids = JWFunction::GetMappedArray($hit_mc_keys, $key_map_mc2db);
 
+//XXX
+//die(var_dump($function));
+//return call_user_func($function,$ids);
 /*
 (var_dump($key_map_mc2db));
 (var_dump($hit_mc_keys));
@@ -161,7 +166,6 @@ die(var_dump($hit_ids));
 		{
 			return $hit_db_rows;
 		}
-
 
 		/*
 		 *	Stage 2. memcache 没有完全命中（或没有命中），我们需要从数据库中获取数据，先算出哪些 id 没有命中 cache
@@ -367,7 +371,7 @@ die(var_dump($db_result));
 	 */
 	static public function GetQueryResult( $sql, $moreThanOne=false, $forceReload=false )
 	{
-
+//return JWDB::GetQueryResult($sql,$moreThanOne);
 		self::Instance();
 
 

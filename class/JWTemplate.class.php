@@ -1720,7 +1720,7 @@ _HTML_;
 	{
 		JWTemplate::Instance();
 
-		$asset_num_max = 4;
+		$asset_num_max = 6;
 
 		if ( empty($absUrlPath) )
 			throw new JWException('must have path');
@@ -1743,7 +1743,8 @@ _HTML_;
 
 
 		// 同一个文件，总会被分配到同一个 n 上。
-		$n = crc32($absUrlPath) % $asset_num_max;
+		$n = sprintf('%u',crc32($absUrlPath));
+		$n %= $asset_num_max;
 
 		if ( !$mtime )
 			return "http://asset${n}.$domain$absUrlPath";

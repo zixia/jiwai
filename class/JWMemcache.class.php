@@ -25,6 +25,8 @@ class JWMemcache implements JWMemcache_Interface
 	const UDP		= 2;
 	const TCP		= 3;
 
+	const DEFAULT_PROTOCOL	= self::TCP;
+
 	private	$msMemcacheProtocol	= null;
 
 
@@ -43,7 +45,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *
 	 * @return JWMemcache
 	 */
-	static public function &Instance($cluster='default', $protocol=self::TCP)
+	static public function &Instance($cluster='default', $protocol=self::DEFAULT_PROTOCOL)
 	{
 		if ( empty(self::$msSyslog) )
 			self::$msSyslog = JWLog::Instance('Memcache');

@@ -153,12 +153,12 @@ class JWStatus {
 	 */
 	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
-		$idUser	= intval($idUser);
-		$num	= intval($num);
+		$idUser	= JWDB::CheckInt($idUser);
+		$num	= JWDB::CheckInt($num);
 		$start	= intval($start);
 
-		if ( !is_int($idUser) || !is_int($num) || !is_int($start) )
-			throw new JWException('must int');
+		//$idSince 	= JWDB::CheckInt($idSince);
+		//$timeSince	= JWDB::CheckInt($timeSince);
 
 		$condition_other = null;
 		if( $idSince > 0 ){
