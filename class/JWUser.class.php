@@ -356,29 +356,24 @@ _SQL_;
 	}
 
 	/*
-	 * @desc	1、英文字母打头（为了方便的区分 nameScreen 和 idUser，禁止nameScreen以数字打头)
-	 *			// desprited 2、允许数字、字母、"."、"_"、"-"作为帐号字符
-				2、允许中文，和/以外一切字符
-	 *			3、在底层，不限制长度
+	 * @desc	see code for rules
 	 * @param	$name	nameScreen
 	 * @return	bool	valid?
 	 *
 	 */
 	static public function IsValidName( $name )
 	{
-		//$regexp = '/^[[:alpha:]][\w\d_\-]+$/';
-
-		// we allow chinese name now:
-		// 不允许数字开头
-		// 不允许包含 / 字符
-		$regexp = '#^[^\d][^/]+$#';
-
-		$ret = preg_match($regexp, $name);
-
-		if ( 1!==$ret )
-			return false;
-
-		return true;
+		if (strlen($name)<4) return false; //最少 4 byte
+		if (preg_match('/^[\d\.\-_]/', $name)) return false; //不能以半角数字开头 为了方便的区分 nameScreen 和 idUser
+		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
+			if (mb_strlen($name)<5) return false; //纯西文字符不能短于5
+		} else {
+			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; 
+			//如果包含非西文字符，则其个数不能少于2
+		}
+		$n = $name;
+		JWUnicode::unifyName($n); //检查所属Unicode区块，具体规则见JWUnicode类
+		return $n==$name;
 	}
 
 	static public function IsValidEmail( $email, $strict=false )

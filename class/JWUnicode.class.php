@@ -20,7 +20,7 @@ class JWUnicode {
     );
     static private $blocks_n = array (
         'A-Za-z0-9',
-        '_', //用户名允许用的特殊字符添加在这里
+        '_\.\-', //用户名允许用的特殊字符添加在这里
         //'\x{FF10}-\x{FF19}\x{FF20}-\x{FF3A}\x{FF41}-\x{FF5A}', //全角0-9A-Za-z
         '\x{4E00}-\x{9FBF}', //CJK Unified Ideographs CJK 统一表意符号
         '\x{3400}-\x{4DBF}', //CJK Unified Ideographs Extension A CJK 统一表意符号扩展 A
