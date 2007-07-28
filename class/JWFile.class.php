@@ -77,8 +77,17 @@ class JWFile {
 			}
 		}
 		
+		$rsync_binary = "/usr/bin/rsync";
+
+		// for rsync, use a /./ to seperate rel path
+		$abs_file_path_name = self::$msStorageAbsRoot . './' . $relativeFilePathName;
+
+		system("$rsync_binary $abs_file_path_name rsync://asset.jw/jiwai/", $ret);
 		// TODO: save a file to remote(furture) storage system here.
-		return true;
+
+		$is_succ = ($ret==0);
+
+		return $is_succ;
 	}
 
 
