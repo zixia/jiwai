@@ -1,6 +1,6 @@
 <?php
 require_once('../../jiwai.inc.php');
-//var_dump($_REQUEST);
+//die(var_dump($_REQUEST));
 
 $nameOrId	= @$_REQUEST['nameOrId'];
 $pathParam 	= @$_REQUEST['pathParam'];
@@ -20,10 +20,13 @@ else
 {
 	$nameScreen = $nameOrId;
 
-	// FIXME: 可能是 GBK 编码的"联通"，不过没关系，这种名字就只能用 utf8 访问好了
-	if ( !IsValidUtf8($nameScreen) )
-		$nameScreen = iconv('GBK','UTF-8', $nameScreen);
-
+	if (!JWUnicode::unifyName($nameScreen)) { 
+		//301 to UTF-8 URL if GBK
+		header('HTTP/1.1 301 Moved Permanently');
+		header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.urlencode($nameScreen).$pathParam);
+		die();
+	}
+	$nameScreen = $nameOrId; //XXX go on even if name is invalid
 	$page_user_id	= JWUser::GetUserInfo($nameScreen,'id');
 }
 
