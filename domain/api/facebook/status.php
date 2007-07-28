@@ -7,7 +7,7 @@
 			return;
 
 		if ( !isset($options['icon']) )
-			$options['icon'] 	= false;
+			$options['icon'] 	= true;
 		if ( !isset($options['trash']) )
 			$options['trash'] 	= false;
 		if ( !isset($options['uniq']) )
@@ -17,7 +17,7 @@
 		if ( !isset($options['protected']) )
 			$options['protected']	= false;
 
-		$current_user_id = 0; //$idUser;
+		$current_user_id = JWUser::GetCurrentUserInfo('id'); //$idUser;
 ?>
 
 				<table class="doing" id="timeline" cellspacing="0" cellpadding="0">    
@@ -132,7 +132,7 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 	}
 
 
-$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 20);
+$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 10);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 if(!empty($status_rows)) {
 	$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(

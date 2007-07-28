@@ -91,11 +91,22 @@ function profile() {
 </style>
 <?php
 	include_once 'status.php';
+?>
+<fb:if-is-app-user>
+<else>
+Click <a href="<?php echo $facebook->get_add_url(); ?>">here</a> to put JiWai.de in your profile.
+</else>
+</fb:if-is-app-user>
+<?php
 }
 
 if (isset($_POST['code'])) {
 	title();
 	bind();
+} elseif (!$idUser) {
+	title();
+	verify();
+	exit();
 } else {
 	switch ($action) {
 		case 'verify':
