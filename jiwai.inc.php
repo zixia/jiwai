@@ -112,7 +112,7 @@ function __autoload($class_name) {
 //require_once 'JWDebug.class.php';
 //require_once 'class/JWException.class.php';
 
-JWSession::Instance();
+if (!defined('NO_SESSION')) JWSession::Instance();
 
 // use for strftime
 setlocale(LC_ALL, 'zh_CN.UTF-8');

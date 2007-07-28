@@ -1,4 +1,5 @@
 <?php
+define('NO_SESSION', true);
 $pathParam = null;
 extract($_REQUEST,EXTR_IF_EXISTS);
 
