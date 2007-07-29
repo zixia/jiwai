@@ -6,7 +6,7 @@
  */
 
 /**
- * JiWai.de Status_Quarantine Class
+ * JiWai.de StatusQuarantine Class
  */
 class JWStatusQuarantine {
 	/**
@@ -79,7 +79,7 @@ class JWStatusQuarantine {
 
 		$picture_id = $user_db_row['idPicture'];
 
-		return JWDB::SaveTableRow('Status_Quarantine',
+		return JWDB::SaveTableRow('StatusQuarantine',
 							array(	 'idUser'	=> $idUser
 									,'status'	=> $status
 									,'device'	=> $device
@@ -101,7 +101,7 @@ class JWStatusQuarantine {
 		$dealCondition = self::GetDealCondition( $dealStatus );
 
 		$sql = <<<SQL
-SELECT COUNT(1) AS count FROM Status_Quarantine
+SELECT COUNT(1) AS count FROM StatusQuarantine
 	WHERE $dealCondition
 SQL;
 		$result = JWDB::GetQueryResult( $sql, false );
@@ -122,7 +122,7 @@ SQL;
 		$dealCondition = self::GetDealCondition( $dealStatus );
 
 		$sql = <<<SQL
-SELECT * FROM Status_Quarantine
+SELECT * FROM StatusQuarantine
 	WHERE $dealCondition
 	ORDER BY id DESC
 	LIMIT $offset , $limit
@@ -150,7 +150,7 @@ SQL;
 
 		$sql = <<<SQL
 SELECT  id
-	FROM Status_Quarantine
+	FROM StatusQuarantine
 	WHERE idUser = $idUser AND $dealCondition
  	$timeCondition
 	ORDER BY id DESC
@@ -197,8 +197,8 @@ SELECT
 		, idStatusReplyTo
 		, idPicture
 		, isSignature
-FROM	Status_Quarantine
-WHERE	Status_Quarantine.id IN ($condition_in)
+FROM	StatusQuarantine
+WHERE	StatusQuarantine.id IN ($condition_in)
 _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
@@ -246,7 +246,7 @@ _SQL_;
 		}
 
 		$sql = <<< __SQL__
-UPDATE Status_Quarantine 
+UPDATE StatusQuarantine 
 	SET dealStatus = '$dealStatusString' 
 	WHERE id IN ( $idStatusesString )
 __SQL__;
@@ -272,7 +272,7 @@ __SQL__;
 	static public function DestroyById ($idStatus, $updateFlag=true)
 	{
 		$idStatus = JWDB::CheckInt( $idStatus );
-		return JWDB::DelTableRow('Status_Quarantine', array (	'id'	=> intval($idStatus) ));
+		return JWDB::DelTableRow('StatusQuarantine', array (	'id'	=> intval($idStatus) ));
 	}
 
 	/**
