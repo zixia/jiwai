@@ -560,7 +560,7 @@ class JWSns {
 		if( $processInfo['reply'] ) {
 			$idUser = "$idUser:$processInfo[reply]";
 		}
-		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature, $idUserReplyTo);
+		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature );
 
 		//added 2007-07-29
 		if( $ret ) {
