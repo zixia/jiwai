@@ -1,6 +1,6 @@
 <?php
 $GLOBALS['facebook_config'] = array('debug'=>0);
-require_once 'Facebook/facebook.php';
+require_once JW_ROOT.'/lib/Facebook/facebook.php';
 
 class JWFacebook extends Facebook {
 	static public $ProfileUrl = 'http://api.alpha.jiwai.de/facebook/?profile=';
