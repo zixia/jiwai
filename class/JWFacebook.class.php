@@ -9,12 +9,12 @@ class JWFacebook extends Facebook {
 		return !empty($_POST['fb_sig']);
 	}
 	function __construct($ForcePrivateAuthToken=false) {
-		$api_key = 'ad4f05fadac08e34aeff6f96d6f84c51';
-		$secret  = 'f9dec00a3bbf623abd3cf5e89a8f4471';
+		$api_key = '4d373987420c13a7a3080bc597216ef4';
+		$secret  = '861eaecde72e5e0a6eac8696e3d576f0';
 		parent::__construct($api_key, $secret);
 		if ($ForcePrivateAuthToken || CONSOLE) {
-			$user_id = 535996158;
-			$session_key = '6259efacb91d5ccc6fcdd67a-535996158';
+			$user_id = 734632045;
+			$session_key = '88b485932073e080f48b656f-734632045';
 			$this->user = $user_id;
 			$this->api_client->session_key = $session_key; 
 		} else {
