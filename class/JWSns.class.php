@@ -551,16 +551,22 @@ class JWSns {
 				return true;
 			}
 		}
-		
 		/* 
 		 * 获得用户自动发给会议特服号的 回复信息，在Status::Create时，需要加上
 		 * 构建新的 idUser , 结构 "idUser:idUserReplyTo", 在 JWStatus::Create时，可以解析
+		 * Modified 2007/07/29
 		 */
-		$idUserReplyTo = JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
-		if( $idUserReplyTo ) {
-			$idUser = "$idUser:$idUserReplyTo";
+		$processInfo = JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
+		if( $processInfo['reply'] ) {
+			$idUser = "$idUser:$processInfo[reply]";
 		}
 		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature, $idUserReplyTo);
+
+		//added 2007-07-29
+		if( $ret ) {
+			JWStatusNotifyQueue::Create($idUser, $ret, time(), $processInfo['notify'] );
+		}
+		
 		//Refresh facebook profile if necessary
 		if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
 		return $ret;
@@ -584,9 +590,21 @@ class JWSns {
 		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
 
+		/**    Commented By shwdai@gmail.com 2007/07/29
 		//Notify Followers
 		JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
-		
+		**/
+
+		/*
+		* record  notify information
+		*/
+		$notifyInfo = array(
+			'idUserReplyTo' => $idUserReplyTo,
+			'device' => $device,
+			'status' => $status,
+			'serverAddress' => $serverAddress,
+			'smssuffix' => $smssuffix,
+		);
 		/*
 		 * Urgly 处理，当回复用户为 会议用户，且更新用户，不满足会议用户回复条件，设更新的idUserReplyTo为 None;
 		 */
@@ -596,7 +614,12 @@ class JWSns {
 				return $idUserReplyTo = 'N';
 		}
 
-		return ( $smssuffix == null) ? null : $idUserReplyTo;
+		$returnArray = array(
+			'reply' => $idUserReplyTo,
+			'notify' => $notifyInfo,
+		);
+		$returnArray['reply'] = ( $smssuffix == null) ? null : $idUserReplyTo;
+		return $returnArray;
 	}
 
 	/**
@@ -625,9 +648,9 @@ class JWSns {
 		}
 
 		if( empty( $follower_ids ) ) 
-			return;
+			return true;
 
-		JWNudge::NudgeUserIds( $follower_ids, $status );
+		return JWNudge::NudgeUserIds( $follower_ids, $status );
 	}
 
 	/*
@@ -778,9 +801,9 @@ class JWSns {
 
 	static public function ResendPassword($idUser)
 	{
-        $secret = JWDevice::GenSecret(32,JWDevice::CHAR_ALL);
+		$secret = JWDevice::GenSecret(32,JWDevice::CHAR_ALL);
 
-        if ( ! JWLogin::SaveRememberMe($idUser,$secret) )
+		if ( ! JWLogin::SaveRememberMe($idUser,$secret) )
 			return false;
 
 		$user_db_row = JWUser::GetUserInfo($idUser);
