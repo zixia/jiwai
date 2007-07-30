@@ -251,7 +251,7 @@ _SQL_;
 			break;
 
 		case 'nameScreen':
-			if ( !self::IsValidName($value) ) return null;
+			//if ( !self::IsValidName($value) ) return null;
 			$value = JWDB::EscapeString($value);
 			break;
 
