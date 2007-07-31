@@ -9,6 +9,8 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smackx.*;
 
 import de.jiwai.robot.*;
+import de.jiwai.util.*;
+import java.io.*;
 
 public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProcessor {
 
@@ -16,7 +18,10 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static final int TALK_PORT = 5222;
 	public static final String DEVICE = "gtalk";
 	
+	public static int onlinePort = 55010;
 	public static XMPPConnection con = null;
+
+	public static Roster roster = null;
 	
 	public static String mServer = null;
 	public static String mAccount = null;
@@ -44,6 +49,11 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			mPassword = System.getProperty("gtalk.password");
 			mQueuePath = System.getProperty("queue.path");
 			mStatus = System.getProperty("gtalk.status", _mStatus);
+		}
+
+		try{
+			onlinePort = Integer.valueOf( config.getProperty("online.port", System.getProperty("online.port", "55010") )).intValue();
+		}catch(Exception e){
 		}
 		
 		mAddress = mAccount + "@" + mServer;
@@ -128,6 +138,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		GTalkJiWaiRobot gtalk_robot = new GTalkJiWaiRobot();
 		worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
 		gtalk_robot.connect();
+		new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
 		gtalk_robot.run();
 	}
 
@@ -140,6 +151,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			con = new XMPPConnection(config);
 			con.connect();
 			con.login( mAccount , mPassword );
+			roster = con.getRoster();
 
 			con.addPacketListener(this , this);
 
@@ -178,5 +190,60 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		msg.setBody(message.getBody());
 		con.sendPacket(msg);
 		return true;
+	}
+
+	static class Service implements SocketProcessor{
+		BufferedReader br = null;
+		PrintWriter pw = null;
+		public Service(){
+		}
+
+		public SocketProcessor getProcessor(BufferedReader br, PrintWriter pw){
+			Service sv = new Service();
+			sv.br = br;
+			sv.pw = pw;
+			return (SocketProcessor) sv;
+		}
+
+		public void run(){
+			try {
+				String line = br.readLine();
+
+				if( null == line ) {
+					out( "N" );
+					return;
+				}
+
+				Presence p = roster.getPresence( line );
+
+				if( p == null ){
+					out( "N" );
+					return;
+				}
+
+				String status = p.getType().toString();
+				if( "error" == status || "unavailable" == status )
+					out( "N" );
+				else
+					out( "Y" );
+			}catch(Exception e){
+				close();
+			}
+
+		}
+
+		public void out(String o){
+			if( o != null )
+				pw.println( o );
+			close();
+		}
+
+		public void close(){
+			try{
+				br.close();
+				pw.close();
+			}catch(Exception e){
+			}
+		}
 	}
 }
