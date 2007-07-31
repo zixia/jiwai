@@ -13,18 +13,22 @@ def listenForQuery():
 	global queryPool
 	host = '' 
 	port = 50007 
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.bind( (host, port) )
-	s.listen(1)
-	while True:
-		conn, addr = s.accept()
-		data = conn.recv(1024)
-		m = re.search( 'GET (?P<device>msn|gtalk|qq)://(?P<address>.*)\r\n', data, re.I ) 
-		if m != None :
-			task = QueryThread( conn, m.group('device').lower(), m.group('address') )
-			queryPool.addTask( task )
-		else:
-			conn.close()
+	try:
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.bind( (host, port) )
+		s.listen(1)
+		while True:
+			conn, addr = s.accept()
+			data = conn.recv(1024)
+			m = re.search( 'GET (?P<device>msn|gtalk|qq)://(?P<address>.*)\r\n', data, re.I ) 
+			if m != None :
+				task = QueryThread( conn, m.group('device').lower(), m.group('address').lower() )
+				queryPool.addTask( task )
+			else:
+				conn.close()
+	except KeyboardInterrupt:
+		s.close()
+
 #'''Main Loop'''
 if __name__ == '__main__':
 	queryPool = WorkerPool(10)
