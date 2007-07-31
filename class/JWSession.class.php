@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     JiWai.de
+ * @package	 JiWai.de
  * @copyright   AKA Inc.
- * @author      zixia@zixia.net
- * @version     $Id$
+ * @author	  zixia@zixia.net
+ * @version	 $Id$
  */
 
 /**
@@ -11,35 +11,42 @@
  */
 
 Class JWSession {
-    /**
-     * Instance of this singleton
-     *
-     * @var JWSession
-     */
-    static private $msInstance;
+	/**
+	 * Instance of this singleton
+	 *
+	 * @var JWSession
+	 */
+	static private $msInstance;
 
-    /**
-     * Instance of this singleton class
-     *
-     * @return JWSession
-     */
-    static public function &Instance()
-    {
-        if (!isset(self::$msInstance)) {
-            $class = __CLASS__;
-            self::$msInstance = new $class;
-        }
-        return self::$msInstance;
-    }
+	/**
+	 * Instance of this singleton class
+	 *
+	 * @return JWSession
+	 */
+	static public function &Instance()
+	{
+		if (!isset(self::$msInstance)) {
+			$class = __CLASS__;
+			self::$msInstance = new $class;
+		}
+		return self::$msInstance;
+	}
 
 
-    function __construct() {
-        ini_set('session.use_cookies',1);
-        ini_set('session.cookie_path','/');
-        ini_set('session.cookie_domain','.jiwai.de');
-        //ini_set('session.gc_maxlifetime',);
-        session_start();        
-    }
+	function __construct() {
+		ini_set('session.use_cookies',1);
+		ini_set('session.cookie_path','/');
+		if (!empty($_SERVER['HTTP_HOST'])) {
+			$domain = '.'.$_SERVER['HTTP_HOST'];
+			if (preg_match('/(\.[^\.]+\.[^\.]+)$/', $domain, $m)) $domain = $m[1];
+		} else {
+			$domain = '.'.$_SERVER['SERVER_NAME'];
+			if (preg_match('/(\.[^\.]+\.[^\.]+)$/', $domain, $m)) $domain = $m[1];
+		}
+		ini_set('session.cookie_domain', $domain);
+		//ini_set('session.gc_maxlifetime',);
+		session_start();		
+	}
 
 
 	public static function SetInfo($infoType, $data)

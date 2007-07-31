@@ -1736,9 +1736,9 @@ _HTML_;
 			//$ip = JWRequest::GetClientIp();
 			//JWLog::Log(LOG_CRIT, "[$ip] GetAssetUrl($absUrlPath) can't find HTTP_HOST");
 		}
-		else if ( preg_match('#((alpha)|(beta))\.jiwai\.de#i',$_SERVER["HTTP_HOST"],$matches) )
+		else if ( preg_match('#(alpha|beta)\.jiwai\.(\w+)#i',$_SERVER["HTTP_HOST"],$matches) )
 		{
-			$domain		= "$matches[1].jiwai.de";
+			$domain		= "$matches[1].jiwai.$matches[2]";
 		}
 
 
