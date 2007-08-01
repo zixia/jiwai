@@ -207,25 +207,32 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 
 		public void run(){
 			try {
-				String line = br.readLine();
+				String line = null;
+			       
+				while( null != ( line = br.readLine()) ){
+					line = line.trim();
 
-				if( null == line ) {
-					out( "N" );
-					return;
+					//Out by client; 
+					if( line.toUpperCase().equals("EXIT") 
+							|| line.toUpperCase().equals("QUIT") ){
+					       	break;
+					}
+
+					Presence p = roster.getPresence( line );
+					if( p == null ){
+						out( "N" );
+						continue;
+					}
+
+					String status = p.getType().toString();
+					if( "error" == status || "unavailable" == status )
+						out( "N" );
+					else if ( "away" == status )
+						out( "A" );
+					else
+						out( "Y" );
 				}
-
-				Presence p = roster.getPresence( line );
-
-				if( p == null ){
-					out( "N" );
-					return;
-				}
-
-				String status = p.getType().toString();
-				if( "error" == status || "unavailable" == status )
-					out( "N" );
-				else
-					out( "Y" );
+				close();
 			}catch(Exception e){
 				close();
 			}
@@ -235,7 +242,6 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		public void out(String o){
 			if( o != null )
 				pw.println( o );
-			close();
 		}
 
 		public void close(){
