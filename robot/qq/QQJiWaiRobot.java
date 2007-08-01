@@ -42,7 +42,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private static final String DEVICE = "qq";
 
 	// For online Status
-	private static final ConcurrentHashMap<String, String> onlineFriends = new ConcurrentHashMap<String, String>();
+	private static ConcurrentHashMap<String, String> onlineFriends = new ConcurrentHashMap<String, String>();
+	private static final ConcurrentHashMap<String, String> onlineFriendsTemp = new ConcurrentHashMap<String, String>();
 
 	private static boolean onlineFinished = false;
 
@@ -194,6 +195,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		GetOnlineOpReplyPacket p = (GetOnlineOpReplyPacket) e.getSource();
 
 		if (!p.finished && onlineFinished) {
+			onlineFriendsTemp.clear();
 			onlineFinished = false;
 		}
 
@@ -203,13 +205,15 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			if (friendEntry.status.isAway())
 				status = "A";
 
-			onlineFriends.put(qq, status);
+			onlineFriendsTemp.put(qq, status);
 		}
 
 		if (!p.finished) {
 			client.getFriendOnline(p.position);
 		} else {
 			Logger.log("Get online friends OK");
+			onlineFriends.clear();
+			onlineFriends.putAll( onlineFriendsTemp );
 			onlineFinished = true;
 		}
 	}
