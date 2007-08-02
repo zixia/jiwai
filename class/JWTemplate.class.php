@@ -836,13 +836,15 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 	}
 
 
-	static public function pagination( $pagination, $qarray=array() )
+	static public function pagination( $pagination, $qarray=array(), $words = array() )
 	{
+
 		if ( empty($pagination) )
 		{
 			JWLog::LogFuncName(LOG_CRIT,'empty pagination, need fix');
 			return;
 		}
+
 		/*
 		 * 	下面的 utf8 字符无法在 securecrt 里面正常显示，但是是对的
 		 *	直接拷贝、黏贴即可（或者用 linux xwin 下面的 term）
@@ -881,18 +883,18 @@ padding:5px;
 _HTML_;
 
 		if ( $is_show_newest )
-			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newest_page_no'>« 最新</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newest_page_no'>".( isset($words['first']) ? $words['first'] : '« 最新' )."</a></td>\n";
 
 		if ( $is_show_newer )
-			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newer_page_no'>‹ 较新</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$newer_page_no'>".( isset($words['first']) ? $words['pre'] : '‹ 较新' )."</a></td>\n";
 
 		echo '<td class="bl"></td>';
 
 		if ( $is_show_older )
-			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$older_page_no'>较早 ›</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$older_page_no'>".( isset($words['first']) ? $words['next'] : '较早 ›' )."</a></td>\n";
 		
 		if ( $is_show_oldest )
-			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$oldest_page_no'>最早 »</a></td>\n";
+			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$oldest_page_no'>".( isset($words['first']) ? $words['last'] : '最早 »' )."</a></td>\n";
 
 		echo <<<_HTML_
 </tr></tbody></table>

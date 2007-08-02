@@ -4,6 +4,9 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
+
 /*
  *	除了显示 /wo/friends/ 之外，还负责显示 /zixia/friends/
  *	如果是其他用户的 friends 页(/zixia/friends)，则 $g_user_friends = true, 并且 $g_page_user_id 是页面用户 id
@@ -21,7 +24,9 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$friend_ids			= JWFriend::GetFriendIds	($page_user_info['id']);
+$friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
+$pagination         = new JWPagination($friend_num, $page);
+$friend_ids         = JWFriend::GetFriendIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
 
 /*
@@ -29,9 +34,6 @@ $picture_ids        = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPict
 $picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
 */
 
-
-
-$friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
 ?>
 
 <html>
@@ -76,13 +78,16 @@ _HTML_;
 }
 
 JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('element_id'=>'friends'));
+
+$words = array(
+		'first' => '<< 首页',
+		'last' => '末页 >>',
+		'pre' => '< 上一页',
+		'next' => '下一页 >',
+	      );
+JWTemplate::pagination( $pagination, array(), $words );
+
 ?>
-
-<div class="pagination">
-<br/>
-</div>
-
-
 		</div><!-- wrapper -->
 	</div><!-- content -->
 </div><!-- #container -->

@@ -4,6 +4,9 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
+
 /*
  *
  */
@@ -11,13 +14,13 @@ $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
 $page_user_info		= $logined_user_info;
 
-$follower_ids			= JWFollower::GetFollowerIds($page_user_info['id']);
+$follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
+$pagination         = new JWPagination($follower_num, $page);
+$follower_ids         = JWFollower::GetFollowerIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
 
 $picture_ids        = JWFunction::GetColArrayFromRows($follower_user_rows, 'idPicture');
 $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
-
-$follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 
 ?>
 
@@ -92,10 +95,15 @@ _HTML_;
 
 </table>
 
-<div class="pagination">
-<br/>
-</div>
-
+<?php
+$words = array(
+		'first' => '<< 首页',
+		'last' => '末页 >>',
+		'pre' => '< 上一页',
+		'next' => '下一页 >',
+	      );
+JWTemplate::pagination( $pagination, array(), $words );
+?>
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
