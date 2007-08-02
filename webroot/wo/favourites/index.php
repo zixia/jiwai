@@ -4,6 +4,9 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
+
 /*
  *	除了显示 /wo/favourites/ 之外，还负责显示 /zixia/favourites/
  *	如果是其他用户的 favourites 页(/zixia/friends)，则 $g_user_favourites = true, 并且 $g_page_user_id 是页面用户 id
@@ -22,13 +25,15 @@ if ( isset($g_user_favourites) && $g_user_favourites ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$status_ids		= JWFavourite::GetFavourite($page_user_info['id']);
 $status_num		= JWFavourite::GetFavouriteNum($page_user_info['id']);
+$pagination		= new JWPagination($status_num, $page);
+$status_ids		= JWFavourite::GetFavourite($page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 $status_rows	= JWStatus::GetStatusDbRowsByIds($status_ids);
 
 $user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
 $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
+
 
 ?>
 
@@ -77,15 +82,9 @@ $n = 0;
 if ( isset($status_ids) )
 {
 	JWTemplate::Timeline($status_ids, $user_rows, $status_rows);
+	JWTemplate::pagination($pagination, array() );
 }
 ?>
-
-
-<div class="pagination">
-<br/>
-</div>
-
-	
 		</div><!-- wrapper -->
 	</div><!-- content -->
 </div><!-- #container -->
