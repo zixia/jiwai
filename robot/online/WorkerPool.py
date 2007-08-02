@@ -1,10 +1,13 @@
 import thread
+import time
 
 def worker(pool):
 	while True:
 		task = pool.getTask()
 		if task:
 			task.run()
+		else:
+			time.sleep( 0.003 )
 
 class WorkerPool:
 	def __init__(self, n=10):

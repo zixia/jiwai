@@ -7,11 +7,26 @@ import socket
 from threading import Thread, Timer
 from Configure import Configure
 
-def qqOnlineTest( address ):
+def qqOnlineTest_20070731( address ):
 	f = urllib.urlopen('http://wpa.qq.com/pa?p=1:%s:3' % (address,) )
 	if f.geturl().find( 'online' ) > 0 :
 		return True, time.time();
 	return False, time.time()
+
+def qqOnlineTest( address ):
+	try:
+		s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+		host = "localhost"
+		port = 55020
+		s.connect( (host, port) )
+		s.send( "%s\r\n" % (address) )
+		data = s.recv(10)
+		if  re.match( "^y" , data , re.I ) :
+			return True, time.time()
+		else:
+			return False, time.time()
+	except socket.error, msg:
+		return False, time.time()
 
 def msnOnlineTest( address ):
 	f = urllib.urlopen('http://osi.hshh.org:8888/msn/%s' % (address,) )
