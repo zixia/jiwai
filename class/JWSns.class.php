@@ -424,22 +424,25 @@ class JWSns {
 
 		$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
 		if( empty( $userInfo )  || $userInfo['idConference'] == null )
-			return null;
+			return array();
 
 		$conference = JWConference::GetDbRowById( $userInfo['idConference'] );
 		if( empty( $conference ) )
-			return null;
+			return array();
 
 		if( $conference['friendOnly'] == 'Y' ) {
 			if( false == JWFriend::IsFriend($idUserReplyTo, $idUser) ) {
-				return null;
+				return array();
 			}
 		}
 
 		$smssuffix = ( $conference['number'] == null ) ? "99$userInfo[id]" : "1$conference[number]";
 
 		if( $idUser === $idUserReplyTo )
-			return $smssuffix;
+			return array(
+					'idConference' => $userInfo['idConference'],
+					'smssuffix' => $smssuffix,
+				    );
 		
 		switch($sendDevice){
 			case 'web':
@@ -454,9 +457,11 @@ class JWSns {
 		
 		$deviceAllow = explode(',', $conference['deviceAllow'] );
 		if( in_array( $deviceType, $deviceAllow ) )
-			return $smssuffix;
-
-		return null;
+			return array(
+					'idConference' => $userInfo['idConference'],
+					'smssuffix' => $smssuffix,
+				    );
+		return array();
 	}
 
 	/**
@@ -580,7 +585,8 @@ class JWSns {
 		 * 如果 reply_info 中含有 smssuffix 则一定为会议用户
 		 */
 		if( !empty($reply_info) ) {
-			$reply_info['smssuffix'] = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
+			$suffixInfo = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
+			$reply_info['smssuffix'] = empty($suffixInfo) ? null : $suffixInfo['smssuffix'];
 		}
 
 		if( empty($reply_info) ) {

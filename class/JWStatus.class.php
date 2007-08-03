@@ -138,10 +138,14 @@ class JWStatus {
 			$isProtected = $userInfo['protected'];
 		}
 		
-		$isConference = 'N';
-		if( $userInfo['idConference'] && $reply_user_id ) {
-			$smssuffix = JWSns::GetSmsSuffix( $idUser, $idUserReplyTo, $device );
-			$isConference = ( $smssuffix == null ) ? 'N' : 'Y';
+		/** 
+		  * 以下逻辑正确是有前提的：
+		  * Create 参数，是经过JWSns处理过的，JWSns在UpdateStatus时，会正确的将会议用户自己发的更新的回复idUserReplyTo设为会议用户本身，在这个前提下，我们可以通过JWSns::GetSmsSuffix，可以获得idConference.
+		  */
+		$idConference = NULL;
+		if( $idUserReplyTo ) {
+			$suffixInfo = JWSns::GetSmsSuffix( $idUser, $idUserReplyTo, $device );
+			$idConference = empty( $suffixInfo ) ? NULL : $suffixInfo['idConference'];
 		}
 
 		return JWDB_Cache::SaveTableRow('Status',
@@ -152,7 +156,7 @@ class JWStatus {
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
-									,'isConference'		=> $isConference
+									,'idConference'		=> $idConference
 									,'isProtected'		=> $isProtected
 									,'isSignature'		=> $isSignature
 							)
