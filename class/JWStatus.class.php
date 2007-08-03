@@ -74,6 +74,7 @@ class JWStatus {
 
 	/*
 	 *	@param	int	$time	unixtime
+	 *	//fix me, the first parameter $idUser, may be an array which comes from table StatusQuarantine. We can use this array to create a new status directly.
 	 */
 	static public function Create( $idUser, $status=null, $device='web',$time=null,$isSignature='N')
 	{
@@ -91,6 +92,10 @@ class JWStatus {
 			$reply_user_id = $row['idUserReplyTo'];
 			$picture_id = $row['idPicture'];
 			$isSignature = $row['isSignature'];
+			
+			//user Info
+			$userInfo = JWUser::GetUserInfo( $idUser );
+			$isProtected = $userInfo['protected'];
 		}else{
 
 			$status = preg_replace('[\r\n]',' ',$status);
@@ -127,9 +132,16 @@ class JWStatus {
 				$reply_status_id = null;
 			}
 
-			$user_db_row = JWUser::GetUserDbRowById($idUser);
+			$userInfo = JWUser::GetUserDbRowById($idUser);
 
-			$picture_id = $user_db_row['idPicture'];
+			$picture_id = $userInfo['idPicture'];
+			$isProtected = $userInfo['protected'];
+		}
+		
+		$isConference = 'N';
+		if( $userInfo['idConference'] && $reply_user_id ) {
+			$smssuffix = JWSns::GetSmsSuffix( $idUser, $idUserReplyTo, $device );
+			$isConference = ( $smssuffix == null ) ? 'N' : 'Y';
 		}
 
 		return JWDB_Cache::SaveTableRow('Status',
@@ -140,6 +152,8 @@ class JWStatus {
 									,'idStatusReplyTo'	=> $reply_status_id
 									,'idUserReplyTo'	=> $reply_user_id
 									,'idPicture'		=> $picture_id
+									,'isConference'		=> $isConference
+									,'isProtected'		=> $isProtected
 									,'isSignature'		=> $isSignature
 							)
 						);
@@ -374,15 +388,14 @@ _SQL_;
 
 		$sql = <<<_SQL_
 SELECT		
-			Status.id		as idStatus
+			Status.id	as idStatus
 			,Status.idUser	as idUser
 FROM		
-			Status, User
+			Status
 WHERE		
-			Status.idUser=User.id
-			AND Status.idUserReplyTo IS NULL
-			AND User.idPicture IS NOT NULL
-			AND User.protected<>'Y'
+			Status.idUserReplyTo IS NULL
+			AND Status.idPicture IS NOT NULL
+			AND Status.isProtected = 'N'
 			$condition_other
 ORDER BY 	
 			Status.timeCreate desc
