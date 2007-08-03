@@ -34,6 +34,8 @@ Class JWSession {
 
 
 	function __construct() {
+		if( defined('CONSOLE') && CONSOLE == true )
+			return;
 		ini_set('session.use_cookies',1);
 		ini_set('session.cookie_path','/');
 		if (!empty($_SERVER['HTTP_HOST'])) {
