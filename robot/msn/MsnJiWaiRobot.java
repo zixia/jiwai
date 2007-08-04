@@ -179,6 +179,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 
 		//Remove From ContactList
 		( ( MsnContactListImpl ) messenger.getContactList() ).removeContactByEmail( contact.getEmail() );
+		if( onlineFriends.containsKey( contact.getEmail().getEmailAddress()) ){
+			String[] r = onlineFriends.get( contact.getEmail().getEmailAddress() );
+			if( r[1].equals( messenger.getOwner().getEmail().getEmailAddress() ) ){
+				onlineFriends.remove( contact.getEmail().getEmailAddress() );
+			}
+		}
 	
 		Logger.log(contact.getEmail().getEmailAddress() + " Leaved JiWai");
 	}
