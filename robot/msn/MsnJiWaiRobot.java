@@ -115,12 +115,11 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 		
 		//ONline OR OFFline
 		if( ( status.equals("FLN") || status.equals("NLN") ) && oldStatus != status ){
-			MoMtMessage msg = new MoMtMessage(DEVICE);
-			msg.setMsgtype(MoMtMessage.TYPE_ONOROFF);
-			msg.setAddress(email);
-			msg.setServerAddress(mEmail);
-			msg.setBody(status);
-			//	worker.saveMoMessage(msg);
+			MoMtMessage message = new MoMtMessage(DEVICE);
+			message.setMsgtype(MoMtMessage.TYPE_ONOROFF);
+			message.setAddress(email);
+			message.setBody(status);
+			//	worker.saveMoMessage(message);
 		}
 		
 		//Signature
@@ -131,12 +130,11 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
 		//		|| email.equals("freewizard@msn.com")
  		//	)
 		){
-			MoMtMessage msg = new MoMtMessage(DEVICE);
-			msg.setMsgtype(MoMtMessage.TYPE_SIG);
-			msg.setAddress(email);
-			msg.setServerAddress(mEmail);
-			msg.setBody(signature);
-			worker.saveMoMessage(msg);
+			MoMtMessage message = new MoMtMessage(DEVICE);
+			message.setMsgtype(MoMtMessage.TYPE_SIG);
+			message.setAddress(email);
+			message.setBody(signature);
+			worker.saveMoMessage(message);
 		}	
 	}
 
@@ -145,7 +143,6 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor, Runnable
             MsnContact contact){
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(contact.getEmail().getEmailAddress());
-		msg.setServerAddress(mEmail);
 		msg.setBody(message.getContent());
 		worker.saveMoMessage(msg);
 	}
