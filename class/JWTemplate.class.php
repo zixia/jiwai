@@ -57,6 +57,15 @@ class JWTemplate {
 _HTML_;
 	}
 
+	static public function wml_doctype( $options=null )
+	{
+		echo <<<_HTML_
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
+
+_HTML_;
+	}
+
 	static public function html_head( $options=null )
 	{
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
