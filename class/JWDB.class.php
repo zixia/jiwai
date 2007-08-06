@@ -84,6 +84,7 @@ class JWDB implements JWDB_Interface
 			self::$msMysqliLink->close();
 			self::$msMysqliLink = null;
 		}
+		self::$msInstance = null;
 	}
 
 	static private function GetDb()
