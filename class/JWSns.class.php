@@ -640,9 +640,18 @@ class JWSns {
 
 		if( $smssuffix ) {
 			$status = preg_replace("/^\s?@\s?\w+/", "", $status );
+			/*
 			$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
 			$status = "$userInfo[nameScreen]: $status";
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+			*/
+			/*
+			 * conference notify enhance 2007-08-06
+			 */
+			$userInfo = JWUser::GetUserInfo( $idSender );
+			$status = "$userInfo[nameScreen]: $status";
+			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = JWFollower::GetFollowerIds($idSender);
