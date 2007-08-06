@@ -24,7 +24,7 @@ class JWPagination {
 	 *	@param	int	$total_num	分页元素的总数
 	 *	@param	int	$page_no	当前页，第一页是 1
 	 */
-	function __construct($total_num, $page_no)
+	function __construct($total_num, $page_no=1, $per_page = 20)
 	{
 		$total_num 	= intval($total_num);
 		$page_no	= intval($page_no);
@@ -37,7 +37,7 @@ class JWPagination {
 		$this->mCurrentPageNo 	= $page_no;
 
 		// 每页显示的条目数
-		$this->mNumPerPage		= 20;
+		$this->mNumPerPage		= $per_page;
 	}
 
 	public function IsShowNewest()
@@ -102,3 +102,4 @@ class JWPagination {
 		return ($this->mCurrentPageNo - 1)*$this->mNumPerPage;
 	}
 }
+?>

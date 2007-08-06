@@ -7,16 +7,20 @@ if(!defined('TPL_FILE_SUFFIX')) define('TPL_FILE_SUFFIX','.tpl');
 if(!defined('TPL_COMPILED_DIR')) define('TPL_COMPILED_DIR','/tmp');
 if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR','/tmp');
 
-class JWHtmlRender extends Template_Base{
-	public function render($templateFile, $v=array() ){
-		return parent::render($templateFile, $v);
+class JWRender{
+	static public function Render( $templateFile, $v=array() ){
+		$template = new Template_Render();
+		return $template->render( $templateFile, $v );
 	}
-	public function display($templateFile,$v=array() ){
-		echo $this->render($templateFile, $v );
+	static public function Display( $templateFile,$v=array() ){
+		echo self::Render( $templateFile, $v );
+	}
+	static public function GetLastContent(){
+		return Template_Render::$lastContent;
 	}
 }
 
-class Template_Base{   
+class Template_Render{ 
 	
         protected $_properties_array_used_by_overload = array();
 	public static $lastContent = null;
@@ -84,8 +88,8 @@ class Template_Base{
 	}
 
 	public function render($templateFile,$valueArray=array()) {
-		$templateFile = TPL_TEMPLATE_DIR .'/'. $templateFile . TPL_FILE_SUFFIX;	
-		$compiledFile = TPL_COMPILED_DIR .'/'. md5($templateFile) . '.php';
+		$templateFile = TPL_TEMPLATE_DIR . '/' . $templateFile . TPL_FILE_SUFFIX;	
+		$compiledFile = TPL_COMPILED_DIR . '/' . md5($templateFile) . '.php';
 
 		if(count($valueArray)){
 			foreach($valueArray as $key=>$value)
