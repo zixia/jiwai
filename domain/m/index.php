@@ -2,7 +2,7 @@
 require_once( './config.inc.php' );
 
 if ( JWLogin::IsLogined() ){
-    header('Location: /wo/');
+    header('Location: '.buildUrl('/wo/') );
     exit;
 }
 

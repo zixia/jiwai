@@ -18,19 +18,24 @@ $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 $statuses = array();
 foreach( $status_rows as $k=>$s){
-    $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", htmlSpecialChars($s['status']) );
+    $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
+
+$friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
+$followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
 JWTemplate::wml_doctype();
 JWTemplate::wml_head();
 
 $render = new JWHtmlRender();
-$shortcut = array( 'public_timeline', 'myfriends', 'myfollowers', 'logout' );
+$shortcut = array( 'public_timeline', 'myfriends', 'myfollowers', 'logout', 'my' );
 $render->display( 'wo/archive', array(
-    'userInfo' => $loginedUserInfo,
+    'loginedUserInfo' => $loginedUserInfo,
     'users' => $user_rows,
     'statuses' => $statuses,
+    'friendsNum' => $friendsNum,
+    'followersNum' => $followersNum,
     'shortcut' => $shortcut,
 ));
 

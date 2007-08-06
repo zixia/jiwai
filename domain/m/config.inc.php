@@ -19,6 +19,6 @@ function buildUrl($url){
 
 function buildReplyUrl($nameScreen){ 
     $url = buildUrl( "/$nameScreen/" );
-    return "<a href=\"$url\">".$nameScreen."</a>";
+    return "@<a href=\"$url\">".$nameScreen."</a> ";
 }
 ?>

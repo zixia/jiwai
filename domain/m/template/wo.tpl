@@ -3,4 +3,5 @@
 <!--{foreach $statuses as $status}-->
     {$status['status']}<br/>
 <!--{/foreach}-->
+<!--{include shortcut}-->
 </card>

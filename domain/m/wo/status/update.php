@@ -20,5 +20,5 @@ if( $status ){
 	if ( !JWSns::UpdateStatus($idUser, $status) )
 		JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
 }
-JWTemplate::RedirectBackToLastUrl("Location: /wo/");
+header('Location: '.buildUrl( '/wo/' ) );
 ?>

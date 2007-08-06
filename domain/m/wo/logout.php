@@ -1,6 +1,6 @@
 <?php
 require_once( '../config.inc.php' );
 JWLogin::Logout();
-header("Location: /");
+header( 'Location: '.buildUrl( '/' ) );
 exit(0);
 ?>
