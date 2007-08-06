@@ -7,14 +7,22 @@ $status_rows    =  JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']
 
 $statuses = array();
 foreach( $status_rows as $k=>$s ){
-    $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", htmlSpecialChars($s['status']) );
+    $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
 
 $render = new JWHtmlRender();
+$shortcut = array('public_timeline', 'index');
+if( JWLogin::isLogined() ) {
+    array_push( $shortcut, 'logout' );
+}else{
+    array_push( $shortcut, 'register' );
+}
+
 $render->display( 'wo' , array(
                     'userInfo' => $userInfo,
                     'statuses' => $statuses,
+                    'shortcut' => $shortcut,
                 ));
 
 JWTemplate::wml_foot();

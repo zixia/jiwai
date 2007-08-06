@@ -19,9 +19,9 @@
 		</alternate>
     </meta>
     <db>
-		<host>127.0.0.1</host>
-		<username>jiwai</username>
-		<passwd>JiWai.de/zixia</passwd>
+		<host>10.0.70.10</host>
+		<username>root</username>
+		<passwd></passwd>
 		<dbname>jiwai</dbname>
 	</db>
 	<directory>

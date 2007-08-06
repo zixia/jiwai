@@ -47,6 +47,11 @@ Class JWSession {
 		}
 		ini_set('session.cookie_domain', $domain);
 		//ini_set('session.gc_maxlifetime',);
+        if( isset( $_GET['PHPSESSID'] ) ) {
+            if( preg_match( '/^[0-9A-Za-z]+$/', $_GET['PHPSESSID'] ) ) {
+                session_id( $_GET['PHPSESSID'] );
+            }
+        }
 		session_start();		
 	}
 

@@ -10,7 +10,10 @@ JWTemplate::wml_doctype();
 JWTemplate::wml_head();
 
 $htmlRender = new JWHtmlRender();
-$htmlRender->display( 'index' );
+$shortcut = array('public_timeline', 'register');
+$htmlRender->display( 'index', array(
+                    'shortcut' => $shortcut,
+                ));
 
 JWTemplate::wml_foot();
 ?>

@@ -22,14 +22,16 @@ foreach( $status_rows as $k=>$s){
     $statuses[ $k ] = $s;
 }
 
-$render = new JWHtmlRender();
 JWTemplate::wml_doctype();
 JWTemplate::wml_head();
 
+$render = new JWHtmlRender();
+$shortcut = array( 'public_timeline', 'myfriends', 'myfollowers', 'logout' );
 $render->display( 'wo/archive', array(
     'userInfo' => $loginedUserInfo,
     'users' => $user_rows,
     'statuses' => $statuses,
+    'shortcut' => $shortcut,
 ));
 
 JWTemplate::wml_foot();

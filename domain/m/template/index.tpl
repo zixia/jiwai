@@ -2,8 +2,8 @@
 
     账户：<input type="text" name="name"/><br/>
     密码：<input type="password" name="pass"/><br/>
-    <anchor>登录叽歪<go href="/wo/login" method="post"><postfield name="name" value="$(name)"/><postfield name="pass" value="$(pass)"/></go></anchor><br/>
+    <anchor>登录叽歪<go href="${buildUrl('/wo/login/')}" method="post"><postfield name="name" value="$(name)"/><postfield name="pass" value="$(pass)"/></go></anchor><br/>
 
-    <!--{include shortcut_guest}-->
+    <!--{include shortcut}-->
 
 </card>

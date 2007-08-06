@@ -6,5 +6,5 @@
     </a>: 
     {$status['status']}<br/>
 <!--{/foreach}-->
-<!--{include shortcut_logined}-->
+<!--{include shortcut}-->
 </card>
