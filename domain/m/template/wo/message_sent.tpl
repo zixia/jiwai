@@ -10,8 +10,7 @@
     {$message['message']}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($message['timeCreate'])}
-    通过
-    ${JWDevice::GetNameFromType($message['device'])}${$message['isSignature'] == 'Y' ? '签名' : ''}
+    <a href="/wo/message/destroy/{$message['idMessage']}">删除</a>
     </span>
 </li>
 <!--{/foreach}-->

@@ -1,7 +1,7 @@
 <?php
 require_once( '../config.inc.php');
 
-$name = $pass = null;
+$name = $pass = $remember = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 
 if( $name == null ) {
@@ -11,7 +11,7 @@ if( $name == null ) {
 
 $idUser = JWUser::GetUserFromPassword($name, $pass);
 if ( $idUser ) {
-	JWLogin::Login($idUser, false);
+	JWLogin::Login( $idUser, (null!=$remember) );
 	header( 'Location: '.buildUrl( '/wo/' ) );
 	exit(0);
 }else{
