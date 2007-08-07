@@ -640,7 +640,8 @@ class JWSns {
 		$idSender = JWDB::CheckInt( $idSender );
 
 		if( $smssuffix ) {
-			$status = preg_replace("/^\s?@\s?\w+/", "", $status );
+			//2007-08-07
+			//$status = preg_replace("/^\s?@\s?\w+/", "", $status );
 			/*
 			$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
 			$status = "$userInfo[nameScreen]: $status";
