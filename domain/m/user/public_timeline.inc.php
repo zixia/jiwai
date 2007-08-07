@@ -21,8 +21,15 @@ foreach( $status_rows as $s){
         break;
 }
 
+$shortcut = array( 'index' );
+if( false == empty($loginedUserInfo) ){
+    array_push( $shortcut, 'logout','my','friends','message' );
+}
 JWRender::Display( 'public_timeline', array(
     'users' => $user_rows,
     'statuses' => $statuses,
+    'loginedUserInfo' => $loginedUserInfo,
+    'userInfo' => $userInfo,
+    'shortcut' => $shortcut,
 ));
 ?>

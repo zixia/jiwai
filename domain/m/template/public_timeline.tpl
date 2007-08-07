@@ -17,6 +17,5 @@
 <!--{/foreach}-->
 </ul>
 
-<!--${$shortcut=array('index')}-->
 <!--{include shortcut}-->
 <!--{include footer}-->
