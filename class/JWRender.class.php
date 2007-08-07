@@ -23,7 +23,7 @@ class JWRender{
 class Template_Render{ 
 	
         protected $_properties_array_used_by_overload = array();
-	public static $lastContent = null;
+        public static $lastContent = null;
 
         public function __get($name=null){
                 return isset($this->_properties_array_used_by_overload[$name]) ?

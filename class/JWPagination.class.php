@@ -15,7 +15,7 @@ class JWPagination {
 	 * @var JWPagination
 	 */
 	private $mNumPerPage;
-
+    private $mCurrentPageNo;
 	private $mTotalNum;
 
 	/**
@@ -101,5 +101,18 @@ class JWPagination {
 	{
 		return ($this->mCurrentPageNo - 1)*$this->mNumPerPage;
 	}
+
+    static public function BuildPageUrl( $url, $page=1){
+        if( false === strpos( $url, 'page=' ) ){
+            if( false === strpos( $url, '?' ) )
+                return $url . '?page=' . $page ;
+            else
+                return $url . '&page=' . $page ; 
+        }else if( false !== strpos( $url, '?page=' ) ){
+            return preg_replace( '(\?page=\d*)', '?page='.$page, $url );
+        }else{
+            return preg_replace( '(&page=\d*)', '&page='.$page, $url );
+        }
+    }
 }
 ?>

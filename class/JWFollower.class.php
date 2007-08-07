@@ -138,7 +138,7 @@ class JWFollower {
 	 * 	Get follower list
 	 *	@return array	array of follower id list
 	 */
-	static function GetFollowerIds($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX)
+	static function GetFollowerIds($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX, $offset = 0)
 	{
 		$idUser = intval($idUser);
 		$numMax = intval($numMax);
@@ -152,7 +152,7 @@ FROM	Follower
 WHERE	idUser=$idUser
 		AND idFollower IS NOT NULL
 		ORDER BY id DESC
-LIMIT	$numMax
+LIMIT $offset,$numMax
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);
