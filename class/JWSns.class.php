@@ -563,6 +563,7 @@ class JWSns {
 		 */
 		$processInfo = JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
 		if( $processInfo['reply'] ) {
+			$oIdUser = $idUser;
 			$idUser = "$idUser:$processInfo[reply]";
 		}
 		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature );
@@ -573,7 +574,7 @@ class JWSns {
 		}
 		
 		//Refresh facebook profile if necessary
-		if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
+		if (JWFacebook::Verified( ( isset($oIdUser) ? $oIdUser : $idUser) )) JWFacebook::RefreshRef($idUser);
 		return $ret;
 	}
 
@@ -647,7 +648,7 @@ class JWSns {
 			*/
 			/*
 			 * conference notify enhance 2007-08-06
-			 */
+			*/
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$status = "$userInfo[nameScreen]: $status";
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
