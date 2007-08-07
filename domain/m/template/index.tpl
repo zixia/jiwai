@@ -1,11 +1,11 @@
-<card title="叽歪de，迷你博客">
-    <!--{if $error}-->
-    错误: {$error}<br/>
-    <!--{/if}-->
-    账户：<input type="text" name="name"/><br/>
-    密码：<input type="password" name="pass"/><br/>
-    <anchor>登录叽歪<go href="${buildUrl('/wo/login/')}" method="post"><postfield name="name" value="$(name)"/><postfield name="pass" value="$(pass)"/></go></anchor><br/>
+<!--{include header}-->
 
-    <!--{include shortcut}-->
+<h2>登录叽歪</h2>
+<form action="/wo/login" method="POST">
+<p>账户：<input type="text" name="name"/></p>
+<p>密码：<input type="password" name="pass"/></p>
+<p><input type="submit" value="登录" /></p>
+</form>
 
-</card>
+<!--{include shortcut}-->
+<!--{include footer}-->

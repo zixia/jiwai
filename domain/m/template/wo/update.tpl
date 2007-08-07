@@ -1,2 +1,5 @@
-<input type="text" name="status"/><br/>
-<anchor>叽歪一下<go href="/wo/status/update" method="post"><postfield name="status" value="$(status)"/></go></anchor><br/>
+<h2>我在做什么?</h2>
+<form action="/wo/status/update" method="post">
+<p><input type="text" name="status"/></p>
+<p><input type="submit" value="叽歪一下"/></p>
+</form>

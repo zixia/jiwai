@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "叽歪广场";
 
 $status_data    = JWStatus::GetStatusIdsFromPublic(100);
 $status_rows    = JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
@@ -20,15 +21,8 @@ foreach( $status_rows as $s){
         break;
 }
 
-$render = new JWHtmlRender();
-
-JWTemplate::wml_doctype();
-JWTemplate::wml_head();
-
-$render->display( 'public_timeline', array(
+JWRender::Display( 'public_timeline', array(
     'users' => $user_rows,
     'statuses' => $statuses,
 ));
-
-JWTemplate::wml_foot();
 ?>

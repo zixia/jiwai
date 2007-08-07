@@ -15,13 +15,7 @@ if ( $idUser ) {
 	header( 'Location: '.buildUrl( '/wo/' ) );
 	exit(0);
 }else{
-    JWTemplate::wml_doctype();
-    JWTemplate::wml_head();
-    $render = new JWHtmlRender();
-    $render->display( 'index', array(
-                    'error' => '账户密码不匹配!',
-                    'shortcut' => array('public_timeline', 'register'),
-                    ));
-    JWTemplate::wml_foot();
+    JWSession::SetInfo('error', '登录失败：账户名密码不匹配');
+	header( 'Location: /' );
 }
 ?>

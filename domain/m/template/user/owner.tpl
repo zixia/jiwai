@@ -1,13 +1,11 @@
 <!--{include header}-->
+<!--{include user/shortcut}-->
 
-<h2>叽歪广场</h2>
+<h2>{$userInfo['nameScreen']}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">{$userInfo['nameScreen']}和好友</a></h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>
-    <a href="${buildUrl('/'.htmlSpecialChars($users[$status['idUser']]['nameScreen']).'/')}">
-        ${htmlSpecialChars($users[$status['idUser']]['nameScreen'])}
-    </a>
-    ${htmlSpecialChars($status['status'])}
+    {$status['status']}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($status['timeCreate'])}
     通过
@@ -16,7 +14,8 @@
 </li>
 <!--{/foreach}-->
 </ul>
+{$pageString}
 
-<!--${$shortcut=array('index')}-->
+<!--{include user/profile}-->
 <!--{include shortcut}-->
 <!--{include footer}-->

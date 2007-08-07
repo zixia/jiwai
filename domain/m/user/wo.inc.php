@@ -1,29 +1,47 @@
 <?php
-JWTemplate::wml_doctype();
-JWTemplate::wml_head();
+if( $statusTab == 'with_friends' ) {
 
-$status_data =  JWDB_Cache_Status::GetStatusIdsFromUser( $userInfo['id'] , 10);
-$status_rows    =  JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
+    $pageTitle = "$userInfo[nameScreen]和朋友们在做什么";
+
+    $statusNum = JWDB_Cache_Status::GetStatusNumFromFriends( $userInfo['id'] );
+    $pagination = new JWPagination( $statusNum, $page , 10);
+    $statusData =  JWDB_Cache_Status::GetStatusIdsFromFriends( $userInfo['id'] , $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+    $statusRows    =  JWDB_Cache_Status::GetDbRowsByIds( $statusData['status_ids']);
+    $userRows   =   JWUser::GetUserDbRowsByIds( $statusData['user_ids']);
+    $tpl = 'user/with_friends';
+}else{
+
+    $pageTitle = "$userInfo[nameScreen]在做什么";
+
+    $statusNum = JWDB_Cache_Status::GetStatusNum( $userInfo['id'] );
+    $pagination = new JWPagination( $statusNum, $page , 10);
+    $statusData =  JWDB_Cache_Status::GetStatusIdsFromUser( $userInfo['id'] , $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+    $statusRows    =  JWDB_Cache_Status::GetDbRowsByIds( $statusData['status_ids']);
+    $userRows = array();
+    $tpl = 'user/owner';
+}
 
 $statuses = array();
-foreach( $status_rows as $k=>$s ){
+foreach( $statusRows as $k=>$s ){
     $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
 
-$render = new JWHtmlRender();
 $shortcut = array('public_timeline', 'index');
 if( JWLogin::isLogined() ) {
-    array_push( $shortcut, 'logout' );
+    array_push( $shortcut, 'logout', 'my', 'message', 'friends' );
 }else{
     array_push( $shortcut, 'register' );
 }
 
-$render->display( 'wo' , array(
+$url = "/$userInfo[nameScreen]/" . ( $statusTab=='with_friends' ? 'with_friends/' : '' );
+$pageString = paginate( $pagination, $url );
+JWRender::Display( $tpl , array(
                     'userInfo' => $userInfo,
                     'statuses' => $statuses,
+                    'users' => $userRows,
                     'shortcut' => $shortcut,
+                    'loginedUserInfo' => $loginedUserInfo,
+                    'pageString' => $pageString,
                 ));
-
-JWTemplate::wml_foot();
 ?>
