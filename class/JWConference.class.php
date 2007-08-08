@@ -19,7 +19,7 @@ class JWConference {
 
 
 	static public $smsAlias = array(
-			'9911456' => '9911881699863',
+			'9911456' => '991188169999',
 			);
 	/**
 	 * Instance of this singleton class
