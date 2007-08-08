@@ -4,9 +4,16 @@ require_once("../../../jiwai.inc.php");
 define ('SP_IP', '211.157.106.111');
 
 $debug = false;
-if ( (!$debug) && (SP_IP!=$_SERVER['REMOTE_ADDR']) )
+if (!$debug)
 {
-	die ("Not Authorized.");
+	$proxy_ip 	= JWRequest::GetProxyIp();
+	$client_ip 	= JWRequest::GetClientIp();
+
+	if ( SP_IP!=$proxy_ip && SP_IP!=$client_ip )
+	{
+		header('HTTP/1.0 401 Unauthorized');
+		die ("You must use registered IP address.");
+	}
 }
 
 $arg_op		= @$_REQUEST['op'];
