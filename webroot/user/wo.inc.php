@@ -61,7 +61,7 @@ switch ( $active_tab )
 			//论坛模式用户
 			$user_status_num	= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
 			$pagination		= new JWPagination($user_status_num-1, $page );
-			$status_data 		= JWStatus::GetStatusIdsFromSelfNReplies( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		}else{
 			// 显示用户自己的
 			$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
@@ -253,15 +253,17 @@ if ( $show_protected_content )
 if ( !isset($g_user_with_friends) )
 	$g_user_with_friends = false;
 
+
 // 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
 if ( $show_protected_content )
+
 	JWTemplate::Timeline(	 $status_data['status_ids']
 							,$user_rows
 							,$status_rows
 							,array(	 'icon'	=> $g_user_with_friends
 									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
-									//,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
-									,'protected'=> $logined_user_info['idUser']!=$page_user_id
+									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
+									//,'protected'=> $logined_user_info['idUser']!=$page_user_id
 							 )
 						) ;
 
