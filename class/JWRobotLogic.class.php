@@ -204,7 +204,7 @@ class JWRobotLogic {
 		if ( $user_id )
 		{
 			$body = <<<_STR_
-搞定了！您已经通过了叽歪de验证。回复本消息即可更新您的JiWai，耶！
+搞定了！您已经通过了验证。回复本消息即可进行更新，耶！
 _STR_;
 		}
 		else
@@ -232,6 +232,7 @@ _STR_;
 		$address = $robotMsg->GetAddress();
 		$type	 = $robotMsg->GetType();
 		$body	 = $robotMsg->GetBody();
+		$serverAddress = $robotMsg->GetServerAddress();
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
 
@@ -243,9 +244,18 @@ _STR_;
 			/*
 			 * 存下用户注册前发的更新
 			 */
-
+			
+			/*
+			 * 经过测试 发现，奇怪现象，$robotMsg，存入memcache后，取出时，很多属性为空，是不是因为文件不存在了
+			 * 导致用户注册前的更新丢失；
+			 */
 			$memcache = JWMemcache::Instance();
-			$memcache->Set( $last_robot_msg_key, $robotMsg, 0, 3600 );
+			$memcache->Set( $last_robot_msg_key, array(
+						'body' => $body,
+						'address' => $address,
+						'type' => $type,
+						'serverAddress' => $serverAddress,
+						), 0, 3600 );
 
 			/*
 			 *	1 用户没有被邀请过
@@ -279,14 +289,14 @@ _STR_;
 				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，您过一会儿再来试试吧。");
 			}
 
-			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的JiWai用户名。访问http://jiwai.de/了解更多。");
+			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的用户名。");
 		}
 
 		/*
 		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
 	 	 */
 		if ( ! $toRegister )
-			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的JiWai用户名。访问http://jiwai.de/了解更多。");
+			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的用户名。");
 
 
 		/*
@@ -324,28 +334,34 @@ _STR_;
 			JWSns::FinishInvitation($new_user_id, $invitation_id);
 
 			$body = <<<_STR_
-欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。发送HELP可以了解更多JiWai功能。登录Web请来这里：http://jiwai.de/wo/account/complete，进行密码设置。
+欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。
 _STR_;
 			/*
 			 * 检查用户注册前的更新，将其发出
 			 */
 
-			$memcache 					= JWMemcache::Instance();
-			$robot_msg_before_register 	= $memcache->Get( $last_robot_msg_key );
+			$memcache = JWMemcache::Instance();
+			$beforeRegister = $memcache->Get( $last_robot_msg_key );
 
-			if( !empty( $robot_msg_before_register ) )
+			if( !empty( $beforeRegister ) && is_array($beforeRegister) )
 			{
 				$memcache->Del( $last_robot_msg_key );
 
 				//获取用户注册时用的会议用户id，讲会议用户加为自己的好友
-				$reply_info = JWSns::GetReplyTo( $new_user_id, $robot_msg_before_register->GetServerAddress(), $robot_msg_before_register->GetType() );
+				$reply_info = JWSns::GetReplyTo( $new_user_id, $beforeRegister['serverAddress'], $beforeRegister['type'] );
 				if( !empty($reply_info) && $reply_info['user_id'] != $new_user_id ){
 					JWSns::CreateFriends( $new_user_id, array($reply_info['user_id']) , false );
 				}
 
 				//JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
 				// 7/24/07 zixia: 如果之前的消息有回复，则返回给用户命令操作的返回，而不是注册成功提示。
-				$reply_msg = self::ProcessMo($robot_msg_before_register);
+				$beforeRegisterMsg = new JWRobotMsg();
+				$beforeRegisterMsg->Set( $beforeRegister['address']
+						, $beforeRegister['type']
+						, $beforeRegister['body']
+						, $beforeRegister['serverAddress']
+						);
+				$reply_msg = self::ProcessMo($beforeRegisterMsg);
 				
 				if ( ! empty($reply_msg) )
 				{

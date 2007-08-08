@@ -173,6 +173,9 @@ class JWRobotLingo {
 		$body = <<<_STR_
 告诉JiWai这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。
 _STR_;
+		$body = <<<_STR_
+告诉我们这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。
+_STR_;
 
 		if ( 'sms'==$robotMsg->GetType() )
 			$body .= '本短信服务免费。';
@@ -188,6 +191,9 @@ _STR_;
 	{
 		$body = <<<_STR_
 命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
+_STR_;
+		$body = <<<_STR_
+命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？
 _STR_;
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $body);
@@ -260,6 +266,9 @@ _STR_;
 		$body = <<<_STR_
 通知消息已关闭。发送ON可开启。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
+		$body = <<<_STR_
+通知消息已关闭。发送ON可开启。
+_STR_;
 
         return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
@@ -272,6 +281,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 FOLLOW命令帮助：FOLLOW 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+FOLLOW命令帮助：FOLLOW 帐号。有问题吗？
 _STR_;
 
 		/*
@@ -352,6 +364,9 @@ _STR_;
 		$help = <<<_STR_
 LEAVE命令帮助：LEAVE 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
+		$help = <<<_STR_
+LEAVE命令帮助：LEAVE 帐号。
+_STR_;
 
 
 		/*
@@ -394,6 +409,9 @@ _STR_;
 		$body = <<<_STR_
 您已退定了$followe_user_db_row[nameFull]。在http://JiWai.de/$followe_user_db_row[nameScreen]/页面上点击订阅或发送FOLLOW $followe_user_db_row[nameScreen]可恢复订阅。
 _STR_;
+		$body = <<<_STR_
+您已退定了$followe_user_db_row[nameFull]。
+_STR_;
 
         return JWRobotLogic::ReplyMsg($robotMsg, $body);
 	}
@@ -414,6 +432,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 ADD命令帮助：ADD 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+ADD命令帮助：ADD 帐号。
 _STR_;
 
 
@@ -528,7 +549,8 @@ _STR_;
 			{
 				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，您添加的"
 												. "${user_input_invitee_address}我不认识，"
-												. "请您输入叽歪帐号或手机号、邮件地址。了解更多？发送 HELP。"
+#. "请您输入叽歪帐号或手机号、邮件地址。了解更多？发送 HELP。"
+												. "请您输入帐号或手机号、邮件地址。了解更多？发送 HELP。"
 											);
 			}
 
@@ -622,6 +644,9 @@ _STR_;
 			$body = <<<_STR_
 ${invitee_address}在JiWai注册过！档案地址：http://JiWai.de/$invitee_user_row[nameScreen]/。我们已经帮您发送了好友添加请求。
 _STR_;
+			$body = <<<_STR_
+${invitee_address}已经注册！我们已经帮您发送了好友添加请求。
+_STR_;
 		}
 		else
 		{
@@ -631,6 +656,9 @@ _STR_;
 			 */
 			$invite_msg['email'] = <<<_INVITATION_
 $address_user_row[nameFull]（$address_user_row[nameScreen]）邀请您来JiWai.de！
+_INVITATION_;
+			$invite_msg['email'] = <<<_INVITATION_
+$address_user_row[nameFull]（$address_user_row[nameScreen]）邀请您来使用我们的服务！
 _INVITATION_;
 
 			$invite_msg['im'] = $invite_msg['email'] . <<<_INVITATION_
@@ -657,6 +685,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 DELETE命令帮助：DELETE 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+DELETE命令帮助：DELETE 帐号。
 _STR_;
 
 
@@ -717,6 +748,9 @@ _STR_;
 		$help = <<<_STR_
 使用方法：GET 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
 _STR_;
+		$help = <<<_STR_
+使用方法：GET 帐号。
+_STR_;
 
 		/*
 	 	 *	解析命令参数
@@ -767,6 +801,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 使用方法：NAO 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+使用方法：NAO 帐号。
 _STR_;
 
 		/*
@@ -822,9 +859,15 @@ _STR_;
 		$nudge_message = <<<_NUDGE_
 $address_user_db_row[nameScreen]挠挠了您一下，提醒您更新JiWai！回复本消息既可更新您的JiWai。
 _NUDGE_;
+		$nudge_message = <<<_NUDGE_
+$address_user_db_row[nameScreen]挠挠了您一下，提醒您更新！回复本消息既可更新。
+_NUDGE_;
 
 		JWNudge::NudgeUserIds(array($friend_user_db_row['idUser']), $nudge_message, 'nudge');
 
+		$body = <<<_STR_
+我们已经帮您挠挠了$friend_user_db_row[nameScreen]一下！期待很快能得到您朋友的回应。
+_STR_;
 		$body = <<<_STR_
 我们已经帮您挠挠了$friend_user_db_row[nameScreen]一下！期待很快能得到您朋友的回应。
 _STR_;
@@ -841,6 +884,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 使用方法：WHOIS 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+使用方法：WHOIS 帐号。
 _STR_;
 
 		/*
@@ -886,6 +932,9 @@ _STR_;
 	{
 		$help = <<<_STR_
 ACCEPT命令帮助：ACCEPT 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+ACCEPT命令帮助：ACCEPT 帐号。
 _STR_;
 
 
@@ -976,6 +1025,9 @@ _STR_;
 		$help = <<<_HELP_
 DENY命令帮助：DENY 帐号。有问题吗？上 http://JiWai.de/ 看看吧。
 _HELP_;
+		$help = <<<_HELP_
+DENY命令帮助：DENY 帐号。
+_HELP_;
 
 		$param_body = $robotMsg->GetBody();
 		$param_body = self::ConvertCorner( $param_body );
@@ -1019,6 +1071,9 @@ _HELP_;
 			$body = <<<_STR_
 哎呀！没有找到邀请您的朋友${friend_name}，发送HELP或访问http://jiwai.de/了解更多！
 _STR_;
+			$body = <<<_STR_
+哎呀！没有找到邀请您的朋友${friend_name}。
+_STR_;
 		}
 		else
 		{
@@ -1048,6 +1103,9 @@ _STR_;
 
 		$help = <<<_STR_
 D命令帮助：D 帐号 您想说的悄悄话。有问题吗？上 http://JiWai.de/ 看看吧。
+_STR_;
+		$help = <<<_STR_
+D命令帮助：D 帐号 您想说的悄悄话。
 _STR_;
 
 		$param_body = $robotMsg->GetBody();
@@ -1119,11 +1177,17 @@ _STR_;
 			$body = <<<_STR_
 您是$address_user_row[nameFull] ($address_user_row[nameScreen])，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。
 _STR_;
+			$body = <<<_STR_
+您是$address_user_row[nameFull] ($address_user_row[nameScreen]) 。
+_STR_;
 		}
 		else
 		{
 			$body = <<<_STR_
 您是$address_user_row[nameScreen]，叽歪档案位于：http://jiwai.de/$address_user_row[nameScreen]/ 。设置密码请来这里：http://jiwai.de/wo/account/complete
+_STR_;
+			$body = <<<_STR_
+您是$address_user_row[nameScreen]，设置密码请来这里：http://jiwai.de/wo/account/complete
 _STR_;
 		}
 
