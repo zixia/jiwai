@@ -263,6 +263,54 @@ _SQL_;
 					);
 	}
 
+	/*
+	 *	获取用户的会议模式下的Status
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdsFromConferenceUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= JWDB_Cache::CheckInt($idUser);
+		$num	= JWDB_Cache::CheckInt($num);
+
+		$userInfo = JWUser::GetUserInfo( $idUser );
+
+		if( empty( $userInfo ) || null == $userInfo['idConference'] ){
+			return array();
+		}
+
+		$idConference = JWDB_Cache::CheckInt( $userInfo['idConference'] );
+
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
+		$sql = <<<_SQL_
+SELECT		 id
+		,id	as idStatus
+		,idUser
+FROM		Status
+WHERE		idConference = $idConference
+ORDER BY 	timeCreate desc
+LIMIT 		$start,$num
+_SQL_;
+
+		//AND Status.idUser<>1927 -- XXX block youyouwan
+
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		array_push($user_ids, $idUser);
+
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> $user_ids
+					);
+	}
 
 
 	/*
