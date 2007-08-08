@@ -96,6 +96,7 @@ class JWStatus {
 			//user Info
 			$userInfo = JWUser::GetUserInfo( $idUser );
 			$isProtected = $userInfo['protected'];
+			$idUserReplyTo = $row['idUserReplyTo'];
 		}else{
 
 			$status = preg_replace('[\r\n]',' ',$status);

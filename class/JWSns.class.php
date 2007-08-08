@@ -494,12 +494,21 @@ class JWSns {
 					
 					//
 					if( $conference && $userInfo && $userInfo['idConference']) {
-						$reply_info = array(
+						if( $conference['friendOnly'] == 'Y' 
+							&& false == JWFriend::IsFriend($userInfo['id'], $idUser) ) {
+							$reply_info = array(
+								'status_id' => null,
+								'user_id' => $userInfo['id'],
+								'smssuffix' => null,
+								);
+						}else{
+							$reply_info = array(
 								'status_id' => null,
 								'user_id' => $userInfo['id'],
 								'smssuffix' => $conference['number']==null ? 
 										"99$userInfo[id]" : "1$conference[number]",
 								);
+						}
 						return $reply_info;
 					}
 				}
@@ -568,8 +577,8 @@ class JWSns {
 		 * Modified 2007/07/29
 		 */
 		$processInfo = JWSns::ProcessStatusNotify( $idUser, $status, $reply_info, $device, $serverAddress );
+		$oldIdUser = $idUser;
 		if( $processInfo['reply'] ) {
-			$oIdUser = $idUser;
 			$idUser = "$idUser:$processInfo[reply]";
 		}
 		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature );
@@ -580,7 +589,7 @@ class JWSns {
 		}
 		
 		//Refresh facebook profile if necessary
-		if (JWFacebook::Verified( ( isset($oIdUser) ? $oIdUser : $idUser) )) JWFacebook::RefreshRef($idUser);
+		if ( JWFacebook::Verified( $oldIdUser ) ) JWFacebook::RefreshRef($idUser);
 		return $ret;
 	}
 
@@ -618,20 +627,12 @@ class JWSns {
 			'serverAddress' => $serverAddress,
 			'smssuffix' => $smssuffix,
 		);
-		/*
-		 * Urgly 处理，当回复用户为 会议用户，且更新用户，不满足会议用户回复条件，设更新的idUserReplyTo为 None;
-		 */
-		if( $idUserReplyTo ) {
-			$userInfoReplyTo = JWUser::GetUserInfo( $idUserReplyTo );
-			if( $userInfoReplyTo['idConference'] && null == $smssuffix )
-				return $idUserReplyTo = 'N';
-		}
 
 		$returnArray = array(
 			'reply' => $idUserReplyTo,
 			'notify' => $notifyInfo,
 		);
-		$returnArray['reply'] = ( $smssuffix == null) ? null : $idUserReplyTo;
+
 		return $returnArray;
 	}
 
