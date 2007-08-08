@@ -473,6 +473,12 @@ class JWSns {
 	static public function GetReplyTo($idUser, $serverAddress, $type='sms'){
 		switch( $type ){
 			case 'sms':
+				/*
+				 * add 2007-08-08 for sms number alias
+				 */
+				if( isset( JWConference::$smsAlias[ $serverAddress ] ) ){
+					$serverAddress = JWConference::$smsAlias[ $serverAddress ];
+				}
 				if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
 					$normalMeeting = $matches[1] == 99 ? true : false;
 					$userInfo = $conference = null;
