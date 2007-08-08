@@ -80,7 +80,7 @@ function send($idUser, $idReceiver){
         }else{
             JWSession::SetInfo('error', "哎呀！由于系统临时故障，您的悄悄话未能成功的发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>，请稍后再试吧。");
         }
-        redirect( );
     }
+    redirect( );
 }
 ?>

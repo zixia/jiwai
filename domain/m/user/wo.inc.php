@@ -1,4 +1,9 @@
 <?php
+$showProtected = $userInfo['isProtected'] == 'N';
+if( false == $showProtected ){
+    $showProtected = JWFriend::IsFriend( $userInfo['id'], $loginedUserInfo['id'] );
+}
+
 if( $statusTab == 'with_friends' ) {
 
     $pageTitle = "$userInfo[nameScreen]和朋友们在做什么";
@@ -41,6 +46,7 @@ JWRender::Display( $tpl , array(
                     'statuses' => $statuses,
                     'users' => $userRows,
                     'shortcut' => $shortcut,
+                    'showProtected' => $showProtected,
                     'loginedUserInfo' => $loginedUserInfo,
                     'pageString' => $pageString,
                 ));
