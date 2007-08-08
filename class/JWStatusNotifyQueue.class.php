@@ -97,6 +97,17 @@ UPDATE StatusNotifyQueue
 	SET dealStatus='$dealStatusString'
 	WHERE id IN ($idCondition)
 SQL;
+
+		/*
+		 * 2007-08-08
+		 */
+		if( $dealStatus == self::DEAL_DEALED ){
+			$sql = <<<SQL
+DELETE FROM StatusNotifyQueue
+	WHERE id IN ($idCondition)
+SQL;
+		}
+
 		return JWDB::Execute( $sql );
 	}
 
