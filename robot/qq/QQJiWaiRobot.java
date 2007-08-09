@@ -31,6 +31,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 
 	private static int onlinePort = 55020;
 
+	public static String mOnlineScript = null;
+
 	private String qqpass;
 
 	private int state = 0;
@@ -94,6 +96,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			config.load(new FileInputStream("config.ini"));
 		} catch (Exception e) {
 		}
+
+		mOnlineScript = config.getProperty("online.script", System.getProperty("online.script"));
 
 		server = config.getProperty("qq.server", System
 				.getProperty("qq.server"));
@@ -177,11 +181,14 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		switch(p.status){
 			case QQ.QQ_STATUS_AWAY:
 				onlineFriends.put(qq, "A");
+				worker.setOnlineStatus( qq, "A" );
 				break;
 			case QQ.QQ_STATUS_ONLINE:
+				worker.setOnlineStatus( qq, "Y" );
 				onlineFriends.put(qq, "Y");
 				break;
 			case QQ.QQ_STATUS_OFFLINE:
+				worker.setOnlineStatus( qq, "N" );
 				onlineFriends.remove(qq);
 				break;
 		}
@@ -367,6 +374,11 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 						break;
 					}
 
+					if( line.equals("ROnlineScript") ){
+						worker.startOnlineProcessor( mOnlineScript );
+						break;
+					}
+
 					if( onlineFriends.containsKey( line ) )
 						out( onlineFriends.get(line) );
 					else
@@ -402,6 +414,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		QQJiWaiRobot qq_robot = new QQJiWaiRobot();
 		new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
 		worker = new MoMtWorker(DEVICE, mQueuePath, qq_robot);
+		worker.startOnlineProcessor( mOnlineScript );
 		worker.run();
 	}
 }
