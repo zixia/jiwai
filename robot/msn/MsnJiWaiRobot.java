@@ -38,7 +38,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public final static String DEVICE = "msn";
 	
 	//worker
-	public MoMtWorker worker = null;
+	public static MoMtWorker worker = null;
 	
 	//userMap;
 	public static ConcurrentHashMap<String,String[]> onlineFriends = new ConcurrentHashMap<String, String[]>();
@@ -46,6 +46,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 
 	//onlinePort
 	public static int onlinePort = 55010;
+	public static String mOnlineScript = null;
 
 	/**
 	 * init robot
@@ -64,11 +65,13 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 			onlinePort = Integer.valueOf( config.getProperty("online.port", System.getProperty("online.port", "55010") )).intValue();
 		}catch(Exception e){
 		}
+		mOnlineScript = config.getProperty("online.script", System.getProperty("online.script") );
 
 		mPassword = config.getProperty("msn.pass", System.getProperty("msn.pass"));
 		_mEmail = config.getProperty("msn.email", System.getProperty("msn.email"));
 		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path"));
 		mDisplayName = config.getProperty("msn.display.name", System.getProperty("msn.display.name", _mDisplayName));
+
 
 		if (_mEmail == null || mPassword == null || mQueuePath == null) {
 			Logger.logError("Please give msn(email,password) and queue(path) definition!");
@@ -80,19 +83,18 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 						
 		//MoMtWorker
 		worker = new MoMtWorker("msn", mQueuePath, this);
-		
 		mEmail = _mEmail.replaceAll("\\s+", "").split(",");
-
 	}
 
 	public static void main(String[] args) throws Exception {
 		robot = new MsnJiWaiRobot();
 		robot.init();
+		worker.startOnlineProcessor( mOnlineScript );
 		for( String account : robot.mEmail ){
 			loginMsnAccount( account , false );
 		}
 		new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
-		robot.worker.run();
+		worker.run();
 	}
 
 	public static void loginMsnAccount( String account , boolean force) {
@@ -210,6 +212,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 			s[0] = "A";
 		}
 
+		worker.setOnlineStatus( email, s[0] );
 		onlineFriends.put(email, s);
 	}
 
@@ -262,6 +265,11 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 						if( ac.indexOf("@") > 0 ){
 							loginMsnAccount( ac , true );
 						}
+						break;
+					}
+
+					if( line.equals("ROnlineScript") ){
+						worker.startOnlineProcessor( mOnlineScript );
 						break;
 					}
 
