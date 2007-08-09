@@ -212,7 +212,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 			s[0] = "A";
 		}
 
-		worker.setOnlineStatus( email, s[0] );
+		worker.setOnlineStatus( email, s[0], serverAddress );
 		onlineFriends.put(email, s);
 	}
 

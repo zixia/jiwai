@@ -118,7 +118,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			online = "N";
 		else if ( status.equals("away") )
 			online = "A";
-		worker.setOnlineStatus( address, online );
+		worker.setOnlineStatus( address, online, mAddress );
 	}
 	
 	/**

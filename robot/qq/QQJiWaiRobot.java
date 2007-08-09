@@ -28,6 +28,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	private boolean udp;
 
 	private int qqno;
+	private static String mAddress = null;
 
 	private static int onlinePort = 55020;
 
@@ -118,6 +119,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 					.getProperty("qq.no")));
 			qqpass = config.getProperty("qq.pass", System
 					.getProperty("qq.pass"));
+			mAddress = String.valueOf( qqno );
 		} catch (Exception ee) {
 			Logger.logError("Can't find qq.no, Program will exit.");
 			System.exit(-1);
@@ -181,14 +183,14 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		switch(p.status){
 			case QQ.QQ_STATUS_AWAY:
 				onlineFriends.put(qq, "A");
-				worker.setOnlineStatus( qq, "A" );
+				worker.setOnlineStatus( qq, "A", mAddress );
 				break;
 			case QQ.QQ_STATUS_ONLINE:
-				worker.setOnlineStatus( qq, "Y" );
+				worker.setOnlineStatus( qq, "Y", mAddress );
 				onlineFriends.put(qq, "Y");
 				break;
 			case QQ.QQ_STATUS_OFFLINE:
-				worker.setOnlineStatus( qq, "N" );
+				worker.setOnlineStatus( qq, "N", mAddress );
 				onlineFriends.remove(qq);
 				break;
 		}

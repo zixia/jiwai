@@ -1,23 +1,25 @@
 #!/usr/bin/php
-#######################
-# used to execute by java process;
-#######################
 <?php
+/**
+ * This file is used to sync users' im online status;
+ * It would be called by Java processor;
+ * I did not read javaProcessor's inputStream, so ****U must not let this function output anything****
+ * otherwise the javaProcessor will be hung.
+ */ 
 define( 'CONSOLE', true );
 require_once( dirname(__FILE__) . '/../../jiwai.inc.php' );
 
 while ( $line=JWConsole::getline() ){
-	if( preg_match('/(\w+)\/\/(.*)\s*:\s*(\w)/', $line, $matches ) ){
+
+	if( preg_match('/^(\w+):\/\/(.*)\/(.*)\/([[:alpha:]]+)\/$/', trim($line), $matches ) ){
+
 		$type = strtolower( $matches[1] );
 		$address = strtolower( $matches[2] );
-		$status = strtoupper( $matches[3] );
+		$serverAddress = strtolower( $matches[3] );
+		$status = strtoupper( $matches[4] );
 
-		error_log ( "$type - $address -$status\n", 3, "/tmp/logrobot" );
+		JWIMOnline::SetIMOnline($address, $type, $serverAddress, $status);
 
-		JWDevice::UpdateDeviceOnlineStatus($address, $type, $status);
-	}else{
-		// error_log ( "not match\n", 3, "/tmp/logrobot" );
 	}
-	//error_log( time().": $line" , 3, "/tmp/logrobot" );
 }
 ?>
