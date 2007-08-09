@@ -30,6 +30,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static String _mStatus = "叽歪一下吧！（发送HELP了解更多）";
 	public static String mStatus = null;
 	public static String mAddress = null;
+	public static String mOnlineScript = null;
 	
 	public static MoMtWorker worker = null;
 	
@@ -38,18 +39,16 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		Properties config = new Properties();
 		try {
 			config.load(new FileInputStream("config.ini"));
-			mServer = config.getProperty("gtalk.server");
-			mAccount = config.getProperty("gtalk.account");
-			mPassword = config.getProperty("gtalk.password");
-			mQueuePath = config.getProperty("queue.path");
-			mStatus = config.getProperty("gtalk.status", _mStatus);
-		} catch (IOException e) {
-			mServer = System.getProperty("gtalk.server");
-			mAccount = System.getProperty("gtalk.account");
-			mPassword = System.getProperty("gtalk.password");
-			mQueuePath = System.getProperty("queue.path");
-			mStatus = System.getProperty("gtalk.status", _mStatus);
+		}catch(IOException e){
 		}
+
+		mServer = config.getProperty("gtalk.server", System.getProperty("gtalk.server") );
+		mAccount = config.getProperty("gtalk.account", System.getProperty("gtalk.account") );
+		mPassword = config.getProperty("gtalk.password", System.getProperty("gtalk.password") );
+		mStatus = config.getProperty("gtalk.status", _mStatus );
+
+		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path") );
+		mOnlineScript = config.getProperty("online.script", System.getProperty("online.script") );
 
 		try{
 			onlinePort = Integer.valueOf( config.getProperty("online.port", System.getProperty("online.port", "55010") )).intValue();
@@ -80,6 +79,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	
 	public void processPacket(Packet p) {
 		if( p instanceof Presence ){
+			processOnlineStatus((Presence) p);
 			processPresence((Presence) p);
 		}else if( p instanceof Message){
 			processMessage((Message) p);
@@ -104,6 +104,21 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		msg.setServerAddress(mAddress);
 		msg.setBody(m.getBody());
 		worker.saveMoMessage(msg);
+	}
+
+	/**
+	 * Process Presence Package
+	 * @param p
+	 */
+	private void processOnlineStatus(Presence p){
+		String status = p.getType().toString();
+		String address = getFromEmail(p.getFrom());
+		String online = "Y";
+		if( status.equals("error") || status.equals("unavailable") )
+			online = "N";
+		else if ( status.equals("away") )
+			online = "A";
+		worker.setOnlineStatus( address, online );
 	}
 	
 	/**
@@ -137,6 +152,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static void main(String args[]) {
 		GTalkJiWaiRobot gtalk_robot = new GTalkJiWaiRobot();
 		worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
+		worker.startOnlineProcessor( mOnlineScript );
 		gtalk_robot.connect();
 		new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
 		gtalk_robot.run();
@@ -215,6 +231,11 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 					//Out by client; 
 					if( line.toUpperCase().equals("EXIT") 
 							|| line.toUpperCase().equals("QUIT") ){
+					       	break;
+					}
+
+					if( line.equals("ROnlineScript") ) {
+						worker.startOnlineProcessor( mOnlineScript );
 					       	break;
 					}
 

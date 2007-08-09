@@ -706,5 +706,56 @@ _SQL_;
 	{
 		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'skype', 'facebook' /*, 'jabber'*/ );
 	}
+
+	/*
+	 * 更新用户设备在线状态
+	 */
+	static public function UpdateDeviceOnlineStatus( $address, $type='gtalk',  $status='Y' ){
+
+		/* Cache the operation */
+		$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array('JWDevice', 'UpdateDeviceOnlineStatus'), array($address, $type ) );
+		$memcache = JWMemcache::Instance();
+		$deviceRow = $memcache->Get( $cachedKey );
+		if ( false === $deviceRow ){
+			$deviceRow = self::GetDeviceDbRowByAddress( $address, $type );
+			$memcache->Set( $cachedKey, $deviceRow , 0, 300 );
+		}
+
+		switch ( $status ){
+			case 'Y':
+				$onlineStatus = 'ONLINE';
+			break;
+			case 'N':
+				$onlineStatus = 'OFFLINE';
+			break;
+			case 'A':
+				$onlineStatus = 'AWAY';
+			break;
+			default:
+			return;
+		}
+		
+		/*
+		 * cache it if changed or return;
+		 */
+		if( empty($deviceRow) || $deviceRow['onlineStatus'] == $onlineStatus ){
+			return;
+		}
+		$deviceRow['onlineStatus'] = $onlineStatus;
+		$memcache->Set( $cachedKey, $deviceRow , 0, 300 );
+
+		
+		/*
+		 * operate mysql
+		 */
+		$sql = <<<SQL
+UPDATE Device 
+	Set
+		`onlineStatus` = '$onlineStatus'
+	WHERE
+		`type` = '$type' AND `address` = '$address'
+SQL;
+		JWDB::Execute( $sql );
+	}
 }
 ?>
