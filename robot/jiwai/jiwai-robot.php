@@ -24,11 +24,9 @@ JWConsole::menu ($items, true);
 */
 
 //echo JWConsole::convert("%yzixia");
-while( true ) {
-	try {
-		JWRobot::run();
-	}catch(Exceptione $e){
-		JWLog::Log(LOG_ERR, "JWException: " . $e->GetMessage() );
-	}
+try {
+	JWRobot::run();
+}catch(Exceptione $e){
+	JWLog::Log(LOG_ERR, "JWException: " . $e->GetMessage() );
 }
 //?>
