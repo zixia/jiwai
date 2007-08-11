@@ -59,10 +59,11 @@ class JWNudge {
 			if ( empty($device_row) )
 				continue;
 			
-			$device_send_via = $user_row['deviceSendVia'];
+			$deviceSendVia = $user_row['deviceSendVia'];
+			$availableSendVia = self::GetAvailableSendVia( $device_row, $deviceSendVia );
 
-			if ( isset($device_row[$device_send_via]) )
-				JWNudge::NudgeDevice( $device_row, $user_row['deviceSendVia'], $message, $messageType );
+			if ( $availableSendVia && isset( $device_row[$availableSendVia] ) )
+				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType );
 			else
 				JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
 											."[$user_row[deviceSendVia]]"
@@ -122,24 +123,45 @@ class JWNudge {
 				break;
 		}
 	}
-
+	
 	/**
-	 * 这个方法用来判断，发出去的Nudge消息，是否可以直接回复，目前仅仅 Sms 可以通过追加长号码的方法，使得用户，可以直接回复消息给特定的Nudge来源用户
+	 * 为用户选择发送通知的设备；
+	 * 如果用户默认为 sms ，则未其检查在线其他im
+	 * 如过默认为 web，不发送
+
 	 */
-	static public function GetReplyToIdUser( $type, $fromIdUser, $justSms=true) {
-		if( 'sms' !== $type && true === $justSms ) 
+	static public function GetAvailableSendVia( $deviceRow = array(), $deviceSendVia = 'web' ) {
+
+		if( empty( $deviceRow ) )
 			return null;
+		
+		$nudgeOrder = explode( ',' , $deviceSendVia );
 
-		$userInfo = JWUser::GetUserInfo( $fromIdUser );
+		$shortcutArray = array();	
+		foreach( $deviceRow as $type=>$row ){
+			array_push( $shortcutArray, array( 'type' => $type, 'address' => $row['address'] ) );
+		}
 
-		/* 
-		 * 用户为会议账户 
-		 */
-		if( $userInfo['idConference'] && true === $justSms ) {
-			return $userInfo['idConference'];
+		$onlineArray = JWIMOnline::GetDbRowsByAddressTypes( $shortcutArray );
+
+		foreach( $nudgeOrder as $device ){
+			foreach( $onlineArray as $key=>$o ){
+				if( 0 == strncasecmp( $key, $device, strlen($device) ) ){
+					if( $o['onlineStatus'] !== 'OFFLINE' ) 
+					       return $device;	
+				}
+			}
+		}
+
+		if( isset( $deviceRow['sms']) && in_array('sms', $nudgeOrder) ){
+			return 'sms';
 		}
 
 		return null;
 	}
 }
+/**
+require_once( '../jiwai.inc.php' );
+JWNudge::NudgeUserIds( array('89') , 'test', $messageType='nudge');
+**/
 ?>

@@ -64,6 +64,38 @@ _SQL_;
 	}
 
 	/**
+	 * Get IMOnline By Short cut
+	 */
+	static public function GetDbRowsByAddressTypes( $addressTypeArray ){
+		if( false === is_array( $addressTypeArray ) )
+			return array();
+		
+		$shortcutArray = array();
+		foreach( $addressTypeArray as $addressType){
+			array_push( $shortcutArray, "$addressType[type]:$addressType[address]" );
+		}
+		if( empty( $shortcutArray ) )
+			return array();
+
+		$shortcutString = implode( "','", $shortcutArray );
+		
+		$sql = <<<_SQL_
+SELECT type, address,shortcut, onlineStatus, timeUpdate
+	FROM IMOnline
+	WHERE shortcut IN ('$shortcutString')
+_SQL_;
+	
+		$rows = JWDB::GetQueryResult( $sql, true );
+		
+		$ret = array();
+		foreach( $rows as $row ){
+			$ret[ $row['shortcut'] ] = $row;
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Get IMOnline By Shortcut
 	 */
 	static public function GetDbRowByShortcut( $shortcut ){
