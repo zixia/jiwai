@@ -716,9 +716,9 @@ _HTML_;
 			return;
 
 		if ( !isset($options['pagination']) )
-			$options['pagination'] 	= true;
+			$options['pagination'] 	= false;
 		if ( !isset($options['search']) )
-			$options['search'] 	= true;
+			$options['search'] 	= false;
 		if ( !isset($options['icon']) )
 			$options['icon'] 	= true;
 		if ( !isset($options['trash']) )
@@ -821,7 +821,7 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 </div><!-- odd -->
 <?php 
 		}
-		if ($options['search'] || $$options['pagination']) {
+		if ($options['search'] || $options['pagination']) {
 ?>
 <div class="line"></div>
 <div class="add">
@@ -832,8 +832,26 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 <?php
 			}
 			if ($options['pagination']) {
+				static $pages = 4;
+				$l = $options['pagination']->GetPageNo() - $pages;
+				if ($l<1) $l = 1;
+				$r = $l + $pages*2;
+				if ($r>$options['pagination']->GetOldestPageNo()) $r = $options['pagination']->GetOldestPageNo();
 ?>
-<div class="pages"><a href="#">上一页</a><a href="#">1</a><a href="#" class="now">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">下一页</a></div>
+<div class="pages">
+<?php
+for ($i=$l;$i<$r+1;$i++) {
+	$u = $i == $options['pagination']->GetPageNo() ? '' : JWPagination::BuildPageUrl($_SERVER['REQUEST_URI'], $i);
+	if ($u) 
+		echo <<<__HTML__
+<a href="$u">$i</a>
+__HTML__;
+	else echo <<<__HTML__
+<a style="background:#fff; color:#000;">$i</a>
+__HTML__;
+}
+?>
+</div>
 <?php
 			}
 ?>
@@ -1048,7 +1066,7 @@ _HTML_;
 				default:
 					if ($n % 4 == 0) echo "			<tr>\n";
 					echo <<<_HTML_
-				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameFull]" border="0" />$user_db_row[nameFull]</a></div></td>
+				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$user_db_row[nameFull]</a></div></td>
 
 _HTML_;
 					if ($n % 4 == 3) echo "			</tr>\n";

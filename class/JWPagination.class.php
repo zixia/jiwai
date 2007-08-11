@@ -97,6 +97,11 @@ class JWPagination {
 		return $this->mNumPerPage;
 	}
 
+	public function GetPageNo()
+	{
+		return ($this->mCurrentPageNo);
+	}
+
 	public function GetStartPos()
 	{
 		return ($this->mCurrentPageNo - 1)*$this->mNumPerPage;
