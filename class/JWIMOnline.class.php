@@ -87,7 +87,7 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) ){
-			return arrya();
+			return array();
 		}
 		
 		$ret = array();
