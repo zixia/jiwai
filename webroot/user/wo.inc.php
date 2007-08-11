@@ -191,8 +191,6 @@ JWTemplate::html_head($options);
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container">
 	<!-- div id="flaginfo">zixia</div -->
 <!-- google_ad_section_start -->
@@ -214,7 +212,7 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 <?php 
 $menu_list = array (
 		 'friends'	=> array(	 'active'	=> false	
-								,'name'		=> "和朋友们(24小时内)"
+								,'name'		=> "和朋友们"
 								,'url'		=> "/$page_user_info[nameScreen]/with_friends"
 							)
 		,'archive'	=> array(	 'active'	=> false
@@ -302,10 +300,12 @@ $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
-								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
 								, array ('action'	, array($user_action_row,$page_user_info['id']))
-								, array ('search'	, array($page_user_info['nameScreen'], $q))
+								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
+								//, array ('search'	, array($page_user_info['nameScreen'], $q))
+								, array ('separator'	, array())
 								, array ('friend'	, array($arr_friend_list))
+								, array ('rss'		, array('user', $page_user_info['nameScreen']))
 							);
 
 if ( ! JWLogin::IsLogined() )
@@ -315,11 +315,11 @@ if ( ! JWLogin::IsLogined() )
 
 
 JWTemplate::sidebar( $arr_menu, $page_user_id);
+JWTemplate::container_ending();
 ?>
 
 </div><!-- #container -->
 
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

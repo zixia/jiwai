@@ -43,60 +43,63 @@ $options = array(	 'title'		=> '叽歪广场'
 			);
 
 ?>
-
 <head>
 <?php JWTemplate::html_head($options) ?>
 </head>
 
-
-<body class="status" id="public_timeline">
-
+<body class="front" id="front">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
+
+<div class="separator">
+	<div class="note1">
+	<h2>一句话博客</h2>
+	<p>用只言片语串成生活轨迹</p>
+	</div>
+	<div class="note2">
+	<h2>分享与沟通</h2>
+	<p>关心朋友的一举一动</p>
+	</div>
+	<div class="note3">
+	<h2>贴身叽歪</h2>
+	<p>手机/QQ/MSN/GTalk/Skype</p>
+	</div>
+</div>
 
 <div id="container">
 	<div id="content">
 		<div id="wrapper">
 
-
 			<span class="ytf" style="font-family: 黑体">
-				<h2><a href="http://help.jiwai.de/NewUserGuide" target="_blank">第一次来，不知道如何叽歪？很容易，来这里吧！</a></h2>
 			</span>
 			<script type="text/javascript">
 				JiWai.Yft(".ytf");
 			</script>
 
-
 <?php JWTemplate::ShowActionResultTips(); ?>
-
 
 			<div class="tab">
 
-<?php JWTemplate::tab_header( array( 'title'	=>	'最新动态 - 大家在做什么？' 
+<?php JWTemplate::tab_header( array( 'title'	=>	'看看大家都在叽歪什么...' 
 									, 'title2'	=>	''//你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
-							) )
-?>
-
-<?php 
+							) );
 
 $options	= array ( 	 'uniq'		=> 2
 						,'nummax'	=> 10
 					 );
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
 ?>
-  
 			</div><!-- tab -->
 		</div><!-- wrapper -->
 	</div><!-- content -->
-
 
 <?php 
 
 $newest_options['title']		= '看看新来的';
 $newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
+$newest_options['view']			= 'list';
 
 $blog_options['user_name']	= 'blog';
 $blog_options['title']		= '叽歪de博客最新主题';
@@ -107,23 +110,27 @@ $announce_options['title']		= '公告';
 $featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds() );
 
 $arr_menu = array(	
-					 array ('announce'		, array($announce_options) )
+					array ('announce'		, array($announce_options) )
+					,array ('separator'		, array() )
 					,array ('announce'		, array($blog_options) )
-					,array ('featured'			, array($featured_options) )
-					,array ('featured'			, array($newest_options) )
+					,array ('separator'		, array() )
+					,array ('featured'		, array($featured_options) )
+					,array ('separator'		, array() )
+					,array ('featured'		, array($newest_options) )
 				);
 
-if ( ! JWLogin::IsLogined() )
+if ( ! JWLogin::IsLogined() ) {
+	array_unshift ($arr_menu, array('separator', array()));
 	array_unshift ($arr_menu, array('register', array(true)));
-
-array_unshift($arr_menu, array ('head'	, array('JiWai.de <strong>叽歪广场</strong>')));
+	array_unshift ($arr_menu, array('login', array()));
+}
+//array_unshift($arr_menu, array ('head'	, array('JiWai.de <strong>叽歪广场</strong>')));
 
 JWTemplate::sidebar($arr_menu, null);
+JWTemplate::container_ending();
 ?>
-			
-		
+
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

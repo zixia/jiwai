@@ -90,7 +90,7 @@ _FOOT_;
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
-		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.1.js' );
+		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.11.js' );
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -111,7 +111,7 @@ _STR_;
 
 
 		$rss_html = <<<_HTML_
-<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+	<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
 _HTML_;
 
 		if ( !empty($options['rss']) )	
@@ -127,19 +127,21 @@ _HTML_;
 		}
 
 		if ( empty($options['refresh_time']) )	$refresh_time 	= null;
-		else									$refresh_time 	= $options['refresh_time'];
-
+		else	$refresh_time 	= $options['refresh_time'];
 
 		if ( empty($options['refresh_url']) )	$refresh_url	= $_SERVER['SCRIPT_URI'];
-		else									$refresh_url	= $options['refresh_url'];
+		else	$refresh_url	= $options['refresh_url'];
+
+		if ( empty($options['refresh_ajax']) )	$refresh_ajax	= false;
+		else	$refresh_ajax	= $options['refresh_ajax'];
 
 		if ( null===$refresh_time )
 			$refresh_html = '';
 		else
-			$refresh_html = <<<_HTML_
+			if (!$options['refresh_ajax']) $refresh_html = <<<_HTML_
 	<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
-
+			else $refresh_html = "<script type=\"text/javascript\">RefreshInterval=$refresh_refresh_time;</script>";
 	
 		if ( !isset($options['ui_user_id']) )
 			$options['ui_user_id'] = JWLogin::GetCurrentUserId();
@@ -172,7 +174,6 @@ _HTML_;
 		echo <<<_HTML_
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-
 	<title>$title</title>
 	<meta name="keywords" content="$keywords" />
 	<meta name="description" content="$description" />
@@ -180,8 +181,6 @@ _HTML_;
 $rss_html
 $refresh_html
 $openid_html
-
-
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript">window.ServerTime=$time;</script>
@@ -205,48 +204,97 @@ _HTML_;
 ?>
 
 
-<ul id="accessibility">
-    <!--li>
+<!-- ul id="accessibility">
+    <li>
       您正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
-    </li-->
+    </li>
 	<li>
 		<a href="#navigation" accesskey="2">跳转到导航目录</a>
 	</li>
 	<li>
 		<a href="#side">跳转到功能目录</a>
 	</li>
-</ul>
+</ul -->
 
 
 <?php
 	}
 
 
-	static public function header($showMenu=true)
+	static public function header($highlight=null)
 	{
 		$nameScreen = JWUser::GetCurrentUserInfo('nameScreen');
+		if ( empty($nameScreen) ) {
+			$nav = array(
+				'/' => '首页',
+				'/public_timeline/' => '逛逛',
+				'/wo/account/create' => '注册/登录',
+				'/help/' => '帮助'
+			);
+		} else {
+			$nav = array(
+				'/wo/' => '我的首页',
+				'/'.$nameScreen.'/' => '我的资料',
+				'/public_timeline/' => '逛逛',
+				'/wo/gadget/' => '转贴',
+				'/wo/account/settings' => '设置',
+				'/help/' => '帮助',
+				'/wo/account/logout' => '退出',
+			);
+		}
+		if (!$highlight) {
+			$a = array_reverse($nav);
+			$urlNow = $_SERVER['REQUEST_URI'];
+			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
+			if (!$highlight) $highlight = $url;
+		}
 ?>
-
 <div id="header">
 	<div id="navigation">
-		<h2><a class="header" href="/">叽歪de</a></h2>
-<?php if ( $showMenu && strlen($nameScreen) ){ ?>
+		<h2><a class="header" href="http://jiwai.de/">叽歪de</a></h2>
+		<div id="sitetip" class="tip" style="display:none;"></div>
 		<ul>
-			<li class="first"><a href="/wo/">首页</a></li>
-			<li><a href="/<?php echo $nameScreen ?>/">我de档案</a></li> <li><a href="<?php echo self::GetConst('UrlPublicTimeline')?>">叽歪广场</a></li>
-			<li><a href="/wo/gadget/">窗可贴</a></li>
-			<li><a href="/wo/invitations/invite">邀请</a></li>
-			<li><a href="/wo/account/settings">设置</a></li>
-			<li><a href="/help/">帮助</a></li>
-			<li><a href="/wo/logout">退出</a></li>
-		</ul>
+<?php foreach ($nav as $url => $txt) { ?>
+		<li>
+			<div class="line1"></div>
+			<div class="nav"><a href="<?php echo $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+		</li>
 <?php } ?>
+		</ul>
 	</div>
 </div>
-
 <?php
 	}
 
+
+	static public function slogon()
+	{
+?>
+<div class="separator">
+	<div class="note1">
+	<h2>一句话博客</h2>
+	<p>用只言片语串成生活轨迹</p>
+
+	</div>
+	<div class="note2">
+	<h2>分享与沟通</h2>
+	<p>关心朋友的一举一动</p>
+	</div>
+	<div class="note3">
+	<h2>贴身叽歪</h2>
+
+	<p>手机/QQ/MSN/GTalk/Skype</p>
+	</div>
+</div>
+<?php
+	}
+
+	static public function container_ending()
+	{
+?>
+<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"/>
+<?php
+	}
 
 	static public function footer()
 	{
@@ -340,7 +388,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 						</div>
 					</div>
 					<div class="submit">
-						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="叽歪一下" />
+						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="" />
 					</div>
 				</fieldset>
 			</form>
@@ -432,7 +480,8 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 			return;
 		}
 
-		echo "<ul class='tabMenu'>";
+		$left = 510 - 80 * count($menuArr);
+		echo "<ul class=\"tabMenu\" style=\"margin-left: ${left}px;\">";
 
 		foreach ( $menuArr as $menu => $options )
 		{
@@ -450,7 +499,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 	}
 
 
-	static public function tab_header( $vars=null )
+	static public function tab_header( $vars=array() )
 	{
 /*
 		//title2 长了之后，会莫名其妙的影响 tab 布局
@@ -461,7 +510,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 */
 
 		if ( !array_key_exists('title',$vars) )	
-			$vars['title'] = '你和<a href="/wo/friends/">你的朋友们</a>在做什么?';
+			$vars['title'] = '你和你的朋友们在做什么?';
 
 		if ( !array_key_exists('title2',$vars) )	
 			$vars['title2'] = '每分钟自动刷新一次。';
@@ -472,7 +521,14 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 						<td class="bg_tab_top_left">
 						</td>
 						<td class="bg_tab_top_mid">
-							<h2 style="font-size:18px"><?php echo $vars['title']; ?></h2>
+							<h2><?php echo $vars['title']; ?></h2>
+<?php
+		if (!empty($vars['find'])) {
+?>
+							<button>找</button><input type="text" value="输入用户名" />
+<?php
+		}
+?>
 						</td>
 						<td class="bg_tab_top_right">
 						</td>
@@ -481,17 +537,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 						<td class="bg_tab_top2_left">
 						</td>
 						<td colspan="2" class="bg_tab_top2_right">
-							<span style="display:none" id="timeline_refresh">
-
-    							<script type="text/javascript">
-//<![CDATA[
-document.write('<img alt="更新中..." src="http://asset.jiwai.de/img/icon_throbber.gif" title="更新中..." />')
-//]]>
-								</script>
-  							</span>
-
-							<?php echo $vars['title2']; ?>
-
+							<?php //echo $vars['title2']; ?>
 						</td>
 					</tr>
 
@@ -550,37 +596,34 @@ _HTML_;
 		$current_user_id	= JWLogin::GetCurrentUserId();
 
 ?>
-
-			<h2 class="thumb">
-				<a href="/wo/account/profile_image/<?php echo $name_screen?>"><img alt="<?php echo $name_full?>" border="0" src="<?php echo $photo_url?>" valign="middle" /></a>
-		
-				<?php echo $name_screen ?>
-
+			<div id="permalink">
+				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0;">
+					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="94" height="94"/></a></div>
+					<div class="cont">
+						<div class="bg"></div>
+<table width="100%" border="0" cellspacing="5" cellpadding="0">
+  <tr>
+    <td><h3><?php echo $name_full; ?></h3></td>
+    <td align="right">
 <?php
-if ( isset($current_user_id)
-		&& $current_user_id!=$idUser 
-		&& JWFollower::IsFollower($idUser, $current_user_id) )
-{
-	echo <<<_HTML_
-<style type="text/css">
-#content h2.thumb small {
-font-size:0.4em;
-}
-</style>
-
-				<small>
-					是一个被你订阅了的朋友
-				</small>
-_HTML_;
-}
-
+if ( isset($current_user_id) && $current_user_id!=$idUser && JWFollower::IsFollower($idUser, $current_user_id) ) {
 ?>
-			</h2>
-
-			<div class="desc">
-	  			<p><?php echo $status?></p>
-	  			<p class="meta">
-<?php 
+      <small> 已订阅 </small>
+<?php
+} else {
+?>
+      <a href="#">成为<?php echo $name_full; ?>的粉丝</a>
+<?php
+}
+?>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><?php echo $status?></td>
+   </tr>
+  <tr>
+    <td><span class="meta">
+<?php
 if ( $isOpen && isset($statusRow) ) 
 {
 	echo <<<_HTML_
@@ -595,12 +638,11 @@ _HTML_;
 		else
 			echo " <a href='/$replyto/statuses/$statusRow[idStatusReplyTo]'>给 ${replyto} 的回复</a> ";
 	}
-
-	echo <<<_HTML_
-					<span id="status_actions_$status_id">
-_HTML_;
 }
-
+?>
+    </span></td>
+    <td align="right">
+<?php
 if ( $isOpen && isset($statusRow) && isset($current_user_id) )	
 {
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
@@ -613,9 +655,12 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	}
 }
 ?>
-					</span>
-  				</p>
-			</div>
+    </td>
+  </tr>
+</table>
+					</div>
+			      </div>
+		  </div>	
 
 <?php
 	}
@@ -631,27 +676,8 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
-	<a href="/wo/status/destroy/$idStatus"
-		onclick="
-			if (confirm('请确认操作：删除后将永远无法恢复！')) 
-			{
-				var f = document.createElement('form');
-				f.style.display = 'none';
-				this.parentNode.appendChild(f);
-				f.method = 'POST';
-				f.action = this.href;
-				var m = document.createElement('input');
-				m.setAttribute('type', 'hidden');
-				m.setAttribute('name', '_method');
-				m.setAttribute('value', 'delete');
-				f.appendChild(m);
-				f.submit();
-			};
-			return false;" 
-		title="删除这条更新？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条更新？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
 _HTML_;
-		
-		$html_str	= preg_replace('/[\r\n\s]+/', ' ',$html_str);
 
 		return $html_str;
 	}
@@ -677,31 +703,8 @@ _HTML_;
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_empty.gif");
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
-	//<a href="<?php echo $ajax_url? >" onclick="new Ajax.Request(
-		$html_str = "<img alt=\"$asset_star_alt\" border=\"0\" id=\"status_star_$idStatus\" src=\"$asset_star_url\" class=\"status_favor\" />";
+		$html_str = "<img alt=\"$asset_star_alt\" border=\"0\" id=\"status_star_$idStatus\" src=\"$asset_star_url\" onclick=\"JiWai.ToggleStar($idStatus);\" />";
 
-/*
-		$html_str = <<<_HTML_
-	<a href="#" onclick="new Ajax(
-					'$ajax_url'
-					,{
-						 method: 		'get'
-						,headers: 		{'AJAX':true}
-						,async:			true
-						,evalScripts:	true
-						,evalResponse:	true
-						,onRequest:		function(){
-							$('status_star_$idStatus').src='$asset_throbber_url'
-						}
-					}
-				).request(); return false;"><img alt="$asset_star_alt" border="0" id="status_star_$idStatus" 
-										src="$asset_star_url" /></a>
-
-_HTML_;
-
-		$html_str		= preg_replace('/[\r\n\s]+/', ' ',$html_str);
-*/
-//echo "<pre>";die($html_str);
 		return $html_str;
 	}
 
@@ -719,6 +722,10 @@ _HTML_;
 		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
 
+		if ( !isset($options['pagination']) )
+			$options['pagination'] 	= true;
+		if ( !isset($options['search']) )
+			$options['search'] 	= true;
 		if ( !isset($options['icon']) )
 			$options['icon'] 	= true;
 		if ( !isset($options['trash']) )
@@ -729,12 +736,15 @@ _HTML_;
 			$options['nummax']	= 0;
 		if ( !isset($options['protected']) )
 			$options['protected']	= false;
+		if ( !isset($options['strip']) )
+			$options['strip']	= false;
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
+		if (!$options['strip']) {
 ?>
-
-				<table class="doing" id="timeline" cellspacing="0" cellpadding="0">    
+<div id="timeline">
 <?php
+		}
 		$n=0;
 		$user_showed = array();
 
@@ -750,7 +760,6 @@ _HTML_;
 			// 最多显示的条数已经达到
 			if ( $options['nummax'] && $n >= $options['nummax'] )
 				break;
-
 			// 如果设置了一个用户只显示一条，则跳过
 			if ( $options['uniq']>0 && @$user_showed[$user_id]>=$options['uniq'] )
 				continue;
@@ -779,87 +788,68 @@ _HTML_;
 
 			$replyto			= $formated_status['replyto'];
 			$status				= $formated_status['status'];
+			if ($n) { //分割线
 ?>
-					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $status_id;?>">
-<?php if ( $options['icon'] ){ ?>
-						<td class="thumb">
-							<a href="/<?php echo $name_screen;?>"><img alt="<?php echo $name_full;?>" 
-									src="<?php echo $photo_url?>" width="48" height="48"/></a>
-						</td>
-<?php } ?>
-						<td>	
-<?php if ( $options['icon'] ){ ?>
-							<strong>
-								<a href="/<?php echo $name_screen?>" 
-										title="<?php echo $name_full?>"><?php echo $name_screen?></a>
-							</strong>
-<?php } ?>
-
-							<?php echo $status?>
-			
-							<span class="meta">
-								<?php if (is_numeric($status_id)) {?>
-								<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
-								<?php } else {
-									echo $duration;	
-								} ?>
-								来自 <?php echo "$device $sign"?> 
-<?php 
-		if (!empty($replyto) )
-		{
-			if ( empty($reply_id) )
-				echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
-			else
-				echo " <a href='/$replyto/statuses/$reply_id'>给 ${replyto} 的回复</a> " ;
-		}
+<div class="line"></div>
+<?php
+			}
+			$n++;
 ?>
+<div class="odd" id="status_<?php echo $status_id;?>">
+	<div class="head"><a href="/<?php echo $name_screen;?>/"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full; ?>" class="name"><?php echo $name_screen;?></a><?php echo $status?>
 
-								<span id="status_actions_<?php echo $status_id?>">
-
+		<span class="meta">
+<?php if (is_numeric($status_id)) {?>
+			<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
+<?php } else {
+			echo $duration;	
+} ?>
+			来自 <?php echo "$device $sign"?> 
+<?php if (!empty($replyto) ) { ?>
+			<a href="<?php echo empty($reply_id) ? "/$replyto/" : "/$replyto/statuses/$reply_id"; ?>">给 <?php echo $replyto; ?> 的回复</a>
+<?php } ?>
+			<span id="status_actions_<?php echo $status_id?>">
 <?php	
 if ( isset($current_user_id) && is_numeric($status_id) )	
 {
 	$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
-
 	echo self::FavouriteAction($status_id,$is_fav);
-	if ( ( JWUser::IsAdmin($current_user_id) || $current_user_id==$user_id  )
-			&& $options['trash'] )
+	if ( ( JWUser::IsAdmin($current_user_id) || $current_user_id==$user_id  ) && $options['trash'] )
 	{
 		//是自己的 status 可以删除
 		echo self::TrashAction($status_id);
 	}
 }
 ?>
-
-								</span>
-
-							</span>
-
-						</td>
-					</tr>
-<?php
-				}
+			</span>
+		</span><!-- meta -->
+	</div><!-- cont -->
+</div><!-- odd -->
+<?php 
+		}
+		if ($options['search'] || $$options['pagination']) {
 ?>
-				</table>
-
-  			<script type="text/javascript">
-//<![CDATA[  
-
-/*
-(function() { new Ajax('/wo/status/timeline_refresh?last_check=' + $('timeline').getElementsByTagName('tr')[0].id.split("_")[1], 
-    {
-      	async:true
-		,evalScripts:true
-		,onRequest: function() { $('timeline_refresh').effect('opacity', {duration:300}).start(0,1); }
-		,onSuccess: function() { $('timeline_refresh').setStyle('display','none'); }
-    }).request()
-}).periodical(2000);
-*/
-
-//]]>
-			</script>
-
-
+<div class="line"></div>
+<div class="add">
+<?php
+			if ($options['search']) {
+?>
+<div class="search"><input type="text" value="请输入关键字" /><button>找</button></div>
+<?php
+			}
+			if ($options['pagination']) {
+?>
+<div class="pages"><a href="#">上一页</a><a href="#">1</a><a href="#" class="now">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">下一页</a></div>
+<?php
+			}
+?>
+<div style="clear:both;"></div>
+</div>
+<?php
+		} 
+?>
+</div><!-- timeline -->
 <?php
 	}
 
@@ -924,12 +914,15 @@ _HTML_;
 		if ( $is_show_oldest )
 			echo "<td class='bl odd'><a href='?".($prequery ? $prequery."&" : null)."page=$oldest_page_no'>".( isset($words['first']) ? $words['last'] : '最早 »' )."</a></td>\n";
 
-		echo <<<_HTML_
+?>
 </tr></tbody></table>
-
+<?php
+		if (!$options['strip']) {
+?>
 				</div>
-_HTML_;
 
+<?php
+		}
 	}
 
 	/*
@@ -941,54 +934,49 @@ _HTML_;
 		if ( false!==@$options['focus'] )
 			$options['focus'] = true;
 ?>
-
-		<form action="/wo/login" class="signin" method="post" name="f">
-			<fieldset>
-				<div>
-					<label for="username_or_email">帐号 / Email</label>
-					<br>
-					<input id="email" name="username_or_email" type="text" class="openid_login"><!-- style="width:158px"/-->
-    			</div>
-
-    			<div>
-    				<label for="pass">密码</label>
-					<br />
-    				<input id="pass" name="password" type="password" style="width:158px"/>
-    			</div>
-
-    			<input id="remember_me" name="remember_me" type="checkbox" value="1" checked style="margin-top:4px"/> <label for="remember_me">记住我</label>
-    			<small><a href="/wo/account/resend_password">忘记?</a></small>
-    			<input id="submit" name="commit" type="submit" value="登录" />
-    		</fieldset>
+	<div id="login" class="sidediv">
+		<h2>会员登录</h2>
+		<form action="/wo/login"  method="post" name="f">
+		<table width="100%" border="0" cellspacing="10" cellpadding="0">
+  			<tr>
+    				<td width="50" align="center">用户名</td>
+				<td><input type="text" name="username_or_email" id="email" /></td>
+			</tr>
+ 			<tr>
+    				<td align="center">密　码</td>
+    				<td><input type="password" name="password" /></td>
+  			</tr>
+  			<tr>
+    				<td>&nbsp;</td>
+				<td><input type="checkbox" name="checkbox" value="checkbox" id="remember_me" /> 记住我</td>
+  			</tr>
+  			<tr>
+				<td>&nbsp;</td>
+				<td><button>登　录</button></td>
+			</tr>
+		</table>
 		</form>
-
+	</div>
 <?php 	
 		if ( $options['focus'] ) 
 			echo <<<_HTML_
-		<script type="text/javascript">
+	<script type="text/javascript">
 //<![CDATA[
 document.getElementById('email').focus()
 //]]>
-		</script>
+	</script>
 _HTML_;
 
 	}
 
 	static function sidebar_register($showLogin=false)
 	{
+		$asset_reg_url = self::GetAssetUrl("/images/org-regit.gif");
 ?>
-
-		<div class="notify">
-  			想拥有一个叽歪de帐号？<br />
-  			<a href="/wo/account/create" class="join">免费注册！</a><br />
-<?php 	if ( !$showLogin ) { ?>
-  			10秒搞定！
-			<br/>
-<?php	} else { ?>
-			已经有帐号了？
-			<a href="/wo/login">登录！</a>
-<?php 	} ?>
-  		</div>
+		<div class="register">
+		<h2>是第一次来吗？</h2>
+		<a href="/wo/account/create"><img src="<?php echo $asset_reg_url; ?>" alt="马上注册" width="112" height="33" border="0" /></a>
+		</div>
 
 <?php
 	}
@@ -1005,6 +993,8 @@ _HTML_;
 			return;
 
 		$user_ids = $options['user_ids'];
+
+		if ( empty($options['view']) ) $options['view'] = 'large';
 		
 		if ( !is_array($user_ids) )
 		{
@@ -1017,15 +1007,34 @@ _HTML_;
 		else
 			$title = '推荐';
 
-		echo <<<_HTML_
-  		<ul class="featured">
-			<li><strong>$title</strong></li>
+		if ( isset($options['id']) )
+			$id = 'id="'.$options['id'].'"';
+		else
+			$id = '';
+
+		switch ($options['view']) {
+			case 'list':
+				echo <<<_HTML_
+		<ul class="featured newuser">
+			<h2>$title</h2>
+
 _HTML_;
+				break;
+			default:
+				echo <<<_HTML_
+		<div class="featured" $id>
+			<h2>$title</h2>			
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="com">
+
+_HTML_;
+				break;
+		}
 
 		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
 		$picture_ids		= JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row	= JWPicture::GetUrlRowByIds($picture_ids);
+		$n = 0;
 
 		foreach ( $user_ids as $user_id )
 		{
@@ -1037,17 +1046,40 @@ _HTML_;
 			if ( $user_picture_id )
 				$user_icon_url		= $picture_url_row[$user_picture_id];
 
-			echo <<<_HTML_
-			<li>
-				<a href="/$user_db_row[nameScreen]/"><img alt="$user_db_row[nameFull]" height="24" src="$user_icon_url" width="24" /></a>
-				<a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a>
-			</li>
+			switch ($options['view']) {
+				case 'list':
+					echo <<<_HTML_
+				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" /></a></li>
+_HTML_;
+					break;
+				default:
+					if ($n % 4 == 0) echo "			<tr>\n";
+					echo <<<_HTML_
+				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameFull]" border="0" />$user_db_row[nameFull]</a></div></td>
+
+_HTML_;
+					if ($n % 4 == 3) echo "			</tr>\n";
+					$n++;
+			}
+			
+		}
+		switch ($options['view']) {
+			case 'list':
+				break;
+			default:
+				if ($n % 4) {
+					while ($n % 4) {
+						$n++;
+						echo "				<td></td>\n";
+					}
+					echo "			</tr>\n";
+				} 
+				echo <<<_HTML_
+			</table>
+		</div>
+
 _HTML_;
 		}
-
-		echo <<<_HTML_
-		</ul>
-_HTML_;
 	}
 
 
@@ -1087,8 +1119,8 @@ _HTML_;
 			return;
 
 		echo <<<_HTML_
-  		<ul class="featured" style="padding:5px;">
-			<li><strong>$title</strong></li>
+  		<ul class="featured">
+			<h2>$title</h2>
 _HTML_;
 
 		$status_db_row = JWDB_Cache_Status::GetDbRowsByIds($user_status_ids['status_ids']);
@@ -1111,17 +1143,38 @@ _HTML_;
 				$desc = mb_substr($desc,0,$max_len-3) . "...";
 
 			echo <<<_HTML_
-			<li style="padding-top:3px">
-				- <a href="$url" target="_blank">$desc</a>
+			<li>
+				<a href="$url" target="_blank">·  $desc</a>
 			</li>
 _HTML_;
 		}
+		if ($title=='公告') echo<<<_HTML_
 
+			<div class="but"><button>叽歪大记事</button><button>更多公告</button></div>
+_HTML_;
 		echo <<<_HTML_
 		</ul>
 _HTML_;
 	}
 
+
+	function sidebar_invite() {
+?>
+		<div class="featured" id="invite" style="line-height:30px;">
+			<p><a href="#">通过Email邀请</a></p>
+			<p><a href="#">通过MSN邀请</a></p>
+			<p><a href="#">通过手机短信邀请</a></p>
+		</div>
+
+<?php
+	}
+
+	function sidebar_separator() {
+?>
+
+		<div class="line"><div></div></div>
+<?php
+	}
 
 	/*
 	 * Sidebar menu
@@ -1140,7 +1193,14 @@ _HTML_;
 			$aUserInfo = JWUser::GetUserInfo($idUser);
 ?>
 
-    <div id="sidebar" class="static">
+<div id="sidebar" class="static">
+<?php
+if ($menuList[0][0] == 'login') {
+	array_shift($menuList);
+	self::sidebar_login();
+}
+?>
+		<div class="sidediv">
 <?php
 		foreach ( $menuList as $func_menu ){
 			list ($menu_name,$menu_param)	= $func_menu;
@@ -1175,7 +1235,8 @@ _HTML_;
 
 
 ?>
-	</div><!-- sidebar -->
+	</div><!-- sidediv -->
+</div><!-- sidebar -->
 
 <?php
 	}
@@ -1194,18 +1255,13 @@ _HTML_;
 		echo <<<_HTML_
 		<ul class="actions">
 _HTML_;
-		if ( $sidebar )
-		echo <<<_HTML_
-			<li><strong>好友操作</strong></li>
-_HTML_;
-
 
 
 		if ( isset($action['nudge']) )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠 $arr_user_info[nameScreen]</a>
 			</li>
 _HTML_;
 		}
@@ -1214,7 +1270,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/direct_messages/create/$arr_user_info[id]">悄悄话</a> $arr_user_info[nameScreen]
+				<a href="/wo/direct_messages/create/$arr_user_info[id]">向$arr_user_info[nameScreen]发悄悄话</a>
 			</li>
 _HTML_;
 		}
@@ -1224,7 +1280,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/follow/$arr_user_info[id]">订阅</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/follow/$arr_user_info[id]">成为 $arr_user_info[nameScreen] 的粉丝</a>
 			</li>
 _HTML_;
 		}
@@ -1233,7 +1289,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/leave/$arr_user_info[id]">退定</a> $arr_user_info[nameScreen]
+				<a href="/wo/friends/leave/$arr_user_info[id]">退定 $arr_user_info[nameScreen]</a>
 			</li>
 _HTML_;
 		}
@@ -1249,7 +1305,7 @@ _HTML_;
 		if ( isset($action['add']) )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friendships/create/$arr_user_info[id]">添加</a> $arr_user_info[nameScreen]</li>
+			<li><a href="/wo/friendships/create/$arr_user_info[id]">将$arr_user_info[nameScreen]添加为好友</a></li>
 _HTML_;
 		}
 
@@ -1258,7 +1314,7 @@ _HTML_;
 			echo <<<_HTML_
 			<li>
 				<a href="/wo/friendships/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除</a> $arr_user_info[nameScreen]
+						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除好友 $arr_user_info[nameScreen]</a>
 			</li>
 _HTML_;
 		}
@@ -1309,11 +1365,12 @@ _HTML_;
 
 	static function sidebar_user_notice($aUserInfo)
 	{
-		$nameScreen = $aUserInfo['nameScreen'];
+		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id']);
 ?>
-		<div class="msg">
-			关于 <strong><?php echo $nameScreen?></strong>
+		<div class="msg ">
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" /><?php echo $aUserInfo['nameScreen'];?>的资料
 		</div>
+
 <?php
 	}
 
@@ -1357,36 +1414,40 @@ _HTML_;
 	static function sidebar_count( $countInfo=null, $user='wo' )
 	{
 		echo <<<_HTML_
-		<ul>
+		<ul id="update_count">
 _HTML_;
 
-		if ( 'wo'==$user )
-		{
-			echo <<<_HTML_
-			<li id="message_count"><a href="/$user/direct_messages/">悄悄话: $countInfo[pm]</a></li>
+		if ($user != 'wo') echo <<<_HTML_
+			<li style="font-size:12px; text-indent:12px;">$user 目前有：</li>
 _HTML_;
-		}
 
 		echo <<<_HTML_
-			<li id="favourite_count"><a href="/$user/favourites/">收藏: $countInfo[fav]</a></li>
-			<li id="friend_count"><a href="/$user/friends/">好友: $countInfo[friend]</a></li>
+			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
 _HTML_;
 		
 		if ( 'wo'==$user ) 
 		{
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/$user/followers/">粉丝: $countInfo[follower]</a></li>
+			<li id="follower_count"><a href="/$user/followers/">$countInfo[follower] 个粉丝</a></li>
 _HTML_;
 		} 
 		else 
 		{
 			echo <<<_HTML_
-			<li id="follower_count">粉丝: $countInfo[follower]</li>
+			<li id="follower_count"><a>$countInfo[follower] 个粉丝</a></li>
+_HTML_;
+		}
+
+		if ( 'wo'==$user )
+		{
+			echo <<<_HTML_
+			<li id="message_count"><a href="/$user/direct_messages/">$countInfo[pm] 条消息</a></li>
 _HTML_;
 		}
 
 		echo <<<_HTML_
-			<li id="update_count">一共记录了 $countInfo[status] 条更新</li>
+			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a></li>
+			<li id="update_count"><a href="/$user/">$countInfo[status] 条更新</a></li>
 		</ul>
 _HTML_;
 	}
@@ -1408,17 +1469,11 @@ _HTML_;
 		}
 
 		$arr_status		= JWStatus::FormatStatus($current_status);
-//XXX
+		$photo_url		= JWPicture::GetUserIconUrl($userInfo['id']);
 ?>
-
-		<div class="msg">
-			欢迎回来，
-			<strong><a href="/<?php echo $userInfo['nameScreen'];?>/"><?php echo $userInfo['nameFull'];?></a></strong>
+		<div class="msg ">
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" />欢迎你 <?php echo $userInfo['nameFull'];?>
 		</div>
-
-		<ul>
-			<li>当前：<em id="currently"><?php echo $arr_status['status']?></em></li>
-		</ul>
 
 <?php
 	}
@@ -1429,109 +1484,48 @@ _HTML_;
 	 *	@param	array	$activeOptions	array('msn'=>, 'sms'=>, ...)
 	 *	@param	string	$viaDevice		'sms' or 'im' or 'web'
 	 */
-	static function sidebar_jwvia($activeOptions, $viaDevice)
+	static function sidebar_jwvia($activeOptions, $viaDevice='web', $strip=false)
 	{
 		$supported_device_types = JWDevice::GetSupportedDeviceTypes();
 
 		$has_active_device = false;
-
+		$otherDev = array();
+		$viaDevName = '网页';
+		$supported_device_types[] = 'web';
+		$activeOptions['web'] = true;
 		foreach ( $supported_device_types as $type )
 		{
 			if ( $activeOptions[$type] )
 			{
 				$has_active_device = true;
-				break;
+				if ($viaDevice == $type) {
+					$viaDevName = JWDevice::GetNameFromType($type);
+				} else {
+					$otherDev[$type] = JWDevice::GetNameFromType($type);
+				}
 			}
 		}
 
-		if ( $has_active_device ) 
-		{ 
-?>
-
-		<ul class="featured">
-			<li>
-				<form action="/wo/account/update_send_via" id="send_via_form" method="post" onsubmit="$('send_via_form').send(); return false;">
-					<fieldset>
-						<h4 style="font-size: 12px">发送通知消息到:</h4>
-<?php 
-		}
-
-		$logined_user_id = JWLogin::GetCurrentUserId();
-		if ( $activeOptions['sms'] && JWUser::IsSubSms($logined_user_id) )
-		{
-?>
-						<input id="current_user_send_via_sms" name="current_user[send_via]" onclick="$('send_via_form').send()" type="radio" <?php if ('sms'==$viaDevice) echo ' checked="checked" '; ?> value="sms" />
-						<label for="current_user_send_via_sms">手机</label><br />
-
-<?php
-		}
-						
-
-		$has_active_device_im = false;
-		foreach ( $supported_device_types as $type )
-		{
-			if ( 'sms'==$type )	continue;
-
-			$im_name = JWDevice::GetNameFromType($type);
-
-			if ( $activeOptions[$type] )
-			{
-				$has_active_device_im = true;
-?>
-						<input id="current_user_send_via_<?php echo $type?>" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio" <?php if ($type==$viaDevice) echo ' checked="checked" '; ?> value="<?php echo $type?>" />
-						<label for="current_user_send_via_<?php echo $type?>"><?php echo $im_name?></label><br />
-<?php
-			}
-
-		}
-
-		if ( $has_active_device )
-		{
-?>
-						<input id="current_user_send_via_none" name="current_user[send_via]" onclick="$('send_via_form').onsubmit()" type="radio"  <?php if ('web'==$viaDevice) echo ' checked="checked" '; ?> value="web" />
-						<label for="current_user_send_via_none">网页</label>
-<?php
-		}
-
-		if ( $has_active_device ) 
-		{ 
-?>
-					</fieldset>
-				</form>	
-			</li>
-		</ul>
-<?php
-		}
-?>
-
-<?php
-		if ( !$activeOptions['sms'] && !$has_active_device_im )
-		{
-?>
-		<ul class="featured">
-<?php
-		}
-
-		if ( !$activeOptions['sms'] )
-		{
-			echo <<<_HTML_
-			<li><a href="/wo/devices/?sms">启用手机短信！</a></li>
-_HTML_;
-		}
-	
 		
-		if ( !$has_active_device_im )
-		{
-			echo <<<_HTML_
-			<li><a href="/wo/devices/?im">启用聊天软件！</a></li>
-_HTML_;
+		if ( $activeOptions['sms'] ) { //FIXME && JWUser::IsSubSms($logined_user_id) 
+			unset($activeOptions['sms']);
 		}
 
-	
-		if ( !$activeOptions['sms'] && !$has_active_device_im )
-		{
-			echo "</ul>";
-		}
+		if (!$strip) echo '		<div id="device_list" class="featured" style="font-size:14px;">';
+?>
+
+			接收通知方式：
+			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'">
+				<li class="slect"><?php echo $viaDevName; ?></li>
+<?php
+		foreach ($otherDev as $d => $n) echo <<<__HTML__
+				<li onclick="JiWai.ChangeDevice('$d');">$n</li>
+
+__HTML__;
+?>
+			</ul>
+<?php
+		if (!$strip) echo "		</div>\n";
 	}
 
 
@@ -1540,6 +1534,8 @@ _HTML_;
 		if ( empty($friendIds) )
 			return;
 
+		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线的好友', 'id'=>'friend'));
+		return;
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 
         $picture_ids        	= JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
@@ -1570,6 +1566,33 @@ _HTML_;
 
 _HTML_;
 	}
+
+	static public function sidebar_rss ( $type, $id )
+	{
+   		$rss_url = "http://api.jiwai.de/statuses/";
+
+		switch ( $type )
+		{
+			case 'friends':
+				$rss_url .= "${type}_timeline/$id.rss";
+				break;
+			case 'user':
+				$rss_url .= "${type}_timeline/$id.rss";
+				break;
+
+			case 'public_timeline':
+				// fallto default
+			default:
+				$rss_url .= "public_timeline.rss";
+				break;
+		}
+
+		echo <<<_HTML_
+				<a href="$rss_url" class="rsshim">订阅 $id</a>
+_HTML_;
+	}
+
+
 
 	static function sidebar_search($nameUser=null,$q=null)
 	{
@@ -1975,6 +1998,11 @@ _HTML_;
 			header("Location: $url");
 		}
 		exit(0);
+	}
+	static public function Strip($html) {
+		$l = strpos($html, '>')+1;
+		$r = strrpos($html, '<')-1;
+		return substr($html, $l, $r-$l+1);
 	}
 }
 ?>

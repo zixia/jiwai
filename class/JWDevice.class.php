@@ -658,6 +658,9 @@ _SQL_;
 			case 'facebook':
 				$name='Facebook';
 				break;
+			case 'web':
+				$name='网页';
+				break;
 			case 'skype':
 				$name='Skype';
 				break;

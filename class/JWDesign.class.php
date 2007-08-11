@@ -188,6 +188,7 @@ class JWDesign {
 
 	public function GetStyleSheet()
 	{
+		return '';
 		if ( ! $this->mIsDesigned )
 			return;
 	

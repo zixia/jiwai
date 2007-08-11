@@ -102,28 +102,5 @@ switch ( $func )
 }
 exit(0);
 
-function IsValidUtf8($string)
-{
-	$str_len = strlen($string);
-	for($i=0;$i<$str_len;)
-	{
-		$str = ord($string[$i]);
-		if($str>=0 && $str < 0x7f)
-		{
-			$i++;
-			continue;
-		}
-		if($str< 0xc0 || $str>0xfd) return false;
-		$count = $str>0xfc?5:$str>0xf8?4:$str>0xf0?3:$str>0xe0?2:1;
-		if($i+$count > $str_len) return false;
-		$i++;
-		for($m=0;$m<$count;$m++)
-		{
-			if(ord($string[$i])<0x80 || ord($string[$i])>0xbf) return false;
-			$i++;
-		}
-	}
-	return true;
-}
 ?>
 

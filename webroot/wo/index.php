@@ -26,8 +26,6 @@ JWTemplate::html_head($options);
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container">
 <?php 
 /*
@@ -169,13 +167,15 @@ if( ( $active_tab == 'friends' || $active_tab == 'archive' )
 
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array(
+	'search' => true,
+	'pagination' => true,
+	));
 
-JWTemplate::pagination($pagination, empty($q) ? array() : array('q'=>$q) );
+//JWTemplate::pagination($pagination, empty($q) ? array() : array('q'=>$q) );
 
 ?>
 
-<?php JWTemplate::rss('user',$logined_user_id) ?>
 			</div><!-- tab -->
 
   			<script type="text/javascript">
@@ -225,20 +225,21 @@ $via_device			= JWUser::GetSendViaDevice($logined_user_id);
 $friend_request_num	= JWFriendRequest::GetUserNum($logined_user_id);
 
 $arr_menu 			= array(
-					array ('status'	, array($logined_user_info)) , 
+					array ('status'		, array($logined_user_info)) , 
 					array ('friend_req'	, array($friend_request_num)) , 
 					array ('count'		, array($arr_count_param)) , 
 					array ('jwvia'		, array($active_options, $via_device)) ,
-					array ('search'		, array(null, isset($q) ? $q : null)) ,
+					array ('separator'	, array()) ,
 				       	array ('friend'		, array($arr_friend_list)) , 
+					array ('invite'	, array()) ,
+					//array ('search'		, array(null, isset($q) ? $q : null)) ,
 				);
 	
 JWTemplate::sidebar( $arr_menu );
+JWTemplate::container_ending();
 ?>
 
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

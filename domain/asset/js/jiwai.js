@@ -102,32 +102,87 @@ alert('ok');
 		g.src = JiWai.AssetUrl(src);
 		document.getElementsByTagName('head')[0].appendChild(g);
 	},
-	ApplyFav: function(el) {
-		if (el.ev) return;
-		el.ev = true;
-		el.addEvent('click', function(e){
-			var id = el.id.split('_')[2];
-			new Ajax( '/wo/favourites/'+((this.src || this.innerHTML).indexOf('full')==-1 ? 'create' : 'destroy')+'/'+id, {
-				method: 'get',
+	ToggleStar: function(id) {
+		var el = $('status_star_'+id);
+		var action = (el.src.indexOf('full')==-1 ? 'create' : 'destroy');
+		new Ajax( '/wo/favourites/'+action+'/'+id, {
+			method: 'get',
+			headers: {'AJAX':true},
+			onSuccess: function() {
+				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
+			}
+		}).request();
+		el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 
+	},
+	DoTrash: function(id) {
+		if (confirm('请确认操作：删除后将永远无法恢复！')) 
+		{
+			new Ajax( '/wo/status/destroy/'+id, {
+				method: 'post',
+				data: '_method=delete',
 				headers: {'AJAX':true},
-				async: true,
-				evalScripts: true,
-				evalResponse: true,
-				onRequest: function() { 
-					$('status_star_'+id).src=JiWai.AssetUrl('/img/icon_throbber.gif') 
+				onSuccess: function() {
+					if (!$('status_'+id)) location.reload();
 				}
 			}).request();
+			setTimeout(function() {
+				var el = $('status_'+id);
+				if (!el) return;
+				var line = el.getNext() || el.getPrevious();
+				(new Fx.Slide(el)).slideOut().addEvent('onComplete', function() { el.remove(); });
+				if (line) if (line.hasClass('line')) line.remove();
+			}, 0);
+		};
+	},
+	ChangeDevice: function(dev) {
+		new Ajax( '/wo/account/update_send_via', {
+			method: 'post',
+			headers: {'AJAX':true},
+			data: 'current_user[send_via]='+dev,
+			onSuccess: function(html) { $('device_list').setHTML(html); }
+		}).request();
+	},
+	Refresh: function() {
+		var last = 0;
+		$$('#timeline .odd').each(function(el) {
+			var id = el.id.split('_')[1];
+			if (id>last) last = id;
 		});
+		if (!last) return;
+		new Ajax(location.path, {
+			method: 'get',
+			data: 'ajax&last='+last,
+			onSuccess: function(html) {
+				alert(html);
+			}
+		});
+		setTimeout(JiWai.Refresh, RefreshInterval*1000);
 	},
 	AutoEmote: function() {
-		$$('#timeline .status_favor').each(JiWai.ApplyFav);
 		if (!$("timeline")) return;
 		_auto_emote = "timeline";
 		JiWai.AddScript("/system/emote/themes/default.js");
 	},
-	Init : function() {
+	ShowThumb: function(el) {
+		el.style.display='inline';
+	},
+	HideThumb: function(el) {
+		el.style.display='none';
+	},
+	ShowTip: function(txt, url) {
+		$('sitetip').setHTML(txt + (url ? '<a href="'+url+'">查看</a> ' : '') + '<a href="#" onclick="JiWai.HideTip();">消除</a>');
+		$('sitetip').style.display='block';
+	},
+	HideTip: function(){
+		$('sitetip').style.display='none';
+	},
+	onLoad: function() {
+		JiWai.AutoEmote();
+		if (window.RefreshInterval && location.search && location.search.length>1) setTimeout(JiWai.Refresh, RefreshInterval*1000);
+	},
+	Init: function() {
 		window.TimeOffset = window.ServerTime ? Math.floor((new Date()).getTime()/1000) - window.ServerTime : 0;
-		window.addEvent('domready', JiWai.AutoEmote); 
+		window.addEvent('domready', JiWai.onLoad); 
 	}
 }
 

@@ -21,7 +21,6 @@ JWTemplate::html_head();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container">
 	<div id="content">
@@ -81,9 +80,8 @@ $announce_options['title']		= '公告';
 
 
 $arr_menu 	= array( 
-					 array ('head'			, array('<h3>请登陆！</h3>'))
+					array ('login'		, null)
 					,array ('register'		, null)
-					,array ('login'		, null)
 					,array ('announce'		, array($announce_options) )
 					,array ('announce'		, array($blog_options) )
 					,array ('featured'		, array($featured_options) )
@@ -96,7 +94,6 @@ JWTemplate::sidebar($arr_menu, null) ;
 			
 		
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
