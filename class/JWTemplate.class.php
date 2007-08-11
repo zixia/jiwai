@@ -138,7 +138,7 @@ _HTML_;
 		if ( null===$refresh_time )
 			$refresh_html = '';
 		else
-			if (!$options['refresh_ajax']) $refresh_html = <<<_HTML_
+			if (!$refresh_ajax) $refresh_html = <<<_HTML_
 	<meta http-equiv="refresh" content="$refresh_time;url=$refresh_url" />
 _HTML_;
 			else $refresh_html = "<script type=\"text/javascript\">RefreshInterval=$refresh_refresh_time;</script>";
@@ -246,7 +246,7 @@ _HTML_;
 			$a = array_reverse($nav);
 			$urlNow = $_SERVER['REQUEST_URI'];
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
-			if (!$highlight) $highlight = $url;
+			if (!$highlight) $highlight = '/public_timeline/'; //$url;
 		}
 ?>
 <div id="header">

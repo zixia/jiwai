@@ -268,13 +268,12 @@ if ( $show_protected_content )
 ?>
   
 <?php 
+/*
 if ( $show_protected_content )
 	JWTemplate::pagination($pagination, (null===$q) ? array() : array('q'=>$q) );
-?>
-
-<?php 
 if ( $show_protected_content )
 	JWTemplate::rss( $g_user_with_friends ? 'friends' : 'user' ,$page_user_id) 
+*/
 ?>
 
 			</div><!-- tab -->
