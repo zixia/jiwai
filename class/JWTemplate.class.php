@@ -361,7 +361,7 @@ _HTML_;
 		else
 			$title = $options['title'];
 ?>
-			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="$('submit').disabled=true;">
+			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="$('submit').disabled=true;$('status').style.backgroundColor='#eee';">
 				<fieldset>
 					<div class="bar even">
 						<h3>
@@ -372,14 +372,6 @@ _HTML_;
 						<span id="chars_left_notice">
 							还可输入: <strong id="status-field-char-counter"></strong>个字符。
 						</span>
-						<span style="display:none" id="submit_loading">
-							<script type="text/javascript">
-//<![CDATA[
-document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif" title="更新中..." />')
-//]]>
-
-							</script>
-						</span>
 					</div>
 					<div class="jiwai_icon_vtab">
 						<div>
@@ -389,6 +381,7 @@ document.write('<img alt="Updating" src="http://asset.jiwai.de/img/updating.gif"
 					</div>
 					<div class="submit">
 						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="" />
+						<a class="howtojiwai" href="#">如何用其它方式叽歪</a>
 					</div>
 				</fieldset>
 			</form>
