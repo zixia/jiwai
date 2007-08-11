@@ -84,8 +84,11 @@ SELECT type, address,shortcut, onlineStatus, timeUpdate
 	FROM IMOnline
 	WHERE shortcut IN ('$shortcutString')
 _SQL_;
-	
+
 		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) ){
+			return arrya();
+		}
 		
 		$ret = array();
 		foreach( $rows as $row ){
