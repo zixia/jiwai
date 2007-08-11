@@ -117,17 +117,18 @@ alert('ok');
 	DoTrash: function(id) {
 		if (confirm('请确认操作：删除后将永远无法恢复！')) 
 		{
+			var refresh = false;
 			new Ajax( '/wo/status/destroy/'+id, {
 				method: 'post',
 				data: '_method=delete',
 				headers: {'AJAX':true},
 				onSuccess: function() {
-					if (!$('status_'+id)) location.reload();
+					if (refresh) location.reload();
 				}
 			}).request();
 			setTimeout(function() {
 				var el = $('status_'+id);
-				if (!el) return;
+				if (!el) { refresh = true; return; }
 				var line = el.getNext() || el.getPrevious();
 				(new Fx.Slide(el)).slideOut().addEvent('onComplete', function() { el.remove(); });
 				if (line) if (line.hasClass('line')) line.remove();
