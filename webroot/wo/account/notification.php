@@ -11,7 +11,7 @@ $user_setting	= JWUser::GetNotification($user_info['id']);
 
 
 //echo "<pre>";(var_dump($user_setting));
-if ( isset($_REQUEST['commit']) )
+if ( isset($_REQUEST['commit_x']) )
 {
 	$user_new_setting	= $_REQUEST['user'];
 
@@ -31,8 +31,7 @@ _HTML_;
 		JWSession::SetInfo('notice', $notice_html);
 	}
 
-
-	header('Location: ' . $_SERVER['PHP_SELF']);
+	header('Location: ' . $_SERVER['REQUEST_URI']);
 	exit(0);
 }
 
@@ -44,22 +43,20 @@ _HTML_;
 </head>
 
 
-<body class="account" id="notification">
+<body class="account" id="settings">
 
 <?php JWTemplate::accessibility() ?>
 
-<?php JWTemplate::header() ?>
-<div class="separator"></div>
+<?php JWTemplate::header('/wo/account/settings') ?>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
 
+<div id="settingsNav" class="subtab">
+    <a href="/wo/account/password">帐号&amp;密码</a><a href="/wo/account/picture">个人资料</a><a href="/wo/devices/?sms">手机</a><a href="/wo/devices/?im">聊天软件</a><a href="/wo/account/notification" class="now">系统通知</a><a href="/wo/account/profile_settings">配色方案</a><a href="/wo/openid/">OpenID</a>
+</div>
 
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php JWTemplate::UserSettingNav('notification'); ?>
-
+<div class="tabbody">
+<h2>系统通知</h2> 
 
 <?php
 
@@ -74,10 +71,9 @@ if ( empty($notice_html) )
 if ( !empty($error_html) )
 {
 		echo <<<_HTML_
-			<div class="notice">密码未能修改：<ul> $error_html </ul></div>
+			<div class="notice">系统通知修改：<ul> $error_html </ul></div>
 _HTML_;
 }
-
 
 if ( !empty($notice_html) )
 {
@@ -87,54 +83,38 @@ _HTML_;
 }
 ?>
 
+<div style="width:500px; margin:30px auto; font-size:14px;">
 
+<form method="post" action="/wo/account/notification">
+<p>更新通知：
+    <input <?php if ( 'Y'==$user_setting['auto_nudge_me'] ) echo ' checked="checked" ';?> 
+            id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="Y" />
+    <label for="user_auto_nudge_me">如果我在24小时内没有更新，请提醒我</label>
+</p>
+<p style="color:#989898; text-indent:76px; font-size:12px;">提醒消息将会发送到你的手机或聊天软件上</p>
+<p>&nbsp;</p>
+<p>好友通知：
+    <input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
+            id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
+    <label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
+</p>
+<p>&nbsp;</p>
+<p>消息通知：
+    <input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
+            id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
+    <label for="user_send_new_direct_text_email">等我接收到新消息的时候发邮件给我</label>
+</p>
+</div>
 
-<form method="post">
-	<fieldset>
-		<table>
-			<tr>
-				<th>自动提醒:</th>
-				<td>
-					<input <?php if ( 'Y'==$user_setting['auto_nudge_me'] ) echo ' checked="checked" ';?> 
-							id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="Y" />
-					<label for="user_auto_nudge_me">如果我在24小时内没有更新，请提醒我</label>
-					<p><small>提醒消息将会发送到您的手机或聊天软件上</small></p>
-				</td>
-			</tr>
-			<tr>
-	    		<th>好友通知:</th>
-				<td>
-					<input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
-							id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
-					<label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
-				</td>
-	  		</tr>
-			<tr>
-	    		<th>消息通知:</th>
-				<td>
-					<input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
-							id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
-					<label for="user_send_new_direct_text_email">等我接收到新消息的时候发邮件给我</label>
-				</td>
-	  		</tr>
-			<tr>
-				<th></th>
-  		
-				<td>
-					<input id="siv" name="siv" type="hidden" value="" />
-					<input name="commit" type="submit" value="保存" />
-				</td>
-			</tr>
-		</table>
-	</fieldset>
+<div class="but" style="text-indent:165px;">
+    <input type="image" name="commit" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="确定" width="112" height="33" border="0" /></a>　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-esc.gif'); ?>" alt="取消并返回" width="112" height="33" border="0" /></a>
+</div>           
 </form>
 
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
-</div><!-- #container -->
-<hr class="separator" />
+</div>
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>         
+</div>
+<!-- #container -->
 
 <?php JWTemplate::footer() ?>
 
