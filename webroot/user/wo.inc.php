@@ -37,7 +37,7 @@ if ( !JWUser::IsAdmin($logined_user_info['idUser'])
 //die( var_dump($page_user_id));
 //die( var_dump($logined_user_info));
 ?>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <?php 
 

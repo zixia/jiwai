@@ -166,7 +166,7 @@ _HTML_;
 		{
 			$openid_html = <<<_HTML_
 	<link rel="openid.server" href="$options[openid_server]" />
-	<link rel="openid.delegate" href="$options[openid_delegate]">
+	<link rel="openid.delegate" href="$options[openid_delegate]" />
 _HTML_;
 		}
 		$time = time();
@@ -388,7 +388,7 @@ _HTML_;
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey && event.keyCode==13){return $('submit').click();} /*else return (event.keyCode == 8) || (this.value.length &lt; getStatusTextCharLengthMax(this.value));*/" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey)if(event.keyCode==13){return $('submit').click();}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
 					<div class="submit">
@@ -1470,7 +1470,7 @@ _HTML_;
 
 		echo <<<_HTML_
 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a></li>
-			<li id="update_count"><a href="/$user/">$countInfo[status] 条更新</a></li>
+			<li id="status_count"><a href="/$user/">$countInfo[status] 条更新</a></li>
 		</ul>
 _HTML_;
 	}

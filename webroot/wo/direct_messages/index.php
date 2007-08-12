@@ -11,11 +11,11 @@ if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
 else
 	$message_box_type = JWMessage::INBOX;
 ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <?php JWTemplate::html_head() ?>
 </head>
-
 
 <body class="direct_messages" id="direct_messages">
 

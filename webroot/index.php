@@ -6,7 +6,7 @@ JWTemplate::html_doctype();
 if ( JWLogin::IsLogined() )
 	header('Location: /wo/');
 ?>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <?php 
