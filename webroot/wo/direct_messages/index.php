@@ -1,7 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-
 JWLogin::MustLogined();
 
 $logined_user_id 	= JWLogin::GetCurrentUserId();
@@ -168,37 +167,8 @@ _HTML_;
 	</div><!-- content -->
 
 <?php
-$arr_count_param	= JWSns::GetUserState($logined_user_id);
-
-$arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
-
-$device_row			= JWDevice::GetDeviceRowByUserId($logined_user_id);
-$active_options = array();
-$supported_device_types = JWDevice::GetSupportedDeviceTypes();
-foreach ( $supported_device_types as $type )
-{
-	if ( isset($device_row[$type]) 
-				&& $device_row[$type]['verified']  )
-	{	
-		$active_options[$type]	= true;
-	}
-	else
-	{
-		$active_options[$type] 	= false;
-	}
-}
-$via_device			= JWUser::GetSendViaDevice($logined_user_id);
-
-$arr_menu 			= array(	array ('status'			, array($logined_user_info))
-								, array ('count'		, array($arr_count_param))
-					,array ('jwvia'		, array($active_options, $via_device)) 
-					,array ('separator'	, array()) 
-								, array ('friend'		, array($arr_friend_list))
-							);
-	
-JWTemplate::sidebar( $arr_menu );
+include_once '../sidebar.php';
 JWTemplate::container_ending();
-
 ?>
 	
 </div><!-- #container -->
@@ -207,5 +177,3 @@ JWTemplate::container_ending();
 
 </body>
 </html>
-
-

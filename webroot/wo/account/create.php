@@ -12,7 +12,7 @@ $name_len_min = 4;
 $aUserInfo = array();
 $JWErr = '';
 if ( isset($_REQUEST['user'])
-		&& isset($_REQUEST['user']['nameScreen']) ){
+		&& isset($_REQUEST['user']['nameScreen']) && trim($_REQUEST['user']['nameScreen']) ){
 
 	$aUserInfo = $_REQUEST['user'];
 
@@ -156,20 +156,9 @@ JWDB::Close();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container">
-	<div id="content">
-		<div id="wrapper">
-			
-
-			<h2 title="Create a Free Twitter Account">免费注册叽歪de帐号</h2>
-
-			<br />
-			<p>已经是叽歪de<strong>手机短信/IM用户</strong>？
-				<a href="/wo/account/complete">请来这里</a>，我们将帮助您获取Web帐号。
-			</p>
-			<br />
+<h2 title="Create a Free Twitter Account">免费注册叽歪de帐号</h2>
 
 <?php
 if ( !empty($JWErr) ){
@@ -181,7 +170,7 @@ _POD_;
 }
 ?>
 
-			<script type="text/javascript">
+<script type="text/javascript">
 function validate_form(form)
 {
 	var bValid = true;
@@ -204,6 +193,7 @@ function validate_form(form)
 		JWErr += "\t" + n + ". 请创建密码\n";
 		n++;
 	}
+
 	if ( 0==$('user_pass_confirm').value.length ){
 		$('user_pass_confirm').className += " notice";
 		bValid = false;
@@ -234,6 +224,7 @@ function validate_form(form)
 */
 
 
+
 	if ( 0==$('user_email').value.length
 				|| !$('user_email').value.match(/[\d\w._\-]+@[\d\w._\-]+\.[\d\w._\-]+/) ){
 		$('user_email').className += " notice";
@@ -244,119 +235,67 @@ function validate_form(form)
 
 	if ( !bValid )
 		alert ( JWErr )
-
+    
 	return bValid;
 }
-			</script>
-			<form action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" onsubmit="return validate_form(this);">
-				<fieldset>
-					<table cellspacing="0">
-						<tr>
-							<th><label for="user_nameScreen">选择帐号：</label></th>
+</script>
 
-							<td><input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" /> 
-								<small>用来登录<em>叽歪de</em>（不可含汉字、空格及特殊字符，最短5个字符）</small>
-							</td>
-						</tr>
-						<tr>
-							<th><label for="user_nameFull">名字：</label></th>
+<form action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" onsubmit="return validate_form(this);">
+<fieldset>
+    <table width="550" border="0" cellspacing="15" cellpadding="0">
+        <tr>
+            <td width="70" align="right" valign="top">用户名</td>        
+            <td width="240">
+                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" /><a href="#">已经通过手机或IM注册过</a>
+            </td>
+            <td valign="top" class="note">用来登录叽歪de（不可含汉字、空格及特殊字符，最短5个字符） </td>
+        </tr>
+        <tr>
+            <td align="right">你的首页</td>
+            <td><a href="#">http://www.jiwai.de/xxxx</a></td>
+            <td class="note">登录名将作为你的首页的地址</td>
+        </tr>
+        <tr>
+            <td align="right">姓　名</td>
+            <td><input type="text" name="user[nameFull]" value="<?php if(array_key_exists('nameFull', $aUserInfo)) echo $aUserInfo['nameFull'];?>" /></td>
+            <td class="note">你的真实姓名，可使用中文或空格</td>
+        </tr>
+        <tr>
+            <td align="right">密　码</td>
+            <td><input id="user_pass" type="password" name="user[pass]" /></td>
+            <td class="note">至少6个字符，建议使用字母、数字、符号组合的复杂密码</td>
+        </tr>
+        <tr>
+            <td align="right">再输一遍</td>
+            <td><input id="user_pass_confirm" type="password" name="user[pass_confirm]" /></td>
+            <td class="note">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right">Email</td>
+            <td><input id="user_email" type="text" name="user[email]" value="<?php if(array_key_exists('email',$aUserInfo)) echo $aUserInfo['email'];?>"/></td>
+            <td class="note">用于找回密码和接收通知</td>
+        </tr>
+    </table>
+</fieldset>
 
-							<td><input id="user_nameFull" name="user[nameFull]" size="30" type="text" value="<?php if(array_key_exists('nameFull',$aUserInfo)) echo $aUserInfo['nameFull'];?>" />
-								<small>可含汉字和空格</small>
-							</td>
-						</tr>
-						<tr>
-							<th><label for="user_pass">创建密码：</label></th>
+<ul class="choise">
+    <li>
+        <input name="checkbox" type="checkbox" value="checkbox" checked="checked" /> 我已阅读并接受　<a href="#" style="font-size:14px;">服务条款</a>
+    </li>
+</ul>
+<div class="but"><input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-login.gif');?>" alt="注册" border="0" /></div>
 
-							<td><input id="user_pass" name="user[pass]" type="password" /> <small>至少6个字符</small></td>
-						</tr>
-						<tr>
-							<th><label for="user_pass_confirm">再次输入密码：</label></th>
-
-							<td><input id="user_pass_confirm" name="user[pass_confirm]" size="30" type="password" /></td>
-						</tr>
-							<tr>
-							<th><label for="user_email">Email 地址:</label></th>
-
-							<td><input id="user_email" name="user[email]" size="30" type="text" value="<?php if(array_key_exists('email',$aUserInfo)) echo $aUserInfo['email'];?>"/> <small>以防遗忘密码</small></td>
-						</tr>
-						<tr>
-							<th>
-								<label for="user_profile_image">
-									头像图片：
-								</label>
-							</th>
-						<td>
-							<input id="user_profile_image" name="profile_image" size="30" type="file" value="浏览"/>
-							<p><small>最小尺寸为48x48（jpg, gif, png）。（如果你上传头像图片，你将会出现在“<a 
-									href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>”中）</small></p>
-						</td>
-					</tr>
-					<tr>
-						<th>
-						</th>
-						<td>
-							<input id="user_protected" name="user[protected]" type="checkbox" value="1" <?php if(array_key_exists('protected',$aUserInfo)) echo ' checked ';?>  />
-							<label for="user_protected">只对我de好友公开</label>
-							<p><small>
-								只允许被我加为好友的人阅读我的更新。如果选中上面的方框，你的更新将不会出现在“叽歪de大家”中。
-							</small></p>
-						</td>
-					</tr>
-					<tr>
-						<th></th>
-						<td>
-							<br />
-							<p title="By default, we&rsquo;ll send you occasional Twitter news by email. It&rsquo;s extremely
-							easy to unsubscribe at any time (one click in the email).">
-							我们有时会通过E-mail来通知你一些关于叽歪de消息，你可以很容易地取消订阅（在email中点击一下即可）。
-							</p>
-
-							<p>加入叽歪de之前，请确认你在13周岁以上，并接受<a href="<?php echo JWTemplate::GetConst('UrlTermOfService')?>" target="_blank">服务条款</a>。</p>
-						</td>
-					</tr>		
-					<!--tr> CAPTCHA
-						<th></th>
-						<td>
-							<input id="digest" name="digest" type="hidden" value="zixia_digest" />
-
-							<label for="key">
-  								<img border="2" src="/wo/captcha" width="164" height="54" />
-  								<br />验证码 - 输入上面所显示的字母（不含数字）：
-							</label>
-							<p><input type="text" id="key" name="key" value="" /></p>
-						</td>
-					</tr-->
-					<tr>
-						<th></th>
-						<td><br /><input name="commit" type="submit" value="创建我的帐号" /></td>
-					</tr>
-				</table>
-			</fieldset>
-		</form>
-		<script type="text/javascript">
-//<![CDATA[
-$('user_nameScreen').focus()
-//]]>
-		</script>
- 
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
-<?php 
-
-$arr_menu 			= array(	array ('head'	, array('<h3>已经是注册用户? 请直接登陆:</h3>'))
-								, array ('login'		, array( array('focus'	=> false) ))
-							);
-
-
-JWTemplate::sidebar($arr_menu, null) ;
+</form>
+<?php
+//JWTemplate::container_ending();
 ?>
-	
 </div><!-- #container -->
+<script type="text/javascript">
+//<![CDATA[
+//$('user_nameScreen').focus()
+//]]>
+</script>
 
-<hr class="separator" />
-		
 <?php JWTemplate::footer() ?>
 
 </body>

@@ -1,9 +1,10 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-
 JWLogin::MustLogined();
 
+$logined_user_info 	= JWUser::GetCurrentUserInfo();
+$logined_user_id 	= $logined_user_info['id'];
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
@@ -44,52 +45,46 @@ $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
 </head>
 
 
-<body class="favourings" id="favourings">
+<body class="front">
 
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 
 <div id="container" class="subpage">
 	<div id="content">
 		<div id="wrapper">
 
+			<div class="tab">
+
 <?php 
 if ( $page_user_info['id']==$logined_user_info['id'] )
 {
-	echo <<<_HTML_
-			<h2> 我的 $status_num 份收藏。 </h2>
-_HTML_;
+	JWTemplate::tab_header( array('title' => '我标记的更新', 'title2'=>'将更新旁边的星标点亮后，它们就会被存在这里啦！') ); 
 } 
 else 
 {
-	echo <<<_HTML_
-			<h2> $page_user_info[nameScreen] 的 $status_num 份收藏。</h2>
-_HTML_;
-	
+	JWTemplate::tab_header( array('title' => $page_user_info[nameScreen].'标记的更新') ); 
 }
 ?>
-
-<p>我们将更新旁边的星标点亮后，它们就会被存在这里啦！</p>
-
 
 <?php
 $n = 0;
 if ( isset($status_ids) )
 {
-	JWTemplate::Timeline($status_ids, $user_rows, $status_rows);
-	JWTemplate::pagination($pagination, array() );
+	JWTemplate::Timeline($status_ids, $user_rows, $status_rows, array('pagination' => $pagination));
 }
 ?>
+			</div><!-- tab -->
 		</div><!-- wrapper -->
 	</div><!-- content -->
+<?php
+include_once '../sidebar.php';
+JWTemplate::container_ending();
+?>
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
