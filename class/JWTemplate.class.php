@@ -360,8 +360,9 @@ _HTML_;
 			$title = '这一刻，你在做什么？';
 		else
 			$title = $options['title'];
+		$mode = ( empty($options['mode']) ) ? 0 : $options['mode']; //0:status 1:direct message
 ?>
-			<form action="/wo/status/update" id="doingForm" method="post" onsubmit="$('submit').disabled=true;$('status').style.backgroundColor='#eee';">
+			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('submit').disabled=true;$('status').style.backgroundColor='#eee';" <?php if ($mode==1) echo 'style="height: 185px;"'; ?>>
 				<fieldset>
 					<div class="bar even">
 						<h3>
@@ -369,7 +370,18 @@ _HTML_;
 								<?php echo $title?>
 							</label>
 						</h3>
-						<span id="chars_left_notice">
+<?php if ($mode==1) { ?>
+						<label for="doing">发给
+						<select style="width: 132px;" name="user[id]" id="user_id">
+<?php
+	foreach ($options['friends'] as $id => $f) echo <<<_HTML_
+<option value="$id">$f[nameScreen]</option>
+
+_HTML_;
+?>
+						</select> 一条悄悄话。</label>
+<?php } ?>
+						<span id="chars_left_notice" <?php if ($mode==1) echo 'style="margin-top: 35px;"'; ?>>
 							还可输入: <strong id="status-field-char-counter"></strong>个字符。
 						</span>
 					</div>

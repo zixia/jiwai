@@ -100,76 +100,17 @@ _HTML_;
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container">
 	<div id="content">
 		<div id="wrapper">
 
-<style type="text/css">
-#content #doingForm .bar {
-line-height:2.5em;
-padding:0pt 10px;
-position:relative;
-}
-</style>
-
-
-
-
-<form action="/wo/direct_messages/create/<?php echo $receiver_user_id?>" id="doingForm" method="post" name="f">
-	<fieldset>
-		<div class="bar odd">
-			<h3><label for="doing">发送给 <a href="/<?php echo $receiver_user_row['nameScreen']?>"><?php echo $receiver_user_row['nameScreen']?></a> 悄悄话。</label></h3>
-
-			<span>
-				还可以输入：<strong id="status-field-char-counter"></strong>个字符
-			</span>
-		</div>
-		<div class="info">
-		<textarea cols="15" id="text" name="text" onkeypress="return (event.keyCode == 8) || (this.value.length &lt; 140);" onkeyup="updateStatusTextCharCounter(this.value)" rows="3"></textarea>
-		</div>
-
-
-		<div class="submit">
-			<input id="submit" name="commit" class="buttonSubmit" value="送出悄悄话" type="submit">
-		</div>
-	</fieldset>
-</form>
-
-<script type="text/javascript">
-//<![CDATA[
-$('submit').onmouseover = function(){
-    this.className += "Hovered"; 
-}
-
-$('submit').onmouseout = function(){
-    this.className = this.className.replace(/Hovered/g, "");
-}
-
-//]]>
-</script>
-
-<script type="text/javascript">
-//<![CDATA[
-$('text').focus()
-//]]>
-</script>
-<script type="text/javascript">
-//<![CDATA[
-
-	function updateStatusTextCharCounter(value) {
-		$('status-field-char-counter').innerHTML = 140 - value.length;
-	};
-
-//]]>
-</script>
-<script type="text/javascript">
-//<![CDATA[
-$('status-field-char-counter').innerHTML = 140 - $('text').value.length;
-//]]>
-</script>
-
+<?php
+JWTemplate::updater(array(
+	'title' 	=> '发送悄悄话',
+	'mode'		=> 1,
+	'friends'	=> array($receiver_user_id => $receiver_user_row)
+	));
+?>
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
@@ -184,13 +125,12 @@ $arr_menu 			= array(	array ('status'			, array($logined_user_info))
 								, array ('friend'		, array($arr_friend_list))
 							);
 	
+JWTemplate::container_ending();
 JWTemplate::sidebar( $arr_menu );
 
 ?>
 	
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
