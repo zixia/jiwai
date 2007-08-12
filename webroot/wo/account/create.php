@@ -88,7 +88,7 @@ _HTML_;
 				JWSession::SetInfo('notice', $notice_html);
 
 
-				header("Location: /wo/invitations/invite");
+				header("Location: /wo/account/regok");
 				exit();
 			}else{
 				$public_timeline_url = JWTemplate::GetConst('UrlPublicTimeline');
@@ -238,6 +238,16 @@ function validate_form(form)
     
 	return bValid;
 }
+
+function updateLink(value){
+    if( value.length > 0 ) {
+        $('indexLink').href = '/' + value + '/';
+        $('indexString').innerHTML = 'http://jiwai.de/' + value + '/';
+    }else{
+        $('indexLink').href = '/';
+        $('indexString').innerHTML = 'http://jiwai.de/';
+    }
+}
 </script>
 
 <form action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" onsubmit="return validate_form(this);">
@@ -246,13 +256,13 @@ function validate_form(form)
         <tr>
             <td width="70" align="right" valign="top">用户名</td>        
             <td width="240">
-                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" /><a href="#">已经通过手机或IM注册过</a>
+                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" maxlength="16" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" onKeyup="updateLink( this.value );"/><a href="/wo/account/complete">已经通过手机或IM注册过</a>
             </td>
             <td valign="top" class="note">用来登录叽歪de（不可含汉字、空格及特殊字符，最短5个字符） </td>
         </tr>
         <tr>
             <td align="right">你的首页</td>
-            <td><a href="#">http://www.jiwai.de/xxxx</a></td>
+            <td><a id="indexLink" href="/"><span id="indexString">http://jiwai.de/</span></a></td>
             <td class="note">登录名将作为你的首页的地址</td>
         </tr>
         <tr>
