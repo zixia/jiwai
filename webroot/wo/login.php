@@ -21,7 +21,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 	if ( $idUser )
 	{
-		if ( isset($_REQUEST['remember_me']) )
+		if ( isset($_REQUEST['remember_me']) && $_REQUEST['remember_me'] )
 			$remember_me = true;
 		else
 			$remember_me = false;
@@ -58,79 +58,73 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <?php JWTemplate::html_head() ?>
 </head>
 
 
-<body class="account" id="login">
+<body class="account" id="create">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container">
-	<div id="content">
-		<div id="wrapper">
 
-			<h2>登录到叽歪de</h2>
+<h2>登陆到叽歪de</h2>
 
-<?php	
-
-JWTemplate::ShowActionResultTips();
-
+<?php
 if ( !empty($err) ){
-	echo "<p class='notice'> $err </p>\n";
+            echo "<p class='notice'> $err </p>\n";
 }
 ?>
 
-<p>
-	如果您已经通过手机使用了叽歪de服务，<a href="/wo/account/complete">请来这里</a>。我们将帮助您在网站上注册。
-</p>
-
-<form method="post" name="f">
-  <fieldset>
-  	<table cellspacing="0">
-  		<tr>
-  			<th><label for="username_or_email">帐号 / Email</label></th>
-  			<td><input id="username_or_email" class="openid_login" name="username_or_email" type="text" /></td>
-  		</tr>
-  		<tr>
-  			<th><label for="password">密码</label></th>
-  			<td><input id="password" name="password" type="password" style="width:158px"/> <small><a href="/wo/account/resend_password">忘记?</a></small></td>
-  		</tr>
-  		<tr>
-  			<th></th>
-  			<td><input id="remember_me" name="remember_me" type="checkbox" value="1" checked /> <label for="remember_me" class="inline">记住我</label></td>
-  		</tr>
-  		<tr>
-  			<th></th>
-  			<td><input name="commit" type="submit" value="登录" /></td>
-  		</tr>
-  	</table>
-  </fieldset>
+<Form method="POST" action="/wo/login">
+<table width="550" border="0" cellspacing="15" cellpadding="0">
+    <tr>
+        <td width="70" align="right">用户名：</td>
+        <td width="240"><input type="text" name="username_or_email" /></td>
+        <td>
+            <a href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" /></a>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">密　码：</td>
+        <td><input type="password" name="password" /></td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td><a href="/wo/account/resend_password">忘记密码了？</a></td>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+<ul class="choise">
+    <li>
+        <input id="every_re" name="remember_me" type="radio" value="0" /> <label for="every_re">每次都重新登陆<label>
+    </li>
+    <li>
+        <input id="month_re" name="remember_me" type="radio" value="1" /> <label for="month_re">一个月内自动登陆</label>
+    </li>
+    <li>
+        <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登陆</label>
+    </li>
+</ul>
+<div class="but">
+    <input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-login.gif'); ?>" alt="注册" border="0" />
+</div>
 </form>
+
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>          
+</div>
+<!-- #container -->
 
 <script type="text/javascript">
   document.getElementById('username_or_email').focus();
 </script>
 
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
-<?php 
-$arr_menu = array (	array('register'	, null)
-				);
-
-JWTemplate::sidebar( $arr_menu );
-?>
-	
-</div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

@@ -56,7 +56,7 @@ if ( isset($_POST['save_x'] ) ) {
 <li>头像修改成功！</li>
 _HTML_;
 				JWSession::SetInfo('notice',$notice_html);
-	            header('Location: /wo/invitations/invite');
+	            header('Location: /wo/account/invite');
                 exit(0);
 			} else {
 				$contact_url = JWTemplate::GetConst('UrlContactUs');
@@ -65,6 +65,8 @@ _HTML_;
 <li>上传头像失败，请检查头像图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="$contact_url">联系我们</a></li>
 _HTML_;
 				JWSession::SetInfo('error',$error_html);
+                header('Location: /wo/account/regok');
+                exit(0);
 			}
 
 			@unlink ( $user_named_file );
@@ -77,6 +79,8 @@ _HTML_;
 <li>头像文件尺寸太大了，请将图片缩小分辨率后重新上载。<li>
 _HTML_;
 				JWSession::SetInfo('notice',$error_html);
+                header('Location: /wo/account/regok');
+                exit(0);
 				break;
 			default:
 				throw new JWException("upload error $file_info[error]");
@@ -84,7 +88,7 @@ _HTML_;
 		}
 	}
 
-	header('Location: /wo/invitations/invite');
+	header('Location: /wo/account/invite');
 	exit(0);
 }
 ?>
