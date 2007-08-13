@@ -242,10 +242,10 @@ function validate_form(form)
 function updateLink(value){
     if( value.length > 0 ) {
         $('indexLink').href = '/' + value + '/';
-        $('indexString').innerHTML = 'http://jiwai.de/' + value + '/';
+        $('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
     }else{
         $('indexLink').href = '/';
-        $('indexString').innerHTML = 'http://jiwai.de/';
+        $('indexString').innerHTML = 'http://JiWai.de/';
     }
 }
 </script>

@@ -50,10 +50,7 @@ _HTML_;
 <?php JWTemplate::header('/wo/account/settings') ?>
 
 <div id="container" class="subpage">
-
-<div id="settingsNav" class="subtab">
-    <a href="/wo/account/password">帐号&amp;密码</a><a href="/wo/account/picture">个人资料</a><a href="/wo/devices/?sms">手机</a><a href="/wo/devices/?im">聊天软件</a><a href="/wo/account/notification" class="now">系统通知</a><a href="/wo/account/profile_settings">配色方案</a><a href="/wo/openid/">OpenID</a>
-</div>
+<?php JWTemplate::SettingTab(); ?>
 
 <div class="tabbody">
 <h2>系统通知</h2> 
