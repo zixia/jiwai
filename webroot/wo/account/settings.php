@@ -7,50 +7,43 @@ JWTemplate::html_doctype();
 @header("Pragma: no-cache");
 */
 
-
 JWLogin::MustLogined();
 
 
 $user_info		= JWUser::GetCurrentUserInfo();
 $new_user_info	= @$_REQUEST['user'];
 
+$is_reset_password	= JWSession::GetInfo('reset_password', false);
+$is_web_user = JWUser::IsWebUser($user_info['idUser']);
+
+$outInfo = $user_info;
+
 //var_dump($user_info);
 
-if ( isset($new_user_info) )
+if ( isset($new_user_info) && isset($_REQUEST['profile_x']) )
 {
-	//die(var_dump($new_user_info));
-
-
 	$nameFull	= trim(@$new_user_info['nameFull']);
     $nameScreen	= trim(@$new_user_info['nameScreen']);
     $email		= trim(@$new_user_info['email']);
-    $url		= trim(@$new_user_info['url']);
-    $bio		= trim(@$new_user_info['bio']);
-    $location	= trim(@$new_user_info['location']);
-    $protected	= @$new_user_info['protected'];
-
 
 	// compatible the twitter url param: name & description
 	if ( empty($nameScreen) )
 		$nameScreen	= trim(@$new_user_info['name']);
-	if ( empty($bio) )
-		$bio		= trim(@$new_user_info['description']);
-
-	if ( empty($protected) )
-		$protected = 'N';
-
 
 	$arr_changed 	= array();
 	$error_html 	= null;
+    $notice_html    = null;
 
 	if ( isset($nameFull) && $nameFull!=$user_info['nameFull'] )
 	{
 		$arr_changed['nameFull'] = $nameFull;
+        $outInfo['nameFull'] = $nameFull;
 	}
 
 	if ( isset($nameScreen) && $nameScreen!=$user_info['nameScreen'] )
 	{
 		$arr_changed['nameScreen'] = $nameScreen;
+        $outInfo['nameScreen'] = $nameScreen;
 
 		if ( 4>strlen($nameScreen) || !JWUser::IsValidName($nameScreen) )
 		{
@@ -86,33 +79,6 @@ _HTML_;
 		}
 	}
 
-
-	if ( isset($url) && $url!=$user_info['url'] )
-	{
-		$arr_changed['url'] = $url;
-	}
-
-	if ( isset($bio) && $bio!=$user_info['bio'] )
-	{
-		$arr_changed['bio'] = $bio;
-	}
-
-	if ( isset($location) && $location!=$user_info['location'] )
-	{
-		$arr_changed['location'] = $location;
-	}
-
-	if ( isset($protected) && $protected!=$user_info['protected'] )
-	{
-		$arr_changed['protected'] = $protected=='Y'?'Y':'N';
-	}
-
-
-//var_dump($arr_changed);
-//die ( "[$error_html] " );
-	/*
-	 * Update User Databse
-	 */
 	if ( empty($error_html) 
 			&& (!empty($arr_changed) ) )
 	{
@@ -133,9 +99,84 @@ _HTML_;
 	}
 }
 
+/** check if reset_password */
+
+    if ( $is_web_user && !$is_reset_password )
+    {
+        $verify_corrent_password = true;
+    }
+    else
+    {
+        $verify_corrent_password = false;
+    }
+
+if ( isset($_REQUEST['chpass_x']) ) {
+    if ( isset($_REQUEST['password']) )
+    {
+        $current_password 		= trim( @$_REQUEST['current_password'] );
+        $password 				= trim( @$_REQUEST['password'] );
+        $password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
+
+        if ( $verify_corrent_password
+                && (	empty($current_password) 
+                        || empty($password)
+                        || empty($password_confirmation) 
+                ) )
+        {
+            $error_html = <<<_HTML_
+                <li>请完整填写三处密码输入框</li>
+_HTML_;
+        }
+
+        if ( $password !== $password_confirmation )
+        {
+                $error_html .= <<<_HTML_
+                <li>两次输入密码不一致！请重新输入</li>
+_HTML_;
+        }
+
+        if ( $verify_corrent_password &&
+                ! JWUser::VerifyPassword($user_info['id'], $current_password) )
+        {
+                $error_html .= <<<_HTML_
+    <li>当前密码输入错误，清除新输入</li>
+_HTML_;
+        }
+    }
+
+	/*
+	 * Update User Databse
+	 */
+	if ( empty($error_html) )
+	{
+		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
+		{
+			$error_html = <<<_HTML_
+<li>密码修改失败，请稍后再试。</li>
+_HTML_;
+			JWSession::SetInfo('error', $error_html);
+		}
+		else
+		{
+			$notice_html = <<<_HTML_
+<li>密码修改成功！</li>
+_HTML_;
+			if ( !$is_web_user )
+				JWUser::SetWebUser($user_info['idUser']);
+
+			// 重设密码成功，现在清理掉重设密码的标志
+			if ( $is_reset_password	)
+				JWSession::GetInfo('reset_password');
+
+			JWSession::SetInfo('notice', $notice_html);
+		}
+
+		header ( "Location: /wo/account/settings" );
+	}
+}
 
 ?>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <?php JWTemplate::html_head() ?>
@@ -147,26 +188,12 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
-
-<div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
-
-
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php JWTemplate::UserSettingNav('account'); ?>
 
 <?php
-
 if ( empty($error_html) )
-	$error_html	= JWSession::GetInfo('error');
-
+    $error_html = JWSession::GetInfo('error');
 if ( empty($notice_html) )
-{
-	$notice_html	= JWSession::GetInfo('notice');
-}
+    $notice_html = JWSession::GetInfo('notice');
 
 if ( !empty($error_html) )
 {
@@ -183,104 +210,94 @@ if ( !empty($notice_html) )
 _HTML_;
 }
 ?>
-			<form enctype="multipart/form-data" method="post">
-				<fieldset>
-					<table cellspacing="0">
-					<tr>
-						<th><label for="user_username">帐号：</label></th>
-						<td>
-							<input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" 
-								value="<?php echo isset($new_user_info)
-														?$new_user_info['nameScreen']
-														:$user_info['nameScreen']?>" />
-							<p><small>帐号将作为你的叽歪de主页地址：
-							(<a href="/<?php echo isset($new_user_info)
-														?$new_user_info['nameScreen']
-														:$user_info['nameScreen']?>">http://JiWai.de/<?php echo isset($new_user_info)
-                                                       										? $new_user_info['nameScreen']
-                                                        									: $user_info['nameScreen']?></a>).
-							它应该是全站唯一的，只能够使用字母、数字和下划线。</small></p>
-
-						</td>
-					</tr>
-					<tr>
-						<th><label for="user_email">Email：</label></th>
-						<td><input id="user_email" name="user[email]" size="30" type="text" value="<?php echo isset($new_user_info)
-                                                        ? $new_user_info['email']
-                                                        : $user_info['email']?>" /></td>
-					</tr>
-
-					<tr>
-						<th><label for="user_name">名字：</label></th>
-
-						<td><input id="user_name" name="user[nameFull]" size="30" type="text" value="<?php echo isset($new_user_info)
-                                                        ? $new_user_info['nameFull']
-                                                        : $user_info['nameFull']?>" /></td>
-					</tr>
-	
-					<tr>
-						<th><label for="user_url">网址：</label></th>
-						<td>
-							<input id="user_url" name="user[url]" size="30" type="text" value="<?php echo isset($new_user_info)
-                                                        ? $new_user_info['url']
-                                                        : $user_info['url']?>" />
-							<p><small>有Blog或者网上像册？将地址输入在这里吧。</small></p>
-
-						</td>
-					</tr>
-					<tr>
-						<th><label for="user_bio">自述：</label></th>
-						<td>
-							<input id="user_bio" maxlength="80" name="user[bio]" size="30" type="text" value="<?php echo isset($new_user_info)
-                                                        ? $new_user_info['bio']
-                                                        : $user_info['bio']?>" />
-							<p><small>一句话（不超过70个汉字）的自我说明</small></p>
-						</td>
-					</tr>
-					<tr>
-						<th><label for="user_location">地址：</label></th>
-						<td>
-							<input id="user_location" name="user[location]" size="30" type="text" value="<?php echo isset($new_user_info)
-                                                        ? $new_user_info['location']
-                                                        : $user_info['location']?>" />
-							<p><small>你生活在哪个城市？</small></p>
-						</td>
-					</tr>
-
-					<tr>
-						<th></th>
-						<td>
-<?php
-//var_dump($new_user_info);
-//var_dump($user_info);
-?>
-							<input <?php echo isset($new_user_info)
-                                                        ? ('Y'==@$new_user_info['protected']?' checked ':'')
-                                                        : ('Y'==$user_info['protected'] ? ' checked ' : '')?> id="user_protected" name="user[protected]" type="checkbox" value="Y" />
-							<label for="user_protected">只对我de好友公开</label>
-
-							<p><small>只允许被我加为好友的人看到我的更新。如果选择了这项设置，你将不会出现在
-							<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</small></p>
-						</td>
-
-					</tr>
-					<tr>
-						<th></th>
-						<td><input name="commit" type="submit" value="保存" /></td>
-					</tr>
-
-					</table>
-				</fieldset>
-			</form>
-
-			<p><a href="/wo/account/delete">删除我的帐号？</a></p>
 
 
-		</div><!-- wrapper -->
-	</div><!-- content -->
+<div id="container">
+<?php JWTemplate::SettingTab() ;?>
 
-</div><!-- #container -->
-<hr class="separator" />
+<script type="text/javascript">
+function updateLink(value){
+    if( value.length > 0 ) {
+        $('indexLink').href = '/' + value + '/';
+        $('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
+    }else{
+        $('indexLink').href = '/';
+        $('indexString').innerHTML = 'http://JiWai.de/';
+    }
+}
+</script>
+
+<div class="tabbody">
+
+<?php if (false == $is_reset_password ) { ?>
+    <h2>修改帐号资料</h2>
+    <form action="/wo/account/settings" method="post">
+    <fieldset>
+    <table width="100%" cellspacing="3">
+        <tr>
+            <th valign="top">用户名：</th>
+            <td width="250">
+                <input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" />
+            </td>
+            <td class="note">用来登陆叽歪de（最少5个字符，不可以使用汉字、空格和特殊字符）</td>
+        </tr>
+        <tr>
+            <th>你的首页：</th>
+            <td><a id="indexLink" href="/Vicky"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
+            <td class="note">登录名将作为你的叽歪de主页地址</td>
+        </tr>
+        <tr>
+            <th>姓名：</th>
+            <td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" /></td>
+            <td class="note">你的真实名字，可以使用中文和空格</td>
+        </tr>
+        <tr>
+            <th>Email：</th>
+            <td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" /></td>
+            <td class="note">用于找回密码和接收通知</td>
+        </tr>
+    </table>
+    </fieldset>
+
+    <div class="but">
+        <input type="image" name="profile" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" /></a>
+    </div>            
+
+    </form>
+
+<? } ?>
+
+    <h2>修改帐号密码</h2>
+    <form action="/wo/account/settings" method="post" name="f">
+    <fieldset>
+    <table width="100%" cellspacing="3">
+        <tr>
+            <th>当前密码：</th>
+            <td width="250"><input id="current_password" name="current_password" type="password" /></td>
+            <td class="note">至少6个字符，建议使用字数、符号、字母组合的复杂密码</td>
+        </tr>
+        <tr>
+            <th>新密码：</th>
+            <td><input id="password" name="password" type="password" /></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <th>重复输入新密码：</th>
+            <td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    </fieldset>
+    <div class="but">
+        <input type="image" name="chpass" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" />
+    </div>            
+    </form>
+
+</div>
+
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>          
+</div>
+<!-- #container -->
 
 <?php JWTemplate::footer() ?>
 
