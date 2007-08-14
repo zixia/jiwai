@@ -214,22 +214,18 @@ _HTML_;
 </head>
 
 
-<body class="account" id="profile_settings">
+<body class="account" id="settings">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
+<?php JWTemplate::SettingTab('/wo/account/profile_settings'); ?>
 
-
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php JWTemplate::UserSettingNav('profile'); ?>
-
+<div class="tabbody">
+<h2>设计您自己de叽歪档案</h2>
+<div style="width:500px; margin:30px auto; font-size:14px;">
 
 <?php
 
@@ -250,15 +246,14 @@ _HTML_;
 
 ?>
 
-
-
-<h3>设计您自己de叽歪档案</h3>
 <p>
 	下面是您当前叽歪档案的设计方案，<br />
 	您可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
 </p>
 
-<form action="/wo/account/profile_settings" enctype="multipart/form-data" method="post"><fieldset>
+<form action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
+
+<fieldset>
 <table cellspacing="0">
 	<tr>
 		<th><label for="user_profile_background_color">背景颜色：</label></th>
@@ -339,15 +334,13 @@ _HTML_;
 	<tr><th></th><td><a href="/wo/account/restore_profile" onclick="return confirm('请确认您希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></td></tr>
 </table>
 </fieldset>
+
 </form>
 
-
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
+</div>
+</div>
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

@@ -4,7 +4,6 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-
 $user_info		= JWUser::GetCurrentUserInfo();
 
 ?>
@@ -20,18 +19,14 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
+<?php JWTemplate::SettingTab('/wo/openid/'); ?>
 
+<div class="tabbody">
+<h2>设置您的OpenId</h2>
 
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php JWTemplate::UserSettingNav('openid'); ?>
-
-<hr class="separator" />
+<div style="width:500px; margin:30px auto; font-size:14px;">
 
 <?php
 
@@ -56,18 +51,14 @@ _HTML_;
 	}
 }
 
-
 JWTemplate::ShowActionResultTips();
 
 ?>
-
 
 <ul>
 <li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
 <li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
 </ul>
-
-<hr class="separator" />
 
 <?php
 if ( isset($_REQUEST['set']) )
@@ -105,7 +96,6 @@ _JIWAI_OPENID_;
 }
 ?>
 
-
 <?php
 
 $trusted_site_ids 		= JWOpenid_TrustSite::GetIdsByUserId($user_info['id']);
@@ -129,11 +119,10 @@ _HTML_;
 echo "</ul>\n";
 ?>
 
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
+</div>
+</div>
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
