@@ -122,12 +122,9 @@ class JWSns {
 		 *	所以，被follow的人是 friend_id
 		 *	2007-05-24 暂时取消这个功能，由用户主动follow.
 		 *	2007-06-07 回复这个功能，自动follow.
-		 *	2007-08-14 取消这个功能，会议模式很危险
 		*/
-		/**
 		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
 			self::CreateFollower($friendRow, $userRow);
-		*/
 
 		return true;
 	}

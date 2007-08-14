@@ -351,6 +351,7 @@ _STR_;
 				$reply_info = JWSns::GetReplyTo( $new_user_id, $beforeRegister['serverAddress'], $beforeRegister['type'] );
 				if( !empty($reply_info) && $reply_info['user_id'] != $new_user_id ){
 					JWSns::CreateFriends( $new_user_id, array($reply_info['user_id']) , false );
+					JWSns::DestroyFollowers( $reply_info['user_id'], $new_user_id, false );
 				}
 
 				//JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
