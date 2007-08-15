@@ -337,7 +337,7 @@ _SQL_;
 		if ( preg_match('/^\d{8}$/',$mobileNo ) )
 			return self::SP_PAS;
 
-		return SP_UNKNOWN;
+		return self::SP_UNKNOWN;
 	}
 
 	/*

@@ -319,11 +319,11 @@ class JWSms {
 	{
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
-			case self::SP_CHINAMOBILE: 	return 1;
-			case self::SP_UNICOM: 		return 3;
+			case JWDevice::SP_CHINAMOBILE: 	return 1;
+			case JWDevice::SP_UNICOM: 		return 3;
 
-			case self::SP_PAS: 			// fall to default
-			case self::SP_UNKNOWN: 		// fall to default
+			case JWDevice::SP_PAS: 			// fall to default
+			case JWDevice::SP_UNKNOWN: 		// fall to default
 			default: 					
 				JWLog::Instance()->Log(LOG_ERR, "GetGidByMobileNo($mobileNo) Unsupported. ");
 				return 1;
