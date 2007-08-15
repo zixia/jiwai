@@ -229,9 +229,13 @@ class JWSms {
 		$pid	= 
 		$linkid = 
 		*/
+		$gid	= 1; // 移动:1 联通:3
+
+		$moId = JWDevice::GetMobileSP( $mobileNo );
+		if( $moId == 2 ) // 联通
+			$gid = 3;
 
 		$appid	= 93;
-		$gid	= 1; // 移动:1 联通:3
 		
 		$moflag		= $mt_type['MT_TYPE_NO_MO'];
 		$msgtype	= $mt_fee['FEE_FREE'];
