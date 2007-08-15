@@ -68,6 +68,7 @@ class JWRobotLogic {
 		$type		= $robotMsg->GetType();
 		$body 		= $robotMsg->GetBody();
 		$serverAddress	= $robotMsg->GetServerAddress();
+		$linkId		= $robotMsg->GetLinkId();
 
 		// echo
 		printf("%-35s: %s\n", "MO($type://$address)", $body);
@@ -233,6 +234,7 @@ _STR_;
 		$type	 = $robotMsg->GetType();
 		$body	 = $robotMsg->GetBody();
 		$serverAddress = $robotMsg->GetServerAddress();
+		$linkId = $robotMsg->GetLinkId();
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
 
@@ -255,6 +257,7 @@ _STR_;
 						'address' => $address,
 						'type' => $type,
 						'serverAddress' => $serverAddress,
+						'linkId' => $linkId,
 						), 0, 3600 );
 
 			/*
@@ -361,6 +364,7 @@ _STR_;
 						, $beforeRegister['type']
 						, $beforeRegister['body']
 						, $beforeRegister['serverAddress']
+						, $beforeRegister['linkId']
 						);
 				$reply_msg = self::ProcessMo($beforeRegisterMsg);
 				
@@ -390,6 +394,7 @@ _STR_;
 								, $robotMsg->GetType()
 								, $message
 								, $robotMsg->GetServerAddress()
+								, $robotMsg->GetLinkId()
 							);
 
 		return $robot_reply_msg;
