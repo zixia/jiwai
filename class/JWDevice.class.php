@@ -28,7 +28,7 @@ class JWDevice {
 	/*
 	 *					0: 不祥 1: 移动 2: 联通 3: 小灵通
 	 */
-	const SP_UNKNOWN 		= 1;
+	const SP_UNKNOWN 		= 0;
 	const SP_CHINAMOBILE 	= 1;
 	const SP_UNICOM			= 2;
 	const SP_PAS			= 3;
