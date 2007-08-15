@@ -183,7 +183,8 @@ sub sms_deliver_file {
 	my $server_address = '99118816';
 	$server_address = $1 if ( $head=~m#^SERVERADDRESS:\s+(\d+)$#mi );
 
-	# TODO: really MT
+	my $linkid = '';
+	$linkid = $1 if ( $head=~m#^LINKID:\s+(\d+)$#mi );
 
 	my $encode_msg = uri_escape($body);
 
@@ -196,7 +197,7 @@ sub sms_deliver_file {
 	#
 	# print sms mt to JWSms PHP class
 	#
-	print $chld_in "$mobile_no $encode_msg $server_address\n";
+	print $chld_in "$mobile_no $encode_msg $server_address $linkid\n";
 
 	$retval = <$chld_out>;
 

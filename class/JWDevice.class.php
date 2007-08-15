@@ -24,6 +24,15 @@ class JWDevice {
 	const	CHAR_NUM	= 2;
 	const	CHAR_ALL	= 3;
 
+
+	/*
+	 *					0: 不祥 1: 移动 2: 联通 3: 小灵通
+	 */
+	const SP_UNKNOWN 		= 1;
+	const SP_CHINAMOBILE 	= 1;
+	const SP_UNICOM			= 2;
+	const SP_PAS			= 3;
+
 	/**
 	 * Instance of this singleton class
 	 *
@@ -314,23 +323,21 @@ _SQL_;
 	/*
 	 * @param	string	Mobile NO
 	 * @return	int		SP Name
-	 *					0: 不祥 1: 移动 2: 联通 3: 小灵通
-	 * 					FIXME: use define here, such as JWDevice::CHINAMOBILE
 	 */
 	static function GetMobileSP($mobileNo)
 	{
 		if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
 				|| preg_match('/^159\d+$4/',$mobileNo)
 				)
-			return 1;
+			return self::SP_CHINAMOBILE;
 
 		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) )
-			return 2;
+			return self::SP_UNICOM;
 
 		if ( preg_match('/^\d{8}$/',$mobileNo ) )
-			return 3;
+			return self::SP_PAS;
 
-		return 0;
+		return SP_UNKNOWN;
 	}
 
 	/*
@@ -341,11 +348,12 @@ _SQL_;
 	{
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
-			case 0: return '99118816(移动) / 93188816(联通)';
-			case 1: return '99118816';
-			case 2: return '93188816';
-			case 3: return '暂时尚不支持小灵通';
-			default: return '99118816(移动) / 93188816(联通)';
+			case self::SP_CHINAMOBILE: 	return '99118816';
+			case self::SP_UNICOM: 		return '93188816';
+			case self::SP_PAS: 			return '暂时尚不支持小灵通';
+
+			case self::SP_UNKNOWN: 		// fall to default
+			default: 					return '99118816(移动) / 93188816(联通)';
 		}
 	}
 

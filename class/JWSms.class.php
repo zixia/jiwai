@@ -173,8 +173,23 @@ class JWSms {
 	 */
 	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816', $linkId=null)
 	{
-		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
+		// 第三方下行接口，只对移动有效
+		$MT_HTTP_URL_3RD		= 'http://211.157.106.111:8092/sms/third/submit';
+
+		// 普通下行接口，移动联通都可以使用。不过要提供 linkId
+		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
+
 		//define ('MT_HTTP_URL_TEST',	'http://beta.jiwai.de/wo/dump');
+
+		/* 	
+		 *	如果有 linkId，则使用 linkid 参数（移动、联通通用）；
+		 *	如果没有 LinkId，则只能给移动用户第三方下行
+		 */
+		if ( empty($linkId) )
+			$MT_HTTP_URL = $MT_HTTP_URL_3RD;
+		else
+			$MT_HTTP_URL = $MT_HTTP_URL_LINKID;
+
 
 		$error_code = array(	0		=> 'HE_ERR_OK'
 								, 52	=> 'HE_ERR_MSG'
@@ -229,13 +244,10 @@ class JWSms {
 		$pid	= 
 		$linkid = 
 		*/
-		$gid	= 1; // 移动:1 联通:3
-
-		$moId = JWDevice::GetMobileSP( $mobileNo );
-		if( $moId == 2 ) // 联通
-			$gid = 3;
 
 		$appid	= 93;
+
+		$gid	= self::GetGidByMobileNo($mobileNo); // 移动:1 联通:3
 		
 		$moflag		= $mt_type['MT_TYPE_NO_MO'];
 		$msgtype	= $mt_fee['FEE_FREE'];
@@ -243,7 +255,7 @@ class JWSms {
 		$param		= 'nofilter';
 		
 		// appid=XX&gid=X&dst=1331234567&pid=XX&msg=XXX&linkid=XXX&func=XXX&moflag=X&msgtype=X 
-		$rpc_url = $MT_HTTP_URL_3RD . "?appid=$appid"
+		$rpc_url = $MT_HTTP_URL . "?appid=$appid"
 							. "&gid=$gid"
 							. "&dst=$dst"
 							. "&pid=$pid"
@@ -298,6 +310,25 @@ class JWSms {
 		return true;
 	}
 
+
+	/*
+	 *	根据手机号，得到 mt url 的 gid 参数
+	 *
+	 */
+	static public function GetGidByMobileNo($mobileNo)
+	{
+		switch ( JWDevice::GetMobileSP($mobileNo) )
+		{
+			case self::SP_CHINAMOBILE: 	return 1;
+			case self::SP_UNICOM: 		return 3;
+
+			case self::SP_PAS: 			// fall to default
+			case self::SP_UNKNOWN: 		// fall to default
+			default: 					
+				JWLog::Instance()->Log(LOG_ERR, "GetGidByMobileNo($mobileNo) Unsupported. ");
+				return 1;
+		}
+	}
 
 	/*
 	 * 根据是否包含中文决定发送 140(ascii) 还是 70(中文)

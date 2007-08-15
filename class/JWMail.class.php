@@ -73,6 +73,9 @@ class JWMail {
 		if ( 'UTF-8'!=$encoding )
 			$string	= mb_convert_encoding($string, $encoding, "UTF-8");
 
+		// 我们不分 ascii ，全部转义
+		return "=?$encoding?B?" . base64_encode($string) . "?=";
+
 		return preg_replace_callback
 			(
 					 '/([\x80-\xFF]+.*[\x80-\xFF]+)/'
