@@ -16,6 +16,7 @@ class JWRobotMsg {
 	private $mAddress	= null;
 	private $mType		= null;
 	private $mServerAddress	= null;
+	private $mLinkId	= null;
 	private $mMsgtype	= null;
 	private $mBody		= null;
 	private $mFile		= null;
@@ -133,6 +134,18 @@ class JWRobotMsg {
 		$this->mAddress = $address;
 		$this->mIsValid = null;
 	}
+	public function GetLinkId()
+	{
+		return $this->mLinkId;
+	}
+	public function SetLinkId($linkId)
+	{
+		if ( $this->mReadOnly )
+			throw new JWException('cant modify readonly msg');
+
+		$this->mLinkId = $linkId;
+		$this->mIsValid = null;
+	}
 	public function GetMsgtype()
 	{
 		return $this->mMsgtype;
@@ -199,7 +212,7 @@ class JWRobotMsg {
 
 
 
-	public function Set($address, $type, $body, $serverAddress=null, $file=null)
+	public function Set($address, $type, $body, $serverAddress=null, $linkId=null, $file=null)
 	{
 		if ( $this->mReadOnly )
 			throw new JWException('cant modify readonly msg');
@@ -208,6 +221,7 @@ class JWRobotMsg {
 		$this->mType	= $type;
 		$this->mBody	= $body;
 		$this->mServerAddress	= $serverAddress;
+		$this->mLinkId	= $linkId;
 		$this->mFile	= $file;
 
 		$this->mIsValid	= $this->IsValid(true);
@@ -231,6 +245,10 @@ class JWRobotMsg {
 		if( $this->mMsgtype != null ) {
 			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
 		}
+		if( $this->mLinkId != null ) {
+			$file_contents .= "LINKID: " . $this->mLinkId . "\n";
+		}
+
 		$file_contents .= "\n";
 		$file_contents .= $this->mBody ;
 
@@ -302,7 +320,7 @@ class JWRobotMsg {
 		if( null == $lineString )
 			return;
 		if( preg_match( '/^(\w+):\s+(.+)$/', $lineString, $matches ) ){
-			$this->headTags[ strtoupper($matches[1]) ] = $matches[2];
+			$this->headTags[ strtoupper(trim($matches[1]))] = trim($matches[2]);
 		}	
 	}
 
@@ -318,12 +336,14 @@ class JWRobotMsg {
 		//MSGTYPE
 		$msgtype = $this->_GetHeadTag('MsgType');
 		$serverAddress = $this->_GetHeadTag('ServerAddress');
+		$linkId = $this->_GetHeadTag('LinkId');
 		
 		//Set properties
 		$this->mAddress = $address ;
 		$this->mType	= $device ;
 		$this->mMsgtype = $msgtype ;
 		$this->mServerAddress = $serverAddress ;
+		$this->mLinkId = $linkId;
 
 		return true;
 	}

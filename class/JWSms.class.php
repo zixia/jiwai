@@ -129,8 +129,10 @@ class JWSms {
 					. " from mobile [$mobileNo] to service [$serviceNo]"
 					. " by link [$linkId] through [$gateId]" );
 
+		$gateNo = ( $gateId == 1 ) ? '9911' : '9318';
+
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($mobileNo, 'sms', $smsMsg, '9911'.$serviceNo);
+		$robot_msg->Set($mobileNo, 'sms', $smsMsg, $gateNo.$serviceNo, $linkId);
 
 		$robot_msg->SetFile( self::$msQueuePathMo . $robot_msg->GenFileName() );
 
@@ -169,7 +171,7 @@ class JWSms {
 	 * 9911(chn) & 9318(uni) mt
 	 *
 	 */
-	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816')
+	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816', $linkId=null)
 	{
 		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
 		//define ('MT_HTTP_URL_TEST',	'http://beta.jiwai.de/wo/dump');
@@ -214,7 +216,7 @@ class JWSms {
 		$appid	= null;	// 数字，应用编号，需分配
 		$gid	= null;	// 数字，网关ID
 		$pid	= null;	// 数字,产品ID
-		$linkid	= null;	// 如果mo里面有带下来，(没有不填，不要乱填)
+		//$linkid	= null;	// 如果mo里面有带下来，(没有不填，不要乱填)
 		$func	= 8816; // 数字，长号码，只加自己的扩展号
 
 		/**
@@ -242,7 +244,7 @@ class JWSms {
 							. "&dst=$dst"
 							. "&pid=$pid"
 							. "&msg=$msg"
-							. "&linkid=$linkid"
+							. "&linkid=$linkId"
 							. "&func=$func"
 							. "&moflag=$moflag"
 							. "&msgtype=$msgtype"
