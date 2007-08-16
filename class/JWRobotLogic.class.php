@@ -102,11 +102,12 @@ class JWRobotLogic {
 
 			return null;
 
-		} else if ( JWDevice::IsExist($address, $type, false) )
+		} else if ( JWDevice::IsExist($address, $type, false) || $type == 'web' )
 		{
 			// 设备已经设置，(false 代表包含未激活的设备)
 			// 		1、user JiWai status
 			//		2、verify code
+
 			$reply_robot_msg = self::ProcessMoStatus($robotMsg);
 		}
 		else 
@@ -126,7 +127,9 @@ class JWRobotLogic {
 						. ")"
 						, $reply_robot_msg->GetBody() );
 		}
-		echo $msg;
+
+        if( $type != 'web' )
+            echo $msg;
 
 		return $reply_robot_msg;
 	}
@@ -149,8 +152,8 @@ class JWRobotLogic {
 			return null; 
 		}
 		$isSignature = ( $msgtype=='SIG' ) ? 'Y' : 'N';
-
-		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+        
+        $device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		if ( empty($device_row) )
 		{	
@@ -399,7 +402,6 @@ _STR_;
 
 		return $robot_reply_msg;
 	}
-
 
 }
 ?>

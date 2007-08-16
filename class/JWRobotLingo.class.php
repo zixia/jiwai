@@ -223,8 +223,8 @@ _STR_;
 		if ( ! $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWUser::SetSendViaDevice($user_id,$type ...) failed");
 
-
-		$ret = JWDevice::SetDeviceEnabledFor($device_id, 'everything');
+        if( $device_id ) 
+            $ret = JWDevice::SetDeviceEnabledFor($device_id, 'everything');
 
 		if ( ! $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWDevice::SetDeviceEnabledFor($device_id,...) failed");
@@ -257,7 +257,10 @@ _STR_;
 
 		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
 
-		$ret = JWUser::SetSendViaDevice($user_id, 'web');
+		if( $type != 'web' )
+            $ret = JWUser::SetSendViaDevice($user_id, 'web');
+        else
+            return null;
 			
 		if ( ! $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
@@ -812,9 +815,7 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-
-		$address_device_id		= JWDevice::GetDeviceIdByAddress( array('address'=>$address,'type'=>$type) );
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowById	($address_device_id);
+		$address_device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		// 用户没有注册过
 		if ( empty($address_device_db_row) )

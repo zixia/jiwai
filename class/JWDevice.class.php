@@ -82,6 +82,7 @@ class JWDevice {
 			case 'email':
 				// email check email address，为了兼容邮件检查，Device表中没有这种类型
 				return JWUser::IsValidEmail($address,true);
+            case 'web':
 			case 'facebook':
 				return true;
 
@@ -98,6 +99,16 @@ class JWDevice {
 	 */
 	static public function GetDeviceDbRowByAddress( $address, $type )
 	{
+
+        if( $type == 'web' ) {
+            return array(
+                'idUser' => $address,
+                'secret' => '',
+                'type' => 'web',
+                'idDevice' => 0,
+            );
+        }
+
 		$device_ids		= JWDevice::GetDeviceIdsByAddresses(	
 										array( 
 											array('address'=>$address,'type'=>$type) 
