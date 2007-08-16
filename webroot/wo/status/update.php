@@ -22,10 +22,22 @@ if ( array_key_exists('status', $_REQUEST) ){
 			$status = '@help ' . $status;
 		}
 
-
+        
+        /*
 
 		if ( !JWSns::UpdateStatus($idUser, $status) )
 			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
+        */
+
+        $robotMsg = new JWRobotMsg();
+        $robotMsg->Set( $idUser , 'web', $status, 'web' );
+        $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
+        if( $replyMsg === false ) {
+			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
+        }
+        if( false == empty( $replyMsg ) ){
+            JWSession::SetInfo('notice', $replyMsg->GetBody() );
+        }
 	}
 }
 

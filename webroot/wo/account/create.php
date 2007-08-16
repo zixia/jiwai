@@ -15,6 +15,8 @@ if ( isset($_REQUEST['user'])
 		&& isset($_REQUEST['user']['nameScreen']) && trim($_REQUEST['user']['nameScreen']) ){
 
 	$aUserInfo = $_REQUEST['user'];
+    if( empty( $aUserInfo['nameFull'] ) ) 
+        $aUserInfo['nameFull'] = $aUserInfo['nameScreen'];
 
 	//echo "<pre>";var_dump($_FILES); die(var_dump($_REQUEST));
 	//JWDebug::trace($aUserInfo);
@@ -224,13 +226,12 @@ function validate_form(form)
 */
 
 
-
 	if ( 0==$('user_email').value.length
 				|| !$('user_email').value.match(/[\d\w._\-]+@[\d\w._\-]+\.[\d\w._\-]+/) ){
 		$('user_email').className += " notice";
 		//bValid = false;
-		JWErr += "\t" + n + ". 请输入正确的邮件地址\n";
-		n++;
+		//JWErr += "\t" + n + ". 请输入正确的邮件地址\n";
+		//n++;
 	}
 
 	if ( !bValid )
