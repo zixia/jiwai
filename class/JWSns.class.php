@@ -602,6 +602,7 @@ class JWSns {
 		if( !empty($reply_info) ) {
 			$suffixInfo = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
 			$reply_info['smssuffix'] = empty($suffixInfo) ? null : $suffixInfo['smssuffix'];
+            if( $reply_info['smssuffix'] == null ) $reply_info['user_id'] = null;
 		}
 
 		if( empty($reply_info) ) {
