@@ -599,17 +599,27 @@ class JWSns {
 		 * 判断是否是会议模式相关，目前仅可以从SMS特服号上取出 会议id
 		 * 如果 reply_info 中含有 smssuffix 则一定为会议用户
 		 */
+		$notifyInfo = array(
+			'device' => $device,
+			'status' => $status,
+			'serverAddress' => $serverAddress,
+		);
 		if( !empty($reply_info) ) {
+			$notifyInfo['idUserReplyTo'] = $reply_info['user_id'];
 			$suffixInfo = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
 			$reply_info['smssuffix'] = empty($suffixInfo) ? null : $suffixInfo['smssuffix'];
-            if( $reply_info['smssuffix'] == null ) $reply_info['user_id'] = null;
+		    	if( $reply_info['smssuffix'] == null ) {
+				$reply_info['user_id'] = null;
+			}
 		}
 
 		if( empty($reply_info) ) {
 			$reply_info = JWSns::GetReplyTo( $idUser, $serverAddress, $device );
+			if( !empty( $reply_info ) ){
+				$notifyInfo['idUserReplyTo'] = $reply_info['user_id'];
+			}
 		}
 
-		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
 
 		/**    Commented By shwdai@gmail.com 2007/07/29
