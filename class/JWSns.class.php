@@ -615,12 +615,11 @@ class JWSns {
 
 		if( empty($reply_info) ) {
 			$reply_info = JWSns::GetReplyTo( $idUser, $serverAddress, $device );
-			if( !empty( $reply_info ) ){
-				$notifyInfo['idUserReplyTo'] = $reply_info['user_id'];
-			}
+			$notifyInfo['idUserReplyTo'] = empty( $reply_info ) ? null : $reply_info['user_id'];
 		}
 
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
+		$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
 
 		/**    Commented By shwdai@gmail.com 2007/07/29
 		//Notify Followers
@@ -630,13 +629,7 @@ class JWSns {
 		/*
 		* record  notify information
 		*/
-		$notifyInfo = array(
-			'idUserReplyTo' => $idUserReplyTo,
-			'device' => $device,
-			'status' => $status,
-			'serverAddress' => $serverAddress,
-			'smssuffix' => $smssuffix,
-		);
+		$notifyInfo['smssuffix'] = $smssuffix;
 
 		$returnArray = array(
 			'reply' => $idUserReplyTo,
@@ -670,6 +663,7 @@ class JWSns {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$status = "$userInfo[nameScreen]: $status";
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+			settype( $follower_ids , 'array' );
 			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
