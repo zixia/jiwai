@@ -119,7 +119,7 @@ class JWApi{
 	  
 	static function ReBuildStatus(&$status){
 		$outInfo = array();
-		$outInfo['created_at'] = date("D M d H:i:s O Y",$status['timeCreate']);
+		$outInfo['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
 		$outInfo['text'] = $status['status'];
 		$outInfo['id'] = $status['idStatus'];
 		return $outInfo;
