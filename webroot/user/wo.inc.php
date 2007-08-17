@@ -262,6 +262,7 @@ if ( $show_protected_content )
 									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
 									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
 									//,'protected'=> $logined_user_info['idUser']!=$page_user_id
+                                    , 'pagination' => $pagination
 							 )
 						) ;
 

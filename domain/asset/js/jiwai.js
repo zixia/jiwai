@@ -143,6 +143,14 @@ alert('ok');
 			onSuccess: function(html) { $('device_list').setHTML(html); }
 		}).request();
 	},
+    EnableDevice: function(id, postdata) {
+		new Ajax( '/wo/devices/enable/'+id, {
+			method: 'post',
+			headers: {'AJAX':true},
+			data: postdata,
+			onSuccess: function(html) { ; }
+		}).request();
+    },
 	Refresh: function() {
 		var last = 0;
 		$$('#timeline .odd').each(function(el) {

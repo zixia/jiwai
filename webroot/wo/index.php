@@ -39,7 +39,6 @@ _HTML_;
 	<div id="content">
 		<div id="wrapper">
 
-
 <?php JWTemplate::ShowAlphaBetaTips() ?>
 <?php JWTemplate::ShowActionResultTips() ?>
 
@@ -49,7 +48,15 @@ _HTML_;
   			<!-- p class="notice">
   				IM is down at the moment.  We're working on restoring it.  Thanks for your patience!
   			</p-->
-
+<?php
+if( false == isset($notice_html) )
+    $notice_html = JWSession::GetInfo('notice');
+if( false == empty($notice_html) ){
+    echo <<<NOTICE
+        <p class="notice">$notice_html</p>
+NOTICE;
+}
+?>
 
 <?php 
 $active_tab = 'friends';
@@ -195,7 +202,7 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array
 	</div><!-- content -->
 
 <?php
-include_once './sidebar.php';
+include_once ( dirname(__FILE__) . '/sidebar.php' );
 JWTemplate::container_ending();
 ?>
 

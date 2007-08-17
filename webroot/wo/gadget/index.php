@@ -27,14 +27,10 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
 
-
-			<h2><?php echo $user_info['nameScreen']?>的窗可贴</h2>
+<h2><?php echo $user_info['nameScreen']?>的窗可贴</h2>
 
 <?php JWTemplate::UserGadgetNav('index'); ?>
 
@@ -62,12 +58,8 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <li><a class="ext" href="http://help.jiwai.de/BlogusWidget"><img width="227" height="28" border="0" alt="BlogUS The Our Life" src="http://www.blogus.cn/OblogStyle/SysStyle/blogus/top_logo.gif"/>Blogus</a><span class="exttail">∞</span></li>
 </ul>
 
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

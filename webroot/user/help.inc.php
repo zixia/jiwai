@@ -90,8 +90,6 @@ $options = array(	 'title'		=> "$help_user_info[nameScreen] / $help_user_info[na
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container">
 <?php 
 /*
@@ -143,13 +141,14 @@ JWTemplate::tab_header( array('title'=>'这一刻，大家都想告诉叽歪de�
 
 //die(var_dump($_REQUEST));
 
-JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows);
-  
+JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array(
+                        'pagination' => $pagination,
+                    ));
+/* 
 JWTemplate::pagination($pagination);
+*/
 
 ?>
-
-<?php JWTemplate::rss('user',$help_user_id) ?>
 			</div><!-- tab -->
 
   			<script type="text/javascript">
@@ -198,14 +197,14 @@ $arr_menu 			= array(	array ('status'			, array($help_user_info))
 								, array ('user_info'	, array($help_user_info))
 								, array ('count'		, array($arr_count_param))
 								, array ('friend'		, array($arr_friend_list))
+                                , array ('rss'      , array('user', '叽歪de留言板'))
 							);
 	
 JWTemplate::sidebar( $arr_menu );
+JWTemplate::container_ending();
 ?>
 
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

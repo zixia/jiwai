@@ -34,7 +34,7 @@ $arr_menu 			= array(
 					array ('count'		, array($arr_count_param)) , 
 					array ('jwvia'		, array($active_options, $via_device)) ,
 					array ('separator'	, array()) ,
-				       	array ('friend'		, array($arr_friend_list)) , 
+				    array ('friend'		, array($arr_friend_list)) , 
 					array ('invite'	, array()) ,
 					//array ('search'		, array(null, isset($q) ? $q : null)) ,
 				);

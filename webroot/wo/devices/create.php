@@ -3,12 +3,12 @@ require_once ('../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
+
 //echo "<pre>"; die(var_dump($_REQUEST));
 if ( ($idUser=JWLogin::GetCurrentUserId())
 		&& array_key_exists('device',$_REQUEST) ){
 
 	$aDeviceInfo = $_REQUEST['device'];
-
 
 	if ( 'newsmth'==$aDeviceInfo['type'] &&  ! preg_match('/@/',$aDeviceInfo['address']) )
 		$aDeviceInfo['address'] .= '@newsmth.net';

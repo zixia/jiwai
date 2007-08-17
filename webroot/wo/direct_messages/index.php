@@ -149,25 +149,21 @@ foreach ( $message_ids as $message_id )
             <div class="write"><a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a></div>
             <div class="time"> $time_desc </div>
           </div>
-
-	<div class="line"></div>
+        <div style="clear:both;"></div>
 
 _HTML_;
 }
-
 ?>
-  	
 	</div>
-
 </div>
+<?php JWTemplate::PaginationLimit( $pagination, $page, null, 4 ); ?>
 </div>
 
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
-
 <?php
-include_once '../sidebar.php';
+include_once ( dirname(dirname(__FILE__)). '/sidebar.php') ;
 JWTemplate::container_ending();
 ?>
 	
