@@ -1,11 +1,11 @@
-SUBJECT: %User.nameScreen%希望您加入叽歪de！
+SUBJECT: %User.nameScreen%希望你加入叽歪de！
 FROM: %User.nameFull% <noreply@jiwai.de>
 
-%Friend.nameFull%您好！
+%Friend.nameFull%你好！
 
 %MESSAGE%
 
-%User.nameFull% (%User.nameScreen%) 邀请您加入叽歪de！
+%User.nameFull% (%User.nameScreen%) 邀请你加入叽歪de！
 
 
 点击这里开始：
