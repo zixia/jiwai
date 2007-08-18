@@ -34,7 +34,7 @@ _HTML_;
 		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
 			$notice_html =<<<_HTML_
-您向${page_user_name}发送的添加好友请求，他还没有回应，再等等吧。
+你向${page_user_name}发送的添加好友请求，他还没有回应，再等等吧。
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}

@@ -41,7 +41,7 @@ switch($action){
 function destroy( $idUser, $value ){
     
     if( false == JWMessage::IsUserOwnMessage( $idUser, $value) ){
-        JWSession::SetInfo('error', "您无权删除这条悄悄话（编号 $value）。" );
+        JWSession::SetInfo('error', "你无权删除这条悄悄话（编号 $value）。" );
         redirect();
     }
 
@@ -69,16 +69,16 @@ function send($idUser, $idReceiver){
     $userInfo = JWUser::GetUserInfo( $idReceiver );
 
     if ( empty($userInfo) || !JWFriend::IsFriend($idReceiver, $idUser) ) {
-        JWSession::SetInfo('error', "用户不存在，或用户不是您的好友。");
+        JWSession::SetInfo('error', "用户不存在，或用户不是你的好友。");
         redirect();
     }
 
     if( $message ){
         if ( JWSns::CreateMessage($idUser, $idReceiver, $message ) ){
-            JWSession::SetInfo('error', "您的悄悄话已经发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>了，耶！");
+            JWSession::SetInfo('error', "你的悄悄话已经发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>了，耶！");
             redirect( '/wo/message/inbox' );
         }else{
-            JWSession::SetInfo('error', "哎呀！由于系统临时故障，您的悄悄话未能成功的发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>，请稍后再试吧。");
+            JWSession::SetInfo('error', "哎呀！由于系统临时故障，你的悄悄话未能成功的发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>，请稍后再试吧。");
         }
     }
     redirect( );

@@ -18,7 +18,7 @@ if ( preg_match('#^/(\w+)$#',@$_REQUEST['pathParam'],$matches) )
 		JWSession::SetInfo('reset_password', 1);
 
 		$notice_html = <<<_HTML_
-现在您可以设置新密码了，下次不要再忘记喽！:-)
+现在你可以设置新密码了，下次不要再忘记喽！:-)
 _HTML_;
 		JWSession::SetInfo('notice',$notice_html);
 

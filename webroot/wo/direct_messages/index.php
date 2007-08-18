@@ -65,10 +65,10 @@ switch ( $message_box_type )
 {
 	default:
 	case JWMessage::INBOX:
-		$options['title'] = '您收到的悄悄话';
+		$options['title'] = '你收到的悄悄话';
 		break;
 	case JWMessage::SENT:
-		$options['title'] = '您发送的悄悄话';
+		$options['title'] = '你发送的悄悄话';
 		break;
 }
 
@@ -144,7 +144,7 @@ foreach ( $message_ids as $message_id )
           <div class="odd">
             <div class="head"><a href="/wo/direct_messages/create/$user_id" title="悄悄话发给$user_db_row[nameScreen]"><img alt="$user_db_row[nameFull]" src="$photo_url" width="48" height="48"/></a></div>
             <div class="cont">$message_db_row[message]
-		<a href="/wo/direct_messages/destroy/$message_db_row[idMessage]" onclick="return confirm('确认您要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+		<a href="/wo/direct_messages/destroy/$message_db_row[idMessage]" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="$asset_trash_url" /></a>
             </div>
             <div class="write"><a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a></div>
             <div class="time"> $time_desc </div>

@@ -85,7 +85,7 @@ JWTemplate::UserSettingNav("device");
 						</form>
 
 <?php } else if ( ! $device_row['sms']['verified'] ){ // sms not verified ?>
-            			<h4>为了验证您的手机号码(<?php echo $device_row['sms']['address']?>)，请将如下验证码发送到短信特服号：
+            			<h4>为了验证你的手机号码(<?php echo $device_row['sms']['address']?>)，请将如下验证码发送到短信特服号：
       						<strong> <?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']) ?> </strong>
 							<code><?php echo $device_row['sms']['secret']?></code>
 						</h4>

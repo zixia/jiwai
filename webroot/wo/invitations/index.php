@@ -62,7 +62,7 @@ if ( !empty($invitee_user_ids) )
 
 
 ?>
-			<h2>您以前的邀请记录</h2>
+			<h2>你以前的邀请记录</h2>
 
 
   			<h3>被接受的邀请数： <?php echo count($registered_invitation_ids)?> 个</h3>

@@ -83,7 +83,7 @@ _HTML_;
         if( empty($secret) ) {
         ?>
             <span class="note">
-            您好，您的<?php echo JWDevice::GetNameFromType($type);?>账户已经通过我们的验证，给叽歪的机器人<?php echo JWDevice::GetNameFromType($type);?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong>发送消息直接更新你的叽歪吧！<br/>
+            你好，你的<?php echo JWDevice::GetNameFromType($type);?>账户已经通过我们的验证，给叽歪的机器人<?php echo JWDevice::GetNameFromType($type);?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong>发送消息直接更新你的叽歪吧！<br/>
             <?php if( in_array($type, array('qq','msn','gtalk','skype') ) ) { ?>
                 <input type="radio" style="display:inline; width:23px;" name="notify_<?php echo $type;?>" id="notify_<?php echo $type;?>_on" <?php if($device_row[$type]['enabledFor']=='everything') echo "checked";?> onclick="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]=everything');"/><label for="notify_<?php echo $type;?>_on"> 开启通知</label>
                 <input type="radio" style="display:inline; width:23px;" name="notify_<?php echo $type;?>" id="notify_<?php echo $type;?>_off" <?php if($device_row[$type]['enabledFor']=='nothing') echo "checked";?> onClick="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]=nothing');"/><label for="notify_<?php echo $type;?>_off"> 关闭通知</label><br/>
@@ -97,14 +97,14 @@ _HTML_;
         ?>
             <?php if( $type != 'facebook' ) { ?>
                 <span class="note">
-                你好，请验证您的<?php echo JWDevice::GetNameFromType($type); ?>账户：<br/>
+                你好，请验证你的<?php echo JWDevice::GetNameFromType($type); ?>账户：<br/>
                 1、加 <?php echo JWDevice::GetNameFromType($type); ?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong> 为好友；<br/>
                 2、发送以下验证码<?php echo JWDevice::GetNameFromType($type); ?>进行验证：<br/>
                 <strong><?php echo $secret;?></strong>
                 </span>
                 <?php }else { ?>
             <span class="note">
-                您好，facebook帐号：<br/>
+                你好，facebook帐号：<br/>
                 1、访问 <a href="http://apps.facebook.com/jiwaide/?verify">JiWai.de @ Facebook</a> 并安装；<br/>
                 2、输入如下验证码进行验证：<br/>
                 <strong><?php echo $secret;?><strong>

@@ -17,7 +17,7 @@ if ( is_int($idLoginedUser) )
 		if ( JWFavourite::Destroy($idLoginedUser, $idStatus) )
 		{
 			$notice_html = <<<_HTML_
-您已经不再收藏这条更新了。
+你已经不再收藏这条更新了。
 _HTML_;
 		}
 		else

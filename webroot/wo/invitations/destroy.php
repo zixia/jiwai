@@ -20,7 +20,7 @@ if ( preg_match('/^\/(\w+)$/',$param,$match) ){
 		JWInvitation::Destroy($inviter_id);
 
 		$notice_html = <<<_HTML_
-我们已经取消了对您的邀请。有时间的话在叽歪de网站上看看大家都在做什么吧！
+我们已经取消了对你的邀请。有时间的话在叽歪de网站上看看大家都在做什么吧！
 _HTML_;
 	}
 } 

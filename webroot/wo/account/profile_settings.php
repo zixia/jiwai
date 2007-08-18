@@ -224,7 +224,7 @@ _HTML_;
 <?php JWTemplate::SettingTab('/wo/account/profile_settings'); ?>
 
 <div class="tabbody">
-<h2>设计您自己de叽歪档案</h2>
+<h2>设计你自己de叽歪档案</h2>
 <div style="width:500px; margin:30px auto; font-size:14px;">
 
 <?php
@@ -247,8 +247,8 @@ _HTML_;
 ?>
 
 <p>
-	下面是您当前叽歪档案的设计方案，<br />
-	您可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
+	下面是你当前叽歪档案的设计方案，<br />
+	你可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
 </p>
 
 <form action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
@@ -331,7 +331,7 @@ _HTML_;
   
 	<tr><th></th><td><input name="commit" type="submit" value="保存" /></td></tr>
 
-	<tr><th></th><td><a href="/wo/account/restore_profile" onclick="return confirm('请确认您希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></td></tr>
+	<tr><th></th><td><a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></td></tr>
 </table>
 </fieldset>
 

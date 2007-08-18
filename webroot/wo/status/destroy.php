@@ -26,7 +26,7 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 			else
 			{
 				$error_html = <<<_HTML_
-<li>您无权删除这条更新（编号 $idStatus ）</li>
+<li>你无权删除这条更新（编号 $idStatus ）</li>
 _HTML_;
 				JWSession::SetInfo('error',$error_html);
 			}

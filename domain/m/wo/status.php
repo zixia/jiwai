@@ -27,7 +27,7 @@ switch($action){
 function destroy( $idUser, $value ){
     
     if( false == JWStatus::IsUserOwnStatus( $idUser, $value) ){
-        JWSession::SetInfo('error', "您无权删除这条更新（编号 $value）。" );
+        JWSession::SetInfo('error', "你无权删除这条更新（编号 $value）。" );
         redirect();
     }
 

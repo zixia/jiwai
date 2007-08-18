@@ -24,7 +24,7 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <?php JWTemplate::SettingTab('/wo/openid/'); ?>
 
 <div class="tabbody">
-<h2>设置您的OpenId</h2>
+<h2>设置你的OpenId</h2>
 
 <div style="width:500px; margin:30px auto; font-size:14px;">
 
@@ -45,7 +45,7 @@ if ( isset($_REQUEST['commit']) )
 	else
 	{
 		$error_html = <<<_HTML_
-您输入的 OpenID：$openid_url 有误，请查证后重试。
+你输入的 OpenID：$openid_url 有误，请查证后重试。
 _HTML_;
 		JWSession::SetInfo('error', $error_html);
 	}
@@ -80,7 +80,7 @@ else if ( $openid_id )
 	$openid_db_row 	= JWOpenid::GetDbRowById($openid_id);
 	$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
 	echo <<<_USER_OPENID_
-		<h3 style="display:inline">您的 OpenID 为：<strong>$openid_url</strong></h3>
+		<h3 style="display:inline">你的 OpenID 为：<strong>$openid_url</strong></h3>
 		<a href="/wo/openid/destroy/$openid_id">使用叽歪de OpenID ?</a>
 _USER_OPENID_;
 
@@ -90,8 +90,8 @@ else
 	
 	// 用户使用 jiwai de openid
 	echo <<<_JIWAI_OPENID_
-		<h3 style="display:inline">您的 OpenID 为：<strong>http://jiwai.de/$user_info[nameScreen]/</strong></h3>
-		<a href="?set">绑定您自己的 OpenID ?</a>
+		<h3 style="display:inline">你的 OpenID 为：<strong>http://jiwai.de/$user_info[nameScreen]/</strong></h3>
+		<a href="?set">绑定你自己的 OpenID ?</a>
 _JIWAI_OPENID_;
 }
 ?>
@@ -104,7 +104,7 @@ $trusted_site_db_rows 	= JWOpenid_TrustSite::GetDbRowsByIds($trusted_site_ids);
 if ( count($trusted_site_ids) )
 {
 	echo <<<_HTML_
-<h4>您当前允许在以下网站登录您的 OpenID</h4>
+<h4>你当前允许在以下网站登录你的 OpenID</h4>
 _HTML_;
 }
 

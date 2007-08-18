@@ -55,7 +55,7 @@ if ( ! isset($inviter_user_info) )
 	$inviter_name_full 	= $inviter_user_info['nameFull'];
 	$inviter_icon_url 	= JWPicture::GetUserIconUrl($inviter_user_info['id']);
 	echo <<<_HTML_
-<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望和您成为叽歪de好友</h2>
+<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望和你成为叽歪de好友</h2>
 _HTML_;
 
 ?>
@@ -64,7 +64,7 @@ _HTML_;
 生活中每一时刻都有意义。对关心你的人们来说，你生活中的每个瞬间都有趣而重要。叽歪de是基于此的一项交流服务。 
 </p-->
 <p>
-在关心你的人们看来，你生活中的每个瞬间都有趣、重要而精彩。叽歪de相信生命中每个时刻都有意义，为您提供免费的，通过短消息记录瞬间的服务。 
+在关心你的人们看来，你生活中的每个瞬间都有趣、重要而精彩。叽歪de相信生命中每个时刻都有意义，为你提供免费的，通过短消息记录瞬间的服务。 
 </p>
 
 <style type="text/css">
@@ -153,7 +153,7 @@ _HTML_;
 	}
 	else
 	{
-  		echo "<h3>您是${inviter_name_full}的第一位好友！</h3>";
+  		echo "<h3>你是${inviter_name_full}的第一位好友！</h3>";
 	}
 
   // end 有效邀请代码

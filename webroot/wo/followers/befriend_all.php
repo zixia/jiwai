@@ -21,7 +21,7 @@ if ( is_int($logined_user_id) )
 			if ($is_succ )
 			{
 				$notice_html = <<<_HTML_
-您已经成为了您的粉丝的好友（或者已经发送了好友请求）
+你已经成为了你的粉丝的好友（或者已经发送了好友请求）
 _HTML_;
 			}
 			else

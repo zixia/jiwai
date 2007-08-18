@@ -46,7 +46,7 @@ _NUDGE_;
 				if ($is_succ )
 				{
 					$notice_html = <<<_HTML_
-我们已经帮您挠挠了$nudged_user_row[nameScreen]一下！期待很快能得到您朋友的回应。
+我们已经帮你挠挠了$nudged_user_row[nameScreen]一下！期待很快能得到你朋友的回应。
 _HTML_;
 				}
 				else
@@ -60,7 +60,7 @@ _HTML_;
 			else
 			{
 				$notice_html = <<<_HTML_
-哎呀！您现在不是$nudged_user_row[nameScreen]的好友，不能挠挠！
+哎呀！你现在不是$nudged_user_row[nameScreen]的好友，不能挠挠！
 _HTML_;
 			}
 		}

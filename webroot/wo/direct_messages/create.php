@@ -63,13 +63,13 @@ _HTML_;
 			)
 	{
 		$notice_html = <<<_HTML_
-您的悄悄话已经发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>了，耶！
+你的悄悄话已经发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>了，耶！
 _HTML_;
 	}
 	else
 	{
 		$error_html = <<<_HTML_
-哎呀！由于系统临时故障，您的悄悄话未能成功的发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>，请稍后再试吧。
+哎呀！由于系统临时故障，你的悄悄话未能成功的发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>，请稍后再试吧。
 _HTML_;
 	}
 

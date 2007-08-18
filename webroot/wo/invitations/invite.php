@@ -39,7 +39,7 @@ if ( isset($_REQUEST['commit']) )
 		JWInvitation::SetReciprocal( $invitation_ids );
 
 	$notice_html = <<<_HTML_
-您的邀请已经发送！
+你的邀请已经发送！
 _HTML_;
 	JWSession::SetInfo('notice',$notice_html);
 
@@ -103,7 +103,7 @@ padding:10px;
 	<div id="content">
 		<div id="wrapper">
 
-  			<h2>邀请您的朋友
+  			<h2>邀请你的朋友
 <?php	
 if ( preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 	echo '（<a href="/wo/">跳过这一步？</a>）';
@@ -112,8 +112,8 @@ if ( preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 			</h2>
 
   			<p>
-				与朋友一起分享叽歪de乐趣！输入您朋友们的Email地址，我们将向他们发送一份邀请。
-				当他们接受邀请后，您们就成为叽歪的好友啦！
+				与朋友一起分享叽歪de乐趣！输入你朋友们的Email地址，我们将向他们发送一份邀请。
+				当他们接受邀请后，你们就成为叽歪的好友啦！
   			</p>
 <?php
 if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
@@ -140,7 +140,7 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 		  					<td>
 
 		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" /><br />
-		    					<p><small>如果您邀请的朋友之间互相也是好友，那么他们在注册之后，会自动互相加为好友。</small></p>
+		    					<p><small>如果你邀请的朋友之间互相也是好友，那么他们在注册之后，会自动互相加为好友。</small></p>
 		  					</td>
 						</tr>
 						<!--tr>
@@ -149,7 +149,7 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 		    					<input id="newsmthusername" name="newsmthusername" type="text" />
 
 		    					<a href="#" onclick="if ($('newsmthusername').value != '') { new Ajax.Request('/wo/invitation/newsmth', {asynchronous:true, evalScripts:true, method:'post', onFailure:function(request){onSMTHFailure()}, onLoading:function(request){onSMTHLoading()}, parameters:Form.Element.serialize('newsmthusername')}); }; return false;">找出我的好友！</a>
-		    					<p><small id="newsmth_details">输入您的水木社区帐号</small></p>
+		    					<p><small id="newsmth_details">输入你的水木社区帐号</small></p>
 							  <td>
 						</tr-->
 						<tr>
@@ -158,24 +158,24 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 
 								<textarea cols="40" id="message" name="message" onkeyup="updatePreview(this.value)" rows="3"></textarea>
 								<p><small>
-									如果您还有别的话要跟朋友说，请在上面的框中输入，我们将在邀请中一并发送给他们.
+									如果你还有别的话要跟朋友说，请在上面的框中输入，我们将在邀请中一并发送给他们.
 								</small></p></td>
 							</tr>
 							<tr>
 								<th>预览</th>
 								<td>
 
-								<pre id="invite_preview">您好！
+								<pre id="invite_preview">你好！
 
 <span id="invite_message"></span>
 
-您的朋友 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 希望您加入叽歪de！
+你的朋友 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 希望你加入叽歪de！
 
 
 请点击这里接受邀请：
   http://JiWai.de/wo/invitations/i/YAOQINGDAIMA
 
-或您可以在这里关注 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 的最新动态：
+或你可以在这里关注 <?php echo "$user_info[nameFull] ($user_info[nameScreen])"?> 的最新动态：
   http://JiWai.de/<?php echo $user_info['nameScreen']?>/
 
 

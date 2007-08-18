@@ -30,14 +30,14 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 	if ( null===$is_succ )
 	{
 		$error_html = <<<_ERR_
-$type 帐号 $address 未能通过叽歪de系统检查，请您检查是否输入了正确的 $type 帐号（EMail需要写全@域名）。如有疑问请
+$type 帐号 $address 未能通过叽歪de系统检查，请你检查是否输入了正确的 $type 帐号（EMail需要写全@域名）。如有疑问请
 _ERR_;
 		$error_html .= '<a href="' . JWTemplate::GetConst('ContactUsUrl') . '">联系我们</a>';
 	} 
 	else if ( false===$is_succ )
 	{
 		$error_html = <<<_ERR_
-对不起，$address 已经被使用，请您输入一个没有被使用的 $type 帐号。如有疑问请
+对不起，$address 已经被使用，请你输入一个没有被使用的 $type 帐号。如有疑问请
 _ERR_;
 		$error_html .= '<a href="' . JWTemplate::GetConst('UrlContactUs') . '">联系我们</a>';
 	}

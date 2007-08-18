@@ -24,7 +24,7 @@ switch($action){
                 JWSession::SetInfo('error', "哎呀！由于系统故障，删除悄悄话失败了…… 请稍后再试。。");
             }
         }else{
-            JWSession::SetInfo('error', "您无权删除这条悄悄话（编号 $value）。");
+            JWSession::SetInfo('error', "你无权删除这条悄悄话（编号 $value）。");
         }
         redirect( $redirect );
     break;
@@ -36,7 +36,7 @@ switch($action){
                 JWSession::SetInfo('error', "哎呀！由于系统故障，删除更新失败了…… 请稍后再试。。");
             }
         }else{
-            JWSession::SetInfo('error', "您无权删除这条更新（编号 $value）。");
+            JWSession::SetInfo('error', "你无权删除这条更新（编号 $value）。");
         }
         redirect( $redirect );
     break;

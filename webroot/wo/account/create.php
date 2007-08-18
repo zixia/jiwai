@@ -96,10 +96,10 @@ _HTML_;
 				$public_timeline_url = JWTemplate::GetConst('UrlPublicTimeline');
 				$JWErr .= <<<_POD_
 <ul>
-	<li>注册有可能未成功，请您重新提交用户注册信息。 </li>
+	<li>注册有可能未成功，请你重新提交用户注册信息。 </li>
 	<li>如系统提示帐号、email重复请尝试<a href="/wo/login">登录</a>。 </li>
 	<li>如果仍然存在问题，请通知我们开展除虫工作：<a href="mailto:bug@jiwai.de?subject=BUG">wo@jiwai.de</a>。 </li>
-	<li>给您带来的不便我们深感抱歉，在您成功注册之前，您可以先浏览一下<a href="$public_timeline_url">大家都在做什么</a>。 </li>
+	<li>给你带来的不便我们深感抱歉，在你成功注册之前，你可以先浏览一下<a href="$public_timeline_url">大家都在做什么</a>。 </li>
 </ul>
 _POD_;
 			}
@@ -176,7 +176,7 @@ _POD_;
 function validate_form(form)
 {
 	var bValid = true;
-	var JWErr = "注册用户信息不完整，请您完善后再次提交：\n\n";
+	var JWErr = "注册用户信息不完整，请你完善后再次提交：\n\n";
 	var n = 1;
 
 	if ( 0==$('user_nameScreen').value.length

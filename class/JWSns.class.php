@@ -73,7 +73,7 @@ class JWSns {
 		JWNudge::NudgeUserIds(	 array($idUserReceiver)
 								,"$sender_row[nameScreen]: $message "
 									."（可直接回复“"
-									."D $sender_row[nameScreen] 您想说的悄悄话"
+									."D $sender_row[nameScreen] 你想说的悄悄话"
 									."”"
 									."）"
 								,'direct_messages'

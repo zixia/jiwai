@@ -50,7 +50,7 @@ function create($idUser, $idFriend){
 
 	if ( JWUser::IsProtected($idFriend) && !JWFriend::IsFriend($idUser, $idFriend) ) {
 		if ( JWFriendRequest::IsExist($idUser, $idFriend) ) {
-                JWSession::SetInfo('error', "您向$userInfo[nameScreen]发送的添加好友请求，他还没有回应，再等等吧。");
+                JWSession::SetInfo('error', "你向$userInfo[nameScreen]发送的添加好友请求，他还没有回应，再等等吧。");
 		}else{
             if( JWSns::CreateFriendRequest($idUser, $idFriend) ) {
                 JWSession::SetInfo('error', "已经向$userInfo[nameScreen]发送了添加好友请求，希望能很快得到回应。");

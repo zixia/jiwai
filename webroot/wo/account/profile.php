@@ -138,7 +138,7 @@ _HTML_;
 function validate_form(form)
 {
 	var bValid = true;
-	var JWErr = "个人信息填写有误，请您完善后再次提交：\n\n";
+	var JWErr = "个人信息填写有误，请你完善后再次提交：\n\n";
 	var n = 1;
 
 	if ( 0==$('user_email').value.length

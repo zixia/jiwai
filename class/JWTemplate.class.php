@@ -206,7 +206,7 @@ _HTML_;
 
 <!-- ul id="accessibility">
     <li>
-      您正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
+      你正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
     </li>
 	<li>
 		<a href="#navigation" accesskey="2">跳转到导航目录</a>
@@ -502,7 +502,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 /*
 		<p class="notice">
 			叽歪de MSN 机器人美眉目前正在偷懒，我们会很快将她找回来的。<br />
-			请您先暂时使用 Web / QQ / GTalk 进行更新。
+			请你先暂时使用 Web / QQ / GTalk 进行更新。
 		</p>
 */
 
@@ -1912,7 +1912,7 @@ _HTML_;
 			case 'alpha':
 				$msg = <<<_MSG_
 <p>
-这里是叽歪de(<strong>Alpha</strong>)测试系统。Alpha测试的定义为：在有开发者关注下对系统进行使用测试。如果您想试用最新的，还在开发中的功能，那么可以在这里继续访问。但是需要注意的是，系统也许会经常的工作不正常，甚至出错，所以我们建议您至少使用<a href='http://beta.$domain_url'>Beta系统</a>。
+这里是叽歪de(<strong>Alpha</strong>)测试系统。Alpha测试的定义为：在有开发者关注下对系统进行使用测试。如果你想试用最新的，还在开发中的功能，那么可以在这里继续访问。但是需要注意的是，系统也许会经常的工作不正常，甚至出错，所以我们建议你至少使用<a href='http://beta.$domain_url'>Beta系统</a>。
 </p>
 _MSG_;
 				break;
@@ -1920,7 +1920,7 @@ _MSG_;
 			case 'beta':
 				$msg = <<<_MSG_
 <p>
-这里是叽歪de(<strong>Beta</strong>)测试系统。如果您想试用最新的，正在准备升级的功能时，欢迎在这里继续访问。最新的系统功能可能有不稳定的情况，欢迎向我们<a href='mailto:wo@jiwai.de'>报告BUG</a>。如果您希望使用最为稳定的版本，请来正式运行的网站：<a href='http://$domain_url'>叽歪de</a>。
+这里是叽歪de(<strong>Beta</strong>)测试系统。如果你想试用最新的，正在准备升级的功能时，欢迎在这里继续访问。最新的系统功能可能有不稳定的情况，欢迎向我们<a href='mailto:wo@jiwai.de'>报告BUG</a>。如果你希望使用最为稳定的版本，请来正式运行的网站：<a href='http://$domain_url'>叽歪de</a>。
 </p>
 _MSG_;
 				break;

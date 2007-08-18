@@ -15,7 +15,7 @@ if ( isset($_REQUEST['email']) )
 		JWSns::ResendPassword($user_db_row['idUser']);
 
 		$notice_html = <<<_HTML_
-重新设置您密码的说明已经发送到您的邮箱，请查收。
+重新设置你密码的说明已经发送到你的邮箱，请查收。
 _HTML_;
 		JWSession::SetInfo('notice', $notice_html);
 
@@ -24,7 +24,7 @@ _HTML_;
 	}
 
 	$notice_html = <<<_HTML_
-哎呀！我们没有找到您的邮件地址！
+哎呀！我们没有找到你的邮件地址！
 _HTML_;
 
 }
@@ -58,7 +58,7 @@ _HTML_;
 
 			<h2>忘记了？</h2>
 
-<p>请输入您的 Email 地址，我们将把密码重设的链接发给您。</p>
+<p>请输入你的 Email 地址，我们将把密码重设的链接发给你。</p>
 
 <form action="/wo/account/resend_password" method="post" name="f">
 <fieldset>

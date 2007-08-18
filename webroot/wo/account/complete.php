@@ -19,7 +19,7 @@ if ( !empty($nameScreen) )
 		if ( JWUser::IsWebUser($user_row['idUser']) )
 		{
 			$notice_html = <<<_HTML_
-您以前曾来过这里！为什么不登录呢？
+你以前曾来过这里！为什么不登录呢？
 _HTML_;
 			JWSession::SetInfo('notice',$notice_html);
 			header("Location: /wo/login");
@@ -58,7 +58,7 @@ _HTML_;
 		<div id="wrapper" class="wrapper">
 
 
-<h2>除了手机短信、IM聊天软件以外，您还可以在网页上JiWai&hellip;</h2>
+<h2>除了手机短信、IM聊天软件以外，你还可以在网页上JiWai&hellip;</h2>
 
 <br>
 
@@ -68,10 +68,10 @@ if ( isset($nameScreen) )
 	// 用户输入了用户设备但是没有找到？
 	echo <<<_HTML_
 <div class="yft">
-哎呀！我们没能够找到您！<br>
+哎呀！我们没能够找到你！<br>
 是否帐号名没有输入正确？<br>
 <br>
-您可以通过短信或IM发送"WHOAMI"或"WOSHISHUI"(我是谁)给IM机器人（wo@jiwai.de）或短信特服号（移动99118816，联通93188816），查询正确的帐号名。
+你可以通过短信或IM发送"WHOAMI"或"WOSHISHUI"(我是谁)给IM机器人（wo@jiwai.de）或短信特服号（移动99118816，联通93188816），查询正确的帐号名。
 </div>
 
 <script type="text/javascript">
@@ -83,7 +83,7 @@ _HTML_;
 ?>
 <hr class="separator">
 
-<p>请填写您使用JiWai时用的手机号码或聊天软件帐号。</p>
+<p>请填写你使用JiWai时用的手机号码或聊天软件帐号。</p>
 
 <br>
 

@@ -23,7 +23,7 @@ if ( is_int($idLoginedUser) )
 		if ( JWSns::DestroyFriends($idLoginedUser, array($idPageUser), $bidirection) )
 		{
 			$notice_html = <<<_HTML_
-${page_user_name}已经不再是您的好友了。
+${page_user_name}已经不再是你的好友了。
 _HTML_;
 		}
 		else

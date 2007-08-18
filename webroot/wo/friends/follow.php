@@ -21,13 +21,13 @@ if ( $idLoginedUser )
 		if ($is_succ )
 		{
 			$notice_html = <<<_HTML_
-订阅成功。${friend_name}的更新将会发送到您的手机或聊天软件上。
+订阅成功。${friend_name}的更新将会发送到你的手机或聊天软件上。
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！由于系统临时故障，您未能成为${friend_name}的粉丝，订阅失败了……
+哎呀！由于系统临时故障，你未能成为${friend_name}的粉丝，订阅失败了……
 请稍后再试吧。
 _HTML_;
 		} 

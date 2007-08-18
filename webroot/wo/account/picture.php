@@ -88,7 +88,7 @@ else if ( isset($_REQUEST['delete'] ) )
 
 	JWUser::SetIcon($user_info['idUser']);
 	$notice_html = <<<_HTML_
-<li>头像删除成功。您将不会出现在<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</li>
+<li>头像删除成功。你将不会出现在<a href="<?php echo JWTemplate::GetConst('UrlPublicTimeline')?>">叽歪广场</a>中。</li>
 _HTML_;
 	JWSession::SetInfo('notice',$notice_html);
 
@@ -142,7 +142,7 @@ if ( !$has_photo )
 {
 	$public_timeline_url = JWTemplate::GetConst('UrlPublicTimeline');
 echo <<<_HTML_
-			<div class="notice"><ul>您现在没有头像，所以没有出现在<a href="$public_timeline_url">叽歪广场</a>中</ul></div>
+			<div class="notice"><ul>你现在没有头像，所以没有出现在<a href="$public_timeline_url">叽歪广场</a>中</ul></div>
 _HTML_;
 
 }
@@ -173,12 +173,12 @@ _HTML_;
 								<!--input id="user_profile_image_temp" name="user[profile_image_temp]" type="hidden" -->
 								<input id="user_profile_image" name="profile_image" size="30" type="file" 
 											onclick="if(0<$('user_profile_image').value.length) upload_button.style.display='block';"/>
-								<p><small>为保证您的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
+								<p><small>为保证你的图片效果，请不要上载太小和太大的图片。建议图片宽度在100-500之间，支持jpg、gif、png等文件格式。</small></p>
 <?php
 if ( !$has_photo )
 {
 	echo <<<_HTML_
-								<p><small>因为没有头像，所以您目前不会出现在叽歪广场中。</small></p>
+								<p><small>因为没有头像，所以你目前不会出现在叽歪广场中。</small></p>
 
 _HTML_;
 }
@@ -209,7 +209,7 @@ _HTML_;
 <?php
 if ( !empty($user_info['idPicture']) )
 		echo <<<_HTML_
-			<p><a href="?delete" onclick="return confirm('删除头像后您将无法出现在叽歪广场中，您确认删除头像图片吗？');"/>删除我的头像？</a></p>
+			<p><a href="?delete" onclick="return confirm('删除头像后你将无法出现在叽歪广场中，你确认删除头像图片吗？');"/>删除我的头像？</a></p>
 _HTML_;
 ?>
 

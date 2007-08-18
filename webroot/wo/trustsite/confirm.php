@@ -91,11 +91,11 @@ $request = JWOpenid_Server::GetRequestInfo();
 <div>
 
 <ul>
-<li>网站 <strong><?php echo $confirm_url?></strong> 希望使用您的OpenID进行登录</li>
-<li>您的OpenID是： <strong><?php echo $request->identity?></strong></li>
+<li>网站 <strong><?php echo $confirm_url?></strong> 希望使用你的OpenID进行登录</li>
+<li>你的OpenID是： <strong><?php echo $request->identity?></strong></li>
 </ul>
 
-<h3>您的意见是：</h3>
+<h3>你的意见是：</h3>
 
 <form method="POST">
 <input type="submit" name="action[accept_once]" value="只同意这次" /> 

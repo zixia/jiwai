@@ -208,13 +208,13 @@ class JWRobotLogic {
 		if ( $user_id )
 		{
 			$body = <<<_STR_
-搞定了！您已经通过了验证。回复本消息即可进行更新，耶！
+搞定了！你已经通过了验证。回复本消息即可进行更新，耶！
 _STR_;
 		}
 		else
 		{
 			$body = <<<_STR_
-哎呀！由于您输入的验证码"$secret"不正确，本次验证未能成功，请您查证后再重试一下吧。
+哎呀！由于你输入的验证码"$secret"不正确，本次验证未能成功，请你查证后再重试一下吧。
 _STR_;
 		}
 
@@ -292,7 +292,7 @@ _STR_;
 									. $robotMsg->GetAddress() 
 						);
 
-				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，您过一会儿再来试试吧。");
+				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，你过一会儿再来试试吧。");
 			}
 
 			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的用户名。");
@@ -314,7 +314,7 @@ _STR_;
 
 //die("[$user_name]");
 		if ( empty($user_name) )
-			return self::ReplyMsg($robotMsg, "哎呀！您选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
+			return self::ReplyMsg($robotMsg, "哎呀！你选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
 
 	
 		$new_user_row = array	(
@@ -340,7 +340,7 @@ _STR_;
 			JWSns::FinishInvitation($new_user_id, $invitation_id);
 
 			$body = <<<_STR_
-欢迎${user_name}！让您的朋友们发送"FOLLOW ${user_name}"来获取您的更新吧。
+欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧。
 _STR_;
 			/*
 			 * 检查用户注册前的更新，将其发出
@@ -373,7 +373,7 @@ _STR_;
 				
 				if ( ! empty($reply_msg) )
 				{
-					$reply_msg->SetBody( "${user_name}，您好！" . $reply_msg->GetBody() );
+					$reply_msg->SetBody( "${user_name}，你好！" . $reply_msg->GetBody() );
 					return $reply_msg;
 				}
 			}
@@ -381,7 +381,7 @@ _STR_;
 		else
 		{
 			$body = <<<_STR_
-哇，真可怕！现在暂时无法处理新用户请求，您过一会儿再来试试吧。
+哇，真可怕！现在暂时无法处理新用户请求，你过一会儿再来试试吧。
 _STR_;
 		}
 
