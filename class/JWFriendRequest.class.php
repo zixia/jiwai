@@ -51,16 +51,17 @@ class JWFriendRequest
 			true: 成功 
 			false: 失败
 	 */
-	static public function Create($idUser, $idFriend)
+	static public function Create($idUser, $idFriend, $note='')
 	{
 		$idUser 	= JWDB::CheckInt($idUser);
 		$idFriend	= JWDB::CheckInt($idFriend);
 
 		return JWDB::SaveTableRow('FriendRequest', array(	 'idUser'	=> $idUser
-															,'idFriend'	=> $idFriend
-															,'timeCreate'	=> JWDB::MysqlFuncion_Now()
-														)
-								);
+							,'idFriend'	=> $idFriend
+							,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+							,'note'	=> $note
+					)
+				);
 	}
 
 

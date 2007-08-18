@@ -39,7 +39,7 @@ _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 				
-		$is_succ = JWSns::CreateFriendRequest($idLoginedUser, $idPageUser);
+		$is_succ = JWSns::CreateFriendRequest($idLoginedUser, $idPageUser, empty($_GET['note']) ? '' : $_GET['note']);
 
 		if ($is_succ )
 		{
@@ -86,7 +86,6 @@ if ( !empty($info['error_html']) )
 
 if ( !empty($info['notice_html']) )
 	JWSession::SetInfo('notice',$info['notice_html']);
-
 
 JWTemplate::RedirectBackToLastUrl('/');
 exit(0);

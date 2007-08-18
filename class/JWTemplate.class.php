@@ -610,7 +610,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser">加我为好友。</a>
+我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="JiWai.requestFriend($idUser, this)">加我为好友。</a>
 _HTML_;
 
 		}
@@ -655,8 +655,9 @@ if ( isset($current_user_id) && $current_user_id!=$idUser && JWFollower::IsFollo
       <small> 已订阅 </small>
 <?php
 } else {
+	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 ?>
-      <a href="/wo/friendships/create/<?php echo $idUser;?>">成为<?php echo $name_full; ?>的粉丝</a>
+      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_full; ?>的粉丝</a>
 <?php
 }
 ?>
@@ -1386,15 +1387,16 @@ _HTML_;
 		if ( isset($action['cancel']) )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消</a> $arr_user_info[nameScreen]</li>
+			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消请求 $arr_user_info[nameScreen]</a></li>
 _HTML_;
 		}
 
 
 		if ( isset($action['add']) )
 		{
+			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].');"' : '';
 			echo <<<_HTML_
-			<li><a href="/wo/friendships/create/$arr_user_info[id]">将$arr_user_info[nameScreen]添加为好友</a></li>
+			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>将$arr_user_info[nameScreen]添加为好友</a></li>
 _HTML_;
 		}
 
