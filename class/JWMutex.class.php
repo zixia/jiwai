@@ -53,7 +53,7 @@ class JWMutex {
 	 * Constructing method, save initial state
 	 *
 	 */
-	function __construct($key, $backend=self::SEM)
+	function __construct($key, $backend=self::FLOCK)
 	{
 		if ( empty($key) )
 			throw new JWException('need key!');
@@ -77,7 +77,6 @@ class JWMutex {
 				$this->mMutexKey %= self::MAX_SEM_NUM;
 				$this->mMutexKey |= self::SEM_KEY_PREFIX;
 
-#printf ( "%x\n", $this->mMutexKey );
 				$sem_resource = sem_get( $this->mMutexKey, 1 );
 
 				if ( empty($sem_resource) )
@@ -134,8 +133,6 @@ class JWMutex {
     */
     function __destruct()
     {
-		$this->Release();
-
 		//$this->mSyslog->LogMsg('Removing key ' . $this->mMutexKey);	
 
 /*
@@ -147,14 +144,14 @@ class JWMutex {
 
 	public function Acquire()
 	{
+return true;
 		//$this->mSyslog->LogMsg('Acquiring key ' . $this->mMutexKey);	
-		//printf ("mMutexKey : %x\n", $this->mMutexKey );
+
 		switch ( $this->mBackend )
 		{
 			case self::SEM:
 				if ( ! sem_acquire($this->mMutexHandle) )
 					return false;
-
 				break;
 
 			default:
@@ -175,8 +172,6 @@ class JWMutex {
 	{
 		//$this->mSyslog->LogMsg('Releasing key ' . $this->mMutexKey);	
 
-//echo "isAcquired: " . $this->mIsAcquired . ", key: " . $this->mMutexKey . "\n";
-
 		if ( ! $this->mIsAcquired )
 			return true;
 
@@ -194,8 +189,6 @@ class JWMutex {
 					return false;
 				break;
 		}
-
-		$this->mIsAcquired = false;
 
 		return true;
 	}

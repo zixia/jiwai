@@ -239,12 +239,24 @@ _HTML_;
 				'/wo/gadget/' => '转贴',
 				'/wo/account/settings' => '设置',
 				'/help/' => '帮助',
-				'/wo/account/logout' => '退出',
+				'/wo/logout' => '退出',
 			);
 		}
+
+        $highlightAlias  = array(
+            '/wo/account/notification' => '/wo/account/settings',
+            '/wo/account/profile' => '/wo/account/settings',
+            '/wo/devices/' => '/wo/account/settings',
+            '/wo/account/profile_settings' => '/wo/account/settings',
+            '/wo/account/metting' => '/wo/account/settings',
+            '/wo/openid/' => '/wo/account/settings',
+        );
+
 		if (!$highlight) {
 			$a = array_reverse($nav);
-			$urlNow = $_SERVER['REQUEST_URI'];
+            $urlNow = $_SERVER['REQUEST_URI'];
+            $urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
+            foreach($highlightAlias as $u=>$aurl) if( 0===strncasecmp($u,$urlNow,strlen($u))){$urlNow=$aurl; break;}
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
 			if (!$highlight) $highlight = '/public_timeline/'; //$url;
 		}
@@ -266,6 +278,32 @@ _HTML_;
 <?php
 	}
 
+    static public function SettingTab($highlight=null){
+			$nav = array(
+				'/wo/account/settings' => '帐号&amp;密码',
+				'/wo/account/profile' => '个人资料',
+				'/wo/devices/sms' => '手机',
+				'/wo/devices/im' => '聊天软件',
+				'/wo/account/notification' => '系统通知',
+				'/wo/account/profile_settings' => '配色方案',
+				'/wo/openid/' => 'OpenID',
+                );
+
+		if (!$highlight) {
+			$a = array_reverse($nav);
+            $urlNow = $_SERVER['REQUEST_URI'];
+			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
+			if (!$highlight) $highlight = '/wo/account/settings'; //$url;
+		}
+?>
+
+<div id="settingsNav" class="subtab">
+<?php foreach( $nav as $url=>$text ) { ?>
+    <a href="<?php echo $url;?>" <?php if($url==$highlight) echo "class=\"now\""; ?> ><?php echo $text;?></a>
+<?php } ?>
+</div>
+<?php
+    }
 
 	static public function slogon()
 	{
@@ -777,8 +815,7 @@ _HTML_;
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
-			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?
-						'签名' : '';
+			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?  '签名' : '';
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
@@ -877,6 +914,34 @@ __HTML__;
 	}
 
 
+    static public function PaginationLimit( $pagination, $page=1, $url=null, $limit = 4 ) {
+
+        $url = ( empty($url) ) ? $_SERVER['REQUEST_URI'] : $url;
+
+        $l = $pagination->GetPageNo() - $limit;
+        if ($l<1) $l = 1;
+        $r = $l + $limit*2;
+        if ($r>$pagination->GetOldestPageNo()) $r = $pagination->GetOldestPageNo();
+?>
+<div class="pages">
+<?php
+for ($i=$l;$i<$r+1;$i++) {
+$u = $i == $pagination->GetPageNo() ? '' : JWPagination::BuildPageUrl($url, $i);
+if ($u) 
+echo <<<__HTML__
+<a href="$u">$i</a>
+__HTML__;
+else echo <<<__HTML__
+<a style="background:#fff; color:#000;">$i</a>
+__HTML__;
+}
+?>
+</div>
+<div style="clear:both;"></div>
+<?
+    }
+
+
 	static public function pagination( $pagination, $qarray=array(), $words = array() )
 	{
 
@@ -971,11 +1036,11 @@ _HTML_;
   			</tr>
   			<tr>
     				<td>&nbsp;</td>
-				<td><input type="checkbox" name="checkbox" value="checkbox" id="remember_me" /> 记住我</td>
+				<td><input type="checkbox" name="remember_me" value="checkbox" id="remember_me" /> 记住我</td>
   			</tr>
   			<tr>
 				<td>&nbsp;</td>
-				<td><button>登　录</button></td>
+				<td><button onclick="this.form.submit();">登　录</button></td>
 			</tr>
 		</table>
 		</form>

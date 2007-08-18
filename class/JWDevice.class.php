@@ -431,9 +431,10 @@ _SQL_;
 	}
 
 
-	static public function SetDeviceEnabledFor($idDevice, $enabledFor, $isSignatureRecord='Y')
+	static public function SetDeviceEnabledFor($idDevice, $enabledFor, $isSignatureRecord=null)
 	{
 		$idDevice	= JWDB::CheckInt($idDevice);
+        $device_row	= JWDevice::GetDeviceDbRowById($idDevice);
 
 		switch ( $enabledFor )
 		{
@@ -453,15 +454,20 @@ _SQL_;
 				break;
 
 			default:
-				$enabledFor = 'nothing';
+				$enabledFor = '';
 				break;
 		}
 
+        $updateRow = array();
+        if( false == empty( $isSignatureRecord ) )
+            $updateRow['isSignatureRecord']  = $isSignatureRecord;
+        if( false == empty( $enabledFor ) )
+            $updateRow['enabledFor']  = $enabledFor;
 
-		return JWDB::UpdateTableRow('Device', $idDevice, array(
-					'enabledFor'=>$enabledFor,
-					'isSignatureRecord'=>$isSignatureRecord,
-					));
+        if( empty( $updateRow ) )
+            return true;
+
+		return JWDB::UpdateTableRow('Device', $idDevice, $updateRow );
 	}
 
 
@@ -631,7 +637,7 @@ _SQL_;
 	/*
 	 *	根据 Device Type 返回机器人帐号
 	 */
-	static public function GetRobotFromType($type)
+	static public function GetRobotFromType($type, $address=null)
 	{
 		switch ( $type )
 		{
@@ -647,6 +653,17 @@ _SQL_;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
+            case 'msn':
+                $row = null;
+                if( false == empty($address) ) {
+                    $shortcut = "$type:$address";
+                    $row = JWIMOnline::GetDbRowByShortcut( $shortcut );
+                }
+                if( empty( $row ) )
+                    $name = "msn001@jiwai.de";
+                else
+                    $name = $row['serverAddress'];
+                break;
 			default:
 				$name='wo@jiwai.de';
 		}
@@ -726,7 +743,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'newsmth', 'skype', 'facebook' /*, 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook' /*, 'jabber'*/ );
 	}
 
 	/*

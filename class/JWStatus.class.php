@@ -444,7 +444,7 @@ SELECT
 			Status.id	as idStatus
 			,Status.idUser	as idUser
 FROM		
-			Status
+			Status force index(IDX__Status__timeCreate)
 WHERE		
 			Status.idUserReplyTo IS NULL
 			AND Status.idPicture IS NOT NULL

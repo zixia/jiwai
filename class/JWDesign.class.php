@@ -188,7 +188,6 @@ class JWDesign {
 
 	public function GetStyleSheet()
 	{
-		return '';
 		if ( ! $this->mIsDesigned )
 			return;
 	
@@ -206,6 +205,13 @@ class JWDesign {
 url($background_url) fixed $tile top left;
 _CSS_;
 		}
+		return <<<_CSS_
+<style type="text/css">
+	body {
+		background: #$this->mBackgroundColor $background_url_css
+	}
+</style>
+_CSS_;
 
 		return <<<_CSS_
 <style type="text/css">
