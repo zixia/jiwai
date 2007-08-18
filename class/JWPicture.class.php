@@ -117,7 +117,7 @@ class JWPicture {
 	/*
 	 *
 	 * @param	string	picture type (jpg | gif)
-	 * @param	string	picture size (picture | thumb48 | thumb24)
+	 * @param	string	picture size (picture | thumb48 | thumb24 | thumb96)
 	 * @param	int		idUser, null if current user.
 
 	 * @return string	filename with full path
@@ -218,7 +218,7 @@ _SQL_;
 	 * 应使用 GetUrlById(idPicture)替换
 	 *
 	 * @param 	int		idUser
-	 * @param 	enum	pictSize = ['thumb48' | 'thumb24' | 'picture']
+	 * @param 	enum	pictSize = ['thumb96' | 'thumb48' | 'thumb24' | 'picture']
 	 * @return 	string	url of picture
 	 */
 	static public function GetUserIconUrl($idUser, $picSize='thumb48')
@@ -308,8 +308,9 @@ _SQL_;
 			throw new JWException("$user_path unwriteable");
 
 		$rel_picture_path_name = $picture_path . "picture." . $dst_file_type;
+		$rel_thumb96_path_name = $picture_path . "thumb96." . $dst_file_type;
 		$rel_thumb48_path_name = $picture_path . "thumb48." . $dst_file_type;
-		$rel_thumb24_path_name = $picture_path . "thumb24." . $dst_file_type;
+		//$rel_thumb24_path_name = $picture_path . "thumb24." . $dst_file_type;
 
 
 		$ret = true;
@@ -319,19 +320,30 @@ _SQL_;
 			$ret = false;
 		}
 
+		if ( $ret && ! self::ConvertThumbnail96(	 ($abs_storage_root . $rel_picture_path_name)
+											,($abs_storage_root . $rel_thumb96_path_name)) ){
+			$ret = false;
+		}
+
 
 		if ( $ret && ! self::ConvertThumbnail48(	 ($abs_storage_root . $rel_picture_path_name)
 											,($abs_storage_root . $rel_thumb48_path_name)) ){
 			$ret = false;
 		}
 
-		if ( $ret && ! self::ConvertThumbnail24(	 ($abs_storage_root . $rel_thumb48_path_name)
+/*
+		if ( $ret && ! self::ConvertThumbnail24(	 ($abs_storage_root . $rel_thumb_path_name)
 											,($abs_storage_root . $rel_thumb24_path_name)) ){
 			$ret = false;
 		}
+*/
 
 		
-		if ( $ret && ! JWFile::Save( array($rel_picture_path_name,$rel_thumb48_path_name,$rel_thumb24_path_name) ) )
+		if ( $ret && ! JWFile::Save( array(	 $rel_picture_path_name
+											,$rel_thumb96_path_name
+											,$rel_thumb48_path_name
+											//,$rel_thumb24_path_name
+									) ) )
 			$ret = false;
 
 		unlink ( $absFilePathName );
@@ -366,6 +378,28 @@ _CMD_;
 		return 0===$ret;
 	}
 
+	static public function ConvertThumbnail96($srcFile, $dstFile)
+	{
+		$srcFile = escapeshellarg($srcFile);
+		$dstFile = escapeshellarg($dstFile);
+
+		$cmd = <<<_CMD_
+convert $srcFile	 \\
+  -resize x192		 \\
+  -resize '192x<'	 \\
+  -resize 50%		 \\
+  -gravity center	 \\
+  -crop 96x96+0+0	 \\
+  +repage			 \\
+  $dstFile
+_CMD_;
+
+		if ( false===system($cmd,$ret) )
+			return false;
+
+		return 0===$ret;
+	}
+
 
 	static public function ConvertThumbnail48($srcFile, $dstFile)
 	{
@@ -390,6 +424,7 @@ _CMD_;
 	}
 
 
+/*
 	static public function ConvertThumbnail24($srcFile, $dstFile)
 	{
 		$srcFile = escapeshellarg($srcFile);
@@ -411,6 +446,7 @@ _CMD_;
 
 		return 0===$ret;
 	}
+*/
 
 	static public function Show($idPicture, $picSize='thumb48')
 	{
@@ -421,8 +457,9 @@ _CMD_;
 
 			case 'origin': // let JWFile choose 
 			case 'picture': // let JWFile choose 
-			case 'thumb48':// let JWFile choose 
-			case 'thumb24':
+			case 'thumb96':// let JWFile choose 
+			case 'thumb48':
+			//case 'thumb24':
 				$filename = self::GetFullPathNameById($idPicture, $picSize);
 
 				$picType = 'gif';

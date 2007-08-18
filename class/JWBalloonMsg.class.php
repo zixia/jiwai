@@ -78,7 +78,7 @@ $user_row[nameFull]($user_row[nameScreen]) 希望和你成为好朋友，是否�
 <a href="BALLOON_URL:/wo/friend_requests/deny/$idFriendRequest">不要</a>
 _HTML_;
 
-		self::Create($idUser,$html);
+		self::Create($idFriend,$html);
 	}
 
 	/**

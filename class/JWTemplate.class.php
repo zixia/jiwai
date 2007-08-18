@@ -597,9 +597,9 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 		$name_full		= $userRow['nameFull'];
 
 		if ( !empty($statusRow['idPicture']) )
-			$photo_url	= JWPicture::GetUrlById($statusRow['idPicture']);
+			$photo_url	= JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
 		else
-			$photo_url	= JWPicture::GetUserIconUrl($idUser);
+			$photo_url	= JWPicture::GetUserIconUrl($idUser, 'thumb96');
 	
 
 		if ( !isset($options['trash']) )
