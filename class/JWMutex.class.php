@@ -144,7 +144,6 @@ class JWMutex {
 
 	public function Acquire()
 	{
-return true;
 		//$this->mSyslog->LogMsg('Acquiring key ' . $this->mMutexKey);	
 
 		switch ( $this->mBackend )
