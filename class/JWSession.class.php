@@ -77,6 +77,9 @@ Class JWSession {
 			case 'invitation_id':
 				$_SESSION["__JiWai__Info__$infoType"] = $data;;
 				break;
+			case 'inviter_id':
+				$_SESSION["__JiWai__Info__$infoType"] = $data;;
+				break;
 			default:
 				throw new JWException('info type not support');
 		}

@@ -79,9 +79,12 @@ if ( isset($_REQUEST['user'])
 				}
 
 				$invitation_id	= JWSession::GetInfo('invitation_id');
-				
 				if ( isset($invitation_id) )
 					JWSns::FinishInvitation($idUser, $invitation_id);
+
+				$inviter_id	= JWSession::GetInfo('inviter_id');
+				if ( isset($inviter_id) )
+					JWSns::FinishInvite($idUser, $inviter_id);
 
 				$notice_html = <<<_HTML_
 厉害! 感谢你明智地选择了叽歪de! 从今以后你就是组织的人了，如果有谁欺负你就报组织的名字!

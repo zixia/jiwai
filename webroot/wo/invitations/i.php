@@ -8,10 +8,11 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 {
 	$invite_code	= $matches[1];
 
-	$invitation_info	= JWInvitation::GetInvitationInfoByCode($invite_code);
-
-
-	$inviter_id = $invitation_info['idUser'];
+    $inviter_id = JWUser::GetIdUserFromIdEncoded( $invite_code ) ;
+    if( !$inviter_id ){
+        $invitation_info	= JWInvitation::GetInvitationInfoByCode($invite_code);
+        $inviter_id = empty($invitation_info) ? null : $invitation_info['idUser'];
+    }
 
 	if ( empty($inviter_id) )
 	{
@@ -36,8 +37,6 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-
-<div class="separator"></div>
 
 <div id="container" class="subpage">
 	<div id="content">
@@ -162,8 +161,6 @@ _HTML_;
 			</div><!-- wrapper -->
 	</div><!-- content -->
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

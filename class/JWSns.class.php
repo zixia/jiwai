@@ -173,7 +173,7 @@ class JWSns {
 	 *	@param	array or int	$idFriends	好友 id(s)
 	 *	申请将 idFriends 添加为 idUser 的好友
 	 */
-	static public function CreateFriendRequest($idUser, $idFriend)
+	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
 		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend);
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id);
@@ -792,7 +792,20 @@ class JWSns {
 		return true;
 	}
 
-	/*
+    /*
+     * 完成邀请用户注册 
+     */
+    static public function FinishInvite($idUser, $idInviter)
+    {
+        $idUser = JWDB::CheckInt( $idUser );
+        $idInviter = JWDB::CheckInt( $idInviter );
+        JWSns::CreateFriends    ( $idUser, $idInviter, true );
+        JWSns::CreateFollowers  ( $idUser, $idInviter, true );
+
+        return true;
+    }
+
+        /*
 	 *	将 idFriend 不做为 idUser 的好友了，并负责处理相关逻辑（是否双向决裂等）
 	 */
 	static public function DestroyFriends($idUser, $idFriends, $biDirection=false)
