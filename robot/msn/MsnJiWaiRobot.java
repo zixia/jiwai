@@ -332,6 +332,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		private String password = null;
 
 		public boolean running = false;
+		public boolean listened = false;
 		
 		public MsnInstance(String account, String password,MsnAdapter adapter){
 			this.adapter = adapter;
@@ -340,26 +341,29 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		}
 		
 		public void run() {
-			// create MsnMessenger instance
-			messenger = MsnMessengerFactory.createMsnMessenger(
-					account, password);
-			messenger.setSupportedProtocol(MsnProtocol.getAllSupportedProtocol());
+			if( listened == false ) {	
+				// create MsnMessenger instance
+				messenger = MsnMessengerFactory.createMsnMessenger(
+						account, password);
+				messenger.setSupportedProtocol(MsnProtocol.getAllSupportedProtocol());
 
-			//Status ONLINE
-			messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);
-			messenger.getOwner().setNotifyMeWhenSomeoneAddedMe(false);
-			try { 
-				MsnObject displayPicture = MsnObject.getInstance( account,"./resource/UserTile/jiwai.jpg"); 
-				messenger.getOwner().setInitDisplayPicture(displayPicture); 
-			} catch (Exception ex) { 
-				Logger.logError("Can't load " + account + "'s user tile.");
+				//Status ONLINE
+				messenger.getOwner().setInitStatus(MsnUserStatus.ONLINE);
+				messenger.getOwner().setNotifyMeWhenSomeoneAddedMe(false);
+				try { 
+					MsnObject displayPicture = MsnObject.getInstance( account,"./resource/UserTile/jiwai.jpg"); 
+					messenger.getOwner().setInitDisplayPicture(displayPicture); 
+				} catch (Exception ex) { 
+					Logger.logError("Can't load " + account + "'s user tile.");
+				}
+
+				// log incoming message
+				//messenger.setLogIncoming(true);
+				//messenger.setLogOutgoing(true);
+
+				messenger.addListener(adapter);
+				listened = true;
 			}
-
-			// log incoming message
-			//messenger.setLogIncoming(true);
-			//messenger.setLogOutgoing(true);
-			
-			messenger.addListener(adapter);
 			messenger.login();
 		}
 		
