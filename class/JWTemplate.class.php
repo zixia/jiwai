@@ -2093,5 +2093,27 @@ _HTML_;
 		$r = strrpos($html, '<')-1;
 		return substr($html, $l, $r-$l+1);
 	}
+
+    static public function ShowBalloon( $idUser )
+    {
+		$balloon_ids = JWBalloon::GetBalloonIds($idUser);
+
+		$balloon_rows	= JWBalloon::GetDbRowsByIds($balloon_ids);
+
+		echo "<div>\n";
+		foreach ( $balloon_ids as $balloon_id )
+		{
+			$balloon_row = $balloon_rows[$balloon_id];
+			$html = JWBalloonMsg::FormatMsg($balloon_id,$balloon_row['html']);
+        echo <<<_HEAD_
+<div>
+$html
+</div>
+_HEAD_;
+		}
+		echo "</div>\n";
+    }
+
+
 }
 ?>

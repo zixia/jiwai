@@ -83,6 +83,15 @@ class JWSns {
 	}
 
 
+	// 先提出来，以后可能又相关操作
+	static public function CreateUser($userRow)
+	{
+		$user_id = JWUser::Create($userRow);
+		JWBalloonMsg::CreateUser($user_id);
+
+		return $user_id;
+	}
+
 	/*
 	 *	根据详细信息建立两个人的好友关系
 	 *	@param	array	$userRow
@@ -126,6 +135,8 @@ class JWSns {
 		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
 			self::CreateFollower($friendRow, $userRow);
 
+		JWBalloonMsg::CreateFriend($userRow['id'],$friendRow['id']);
+
 		return true;
 	}
 
@@ -164,7 +175,10 @@ class JWSns {
 	 */
 	static public function CreateFriendRequest($idUser, $idFriend)
 	{
-		return JWFriendRequest::Create($idUser, $idFriend);
+		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend);
+		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id);
+
+		return $friend_request_id;
 	}
 
 
@@ -190,6 +204,8 @@ class JWSns {
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
 		
+		JWBalloonMsg::CreateFollower($userRow['id'],$followerRow['id']);
+
 		return true;
 	}
 

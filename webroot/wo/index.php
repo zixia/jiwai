@@ -39,6 +39,7 @@ _HTML_;
 	<div id="content">
 		<div id="wrapper">
 
+<?php JWTemplate::ShowBalloon($logined_user_id) ?>
 <?php JWTemplate::ShowAlphaBetaTips() ?>
 <?php JWTemplate::ShowActionResultTips() ?>
 

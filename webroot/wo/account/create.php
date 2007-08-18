@@ -56,7 +56,7 @@ if ( isset($_REQUEST['user'])
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] )
 		{
-			$idUser = JWUser::Create($aUserInfo);
+			$idUser = JWSns::CreateUser($aUserInfo);
 			if ( $idUser && JWLogin::Login ( $idUser, true ) )
 			{
 
