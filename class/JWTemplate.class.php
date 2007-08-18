@@ -227,19 +227,20 @@ _HTML_;
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
-				'/public_timeline/' => '逛逛',
-				'/wo/account/create' => '注册/登录',
-				'/help/' => '帮助'
+				'/wo/account/create' 	=> '注册',
+				'/wo/login' 		=> '登录',
+				'/public_timeline/' 	=> '逛逛',
+				'/help/' 		=> '帮助'
 			);
 		} else {
 			$nav = array(
-				'/wo/' => '我的首页',
-				'/'.$nameScreen.'/' => '我的资料',
-				'/public_timeline/' => '逛逛',
-				'/wo/gadget/' => '转贴',
-				'/wo/account/settings' => '设置',
-				'/help/' => '帮助',
-				'/wo/logout' => '退出',
+				'/wo/' 			=> '我的首页',
+				'/'.$nameScreen.'/' 	=> '我的叽歪',
+				'/public_timeline/' 	=> '逛逛',
+				'/wo/gadget/' 		=> '窗可贴',
+				'/wo/account/settings' 	=> '设置',
+				'/help/' 		=> '帮助',
+				'/wo/logout' 		=> '退出',
 			);
 		}
 
@@ -655,7 +656,7 @@ if ( isset($current_user_id) && $current_user_id!=$idUser && JWFollower::IsFollo
 <?php
 } else {
 ?>
-      <a href="#">成为<?php echo $name_full; ?>的粉丝</a>
+      <a href="/wo/friendships/create/<?php echo $idUser;?>">成为<?php echo $name_full; ?>的粉丝</a>
 <?php
 }
 ?>
