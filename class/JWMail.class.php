@@ -102,6 +102,7 @@ class JWMail {
 	 */
 	static function SendMail($from, $to, $subject, $message, $options=null)
 	{
+
 		if ( !isset($options['encoding']) )
 			$options['encoding'] 	= 'UTF-8';
 
@@ -262,6 +263,8 @@ class JWMail {
 	
 		$template_data = preg_replace('/%INVITATION_ID%/i'	,$code		,$template_data);
 		$template_data = preg_replace('/%MESSAGE%/i'		,$message	,$template_data);
+		$template_data = preg_replace('/%SUBJECT%/i'		,$message	,$template_data);
+		$template_data = preg_replace('/%DATE%/i'		    ,date('m/d/Y'), $template_data);
 
 		$template_info = self::ParseTemplate($template_data);
 

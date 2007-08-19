@@ -27,66 +27,29 @@ $idInvited      = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
 
 //echo "<pre>"; die(var_dump($user_info));
 //var_dump($file_info);
-if ( isset($_POST['save_x'] ) ) {
+if ( isset($_POST['invite_email_x'] ) ) {
+    $emails = $_POST['email_addresses'];
+    $subject = $_POST['subject'];
+    $emails = split('/[，, ]/', $emails);
+    $count = 0;
+    foreach( $emails as $email ) {
+        if( JWMail::SendMailInvitation( $user_info, $email, $subject, $idInvited ) )
+            $count ++;
+    }
 
-    $protected = $_POST['protected'];
+    if( $count )
+        JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你的好友！');
+    else
+        JWSession::SetInfo('notice', '对不起，你所填写的朋友的Email地址不合法，我们无法帮你邀请你的的朋友！');
 
-    JWUser::Modify( $user_info['id'], array(
-                'protected' => $protected,
-            ));
+    Header("Location: /wo/");
+    exit;
+}
 
-	$file_info = @$_FILES['profile_image'];
-
-	if ( isset($file_info) 
-			&& 0===$file_info['error'] 
-			&& preg_match('/image/',$file_info['type']) 
-			) {
-			
-		$user_named_file = '/tmp/' . $file_info['name'];
-
-		if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) ) {
-			$idPicture	= JWPicture::SaveUserIcon($user_info['id'], $user_named_file);
-
-			if ( $idPicture ) {
-				preg_match('/([^\/]+)$/',$user_named_file,$matches);
-
-				JWUser::SetIcon($user_info['id'],$idPicture);
-
-
-				$notice_html = <<<_HTML_
-<li>头像修改成功！</li>
-_HTML_;
-				JWSession::SetInfo('notice',$notice_html);
-	            header('Location: /wo/invitations/invite');
-                exit(0);
-			} else {
-				$contact_url = JWTemplate::GetConst('UrlContactUs');
-
-				$error_html = <<<_HTML_
-<li>上传头像失败，请检查头像图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="$contact_url">联系我们</a></li>
-_HTML_;
-				JWSession::SetInfo('error',$error_html);
-			}
-
-			@unlink ( $user_named_file );
-		}
-	} else if ( isset($file_info) && $file_info['error']>0 && 4!==$file_info['error']) {
-		// PHP upload error, except NO FILE(that mean user want to delete).
-		switch ( $file_info['error'] ) {
-			case UPLOAD_ERR_INI_SIZE:
-				$error_html = <<<_HTML_
-<li>头像文件尺寸太大了，请将图片缩小分辨率后重新上载。<li>
-_HTML_;
-				JWSession::SetInfo('notice',$error_html);
-				break;
-			default:
-				throw new JWException("upload error $file_info[error]");
-				break;
-		}
-	}
-
-	header('Location: /wo/invitations/invite');
-	exit(0);
+if ( isset($_POST['invite_sms_x'] ) ) {
+    JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你的好友！');
+    Header("Location: /wo/");
+    exit;
 }
 ?>
 
