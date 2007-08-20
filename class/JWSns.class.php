@@ -680,11 +680,14 @@ class JWSns {
 			$status = "$userInfo[nameScreen]: $status";
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
 			settype( $follower_ids , 'array' );
-			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
-            /** 2007-08-20 */
-            //$follower_ids = array_diff( $follower_ids, array( $idSender ) );
-            array_push( $follower_ids, $idSender );
+
+            /** 2007-08-20 
+             * 会议用户本身发送的消息，不需要给会议用户通知，其他用户发到会议用户的消息，均通知会议用户；
+             *  会议用户可以通过 on/off 进行开关设置   
+            */
+            array_push( $follower_ids, $idUserReplyTo );
             $follower_ids = array_unique( $follower_ids );
+			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = JWFollower::GetFollowerIds($idSender);
