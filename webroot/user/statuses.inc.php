@@ -18,6 +18,7 @@ function user_status($idPageUser, $idStatus)
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
 	$formated_status 	= JWStatus::FormatStatus($status_info['status'],false);
+    $pettyDevice = JWDevice::GetNameFromType( $status_info['device'] );
 
 	$protected = false;
 	if ( JWUser::IsProtected($idPageUser) )
@@ -29,8 +30,8 @@ function user_status($idPageUser, $idStatus)
 				$protected = false;
 		}
 	}
-?>
 
+?>
 <html>
 
 <head>
@@ -55,161 +56,86 @@ JWTemplate::html_head($head_options) ;
 
 <?php //JWTemplate::accessibility() ?>
 
-<?php //JWTemplate::header() ?>
+<?php JWTemplate::header() ?>
 
-<div class="separator"></div>
+
 
 <div id="container">
 	<div id="content">
-		<div id="wrapper">
+    <div id="wrapper">
+    <div id="permalink">
 
-
-			<div id="permalink">
-	
-	
-    			<div class="desc">
-
-					<!-- google_ad_section_start -->
-
-<?php
-if ( $protected )
-{
-	echo <<<_HTML_
-    				<h1>
-    		  			我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$page_user_info[idUser]">加我为好友。</a>
-    				</h1>
-_HTML_;
-}
-else
-{
-?>
-    				<h1>
-    		  			<?php echo $formated_status['status'] ?>
-    				</h1>
-
-<?php
-	$duration	= JWStatus::GetTimeDesc($status_info['timeCreate']);
-
-	$device = $status_info['device'];
-
-	if ( 'sms'==$device )
-		$device='手机';
-	else
-		$device=strtoupper($device);
-
-
-?>
-					<!-- google_ad_section_end -->
-
-    				<p class="meta">
-    					<span class="meta">
-							<?php echo $duration?>
-    				    	来自于 <?php echo $device?>
-							<span id="status_actions_<?php echo $status_info['idStatus']?>">
-<?php 
-if ( JWLogin::IsLogined() )	
-{
-	$id_user_logined 	= JWLogin::GetCurrentUserId();
-	$is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['idStatus']);
-
-	echo JWTemplate::FavouriteAction($status_info['idStatus'],$is_fav);
-	if ( JWUser::IsAdmin($id_user_logined) || $id_user_logined==$idPageUser ) {
-		echo JWTemplate::TrashAction($idStatus);
-	}
-}
-
+        <div class="odd">
+            <div class="head">
+                <a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb48');?>" width="94" height="94"/></a>
+            </div>
+            <div class="cont">
+                <div class="bg"></div>
+                <table width="100%" border="0" cellspacing="5" cellpadding="0">
+                <tr>
+                    <td><h3><?php echo $page_user_info['nameFull'];?></h3></td>
+                    <td align="right">
+                        <?php 
+                        if ( ! empty($logined_user_info) && $logined_user_info['idUser'] != $idPageUser ) {
+                            if ( JWFriend::IsFriend($logined_user_info['idUser'], $idPageUser) ) {
+                                echo "$page_user_info[nameFull]是你的好友";
+                            }else{
+                                echo "<a href='/wo/friendships/create/$idPageUser'>加$page_user_info[nameFull]为好友</a>";
+                            }
+                        } 
+                        ?>
+                    </td>
+                </tr>
+<?php if ( $protected ) { ?>
+    				<tr>
+    		  			<td colspan="2">我只和我的好友分享我的叽歪de。</td>
+    				</tr>
+<?php }else{ 
+    
 	$replyto = $formated_status['replyto'];
-
-	if (!empty($replyto))
-	{
+    $replyHtml = null;
+	if (!empty($replyto)) {
 		if ( empty($status_info['idStatusReplyTo']) )
-			echo " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
+			$replyHtml = " <a href='/$replyto/'>给 ${replyto} 的回复</a> ";
 		else
-			echo " <a href='/$replyto/statuses/$status_info[idStatusReplyTo]'>给 ${replyto} 的回复</a> ";
+			$replyHtml = " <a href='/$replyto/statuses/$status_info[idStatusReplyTo]'>给 ${replyto} 的回复</a> ";
 	}
-
-
+    
 ?>
-							</span>
-    					</span>
-    				</p>
-<?php
-}	// if protected
-?>
-    			</div>
+                <tr>
+                    <td colspan="2"><?php echo $formated_status['status'] ?><?php echo $replyHtml; ?></td>
+                </tr>
+                <tr>
+                    <td><span class="meta"><a href="/sunhquan/statuses/<?php echo $status_info['idStatus'];?>"><?php echo JWStatus::GetTimeDesc($status_info['timeCreate']);?></a>来自于 <?php echo $pettyDevice;?><span id="status_actions_<?php echo $status_info['idStatus'];?>"></span></span></td>
+                    <?php if ( JWLogin::IsLogined() ) { 
 
-<?php
-if ( !empty($status_info['idPicture']) )
-	$photo_url	= JWPicture::GetUrlById($status_info['idPicture']);
-else
-	$photo_url	= JWPicture::GetUserIconUrl($page_user_info['idUser']);
-?>
-			<h2 class="thumb">
-				<a href="/<?php echo $page_user_info['nameScreen']?>/"><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo $photo_url?>" /></a>
-				<a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a>
-			</h2>
+                        $id_user_logined 	= JWLogin::GetCurrentUserId();
+                        $is_fav				= JWFavourite::IsFavourite($id_user_logined,$status_info['idStatus']);
+                        $trashAction = null;
+                        if( JWUser::IsAdmin( $id_user_logined ) || $id_user_logined == $idPageUser ) 
+                            $trashAction = JWTemplate::TrashAction( $idStatus );
+                        
+                    ?> 
 
-<?php
-if ( 0 ) { // commemt google ad sense
-?>
-			<div id="ad">
-<script type="text/javascript"><!--
-google_ad_client = "pub-8383497624729613";
-google_ad_width = 234;
-google_ad_height = 60;
-google_ad_format = "234x60_as";
-google_ad_type = "text_image";
-//2007-04-30: JiWai.de - Statuses
-google_ad_channel = "3074588979";
-google_color_border = "99CC00";
-google_color_bg = "C3E169";
-google_color_link = "669900";
-google_color_text = "333333";
-google_color_url = "669900";
-
-google_language = 'zh-CN';
-//-->
-</script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-<script type="text/javascript" id="google_show_ads">
-</script>
-			</div>
-
-<script type="text/javascript"><!--
-/*
-setTimeout("show_ad()", 1000);
-function show_ad()
-{
-alert(google_ad_width);
-	$('google_show_ads').src="http://pagead2.googlesyndication.com/pagead/show_ads.js";
-	ad_element = document.createElement("script")
-	ad_element.type = "text/javascript";
-	ad_element.language = 'javascript';
-	ad_element.src 	= "http://pagead2.googlesyndication.com/pagead/show_ads.js"
-	ad_element.id 	= "show_ads";
-	document.getElementById('ad').appendChild(ad_element);
-}
-*/
-</script>
-
-<?php
-}	//google ad sense comment end -->
-?>
-
+                    <td align="right"><?php echo JWTemplate::FavouriteAction($status_info['idStatus'], $is_fav); ?><img src="images/org-icon-mark.gif" alt="标记" width="16" height="16" align="absmiddle" /><a href="#">标记</a><?php echo $trashAction; ?></td>
+                    <?php } else { ?>
+                    <td>&nbsp;</td>
+                    <?php } ?>
+                </tr>
+<?php } ?>
+                </table>
+            </div>
+        </div>
+        
+        </div>
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-
-<hr class="separator" />
-
-<?php //JWTemplate::footer() ?>
+<?php JWTemplate::footer(); ?>
 
 </body>
 </html>
 
-<?php 
-}  // end function
-?>
+<?php } ?>

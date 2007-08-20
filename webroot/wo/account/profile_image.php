@@ -47,7 +47,6 @@ JWTemplate::html_head($options);
 
 <?php JWTemplate::header() ?>
 
-
 <div id="container" class="subpage">
 	<div id="content">
 		<div id="wrapper" class="wrapper">
@@ -72,7 +71,6 @@ _HTML_;
 		</div><!-- wrapper -->
 	</div><!-- content -->
 </div><!-- #container -->
-
 
 <?php JWTemplate::footer() ?>
 

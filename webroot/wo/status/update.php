@@ -15,7 +15,7 @@ if ( array_key_exists('status', $_REQUEST) ){
 		 */
 		$help_user_id	= JWUser::GetUserInfo('help', 'idUser');
 
-		if ( preg_match('#\.de/help/$#i', $_SERVER['HTTP_REFERER'])
+		if ( preg_match('#\.(de|vm)/help/$#i', $_SERVER['HTTP_REFERER'])
 				&& $idUser != $help_user_id
 				&& !preg_match('/^@help /',$status) )
 		{

@@ -25,7 +25,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 }
 
 $friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
-$pagination         = new JWPagination($friend_num, $page);
+$pagination         = new JWPagination($friend_num, $page, 15);
 $friend_ids         = JWFriend::GetFriendIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
 
@@ -42,60 +42,33 @@ $picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
 <?php JWTemplate::html_head($head_options) ?>
 </head>
 
+<body class="account" id="friends">
+<?php JWTemplate::header("/wo/account/settings") ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
-<body class="friends" id="friends">
+<div id="container">
+<?php JWTemplate::FriendsTab( $page_user_info['id'], 'friends' ); ?>
+<div class="tabbody" id="myfriend">
+
+    <table width="100%" border="0" cellspacing="1" cellpadding="0" class="tablehead">
+    <tr>
+        <td width="285"><a href="#">用户名</a></td>
+        <td width="60"><a href="#">消息数</a></td>
+        <td width="60"><a href="#">彩信数</a></td>
+        <td><a href="#">最后更新时间</a></td>
+    </tr>
+    </table>
 
 
-<?php JWTemplate::accessibility() ?>
+<?php JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('type'=>'friends')); ?>
+</div>
 
-<?php JWTemplate::header() ?>
+<?php JWTemplate::PaginationLimit( $pagination, $page, null, $limit = 4 ) ; ?>
 
-<div class="separator"></div>
-
-<div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
-
-
-<?php 
-
-JWTemplate::ShowActionResultTips();
-
-if ( $page_user_info['id']==$logined_user_info['id'] )
-{
-	echo <<<_HTML_
-			<h2> 我的 $friend_num 位好友。
-		  		<a href="/wo/invitations/invite">邀请更多！</a>
-			</h2>
-_HTML_;
-} 
-else 
-{
-	echo <<<_HTML_
-			<h2> $page_user_info[nameScreen] 的 $friend_num 位好友。</h2>
-_HTML_;
-	
-}
-
-JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('element_id'=>'friends'));
-
-$words = array(
-		'first' => '<< 首页',
-		'last' => '末页 >>',
-		'pre' => '< 上一页',
-		'next' => '下一页 >',
-	      );
-JWTemplate::pagination( $pagination, array(), $words );
-
-?>
-		</div><!-- wrapper -->
-	</div><!-- content -->
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
 </body>
 </html>
-

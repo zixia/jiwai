@@ -84,7 +84,9 @@ class JWFriendRequest
 								);
 	}
 
-
+    static function GetTableRow($idUser, $idFriend) {
+        return JWDB::GetTableRow('FriendRequest', array( 'idUser'=>$idUser, 'idFriend'=>$idFriend ) );
+    }
 
 	static function IsExist($idUser, $idFriend)
 	{
@@ -106,7 +108,7 @@ class JWFriendRequest
 
 
 		$sql = <<<_SQL_
-SELECT	idFriend
+SELECT	idFriend,note,timeCreate
 FROM	FriendRequest
 WHERE	idUser=$idUser
 		AND idFriend IS NOT NULL
@@ -120,7 +122,7 @@ _SQL_;
 
 		$arr_friend_id = array();
 		foreach ( $arr_result as $row )
-			array_push($arr_friend_id, $row['idFriend']);
+            $arr_friend_id[$row['idFriend']] = $row ;
 
 		return $arr_friend_id;
 	}
@@ -137,7 +139,7 @@ _SQL_;
 		$numMax 	= JWDB::CheckInt($numMax);
 
 		$sql = <<<_SQL_
-SELECT	idUser
+SELECT	idUser,note,timeCreate
 FROM	FriendRequest
 WHERE	idFriend=$idFriend
 		AND idUser IS NOT NULL
@@ -151,7 +153,7 @@ _SQL_;
 
 		$arr_friend_id = array();
 		foreach ( $arr_result as $row )
-			array_push($arr_friend_id, $row['idUser']);
+            $arr_friend_id[$row['idUser']] = $row;
 
 		return $arr_friend_id;
 	}

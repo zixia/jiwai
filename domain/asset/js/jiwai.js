@@ -552,51 +552,12 @@ alert('ok');
 	HideTip: function() {
 		$('sitetip').style.display='none';
 	},
-	removeFriend: function(screenName) {
-		new Ajax( '/wo/friendships/destory/'+screenName, {
-			method: 'get',
-			data: {'note': note},
-			headers: {'AJAX':true},
-			onSuccess: function () {
-				if ($('subscribe1')) {
-					$('subscribe1').setText('已订阅');
-					$('subscribe1').onclick='';
-				}
-				if ($('subscribe2')) {
-					$('subscribe2').setText('添加 '+screenName);
-					$('subscribe2').onclick='JiWai.addFriend('+screenName+')';
-				}
-			}
-		}).request();
-	},
-	_createFriend: function(screenName, note) {
-		new Ajax( '/wo/friendships/create/'+screenName, {
-			method: 'post',
-			data: {'note': note},
-			headers: {'AJAX':true},
-			onSuccess: function () {
-				if ($('subscribe1')) {
-					$('subscribe1').setText('已订阅');
-					$('subscribe1').onclick='';
-				}
-				if ($('subscribe2')) {
-					$('subscribe2').setText('退定 '+screenName);
-					$('subscribe2').onclick='JiWai.removeFriend('+screenName+')';
-				}
-			}
-		}).request();
-	},
-	addFriend: function(screenName) {
-		JiWai._createFriend(screenName, '');
-		return false;
-	},
 	requestFriend: function(screenName, el) {
 		var mba = new PBBAcpBox({
 			name: 'JiWai'
 		});
 		mba.prompt(screenName+'希望验证你的身份，可以在下面输入一句话介绍你自己：', '', {onComplete:function(v){
 			if (v===false) return;
-			//JiWai._createFriend(screenName, v);
 			location.href=el.href+'?note='+encodeURIComponent(v);
 		}});
 		return false;

@@ -175,7 +175,7 @@ class JWSns {
 	 */
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
-		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend);
+		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id);
 
 		return $friend_request_id;
@@ -681,6 +681,10 @@ class JWSns {
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
 			settype( $follower_ids , 'array' );
 			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
+            /** 2007-08-20 */
+            //$follower_ids = array_diff( $follower_ids, array( $idSender ) );
+            array_push( $follower_ids, $idSender );
+            $follower_ids = array_unique( $follower_ids );
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = JWFollower::GetFollowerIds($idSender);

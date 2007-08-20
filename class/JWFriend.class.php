@@ -265,7 +265,5 @@ _SQL_;
 		return $row['num'];
 	}
 
-
-
 }
 ?>

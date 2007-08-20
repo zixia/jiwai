@@ -15,7 +15,7 @@ $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $page_user_info		= $logined_user_info;
 
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
-$pagination         = new JWPagination($follower_num, $page);
+$pagination         = new JWPagination($follower_num, $page, 15);
 $follower_ids         = JWFollower::GetFollowerIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
 
@@ -31,85 +31,31 @@ $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
 </head>
 
 
-<body class="followers" id="followers">
+<body class="account" id="friends">
 
-<?php JWTemplate::accessibility() ?>
+<?php JWTemplate::header("/wo/account/settings") ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
-<?php JWTemplate::header() ?>
+<div id="container">
+<?php JWTemplate::FriendsTab($page_user_info['id'], 'followers' ); ?>
 
-<div class="separator"></div>
-
-<div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
-
-<?php
-JWTemplate::ShowActionResultTips();
-?>
-			<h2>我的 <?php echo $follower_num?> 位粉丝</h2>
-
-
-<?php if ( !empty($follower_ids) ) { ?>
- 			<p>
-    			<a href="/wo/followers/befriend_all" onclick="return confirm('清确认： 这样可能使你一下多出很多很多的好友！');">将所有粉丝加为好友？</a>
-  			</p>
-<?php } ?>
-
-
-
+<div class="tabbody" id="myfriend">
+    <table width="100%" border="0" cellspacing="1" cellpadding="0" class="tablehead">
+    <tr>
+        <td width="285"><a href="#">用户名</a></td>
+        <td width="60"><a href="#">消息数</a></td>
+        <td width="60"><a href="#">彩信数</a></td>
+        <td><a href="#">最后更新时间</a></td>
+    </tr>
+    </table>
 	
-<table class="doing" cellspacing="0">
+<?php JWTemplate::ListUser($logined_user_info['id'], $follower_ids, array('type'=>'followers')); ?>
+</div>
 
-<?php
-$n = 0;
-if ( isset($follower_ids) )
-{
-	foreach ( $follower_ids as $follower_id )
-	{
-		$follower_info		= $follower_user_rows[$follower_id];
+<?php JWTemplate::PaginationLimit( $pagination, $page, null, $limit = 4 ) ; ?>
 
-		$follower_picture_id= @$follower_info['idPicture'];
-
-		$follower_icon_url  = JWTemplate::GetConst('UrlStrangerPicture');
-
-		if ( $follower_picture_id )
-			$follower_icon_url	= $picture_url_row[$follower_picture_id];
-
-		$odd_even			= ($n++ % 2) ? 'odd' : 'even';
-
-		echo <<<_HTML_
-	<tr class="$odd_even vcard">
-		<td class="thumb">
-			<a href="http://jiwai.de/$follower_info[nameScreen]/"><img alt="$follower_info[nameFull]" class="photo" src="$follower_icon_url" /></a>
-		</td>
-		<td>
-			<strong>
-		  		<a href="http://jiwai.de/$follower_info[nameScreen]/" class="url"><span class="fn">$follower_info[nameFull]</span> (<span class="uid">$follower_info[nameScreen]</span>)</a>
-			</strong>
-		</td>
-	</tr>
-_HTML_;
-	}
-}
-?>
-
-</table>
-
-<?php
-$words = array(
-		'first' => '<< 首页',
-		'last' => '末页 >>',
-		'pre' => '< 上一页',
-		'next' => '下一页 >',
-	      );
-JWTemplate::pagination( $pagination, array(), $words );
-?>
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

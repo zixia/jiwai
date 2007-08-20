@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {background:#fff;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
+body {background:#FFF2D6;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
 form {margin:0;padding:0;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
@@ -53,10 +53,10 @@ a:hover {color:#F87A01;}
  .separator p {line-height:26px; margin-left:87px;}
 
 
-#header {margin:0 auto; background-color:#ffffff; height:80px;width:776px; border-bottom:5px solid #F97B00;}
+#header {margin:0 auto; background-color:#FFF2D6; height:80px;width:776px; border-bottom:5px solid #F97B00;}
   #navigation {}
-  #header h2 {width:150px; height:44px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:30px; margin-left:18px;}
-  #header h2 a {width:150px; height:44px; display:block; text-indent:-8000px;}
+  #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:18px;}
+  #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
   html>body #header .tip {margin-left:170px;}
   #header .tip a {font-weight:bold; margin-left:5px;}
@@ -168,7 +168,7 @@ html>body #content .tabMenu {margin-top:19px;}
 #content .tab p {text-indent: 1em;}
 
 
-#timeline { border:1px solid #D3D3D5; margin-top:6px; height:100%;}
+#timeline { border:1px solid #D3D3D5; margin-top:6px; height:100%; background-color:#ffffff;}
 
 .layout_table {margin:0; padding:0;}
 .bg_tab_top_left { width:2px; height:46px; background:url(../images/org-tit-l.gif) no-repeat right; font-size:1px; overflow:hidden;}
@@ -184,7 +184,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .even {background-color:#ffffff;}
 
 
-.odd { padding:8px 16px; height:100%; clear:both;}
+.odd { padding:8px 16px; height:100%; clear:both; background-color:#ffffff;}
 #content .line {height:1px; overflow:hidden; background-color:#DDE0E3; margin:0 auto; clear:both; width:500px;}
 .odd .head {float:left; width:64px; overflow:hidden; height:62px;}
 	.odd .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
@@ -383,8 +383,8 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 .account .but {width:360px; margin:10px auto 10px auto;}
 #settings .but { width:700px; text-align:left; margin:10px auto 10px auto; text-indent:140px;}
 #regok #container p {width:500px; margin:0 auto; display:block; line-height:30px; margin-top:20px; font-size:14px;}
-#invite #container p {width:550px; margin:0 auto; display:block; line-height:30px; margin-top:20px; font-size:14px;}
 #regok  #container ul {width:500px; margin:10px auto 10px auto;}
+#invite #container p {width:700px; margin:0 auto; display:block; line-height:30px; margin-top:20px; font-size:14px;}
 #regok .but {width:500px; margin:10px auto 10px auto;}
 #invite .but {width:500px; margin:10px auto 10px auto; text-align: center;}
 .subtab {height:30px; clear:both;}
@@ -396,9 +396,14 @@ html>body .subtab {height:31px; clear:both;}
 #container .tabbody { margin:0 auto; border:1px solid #FFC892; width:548px; padding:0;}
 #settings #container .tabbody { width:738px;background-color:#ffffff;}
 #container .tabbody div { padding:20px 15px 0 15px;}
-.tabbody p {line-height:30px; text-indent:50px;
-
+.tabbody p {line-height:30px; text-indent:50px;}
 #invite #content {width:550px; margin:0 auto; float:none; clear:both;}
+#invite #container {background-color:#ffffff;}
+#create #container {background-color:#ffffff;}
+#regok #container {background-color:#ffffff;}
+#friends #container {background-color:#ffffff; padding-top:30px;}
+#friends #container p{width:550px; margin:0 auto; float:none; clear:both;}
+#friends #container .but {width:550px; margin:30px auto 10px auto; text-align:center;}
 
 small {color:#989898; vertical-align:top; font-size:12px;}
 
@@ -407,4 +412,37 @@ small {color:#989898; vertical-align:top; font-size:12px;}
 .list_ji li { background:url(../images/org-icon-ji.gif) no-repeat left 10px; text-indent:20px; font-size:14px; font-weight:bold; color:#000000;}
 .list_ji li a {color:#000000;}
 
-.orgbut { border:none; background-color:#F97B00; color:#ffffff; line-height:18px; height:18px; padding:0 5px; margin-top:5px;}
+.orgbut {border:none; background-color:#F97B00; color:#ffffff; line-height:18px; height:18px; padding:0 5px; margin-top:5px;}
+.alt {background:url(../images/org-chatalt-bg.gif) no-repeat; width:296px; height:50px; display:block; margin-bottom:10px; margin-top:5px;}
+.chat input {margin-left:12px;}
+.account .chat td input { width:272px;}
+
+.tipnote {clear:both; height:30px; background-color:#FFF996; height:21px; line-height:21px; border:1px solid #C2C2C2; margin-top:3px; text-indent:20px;}
+	.tipnote a {float:right; line-height:21px; margin-right:10px; color:#000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
+	
+.tipnote-red {clear:both; height:30px; background-color:#FF0000; height:21px; line-height:21px; border:1px solid #C2C2C2; margin-top:3px; text-indent:20px; color:#ffffff;}
+	.tipnote-red a {float:right; line-height:21px; margin-right:10px; color:#ffffff; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
+	
+.float {border:5px solid #FFCFA8; background:url(../images/org-float-bg.gif) repeat-x; margin:0 auto; width:500px; padding:9px 15px;}
+	.float h3 {font-size:16px; font-weight:bold; color:#EB6400; line-height:50px; text-align:center;}
+	.float h2 {font-size:14px; color:#000000; font-weight: bold; margin-top:5px;}
+	.float p {line-height:26px;}
+	.float textarea {width:498px; border:1px solid #D3D3D5; height:50px;}
+	.float .orgbut {margin:8px 20px 8px 0;}
+	
+.account #container .liketable {height:100%; margin:0 15px; width:500px; padding:8px 0; clear:both;}
+.account #container .liketable li {float:left; line-height:20px; overflow:hidden; height:20px;}
+	.liketable .img {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px; float:left; margin:0 25px 0 0;}
+	.liketable .name {width:200px; font-size:14px; text-indent:5px;}
+	.liketable .nob {width:60px; color:#929292; text-align:center;}
+	.liketable .time {width:100px; color:#929292; text-align:center;}
+	.liketable .note {width:420px; text-indent:5px;}
+	.liketable .action {width:420px; color:#D05D00;}
+		.liketable .action a {margin:0 5px;}
+	#myfriend .liketable .action {margin-top:10px;}
+#container .tabbody .clear {font-size:1px; height:1px; overflow:hidden; float:none; clear:both; width:520px; margin:0 auto; border-bottom:1px solid #DDE0E3; padding:0;}
+html>body #container .tabbody .clear { padding:4px;}
+
+.account .tablehead { background-color:#F2F2F2; margin-top:0; border-bottom:1px solid #D3D3D5;}
+.account .tablehead td {border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;  font-size:12px; text-align:center; line-height:19px;}
+.account .tablehead td a {color:#000000; text-decoration:none;}

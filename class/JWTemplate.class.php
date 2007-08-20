@@ -306,6 +306,41 @@ _HTML_;
 <?php
     }
 
+    static public function FriendsTab( $idUser, $highlight=null ){
+        $userInfo = JWUser::GetUserInfo( $idUser );
+        $wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
+
+        $friendsNum = JWFriend::GetFriendNum( $idUser );
+        $followersNum = JWFollower::GetFollowerNum( $idUser );
+        $inRequestsNum = JWFriendRequest::GetUserNum( $idUser );
+        $outRequestsNum = JWFriendRequest::GetFriendNum( $idUser );
+    
+        if( $wo ) {
+            $nav = array(
+                'friends' => array("/wo/friends/", "我的好友", $friendsNum),
+                'followers' => array("/wo/followers/","我的粉丝", $followersNum),
+                'inrequests' => array("/wo/friend_requests/","待审核好友",$inRequestsNum),
+                'outrequests' => array("/wo/friend_requests/?out","发出的好友请求",$outRequestsNum),
+            );
+        }else{
+            $nav = array(
+                'friends' => array("/$userInfo[nameScreen]/friends/", "$userInfo[nameFull]的好友", $friendsNum),
+                //'followers' => array("$prefix/followers/","$userInfo[nameFull]的粉丝", $followersNum),
+            );
+        }
+
+        if( !$highlight ) 
+            $highlight = 'friends';
+?> 
+        <p class="subtab">
+        <?php foreach ($nav as $k=>$v ){ 
+            echo "<a href=\"".$v[0]."\" ".($k==$highlight?"class=\"now\"":"").">".$v[1]."(".$v[2].")</a>";
+        }?>
+        </p>
+<?php
+    }
+
+
 	static public function slogon()
 	{
 ?>
@@ -1394,7 +1429,7 @@ _HTML_;
 
 		if ( isset($action['add']) )
 		{
-			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].');"' : '';
+			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
 			echo <<<_HTML_
 			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>将$arr_user_info[nameScreen]添加为好友</a></li>
 _HTML_;
@@ -1985,36 +2020,30 @@ _HTML_;
 	 *	@param	@options	array ( 'element_id' => 'doing' )
 	 *
 	 */
-	static public function ListUser($idUser, $idListUsers, $options=null)
+	static public function ListUser($idUser, $idListUsers, $options=array() )
 	{
-		echo <<<_HTML_
-<style type="text/css">
-.friend-actions ul li
-{
-	display: inline;
-}
-.subpage #content p {
-line-height:1.2;
-margin:5px 0pt;
-}
-.friend-actions {
-text-indent:0.6em;
-}
-</style>
-	
-<table class="doing" id="$options[element_id]" cellspacing="0">
-_HTML_;
 
-		$n = 0;
+        $wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
+
+        if( false == isset( $options['type'] ) ) 
+            $options['type'] = 'friends';
+
+        switch( $options['type'] ) {
+            case 'inrequests':
+            case 'outrequests':
+                $friendRequestRows = $idListUsers ;
+                $idListUsers = array_keys( $idListUsers );
+            break;
+            default:
+                $action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
+            break;
+        }
+
 		$list_user_rows				= JWUser::GetUserDbRowsByIds			($idListUsers);
 
         $picture_ids        = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
         $picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);
 
-		$action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
-
-//die(var_dump($picture_url_row));
-//die(var_dump($action_rows));
 		foreach ( $idListUsers as $list_user_id )
 		{
 			$list_user_row			= $list_user_rows			[$list_user_id];
@@ -2026,35 +2055,98 @@ _HTML_;
                 $list_user_icon_url      = $picture_url_row[$list_user_picture_id];
 
 			$odd_even			= ($n++ % 2) ? 'odd' : 'even';
+            $statusNum = JWStatus::GetStatusNum( $list_user_id );
+            $mmsNum = JWPicture::GetMMSNum( $list_user_id );
+        
+            $timeUpdate = $list_user_row['timeStamp'];
+
+            $action_row = $action = $liNote = null;
+            switch( $options['type'] ) {
+                case 'friends':
+                    $action_row = $action_rows[$list_user_id];
+                    $action = self::FriendsAction($list_user_id, $action_row , $wo);
+                break;
+                case 'followers':
+                    $action_row = $action_rows[$list_user_id];
+                    $action = self::FollowersAction($list_user_id, $action_row , $wo);
+                break;
+                case 'inrequests':
+                    $action = self::InRequestsAction($list_user_id, $action_row , $wo);
+                    $requestRow = $friendRequestRows[ $list_user_id ];
+                    $liNote = "<li class=\"note\">$requestRow[note]</li>";
+                break;
+                case 'outrequests':
+                    $action = self::OutRequestsAction($list_user_id, $action_row , $wo);
+                    $requestRow = $friendRequestRows[ $list_user_id ];
+                    $liNote = "<li class=\"note\">$requestRow[note]</li>";
+                break;
+            }
 
 			echo <<<_HTML_
-	<tr class="$odd_even vcard">
-		<td class="thumb">
-			<a href="/$list_user_row[nameScreen]/"><img alt="$list_user_row[nameFull]" class="photo" src="$list_user_icon_url" /></a>
-		</td>
-		<td>
-			<strong>
-		  		<a href="/$list_user_row[nameScreen]/" class="url"><span class="fn">$list_user_row[nameFull]</span> (<span class="uid">$list_user_row[nameScreen]</span>)</a>
-			</strong>
-			<p class="friend-actions">
-		  		<small>
+                <ul class="liketable"><img src="$list_user_icon_url"  class="img" />
+                    <li class="name"><a href="/$list_user_row[nameScreen]/">$list_user_row[nameFull]</a></li>
+                    <li class="nob">${statusNum}条</li>
+                    <li class="nob">${mmsNum}条</li>
+                    <li class="time">$timeUpdate</li>
+                    $liNote
+                    <li class="action">$action</li>
+                </ul>
 _HTML_;
 
-			$action_row = $action_rows[$list_user_id];
+            ?>
+             <div class="clear" style="border-bottom:none;"></div>
+            <?php
 
-			JWTemplate::sidebar_action($action_row,$list_user_id,false);
-
-			echo <<<_HTML_
-  		  		</small>
-		</p>
-
-	</td>
-</tr>
-_HTML_;
 		}
 
-		echo "</table>";
 	}
+
+    static public function FriendsAction($idUser, $actionRow , $wo = true, $separator='|') {
+        $idUser = JWDB::CheckInt( $idUser );
+        $action = null;
+        if( isset( $actionRow['follow'] ) )
+            $action .= "<a href='/wo/friends/follow/$idUser'>关注</a>$separator";
+        if( isset( $actionRow['leave'] ) )
+            $action .= "<a href='/wo/friends/leave/$idUser'>取消关注</a>$separator";
+
+        if( $wo ) $action .= "<a href='/wo/friends/destroy/$idUser'>删除</a>$separator";
+
+        if( isset( $actionRow['nudge'] ) )
+            $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";
+        
+        return trim( $action, $separator );
+    }
+
+    static public function InRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
+        $idUser = JWDB::CheckInt( $idUser );
+        $action = null;
+
+        $action .= "<a href='/wo/friend_requests/accept/$idUser'>接受</a>$separator";
+        $action .= "<a href='/wo/friend_requests/deny/$idUser'>拒绝</a>$separator";
+
+        return trim( $action, $separator );
+    }
+
+    static public function OutRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
+        $idUser = JWDB::CheckInt( $idUser );
+        $action = null;
+
+        $action .= "<a href='/wo/friend_requests/cancel/$idUser'>取消</a>$separator";
+
+        return trim( $action, $separator );
+    }
+
+    static public function FollowersAction($idUser, $actionRow , $wo = true, $separator='|') {
+        $idUser = JWDB::CheckInt( $idUser );
+        $action = null;
+        if( isset( $actionRow['add'] ) )
+            $action .= "<a href='/wo/friendships/create/$idUser'>加为好友</a>$separator";
+
+        if( isset( $actionRow['nudge'] ) )
+            $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";
+        
+        return trim( $action, $separator );
+    }
 
 	static public function RedirectTo404NotFound()
 	{
