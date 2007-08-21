@@ -360,11 +360,11 @@ _SQL_;
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
 			case self::SP_CHINAMOBILE: 	return '99118816';
-			case self::SP_UNICOM: 		return '93188816';
-			case self::SP_PAS: 			return '暂时尚不支持小灵通';
+			case self::SP_UNICOM: 		return '95014567';
+			case self::SP_PAS: 		return '99318456';
 
 			case self::SP_UNKNOWN: 		// fall to default
-			default: 					return '99118816(移动) / 93188816(联通)';
+			default: 			return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
 		}
 	}
 

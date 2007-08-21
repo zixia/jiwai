@@ -31,6 +31,15 @@ class JWSms {
 	static $msQuarantinePathMo;
 	static $msQuarantinePathMt;
 
+	/**
+	 * SP GID
+	 */
+	const GID_CHINAMOBILE 	= 1;
+	const GID_UNICOM	= 45;
+	const GID_PAS		= 52;
+	const GID_UNKNOWN	= 1;
+
+
 
 	/**
 	 * Instance of this singleton class
@@ -176,78 +185,68 @@ class JWSms {
 		// 第三方下行接口，只对移动有效
 		$MT_HTTP_URL_3RD		= 'http://211.157.106.111:8092/sms/third/submit';
 
-		// 普通下行接口，移动联通都可以使用。不过要提供 linkId
+		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		//define ('MT_HTTP_URL_TEST',	'http://beta.jiwai.de/wo/dump');
+		$gid	= self::GetGidByMobileNo($mobileNo); // 移动:1 联通:42
 
 		/* 	
 		 *	如果有 linkId，则使用 linkid 参数（移动、联通通用）；
 		 *	如果没有 LinkId，则只能给移动用户第三方下行
 		 */
-		if ( empty($linkId) )
+		if ( empty($linkId) && $gid == self::GID_CHINAMOBILE )
 			$MT_HTTP_URL = $MT_HTTP_URL_3RD;
 		else
 			$MT_HTTP_URL = $MT_HTTP_URL_LINKID;
 
 
-		$error_code = array(	0		=> 'HE_ERR_OK'
-								, 52	=> 'HE_ERR_MSG'
-								, 53	=> 'HE_ERR_USERNUMBER'
-								, 54	=> 'HE_ERR_PID'
-								, 55	=> 'HE_ERR_MOFLAG'
-								, 56	=> 'HE_ERR_GATEWAY'
-								, 57	=> 'HE_ERR_MSGTYPE'
-								, 58	=> 'HE_ERR_ILLEGAL_IP'
-								, 59	=> 'HE_ERR_ILLEGAL_APPID'
-								, 124	=> 'HE_ERR_ZIXIA_MOBILE_NO'
-							);
+		$error_code = array(	0	=> 'HE_ERR_OK'
+					, 52	=> 'HE_ERR_MSG'
+					, 53	=> 'HE_ERR_USERNUMBER'
+					, 54	=> 'HE_ERR_PID'
+					, 55	=> 'HE_ERR_MOFLAG'
+					, 56	=> 'HE_ERR_GATEWAY'
+					, 57	=> 'HE_ERR_MSGTYPE'
+					, 58	=> 'HE_ERR_ILLEGAL_IP'
+					, 59	=> 'HE_ERR_ILLEGAL_APPID'
+					, 124	=> 'HE_ERR_ZIXIA_MOBILE_NO'
+				);
 
 
-		$mt_type	= array(	'MT_TYPE_MO_FIRST'		=>	0 // MO点播引起的第一条MT消息
-								, 'MT_TYPE_MO_NOT_FIRST'=>	1 // MO点播引起的非第一条MT消息
-								, 'MT_TYPE_NO_MO'		=>	2 // 非MO点播引起的MT消息
-								, 'MT_TYPE_SYSTEM'		=>	3 // 系统反馈引起的MT消息
-							);
+		$mt_type = array('MT_TYPE_MO_FIRST' 	=> 0, // MO点播引起的第一条MT消息
+				 'MT_TYPE_MO_NOT_FIRST'	=> 1, // MO点播引起的非第一条MT消息
+				 'MT_TYPE_NO_MO'	=> 2, // 非MO点播引起的MT消息
+				 'MT_TYPE_SYSTEM'	=> 3, // 系统反馈引起的MT消息
+				);
 
-		$mt_fee		= array(	'FEE_FREE'				=>	0 // 免费消息
-								, 'FEE_NORMAL'			=>	1 // 正常收费
-								, 'FEE_MONTHLY_LIST'	=>	2 // 包月话单
-								, 'FEE_MONTHLY_DOWNLOAD'=>	3 // 包月下发
-							);
-
-
-		$dst				= $mobileNo;	// 数字,目的手机号 
-		$msgfmt				= 0;	// 英文，如果是中文，就去掉这个参数
+		$mt_fee	= array('FEE_FREE'		 =>	0, // 免费消息
+				'FEE_NORMAL'		 =>	1, // 正常收费
+				'FEE_MONTHLY_LIST'	 =>	2, // 包月话单
+				'FEE_MONTHLY_DOWNLOAD'	 =>	3, // 包月下发
+				);
 
 
-		list($msg,$msgfmt)	= self::FormatSms($smsMsg);
-
-		$msg				= urlencode(
-									iconv('UTF-8','GBK', $msg)
-							);		// urlencode的GBK编码消息
+		$dst	= $mobileNo;	// 数字,目的手机号 
+		$msgfmt		= 0;	// 英文，如果是中文，就去掉这个参数
 
 
-		$appid	= null;	// 数字，应用编号，需分配
-		$gid	= null;	// 数字，网关ID
-		$pid	= null;	// 数字,产品ID
-		//$linkid	= null;	// 如果mo里面有带下来，(没有不填，不要乱填)
+		list($msg,$msgfmt) = self::FormatSms($smsMsg);
+
+		$msg	= urlencode( iconv('UTF-8','GBK', $msg));		// urlencode的GBK编码消息
+
+
+		$appid	= 93;	// 数字，应用编号，需分配
+		$prelen = ( $gid == self::GID_PAS ) ? 5 : 4;
 		$func	= 8816; // 数字，长号码，只加自己的扩展号
-
-		/**
-		 *	挂上自己的长尾号
-		 * 	turn 99118816123 to 8816123
-		 */
-		$func	= substr($serverAddress, 4);
-
-		/*
-		$pid	= 
-		$linkid = 
-		*/
-
-		$appid	= 93;
-
-		$gid	= self::GetGidByMobileNo($mobileNo); // 移动:1 联通:3
+		$func	= substr($serverAddress, $prelen);
+		
+		$pid = 0;
+		if( $gid == self::GID_UNICOM ) {
+			if( $func == 456 ) 
+				$pid = 46;
+			else
+				$pid = 47;
+		}
 		
 		$moflag		= $mt_type['MT_TYPE_NO_MO'];
 		$msgtype	= $mt_fee['FEE_FREE'];
@@ -319,14 +318,14 @@ class JWSms {
 	{
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
-			case JWDevice::SP_CHINAMOBILE: 	return 1;
-			case JWDevice::SP_UNICOM: 		return 3;
+			case JWDevice::SP_CHINAMOBILE: 	return self::GID_CHINAMOBILE;
+			case JWDevice::SP_UNICOM: 	return self::GID_UNICOM;
 
-			case JWDevice::SP_PAS: 			// fall to default
-			case JWDevice::SP_UNKNOWN: 		// fall to default
+			case JWDevice::SP_PAS: 		return self::GID_PAS;
+			case JWDevice::SP_UNKNOWN: 	// fall to default
 			default: 					
 				JWLog::Instance()->Log(LOG_ERR, "GetGidByMobileNo($mobileNo) Unsupported. ");
-				return 1;
+				return self::GID_UNKNOWN;
 		}
 	}
 
