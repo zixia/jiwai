@@ -113,12 +113,12 @@ $status_data['user_ids'][] = $page_user_id;
 
 $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
-//$head_status_data 	= JWStatus::GetStatusIdsFromUser( $page_user_id, 1 );
-$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
-
-//$head_status_rows 	= JWStatus::GetStatusDbRowsByIds($head_status_data['status_ids']);
+if( $page_user_info['idConference'] ) {
+	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
+}else{
+	$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
+}
 $head_status_rows 	= JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
-
 $head_status_id 	= @array_shift($head_status_data['status_ids']); 
 
 
