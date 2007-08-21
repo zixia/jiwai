@@ -306,7 +306,7 @@ class JWSms {
 			if ( preg_match('/^(\d+)$/',$return_content,$matches) )
 				$ret = $matches[1];
 
-			JWLog::Instance()->Log(LOG_ERR, "JWSms::SendMt return content parse err:[$return_content]($error_code[$ret])");
+			JWLog::Instance()->Log(LOG_ERR, "JWSms::SendMt return content parse err:[$return_content]($error_code => [$ret])");
 			return false;
 		}
 

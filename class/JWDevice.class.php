@@ -339,13 +339,14 @@ _SQL_;
 	{
 		if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
 				|| preg_match('/^159\d+$4/',$mobileNo)
+				|| preg_match('/^158\d+$4/',$mobileNo)
 				)
 			return self::SP_CHINAMOBILE;
 
 		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) )
 			return self::SP_UNICOM;
 
-		if ( preg_match('/^\d{8}$/',$mobileNo ) )
+		if ( preg_match('/^\d{11,12}$/',$mobileNo ) )
 			return self::SP_PAS;
 
 		return self::SP_UNKNOWN;
