@@ -66,7 +66,7 @@ class JWDevice {
 
 		switch ( $type ){
 			case 'sms':
-				return preg_match('/^\d{11}$/'			,$address);
+				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':

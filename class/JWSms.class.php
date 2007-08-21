@@ -137,8 +137,19 @@ class JWSms {
 		JWLog::Instance()->Log(LOG_INFO, "$now ReceiveMo: msg [$smsMsg]"
 					. " from mobile [$mobileNo] to service [$serviceNo]"
 					. " by link [$linkId] through [$gateId]" );
-
-		$gateNo = ( $gateId == 1 ) ? '9911' : '9318';
+		
+		$gateNo = 9911;
+		switch( $gateId ){
+			case self::GID_UNICOM:
+				$gateNo = 9501;
+			break;
+			case self::GID_PAS:
+				$gateNo = 99318;
+			break;
+			case self::GID_CHINAMOBILE:
+				$gateNo = 9911;
+			break;
+		}
 
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($mobileNo, 'sms', $smsMsg, $gateNo.$serviceNo, $linkId);
@@ -266,8 +277,6 @@ class JWSms {
 							. "&param=$param"
 							//. "&src=99118816" //mobile src ??
 						;
-
-//error_log($rpc_url);
 
 		if ( isset($msgfmt) )
 			$rpc_url .= "&msgfmt=$msgfmt";
