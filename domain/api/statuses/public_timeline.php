@@ -75,7 +75,7 @@ function renderFeedReturn($options, $feedType=JWFeed::ATOM){
 		$feed->AddItem(array( 
 				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'date'	=> $status['timeCreate'] , 
+				'date'	=> strtotime( $status['timeCreate'] ) , 
 				'author'=> $status['user']['nameFull'] , 
 				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
 				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'],

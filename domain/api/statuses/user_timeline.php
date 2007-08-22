@@ -96,10 +96,11 @@ function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 				)); 
 
 	foreach ( $statuses as $status ){
+
 		$feed->AddItem(array( 
 				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'date'	=> $status['timeCreate'] , 
+				'date'	=> strtotime( $status['timeCreate'] ), 
 				'author'=> $status['user']['nameFull'] , 
 				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
 				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'],
@@ -125,7 +126,7 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
 
 	if( $options['idConference'] ) {
-		$status_data    = JWStatus::GetStatusIdsFromSelfNReplies($options['idUser'],$count,0 );
+		$status_data    = JWStatus::GetStatusIdsFromConferenceUser($options['idUser'],$count,0 );
 	}else{
 		$status_data    = JWStatus::GetStatusIdsFromUser($options['idUser'],$count,0,$options['since_id'], $timeSince);
 	}
