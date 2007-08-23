@@ -267,6 +267,14 @@ _STR_;
 						'serverAddress' => $serverAddress,
 						'linkId' => $linkId,
 						), 0, 3600 );
+			/*
+			 * register msg
+			 */
+			$msgRegister = "哇，真可怕！请回复你想用的用户名。";
+			$conference = JWConference::GetDbRowFromServerAddress( $robotMsg->GetServerAddress() );
+			if( false == empty( $conference ) && $conference['msgRegister'] ) {
+				$msgRegister = $conference['msgRegister'];
+			}
 
 			/*
 			 *	1 用户没有被邀请过
@@ -300,14 +308,14 @@ _STR_;
 				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，你过一会儿再来试试吧。");
 			}
 
-			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的用户名。");
+			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
 		}
 
 		/*
 		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
 	 	 */
 		if ( ! $toRegister )
-			return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！请回复你想用的用户名。");
+			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
 
 
 		/*
@@ -347,15 +355,6 @@ _STR_;
 			$body = <<<_STR_
 欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧。
 _STR_;
-			/*
-			 * register msg
-			 */
-			$msgRegister = null;
-			$conference = JWConference::GetDbRowFromServerAddress( $robotMsg->GetServerAddress() );
-			if( false == empty( $conference ) && $conference['msgRegister'] ) {
-				$msgRegister = "${user_name}，$conference[msgRegister]";
-				$body = $msgRegister;
-			}
 
 			/*
 			 * 检查用户注册前的更新，将其发出
@@ -386,13 +385,9 @@ _STR_;
 						);
 				$reply_msg = self::ProcessMo($beforeRegisterMsg);
 
-				if( $msgRegister ) {
-					return self::ReplyMsg( $robotMsg, $msgRegister );
-				}
-				
 				if ( ! empty($reply_msg) )
 				{
-					$reply_msg->SetBody( "${user_name}，你好！" . $reply_msg->GetBody() );
+					$reply_msg->SetBody( $reply_msg->GetBody() );
 					return $reply_msg;
 				}
 			}
