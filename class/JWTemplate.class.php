@@ -604,7 +604,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 <?php
 		if (!empty($vars['find'])) {
 ?>
-							<button>找</button><input type="text" value="输入用户名" />
+							<form action="/"><button onClcik='this.form.submit();'>找</button><input type="text" value="输入用户名" onclick='this.value=""' /></form>
 <?php
 		}
 ?>
@@ -914,7 +914,9 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 <?php
 			if ($options['search']) {
 ?>
-<div class="search"><input type="text" value="请输入关键字" /><button>找</button></div>
+<div class="search">
+    <form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="输入关键词" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
+</div>
 <?php
 			}
 			if ($options['pagination']) {

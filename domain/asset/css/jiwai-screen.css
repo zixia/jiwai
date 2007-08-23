@@ -55,7 +55,7 @@ a:hover {color:#F87A01;}
 
 #header {margin:0 auto; background-color:#FFF2D6; height:80px;width:776px; border-bottom:5px solid #F97B00;}
   #navigation {}
-  #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:18px;}
+  #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
   html>body #header .tip {margin-left:170px;}

@@ -3,6 +3,8 @@ require_once(dirname(__FILE__) . '/../../jiwai.inc.php');
 JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
+$q = $page = null;
+extract($_GET, EXTR_IF_EXISTS);
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
@@ -68,7 +70,7 @@ if ( isset($g_show_user_archive) && $g_show_user_archive)
 if ( isset($g_replies) && $g_replies )
 	$active_tab = 'replies';
 
-if ( isset($g_search) && $g_search )
+if ( (isset($g_search) && $g_search) || $q )
 	$active_tab = 'search';
 
 
@@ -124,7 +126,6 @@ switch ( $active_tab )
 	case 'search':
 		//搜索所有用户的Status更新
 		$searchStatus = new JWSearchStatus();
-
 		$searchStatus->setPageNo( $page );
 
 		$searchStatus->setInSite("jiwai.de/$in_user/statuses/");
