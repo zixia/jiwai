@@ -195,7 +195,6 @@ class JWSms {
 	{
 		// 第三方下行接口，只对移动有效
 		$MT_HTTP_URL_3RD		= 'http://211.157.106.111:8092/sms/third/submit';
-		$MT_HTTP_URL_3RD		= 'http://211.157.106.111:8092/sms/submit';
 
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
@@ -281,6 +280,8 @@ class JWSms {
 
 		if ( isset($msgfmt) )
 			$rpc_url .= "&msgfmt=$msgfmt";
+
+		//error_log( $rpc_url );
 
 		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt Calling: [$rpc_url]");
 
