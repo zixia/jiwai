@@ -29,6 +29,8 @@ $arg_msgid	= @$_REQUEST['msgid'];
 $arg_state	= @$_REQUEST['state'];
 $arg_errcode= @$_REQUEST['errcode'];
 
+$var = var_export( $_REQUEST, true );
+error_log( "$var\n", 3, "/tmp/requestsms" );
 
 switch ($arg_op)
 {
@@ -83,6 +85,8 @@ function mop_mo()
 		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
 
 		//file_put_contents("/tmp/zixia.txt", "$arg_src -> $arg_dst\n$arg_msg");
+		if( $arg_gid == JWSms::GID_CHINAMOBILE )
+			$arg_linkid = rand(100000000,999999999);
 		return JWSms::ReceiveMo($arg_src, $arg_dst, $arg_msg, $arg_linkid, $arg_gid);
 }
 
