@@ -128,8 +128,8 @@ class JWRobotLogic {
 						, $reply_robot_msg->GetBody() );
 		}
 
-        if( $type != 'web' )
-            echo $msg;
+		if( $type != 'web' )
+		    echo $msg;
 
 		return $reply_robot_msg;
 	}
@@ -153,7 +153,7 @@ class JWRobotLogic {
 		}
 		$isSignature = ( $msgtype=='SIG' ) ? 'Y' : 'N';
         
-        $device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		if ( empty($device_row) )
 		{	
@@ -174,9 +174,14 @@ class JWRobotLogic {
 			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
-			if ( JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature, $serverAddress) )
+			$ret = JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature, $serverAddress);
+			if( $ret['op'] ) 	
 			{	// succeed posted, keep silence
-				return null;
+				if( $ret['reply'] ) {
+					return self::ReplyMsg( $robotMsg, $ret['reply'] );
+				}else {
+					return null;
+				}
 			}
 			else
 			{	// update error, need quarantine
@@ -278,12 +283,12 @@ _STR_;
 
 			$jiwai_user_id = $jiwai_user_db_row['idUser'];
 
-			$ret = JWInvitation::Create(	 $jiwai_user_id
-											,$robotMsg->GetAddress()
-											,$robotMsg->GetType()
-											,'用户主动上行注册，自动建立邀请'
-											,JWDevice::GenSecret(32, JWDevice::CHAR_ALL)
-									);
+			$ret = JWInvitation::Create(	$jiwai_user_id
+							, $robotMsg->GetAddress()
+							, $robotMsg->GetType()
+							, '用户主动上行注册，自动建立邀请'
+							, JWDevice::GenSecret(32, JWDevice::CHAR_ALL)
+					);
 
 			if ( ! $ret )
 			{
@@ -343,6 +348,16 @@ _STR_;
 欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧。
 _STR_;
 			/*
+			 * register msg
+			 */
+			$msgRegister = null;
+			$conference = JWConference::GetDbRowFromServerAddress( $robotMsg->GetServerAddress() );
+			if( false == empty( $conference ) && $conference['msgRegister'] ) {
+				$msgRegister = "${user_name}，$conference[msgRegister]";
+				$body = $msgRegister;
+			}
+
+			/*
 			 * 检查用户注册前的更新，将其发出
 			 */
 
@@ -370,6 +385,10 @@ _STR_;
 						, $beforeRegister['linkId']
 						);
 				$reply_msg = self::ProcessMo($beforeRegisterMsg);
+
+				if( $msgRegister ) {
+					return self::ReplyMsg( $robotMsg, $msgRegister );
+				}
 				
 				if ( ! empty($reply_msg) )
 				{
@@ -394,11 +413,11 @@ _STR_;
 		$robot_reply_msg = new JWRobotMsg();
 
 		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $message
-								, $robotMsg->GetServerAddress()
-								, $robotMsg->GetLinkId()
-							);
+					, $robotMsg->GetType()
+					, $message
+					, $robotMsg->GetServerAddress()
+					, $robotMsg->GetLinkId()
+				);
 
 		return $robot_reply_msg;
 	}

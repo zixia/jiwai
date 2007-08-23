@@ -175,7 +175,7 @@ class JWSns {
 	 */
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
-		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
+		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend);
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id);
 
 		return $friend_request_id;
@@ -515,6 +515,7 @@ class JWSns {
 								'status_id' => null,
 								'user_id' => $userInfo['id'],
 								'smssuffix' => null,
+								'idConference' => null,
 								);
 						}else{
 							$reply_info = array(
@@ -522,6 +523,7 @@ class JWSns {
 								'user_id' => $userInfo['id'],
 								'smssuffix' => $conference['number']==null ? 
 										"99$userInfo[id]" : "1$conference[number]",
+								'idConference' => $userInfo['idConference'],
 								);
 						}
 						return $reply_info;
@@ -544,6 +546,7 @@ class JWSns {
 				'user_id' => $idUser,
 				'smssuffix' => $conference['number']==null ? 
 						"99$userInfo[id]" : "1$conference[number]",
+				'idConference' => $userInfo['idConference'],
 				);
 	}
 
@@ -599,8 +602,16 @@ class JWSns {
 		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature );
 
 		//added 2007-07-29
-		if( $ret ) {
-			JWStatusNotifyQueue::Create($idUser, $ret, time(), $processInfo['notify'] );
+		$ret = array( 'op' => $ret, 'reply' => null, );
+		if( $ret['op'] ) {
+			JWStatusNotifyQueue::Create($oldIdUser, $ret['op'], time(), $processInfo['notify'] );
+			if( $processInfo['notify']['idConference'] ) {
+				$conference = JWConference::GetDbRowById( $processInfo['notify']['idConference'] );
+				if( false == empty($conference) && $conference['msgUpdateStatus'] ){
+					$userInfo = JWUser::GetUserInfo( $oldIdUser );
+					$ret['reply'] = "$userInfo[nameScreen]，$conference[msgUpdateStatus]" ;
+				}
+			}
 		}
 		
 		//Refresh facebook profile if necessary
@@ -619,11 +630,13 @@ class JWSns {
 			'device' => $device,
 			'status' => $status,
 			'serverAddress' => $serverAddress,
+			'idConference' => null,
 		);
 		if( !empty($reply_info) ) {
 			$notifyInfo['idUserReplyTo'] = $reply_info['user_id'];
 			$suffixInfo = JWSns::GetSmsSuffix($idUser, $reply_info['user_id'] , $device );
 			$reply_info['smssuffix'] = empty($suffixInfo) ? null : $suffixInfo['smssuffix'];
+			$notifyInfo['idConference'] = empty($suffixInfo) ? null : $suffixInfo['idConference'];
 		    	if( $reply_info['smssuffix'] == null ) {
 				$reply_info['user_id'] = null;
 			}
@@ -632,6 +645,7 @@ class JWSns {
 		if( empty($reply_info) ) {
 			$reply_info = JWSns::GetReplyTo( $idUser, $serverAddress, $device );
 			$notifyInfo['idUserReplyTo'] = empty( $reply_info ) ? null : $reply_info['user_id'];
+			$notifyInfo['idConference'] =  empty($reply_info ) ? null : $reply_info['idConference'];
 		}
 
 		$smssuffix = empty( $reply_info ) ? null : $reply_info['smssuffix'];
@@ -681,13 +695,10 @@ class JWSns {
 			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
 			settype( $follower_ids , 'array' );
 
-            /** 2007-08-20 
-             * 会议用户本身发送的消息，不需要给会议用户通知，其他用户发到会议用户的消息，均通知会议用户；
-             *  会议用户可以通过 on/off 进行开关设置   
-            */
-            array_push( $follower_ids, $idUserReplyTo );
-            $follower_ids = array_unique( $follower_ids );
-			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
+			/** 2007-08-20 */
+			//$follower_ids = array_diff( $follower_ids, array( $idSender ) );
+			array_push( $follower_ids, $idSender );
+			$follower_ids = array_unique( $follower_ids );
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = JWFollower::GetFollowerIds($idSender);

@@ -21,6 +21,7 @@ class JWConference {
 	static public $smsAlias = array(
 			'9911456' => '991188169999',
 			'9318456' => '931888169999',
+			'9318456' => '931888169999',
 			'99318456' =>'000000009999',
 			'9318456' => '000000009999',
 			);
@@ -90,7 +91,7 @@ _SQL_;
 		$sql = <<<_SQL_
 SELECT * FROM Conference
 	WHERE
-		number = number
+		`number` = number
 	LIMIT 1
 _SQL_;
 
@@ -126,6 +127,33 @@ _SQL_;
 						'deviceAllow' => $deviceAllow,
 						'number' => $number,
 					));
+	}
+
+	/**
+	 * Update Row
+	 */
+	static public function UpdateRow( $idConference, $updatedRow = array() ){
+		$idConference = JWDB::CheckInt( $idConference );
+		return JWDB::UpdateTableRow( 'Conference' , $idConference, $updatedRow );
+	}
+
+	/**
+	 * GetConference from serverAddress
+	 */
+	static public function GetDbRowFromServerAddress( $serverAddress ) {
+		if( isset( self::$smsAlias[ $serverAddress ] ) )
+			$serverAddress = self::$smsAlias[ $serverAddress ];
+
+		$conference = null;
+		if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
+			if( $matches[1] == 1 ) {
+				$conference = self::GetDbRowFromNumber( $matches[2] );		
+			}else{
+				$conference = self::GetDbRowFromUser( $matches[2] );
+			}
+		}
+
+		return $conference;
 	}
 }
 ?>
