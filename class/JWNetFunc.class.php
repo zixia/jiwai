@@ -84,7 +84,7 @@ class JWNetFunc {
 		}
 		fclose($fp);
 
-		return $results;
+		return trim($results);
 	}
 }
 ?>
