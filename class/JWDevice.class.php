@@ -338,8 +338,8 @@ _SQL_;
 	static function GetMobileSP($mobileNo)
 	{
 		if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
-				|| preg_match('/^159\d+$4/',$mobileNo)
-				|| preg_match('/^158\d+$4/',$mobileNo)
+				|| preg_match('/^159\d+$/',$mobileNo)
+				|| preg_match('/^158\d+$/',$mobileNo)
 				)
 			return self::SP_CHINAMOBILE;
 
