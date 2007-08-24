@@ -34,10 +34,11 @@ class JWSms {
 	/**
 	 * SP GID
 	 */
-	const GID_CHINAMOBILE 	= 1;
-	const GID_UNICOM	= 45;
-	const GID_PAS		= 52;
-	const GID_UNKNOWN	= 1;
+	const GID_CHINAMOBILE 		= 1;
+	const GID_CHINAMOBILE_TWO 	= 85;
+	const GID_UNICOM		= 45;
+	const GID_PAS			= 52;
+	const GID_UNKNOWN		= 1;
 
 
 
@@ -149,6 +150,9 @@ class JWSms {
 			case self::GID_CHINAMOBILE:
 				$gateNo = 9911;
 			break;
+			case self::GID_CHINAMOBILE_TWO:
+				$gateNo = 50136;
+			break;
 		}
 
 		$robot_msg = new JWRobotMsg();
@@ -199,7 +203,7 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		$gid	= self::GetGidByMobileNo($mobileNo); // 移动:1 联通:42
+		$gid	= self::GetGidByServerAddress($serverAddress); // 移动:1 联通:42
 
 		/* 	
 		 *	如果有 linkId，则使用 linkid 参数（移动、联通通用）；
@@ -247,9 +251,7 @@ class JWSms {
 
 
 		$appid	= 93;	// 数字，应用编号，需分配
-		$prelen = ( $gid == self::GID_PAS ) ? 5 : 4;
-		$func	= 8816; // 数字，长号码，只加自己的扩展号
-		$func	= substr($serverAddress, $prelen);
+		$func 	= self::GetFuncByServerAddress( $serverAddress ); // 数字，长号码，只加自己的扩展号
 		
 		$pid = 0;
 		if( $gid == self::GID_UNICOM ) {
@@ -337,6 +339,49 @@ class JWSms {
 				JWLog::Instance()->Log(LOG_ERR, "GetGidByMobileNo($mobileNo) Unsupported. ");
 				return self::GID_UNKNOWN;
 		}
+	}
+
+	/*
+	 *  根据serverAddress 得到 GId
+	 *
+	 */
+	static public function GetGidByServerAddress( $serverAddress ) {
+		switch( $serverAddress ) {
+			case 99118816:
+			case 9911456:
+				return self::GID_CHINAMOBILE;
+			case 93188816:
+			case 9318456:
+			case 9501456:
+			case 95014567:
+				return self::GID_UNICOM;
+			case 99318456: 
+				return self::GID_PAS;
+			case 50136456:
+				return self::GID_CHINAMOBILE_TWO;
+		}	
+		return self::GID_UNKNOWN;
+	}
+
+	/*
+	 *
+	 *  得到长号码
+	 */
+	static public function GetFuncByServerAddress( $serverAddress ) {
+		switch( $serverAddress ) {
+			case 99118816: //chinamobile
+			case 93188816: //old unicom
+				return 8816;
+			case 9318456:  //old unicom
+			case 9911456:  //chinamobile
+			case 9501456:  //new unicom
+			case 99318456: //pas
+			case 50136456: //for beijing mobile
+				return 456;
+			case 95014567: //new unicom
+				return 4567;
+		}	
+		return 8816;
 	}
 
 	/*
