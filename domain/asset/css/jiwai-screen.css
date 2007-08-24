@@ -64,7 +64,7 @@ a:hover {color:#F87A01;}
 #navigation ul { float:right; margin-top:48px; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
-#navigation .line1 {background-color:#BDBDBD; width:76px; border-left:1px solid #ffffff; border-right:1px solid #ffffff; line-height:1px; height:1px; overflow:hidden;}
+#navigation .line1 {background-color:#BDBDBD; width:78px; /*border-left:1px solid #ffffff; border-right:1px solid #ffffff;*/ line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
 #navigation .nav a {background-color:#F7F7F7; border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; color:#242424; text-decoration:none; overflow:hidden;}
 #navigation .nav a.now {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
@@ -195,7 +195,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .front .odd .cont .bg  {display:none;}
 .normal .odd .head {}
 .normal #content .line {background-color:#ffffff;}
-.odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden;}
+.odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color: white;}
 .odd a:hover {color:#FF830B; text-decoration:underline;}
 .odd .meta ,.odd .meta a{color:#929292; padding:0 3px; font-size:12px;}
 .undo {font-size:12px; padding:0 5px; color:#FF830B;}
