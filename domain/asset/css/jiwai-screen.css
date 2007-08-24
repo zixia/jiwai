@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {background:#FFF2D6;font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
+body {font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
 form {margin:0;padding:0;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
@@ -53,7 +53,7 @@ a:hover {color:#F87A01;}
  .separator p {line-height:26px; margin-left:87px;}
 
 
-#header {margin:0 auto; background-color:#FFF2D6; height:80px;width:776px; border-bottom:5px solid #F97B00;}
+#header {margin:0 auto; height:80px;width:776px; border-bottom:5px solid #F97B00;}
   #navigation {}
   #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
@@ -423,7 +423,7 @@ small {color:#989898; vertical-align:top; font-size:12px;}
 .tipnote-red {clear:both; height:30px; background-color:#FF0000; height:21px; line-height:21px; border:1px solid #C2C2C2; margin-top:3px; text-indent:20px; color:#ffffff;}
 	.tipnote-red a {float:right; line-height:21px; margin-right:10px; color:#ffffff; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
 	
-.float {border:5px solid #FFCFA8; background:url(../images/org-float-bg.gif) repeat-x; margin:0 auto; width:500px; padding:9px 15px;}
+.float {border:5px solid #FFCFA8; background-color:white; margin:0 auto; width:500px; padding:9px 15px;}
 	.float h3 {font-size:16px; font-weight:bold; color:#EB6400; line-height:50px; text-align:center;}
 	.float h2 {font-size:14px; color:#000000; font-weight: bold; margin-top:5px;}
 	.float p {line-height:26px;}
