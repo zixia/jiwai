@@ -677,8 +677,8 @@ _HTML_;
 
 ?>
 			<div id="permalink">
-				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0;">
-					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="94" height="94"/></a></div>
+				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0; background: none;">
+					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
 					<div class="cont">
 						<div class="bg"></div>
 <table width="100%" border="0" cellspacing="5" cellpadding="0">
@@ -686,7 +686,8 @@ _HTML_;
     <td><h3><?php echo $name_full; ?></h3></td>
     <td align="right">
 <?php
-if ( isset($current_user_id) && $current_user_id!=$idUser && JWFollower::IsFollower($idUser, $current_user_id) ) {
+if ($current_user_id!=$idUser) {
+if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id) ) {
 ?>
       <small> 已订阅 </small>
 <?php
@@ -694,6 +695,11 @@ if ( isset($current_user_id) && $current_user_id!=$idUser && JWFollower::IsFollo
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 ?>
       <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_full; ?>的粉丝</a>
+<?php
+}
+} else {
+?>
+<small>  &nbsp; </small>
 <?php
 }
 ?>
