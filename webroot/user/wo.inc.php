@@ -237,7 +237,7 @@ $menu_list[$active_tab]['active'] = true;
 
 
 if ( $show_protected_content )
-	JWTemplate::tab_menu($menu_list) 
+	JWTemplate::tab_menu($menu_list, 1); 
 ?>
 
 			<div class="tab">

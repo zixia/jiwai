@@ -551,7 +551,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 	 *	@param	array	$menuArr	菜单数据，结构如下：
 									array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
 	 */
-	static public function tab_menu( $menuArr )
+	static public function tab_menu( $menuArr, $fix_pos=0 )
 	{
 		if ( empty($menuArr) )
 		{
@@ -560,7 +560,8 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 		}
 
 		$left = 510 - 80 * count($menuArr);
-		echo "<ul class=\"tabMenu\" style=\"margin-left: ${left}px;\">";
+		$fix = $fix_pos ? 'margin-top: 7px;' : '';
+		echo "<ul class=\"tabMenu\" style=\"margin-left: ${left}px; $fix\">";
 
 		foreach ( $menuArr as $menu => $options )
 		{
