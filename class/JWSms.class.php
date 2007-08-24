@@ -34,10 +34,11 @@ class JWSms {
 	/**
 	 * SP GID
 	 */
-	const GID_CHINAMOBILE 		= 1;
-	const GID_CHINAMOBILE_TWO 	= 85;
-	const GID_UNICOM		= 45;
-	const GID_PAS			= 52;
+	const GID_CHINAMOBILE 		= 1;   //9911 old china mobile
+	const GID_CHINAMOBILE_TWO 	= 85;  //50136 new china mobile
+	const GID_UNICOM		= 45;  //9501 new unicom
+	const GID_UNICOM_TWO		= 3;   //9318 old unicom
+	const GID_PAS			= 52;  //99318
 	const GID_UNKNOWN		= 1;
 
 
@@ -144,6 +145,9 @@ class JWSms {
 			case self::GID_UNICOM:
 				$gateNo = 9501;
 			break;
+			case self::GID_UNICOM_TWO:
+				$gateNo = 9318;
+			break;
 			case self::GID_PAS:
 				$gateNo = 99318;
 			break;
@@ -203,7 +207,12 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		$gid	= self::GetGidByServerAddress($serverAddress); // 移动:1 联通:42
+		$gid	= self::GetGidByServerAddressAndNo($serverAddress, $mobileNo); // 移动:1 联通:42
+
+		if( 1 == self::GetLocationByMobileNo( $mobileNo ) ) {
+			$gid = self::GID_CHINAMOBILE_TWO;
+			$serverAddress = '50136999';
+		}
 
 		/* 	
 		 *	如果有 linkId，则使用 linkid 参数（移动、联通通用）；
@@ -251,7 +260,7 @@ class JWSms {
 
 
 		$appid	= 93;	// 数字，应用编号，需分配
-		$func 	= self::GetFuncByServerAddress( $serverAddress ); // 数字，长号码，只加自己的扩展号
+		$func 	= self::GetFuncByServerAddressAndNo( $serverAddress, $mobileNo ); // 数字，长号码，只加自己的扩展号
 		
 		$pid = 0;
 		if( $gid == self::GID_UNICOM ) {
@@ -345,21 +354,38 @@ class JWSms {
 	 *  根据serverAddress 得到 GId
 	 *
 	 */
-	static public function GetGidByServerAddress( $serverAddress ) {
-		switch( $serverAddress ) {
-			case 99118816:
-			case 9911456:
-				return self::GID_CHINAMOBILE;
-			case 93188816:
-			case 9318456:
-			case 9501456:
-			case 95014567:
-				return self::GID_UNICOM;
-			case 99318456: 
-				return self::GID_PAS;
-			case 50136456:
-				return self::GID_CHINAMOBILE_TWO;
-		}	
+	static public function GetGidByServerAddressAndNo( $serverAddress, $mobileNo ) {
+
+		switch ( JWDevice::GetMobileSP($mobileNo) )
+		{
+			case JWDevice::SP_CHINAMOBILE: 
+				{	
+					if( substr( $serverAddress, 0, 4 ) == 9911 )
+						return self::GID_CHINAMOBILE;
+					else if( substr( $serverAddress , 0, 5 ) == 50136 )
+						return self::GID_CHINAMOBILE_TWO;
+				}
+			break;
+			case JWDevice::SP_UNICOM: 
+				{
+					if( substr( $serverAddress, 0, 4 ) == 9318 )
+						return self::GID_UNICOM_TWO;
+					else if( substr( $serverAddress , 0, 4 ) == 9501 )
+						return self::GID_UNICOM;
+				}
+			break;
+			case JWDevice::SP_PAS: 	
+				{	
+					return self::GID_PAS;
+				}
+			break;
+			case JWDevice::SP_UNKNOWN: 
+			default: 					
+				{
+					JWLog::Instance()->Log(LOG_ERR, "GetGidByMobileNo($mobileNo) Unsupported. ");
+					return self::GID_UNKNOWN;
+				}
+		}
 		return self::GID_UNKNOWN;
 	}
 
@@ -367,22 +393,57 @@ class JWSms {
 	 *
 	 *  得到长号码
 	 */
-	static public function GetFuncByServerAddress( $serverAddress ) {
-		switch( $serverAddress ) {
-			case 99118816: //chinamobile
-			case 93188816: //old unicom
-				return 8816;
-			case 9318456:  //old unicom
-			case 9911456:  //chinamobile
-			case 9501456:  //new unicom
-			case 99318456: //pas
-			case 50136456: //for beijing mobile
-				return 456;
-			case 95014567: //new unicom
-				return 4567;
-		}	
-		return 8816;
+	static public function GetFuncByServerAddressAndNo( $serverAddress , $mobileNo) {
+		switch ( JWDevice::GetMobileSP($mobileNo) )
+		{
+			case JWDevice::SP_CHINAMOBILE: 
+				{	
+					if( substr( $serverAddress, 0, 4 ) == 9911 )
+						return substr( $serverAddress, 4 );
+					else if( substr( $serverAddress , 0, 5 ) == 50136 )
+						return substr( $serverAddress, 5 );
+				}
+			break;
+			case JWDevice::SP_UNICOM: 
+				{
+					return substr( $serverAddress, 4 );
+				}
+			break;
+			case JWDevice::SP_PAS: 	
+				{	
+					return substr( $serverAddress, 5 );
+				}
+			break;
+			case JWDevice::SP_UNKNOWN: 
+			default: 					
+				{
+					JWLog::Instance()->Log(LOG_ERR, "GetGidByServerAddressAndNo($serverAddress , $mobileNo) Unsupported. ");
+					return substr( $serverAddress, 4 );
+				}
+		}
+		return substr( $serverAddress, 4 );
 	}
+
+	/*
+	 * 根据手机号返回地区
+	 */
+
+	static public function GetLocationByMobileNo( $mobileNo ) {
+
+		if( preg_match( '/^138((01)|(10)|(11))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^139((01)|(10)|(11))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^137((01)|(18)|(16)|(17))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^136((93)|(91)|(83)|(81)|(01)|(11)|(21)|(41)|(51)|(61)|(71))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^135((01)|(21)|(20)|(22)|(52)|(81))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^134((39)|(36)|(66)|(68))[0-9]{6}$/', $mobileNo )
+			|| preg_match( '/^15901[0-9]{6}$/', $mobileNo ) 
+			|| preg_match( '/^15801[0-9]{6}$/', $mobileNo ) )
+		{
+			return 1;
+		}
+		return 0;
+	}
+
 
 	/*
 	 * 根据是否包含中文决定发送 140(ascii) 还是 70(中文)
