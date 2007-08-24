@@ -2002,7 +2002,7 @@ _HTML_;
 		{
 			$is_exist = true;
 			echo <<<_HTML_
-			<div class="notice"> $error_html </div>
+			<div class="tipnote-red" onclick="return JiWai.KillNote(this);"> $error_html </div>
 _HTML_;
 		}
 
@@ -2011,7 +2011,7 @@ _HTML_;
 		{
 			$is_exist = true;
 			echo <<<_HTML_
-			<div class="notice"> $notice_html </div>
+			<div class="tipnote" onclick="return JiWai.KillNote(this);"> $notice_html </div>
 _HTML_;
 		}
 
@@ -2209,7 +2209,7 @@ _HTML_;
 			$balloon_row = $balloon_rows[$balloon_id];
 			$html = JWBalloonMsg::FormatMsg($balloon_id,$balloon_row['html']);
         echo <<<_HEAD_
-<div>
+<div class="tipnote">
 $html
 </div>
 _HEAD_;

@@ -30,7 +30,7 @@ $friend_request_num	= JWFriendRequest::GetUserNum($logined_user_id);
 
 $arr_menu 			= array(
 					array ('status'		, array($logined_user_info)) , 
-					array ('friend_req'	, array($friend_request_num)) , 
+					//array ('friend_req'	, array($friend_request_num)) , 
 					array ('count'		, array($arr_count_param)) , 
 					array ('jwvia'		, array($active_options, $via_device)) ,
 					array ('separator'	, array()) ,

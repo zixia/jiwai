@@ -184,6 +184,11 @@ alert('ok');
 	HideTip: function() {
 		$('sitetip').style.display='none';
 	},
+	KillNote: function(el) {
+		el = $(el);
+		(new Fx.Slide(el)).slideOut().addEvent('onComplete', function() { el.remove(); });
+		return false;
+	},
 	requestFriend: function(screenName, el) {
 		var mba = new PBBAcpBox({
 			name: 'JiWai'

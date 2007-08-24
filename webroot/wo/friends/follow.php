@@ -16,8 +16,11 @@ if ( $idLoginedUser )
 
 		$friend_name = JWUser::GetUserInfo($idPageUser, 'nameFull');
 
-		$is_succ = JWFollower::Create($idPageUser, $idLoginedUser);
-
+		try {
+			$is_succ = JWFollower::Create($idPageUser, $idLoginedUser);
+		} catch ( Exception $e ) {
+			$is_succ = false;
+		}
 		if ($is_succ )
 		{
 			$notice_html = <<<_HTML_
@@ -54,5 +57,5 @@ else
 	$redirect_url = '/';
 
 header ("Location: $redirect_url");
-exit(0);
+//exit(0);
 ?>

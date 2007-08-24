@@ -418,10 +418,10 @@ small {color:#989898; vertical-align:top; font-size:12px;}
 .account .chat td input { width:272px;}
 
 .tipnote {clear:both; height:30px; background-color:#FFF996; height:21px; line-height:21px; border:1px solid #C2C2C2; margin-top:3px; text-indent:20px;}
-	.tipnote a {float:right; line-height:21px; margin-right:10px; color:#000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
+	.tipnote #actions {float:right; line-height:21px; margin-right:10px; color:#000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
 	
 .tipnote-red {clear:both; height:30px; background-color:#FF0000; height:21px; line-height:21px; border:1px solid #C2C2C2; margin-top:3px; text-indent:20px; color:#ffffff;}
-	.tipnote-red a {float:right; line-height:21px; margin-right:10px; color:#ffffff; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
+	.tipnote-red #actions {float:right; line-height:21px; margin-right:10px; color:#ffffff; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
 	
 .float {border:5px solid #FFCFA8; background-color:white; margin:0 auto; width:500px; padding:9px 15px;}
 	.float h3 {font-size:16px; font-weight:bold; color:#EB6400; line-height:50px; text-align:center;}
