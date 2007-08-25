@@ -246,10 +246,10 @@ _HTML_;
 
 ?>
 
-<p>
+<!-- p>
 	下面是你当前叽歪档案的设计方案，<br />
 	你可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
-</p>
+</p -->
 
 <form action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
 
@@ -297,7 +297,7 @@ _HTML_;
 		</td>
 
 	</tr>
-
+<!--
 	<tr>
 		<th><label for="user_profile_text_color">文字颜色：</label></th>
 		<td><input id="user_profile_text_color" name="user[profile_text_color]" size="30" type="text"
@@ -326,6 +326,7 @@ _HTML_;
 		<td><input id="user_profile_sidebar_border_color" name="user[profile_sidebar_border_color]" size="30" type="text" 
 				value="<?php echo $user['profile_sidebar_border_color']?>" /></td>
 	</tr>
+-->
 	
   <input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
   
