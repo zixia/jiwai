@@ -42,6 +42,8 @@ class JWRobotLingo {
 
 			,'D'		=> array( 'func'=>'Lingo_D' 	,'param'=>999)
 
+			,'REG'		=> array( 'func'=>'Lingo_REG' 	,'param'=>2)
+
 
 			/*
 			 *	JiWai 扩展，Twitter没有
@@ -69,6 +71,11 @@ class JWRobotLingo {
 			,'NN'		=>	'NUDGE'
 
 			,'REMOVE'	=>	'DELETE'
+
+			,'REGISTER'	=>	'REG'
+			,'ZHUCE'	=>	'REG'
+			,'GM'		=>	'REG'
+			,'GAIMING'	=>	'REG'
 
 			/*
 		 	 * 	JiWai扩展
@@ -190,7 +197,7 @@ _STR_;
 	static function	Lingo_Tips($robotMsg)
 	{
 		$body = <<<_STR_
-命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？登录http://jiwai.de ！
+命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号、REG账号。了解更多？登录http://jiwai.de ！
 _STR_;
 		$body = <<<_STR_
 命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。了解更多？
@@ -1146,6 +1153,96 @@ _STR_;
 		return null;
 	}
 
+	/*
+	 * Reg nameScreen nameFull
+	 */
+	static function Lingo_Reg($robotMsg){
+
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();	
+		$param_body 		= $robotMsg->GetBody();	
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		$registered = true;
+		if( empty( $device_db_row ) ){
+			$registered = false;
+		}
+
+		$param_body = self::ConvertCorner( $param_body );
+
+		if ( preg_match('/^([[:alpha:]]+)\s+([^\s]+)\s*([^\s]*)$/',$param_body, $matches) ) {
+
+			$nameScreen = $matches[2];
+			$nameFull = isset( $matches[3] ) ? $matches[3] : null;
+
+			if( false == isset( $matches[3] ) ){
+				if ( $registered == false )
+					$nameFull = $nameScreen;
+			}
+
+
+			if( $registered == false ) {
+				return JWRobotLogic::CreateAccount( $robotMsg, true, $nameScreen, $nameFull );
+			}
+
+			$user_info = JWUser::GetUserInfo( $device_db_row['idUser'] );
+
+			//only change nameFull
+			if( $user_info['nameScreen'] == $nameScreen ) {
+				if( $nameFull == null ) {
+					return JWRobotLogic::ReplyMsg($robotMsg, "哇！你想改成自己正在用的名字 ${nameScreen} ，没有必要吧？");
+			       	}else{
+					$uRow = array( 'nameFull' => $nameFull );
+					if( JWUser::Modify( $user_info['id'], $uRow) ){
+						return JWRobotLogic::ReplyMsg( $robotMsg, "好消息，你的全名修改为 ${nameFull} 成功！");
+					}else{
+						return JWRobotLogic::ReplyMsg( $robotMsg, "哎呀！由于系统故障，你修改全名的请求败了……请稍后再试吧。");
+					}
+				}
+			}
+
+
+			$email = in_array( $type, array('jabber','msn','gtalk','email') ) ? $address : null;
+			$user_name = JWUser::GetPossibleName( $nameScreen, $email, $type );
+
+			//if no nameFull , use user_name;
+			if( $nameFull == null )
+				$nameFull = $user_name;
+			//end if
+
+			if( empty($user_name) ) {
+				$body = "哎呀！你选择的用户名 (${user_name}) 太热门了，已经被使用了。请选择另外的用户名吧。";
+				return JWRobotLogic::ReplyMsg( $robotMsg, $body );
+			}else{
+
+				$uRow = array('nameScreen' => $user_name );
+				if ( null != $nameFull ) 
+					$uRow['nameFull']  = $nameFull;
+
+				if( JWUser::Modify( $user_info['id'], $uRow ) ){
+					if( $nameFull == null ) {
+						return JWRobotLogic::ReplyMsg( $robotMsg, "好消息，你修改登录名为 ${user_name} 成功，如果不满意，可以重新修改！");
+					}else{
+						return JWRobotLogic::ReplyMsg( $robotMsg, "好消息，你修改登录名及全名为 ${user_name} (${nameFull}) 成功，如果不满意，可以重新修改！");
+					}
+				}else{
+					return JWRobotLogic::ReplyMsg( $robotMsg, "哎呀！由于系统故障，你修改全名的请求败了……请稍后再试吧。");
+				}
+			}
+
+
+		}else{
+
+			if( $registered ) {
+				$body = "错了，请使用 （GM 用户名）或（GM 用户名 全名）的方式修改自己的登录名及全名！";
+			}else{
+				$body = "错了，请使用 （REG 用户名）或（REG 用户名 全名）的方式注册你想要的用户！成功后就可以加入我们的组织拉！";
+			}
+			return JWRobotLogic::ReplyMsg( $robotMsg, $body );
+		}
+	}
+
 
 	/*
 	 *
@@ -1154,6 +1251,7 @@ _STR_;
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1190,6 +1288,15 @@ _STR_;
 			$body = <<<_STR_
 你是$address_user_row[nameScreen]，设置密码请来这里：http://jiwai.de/wo/account/complete
 _STR_;
+			switch( $serverAddress ){
+				case '9911456':
+				case '9501456':
+				case '99138456':
+					$body = "你的昵称是 $address_user_row[nameScreen] ，改名请发送gm+空格+新昵称。";
+					break;
+				default:
+					break;
+			}
 		}
 
         return JWRobotLogic::ReplyMsg($robotMsg, $body);

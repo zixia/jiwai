@@ -236,7 +236,7 @@ _STR_;
 	/*
 	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
 	 */
-	static public function CreateAccount($robotMsg, $toRegister=false, $idUserConference=null)
+	static public function CreateAccount($robotMsg, $toRegister=false, $nameScreen= null, $nameFull=null )
 	{
 		$address = $robotMsg->GetAddress();
 		$type	 = $robotMsg->GetType();
@@ -248,7 +248,8 @@ _STR_;
 
 		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
 
-		if ( empty($invitation_id) )
+		{{{  // Not be invited and not register by lingo REG
+		if ( empty($invitation_id) && null == $nameScreen )
 		{
 			
 			/*
@@ -311,6 +312,8 @@ _STR_;
 			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
 		}
 
+		}}} 
+
 		/*
 		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
 	 	 */
@@ -319,23 +322,28 @@ _STR_;
 
 
 		/*
-		 *	2	用户被邀请过（通过设备查找到邀请）
+		 *	2	用户被邀请过（通过设备查找到邀请） || 主动注册 
 		 */
 		$param_body = $robotMsg->GetBody();
 
-		$user_name	= JWUser::GetPossibleName($param_body, $robotMsg->GetAddress(), $robotMsg->GetType());
+		if ( $nameScreen == null ) {
+			$user_name	= JWUser::GetPossibleName($param_body, $robotMsg->GetAddress(), $robotMsg->GetType());
+			$user_nameFull 	= $user_name;
+		}else{
+			$user_name	= $nameScreen;
+			$user_nameFull 	= $nameFull;
+		}
 
 //die("[$user_name]");
 		if ( empty($user_name) )
 			return self::ReplyMsg($robotMsg, "哎呀！你选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
 
 	
-		$new_user_row = array	(
-							 'nameScreen'	=> $user_name
-							,'nameFull'		=> $user_name
-							,'pass'			=> JWDevice::GenSecret(16)
-							,'isWebUser'	=> 'N'	// 很重要：设备直接注册的用户，要设置标志，方便未来Web上设置密码
-						);
+		$new_user_row = array( 	'nameScreen'	=> $user_name,
+					'nameFull'	=> $user_nameFull,
+					'pass'		=> JWDevice::GenSecret(16),
+					'isWebUser'	=> 'N', // 很重要：设备注册，要设置标志，方便未来Web上设置密码
+				);
 
 		if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) )
 			$new_user_row['email'] = $address;
@@ -346,11 +354,15 @@ _STR_;
 
 		if ( $new_user_id )
 		{
+			{{{ //Create User Success
 			if ( ! JWSns::CreateDevice($new_user_id, $address, $type, true) )
 				JWLog::LogFuncName(LOG_CRIT, "JWDevice::Create($new_user_id,$address,$type,true) failed.");
 
 			// 互相加为好友，标识邀请状态
-			JWSns::FinishInvitation($new_user_id, $invitation_id);
+
+			if( $invitation_id ) {
+				JWSns::FinishInvitation($new_user_id, $invitation_id);
+			}
 
 			$body = <<<_STR_
 欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧。
@@ -391,6 +403,8 @@ _STR_;
 					return $reply_msg;
 				}
 			}
+
+			}}}
 		}
 		else
 		{
