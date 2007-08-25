@@ -197,7 +197,7 @@ alert('ok');
 		var mba = new PBBAcpBox({
 			name: 'JiWai'
 		});
-		mba.prompt(screenName+'希望验证你的身份，可以在下面输入一句话介绍你自己：', '', {onComplete:function(v){
+		mba.prompt('对方希望验证你的身份，可以在下面输入一句话介绍你自己：', '', {onComplete:function(v){
 			if (v===false) return;
 			location.href=el.href+'?note='+encodeURIComponent(v);
 		}});
