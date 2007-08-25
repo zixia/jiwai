@@ -48,8 +48,7 @@ class JWNudge {
 	 */
 	static public function NudgeUserIds($idUsers, $message, $messageType='nudge')
 	{
-
-		if( empty($idUser) )
+		if( empty($idUsers) )
 			return true;
 
 		$user_rows		= JWUser::GetUserDbRowsByIds			($idUsers);
@@ -138,6 +137,7 @@ class JWNudge {
 
 	 */
 	static public function GetAvailableSendVia( $deviceRow = array(), $deviceSendVia = 'web' ) {
+
 
 		if( empty( $deviceRow ) )
 			return null;

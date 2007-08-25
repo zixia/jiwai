@@ -696,9 +696,11 @@ class JWSns {
 			settype( $follower_ids , 'array' );
 
 			/** 2007-08-20 */
-			//$follower_ids = array_diff( $follower_ids, array( $idSender ) );
-			array_push( $follower_ids, $idSender );
-			$follower_ids = array_unique( $follower_ids );
+			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
+			if( false == ($idSender == $idUserReplyTo ) ){
+				array_push( $follower_ids, $idUserReplyTo );
+			}
+
 		}else if( null == $idUserReplyTo ) {
 			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = JWFollower::GetFollowerIds($idSender);
