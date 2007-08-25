@@ -229,7 +229,6 @@ _HTML_;
 				'/' => '首页',
 				'/wo/account/create' 	=> '注册',
 				'/wo/login' 		=> '登录',
-				'/public_timeline/' 	=> '逛逛',
 				'/help/' 		=> '帮助'
 			);
 		} else {
@@ -1188,8 +1187,10 @@ _HTML_;
 					break;
 				default:
 					if ($n % 4 == 0) echo "			<tr>\n";
+					$name = $user_db_row[nameFull];
+					//if (mb_strwidth($name)>8) $name = mb_strimwidth($name, 6, '...');
 					echo <<<_HTML_
-				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$user_db_row[nameFull]</a></div></td>
+				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$name</a></div></td>
 
 _HTML_;
 					if ($n % 4 == 3) echo "			</tr>\n";
@@ -1275,6 +1276,8 @@ _HTML_;
 
 			if ( mb_strlen($desc) > $max_len )
 				$desc = mb_substr($desc,0,$max_len-3) . "...";
+			$desc   = str_replace(array('NEW', '！'), array('', ''), $desc);
+			$desc   = str_replace(array('[', ']'), array('<b>', '</b>'), $desc);
 
 			echo <<<_HTML_
 			<li>
