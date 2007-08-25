@@ -1162,9 +1162,8 @@ _STR_;
 		$type 		= $robotMsg->GetType();	
 		$param_body 		= $robotMsg->GetBody();	
 		
-		$user_info = null;
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
-		if( false != empty( $device_db_row ) )
+		if( false  == empty( $device_db_row ) )
 			$user_info = JWUser::GetUserInfo( $device_db_row['idUser'] );
 
 		$registered = true;
