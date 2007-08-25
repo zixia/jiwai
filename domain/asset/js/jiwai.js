@@ -102,6 +102,10 @@ alert('ok');
 		g.src = JiWai.AssetUrl(src);
 		document.getElementsByTagName('head')[0].appendChild(g);
 	},
+	OpenLink: function(link) {
+		urchinTracker('/wo/outlink/'+link);
+		window.open('http://'+link);
+	},
 	ToggleStar: function(id) {
 		var el = $('status_star_'+id);
 		var action = (el.src.indexOf('full')==-1 ? 'create' : 'destroy');

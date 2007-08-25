@@ -446,3 +446,4 @@ html>body #container .tabbody .clear { padding:4px;}
 .account .tablehead { background-color:#F2F2F2; margin-top:0; border-bottom:1px solid #D3D3D5;}
 .account .tablehead td {border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;  font-size:12px; text-align:center; line-height:19px;}
 .account .tablehead td a {color:#000000; text-decoration:none;}
+a.extlink { background:transparent url(../images/extlink.gif) no-repeat scroll left center; padding-left:16px; color: gray; }
