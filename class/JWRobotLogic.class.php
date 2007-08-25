@@ -365,7 +365,7 @@ _STR_;
 			}
 
 			$body = <<<_STR_
-欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧。
+欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧，改名请用"GM 新名称"。
 _STR_;
 
 			/*

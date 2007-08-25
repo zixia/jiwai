@@ -72,8 +72,8 @@ class JWRobotLingo {
 
 			,'REMOVE'	=>	'DELETE'
 
-			,'REGISTER'	=>	'REG'
 			,'ZHUCE'	=>	'REG'
+			,'ZC'		=>	'REG'
 			,'GM'		=>	'REG'
 			,'GAIMING'	=>	'REG'
 
@@ -1161,11 +1161,14 @@ _STR_;
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();	
 		$param_body 		= $robotMsg->GetBody();	
-
+		
+		$user_info = null;
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		if( false != empty( $device_db_row ) )
+			$user_info = JWUser::GetUserInfo( $device_db_row['idUser'] );
 
 		$registered = true;
-		if( empty( $device_db_row ) ){
+		if( empty( $device_db_row ) || empty($user_info) ){
 			$registered = false;
 		}
 
@@ -1185,8 +1188,6 @@ _STR_;
 			if( $registered == false ) {
 				return JWRobotLogic::CreateAccount( $robotMsg, true, $nameScreen, $nameFull );
 			}
-
-			$user_info = JWUser::GetUserInfo( $device_db_row['idUser'] );
 
 			//only change nameFull
 			if( $user_info['nameScreen'] == $nameScreen ) {
