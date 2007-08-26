@@ -474,11 +474,12 @@ _CMD_;
 
 				header('Content-Type: image/'.$picType);
 				header('Content-Length: '.filesize($filename));
+
 				header('Last-Modified: '.date(DATE_RFC822, filemtime($filename)));
 				header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
 				header('Pragma: public');
 				//header('X-Sendfile: '.$filename);
-				//header("cache-control: max-age=94608000");
+				header("cache-control: max-age=259200");
 
 				$fp = fopen($filename, 'rb');
 				fpassthru($fp);

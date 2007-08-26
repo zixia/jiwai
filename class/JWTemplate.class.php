@@ -805,6 +805,9 @@ _HTML_;
 	 */
 	static public function Timeline($statusIds, $userRows, $statusRows, $options=array() )
 	{
+		
+		$idCurrent = JWLogin::GetCurrentUserId();
+
 		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
 
@@ -840,8 +843,19 @@ _HTML_;
 
 			$user_id 	= $statusRows[$status_id]['idUser'];
 
-			if ( $options['protected'] && JWUser::IsProtected($user_id) )
-				continue;
+			if ( $options['protected'] || 
+					( JWUser::IsProtected($user_id) && 
+					  	(
+							( $idCurrent 
+								&& false == JWFriend::IsFriend($user_id, $idCurrent) 
+								&& $idCurrent != $user_id 
+							)
+							|| 
+							( !$idCurrent )
+					       	)	
+				       	)
+			   )
+			continue;
 				
 			// 最多显示的条数已经达到
 			if ( $options['nummax'] && $n >= $options['nummax'] )
