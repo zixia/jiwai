@@ -80,35 +80,31 @@ _HTML_;
     <th valign="top"><?php echo JWDevice::GetNameFromType($type); ?> ：</th>
     <td width="230"><input name="device[<?php echo $type;?>][address]" type="text" id="device_<?php echo $type;?>" value="<?php echo $address; ?>" <?php echo $readonly ?>/>
     <?php if( $bind ) {
-        if( empty($secret) ) {
-        ?>
-            <span class="note">
-            你好，你的<?php echo JWDevice::GetNameFromType($type);?>账户已经通过我们的验证，给叽歪的机器人<?php echo JWDevice::GetNameFromType($type);?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong>发送消息直接更新你的叽歪吧！<br/>
-            <?php if( in_array($type, array('qq','msn','gtalk','skype') ) ) { ?>
-                <input type="radio" style="display:inline; width:23px;" name="notify_<?php echo $type;?>" id="notify_<?php echo $type;?>_on" <?php if($device_row[$type]['enabledFor']=='everything') echo "checked";?> onclick="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]=everything');"/><label for="notify_<?php echo $type;?>_on"> 开启通知</label>
-                <input type="radio" style="display:inline; width:23px;" name="notify_<?php echo $type;?>" id="notify_<?php echo $type;?>_off" <?php if($device_row[$type]['enabledFor']=='nothing') echo "checked";?> onClick="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]=nothing');"/><label for="notify_<?php echo $type;?>_off"> 关闭通知</label><br/>
-                <?php if( in_array($type, array('gtalk','qq','msn') )) { ?>
-                <label for="notify_<?php echo $type;?>_sig">同步聊天工具签名档更新到叽歪</label> <input id="notify_<?php echo $type;?>_sig" type="checkbox" style="display:inline; width:23px;" name="isSignatureRecord" value="<?php echo $device_row[$type]['isSignatureRecord'];?>" <?php if($device_row[$type]['isSignatureRecord']=='Y') echo "checked"; ?> onClick="this.value=(this.value=='Y' ? 'N' : 'Y'); JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'isSignatureRecord='+this.value);"/> 
-                <?php } ?>
-            <?php } ?>
-            </span>
-        <?php
-        }else{
-        ?>
+        if( false == empty($secret) ) { ?>
             <?php if( $type != 'facebook' ) { ?>
-                <span class="note">
+                <div class="pop">
+                    <div class="poptop"></div>
+                    <div class="popbg">
+                        <div class="popleft"></div>
                 你好，请验证你的<?php echo JWDevice::GetNameFromType($type); ?>账户：<br/>
                 1、加 <?php echo JWDevice::GetNameFromType($type); ?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong> 为好友；<br/>
                 2、发送以下验证码<?php echo JWDevice::GetNameFromType($type); ?>进行验证：<br/>
                 <strong><?php echo $secret;?></strong>
-                </span>
+                    </div>
+                    <div class="popbottom"></div>
+                </div>
                 <?php }else { ?>
-            <span class="note">
+                <div class="pop">
+                    <div class="poptop"></div>
+                    <div class="popbg">
+                        <div class="popleft"></div>
                 你好，facebook帐号：<br/>
                 1、访问 <a href="http://apps.facebook.com/jiwaide/?verify">JiWai.de @ Facebook</a> 并安装；<br/>
                 2、输入如下验证码进行验证：<br/>
                 <strong><?php echo $secret;?><strong>
-                </span>
+                    </div>
+                    <div class="popbottom"></div>
+                </div>
             <?php } ?>
         <?php 
         }
@@ -116,19 +112,39 @@ _HTML_;
     ?>
     </td>
     <td valign="top">
-        <?php if($bind) {
-        ?>
+        <?php if(empty($secret) ) { ?> 
+        <select name="select" onChange="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]='+this.options[this.selectedIndex].value);">
+            <option value="everything" <?php if($device_row[$type]['enabledFor']=='everything') echo "selected";?>>启用</option>
+            <option value="nothing" <?php if($device_row[$type]['enabledFor']=='nothing') echo "selected";?>>关闭</option>
+        </select>
+        <?php } ?>
+        <?php if($bind) { ?>
             <a href="/wo/devices/destroy/<?php echo $device_row[$type]['id']; ?>" onClick="if (confirm('请确认操作：删除后将永远无法恢复！')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m); f.submit(); }; return false;" ><strong>删除</strong></a>
         <?php 
         } else{
         ?>
             <a href="/wo/devices/create" onClick="{ var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', 'device[type]'); m.setAttribute('value', '<?php echo $type; ?>'); f.appendChild(m); var m1 = document.createElement('input'); m1.setAttribute('type', 'hidden'); m1.setAttribute('name', 'device[address]'); m1.setAttribute('value', $('device_<?php echo $type;?>').value); f.appendChild(m1); f.submit(); }; return false;"><strong>绑定</strong></a>
-        <?php
-        }
-        ?>
+        <?php } ?>
     </td>
 </tr>
-<? } ?>
+<?php if( empty($secret)  ) { ?>
+<tr>
+    <td>&nbsp;</td>
+    <th>&nbsp;</th>
+    <td colspan="2"><span class="note" style="margin-left:10px;">发送更新消息给 </span><span class="c_black"><?php echo JWDevice::GetNameFromType($type); ?></span><span class="note"> 上的 </span><span class="c_black"><?php echo JWDevice::GetRobotFromType($type, $address);?></span><span class="note"> 即可更新叽歪</span></td>
+</tr>
+    <?php if ( in_array($type, array('msn','gtalk','qq') ) ) { ?>
+<tr height="60px">
+    <td>&nbsp;</td>
+    <th>&nbsp;</th>
+    <td colspan="2">
+        <input style="width:14px; display:inline; border:none;" type="checkbox" value="<?php echo $device_row[$type]['isSignatureRecord']; ?>" id="notify_<?php echo $type;?>_sig" <?php if($device_row[$type]['isSignatureRecord']=='Y') echo "checked"; ?> onClick="this.value=(this.value=='Y' ? 'N' : 'Y'); JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'isSignatureRecord='+this.value);"/> <label for="notify_<?php echo $type;?>_sig">将我的签名更新发布到叽歪</label> 
+    </td>
+</tr>
+    <?php } ?>
+<?php } ?>
+
+<?php } ?>
 
 </table>
 </fieldset>
