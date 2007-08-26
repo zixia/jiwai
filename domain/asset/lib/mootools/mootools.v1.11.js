@@ -2104,6 +2104,206 @@ Fx.Transitions.extend({
 	Fx.Transitions.compat(transition);
 });
 
+var Drag = {};
+
+Drag.Base = new Class({
+
+	options: {
+		handle: false,
+		unit: 'px',
+		onStart: Class.empty,
+		onBeforeStart: Class.empty,
+		onComplete: Class.empty,
+		onSnap: Class.empty,
+		onDrag: Class.empty,
+		limit: false,
+		modifiers: {x: 'left', y: 'top'},
+		grid: false,
+		snap: 6
+	},
+
+	initialize: function(el, options){
+		this.setOptions(options);
+		this.element = $(el);
+		this.handle = $(this.options.handle) || this.element;
+		this.mouse = {'now': {}, 'pos': {}};
+		this.value = {'start': {}, 'now': {}};
+		this.bound = {
+			'start': this.start.bindWithEvent(this),
+			'check': this.check.bindWithEvent(this),
+			'drag': this.drag.bindWithEvent(this),
+			'stop': this.stop.bind(this)
+		};
+		this.attach();
+		if (this.options.initialize) this.options.initialize.call(this);
+	},
+
+	attach: function(){
+		this.handle.addEvent('mousedown', this.bound.start);
+		return this;
+	},
+
+	detach: function(){
+		this.handle.removeEvent('mousedown', this.bound.start);
+		return this;
+	},
+
+	start: function(event){
+		this.fireEvent('onBeforeStart', this.element);
+		this.mouse.start = event.page;
+		var limit = this.options.limit;
+		this.limit = {'x': [], 'y': []};
+		for (var z in this.options.modifiers){
+			if (!this.options.modifiers[z]) continue;
+			this.value.now[z] = this.element.getStyle(this.options.modifiers[z]).toInt();
+			this.mouse.pos[z] = event.page[z] - this.value.now[z];
+			if (limit && limit[z]){
+				for (var i = 0; i < 2; i++){
+					if ($chk(limit[z][i])) this.limit[z][i] = ($type(limit[z][i]) == 'function') ? limit[z][i]() : limit[z][i];
+				}
+			}
+		}
+		if ($type(this.options.grid) == 'number') this.options.grid = {'x': this.options.grid, 'y': this.options.grid};
+		document.addListener('mousemove', this.bound.check);
+		document.addListener('mouseup', this.bound.stop);
+		this.fireEvent('onStart', this.element);
+		event.stop();
+	},
+
+	check: function(event){
+		var distance = Math.round(Math.sqrt(Math.pow(event.page.x - this.mouse.start.x, 2) + Math.pow(event.page.y - this.mouse.start.y, 2)));
+		if (distance > this.options.snap){
+			document.removeListener('mousemove', this.bound.check);
+			document.addListener('mousemove', this.bound.drag);
+			this.drag(event);
+			this.fireEvent('onSnap', this.element);
+		}
+		event.stop();
+	},
+
+	drag: function(event){
+		this.out = false;
+		this.mouse.now = event.page;
+		for (var z in this.options.modifiers){
+			if (!this.options.modifiers[z]) continue;
+			this.value.now[z] = this.mouse.now[z] - this.mouse.pos[z];
+			if (this.limit[z]){
+				if ($chk(this.limit[z][1]) && (this.value.now[z] > this.limit[z][1])){
+					this.value.now[z] = this.limit[z][1];
+					this.out = true;
+				} else if ($chk(this.limit[z][0]) && (this.value.now[z] < this.limit[z][0])){
+					this.value.now[z] = this.limit[z][0];
+					this.out = true;
+				}
+			}
+			if (this.options.grid[z]) this.value.now[z] -= (this.value.now[z] % this.options.grid[z]);
+			this.element.setStyle(this.options.modifiers[z], this.value.now[z] + this.options.unit);
+		}
+		this.fireEvent('onDrag', this.element);
+		event.stop();
+	},
+
+	stop: function(){
+		document.removeListener('mousemove', this.bound.check);
+		document.removeListener('mousemove', this.bound.drag);
+		document.removeListener('mouseup', this.bound.stop);
+		this.fireEvent('onComplete', this.element);
+	}
+
+});
+
+Drag.Base.implement(new Events, new Options);
+
+Element.extend({
+
+	makeResizable: function(options){
+		return new Drag.Base(this, $merge({modifiers: {x: 'width', y: 'height'}}, options));
+	}
+
+});
+
+Drag.Move = Drag.Base.extend({
+
+	options: {
+		droppables: [],
+		container: false,
+		overflown: []
+	},
+
+	initialize: function(el, options){
+		this.setOptions(options);
+		this.element = $(el);
+		this.droppables = $$(this.options.droppables);
+		this.container = $(this.options.container);
+		this.position = {'element': this.element.getStyle('position'), 'container': false};
+		if (this.container) this.position.container = this.container.getStyle('position');
+		if (!['relative', 'absolute', 'fixed'].contains(this.position.element)) this.position.element = 'absolute';
+		var top = this.element.getStyle('top').toInt();
+		var left = this.element.getStyle('left').toInt();
+		if (this.position.element == 'absolute' && !['relative', 'absolute', 'fixed'].contains(this.position.container)){
+			top = $chk(top) ? top : this.element.getTop(this.options.overflown);
+			left = $chk(left) ? left : this.element.getLeft(this.options.overflown);
+		} else {
+			top = $chk(top) ? top : 0;
+			left = $chk(left) ? left : 0;
+		}
+		this.element.setStyles({'top': top, 'left': left, 'position': this.position.element});
+		this.parent(this.element);
+	},
+
+	start: function(event){
+		this.overed = null;
+		if (this.container){
+			var cont = this.container.getCoordinates();
+			var el = this.element.getCoordinates();
+			if (this.position.element == 'absolute' && !['relative', 'absolute', 'fixed'].contains(this.position.container)){
+				this.options.limit = {
+					'x': [cont.left, cont.right - el.width],
+					'y': [cont.top, cont.bottom - el.height]
+				};
+			} else {
+				this.options.limit = {
+					'y': [0, cont.height - el.height],
+					'x': [0, cont.width - el.width]
+				};
+			}
+		}
+		this.parent(event);
+	},
+
+	drag: function(event){
+		this.parent(event);
+		var overed = this.out ? false : this.droppables.filter(this.checkAgainst, this).getLast();
+		if (this.overed != overed){
+			if (this.overed) this.overed.fireEvent('leave', [this.element, this]);
+			this.overed = overed ? overed.fireEvent('over', [this.element, this]) : null;
+		}
+		return this;
+	},
+
+	checkAgainst: function(el){
+		el = el.getCoordinates(this.options.overflown);
+		var now = this.mouse.now;
+		return (now.x > el.left && now.x < el.right && now.y < el.bottom && now.y > el.top);
+	},
+
+	stop: function(){
+		if (this.overed && !this.out) this.overed.fireEvent('drop', [this.element, this]);
+		else this.element.fireEvent('emptydrop', this);
+		this.parent();
+		return this;
+	}
+
+});
+
+Element.extend({
+
+	makeDraggable: function(options){
+		return new Drag.Move(this, options);
+	}
+
+});
+
 var XHR = new Class({
 
 	options: {
@@ -2414,6 +2614,116 @@ var Asset = new Abstract({
 			images.push(img);
 		});
 		return new Elements(images);
+	}
+
+});
+
+var Color = new Class({
+
+	initialize: function(color, type){
+		type = type || (color.push ? 'rgb' : 'hex');
+		var rgb, hsb;
+		switch(type){
+			case 'rgb':
+				rgb = color;
+				hsb = rgb.rgbToHsb();
+				break;
+			case 'hsb':
+				rgb = color.hsbToRgb();
+				hsb = color;
+				break;
+			default:
+				rgb = color.hexToRgb(true);
+				hsb = rgb.rgbToHsb();
+		}
+		rgb.hsb = hsb;
+		rgb.hex = rgb.rgbToHex();
+		return $extend(rgb, Color.prototype);
+	},
+
+	mix: function(){
+		var colors = $A(arguments);
+		var alpha = ($type(colors[colors.length - 1]) == 'number') ? colors.pop() : 50;
+		var rgb = this.copy();
+		colors.each(function(color){
+			color = new Color(color);
+			for (var i = 0; i < 3; i++) rgb[i] = Math.round((rgb[i] / 100 * (100 - alpha)) + (color[i] / 100 * alpha));
+		});
+		return new Color(rgb, 'rgb');
+	},
+
+	invert: function(){
+		return new Color(this.map(function(value){
+			return 255 - value;
+		}));
+	},
+
+	setHue: function(value){
+		return new Color([value, this.hsb[1], this.hsb[2]], 'hsb');
+	},
+
+	setSaturation: function(percent){
+		return new Color([this.hsb[0], percent, this.hsb[2]], 'hsb');
+	},
+
+	setBrightness: function(percent){
+		return new Color([this.hsb[0], this.hsb[1], percent], 'hsb');
+	}
+
+});
+
+function $RGB(r, g, b){
+	return new Color([r, g, b], 'rgb');
+};
+
+function $HSB(h, s, b){
+	return new Color([h, s, b], 'hsb');
+};
+
+Array.extend({
+
+	rgbToHsb: function(){
+		var red = this[0], green = this[1], blue = this[2];
+		var hue, saturation, brightness;
+		var max = Math.max(red, green, blue), min = Math.min(red, green, blue);
+		var delta = max - min;
+		brightness = max / 255;
+		saturation = (max != 0) ? delta / max : 0;
+		if (saturation == 0){
+			hue = 0;
+		} else {
+			var rr = (max - red) / delta;
+			var gr = (max - green) / delta;
+			var br = (max - blue) / delta;
+			if (red == max) hue = br - gr;
+			else if (green == max) hue = 2 + rr - br;
+			else hue = 4 + gr - rr;
+			hue /= 6;
+			if (hue < 0) hue++;
+		}
+		return [Math.round(hue * 360), Math.round(saturation * 100), Math.round(brightness * 100)];
+	},
+
+	hsbToRgb: function(){
+		var br = Math.round(this[2] / 100 * 255);
+		if (this[1] == 0){
+			return [br, br, br];
+		} else {
+			var hue = this[0] % 360;
+			var f = hue % 60;
+			var p = Math.round((this[2] * (100 - this[1])) / 10000 * 255);
+			var q = Math.round((this[2] * (6000 - this[1] * f)) / 600000 * 255);
+			var t = Math.round((this[2] * (6000 - this[1] * (60 - f))) / 600000 * 255);
+			switch(Math.floor(hue / 60)){
+				case 0: return [br, t, p];
+				case 1: return [q, br, p];
+				case 2: return [p, br, t];
+				case 3: return [p, q, br];
+				case 4: return [t, p, br];
+				case 5: return [br, p, q];
+			}
+		}
+		return false;
 	}
 
 });

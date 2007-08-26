@@ -167,6 +167,7 @@ foreach ( $color_ids as $color_id )
 	$k = preg_replace('/^user_/','',$color_id);
 
 	echo <<<_HTML_
+try {
 
 	var default_bg_color = new Color('$user[$k]');
 	var default_fg_color = default_bg_color.invert();
@@ -196,6 +197,8 @@ foreach ( $color_ids as $color_id )
 		}
 */
 	});
+} catch (e) {
+}
 
 _HTML_;
 }
