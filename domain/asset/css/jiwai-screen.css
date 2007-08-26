@@ -125,14 +125,16 @@ a:hover {color:#F87A01;}
 
 
   #sidebar .featured { background: #F2F2F2; padding:10px;}
-  .featured h2 {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat left 1px; text-indent:15px; margin-bottom:3px;}
-  html>body .featured h2 {margin-bottom:5px;}
+  /*.featured h2 {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat left 1px; text-indent:15px; margin-bottom:3px;}
+  html>body .featured h2 {margin-bottom:5px;}*/
+  .forul {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat 10px 12px; text-indent:15px; padding:10px 0 0 10px;}
+  /*html>body .forul {margin-bottom:5px;}*/
   .featured li {}
   .featured li a {display:block; width:198px; line-height:24px; height:24px; border:1px solid #f2f2f2; text-decoration:none; text-indent:8px; color:#515151;}
   .featured li a:hover {border-top:1px solid #CFCFCF; border-bottom:1px solid #ffffff; border-left:1px solid #CFCFCF; border-right:1px solid #ffffff; color:#FF830B;}
   .featured .new {font-weight:bold;}
   .featured .new img {margin-left:3px;}
-  .featured .but {text-align:center; padding-top:15px;}
+  #sidebar .but { background-color:#f2f2f2; text-align:center; padding-top:10px;}
   #sidebar .but button { padding:0; margin:0 3px; font-weight:normal; line-height:20px; height:19px;}
 	
   .com td {  line-height:24px; width:25%;}
@@ -154,7 +156,7 @@ a:hover {color:#F87A01;}
 #content #doingForm .bar span { font-size:12px; display: block; position: absolute; top: 0; right: 10px; color:#A2A2A2;}
 #content #doingForm .bar span#submit_loading {padding-top:.3em;}
 #content #doingForm textarea {width: 100%; margin:0; padding: 9px; height: 48px; width:490px;border-color: #D0D0D0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff; overflow:hidden;}
-#content #doingForm .submit { padding-top: 9px; text-align:center}
+#content #doingForm .submit { padding-top: 9px; text-align:center;}
 .howtojiwai {background:url(../images/org-icon-ji.gif) no-repeat 3px 1px; text-indent:20px; text-align:left; position:absolute; color:#F77E08; margin-left:-319px;}
 html>body .howtojiwai {margin-left:-314px;}
 
@@ -447,3 +449,19 @@ html>body #container .tabbody .clear { padding:4px;}
 .account .tablehead td {border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;  font-size:12px; text-align:center; line-height:19px;}
 .account .tablehead td a {color:#000000; text-decoration:none;}
 a.extlink { background:transparent url(../images/extlink.gif) no-repeat scroll left center; padding-left:16px; color: gray; }
+
+/*===button===*/
+a.button {background:url(../images/org-button-bg.gif) no-repeat top; width:112px; height:33px; display:block; text-align:center; vertical-align:middle; float:left; margin-right:15px;}
+a.button:hover{background-position:bottom;}
+a.button img { margin-top:8px;}
+
+a.button2 {background:url(../images/org-button-bg2.gif) no-repeat top; width:112px; height:33px; display:block; text-align:center; vertical-align:middle; float:left; margin-right:15px;}
+a.button2:hover{background-position:bottom;}
+a.button2 img { margin-top:8px;}
+
+/*======pop======*/
+#container .tabbody .pop { padding:5px 0 0 15px;}
+#container .tabbody .pop .poptop{background:url(../images/org-pop-top.gif) no-repeat bottom; width:281px; height:4px; padding:0;}
+#container .tabbody .pop .popbg {background:url(../images/org-pop-bg.gif) repeat-y right; width:269px; padding:0 6px; font-size:12px;}
+#container .tabbody .pop .popleft{background:url(../images/org-pop-left.gif) no-repeat; width:12px; height:11px; position:absolute; margin-left:-17px; margin-top:5px;}
+#container .tabbody .pop .popbottom {background:url(../images/org-pop-bottom.gif) no-repeat top; width:281px; height:4px; padding:0;}
