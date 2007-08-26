@@ -1949,6 +1949,7 @@ _HTML_;
 
 	static public function	ShowAlphaBetaTips()
 	{
+		return;
 		if ( ! preg_match('#((alpha)|(beta))\.(?P<domain_url>jiwai\.de.*?)$#i',$_SERVER["HTTP_HOST"],$matches) )
 			return;
 		
