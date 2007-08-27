@@ -513,15 +513,28 @@ i=0;
 		// chinese msg;
 	  	return 70;
 	}
+
 // onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
 
 	function updateStatusTextCharCounter(value) {
+
 	  len_max = getStatusTextCharLengthMax(value);
 
 	  if (len_max - value.length >= 0) {
 		  $('status-field-char-counter').innerHTML = len_max - value.length;
 		} else {
 		  $('status-field-char-counter').innerHTML = 0;
+          var ov = $('status').value;
+          var nv = ov.substring(0, len_max);
+
+          if( len_max == 70 ) {
+              var max_nv = ov.substring(0, ++len_max);
+              while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
+                  nv = max_nv;
+                  max_nv = ov.substring(0, ++len_max);
+              }
+          }
+          $('status').value = nv;
 		}
 	};
 
