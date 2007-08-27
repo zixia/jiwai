@@ -127,7 +127,7 @@ _HTML_;
         <?php } ?>
     </td>
 </tr>
-<?php if( empty($secret)  ) { ?>
+<?php if( empty($secret) && $bind ) { ?>
 <tr>
     <td>&nbsp;</td>
     <th>&nbsp;</th>
