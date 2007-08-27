@@ -45,7 +45,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public static ConcurrentHashMap<String,MsnInstance> instances = new ConcurrentHashMap<String, MsnInstance>();
 
 	//onlinePort
-	public static int onlinePort = 55010;
+	public static int onlinePort = 55030;
 	public static String mOnlineScript = null;
 
 	/**
@@ -104,7 +104,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 				return;
 			} else {
 				instance = instances.get( account );
-				instance.doReconnect();
+				instance.doReconnect(force);
 			}
 		}else{
 			instance = new MsnInstance(account, mPassword, robot);
@@ -260,14 +260,15 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 					line = line.trim();
 					
 					//ADD A new JiWai Robot	
-					if( 0 == line.indexOf("AJiWaiMsn: ") ){
-						String ac = line.substring( "AJiWaiMsn: ".length() );
+					if( 0 == line.indexOf("Relogin: ") ){
+						String ac = line.substring( "Relogin: ".length() );
 						if( ac.indexOf("@") > 0 ){
 							loginMsnAccount( ac , true );
 						}
 						break;
 					}
 
+					//Restart online_mo.php
 					if( line.equals("ROnlineScript") ){
 						worker.startOnlineProcessor( mOnlineScript );
 						break;
@@ -284,6 +285,28 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 							ret += account + ":" + count + ";";
 						}
 						out( ret );
+						break;
+					}
+
+					if( 0 == line.indexOf("Invite: ") ){
+						String ft = line.substring( "Invite: ".length() );
+						String[] fts = ft.split(" ");
+						out( ft );
+						if( fts.length < 2 ) {
+							out( "N" );
+							break;
+						}
+
+						String h = fts[0].trim();
+						String o = fts[1].trim();
+
+						if( instances.containsKey( h ) ) {
+							MsnInstance instance = instances.get( h );
+							instance.addToFriend( o );
+							out( "Y" );
+							break;
+						}
+						out( "N" );
 						break;
 					}
 
@@ -339,6 +362,10 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 			this.account = account;
 			this.password = password;
 		}
+
+		public void addToFriend( String friend ){
+			messenger.addFriend( Email.parseStr( friend ), friend );
+		}
 		
 		public void run() {
 			if( listened == false ) {	
@@ -378,14 +405,17 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 					messenger.sendText(remail, body);
 				}catch(Exception e){
 					Logger.logError("[MT] ["+MsnJiWaiRobot.DEVICE+"://"+email+"] Session closed");	
-					doReconnect();
+					doReconnect(false);
 					return false;
 				}
 			}
 			return true;
 		}
 
-		private void doReconnect(){
+		private void doReconnect(boolean force){
+			if( force ) 
+				listened = false;
+
 			new Thread(this).start();
 		}
 
@@ -394,7 +424,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 		}
 
 		public int getAllowCount(){
-			return messenger.getContactList().getContactsInList(MsnList.FL).length;
+			return messenger.getContactList().getContactsInList(MsnList.AL).length;
 		}
 
 		public void removeContact(MsnContact contact){

@@ -18,7 +18,7 @@ import de.jiwai.robot.*;
 import de.jiwai.util.*;
 
 public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
-	private QQClient client;
+	private static QQClient client;
 
 	private QQUser user;
 
@@ -36,7 +36,7 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 
 	private String qqpass;
 
-	private int state = 0;
+	private static int state = 0;
 
 	private static String mQueuePath = null;
 
@@ -54,9 +54,12 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		if (false == loadConfig()) {
 			return;
 		}
+		login();
+	}
+
+	public void login() {
 
 		try {
-			state = 0;
 			user = new QQUser(qqno, qqpass);
 
 			user.setStatus(QQ.QQ_LOGIN_MODE_NORMAL);
@@ -67,19 +70,30 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			client.setUser(user);
 			client.setConnectionPoolFactory(new PortGateFactory());
 			client.setLoginServer(server);
-			client.login();
 		} catch (Exception e) {
 			handleException(e);
 			Logger.logError("Init QQClient error, exit.");
 		}
-		Logger.log("QQClient Started");
 
-		while (state == 0) {
-			zizz();
-		}
+		relogin();
+
 	}
 
-	public void zizz() {
+	public static void relogin() {
+
+		state = 0;
+		try{
+			client.logout();
+			client.login();
+		}catch(Exception e){
+			handleException(e);
+			Logger.logError("Init QQClient error, exit.");
+		}
+
+		//Just for sleeping fun.
+	}
+
+	public static void zizz() {
 		try {
 			Thread.sleep(500);
 		} catch (Exception e) {
@@ -139,13 +153,15 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 	public void qqEvent(QQEvent e) {
 		switch (e.type) {
 		case QQEvent.QQ_LOGIN_SUCCESS:
+			Logger.log("QQ Login Successed.");
 			state = 1;
 			break;
 		case QQEvent.QQ_LOGIN_FAIL:
 		case QQEvent.QQ_LOGIN_REDIRECT_NULL:
 		case QQEvent.QQ_LOGIN_UNKNOWN_ERROR:
-			Logger.logError("login failed");
-			System.exit(-1);
+			Logger.logError("QQ Login Failed");
+			relogin();
+			zizz();
 			break;
 		case QQEvent.QQ_CHANGE_STATUS_SUCCESS:
 			Logger.log("changed status ok.");
@@ -375,9 +391,16 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 							|| line.toUpperCase().equals("QUIT") ){
 						break;
 					}
-
+					
+					//Restart online_mo.php
 					if( line.equals("ROnlineScript") ){
 						worker.startOnlineProcessor( mOnlineScript );
+						break;
+					}
+
+					//Relogin QQ
+					if( line.equals("Relogin") ) {
+						relogin();
 						break;
 					}
 

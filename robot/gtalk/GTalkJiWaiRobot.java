@@ -22,6 +22,9 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static XMPPConnection con = null;
 
 	public static Roster roster = null;
+
+	public static ConnectionConfiguration config = null;
+	public static GTalkJiWaiRobot gtalk_robot = null;
 	
 	public static String mServer = null;
 	public static String mAccount = null;
@@ -150,29 +153,38 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	
 
 	public static void main(String args[]) {
-		GTalkJiWaiRobot gtalk_robot = new GTalkJiWaiRobot();
+		gtalk_robot = new GTalkJiWaiRobot();
 		worker = new MoMtWorker(DEVICE, mQueuePath, gtalk_robot);
 		worker.startOnlineProcessor( mOnlineScript );
-		gtalk_robot.connect();
+		connect();
 		new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
 		gtalk_robot.run();
 	}
 
-	public void connect(){
+	public static void connect(){
 		try {
-			ConnectionConfiguration config = new ConnectionConfiguration(TALK_SERVER, TALK_PORT, mServer);
+			config = new ConnectionConfiguration(TALK_SERVER, TALK_PORT, mServer);
 			config.setReconnectionAllowed(false);
 			config.setSecurityMode( ConnectionConfiguration.SecurityMode.enabled );
 			config.setSASLAuthenticationEnabled(false);
+
+			realConnect();
+
+		}catch(Exception e ){
+			Logger.logError("GTalk Login failed");
+		}
+	}
+
+	public static void realConnect() {
+		try{
 			con = new XMPPConnection(config);
 			con.connect();
 			con.login( mAccount , mPassword );
 			roster = con.getRoster();
 
-			con.addPacketListener(this , this);
+			con.addPacketListener(gtalk_robot , gtalk_robot);
 
 			worker.startProcessor();
-
 		}catch(Exception e ){
 			Logger.logError("GTalk Login failed");
 		}
@@ -233,10 +245,17 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 							|| line.toUpperCase().equals("QUIT") ){
 					       	break;
 					}
-
+					
+					//Restart online_mo.php
 					if( line.equals("ROnlineScript") ) {
 						worker.startOnlineProcessor( mOnlineScript );
 					       	break;
+					}
+
+					//Relogin
+					if( line.equals("Relogin") ){
+						realConnect();
+						break;
 					}
 
 					Presence p = roster.getPresence( line );
