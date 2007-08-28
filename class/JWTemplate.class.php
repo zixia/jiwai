@@ -1866,7 +1866,7 @@ _HTML_;
 										,'UrlHelpComments'		=>	'/help/'
 										,'UrlHelpGadget'		=>	'http://help.jiwai.de/Gadget'
 
-										,'UrlStrangerPicture'	=>	'http://asset6.jiwai.de/img/stranger.gif'
+										,'UrlStrangerPicture'	=>	'http://asset6.jiwai.de/images/org-nobody-96-96.gif'
 								);
 		}
 
