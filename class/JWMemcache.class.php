@@ -37,7 +37,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *	我们在第一次取 key 的时候，就将其放入程序内存的 cache，这样下次获取的时候，
  	 *	如果程序内存的 cache 有，就不用在通过网络获取了。
 	 */
-	private	$msUseLocalCache;
+	private	static $msUseLocalCache = true;
 	private	$msLocalCache = array();
 
 
