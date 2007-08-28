@@ -900,7 +900,7 @@ _HTML_;
 			$n++;
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_screen;?>/"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $name_screen;?>/"><img width="48" height="48" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full; ?>" class="name"><?php echo $name_screen;?></a><?php echo $status?>
 
 		<span class="meta">
