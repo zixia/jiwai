@@ -81,7 +81,7 @@ if ( !empty($err) ){
 }
 ?>
 
-<Form method="POST" action="/wo/login">
+<form id="f" method="POST" action="/wo/login">
 <table width="550" border="0" cellspacing="15" cellpadding="0">
     <tr>
         <td width="70" align="right">用户名：</td>
@@ -112,9 +112,9 @@ if ( !empty($err) ){
         <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登陆</label>
     </li>
 </ul>
-<div class="but">
-    <input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-login.gif'); ?>" alt="注册" border="0" />
-</div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-login.gif'); ?>" alt="登录" /></a>
+    </div>            
 </form>
 
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>          
