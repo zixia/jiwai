@@ -43,7 +43,7 @@ class JWDB_Cache_Picture implements JWDB_Cache_Interface
 	 */
 	function __construct()
 	{
-		$this->msMemcache 	= JWMemcache::Instance();
+		self::$msMemcache 	= JWMemcache::Instance();
 	}
 
 	/*
