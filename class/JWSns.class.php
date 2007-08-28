@@ -819,8 +819,8 @@ class JWSns {
     {
         $idUser = JWDB::CheckInt( $idUser );
         $idInviter = JWDB::CheckInt( $idInviter );
-        JWSns::CreateFriends    ( $idUser, $idInviter, true );
-        JWSns::CreateFollowers  ( $idUser, $idInviter, true );
+        JWSns::CreateFriends    ( $idUser, array($idInviter), true );
+        JWSns::CreateFollowers  ( $idUser, array($idInviter), true );
 
         return true;
     }

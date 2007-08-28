@@ -26,7 +26,9 @@ $protected      = $user_info['protected'] == 'Y';
 
 //echo "<pre>"; die(var_dump($user_info));
 //var_dump($file_info);
-if ( isset($_POST['save_x'] ) ) {
+//var_dump($_POST);
+if ( isset($_POST['save_x'] ) ) 
+{
 
     $protected = $_POST['protected'];
 
@@ -35,7 +37,6 @@ if ( isset($_POST['save_x'] ) ) {
             ));
 
 	$file_info = @$_FILES['profile_image'];
-
 	if ( isset($file_info) 
 			&& 0===$file_info['error'] 
 			&& preg_match('/image/',$file_info['type']) 
@@ -108,21 +109,13 @@ _HTML_;
 <div id="container">
 
 <h2>恭喜你注册成功！</h2>
-<?php
-if ( empty($error_html) )
-	$error_html	= JWSession::GetInfo('error');
-
-if ( empty($notice_html) )
-{
-	$notice_html	= JWSession::GetInfo('notice');
-}
-
-?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <p>你好，<?php echo htmlSpecialChars($user_info['nameScreen']); ?>，要<a href="/wo/">马上开始叽歪</a>吗？你可以先：</p>
 <p><strong>上传头像图片</strong></p>
 
 <form id="f" action="/wo/account/regok" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="save_x" value="1"/>
 <table width="500" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td width="72"><img src="<?php echo $photo_url; ?>" width="48" height="48" class="imagb"  /></td>

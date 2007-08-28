@@ -65,24 +65,24 @@ function shifttab(id){
             $('tab_msn').className='now';
             $('invite_email').style.display='none';
             $('tab_email').className='';
-            $('invite_sms').style.display='none';
-            $('tab_sms').className='';
+      //      $('invite_sms').style.display='none';
+       //     $('tab_sms').className='';
         break;
         case 2:
             $('invite_msn').style.display='none';
             $('tab_msn').className='';
             $('invite_email').style.display='block';
             $('tab_email').className='now';
-            $('invite_sms').style.display='none';
-            $('tab_sms').className='';
+    //        $('invite_sms').style.display='none';
+     //       $('tab_sms').className='';
         break;
         case 3:
             $('invite_msn').style.display='none';
             $('tab_msn').className='';
             $('invite_email').style.display='none';
             $('tab_email').className='';
-            $('invite_sms').style.display='block';
-            $('tab_sms').className='now';
+  //          $('invite_sms').style.display='block';
+   //         $('tab_sms').className='now';
         break;
     }
 }
@@ -100,9 +100,9 @@ function shifttab(id){
 <h2>邀请朋友一起来叽歪</h2>
 <p>如果暂时不想邀请朋友，可以点击进入<a href="/wo/">我的首页</a></p>
 
-<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);" class="now">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);">通过Email邀请</a><a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a></p>
+<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);" class="now">通过Email邀请</a><!--a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a--></p>
 
-<div id="invite_msn" style="display:block;">
+<div id="invite_msn" style="display:none;">
     <div class="tabbody">
         <div>把下面的网址通过MSN发送给朋友</div>
         <div>
@@ -145,7 +145,7 @@ function shifttab(id){
     </form>
 </div>
 
-<div id="invite_email" style="display:none">
+<div id="invite_email" style="display:block">
     <div  class="tabbody">
     <form id="f" method="post" name="f">
     <fieldset>
