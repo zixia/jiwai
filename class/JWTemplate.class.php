@@ -468,7 +468,7 @@ _HTML_;
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey)if(event.keyCode==13){return $('submit').click();}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey)if(event.keyCode==13){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
 					<div class="submit">
