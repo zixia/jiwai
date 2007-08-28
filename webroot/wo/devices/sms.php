@@ -147,7 +147,13 @@ _HTML_;
         </tr>
         <tr>
             <th>短信接收设置:</th>
-            <td><input name="sendVia" type="checkbox" style="width:14px; display:inline; border:none;" id="send_via"/> <label for="send_via">使用手机短信接受通知信息</label></td>
+            <td>
+        <select name="select" onChange="JiWai.EnableDevice(<?php echo $device_row['sms']['id'];?>, 'device[enabled_for]='+this.options[this.selectedIndex].value);">
+            <option value="everything" <?php if($device_row['sms']['enabledFor']=='everything') echo "selected";?>>启用</option>
+            <option value="direct_messages" <?php if($device_row['sms']['enabledFor']=='direct_messages') echo "selected";?>>只接受悄悄话</option>
+            <option value="nothing" <?php if($device_row['sms']['enabledFor']=='nothing') echo "selected";?>>关闭</option>
+        </select>
+            </td>    
         </tr>
         <tr>
             <th>&nbsp;</th>
