@@ -541,7 +541,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 /*
 		<p class="notice">
 			叽歪de MSN 机器人美眉目前正在偷懒，我们会很快将她找回来的。<br />
-			请你先暂时使用 Web / QQ / GTalk 进行更新。
+			请你先暂时使用 Web / QQ / GTalk 进行叽歪。
 		</p>
 */
 
@@ -656,7 +656,7 @@ _HTML_;
 		}
 		else if ( empty($statusRow) )
 		{
-			$status		= "迄今为止还没有更新过！";
+			$status		= "迄今为止还没有叽歪过！";
 		}
 		else	
 		{
@@ -767,7 +767,7 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条更新？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条叽歪？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
 _HTML_;
 
 		return $html_str;
@@ -1614,7 +1614,7 @@ _HTML_;
 
 		echo <<<_HTML_
 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a></li>
-			<li id="status_count"><a href="/$user/">$countInfo[status] 条更新</a></li>
+			<li id="status_count"><a href="/$user/">$countInfo[status] 条叽歪</a></li>
 		</ul>
 _HTML_;
 	}
@@ -1632,7 +1632,7 @@ _HTML_;
 		}
 		else
 		{
-			$current_status	= '还没有更新过！';
+			$current_status	= '还没有叽歪过！';
 		}
 
 		$arr_status		= JWStatus::FormatStatus($current_status);
@@ -1790,7 +1790,7 @@ _HTML_;
 			<form action="<?php echo $action?>" method="GET" id="sidebar_search_form">
 				<fieldset class="user_search">
 				<input id="search_content" name="q" onclick="" type="text" value="<?php echo $q ?>" /><br/>
-				<input type="submit" value="搜更新" onclick="return on_sidebar_search_click();"/>
+				<input type="submit" value="搜叽歪" onclick="return on_sidebar_search_click();"/>
 				</fieldset>
 			</form>
 		</div>
@@ -1802,7 +1802,7 @@ _HTML_;
 				<fieldset class="user_search">
 				<input id="search_content" name="q" onclick="" type="text" value="<?php echo $q ?>" /><br/>
 				<input type="submit" value="搜用户" onclick="on_sidebar_search_click();"/>
-				<input type="submit" value="搜更新" onclick="on_sidebar_search_click('s');"/>
+				<input type="submit" value="搜叽歪" onclick="on_sidebar_search_click('s');"/>
 				</fieldset>
 			</form>
 		</div>
