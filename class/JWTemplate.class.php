@@ -1319,7 +1319,7 @@ _HTML_;
 _HTML_;
 		if ($title=='公告') echo<<<_HTML_
 
-			<div class="but"><button>叽歪大记事</button><button>更多公告</button></div>
+			<div class="but"><button onclick="window.open('http://blog.jiwai.de/');">叽歪大记事</button><button onclick="window.open('http://blog.jiwai.de/');">更多公告</button></div>
 _HTML_;
 	}
 
