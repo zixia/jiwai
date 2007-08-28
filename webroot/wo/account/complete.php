@@ -29,7 +29,7 @@ _HTML_;
 		{
 			// IM / SMS 用户第一次来，设置好登录状态后，送到用户信息修改页面
 			JWLogin::Login($user_row['idUser'], false);
-			header('Location: /wo/account/password');
+			header('Location: /wo/account/settings');
 			exit(0);
 		}
 	}

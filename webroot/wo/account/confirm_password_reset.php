@@ -22,7 +22,7 @@ if ( preg_match('#^/(\w+)$#',@$_REQUEST['pathParam'],$matches) )
 _HTML_;
 		JWSession::SetInfo('notice',$notice_html);
 
-		header('Location: /wo/account/password');
+		header('Location: /wo/account/settings');
 
 		exit(0);
 	}
