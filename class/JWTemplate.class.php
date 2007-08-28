@@ -472,7 +472,7 @@ _HTML_;
 						</div>
 					</div>
 					<div class="submit">
-						<a class="howtojiwai" href="#">如何用其它方式叽歪</a>
+						<a class="howtojiwai" href="http://help.jiwai.de/NewUserGuide" target="_blank">如何用其它方式叽歪</a>
 						<a class="button" href="#" style="margin-left:80px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
 					</div>
 				</fieldset>
