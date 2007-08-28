@@ -338,7 +338,6 @@ _SQL_;
 		}
 */
 
-		
 		if ( $ret && ! JWFile::Save( array(	 $rel_picture_path_name
 											,$rel_thumb96_path_name
 											,$rel_thumb48_path_name

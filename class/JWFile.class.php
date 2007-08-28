@@ -75,18 +75,26 @@ class JWFile {
 				if ( ! self::Save($rel_file_path_name) )
 					return false;
 			}
+
+            return true;
 		}
 		
-		$rsync_binary = "/usr/bin/rsync";
 
-		// for rsync, use a /./ to seperate rel path
+		$rsync_binary = "/usr/bin/rsync -R --timeout=3 --contimeout=1 ";
+
+        /*
+         * very important:
+		 * for rsync, use a /./ to seperate rel path
+         */
 		$abs_file_path_name = self::$msStorageAbsRoot . './' . $relativeFilePathNames;
 
-		// save a file to remote(future) storage system here.
-		$cmd = "$rsync_binary --timeout=3 --contimeout=1 $abs_file_path_name rsync://asset-01.jw/jiwai/".dirname($relativeFilePathNames);
+		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-01.jw/jiwai/";
 		system($cmd, $ret);
-		$cmd = "$rsync_binary --timeout=3 --contimeout=1 $abs_file_path_name rsync://asset-02.jw/jiwai/".dirname($relativeFilePathNames);
+
+		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-02.jw/jiwai/";
 		system($cmd, $ret);
+
+        //echo "<h1>$cmd</h1>";
 
 		$is_succ = ($ret==0);
 

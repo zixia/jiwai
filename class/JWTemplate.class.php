@@ -1211,7 +1211,7 @@ _HTML_;
 					break;
 				default:
 					if ($n % 4 == 0) echo "			<tr>\n";
-					$name = $user_db_row[nameFull];
+					$name = $user_db_row['nameFull'];
 					//if (mb_strwidth($name)>8) $name = mb_strimwidth($name, 6, '...');
 					echo <<<_HTML_
 				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$name</a></div></td>
@@ -1327,9 +1327,7 @@ _HTML_;
 	function sidebar_invite() {
 ?>
 		<div class="featured" id="invite" style="line-height:30px;">
-			<p><a href="#">通过Email邀请</a></p>
-			<p><a href="#">通过MSN邀请</a></p>
-			<p><a href="#">通过手机短信邀请</a></p>
+			<p><a href="/wo/account/invite">邀请好友加入JiWai</a></p>
 		</div>
 
 <?php
