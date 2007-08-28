@@ -37,6 +37,7 @@ class JWMemcache implements JWMemcache_Interface
 	 *	我们在第一次取 key 的时候，就将其放入程序内存的 cache，这样下次获取的时候，
  	 *	如果程序内存的 cache 有，就不用在通过网络获取了。
 	 */
+	private	$msUseLocalCache;
 	private	$msLocalCache = array();
 
 
@@ -45,15 +46,17 @@ class JWMemcache implements JWMemcache_Interface
 	 *
 	 * @return JWMemcache
 	 */
-	static public function &Instance($cluster='default', $protocol=self::DEFAULT_PROTOCOL)
+	static public function &Instance($cluster='default', $protocol=self::DEFAULT_PROTOCOL, $useLocalCache=true)
 	{
 		if ( empty(self::$msSyslog) )
 			self::$msSyslog = JWLog::Instance('Memcache');
 
 		if (!isset(self::$msInstances[$cluster])) {
 			$class = __CLASS__;
-			self::$msInstances[$cluster] = new $class($cluster, $protocol);
+			self::$msInstances[$cluster] = new $class($cluster, $protocol, $useLocalCache);
 		}
+
+
 		return self::$msInstances[$cluster];
 	}
 
@@ -62,7 +65,7 @@ class JWMemcache implements JWMemcache_Interface
 	 * Constructing method, save initial state
 	 *
 	 */
-	function __construct($cluster='default', $protocol=self::TCP)
+	function __construct($cluster='default', $protocol=self::TCP, $useLocalCache=true)
 	{
 		self::$msSyslog->LogMsg("connect to [$cluster] cluster with protocol: " . $protocol);
 
@@ -80,6 +83,8 @@ class JWMemcache implements JWMemcache_Interface
 				$this->msMemcacheProtocol = null;
 				break;
 		}
+
+		self::$msUseLocalCache = $useLocalCache;
 	}
 
 
@@ -95,7 +100,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( isset($this->msLocalCache[$key]) )
+		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
 			return false;
 	
 		return $this->msMemcacheProtocol->Add($key,$var,$flag,$expire);
@@ -118,7 +123,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( isset($this->msLocalCache[$key]) )
+		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
 			unset($this->msLocalCache[$key]);
 
 		self::$msSyslog->LogMsg("Del($key,$timeout)");
@@ -136,7 +141,8 @@ class JWMemcache implements JWMemcache_Interface
 			return null;
 
 
-		if ( !is_array($key) && isset($this->msLocalCache[$key]) )
+		if ( $this->msUseLocalCache 
+				&& !is_array($key) && isset($this->msLocalCache[$key]) )
 			return $this->msLocalCache[$key];
 
 
@@ -165,7 +171,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( isset($this->msLocalCache[$key]) )
+		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
 			$this->msLocalCache[$key] = $var;
 
 		return $this->msMemcacheProtocol->Replace($key,$var, $flag, $expire);
@@ -177,7 +183,8 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		$this->msLocalCache[$key] = $var;
+		if ( $this->msUseLocalCache )
+			$this->msLocalCache[$key] = $var;
 
 		self::$msSyslog->LogMsg("Set($key,$var,$flag,$expire)");
 

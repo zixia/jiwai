@@ -24,6 +24,10 @@ JWConsole::menu ($items, true);
 */
 
 //echo JWConsole::convert("%yzixia");
+
+// 禁止 memcache 的本地缓存
+JWMemcache::Instance('default', JWMemcache::TCP, false);
+
 try {
 	JWRobot::run();
 }catch(Exceptione $e){
