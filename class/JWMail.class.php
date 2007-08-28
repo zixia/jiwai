@@ -73,9 +73,6 @@ class JWMail {
 		if ( 'UTF-8'!=$encoding )
 			$string	= mb_convert_encoding($string, $encoding, "UTF-8");
 
-		// 我们不分 ascii ，全部转义
-		return "=?$encoding?B?" . base64_encode($string) . "?=";
-
 		return preg_replace_callback
 			(
 					 '/([\x80-\xFF]+.*[\x80-\xFF]+)/'
@@ -300,7 +297,6 @@ class JWMail {
 		$template_info = self::ParseTemplate($template_data);
 
 //die(var_dump($template_info));
-		
 		return self::SendMail(	 $template_info['from']
 						,$receiver['email']
 						,$template_info['subject']
@@ -329,7 +325,7 @@ class JWMail {
 		$template_info = self::ParseTemplate($template_data);
 
 //die(var_dump($template_info));
-		
+//		die( " from - " . $template_info['from'] );
 		return self::SendMail(	 $template_info['from']
 						,$user['email']
 						,$template_info['subject']
