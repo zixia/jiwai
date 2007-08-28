@@ -106,7 +106,7 @@ JWTemplate::html_head($head_options) ;
                     <td colspan="2"><?php echo $formated_status['status'] ?><?php echo $replyHtml; ?></td>
                 </tr>
                 <tr>
-                    <td><span class="meta"><a href="/sunhquan/statuses/<?php echo $status_info['idStatus'];?>"><?php echo JWStatus::GetTimeDesc($status_info['timeCreate']);?></a>来自于 <?php echo $pettyDevice;?><span id="status_actions_<?php echo $status_info['idStatus'];?>"></span></span></td>
+                    <td><span class="meta"><a href="/<?php echo $page_user_info['nameScreen'];?>/statuses/<?php echo $status_info['idStatus'];?>"><?php echo JWStatus::GetTimeDesc($status_info['timeCreate']);?></a>来自于 <?php echo $pettyDevice;?><span id="status_actions_<?php echo $status_info['idStatus'];?>"></span></span></td>
                     <?php if ( JWLogin::IsLogined() ) { 
 
                         $id_user_logined 	= JWLogin::GetCurrentUserId();
@@ -117,7 +117,7 @@ JWTemplate::html_head($head_options) ;
                         
                     ?> 
 
-                    <td align="right"><?php echo JWTemplate::FavouriteAction($status_info['idStatus'], $is_fav); ?><img src="images/org-icon-mark.gif" alt="标记" width="16" height="16" align="absmiddle" /><a href="#">标记</a><?php echo $trashAction; ?></td>
+                    <td align="right"><?php echo JWTemplate::FavouriteAction($status_info['idStatus'], $is_fav); ?><?php echo $trashAction; ?></td>
                     <?php } else { ?>
                     <td>&nbsp;</td>
                     <?php } ?>
