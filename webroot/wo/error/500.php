@@ -40,8 +40,6 @@ JWTemplate::html_doctype();
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container">
 
 <style type="text/css">
@@ -92,8 +90,6 @@ margin: 10px;
 
 
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
