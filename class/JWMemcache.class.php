@@ -100,7 +100,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
+		if ( self::$msUseLocalCache && isset($this->msLocalCache[$key]) )
 			return false;
 	
 		return $this->msMemcacheProtocol->Add($key,$var,$flag,$expire);
@@ -123,7 +123,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
+		if ( self::$msUseLocalCache && isset($this->msLocalCache[$key]) )
 			unset($this->msLocalCache[$key]);
 
 		self::$msSyslog->LogMsg("Del($key,$timeout)");
@@ -141,7 +141,7 @@ class JWMemcache implements JWMemcache_Interface
 			return null;
 
 
-		if ( $this->msUseLocalCache 
+		if ( self::$msUseLocalCache 
 				&& !is_array($key) && isset($this->msLocalCache[$key]) )
 			return $this->msLocalCache[$key];
 
@@ -171,7 +171,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( $this->msUseLocalCache && isset($this->msLocalCache[$key]) )
+		if ( self::$msUseLocalCache && isset($this->msLocalCache[$key]) )
 			$this->msLocalCache[$key] = $var;
 
 		return $this->msMemcacheProtocol->Replace($key,$var, $flag, $expire);
@@ -183,7 +183,7 @@ class JWMemcache implements JWMemcache_Interface
 		if ( empty($this->msMemcacheProtocol) )
 			return null;
 
-		if ( $this->msUseLocalCache )
+		if ( self::$msUseLocalCache )
 			$this->msLocalCache[$key] = $var;
 
 		self::$msSyslog->LogMsg("Set($key,$var,$flag,$expire)");
