@@ -244,7 +244,7 @@ function updateLink(value){
         </tr>
         <tr>
             <th>你的首页：</th>
-            <td><a id="indexLink" href="/Vicky"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
+            <td><a id="indexLink" href="/<?php echo $outInfo['nameScreen']; ?>/"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
             <td class="note">登录名将作为你的叽歪de主页地址</td>
         </tr>
         <tr>
@@ -262,7 +262,7 @@ function updateLink(value){
 
     <div style=" padding:20px 0 0 160px; height:50px;">
     	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
-    </div>            
+    </div>
 
     </form>
 
