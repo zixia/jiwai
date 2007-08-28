@@ -17,12 +17,18 @@ $logined_user_id 	= $logined_user_info['id'];
 
 
 <body class="invitations" id="invitations">
+<style>
+.clear {
+clear: both;
+}
+.liketable>li {
+display: inline;
+}
+</style>
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-
-<div class="separator"></div>
 
 <div id="container" class="subpage">
 	<div id="content">
@@ -120,9 +126,10 @@ _HTML_;
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
+<?php
+JWTemplate::container_ending();
+?>
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

@@ -58,13 +58,15 @@ if ( isset($_REQUEST['set']) )
 {
 	// 用户进行设置自己的 openid
 	echo <<<_SET_OPENID_
+<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">
 		<form action="/wo/openid/" method="POST">
 			<fieldset>
 				<label for="user_openid">OpenID 地址：</label>
-				<input id="user_openid" name="user[openid]" size="30" type="text" />
-				<input name="commit" type="submit" value="保存" />
+				<input id="user_openid" name="user[openid]" size="30" type="text" class="input"/>
+				<input name="commit" type="submit" value="保存"/>
 			</fieldset>
 		</form>
+</h3>
 _SET_OPENID_;
 }
 else if ( $openid_id )
@@ -86,7 +88,7 @@ else
 <h3 style=" padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">您的 OpenID 为：
 	<input name="textfield" type="text" value="http://jiwai.de/$user_info[nameScreen]/" class="input" readonly="readonly" />
 </h3>
-<ul class="list_ji"> <a href="?set" >绑定您自己的 OpenID ?</a>
+<ul class="list_ji"> <a href="?set" >绑定你自己的 OpenID ?</a>
 _JIWAI_OPENID_;
 }
 ?>
