@@ -77,7 +77,7 @@ class JWSearch {
 			return self::SEARCH_EMAIL;
 		}
 		if( is_numeric( $key ) ){
-			if( strlen($key)==11 && ( 0 === strpos($key, '13' ) || 0 === strpos($key, '15')) ){
+			if( strlen($key)==11 && ( 0===strpos($key,'13') || 0===strpos($key,'15') || 0===strpos($key,'0') )){
 				return self::SEARCH_MOBILE;
 			}
 			return self::SEARCH_QQ;

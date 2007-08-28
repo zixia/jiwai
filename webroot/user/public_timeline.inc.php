@@ -84,6 +84,7 @@ $options = array(	 'title'		=> '叽歪广场'
 
 <?php JWTemplate::tab_header( array( 'title'	=>	'看看大家都在叽歪什么...' 
 									, 'title2'	=>	''//你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
+                                    , 'find' => true
 							) );
 
 $options	= array ( 	 'uniq'		=> 2

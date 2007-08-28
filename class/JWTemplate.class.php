@@ -313,19 +313,26 @@ _HTML_;
         $followersNum = JWFollower::GetFollowerNum( $idUser );
         $inRequestsNum = JWFriendRequest::GetUserNum( $idUser );
         $outRequestsNum = JWFriendRequest::GetFriendNum( $idUser );
-    
-        if( $wo ) {
+
+        if( $highlight == 'search' ) {
+            global $q , $searched_num;
             $nav = array(
-                'friends' => array("/wo/friends/", "我的好友", $friendsNum),
-                'followers' => array("/wo/followers/","我的粉丝", $followersNum),
-                'inrequests' => array("/wo/friend_requests/","待审核好友",$inRequestsNum),
-                'outrequests' => array("/wo/friend_requests/?out","发出的好友请求",$outRequestsNum),
+                    'search' => array("javascript:void(0);", "共找到符合\"$q\"的用户", $searched_num),
             );
-        }else{
-            $nav = array(
-                'friends' => array("/$userInfo[nameScreen]/friends/", "$userInfo[nameFull]的好友", $friendsNum),
-                //'followers' => array("$prefix/followers/","$userInfo[nameFull]的粉丝", $followersNum),
-            );
+        }else {
+            if( $wo ) {
+                $nav = array(
+                    'friends' => array("/wo/friends/", "我的好友", $friendsNum),
+                    'followers' => array("/wo/followers/","我的粉丝", $followersNum),
+                    'inrequests' => array("/wo/friend_requests/","待审核好友",$inRequestsNum),
+                    'outrequests' => array("/wo/friend_requests/?out","发出的好友请求",$outRequestsNum),
+                );
+            }else{
+                $nav = array(
+                    'friends' => array("/$userInfo[nameScreen]/friends/", "$userInfo[nameFull]的好友", $friendsNum),
+                    //'followers' => array("$prefix/followers/","$userInfo[nameFull]的粉丝", $followersNum),
+                );
+            }
         }
 
         if( !$highlight ) 
@@ -616,8 +623,9 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 							<h2><?php echo $vars['title']; ?></h2>
 <?php
 		if (!empty($vars['find'])) {
+            global $q;
 ?>
-							<form action="/"><button onClcik='this.form.submit();'>找</button><input type="text" value="输入用户名" onclick='this.value=""' /></form>
+<form action="/wo/search/users" method="GET" id="search_user"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '用户名、Email';?>" onclick='this.value=""' /><button onClick='$("search_user").submit();'>找</button></form>
 <?php
 		}
 ?>
@@ -940,15 +948,16 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 </div><!-- odd -->
 <?php 
 		}
-		if ($options['search'] || $options['pagination']) {
+		if ($options['search'] || ( $options['pagination'] && ( $options['pagination']->IsShowNewer() || $options['pagination']->IsShowOlder() ) ) ) {
 ?>
 <div class="line"></div>
 <div class="add">
 <?php
 			if ($options['search']) {
+                global $q;
 ?>
 <div class="search">
-    <form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="输入关键词" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
+    <form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '输入关键词';?>" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
 </div>
 <?php
 			}
@@ -994,6 +1003,8 @@ __HTML__;
         if ($l<1) $l = 1;
         $r = $l + $limit*2;
         if ($r>$pagination->GetOldestPageNo()) $r = $pagination->GetOldestPageNo();
+
+        if( $pagination->IsShowOlder() || $pagination->IsShowNewer() ) {
 ?>
 <div class="pages">
 <?php
@@ -1011,6 +1022,7 @@ __HTML__;
 </div>
 <div style="clear:both;"></div>
 <?
+        }
     }
 
 
@@ -2119,6 +2131,12 @@ _HTML_;
                     $action = self::OutRequestsAction($list_user_id, $action_row , $wo);
                     $requestRow = $friendRequestRows[ $list_user_id ];
                     $liNote = "<li class=\"note\">$requestRow[note]</li>";
+                break;
+                case 'search':
+                    $action_row = $action_rows[$list_user_id];
+                    $action = self::FollowersAction($list_user_id, $action_row , false);
+                    $action .= '|'. self::FriendsAction($list_user_id, $action_row , false);
+                    $action = trim( $action, '|' );
                 break;
             }
 
