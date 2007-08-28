@@ -408,7 +408,7 @@ html>body .subtab {height:31px; clear:both;}
 #create #container {background-color:#ffffff;}
 #regok #container {background-color:#ffffff;}
 #friends #container {background-color:#ffffff; padding-top:30px;}
-#friends #container p{width:550px; margin:0 auto; float:none; clear:both;}
+#friends #container p{width:550px; line-height: 120%; margin:20px auto 0 auto; float:none; clear:both; font-size:16px;}
 #friends #container .but {width:550px; margin:30px auto 10px auto; text-align:center;}
 
 small {color:#989898; vertical-align:top; font-size:12px;}

@@ -89,7 +89,7 @@ function shifttab(id){
 </script>
 </head>
 
-<body class="account" id="invite">
+<body class="account" id="friends">
 
 <?php JWTemplate::accessibility() ?>
 
