@@ -258,7 +258,7 @@ _HTML_;
             $urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
             foreach($highlightAlias as $u=>$aurl) if( 0===strncasecmp($u,$urlNow,strlen($u))){$urlNow=$aurl; break;}
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
-			if (!$highlight) $highlight = '/public_timeline/'; //$url;
+			if (!$highlight && empty($nameScreen) ) $highlight = '/public_timeline/'; //$url;
 		}
 ?>
 <div id="header">
@@ -901,7 +901,7 @@ _HTML_;
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
 	<div class="head"><a href="/<?php echo $name_screen;?>/"><img width="48" height="48" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
-	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full; ?>" class="name"><?php echo $name_screen;?></a><?php echo $status?>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full; ?>" class="name"><?php echo $name_full;?></a><?php echo $status?>
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>

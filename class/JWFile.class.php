@@ -94,7 +94,6 @@ class JWFile {
 		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-02.jw/jiwai/";
 		system($cmd, $ret);
 
-        //echo "<h1>$cmd</h1>";
 
 		$is_succ = ($ret==0);
 
