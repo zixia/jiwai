@@ -147,7 +147,7 @@ _HTML_;
         </tr>
         <tr>
             <th>短信接收设置:</th>
-            <td><input name="sendVia" type="checkbox" style="display:inline" />使用手机短信接受通知信息</td>
+            <td><input name="sendVia" type="checkbox" style="width:14px; display:inline; border:none;" id="send_via"/> <label for="send_via">使用手机短信接受通知信息</label></td>
         </tr>
         <tr>
             <th>&nbsp;</th>
