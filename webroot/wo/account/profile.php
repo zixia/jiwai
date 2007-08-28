@@ -84,7 +84,11 @@ _HTML_;
 				JWSession::SetInfo('notice',$error_html);
 				break;
 			default:
-				throw new JWException("upload error $file_info[error]");
+				$error_html = <<<_HTML_
+<li>抱歉，你选择的图像没有上传成功，请重试。<li>
+_HTML_;
+				JWSession::SetInfo('notice',$error_html);
+				//throw new JWException("upload error $file_info[error]");
 				break;
 		}
 	}

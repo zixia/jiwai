@@ -53,7 +53,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 		}
 		exit(0);
 	}else{
-		$err = '用户名/Email 与密码不匹配。<small><a href="/wo/account/resent_password">忘记密码？</a>.';
+		$err = '用户名/Email 与密码不匹配。<small><a href="/wo/account/resend_password">忘记密码？</a>.';
 	}
 }
 ?>
@@ -108,13 +108,15 @@ if ( !empty($err) ){
     <li>
         <input id="month_re" name="remember_me" type="radio" value="1" /> <label for="month_re">一个月内自动登陆</label>
     </li>
-    <li>
+    <!--li>
         <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登陆</label>
+    </li-->
+    <li style="margin-top:20px;">
+        <div>
+            <a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-login.gif'); ?>" alt="登录" /></a>
+        </div>            
     </li>
 </ul>
-    <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-login.gif'); ?>" alt="登录" /></a>
-    </div>            
 </form>
 
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>          

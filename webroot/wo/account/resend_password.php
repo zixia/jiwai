@@ -36,29 +36,17 @@ _HTML_;
 <?php JWTemplate::html_head() ?>
 </head>
 
-<body class="account" id="resend_password">
+<body class="account">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
+<?php JWTemplate::ShowActionResultTips(); ?>
+<h2>忘记了？</h2>
 
-<?php
-if ( !empty($notice_html) )
-	echo <<<_HTML_
-<p class="notice">
-$notice_html;
-</p>
-_HTML_;
-?>
-
-			<h2>忘记了？</h2>
-
-<p>请输入你的 Email 地址，我们将把密码重设的链接发给你。</p>
+<p style="margin:15px;">请输入你的 Email 地址，我们将把密码重设的链接发给你。</p>
 
 <form action="/wo/account/resend_password" method="post" name="f">
 <fieldset>
@@ -78,12 +66,7 @@ $('email').focus();
 </script>
 		
 
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
