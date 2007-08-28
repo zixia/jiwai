@@ -67,7 +67,7 @@ JWTemplate::html_head($head_options) ;
 
         <div class="odd">
             <div class="head">
-                <a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb48');?>" width="94" height="94"/></a>
+                <a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb96');?>" width="96" height="96"/></a>
             </div>
             <div class="cont">
                 <div class="bg"></div>
