@@ -18,7 +18,7 @@ $ui = new JWDesign($user_info['idUser']);
 
 
 //var_dump($file_info);
-if ( isset($_REQUEST['commit'] ) )
+if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 {
 	
 //echo "<pre>"; die(var_dump($_REQUEST));
@@ -95,16 +95,16 @@ _HTML_;
 	$ui->SetBackgroundColor	($user['profile_background_color']);
 	$ui->SetUseBackgroundImage($user['profile_use_background_image']);
 	$ui->SetBackgroundTile	($user['profile_background_tile']);
-	$ui->SetTextColor		($user['profile_text_color']);
+/*	$ui->SetTextColor		($user['profile_text_color']);
 	$ui->SetNameColor		($user['profile_name_color']);
 	$ui->SetLinkColor		($user['profile_link_color']);
 	$ui->SetSidebarFillColor($user['profile_sidebar_fill_color']);
 	$ui->SetSidebarBorderColor($user['profile_sidebar_border_color']);
-
+*/
 //die(var_dump($ui));
 	$ui->Save();
 
-	header('Location: ' . $_SERVER['SCRIPT_URL']);
+	header('Location: ' . $_SERVER['SCRIPT_URI']);
 	exit(0);
 }
 else
