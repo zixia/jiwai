@@ -202,7 +202,7 @@ if ( $has_photo ){
 
 <div class="tabbody">
 <h2>修改个人资料</h2>
-<form enctype="multipart/form-data" method="post" action="/wo/account/profile" >
+<form id="f" enctype="multipart/form-data" method="post" action="/wo/account/profile" >
 
 <fieldset>
     <table width="100%" cellspacing="3">
@@ -253,9 +253,10 @@ if ( $has_photo ){
     </table>
 </fieldset>
 
-<div class="but">
-    <input type="image" name="save" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" />
-</div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    </div>            
+
 
 </form>
 </div>

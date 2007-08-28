@@ -254,7 +254,7 @@ function updateLink(value){
 }
 </script>
 
-<form action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" onsubmit="return validate_form(this);">
+<form id="f" action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" onsubmit="return validate_form(this);">
 <fieldset>
     <table width="550" border="0" cellspacing="15" cellpadding="0">
         <tr>
@@ -297,7 +297,9 @@ function updateLink(value){
         <input name="checkbox" type="checkbox" value="checkbox" checked="checked" /> 我已阅读并接受　<a href="#" style="font-size:14px;">服务条款</a>
     </li>
 </ul>
-<div class="but"><input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-login.gif');?>" alt="注册" border="0" /></div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>" alt="注册" /></a>
+    </div>            
 
 </form>
 <?php

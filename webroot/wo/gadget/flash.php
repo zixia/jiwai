@@ -20,7 +20,6 @@ $user_info	= JWUser::GetUserInfo($user_id);
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
 	<div id="content" style="margin: 1em 1em">
@@ -50,8 +49,6 @@ $user_info	= JWUser::GetUserInfo($user_id);
 	</embed>
 </div>
 
-<hr class="separator" />
-
 <h4>叽歪de你自己</h4>
 
 <div style="width:600px;text-align:center">
@@ -69,7 +66,6 @@ $user_info	= JWUser::GetUserInfo($user_id);
 	
 
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

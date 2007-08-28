@@ -86,7 +86,6 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
 	<div id="content" style="margin: 1em 1em">
@@ -298,7 +297,6 @@ _HTML_;
 	
 
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 

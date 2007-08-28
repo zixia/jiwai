@@ -254,19 +254,18 @@ _HTML_;
 	你可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
 </p -->
 
-<form action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
-
-<fieldset>
-<table cellspacing="0">
-	<tr>
-		<th><label for="user_profile_background_color">背景颜色：</label></th>
-
-		<td><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="<?php echo $user['profile_background_color']?>" /></td>
-	</tr>
-	<tr>
-		<th><label for="user_profile_background_image">背景图片：</label></th>
-		<td>
-			<input <?php 
+<form id="f" action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
+	<fieldset>
+		<table width="100%" cellspacing="3">
+			<tr>
+				<td>背景颜色：</td>
+				<td width="350"><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="<?php echo $user['profile_background_color']?>" /></td>
+			    <td class="note"></td>
+			</tr>
+			<tr>
+				<td>背景图片：</td>
+				<td>
+					<input style="display:inline;border:0px;width:20px;" <?php 
 						$picture_name 	= '无';
 						$picture_id		= 0;
 						if ( $user['profile_use_background_image'] )
@@ -280,64 +279,27 @@ _HTML_;
 								$picture_id		= $pic_db_row['idPicture'];
 							}
 						}
-					?>
-			 id="user_profile_use_background_image" name="user[profile_use_background_image]" type="checkbox" value="<?php echo $picture_id?>" /><label for="user_profile_use_background_image">当前背景图片：<small>(<?php echo $picture_name?>)</small></label>
-			&nbsp;&nbsp;
-
-			<input id="user_profile_background_tile" <?php
-														if ( $user['profile_background_tile'] )
-															echo ' checked="checked" ';
-													?>
-					name="user[profile_background_tile]" type="checkbox" value="1" />
-			<label for="user_profile_background_tile">平铺</label><br />
-			<input id="user_profile_background_image" name="profile_background_image" size="30" type="file" />
-		</td>
-	</tr>
-	<tr>
-		<th></th>
-		<td>
-			
-		</td>
-
-	</tr>
-<!--
-	<tr>
-		<th><label for="user_profile_text_color">文字颜色：</label></th>
-		<td><input id="user_profile_text_color" name="user[profile_text_color]" size="30" type="text"
-				 value="<?php echo $user['profile_text_color']?>" /></td>
-	</tr>
-	<tr>
-		<th><label for="user_profile_name_color">名字颜色：</label></th>
-
-		<td><input id="user_profile_name_color" name="user[profile_name_color]" size="30" type="text" 
-				value="<?php echo $user['profile_name_color']?>" /></td>
-	</tr>
-	<tr>
-		<th><label for="user_profile_link_color">链接颜色：</label></th>
-		<td><input id="user_profile_link_color" name="user[profile_link_color]" size="30" type="text" 
-				value="<?php echo $user['profile_link_color']?>" /></td>
-	</tr>
-
-	<tr>
-		<th><label for="user_profile_sidebar_fill_color">侧栏填充色：</label></th>
-
-		<td><input id="user_profile_sidebar_fill_color" name="user[profile_sidebar_fill_color]" size="30" type="text" 
-				value="<?php echo $user['profile_sidebar_fill_color']?>" /></td>
-	</tr>
-	<tr>
-		<th><label for="user_profile_sidebar_border_color">侧栏边框色：</label></th>
-		<td><input id="user_profile_sidebar_border_color" name="user[profile_sidebar_border_color]" size="30" type="text" 
-				value="<?php echo $user['profile_sidebar_border_color']?>" /></td>
-	</tr>
--->
-	
-  <input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
+					?> id="user_profile_use_background_image" name="user[profile_use_background_image]" type="checkbox" value="<?php echo $picture_id?>" />
+					<input style="display:inline;border:0px;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" />
+					<br />
+			    	<input id="user_profile_background_tile" style="display:inline;border:0;width:20px;"<?php
+						if ( $user['profile_background_tile'] ) echo 'checked="checked" ';
+					?> name="user[profile_background_tile]" type="checkbox" value="1" />
+					<label for="user_profile_background_tile">平铺</label>
+					<br />
+					当前背景图片：<small>(<?php echo $picture_name?>)</small>
+				</td>
+			    <td>
+				</td>
+			</tr>
+		</table>
+		<input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
   
-	<tr><th></th><td><input name="commit" type="submit" value="保存" /></td></tr>
-
-	<tr><th></th><td><a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></td></tr>
-</table>
-</fieldset>
+	</fieldset>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    </div>
+	<a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a>
 
 </form>
 

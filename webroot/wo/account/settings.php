@@ -231,7 +231,7 @@ function updateLink(value){
 
 <?php if (false == $is_reset_password ) { ?>
     <h2>修改帐号资料</h2>
-    <form action="/wo/account/settings" method="post">
+    <form id="f" action="/wo/account/settings" method="post">
     <fieldset>
     <table width="100%" cellspacing="3">
         <tr>
@@ -259,8 +259,8 @@ function updateLink(value){
     </table>
     </fieldset>
 
-    <div class="but">
-        <input type="image" name="profile" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" /></a>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
     </div>            
 
     </form>
@@ -268,29 +268,30 @@ function updateLink(value){
 <? } ?>
 
     <h2>修改帐号密码</h2>
-    <form action="/wo/account/settings" method="post" name="f">
-    <fieldset>
-    <table width="100%" cellspacing="3">
-        <tr>
-            <th>当前密码：</th>
-            <td width="250"><input id="current_password" name="current_password" type="password" /></td>
-            <td class="note">至少6个字符，建议使用字数、符号、字母组合的复杂密码</td>
-        </tr>
-        <tr>
-            <th>新密码：</th>
-            <td><input id="password" name="password" type="password" /></td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <th>重复输入新密码：</th>
-            <td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    </fieldset>
-    <div class="but">
-        <input type="image" name="chpass" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" />
-    </div>            
+    <form action="/wo/account/settings" method="post" id="f1">
+	    <fieldset>
+	    <table width="100%" cellspacing="3">
+	        <tr>
+	            <th>当前密码：</th>
+	            <td width="250"><input id="current_password" name="current_password" type="password" /></td>
+	            <td class="note">至少6个字符，建议使用数字、符号、字母组合的复杂密码</td>
+	        </tr>
+	        <tr>
+	            <th>新密码：</th>
+	            <td><input id="password" name="password" type="password" /></td>
+	            <td>&nbsp;</td>
+	        </tr>
+	        <tr>
+	            <th>重复输入新密码：</th>
+	            <td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
+	            <td>&nbsp;</td>
+	        </tr>
+	    </table>
+	    </fieldset>
+	    <div style=" padding:20px 0 0 160px; height:50px;">
+	    	<a onclick="$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+	    	<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
+	    </div>            
     </form>
 
 </div>

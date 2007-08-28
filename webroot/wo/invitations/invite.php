@@ -85,8 +85,6 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
-
 
 <style type="text/css">
 #invite_message {
@@ -201,10 +199,10 @@ function updatePreview(value) {$('invite_message').innerHTML = value;};
 
 			</div><!-- wrapper -->
 	</div><!-- content -->
-
+<?php
+JWTemplate::container_ending();
+?>
 </div><!-- #container -->
-<hr class="separator" />
-
 
 <?php JWTemplate::footer() ?>
 

@@ -82,7 +82,7 @@ _HTML_;
 
 <div style="width:500px; margin:30px auto; font-size:14px;">
 
-<form method="post" action="/wo/account/notification">
+<form id="f" method="post" action="/wo/account/notification">
 <p>更新通知：
     <input <?php if ( 'Y'==$user_setting['auto_nudge_me'] ) echo ' checked="checked" ';?> 
             id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="Y" />
@@ -102,10 +102,9 @@ _HTML_;
     <label for="user_send_new_direct_text_email">等我接收到新消息的时候发邮件给我</label>
 </p>
 </div>
-
-<div class="but" style="text-indent:165px;">
-    <input type="image" name="commit" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="确定" width="112" height="33" border="0" /></a>　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-esc.gif'); ?>" alt="取消并返回" width="112" height="33" border="0" /></a>
-</div>           
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    </div>            
 </form>
 
 </div>

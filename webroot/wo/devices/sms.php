@@ -83,7 +83,7 @@ _HTML_;
 <h2>设定手机号码</h2> 
 <p>设定手机号码后你可以通过手机短信发送新的消息、接收好友新消息，随时随地和好友叽歪！</p>
 
-<form action="/wo/devices/create" method="POST">
+<form id="f" action="/wo/devices/create" method="POST">
     <fieldset>
         <table width="100%" cellspacing="5">
         <tr>
@@ -96,9 +96,9 @@ _HTML_;
         </tr>
         </table>
     </fieldset>
-    <div class="but">
-        <input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" /></a>
-    </div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    </div>            
 
 </form>
 
@@ -130,7 +130,7 @@ _HTML_;
 </script>
 
 <h2>设定手机号码</h2> 
-<form action="/wo/devices/sms" method="POST">
+<form id="f1"action="/wo/devices/sms" method="POST">
 
     <fieldset>
         <table width="100%" cellspacing="5">
@@ -159,9 +159,9 @@ _HTML_;
         </table>
     </fieldset>
 
-    <div class="but">
-        <input type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-save.gif'); ?>" alt="保存" width="112" height="33" border="0" /></a>
-    </div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    </div>            
 
 </form>
 

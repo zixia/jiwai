@@ -442,7 +442,7 @@ _HTML_;
 			$title = $options['title'];
 		$mode = ( empty($options['mode']) ) ? 0 : $options['mode']; //0:status 1:direct message
 ?>
-			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('submit').disabled=true;$('status').style.backgroundColor='#eee';" <?php if ($mode==1) echo 'style="height: 185px;"'; ?>>
+			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('status').style.backgroundColor='#eee';" <?php if ($mode==1) echo 'style="height: 185px;"'; ?>>
 				<fieldset>
 					<div class="bar even">
 						<h3>
@@ -472,28 +472,12 @@ _HTML_;
 						</div>
 					</div>
 					<div class="submit">
-						<input id="submit" name="commit" type="submit" class="buttonSubmit" value="" />
 						<a class="howtojiwai" href="#">如何用其它方式叽歪</a>
+						<a class="button" href="#" style="margin-left:80px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
 					</div>
 				</fieldset>
 			</form>
 
-<script type="text/javascript">
-//<![CDATA[
-$('submit').onmouseover = function(){
-	this.className += "Hovered"; 
-}
-
-$('submit').onmouseout = function(){
-	this.className = this.className.replace(/Hovered/g, "");
-}
-//]]>
-</script>
-
-
-					<!--div style="width:100%; border:1px solid #f00; text-align:left">
-						<textarea id='test' name='test' rows="3" style="width:100%"></textarea>
-					</div-->
 			<script type="text/javascript">
 //<![CDATA[
 $('status').focus()
@@ -1187,15 +1171,15 @@ _HTML_;
 		switch ($options['view']) {
 			case 'list':
 				echo <<<_HTML_
+		<h2 class="forul">$title</h2>
 		<ul class="featured newuser">
-			<h2>$title</h2>
 
 _HTML_;
 				break;
 			default:
 				echo <<<_HTML_
 		<div class="featured" $id>
-			<h2>$title</h2>			
+			<h2 class="forul">$title</h2>			
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="com">
 
 _HTML_;
@@ -1221,7 +1205,8 @@ _HTML_;
 			switch ($options['view']) {
 				case 'list':
 					echo <<<_HTML_
-				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" /></a></li>
+				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" /></a></li>
+
 _HTML_;
 					break;
 				default:
@@ -1239,6 +1224,10 @@ _HTML_;
 		}
 		switch ($options['view']) {
 			case 'list':
+				echo <<<_HTML_
+			</ul>
+
+_HTML_;
 				break;
 			default:
 				if ($n % 4) {
@@ -1293,8 +1282,9 @@ _HTML_;
 			return;
 
 		echo <<<_HTML_
+
+		<h2 class="forul">$title</h2>
   		<ul class="featured">
-			<h2>$title</h2>
 _HTML_;
 
 		$status_db_row = JWDB_Cache_Status::GetDbRowsByIds($user_status_ids['status_ids']);
@@ -1324,12 +1314,12 @@ _HTML_;
 			</li>
 _HTML_;
 		}
+		echo <<<_HTML_
+		</ul>
+_HTML_;
 		if ($title=='公告') echo<<<_HTML_
 
 			<div class="but"><button>叽歪大记事</button><button>更多公告</button></div>
-_HTML_;
-		echo <<<_HTML_
-		</ul>
 _HTML_;
 	}
 

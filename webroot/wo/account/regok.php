@@ -122,7 +122,7 @@ if ( empty($notice_html) )
 <p>你好，<?php echo htmlSpecialChars($user_info['nameScreen']); ?>，要<a href="/wo/">马上开始叽歪</a>吗？你可以先：</p>
 <p><strong>上传头像图片</strong></p>
 
-<form action="/wo/account/regok" method="POST" enctype="multipart/form-data">
+<form id="f" action="/wo/account/regok" method="POST" enctype="multipart/form-data">
 <table width="500" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td width="72"><img src="<?php echo $photo_url; ?>" width="48" height="48" class="imagb"  /></td>
@@ -142,9 +142,10 @@ if ( empty($notice_html) )
     </li>
 </ul>
 
-<div class="but">
-    <input name="save" type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-sure.gif'); ?>" alt="确定" width="112" height="33" border="0" />　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-skip.gif'); ?>" alt="跳过" width="112" height="33" border="0" /></a>
-</div>
+    <div style=" padding:20px 0 0 160px; height:50px;">
+    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-sure.gif'); ?>" alt="确定" /></a>
+    </div>            
+</form>
 
 </div>
 <!-- #container -->
