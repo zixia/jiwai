@@ -21,6 +21,7 @@ class JWConference {
 	static public $smsAlias = array(
 			'9911456' => '991188169999',
 			'9318456' => '931888169999',
+			'9318456' => '931888169999',
 			'99318456' =>'000000009999',
 			'9501456' => '000000009999',
 			);
@@ -155,4 +156,10 @@ _SQL_;
 		return $conference;
 	}
 }
+require_once( '../jiwai.inc.php' );
+
+JWConference::UpdateRow( 5, array(
+				'msgRegister' => '欢迎您参与《午夜心语》节目，本短信服务不收任何信息费，正常通信费除外，为实现您的个性化交流，请把您的昵称作为短信内容直接回复。',
+				'msgUpdateStatus' => '《午夜心语》谢谢您的参与！您发送的短信即将播出，请密切关注。',
+			));
 ?>

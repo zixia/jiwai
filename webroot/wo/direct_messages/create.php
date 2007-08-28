@@ -54,7 +54,7 @@ if ( isset($_REQUEST['text']) )
 	if ( empty($message) )
 	{
 		$error_html = <<<_HTML_
-哎呀！请不要发送空消息！
+哎呀！请不要发送空悄悄话！
 _HTML_;
 	}else if ( JWSns::CreateMessage(	 $logined_user_id
 										,$receiver_user_id

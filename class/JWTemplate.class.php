@@ -1608,7 +1608,7 @@ _HTML_;
 		if ( 'wo'==$user )
 		{
 			echo <<<_HTML_
-			<li id="message_count"><a href="/$user/direct_messages/">$countInfo[pm] 条消息</a></li>
+			<li id="message_count"><a href="/$user/direct_messages/">$countInfo[pm] 条悄悄话</a></li>
 _HTML_;
 		}
 

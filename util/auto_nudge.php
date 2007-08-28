@@ -52,9 +52,15 @@ foreach ( $nudge_user_ids as $idUser )
 	$user_info = JWUser::GetUserInfo($idUser);
 
 	$nudge_message = <<<_NUDGE_
-小叽挠挠了你一下，提醒你更新JiWai！回复本消息既可更新。回复HELP了解更多。你的叽歪档案在: http://jiwai.de/$user_info[nameScreen]/，你可在"通知"设置中取消自动提醒。 
+你已经24小时没有发送过更新了。回复本条短信，告诉大家你正在做什么吧！
 _NUDGE_;
 
+
+/*
+	$nudge_message = <<<_NUDGE_
+小叽挠挠了你一下，提醒你更新JiWai！回复本消息既可更新。回复HELP了解更多。你的叽歪档案在: http://jiwai.de/$user_info[nameScreen]/，你可在"通知"设置中取消自动提醒。 
+_NUDGE_;
+*/
 	echo "$nudge_message\n";
 
 	JWNudge::NudgeUserIds(array($idUser), $nudge_message, 'nudge');

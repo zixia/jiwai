@@ -96,10 +96,10 @@ _HTML_;
     <label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
 </p>
 <p>&nbsp;</p>
-<p>消息通知：
+<p>悄悄话通知：
     <input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
             id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
-    <label for="user_send_new_direct_text_email">等我接收到新消息的时候发邮件给我</label>
+    <label for="user_send_new_direct_text_email">等我接收到新悄悄话的时候发邮件给我</label>
 </p>
 </div>
     <div style=" padding:20px 0 0 160px; height:50px;">
