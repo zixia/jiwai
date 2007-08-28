@@ -59,6 +59,7 @@ a:hover {color:#F87A01;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
   html>body #header .tip {margin-left:170px;}
+  *+html #header .tip {margin-left:0!important}
   #header .tip a {font-weight:bold; margin-left:5px;}
 
 #navigation ul { float:right; margin-top:48px; margin-bottom:0;}
@@ -125,8 +126,8 @@ a:hover {color:#F87A01;}
 
 
   #sidebar .featured { background: #F2F2F2; padding:10px;}
-  .featured h2 {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat left 1px; text-indent:15px; margin-bottom:3px;}
-  html>body .featured h2 {margin-bottom:5px;}
+  /*.featured h2 {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat left 1px; text-indent:15px; margin-bottom:3px;}
+  html>body .featured h2 {margin-bottom:5px;}*/
   .forul {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat 10px 12px; text-indent:15px; padding:10px 0 0 10px;}
   /*html>body .forul {margin-bottom:5px;}*/
   .featured li {}
@@ -155,13 +156,13 @@ a:hover {color:#F87A01;}
 #content #doingForm .bar h3 { font-size:15px ; font-weight:bold; color: #000; padding: 5px 170px 0 0;}
 #content #doingForm .bar span { font-size:12px; display: block; position: absolute; top: 0; right: 10px; color:#A2A2A2;}
 #content #doingForm .bar span#submit_loading {padding-top:.3em;}
-#content #doingForm textarea {width: 100%; margin:0; padding: 9px; height: 48px; width:490px;border-color: #D0D0D0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff; overflow:hidden;}
+#content #doingForm textarea {width: 100%; margin:0; padding: 9px; height: 48px; width:490px;border-color: #D0D0D0; font: 1.15em/1.1 Helvetica, Arial, sans-serif; background: #fff; overflow:auto;}
 #content #doingForm .submit { padding-top: 9px; text-align:center;}
-.howtojiwai {background:url(../images/org-icon-ji.gif) no-repeat 3px 1px; text-indent:20px; text-align:left; position:absolute; color:#F77E08; margin-left:-319px;}
-html>body .howtojiwai {margin-left:-314px;}
+.howtojiwai {background:url(../images/org-icon-ji.gif) no-repeat 10px 2px; text-indent:28px; text-align:left; color:#F77E08; float:left; }
 
 #content .tabMenu { position:absolute; margin-left:270px; margin-top:7px;}
 html>body #content .tabMenu {margin-top:19px;}
+*+html #content .tabMenu {margin-top:7px!important}
 #content .tabMenu li { float:left; margin-left:4px;}
 #content .tabMenu li a {display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
 #content .tabMenu li.active a {background:url(../images/org-tab-off.gif) no-repeat; color:#000000;}
@@ -194,6 +195,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .normal .odd .cont { border:1px solid #FFCFA8; padding:6px 6px 22px 6px;}
  .odd .cont .bg { background: url(../images/org-con-bg.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
  html>body .odd .cont .bg {margin-top:4px;}
+ *+html .odd .cont .bg {margin-top:0!important}
 .front .odd .cont .bg  {display:none;}
 .normal .odd .head {}
 .normal #content .line {background-color:#ffffff;}
@@ -360,10 +362,12 @@ input.openid_login {
 
 .droplist {background:url(../images/org-drop-bg.gif) no-repeat; width:80px; height:21px; position:absolute; margin-top:-5px; cursor:pointer;}
 html>body .droplist {margin-top:-20px; margin-left:100px;}
+*+html .droplist{margin-top:-5px!important; margin-left:0!important}
 .droplist li { display:none; color:#FFEFC8; text-indent:18px; line-height:21px; font-size:12px;}
 .droplist .slect {background:url(../images/org-drop-icon.gif) no-repeat right 8px; display:block;}
 .droplistopen {background:url(../images/org-drop-bg.gif) no-repeat; width:80px; height:63px; position:absolute; margin-top:-5px; cursor:pointer;}
 html>body .droplistopen {margin-top:-20px; margin-left:100px;}
+*+html .droplistopen {margin-top:-5px!important; margin-left:0!important;}
 
 .droplistopen .slect {background:url(../images/org-drop-icon.gif) no-repeat right 8px;}
 .droplistopen li { color:#FFEFC8; text-indent:18px; line-height:21px; font-size:12px; background-color:#F97B00; border-bottom:1px solid #FFEFC8;}
@@ -382,7 +386,6 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 .account table .note {font-size:12px; color:#989898;}
 .account #container ul {width:360px; margin:10px auto 10px auto;}
 .account #container ul li {height:32px; line-height:32px;}
-.account .but {width:360px; margin:10px auto 10px auto;}
 #settings .but { width:700px; text-align:left; margin:10px auto 10px auto; text-indent:140px;}
 #regok #container p {width:500px; margin:0 auto; display:block; line-height:30px; margin-top:20px; font-size:14px;}
 #regok  #container ul {width:500px; margin:10px auto 10px auto;}
@@ -391,6 +394,7 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 #invite .but {width:500px; margin:10px auto 10px auto; text-align: center;}
 .subtab {height:30px; clear:both;}
 html>body .subtab {height:31px; clear:both;}
+*+html .subtab {height:30px!important; clear:both!important;}
 #settings .subtab {width:740px; margin:10px auto 0 auto;}
 .subtab a {display:block; float:left; line-height:23px; height:23px; margin:7px 2px 0 0; padding:0 8px; border:1px solid #D3D3D5; border-bottom:none; color:#000000; font-size:12px; text-decoration:none; background-color:#ffffff;}
 #settings .subtab a {width:72px; text-align:center;}
@@ -444,6 +448,7 @@ small {color:#989898; vertical-align:top; font-size:12px;}
 	#myfriend .liketable .action {margin-top:10px;}
 #container .tabbody .clear {font-size:1px; height:1px; overflow:hidden; float:none; clear:both; width:520px; margin:0 auto; border-bottom:1px solid #DDE0E3; padding:0;}
 html>body #container .tabbody .clear { padding:4px;}
+*+html #container .tabbody .clear { padding:0!important;}
 
 .account .tablehead { background-color:#F2F2F2; margin-top:0; border-bottom:1px solid #D3D3D5;}
 .account .tablehead td {border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;  font-size:12px; text-align:center; line-height:19px;}
