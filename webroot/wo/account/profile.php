@@ -193,7 +193,7 @@ _HTML_;
 <?php
 if ( $has_photo ){
     // we have photo
-    $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb48');
+    $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb96');
 }else{
     // we have no photo
     $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
@@ -214,9 +214,9 @@ if ( $has_photo ){
     <tr>
         <th valign="top">头像：</th>
         <td colspan="2">
-            <img src="<?php echo $photo_url; ?>" width="48" height="48" align="left" class="imagb" />
+            <img src="<?php echo $photo_url; ?>" width="96" height="96" align="left" class="imagb" />
             <span class="note" style="padding-left:5px;">选择图片文件：支持.jpg .gif .png的图片 </span>
-            <input type="file" name="profile_image"  style="margin-left:58px; width:248px;"/>
+            <input type="file" name="profile_image"  style="margin-left:110px; width:248px;"/>
         </td>
     </tr>
     <tr>
@@ -224,7 +224,7 @@ if ( $has_photo ){
         <td><textarea name="user[bio]" id="user_name" style="height:60px;"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
         <td class="note">一句话的介绍，不超过70个字</td>
     </tr>
-    <tr>
+    <!-- tr>
         <th>来自：</th>
         <td>
             <label>
@@ -234,7 +234,7 @@ if ( $has_photo ){
             </label>
         </td>
         <td class="note">选择所在地区</td>
-    </tr>
+    </tr -->
     <tr>
         <th>地址：</th>
         <td><input name="user[address]" type="text" id="user_address" value="<?php echo $outInfo['address']; ?>"/></td>
