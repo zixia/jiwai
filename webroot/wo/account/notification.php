@@ -83,6 +83,7 @@ _HTML_;
 <div style="width:500px; margin:30px auto; font-size:14px;">
 
 <form id="f" method="post" action="/wo/account/notification">
+<input type="hidden" name="commit_x" value="commit"/>
 <p>更新通知：
     <input <?php if ( 'Y'==$user_setting['auto_nudge_me'] ) echo ' checked="checked" ';?> 
             id="user_auto_nudge_me" name="user[auto_nudge_me]" type="checkbox" value="Y" />

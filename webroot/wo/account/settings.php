@@ -20,7 +20,7 @@ $outInfo = $user_info;
 
 //var_dump($user_info);
 
-if ( isset($new_user_info) && isset($_REQUEST['profile_x']) )
+if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 {
 	$nameFull	= trim(@$new_user_info['nameFull']);
     $nameScreen	= trim(@$new_user_info['nameScreen']);
@@ -110,7 +110,7 @@ _HTML_;
         $verify_corrent_password = false;
     }
 
-if ( isset($_REQUEST['chpass_x']) ) {
+if ( isset($_REQUEST['commit_p']) ) {
     if ( isset($_REQUEST['password']) )
     {
         $current_password 		= trim( @$_REQUEST['current_password'] );
@@ -232,6 +232,7 @@ function updateLink(value){
 <?php if (false == $is_reset_password ) { ?>
     <h2>修改帐号资料</h2>
     <form id="f" action="/wo/account/settings" method="post">
+    <input type="hidden" name="commit_u" value="1"/>
     <fieldset>
     <table width="100%" cellspacing="3">
         <tr>
@@ -269,6 +270,7 @@ function updateLink(value){
 
     <h2>修改帐号密码</h2>
     <form action="/wo/account/settings" method="post" id="f1">
+        <input type="hidden" name="commit_p" value="1"/>
 	    <fieldset>
 	    <table width="100%" cellspacing="3">
 	        <tr>
