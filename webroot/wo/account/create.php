@@ -278,7 +278,7 @@ function updateLink(value){
         <tr>
             <td align="right">密　码</td>
             <td><input id="user_pass" type="password" name="user[pass]" /></td>
-            <td class="note">至少6个字符，建议使用字母、数字、符号组合的复杂密码</td>
+            <td class="note">至少6个字符</td>
         </tr>
         <tr>
             <td align="right">再输一遍</td>
