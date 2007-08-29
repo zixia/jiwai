@@ -13,9 +13,9 @@ if ( $logined_user_id )
 {
 	$param = $_REQUEST['pathParam'];
 
-	if ( preg_match('/^\/(\d+)\/(.+)$/',$param,$match) ){
+	if ( preg_match('/^\/(\d+)\/(.*)$/',$param,$match) ){
 		$balloon_id 	= $match[1];
-		$redirect_url	= $match[2];
+		$redirect_url	= $match[2] ? $match[2] : $_SERVER['HTTP_REFERER'];
 
 		$balloon_row	= JWBalloon::GetDbRowById($balloon_id);
 

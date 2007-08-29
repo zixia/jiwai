@@ -44,8 +44,9 @@ class JWBalloonMsg extends JWBalloon{
 	static function CreateUser($idUser)
 	{
 		$html = <<<_HTML_
-厉害! 感谢你明智地选择了叽歪de! 从今以后你就是组织的人了，如果有谁欺负你就报组织的名字!
-不知道怎么叽歪de话，你可以先到这里<a href="BALLOON_URL:http://help.jiwai.de/NewUserGuide" target="_blank">《新手手册》</a>来看看。
+欢迎来到叽歪de，
+先看看<a href="BALLOON_URL:http://help.jiwai.de/NewUserGuide" target="_blank">《新手手册》</a>，
+或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
 		return self::Create($idUser,$html);
@@ -60,6 +61,7 @@ _HTML_;
 		$html = <<<_HTML_
 你被 $user_row[nameFull]($user_row[nameScreen]) 加为好友了。
 <a href="BALLOON_URL:/wo/friendships/create/$user_row[idUser]">将 $user_row[nameFull]($user_row[nameScreen]) 添加为好友</a>
+或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
 		self::Create($idFriend,$html);
@@ -74,8 +76,9 @@ _HTML_;
 
 		$html = <<<_HTML_
 $user_row[nameFull]($user_row[nameScreen]) 希望和你成为好朋友，是否同意？
-<a href="BALLOON_URL:/wo/friend_requests/accept/$idFriendRequest">好的</a>
-<a href="BALLOON_URL:/wo/friend_requests/deny/$idFriendRequest">不要</a>
+<a href="BALLOON_URL:/wo/friend_requests/accept/$idUser">好的</a>
+<a href="BALLOON_URL:/wo/friend_requests/deny/$idUser">不要</a>
+或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
 		self::Create($idFriend,$html);
@@ -91,6 +94,7 @@ _HTML_;
 		$html = <<<_HTML_
 $follower_row[nameFull]($follower_row[nameScreen]) 订阅了你的叽歪。
 <a href="BALLOON_URL:/wo/friends/follow/$idFollower">订阅 $follower_row[nameFull]</a>
+或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
 		self::Create($idUser,$html);
@@ -106,6 +110,7 @@ _HTML_;
 
 		$html = <<<_HTML_
 $accepter_row[nameFull]($accepter_row[nameScreen]) 通过了你的好朋请求。
+<a href="BALLOON_URL:">嗯，知道了</a>。
 _HTML_;
 
 		self::Create($idUser,$html);
@@ -121,6 +126,7 @@ _HTML_;
 
 		$html = <<<_HTML_
 $nudger_row[nameFull]($nudger_row[nameScreen]) 挠挠了你一下，提醒你更新叽歪。
+<a href="BALLOON_URL:">嗯，知道了</a>。
 _HTML_;
 
 		self::Create($idUser,$html);
