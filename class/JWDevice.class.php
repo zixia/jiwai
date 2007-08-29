@@ -660,9 +660,14 @@ _SQL_;
                     $shortcut = "$type:$address";
                     $row = JWIMOnline::GetDbRowByShortcut( $shortcut );
                 }
-                if( empty( $row ) )
-                    $name = "msn001@jiwai.de";
-                else
+                if( empty( $row ) ){
+			$msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de' );
+			$name = $msnArray[ array_rand($msnArray, 1) ];
+			if( false == empty($address) ) {
+				$shortcut = "$type:$address";
+				JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
+			}
+		} else
                     $name = $row['serverAddress'];
                 break;
 			default:
