@@ -1127,11 +1127,10 @@ _HTML_;
 
 	static function sidebar_register($showLogin=false)
 	{
-		$asset_reg_url = self::GetAssetUrl("/images/org-regit.gif");
 ?>
 		<div class="register">
 		<h2>是第一次来吗？</h2>
-		<a href="/wo/account/create"><img src="<?php echo $asset_reg_url; ?>" alt="马上注册" width="112" height="33" border="0" /></a>
+		<div style="padding:5px 0 5px 50px; height:35px;"><a class="button" href="/wo/account/create"><img src="<?php echo self::GetAssetUrl('/images/org-text-regnow.gif'); ?>" alt="马上注册" /></a></div>
 		</div>
 
 <?php
@@ -1205,7 +1204,7 @@ _HTML_;
 			switch ($options['view']) {
 				case 'list':
 					echo <<<_HTML_
-				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" /></a></li>
+				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="64" height="64"/></a></li>
 
 _HTML_;
 					break;
