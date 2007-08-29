@@ -650,7 +650,7 @@ $('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status'
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="JiWai.requestFriend($idUser, this)">加我为好友。</a>
+我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="return JiWai.requestFriend($idUser, this);">加我为好友。</a>
 _HTML_;
 
 		}
@@ -871,8 +871,9 @@ _HTML_;
 			else
 				@$user_showed[$user_id] += 1;
 				
-			$name_screen= $userRows[$user_id]['nameScreen'];
+			$name_screen	= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];
+			$name_mix	= "$name_full($name_screen)";
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
@@ -900,8 +901,8 @@ _HTML_;
 			$n++;
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_screen;?>/"><img width="48" height="48" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
-	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full; ?>" class="name"><?php echo $name_full;?></a><?php echo $status?>
+	<div class="head"><a href="/<?php echo $name_screen;?>/"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_full;?></a><?php echo $status?>
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>
@@ -1204,7 +1205,7 @@ _HTML_;
 			switch ($options['view']) {
 				case 'list':
 					echo <<<_HTML_
-				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="64" height="64"/></a></li>
+				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="48" height="48"/></a></li>
 
 _HTML_;
 					break;
@@ -1213,7 +1214,7 @@ _HTML_;
 					$name = $user_db_row['nameFull'];
 					//if (mb_strwidth($name)>8) $name = mb_strimwidth($name, 6, '...');
 					echo <<<_HTML_
-				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$name</a></div></td>
+				<td><div><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$name</a></div></td>
 
 _HTML_;
 					if ($n % 4 == 3) echo "			</tr>\n";
@@ -1698,7 +1699,7 @@ __HTML__;
 		if ( empty($friendIds) )
 			return;
 
-		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线的好友', 'id'=>'friend'));
+		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'好友', 'id'=>'friend'));
 		return;
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 
@@ -1721,7 +1722,7 @@ _HTML_;
                 $picture_url	= $picture_url_rows[$friend_picture_id];
 
 			echo <<<_HTML_
-			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
+			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]($friend_info[nameScreen])"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
 
 _HTML_;
 		}
@@ -2128,8 +2129,8 @@ _HTML_;
             }
 
 			echo <<<_HTML_
-                <ul class="liketable"><img src="$list_user_icon_url" width="64" height="64" class="img" />
-                    <li class="name"><a href="/$list_user_row[nameScreen]/">$list_user_row[nameFull]</a></li>
+                <ul class="liketable"><img src="$list_user_icon_url" width="64" height="64" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
+                    <li class="name"><a href="/$list_user_row[nameScreen]/" title="$list_user_row[nameFull]($list_user_row[nameScreen])">$list_user_row[nameFull]</a></li>
                     <li class="nob">${statusNum}条</li>
                     <li class="nob">${mmsNum}条</li>
                     <li class="time">$timeUpdate</li>
