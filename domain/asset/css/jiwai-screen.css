@@ -171,7 +171,7 @@ html>body #content .tabMenu {margin-top:19px;}
 #content .tab p {text-indent: 1em;}
 
 
-#timeline { border:1px solid #D3D3D5; margin-top:6px; height:100%; background-color:#ffffff;}
+#timeline { border:1px solid #D3D3D5; margin-top:6px; height:100%; }
 
 .layout_table {margin:0; padding:0;}
 .bg_tab_top_left { width:2px; height:46px; background:url(../images/org-tit-l.gif) no-repeat right; font-size:1px; overflow:hidden;}
@@ -187,7 +187,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .even {background-color:#ffffff;}
 
 
-.odd { padding:8px 16px; height:100%; clear:both; background-color:#ffffff;}
+.odd { padding:8px 16px; height:100%; clear:both; }
 #content .line {height:1px; overflow:hidden; background-color:#DDE0E3; margin:0 auto; clear:both; width:500px;}
 .odd .head {float:left; width:64px; overflow:hidden; height:62px;}
 	.odd .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
