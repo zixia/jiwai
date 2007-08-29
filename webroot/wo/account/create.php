@@ -15,7 +15,7 @@ if ( isset($_REQUEST['user'])
 		&& isset($_REQUEST['user']['nameScreen']) && trim($_REQUEST['user']['nameScreen']) ){
 
 	$aUserInfo = $_REQUEST['user'];
-    if( empty( $aUserInfo['nameFull'] ) ) 
+    if( empty( $aUserInfo['nameFull'] )|| !JWUser::IsValidFullName($new_user_info['nameFull']) ) 
         $aUserInfo['nameFull'] = $aUserInfo['nameScreen'];
 
 	//echo "<pre>";var_dump($_FILES); die(var_dump($_REQUEST));
@@ -86,12 +86,13 @@ if ( isset($_REQUEST['user'])
 				if ( isset($inviter_id) )
 					JWSns::FinishInvite($idUser, $inviter_id);
 
+/*
 				$notice_html = <<<_HTML_
 厉害! 感谢你明智地选择了叽歪de! 从今以后你就是组织的人了，如果有谁欺负你就报组织的名字!
 不知道怎么叽歪de话，你可以先到这里<a href="http://help.jiwai.de/NewUserGuide" target="_blank">《新手手册》</a>来看看。
 _HTML_;
 				JWSession::SetInfo('notice', $notice_html);
-
+*/
 
 				header("Location: /wo/account/regok");
 				exit();

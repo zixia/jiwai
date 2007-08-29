@@ -23,8 +23,8 @@ $outInfo = $user_info;
 if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 {
 	$nameFull	= trim(@$new_user_info['nameFull']);
-    $nameScreen	= trim(@$new_user_info['nameScreen']);
-    $email		= trim(@$new_user_info['email']);
+	$nameScreen	= trim(@$new_user_info['nameScreen']);
+	$email		= trim(@$new_user_info['email']);
 
 	// compatible the twitter url param: name & description
 	if ( empty($nameScreen) )
@@ -32,30 +32,36 @@ if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 
 	$arr_changed 	= array();
 	$error_html 	= null;
-    $notice_html    = null;
+	$notice_html	= null;
 
 	if ( isset($nameFull) && $nameFull!=$user_info['nameFull'] )
 	{
 		$arr_changed['nameFull'] = $nameFull;
-        $outInfo['nameFull'] = $nameFull;
+		$outInfo['nameFull'] = $nameFull;
+		if ( !JWUser::IsValidFullName($nameFull) )
+		{
+			$error_html .= <<<_HTML_
+<li>姓名 <strong>$nameFull</strong> 需为2个字以上的中日韩英文名字。</li>
+_HTML_;
+		}
 	}
 
 	if ( isset($nameScreen) && $nameScreen!=$user_info['nameScreen'] )
 	{
 		$arr_changed['nameScreen'] = $nameScreen;
-        $outInfo['nameScreen'] = $nameScreen;
+		$outInfo['nameScreen'] = $nameScreen;
 
-		if ( 4>strlen($nameScreen) || !JWUser::IsValidName($nameScreen) )
+		if ( !JWUser::IsValidName($nameScreen) )
 		{
 			$error_html .= <<<_HTML_
-<li>帐号 <strong>$nameScreen</strong> 需由最短为5位的字母、数字、下划线和小数点组成，且不能短于6个字符。</li>
+<li>用户名 <strong>$nameScreen</strong> 由最短为5位的字母、数字、下划线和小数点组成，且不能以数字开头。</li>
 _HTML_;
 		}
 
 		if ( JWUser::IsExistName($nameScreen) )
 		{
 			$error_html .= <<<_HTML_
-<li>帐号 <strong>$nameScreen</strong> 已经被使用。</li>
+<li>用户名 <strong>$nameScreen</strong> 已经被使用。</li>
 _HTML_;
 		}
 	}
@@ -101,48 +107,48 @@ _HTML_;
 
 /** check if reset_password */
 
-    if ( $is_web_user && !$is_reset_password )
-    {
-        $verify_corrent_password = true;
-    }
-    else
-    {
-        $verify_corrent_password = false;
-    }
+	if ( $is_web_user && !$is_reset_password )
+	{
+		$verify_corrent_password = true;
+	}
+	else
+	{
+		$verify_corrent_password = false;
+	}
 
 if ( isset($_REQUEST['commit_p']) ) {
-    if ( isset($_REQUEST['password']) )
-    {
-        $current_password 		= trim( @$_REQUEST['current_password'] );
-        $password 				= trim( @$_REQUEST['password'] );
-        $password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
+	if ( isset($_REQUEST['password']) )
+	{
+		$current_password 		= trim( @$_REQUEST['current_password'] );
+		$password 				= trim( @$_REQUEST['password'] );
+		$password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
 
-        if ( $verify_corrent_password
-                && (	empty($current_password) 
-                        || empty($password)
-                        || empty($password_confirmation) 
-                ) )
-        {
-            $error_html = <<<_HTML_
-                <li>请完整填写三处密码输入框</li>
+		if ( $verify_corrent_password
+				&& (	empty($current_password) 
+						|| empty($password)
+						|| empty($password_confirmation) 
+				) )
+		{
+			$error_html = <<<_HTML_
+				<li>请完整填写三处密码输入框</li>
 _HTML_;
-        }
+		}
 
-        if ( $password !== $password_confirmation )
-        {
-                $error_html .= <<<_HTML_
-                <li>两次输入密码不一致！请重新输入</li>
+		if ( $password !== $password_confirmation )
+		{
+				$error_html .= <<<_HTML_
+				<li>两次输入密码不一致！请重新输入</li>
 _HTML_;
-        }
+		}
 
-        if ( $verify_corrent_password &&
-                ! JWUser::VerifyPassword($user_info['id'], $current_password) )
-        {
-                $error_html .= <<<_HTML_
-    <li>当前密码输入错误，清除新输入</li>
+		if ( $verify_corrent_password &&
+				! JWUser::VerifyPassword($user_info['id'], $current_password) )
+		{
+				$error_html .= <<<_HTML_
+	<li>当前密码输入错误，清除新输入</li>
 _HTML_;
-        }
-    }
+		}
+	}
 
 	/*
 	 * Update User Databse
@@ -191,9 +197,9 @@ _HTML_;
 
 <?php
 if ( empty($error_html) )
-    $error_html = JWSession::GetInfo('error');
+	$error_html = JWSession::GetInfo('error');
 if ( empty($notice_html) )
-    $notice_html = JWSession::GetInfo('notice');
+	$notice_html = JWSession::GetInfo('notice');
 
 if ( !empty($error_html) )
 {
@@ -217,88 +223,88 @@ _HTML_;
 
 <script type="text/javascript">
 function updateLink(value){
-    if( value.length > 0 ) {
-        $('indexLink').href = '/' + value + '/';
-        $('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
-    }else{
-        $('indexLink').href = '/';
-        $('indexString').innerHTML = 'http://JiWai.de/';
-    }
+	if( value.length > 0 ) {
+		$('indexLink').href = '/' + value + '/';
+		$('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
+	}else{
+		$('indexLink').href = '/';
+		$('indexString').innerHTML = 'http://JiWai.de/';
+	}
 }
 </script>
 
 <div class="tabbody">
 
 <?php if (false == $is_reset_password ) { ?>
-    <h2>修改帐号资料</h2>
-    <form id="f" action="/wo/account/settings" method="post">
-    <input type="hidden" name="commit_u" value="1"/>
-    <fieldset>
-    <table width="100%" cellspacing="3">
-        <tr>
-            <th valign="top">用户名：</th>
-            <td width="250">
-                <input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" />
-            </td>
-            <td class="note">用来登陆叽歪de（最少5个字符，不可以使用汉字、空格和特殊字符）</td>
-        </tr>
-        <tr>
-            <th>你的首页：</th>
-            <td><a id="indexLink" href="/<?php echo $outInfo['nameScreen']; ?>/"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
-            <td class="note">登录名将作为你的叽歪de主页地址</td>
-        </tr>
-        <tr>
-            <th>姓名：</th>
-            <td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" /></td>
-            <td class="note">你的真实名字，可以使用中文和空格</td>
-        </tr>
-        <tr>
-            <th>Email：</th>
-            <td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" /></td>
-            <td class="note">用于找回密码和接收通知</td>
-        </tr>
-    </table>
-    </fieldset>
+	<h2>修改帐号资料</h2>
+	<form id="f" action="/wo/account/settings" method="post">
+	<input type="hidden" name="commit_u" value="1"/>
+	<fieldset>
+	<table width="100%" cellspacing="3">
+		<tr>
+			<th valign="top">用户名：</th>
+			<td width="250">
+				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" />
+			</td>
+			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
+		</tr>
+		<tr>
+			<th>你的首页：</th>
+			<td><a id="indexLink" href="/<?php echo $outInfo['nameScreen']; ?>/"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
+			<td class="note">用户名也将作为你的叽歪de主页地址</td>
+		</tr>
+		<tr>
+			<th>姓名：</th>
+			<td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" /></td>
+			<td class="note">你的真实名字，可以使用中文和空格</td>
+		</tr>
+		<tr>
+			<th>Email：</th>
+			<td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" /></td>
+			<td class="note">用于找回密码和接收通知</td>
+		</tr>
+	</table>
+	</fieldset>
 
-    <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
-    </div>
+	<div style=" padding:20px 0 0 160px; height:50px;">
+		<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+	</div>
 
-    </form>
+	</form>
 
 <? } ?>
 
-    <h2>修改帐号密码</h2>
-    <form action="/wo/account/settings" method="post" id="f1">
-        <input type="hidden" name="commit_p" value="1"/>
-	    <fieldset>
-	    <table width="100%" cellspacing="3">
-	        <tr>
-	            <th>当前密码：</th>
-	            <td width="250"><input id="current_password" name="current_password" type="password" /></td>
-	            <td class="note">至少6个字符，建议使用数字、符号、字母组合的复杂密码</td>
-	        </tr>
-	        <tr>
-	            <th>新密码：</th>
-	            <td><input id="password" name="password" type="password" /></td>
-	            <td>&nbsp;</td>
-	        </tr>
-	        <tr>
-	            <th>重复输入新密码：</th>
-	            <td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
-	            <td>&nbsp;</td>
-	        </tr>
-	    </table>
-	    </fieldset>
-	    <div style=" padding:20px 0 0 160px; height:50px;">
-	    	<a onclick="$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
-	    	<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
-	    </div>            
-    </form>
+	<h2>修改帐号密码</h2>
+	<form action="/wo/account/settings" method="post" id="f1">
+		<input type="hidden" name="commit_p" value="1"/>
+		<fieldset>
+		<table width="100%" cellspacing="3">
+			<tr>
+				<th>当前密码：</th>
+				<td width="250"><input id="current_password" name="current_password" type="password" /></td>
+				<td class="note">至少6个字符，建议使用数字、符号、字母组合的复杂密码</td>
+			</tr>
+			<tr>
+				<th>新密码：</th>
+				<td><input id="password" name="password" type="password" /></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<th>重复输入新密码：</th>
+				<td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		</fieldset>
+		<div style=" padding:20px 0 0 160px; height:50px;">
+			<a onclick="$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+			<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
+		</div>			
+	</form>
 
 </div>
 
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>          
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>		  
 </div>
 <!-- #container -->
 

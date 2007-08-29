@@ -95,9 +95,9 @@ _HTML_;
 
     $array_changed = array();
     if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
-        if( $new_user_info['nameFull'] === '' )
+        if ($new_user_info['nameFull'] === '')
             $array_changed['nameFull'] = $outInfo['nameScreen'];
-        else
+	elseif (JWUser::IsValidFullName($new_user_info['nameFull']))
             $array_changed['nameFull'] = $new_user_info['nameFull'];
     }
 

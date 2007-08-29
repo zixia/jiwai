@@ -363,14 +363,29 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		if (strlen($name)<4) return false; //最少 4 byte
-		if (preg_match('/^[\d\.\-_]/', $name)) return false; //不能以半角数字开头 为了方便的区分 nameScreen 和 idUser
+		if (strlen($name)<4||strlen($name)>20) return false; //最少 4 byte
+		if (strpos($name, ' ')!==false) return false; //不能包含空格
+		if (preg_match('/^\d/', $name)) return false; //不能以半角数字开头 
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
 			if (mb_strlen($name)<5) return false; //纯西文字符不能短于5
 		} else {
-			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; 
-			//如果包含非西文字符，则其个数不能少于2
+			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; //如果包含非西文字符，则其个数不能少于2
 		}
+		$n = $name;
+		JWUnicode::unifyName($n); //检查所属Unicode区块，具体规则见JWUnicode类
+		return $n==$name;
+	}
+
+	/*
+	 * @desc	see code for rules
+	 * @param	$name	nameFull
+	 * @return	bool	valid?
+	 *
+	 */
+	static public function IsValidFullName( $name )
+	{
+		if (strlen($name)<2||strlen($name)>40) return false; //最少 2 byte
+		if (preg_match('/^[\d]/', $name)) return false; //不能以半角数字开头 
 		$n = $name;
 		JWUnicode::unifyName($n); //检查所属Unicode区块，具体规则见JWUnicode类
 		return $n==$name;

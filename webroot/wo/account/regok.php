@@ -21,7 +21,7 @@ $protected      = $user_info['protected'] == 'Y';
     $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb48');
 }else{
     // we have no photo
-    $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
+    $photo_url = JWTemplate::GetAssetUrl('/images/org-nobody-96-96.gif');
 }
 
 //echo "<pre>"; die(var_dump($user_info));
