@@ -1533,7 +1533,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id']);
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" /><?php echo $aUserInfo['nameScreen'];?>的资料
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="64" height="64"/><?php echo $aUserInfo['nameScreen'];?>的资料
 		</div>
 
 <?php
@@ -1637,7 +1637,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($userInfo['id']);
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" />欢迎你 <?php echo $userInfo['nameFull'];?>
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="64" height="64"/>欢迎你 <?php echo $userInfo['nameFull'];?>
 		</div>
 
 <?php
@@ -2129,7 +2129,7 @@ _HTML_;
             }
 
 			echo <<<_HTML_
-                <ul class="liketable"><img src="$list_user_icon_url"  class="img" />
+                <ul class="liketable"><img src="$list_user_icon_url" width="64" height="64" class="img" />
                     <li class="name"><a href="/$list_user_row[nameScreen]/">$list_user_row[nameFull]</a></li>
                     <li class="nob">${statusNum}条</li>
                     <li class="nob">${mmsNum}条</li>
