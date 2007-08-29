@@ -958,6 +958,10 @@ _STR_;
 		$inviter_name 		= $matches[1];
 		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
 
+		if( empty( $inviter_user_row) ){
+			return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！没有找到 $inviter_name 这个用户。" );
+		}
+
 
 		/*
 		 *	检查发送者是否已经注册 
