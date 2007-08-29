@@ -101,6 +101,10 @@ _HTML_;
             $array_changed['nameFull'] = $new_user_info['nameFull'];
     }
 
+    if( $new_user_info['url'] != $outInfo['url'] ) {
+        $array_changed['url'] = $new_user_info['url'];
+    }
+
     if( $new_user_info['email'] != $outInfo['email'] ) {
         $array_changed['email'] = $new_user_info['email'];
     }
