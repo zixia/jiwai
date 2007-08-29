@@ -73,7 +73,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 <div id="container">
 
-<h2>登陆到叽歪de</h2>
+<h2>登录到叽歪de</h2>
 
 <?php
 if ( !empty($err) ){
@@ -85,7 +85,7 @@ if ( !empty($err) ){
 <table width="550" border="0" cellspacing="15" cellpadding="0">
     <tr>
         <td width="70" align="right">用户名：</td>
-        <td width="240"><input type="text" name="username_or_email" /></td>
+        <td width="240"><input id="username_or_email" type="text" name="username_or_email" /></td>
         <td>
             <a href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" /></a>
         </td>
@@ -103,13 +103,13 @@ if ( !empty($err) ){
 </table>
 <ul class="choise">
     <li>
-        <input id="every_re" name="remember_me" type="radio" value="0" /> <label for="every_re">每次都重新登陆<label>
+        <input id="every_re" name="remember_me" type="radio" value="0" /> <label for="every_re">每次都重新登录<label>
     </li>
     <li>
-        <input id="month_re" name="remember_me" type="radio" value="1" /> <label for="month_re">一个月内自动登陆</label>
+        <input id="month_re" name="remember_me" type="radio" value="1" checked="checked"/> <label for="month_re">一个月内自动登录</label>
     </li>
     <!--li>
-        <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登陆</label>
+        <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登录</label>
     </li-->
     <li style="margin-top:20px;">
         <div>
