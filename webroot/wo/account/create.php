@@ -294,7 +294,7 @@ function updateLink(value){
 
 <ul class="choise">
     <li>
-        <input name="checkbox" type="checkbox" value="checkbox" checked="checked" /> 我已阅读并接受　<a href="#" style="font-size:14px;">服务条款</a>
+        <input name="checkbox" type="checkbox" value="checkbox" checked="checked" /> 我已阅读并接受　<a href="http://help.jiwai.de/Tos" style="font-size:14px;">服务条款</a>
     </li>
 </ul>
     <div style=" padding:20px 0 0 160px; height:50px;">
