@@ -54,7 +54,7 @@ $picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
     <tr>
         <td width="285"><a href="#">用户名</a></td>
         <td width="60"><a href="#">叽歪数</a></td>
-        <td width="60"><a href="#">彩信数</a></td>
+        <!--td width="60"><a href="#">彩信数</a></td-->
         <td><a href="#">最后更新时间</a></td>
     </tr>
     </table>
