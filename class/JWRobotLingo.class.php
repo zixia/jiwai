@@ -233,8 +233,8 @@ class JWRobotLingo {
 			 * seek 2007/07/25
 			 * 当用户发送follow命令到特服号码，直接follow
 			 */
-			if( $robotMsg->GetIdUserReference() ) {
-				$followe = $robotMsg->GetIdUserReference();
+			if( $robotMsg->GetIdUserConference() ) {
+				$followe = $robotMsg->GetIdUserConference();
 			}else {
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_LEAVE_HELP' );
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
