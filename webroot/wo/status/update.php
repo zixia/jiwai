@@ -29,15 +29,15 @@ if ( array_key_exists('status', $_REQUEST) ){
 			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
         */
 
-        $robotMsg = new JWRobotMsg();
-        $robotMsg->Set( $idUser , 'web', $status, 'web' );
-        $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
-        if( $replyMsg === false ) {
-			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
-        }
-        if( false == empty( $replyMsg ) ){
-            JWSession::SetInfo('notice', $replyMsg->GetBody() );
-        }
+            $robotMsg = new JWRobotMsg();
+            $robotMsg->Set( $idUser , 'web', $status, 'web' );
+            $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
+            if( $replyMsg === false ) {
+                JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
+            }
+            if( false == empty( $replyMsg ) ){
+                JWSession::SetInfo('notice', $replyMsg->GetBody() );
+            }
 	}
 }
 

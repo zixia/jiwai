@@ -22,6 +22,10 @@ $has_photo		= !empty($user_info['idPicture']);
 if ( $new_user_info )
 {
 
+    if( false == isset($new_user_info['protected']) ) {
+        $new_user_info['protected'] == 'N';
+    }
+
 	$file_info = @$_FILES['profile_image'];
 
     $notice_html = null;
@@ -99,6 +103,16 @@ _HTML_;
             $array_changed['nameFull'] = $outInfo['nameScreen'];
 	elseif (JWUser::IsValidFullName($new_user_info['nameFull']))
             $array_changed['nameFull'] = $new_user_info['nameFull'];
+    }
+    if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
+        if( $new_user_info['nameFull'] === '' )
+            $array_changed['nameFull'] = $outInfo['nameScreen'];
+        else
+            $array_changed['nameFull'] = $new_user_info['nameFull'];
+    }
+
+    if( $new_user_info['protected'] != $outInfo['protected'] ) {
+        $array_changed['protected'] = $new_user_info['protected'];
     }
 
     if( $new_user_info['url'] != $outInfo['url'] ) {
@@ -257,6 +271,12 @@ if ( $has_photo ){
         <th>Email：</th>
         <td><input name="user[email]" type="text" id="user_email" value="<?php echo $outInfo['email']?>"/></td>
         <td class="note">用于找回密码和接收通知</td>
+    </tr>
+    <tr><td colspan="3">&nbsp;</td></tr>
+    <tr>
+        <th>隐私设置：</th>
+        <td><input type="checkbox" id="protected" name="user[protected]" style="width:14px;border:none;display:inline;" value="Y" <?php if($outInfo['protected']=='Y') echo "checked";?>/> <label for="protect">只对好友开发我的叽歪更新</label></td>
+        <td class="note">选择这项设置，更新不会出现在<a href="/public_timeline/">叽歪广场</a>中</td>
     </tr>
     </table>
 </fieldset>
