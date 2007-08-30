@@ -1,0 +1,29 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*- 
+import sys
+import re
+import os
+import commands
+import syslog
+import socket
+import time
+import random
+
+#print time.localtime()
+#print time.strftime("%Y-%m-%d %H:%M:%S")
+
+def change(port,status):
+	try:
+		host = 'localhost' 
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect( (host,port) )
+		s.send( "Sig: %s\r\n" % (status))
+		s.recv( 10 )
+		s.close()
+	except socket.error, msg:
+		pass
+
+status = '叽歪de将于9月1日上午8:00开始系统升级blahblah'
+change( 55010, status )
+change( 55020, status )
+change( 55030, status )
