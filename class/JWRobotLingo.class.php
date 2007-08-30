@@ -45,8 +45,8 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Help($robotMsg)
 	{
-		$body = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_HELP_OK' );
-		return JWRobotLogic::ReplyMsg($robotMsg, $body);
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_HELP_OK' );
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
 
@@ -55,8 +55,8 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Tips($robotMsg)
 	{
-		$body = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TIPS_OK' );
-		return JWRobotLogic::ReplyMsg($robotMsg, $body);
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TIPS_OK' );
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
 
@@ -89,9 +89,9 @@ class JWRobotLingo {
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWDevice::SetDeviceEnabledFor($device_id,...) failed");
 
 
-		$body = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_OK' );
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_OK' );
 
-		return JWRobotLogic::ReplyMsg($robotMsg, $body);
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 
 	}
 
@@ -122,8 +122,8 @@ class JWRobotLingo {
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
 
 
-		$body = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_OK' );
-		return JWRobotLogic::ReplyMsg($robotMsg, $body);
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_OK' );
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
 
@@ -1015,7 +1015,7 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_IM', array($address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 		}
 
-		return JWRobotLogic::ReplyMsg($robotMsg, $body);
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 }
 ?>
