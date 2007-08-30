@@ -854,7 +854,7 @@ class JWRobotLingo {
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
 		if ( ! preg_match('/^\w+\s+(\w+)\s+(.+)$/i',$param_body,$matches) ) {
-			$reply = JWRobotLogic::GetReplyString($robotMsg, 'REPLY_D_HELP');
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
@@ -865,7 +865,7 @@ class JWRobotLingo {
 
 		if ( empty($friend_row) )
 		{
-			$reply = JWRobotLogic::GetReplyString($robotMsg, 'REPLY_NOUSER', array($friend_name,) );
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOUSER', array($friend_name,) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
@@ -875,12 +875,12 @@ class JWRobotLingo {
 		{
 			if ( JWFriend::IsFriend($address_user_id, $friend_id) )
 			{
-				$reply = JWRobotLogic::GetReplyString($robotMsg, 'REPLY_D_NOPERM', array($friend_name,) );
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_NOPERM', array($friend_name,) );
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 			}
 			else
 			{
-				$reply = JWRobotLogic::GetReplyString($robotMsg,'REPLY_D_NOPERM_BIO',array($friend_name,));
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_D_NOPERM_BIO',array($friend_name,));
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 			}
 		}
