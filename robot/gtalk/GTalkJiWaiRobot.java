@@ -213,6 +213,10 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		}
 	}
 
+	public static void setDisplayName(String displayName){
+		mStatus = displayName;
+	}
+
 	public boolean mtProcessing(MoMtMessage message){
 		Message msg = new Message(message.getAddress());
 		msg.setBody(message.getBody());
@@ -255,6 +259,13 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 					//Relogin
 					if( line.equals("Relogin") ){
 						realConnect();
+						break;
+					}
+
+					//Change Signature 
+					if( 0 == line.indexOf("Sig: ") ){
+						String sig = line.substring( "Sig: ".length() );
+						GTalkJiWaiRobot.mStatus = sig;
 						break;
 					}
 

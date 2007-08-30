@@ -44,6 +44,9 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 
 	private static final String DEVICE = "qq";
 
+	private static String mDisplayName = null;
+	private String _mDisplayName = "叽歪一下吧！（发送HELP了解更多）";
+
 	// For online Status
 	private static ConcurrentHashMap<String, String> onlineFriends = new ConcurrentHashMap<String, String>();
 	private static final ConcurrentHashMap<String, String> onlineFriendsTemp = new ConcurrentHashMap<String, String>();
@@ -114,6 +117,8 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 
 		mOnlineScript = config.getProperty("online.script", System.getProperty("online.script"));
 
+		mDisplayName = config.getProperty("qq.display.name", System.getProperty("qq.display.name", _mDisplayName));
+
 		server = config.getProperty("qq.server", System
 				.getProperty("qq.server"));
 		if (server == null || server.trim().equals("")) {
@@ -150,10 +155,15 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 		return true;
 	}
 
+	public static void setDisplayName(String displayName) {
+		client.modifySignature( displayName );
+	}
+
 	public void qqEvent(QQEvent e) {
 		switch (e.type) {
 		case QQEvent.QQ_LOGIN_SUCCESS:
 			Logger.log("QQ Login Successed.");
+			setDisplayName( mDisplayName );
 			state = 1;
 			break;
 		case QQEvent.QQ_LOGIN_FAIL:
@@ -401,6 +411,14 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 					//Relogin QQ
 					if( line.equals("Relogin") ) {
 						relogin();
+						break;
+					}
+
+					//Change Signature 
+					if( 0 == line.indexOf("Sig: ") ){
+						String sig = line.substring( "Sig: ".length() );
+						System.out.println( sig );
+						QQJiWaiRobot.setDisplayName( sig );
 						break;
 					}
 

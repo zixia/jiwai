@@ -28,11 +28,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public String _mEmail = null;
 	public static String[] mEmail = null; 
 	public static String mPassword = null;
+	public static String mDisplayName = null;
+
 	public String mQueuePath = null;
 	public String mQueuePathMo = null;
 	public String mQueuePathMt = null;
 	public String _mDisplayName = "叽歪一下吧！（发送HELP了解更多）";
-	public String mDisplayName = null;
 	
 	//device type
 	public final static String DEVICE = "msn";
@@ -288,6 +289,19 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 						break;
 					}
 
+					//Change Signature 
+					if( 0 == line.indexOf("Sig: ") ){
+						String sig = line.substring( "Sig: ".length() );
+						MsnJiWaiRobot.mDisplayName = sig;
+						Enumeration en = instances.keys();
+						while( en.hasMoreElements() ){
+							String account = (String) en.nextElement();
+							MsnInstance instance = instances.get( account );
+							instance.setDisplayName( sig );
+						}
+						break;
+					}
+
 					if( 0 == line.indexOf("Invite: ") ){
 						String ft = line.substring( "Invite: ".length() );
 						String[] fts = ft.split(" ");
@@ -417,6 +431,10 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 				listened = false;
 
 			new Thread(this).start();
+		}
+
+		public void setDisplayName(String displayName){
+			messenger.getOwner().setDisplayName( displayName );
 		}
 
 		public int getFriendCount(){
