@@ -174,7 +174,7 @@ class JWRobotLingoReply {
 				$map['REPLY_NAMEFULL'] = '午夜过客';
 			}
 			break;
-			case 89:
+			case 28006:
 			{
 				$map['REPLY_WHOAMI_IM'] = '你是{0}，改名请用：GM 新昵称。';
 				$map['REPLY_REG_MSG'] = '欢迎您参与《亲子港湾》节目，本短信服务不收任何信息费，正常通信费除外，请把你的昵称作为短信内容直接回复。';

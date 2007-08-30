@@ -183,7 +183,6 @@ class JWRobotLingoBase {
 			}
 			break;
 			case 28006:
-			case 89:
 			{
 				$alias['A'] = 'FOLLOW';	
 			}

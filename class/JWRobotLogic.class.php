@@ -241,9 +241,10 @@ _STR_;
 		switch( $idUserConference ) {
 			case 99:
 			{
-				$nameFull = '午夜过客';
-				$uaddress = 'u'.$address;
+				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
 				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
+				$nameFull = '午夜过客';
+
 				if( !$nameScreen ){
 					return false;
 				}
@@ -269,12 +270,12 @@ _STR_;
 			}
 			break;
 			case 28006:
-			case 89:
 			{
+				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
+				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
 				$nameFull = $address;
 				$nameFull = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
-				$uaddress = 'u'.$address;
-				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
+
 				if( !$nameScreen ){
 					return false;
 				}
