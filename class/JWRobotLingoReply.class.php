@@ -72,8 +72,8 @@ class JWRobotLingoReply {
 			'REPLY_NUDGE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 			'REPLY_NUDGE_NOPERM' => '对不起，你还不是{0}的好友呢，不能随便挠挠。等你被加为好友后，再挠吧！',
 
-			'REPLY_REG_HLEP' => '使用方法：REG 账户 [昵称]，[]内为可选。',
-			'REPLY_REG_HLEP_GM' => '使用方法：GM 账户 [昵称]，[]内为可选。',
+			'REPLY_REG_HELP' => '使用方法：REG 账户 [昵称]，[]内为可选。',
+			'REPLY_REG_HELP_GM' => '使用方法：GM 账户 [昵称]，[]内为可选。',
 			'REPLY_REG_SUC_NICK' => '好消息，你的昵称修改为 {0} 成功，如果不满意，可以重新修改！',
 			'REPLY_REG_SUC_SCREEN' => '好消息，你的帐户名修改为 {0} 成功，如果不满意，可以重新修改！',
 			'REPLY_REG_SUC_ALL' => '好消息，修改账户及昵称为 {1} ({0}) 成功，如果不满意，可以重新修改！',
