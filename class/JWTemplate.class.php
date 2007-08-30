@@ -2113,12 +2113,12 @@ _HTML_;
                 case 'inrequests':
                     $action = self::InRequestsAction($list_user_id, $action_row , $wo);
                     $requestRow = $friendRequestRows[ $list_user_id ];
-                    $liNote = "<li class=\"note\">$requestRow[note]</li>";
+                    $liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
                 break;
                 case 'outrequests':
                     $action = self::OutRequestsAction($list_user_id, $action_row , $wo);
                     $requestRow = $friendRequestRows[ $list_user_id ];
-                    $liNote = "<li class=\"note\">$requestRow[note]</li>";
+                    $liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
                 break;
                 case 'search':
                     $action_row = $action_rows[$list_user_id];
