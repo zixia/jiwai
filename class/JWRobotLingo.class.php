@@ -45,7 +45,7 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Help($robotMsg)
 	{
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_HELP_OK' );
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_HELP_SUC' );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -55,7 +55,7 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Tips($robotMsg)
 	{
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TIPS_OK' );
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TIPS_SUC' );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -89,7 +89,7 @@ class JWRobotLingo {
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWDevice::SetDeviceEnabledFor($device_id,...) failed");
 
 
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_OK' );
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_SUC' );
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 
@@ -122,7 +122,7 @@ class JWRobotLingo {
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
 
 
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_OK' );
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_SUC' );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -419,7 +419,7 @@ class JWRobotLingo {
 				{
 					JWSns::CreateFriends	( $address_user_id	,array($friend_user_id) );
 					JWSns::CreateFollowers	( $friend_user_id	,array($address_user_id) );
-					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_OK', array($invitee_address,) );
+					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_SUC', array($invitee_address,) );
 				}
 			}
 
@@ -433,6 +433,7 @@ class JWRobotLingo {
 
 		if ( ! JWDevice::IsValid($invitee_address,$invitee_type) )
 		{
+	
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_NOADDRESS', array( $user_input_invitee_address, ));
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
@@ -739,7 +740,7 @@ class JWRobotLingo {
 			JWSns::CreateFriends	($address_user_id, array($inviter_user_row['idUser']), true);
 			JWSns::CreateFollowers	($address_user_id, array($inviter_user_row['idUser']), true);
 
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_SUC', array($inviter_user_row['nameFull'], ));
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_SUC', array($inviter_user_row['nameFull'], $inviter_user_row['nameScreen']));
 		}
 		else if ( !empty($inviter_user_row) )
 		{
