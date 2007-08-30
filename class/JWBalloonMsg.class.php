@@ -64,7 +64,8 @@ _HTML_;
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
-		self::Create($idFriend,$html);
+        if( false == JWFriend::IsFriend($idUser, $idFriend ) )
+            self::Create($idFriend,$html);
 	}
 
 	/**
@@ -97,7 +98,7 @@ $follower_row[nameFull]($follower_row[nameScreen]) 订阅了你的叽歪。
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
-		self::Create($idUser,$html);
+		//self::Create($idUser,$html);
 
 	}
 

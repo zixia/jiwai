@@ -175,7 +175,7 @@ class JWSns {
 	 */
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
-		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend);
+		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id);
 
 		return $friend_request_id;
