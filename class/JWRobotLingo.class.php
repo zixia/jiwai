@@ -159,12 +159,18 @@ class JWRobotLingo {
 			 */
 			if( $robotMsg->GetIdUserConference() ) {
 				$followe = $robotMsg->GetIdUserConference();
-				$userInfo = JWUser::GetUserInfo( $followe );
-				if( false == empty($userInfo) ){
-					$followe = $userInfo['nameScreen'];
-				}else{
-					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array($followe,));
-					return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+				if( $followe == 28006 ) {
+					$followe = 'qzgwclub';
+				}
+
+				if( is_numeric( $followe ) ) {
+					$userInfo = JWUser::GetUserInfo( $followe );
+					if( false == empty($userInfo) ){
+						$followe = $userInfo['nameScreen'];
+					}else{
+						$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array($followe,));
+						return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+					}
 				}
 			}else {
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_HELP' );
