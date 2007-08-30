@@ -18,8 +18,8 @@ class JWRobotLingoReply {
 
 	static private $msReplyMap = array(
 			//Reply
-			'REPLY_HELP'	=> '告诉我们这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。',
-			'REPLY_TIPS'	=> '命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。',
+			'REPLY_HELP_SUC'	=> '告诉我们这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。',
+			'REPLY_TIPS_SUC'	=> '命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。',
 
 			'REPLY_ADD_SUC' => '搞定了！已经将{0}添加为你的好友啦！',
 			'REPLY_ADD_HELP' => 'ADD命令帮助：ADD 帐号。',
