@@ -733,20 +733,21 @@ class JWRobotLingo {
 				2、用户没有注册，但是有邀请
 				3、用户没有注册，没有邀请
 		 */
-		if ( ! empty($address_device_db_row) )
+		if ( ! empty($address_device_db_row) && !empty($inviter_user_row) )
 		{
 			/*
 			 *	 1、用户已经注册
 			 */
-
 			$address_user_id	= $address_device_db_row['idUser'];
 
-
-			// 互相加，无所谓先后顺序
-			JWSns::CreateFriends	($address_user_id, array($inviter_user_row['idUser']), true);
-			JWSns::CreateFollowers	($address_user_id, array($inviter_user_row['idUser']), true);
-
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_SUC', array($inviter_user_row['nameFull'], $inviter_user_row['nameScreen']));
+			if( JWFriendRequest::IsExist($inviter_user_row['id'], $address_user_id) ) {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameFull'],) );
+			}else{
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_NOREQUEST', array($inviter_user_row['nameFull'],) );
+			}
+			if( false == JWSns::CreateFriends($inviter_user_row['id'], array($address_user_id), false) ){
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_500', array($inviter_user_row['nameFull'],) );
+			}
 		}
 		else if ( !empty($inviter_user_row) )
 		{

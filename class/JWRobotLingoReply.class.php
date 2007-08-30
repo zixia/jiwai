@@ -93,6 +93,9 @@ class JWRobotLingoReply {
 			'REPLY_ACCEPT_INVITE' => '哎呀！{0}没有邀请过你。请回复你希望使用的用户名。',
 			'REPLY_ACCEPT_INVITE_SUC' => '搞定了！你已经接受了{0}的邀请。请回复你希望使用的用户名。',
 			'REPLY_ACCEPT_INVITE_NOUSER' => '哎呀！没有找到这个用户 {0}，是不是改名了？。发送HELP了解更多。',
+			'REPLY_ACCEPT_SUC_REQUEST' => '搞定了！你已经接受了{0}成为你的好友了。',
+			'REPLY_ACCEPT_SUC_NOREQUEST' => '哎呀！虽然{0}并没有邀请过你，但你还是让{0}成为你的好友了。',
+			'REPLY_ACCEPT_500' => '哎呀！由于系统故障，你的接受操作失败了…… 请稍后再试吧。',
 
 			'REPLY_VERIFY_SUC' => '搞定了！你已经通过了验证。回复本消息即可进行更新，耶！',
 			'REPLY_VERIFY_FAIL' => '哎呀！由于你输入的验证码"{0}"不正确，本次验证未能成功，请你查证后再重试一下吧。',
