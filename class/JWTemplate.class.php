@@ -2129,7 +2129,7 @@ _HTML_;
             }
 
 			echo <<<_HTML_
-                <ul class="liketable"><img src="$list_user_icon_url" width="64" height="64" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
+                <ul class="liketable"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
                     <li class="name"><a href="/$list_user_row[nameScreen]/" title="$list_user_row[nameFull]($list_user_row[nameScreen])">$list_user_row[nameFull]</a></li>
                     <li class="nob">${statusNum}条</li>
                     <!--li class="nob">${mmsNum}条</li-->
