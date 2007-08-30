@@ -84,8 +84,8 @@ class JWRobotLingoReply {
 			'REPLY_NOREG_TIPS' => '你还没有注册，请回复你想要的账户名。',
 
 			'REPLY_WHOAMI' => '你是{0}({1})。',
-			'REPLY_WHOAMI_WEB' => '你是{0}，你的叽歪档案位于：http://JiWai.de/{1}',
-			'REPLY_WHOAMI_IM' => '你是{0}，设置密码请来这里：http://JiWai.de/wo/account/complete',
+			'REPLY_WHOAMI_WEB' => '你是{0}({1})，你的叽歪档案位于：http://JiWai.de/{1}',
+			'REPLY_WHOAMI_IM' => '你是{0}({1})，设置密码请来这里：http://JiWai.de/wo/account/complete',
 
 			'REPLY_ACCEPT_SUC' => '搞定了！你和{0}({1})已经成为好友！回复GET {1}查看最新更新。',
 			'REPLY_ACCEPT_HELP' => 'ACCEPT命令帮助：ACCEPT 帐号。',
