@@ -2155,7 +2155,7 @@ _HTML_;
         if( isset( $actionRow['leave'] ) )
             $action .= "<a href='/wo/friends/leave/$idUser'>取消关注</a>$separator";
 
-        if( $wo ) $action .= "<a href='/wo/friends/destroy/$idUser'>删除</a>$separator";
+        if( $wo ) $action .= "<a href='/wo/friendships/destroy/$idUser'>删除</a>$separator";
 
         if( isset( $actionRow['nudge'] ) )
             $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";
