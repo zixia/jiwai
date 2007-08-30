@@ -57,7 +57,6 @@ class JWRobotLogic {
 			return null;
 		}
 		
-//var_dump($robotMsg);
 		if ( ! $robotMsg->IsValid() )
 		{
 			JWLog::LogFuncName(LOG_CRIT, 'received a invalid msg' );
@@ -92,15 +91,11 @@ class JWRobotLogic {
 		 */
 		$robotMsgtype = $robotMsg->getMsgtype();
 		$lingo_func = ( null == $robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
-			JWRobotLingo::GetLingoFunctionFromMsg($robotMsg) : null;
+			JWRobotLingoBase::GetLingoFunctionFromMsg($robotMsg) : null;
 
 		if ( !empty($lingo_func) )
 		{
 			$reply_robot_msg 	= call_user_func($lingo_func, $robotMsg);
-
-		}else if( $robotMsgtype == 'ONOROFF' ) {  // FOR user online/offline msg
-
-			return null;
 
 		} else if ( JWDevice::IsExist($address, $type, false) || $type == 'web' )
 		{
@@ -137,7 +132,6 @@ class JWRobotLogic {
 
 	static function ProcessMoStatus($robotMsg)
 	{
-
 		$address	= $robotMsg->GetAddress();
 		$serverAddress  = $robotMsg->GetServerAddress();
 		$type		= $robotMsg->GetType();
@@ -175,11 +169,13 @@ class JWRobotLogic {
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
 			$ret = JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature, $serverAddress);
-			if( $ret['op'] ) 	
-			{	// succeed posted, keep silence
-				if( $ret['reply'] ) {
-					return self::ReplyMsg( $robotMsg, $ret['reply'] );
+			if( $ret ) {
+				$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_UPDATESTATUS',array($nameFull,));
+				if( $reply ) {
+					return self::ReplyMsg( $robotMsg, $reply );
 				}else {
+					//KeepSilence
 					return null;
 				}
 			}
@@ -233,6 +229,81 @@ _STR_;
 		return $robot_reply_msg;
 	}
 
+	/**
+	 * 一些会议系统需要强制注册；
+	 */
+	static public function ForceCreateAccount($robotMsg ) {
+
+		$idUserConference = $robotMsg->GetIdUserConference();	
+		$address = $robotMsg->GetAddress();
+		$type = $robotMsg->GetType();
+
+		switch( $idUserConference ) {
+			case 99:
+			{
+				$nameFull = '午夜过客';
+				$uaddress = 'u'.$address;
+				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
+				if( !$nameScreen ){
+					return false;
+				}
+				$new_user_row = array(
+						'nameScreen'	=> $nameScreen,
+						'nameFull'	=> $nameFull,
+						'pass'		=> JWDevice::GenSecret(16),
+						'isWebUser'	=> 'N', 
+				);
+
+				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
+					$new_user_row['email'] = $address;
+				}
+		
+				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
+				$new_user_id =  JWUser::Create($new_user_row);
+				if( $new_user_id ) {
+					JWSns::CreateDevice($new_user_id, $address, $type, true);
+				}else{
+					return false;
+				}
+				return true;
+			}
+			break;
+			case 28006:
+			case 89:
+			{
+				$nameFull = $address;
+				$nameFull = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
+				$uaddress = 'u'.$address;
+				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
+				if( !$nameScreen ){
+					return false;
+				}
+				$new_user_row = array(
+						'nameScreen'	=> $nameScreen,
+						'nameFull'	=> $nameFull,
+						'pass'		=> JWDevice::GenSecret(16),
+						'isWebUser'	=> 'N', 
+				);
+
+				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
+					$new_user_row['email'] = $address;
+				}
+		
+				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
+				$new_user_id =  JWUser::Create($new_user_row);
+				if( $new_user_id ) {
+					JWSns::CreateDevice($new_user_id, $address, $type, true);
+				}else{
+					return false;
+				}
+				return true;
+				return true;
+			}
+			break;
+		}
+		return null;
+	}
+
 	/*
 	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
 	 */
@@ -243,9 +314,22 @@ _STR_;
 		$body	 = $robotMsg->GetBody();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$linkId = $robotMsg->GetLinkId();
+		$idUserConference = $robotMsg->GetIdUserConference();
+
+		$forceCreate = self::ForceCreateAccount( $robotMsg );
+
+		if( false === $forceCreate ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_MSG' );
+			return self::ReplyMsg( $robotMsg, $reply );
+		}else if( true === $forceCreate ){
+			self::ProcessMo( $robotMsg );
+			$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+			$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_SUC', array($nameFull,) );
+			return self::ReplyMsg( $robotMsg, $reply );
+		}
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
-
 		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
 
 		{{{  // Not be invited and not register by lingo REG

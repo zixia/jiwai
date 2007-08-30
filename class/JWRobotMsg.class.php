@@ -21,6 +21,11 @@ class JWRobotMsg {
 	private $mBody		= null;
 	private $mFile		= null;
 	private $mCreateTime	= null;
+	
+	/**
+	  * idUserConference; not need check
+	  */
+	private $mIdUserConference = null;
 
 	/**
 	 * A hash array used to store Message Head Tag from File 
@@ -208,6 +213,15 @@ class JWRobotMsg {
 	public function GetCreateTime()
 	{
 		return $this->mCreateTime;
+	}
+
+	public function GetIdUserConference()
+	{
+		return $this->mIdUserConference;
+	}
+	public function SetIdUserConference( $idUserConference )
+	{
+		$this->mIdUserConference = $idUserConference ;
 	}
 
 

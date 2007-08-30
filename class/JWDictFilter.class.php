@@ -112,7 +112,7 @@ class JWDictFilter {
 
 	function GetFilterWords($string, $out="UTF-8"){
 		//全角到半角
-		$string = self::ConvertCorner( $string );
+		$string = JWRobotLingoBase::ConvertCorner( $string );
 	
 		//Get english word, number
 		$filterWords = array();
@@ -188,26 +188,6 @@ class JWDictFilter {
 		}
 		return $filterWords;
 	}
-
-	static function ConvertCorner($string){
-		$corner = array(
-			'１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
-			'６' => '6', '７' => '7', '８' => '8', '９' => '9', '０' => '0',
-			'ａ' => 'a', 'ｂ' => 'b', 'ｃ' => 'c', 'ｄ' => 'd', 'ｅ' => 'e',
-			'ｆ' => 'f', 'ｇ' => 'g', 'ｈ' => 'h', 'ｉ' => 'i', 'ｊ' => 'j',
-			'ｋ' => 'k', 'ｌ' => 'l', 'ｍ' => 'm', 'ｎ' => 'n', 'ｏ' => 'o',
-			'ｐ' => 'p', 'ｑ' => 'q', 'ｒ' => 'r', 'ｓ' => 's', 'ｔ' => 't',
-			'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x', 'ｙ' => 'y',
-			'ｚ' => 'z', 'Ａ' => 'A', 'Ｂ' => 'B', 'Ｃ' => 'C', 'Ｄ' => 'D',
-			'Ｅ' => 'E', 'Ｆ' => 'F', 'Ｇ' => 'G', 'Ｈ' => 'H', 'Ｉ' => 'I',
-			'Ｊ' => 'J', 'Ｋ' => 'K', 'Ｌ' => 'L', 'Ｍ' => 'M', 'Ｎ' => 'N',
-			'Ｏ' => 'O', 'Ｐ' => 'P', 'Ｑ' => 'Q', 'Ｒ' => 'R', 'Ｓ' => 'S',
-			'Ｔ' => 'T', 'Ｕ' => 'U', 'Ｖ' => 'V', 'Ｗ' => 'W', 'Ｘ' => 'X',
-			'Ｙ' => 'Y', 'Ｚ' => 'Z', '　' => ' '
-	    	);
-		return str_replace(array_keys($corner), array_values($corner), $string);
-	}
-
 }
 /** Test Case
 	$a = new JWDictFilter();

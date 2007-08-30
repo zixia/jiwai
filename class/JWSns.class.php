@@ -567,7 +567,7 @@ class JWSns {
 			}
 		}
 
-		$statusPost = JWRobotLingo::ConvertCorner( $status );
+		$statusPost = JWRobotLingoBase::ConvertCorner( $status );
 		$reply_info	= JWStatus::GetReplyInfo($statusPost);	
 
 		if( !empty( $reply_info )) {
@@ -602,16 +602,8 @@ class JWSns {
 		$ret = JWStatus::Create($idUser,$status,$device,$time, $isSignature );
 
 		//added 2007-07-29
-		$ret = array( 'op' => $ret, 'reply' => null, );
-		if( $ret['op'] ) {
-			JWStatusNotifyQueue::Create($oldIdUser, $ret['op'], time(), $processInfo['notify'] );
-			if( $processInfo['notify']['idConference'] ) {
-				$conference = JWConference::GetDbRowById( $processInfo['notify']['idConference'] );
-				if( false == empty($conference) && $conference['msgUpdateStatus'] ){
-					$userInfo = JWUser::GetUserInfo( $oldIdUser );
-					$ret['reply'] = "$userInfo[nameScreen]，$conference[msgUpdateStatus]" ;
-				}
-			}
+		if( $ret ) {
+			JWStatusNotifyQueue::Create($oldIdUser, $ret, time(), $processInfo['notify'] );
 		}
 		
 		//Refresh facebook profile if necessary

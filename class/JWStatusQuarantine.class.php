@@ -60,7 +60,7 @@ class JWStatusQuarantine {
 		if ( 0>=$time )
 			$time = time();
 		
-		$statusPost = JWRobotLingo::ConvertCorner($status);
+		$statusPost = JWRobotLingoBase::ConvertCorner($status);
 		$reply_info = JWStatus::GetReplyInfo($statusPost);
 
 		if ( empty($reply_info) )
