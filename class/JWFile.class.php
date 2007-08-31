@@ -88,12 +88,11 @@ class JWFile {
          */
 		$abs_file_path_name = self::$msStorageAbsRoot . './' . $relativeFilePathNames;
 
-		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-01.jw/jiwai/";
-		system($cmd, $ret);
+		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-01.jw/jiwai/ 2>&1";
+		exec($cmd, $out, $ret);
 
-		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-02.jw/jiwai/";
-		system($cmd, $ret);
-
+		$cmd = "$rsync_binary $abs_file_path_name rsync://asset-02.jw/jiwai/ 2>&1";
+		exec($cmd, $out, $ret);
 
 		$is_succ = ($ret==0);
 
