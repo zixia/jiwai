@@ -112,7 +112,7 @@ _HTML_;
     ?>
     </td>
     <td valign="top">
-        <?php if(empty($secret) ) { ?> 
+        <?php if(empty($secret) && $bind) { ?> 
         <select name="select" onChange="JiWai.EnableDevice(<?php echo $device_row[$type]['id'];?>, 'device[enabled_for]='+this.options[this.selectedIndex].value);">
             <option value="everything" <?php if($device_row[$type]['enabledFor']=='everything') echo "selected";?>>启用</option>
             <option value="direct_messages" <?php if($device_row[$type]['enabledFor']=='direct_messages') echo "selected";?>>只接受悄悄话</option>
