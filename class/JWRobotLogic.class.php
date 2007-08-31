@@ -70,7 +70,8 @@ class JWRobotLogic {
 		$linkId		= $robotMsg->GetLinkId();
 
 		// echo
-		printf("%-35s: %s\n", "MO($type://$address)", $body);
+        if( $type != 'web' )
+            printf("%-35s: %s\n", "MO($type://$address)", $body);
 
 		/*
 		 *	一个 MO 消息有如下几种状态：
