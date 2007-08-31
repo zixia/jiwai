@@ -20,23 +20,25 @@ class JWRender{
 	}
 }
 
-class Template_Render{ 
+class Template_Render{   
 	
-        protected $_properties_array_used_by_overload = array();
-        public static $lastContent = null;
+	//now have fixed the warning to access not exists properties;
+	//used to store value stack of template calling especiall call [part]
+    protected $_properties_array_used_by_overload = array();
+    public static $lastContent = null;
 
-        public function __get($name=null){
-                return isset($this->_properties_array_used_by_overload[$name]) ?
-                        $this->_properties_array_used_by_overload[$name] : false;
-        }
+    public function __get($name=null){
+        return isset($this->_properties_array_used_by_overload[$name]) ?
+            $this->_properties_array_used_by_overload[$name] : false;
+    }
 
-        public function __set($name=null,$value=null){
-                return $this->_properties_array_used_by_overload[$name] = $value;
-        }
+    public function __set($name=null,$value=null){
+        return $this->_properties_array_used_by_overload[$name] = $value;
+    }
 
-        public function __call($method=null,$param = array()){
-                return false;
-        }
+    public function __call($method=null,$param = array()){
+        return false;
+    }
 	
 	//following is for template	
 
@@ -46,7 +48,7 @@ class Template_Render{
 	}
 
 	private function __parsecall($matches) {
-		return '<?= $render("'.$matches[1].'") ?>';
+		return '<?php echo $render("'.$matches[1].'") ?>';
 	}
 
 	private function parse($templateFile,$compiledFile) {
@@ -56,20 +58,20 @@ class Template_Render{
 		if(!($fileContent = file_get_contents($templateFile)))
 			return false;
 
-		$fileContent = preg_replace("/\<\!\-\-\s*\\\$\{(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<? \\1; ?>')", $fileContent);
-		$fileContent = preg_replace("/\{(\\\$[a-zA-Z0-9_\[\]\\\ \-\'\,\%\*\/\.\(\)\'\"\$\x7f-\xff]+)\}/s", "<?= \\1 ?>", $fileContent);
-		$fileContent = preg_replace("/\\\$\{(.+?)\}/ies", "\$this->__replace('<?= \\1 ?>')", $fileContent);
-		$fileContent = preg_replace("/\<\!\-\-\s*\{else\s*if\s+(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<? } else if(\\1) { ?>')", $fileContent);
-		$fileContent = preg_replace("/\<\!\-\-\s*\{else\}\s*\-\-\>/is", "<? } else { ?>", $fileContent);
+		$fileContent = preg_replace("/\<\!\-\-\s*\\\$\{(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<?php \\1; ?>')", $fileContent);
+		$fileContent = preg_replace("/\{(\\\$[a-zA-Z0-9_\[\]\\\ \-\'\,\%\*\/\.\(\)\'\"\$\x7f-\xff]+)\}/s", "<?php echo \\1 ?>", $fileContent);
+		$fileContent = preg_replace("/\\\$\{(.+?)\}/ies", "\$this->__replace('<?php echo \\1 ?>')", $fileContent);
+		$fileContent = preg_replace("/\<\!\-\-\s*\{else\s*if\s+(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<?php } else if(\\1) { ?>')", $fileContent);
+		$fileContent = preg_replace("/\<\!\-\-\s*\{else\}\s*\-\-\>/is", "<?php } else { ?>", $fileContent);
 
 		for($i = 0; $i < 5; ++$i) {
-			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*=>\s*(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<? if(is_array(\\1)){foreach(\\1 as \\2=>\\3) { ?>\\4<? }}?>')", $fileContent);
-			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<? if(is_array(\\1)){foreach(\\1 as \\2) { ?>\\3<? }}?>')", $fileContent);
-			$fileContent = preg_replace("/\<\!\-\-\s*\{if\s+(.+?)\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/if\}\s*\-\-\>/ies", "\$this->__replace('<? if(\\1){?>\\2<? }?>')", $fileContent);
+			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*=>\s*(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<?php if(is_array(\\1)){foreach(\\1 as \\2=>\\3) { ?>\\4<?php }}?>')", $fileContent);
+			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<?php if(is_array(\\1)){foreach(\\1 as \\2) { ?>\\3<?php }}?>')", $fileContent);
+			$fileContent = preg_replace("/\<\!\-\-\s*\{if\s+(.+?)\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/if\}\s*\-\-\>/ies", "\$this->__replace('<?php if(\\1){?>\\2<?php }?>')", $fileContent);
 		}
 		
 		//Add for call <!--{portal->part /video/index/}-->
-		$fileContent = preg_replace("/\<\!\-\-\s*\{\s*(\w+)\-\>(\w+)\s+(.+?)\s*}\s*\-\-\>/is","<?= $\\1->\\2('\\3') ?>",$fileContent);
+		$fileContent = preg_replace("/\<\!\-\-\s*\{\s*(\w+)\-\>(\w+)\s+(.+?)\s*}\s*\-\-\>/is","<?php echo $\\1->\\2('\\3') ?>",$fileContent);
 		$fileContent = preg_replace_callback("/\<\!\-\-\s*\{\s*include\s+(.+?)\s*}\s*\-\-\>/is", array(&$this,'__parsecall'), $fileContent);
 
 		//Add value namespace
@@ -88,8 +90,8 @@ class Template_Render{
 	}
 
 	public function render($templateFile,$valueArray=array()) {
-		$templateFile = TPL_TEMPLATE_DIR . '/' . $templateFile . TPL_FILE_SUFFIX;	
-		$compiledFile = TPL_COMPILED_DIR . '/' . md5($templateFile) . '.php';
+		$templateFile = TPL_TEMPLATE_DIR .'/'. $templateFile . TPL_FILE_SUFFIX;	
+		$compiledFile = TPL_COMPILED_DIR .'/'. md5($templateFile) . '.php';
 
 		if(count($valueArray)){
 			foreach($valueArray as $key=>$value)
