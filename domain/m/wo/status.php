@@ -55,17 +55,31 @@ function update($idUser, $status) {
         /*
          *	为了 /help/ 留言板的更新都自动加上 @help
          */
+        $isHelp = false;
         $helpUserId	= JWUser::GetUserInfo('help', 'idUser');
-        if ( preg_match('#\.de/help/$#i', $_SERVER['HTTP_REFERER'])
-                && $idUser != $help_user_id
+        if ( false !== strpos( $_SERVER['HTTP_REFERER'], 'jiwai.de/help/' )
+                && $idUser != $helpUserId
                 && !preg_match('/^@help /',$status) ) {
                 $status = '@help ' . $status;
+                $isHelp = true;
         }
-        if ( !JWSns::UpdateStatus($idUser, $status) ) {
-            JWSession::SetInfo('error', "系统出现故障，叽歪失败，稍后再试。");
+
+        $robotMsg = new JWRobotMsg();
+        $robotMsg->Set( $idUser , 'web', $status, 'web' );
+        $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
+
+        if( $replyMsg === false ) {
             JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
+        }
+
+        if( false == empty( $replyMsg ) ){
+            JWSession::SetInfo('error', $replyMsg->GetBody() );
         }else{
-            JWSession::SetInfo('error', "叽歪成功！");
+            if( $isHelp ) {
+                JWSession::SetInfo('error', "你给叽歪de留言成功！");
+            }else{
+                JWSession::SetInfo('error', "叽歪成功！");
+            }
         }
     }
     header('Location: /wo/' );
