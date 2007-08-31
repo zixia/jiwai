@@ -11,10 +11,12 @@ $page = ($page < 1 ) ? 1 : $page;
 
 $statusNum= JWStatus::GetStatusNumFromFriends($loginedIdUser);
 $pagination		= new JWPagination($statusNum, $page, 10);
-$statusData 	= JWDB_Cache_Status::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$statusData 	= JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 $statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
 $userRows		= JWUser::GetUserDbRowsByIds	($statusData['user_ids']);
+
+krsort( $statusRows );
 
 $statuses = array();
 foreach( $statusRows as $k=>$s){

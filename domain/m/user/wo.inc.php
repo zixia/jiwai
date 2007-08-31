@@ -27,6 +27,7 @@ if( $statusTab == 'with_friends' ) {
     $tpl = 'user/owner';
 }
 
+krsort( $statusRows );
 $statuses = array();
 foreach( $statusRows as $k=>$s ){
     $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
