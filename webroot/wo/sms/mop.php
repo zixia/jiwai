@@ -132,17 +132,16 @@ function mop_mo()
 				$old_arg_msg = iconv('GBK','UTF-8',urldecode($old_msg));
 				if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
 					$arg_linkid = rand(100000000,999999999);
-					JWSms::ReceiveMo($arg_src, $arg_dst, $old_arg_msg, $arg_linkid, $arg_gid);
 				}
-
+				JWSms::ReceiveMo($arg_src, $arg_dst, $old_arg_msg, $arg_linkid, $arg_gid);
 				$memcache->Del( $cut_key );
-
 			}
 		}
 
 		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
-		if( $arg_gid == JWSms::GID_CHINAMOBILE )
+		if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
 			$arg_linkid = rand(100000000,999999999);
+		}
 		return JWSms::ReceiveMo($arg_src, $arg_dst, $arg_msg, $arg_linkid, $arg_gid);
 }
 
