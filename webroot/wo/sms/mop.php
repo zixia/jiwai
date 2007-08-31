@@ -29,8 +29,7 @@ $arg_msgid	= @$_REQUEST['msgid'];
 $arg_state	= @$_REQUEST['state'];
 $arg_errcode= @$_REQUEST['errcode'];
 
-$var = var_export( $_REQUEST, true );
-error_log( "$var\n", 3, "/tmp/requestsms" );
+error_log( var_export( $_REQUEST , true ), 3, '/tmp/requestsms' );
 
 switch ($arg_op)
 {
@@ -82,9 +81,64 @@ function mop_mo()
 		 */ 
 		$arg_msg = preg_replace('/^(%3F)+/', '', $arg_msg);
 
-		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
 
-		//file_put_contents("/tmp/zixia.txt", "$arg_src -> $arg_dst\n$arg_msg");
+		/** DELA max pieces of gsm-sms */
+		$cut_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'StoreCut'), $arg_src );
+		$memcache = JWMemcache::Instance();
+		$old_msg = $memcache->Get( $cut_key );
+
+		if( mb_strlen( $arg_msg , 'GBK') > 3 && $arg_msg[0] == '?' && $arg_msg[2] == '?' ) {
+
+			$net_msg = substr( $arg_msg, 3 );
+
+			$old_len = mb_strlen( $old_msg, 'GBK' );
+			$net_len = mb_strlen( $net_msg, 'GBK' );
+
+			//error_log( "net_len: $net_len\n", 3 , '/tmp/requestsms' );
+
+			if( $net_len < 67 ) { // it may be last content;
+
+				//error_log( "retrieve it!\n ", 3, "/tmp/requestsms");
+				
+				if( $old_len == 0 ) { // may this msg come quick than the head msg;
+
+					$memcache->Set( $cut_key, $net_msg, 0, 600 );
+					return true;
+
+				}else{  // merge the exists one;    ########## FINISHED ########
+
+					$arg_msg = $old_msg . $net_msg;
+					$memcache->Del( $cut_key );
+
+				}
+
+			}else{
+				//error_log( "long msg\n", 3, "/tmp/requestsms");
+
+				if( $old_len < 67 && $old_len > 0 ) { ######### FINISHED ######
+					$arg_msg = $net_msg . $old_msg ;
+					$memcache->Del( $cut_key );
+				}else{
+					$new_msg = $old_msg . $net_msg ;
+					$memcache->Set( $cut_key, $new_msg, 0, 600 ); // store about 10mins
+					return true;
+				}
+			}
+		}else{
+			if( $old_msg ) {
+
+				$old_arg_msg = iconv('GBK','UTF-8',urldecode($old_msg));
+				if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
+					$arg_linkid = rand(100000000,999999999);
+					JWSms::ReceiveMo($arg_src, $arg_dst, $old_arg_msg, $arg_linkid, $arg_gid);
+				}
+
+				$memcache->Del( $cut_key );
+
+			}
+		}
+
+		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
 		if( $arg_gid == JWSms::GID_CHINAMOBILE )
 			$arg_linkid = rand(100000000,999999999);
 		return JWSms::ReceiveMo($arg_src, $arg_dst, $arg_msg, $arg_linkid, $arg_gid);
