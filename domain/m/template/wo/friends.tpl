@@ -4,7 +4,7 @@
 <ul>
 <!--{foreach $friends as $friend}-->
 <li>
-    <img src="${JWPicture::GetUserIconUrl($friend['id'],'thumb48')}" alt="{$friend['nameScreen']}" alt="{$friend['nameScreen']}" />
+    <img width="48" height="48" src="${JWPicture::GetUserIconUrl($friend['id'],'thumb48')}" alt="{$friend['nameScreen']}" alt="{$friend['nameScreen']}" />
     <a href="/{$friend['nameScreen']}/">{$friend['nameScreen']}</a>
     <span class="a">（{$friendOps[ $friend['id'] ]}）</span>
 </li>

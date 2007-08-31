@@ -9,7 +9,7 @@ require_once( dirname(__FILE__).'/../../jiwai.inc.php' );
 function buildUrl($url){
     return $url;
     $sessionId = session_id();
-    $relayUrl = 'http://m.jiwai.vm' . $url;
+    $relayUrl = 'http://m.alpha.jiwai.de' . $url;
     if( strpos( $relayUrl, '?' ) > 0 ) {
         $relayUrl .= "&PHPSESSID=$sessionId";
     } else {

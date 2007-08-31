@@ -1,7 +1,8 @@
 <?php
 $showProtected = $userInfo['isProtected'] == 'N';
 if( false == $showProtected ){
-    $showProtected = JWFriend::IsFriend( $userInfo['id'], $loginedUserInfo['id'] );
+    $showProtected = JWFriend::IsFriend( $userInfo['id'], $loginedUserInfo['id'] ) 
+                        | $loginedUserInfo['id'] == $userInfo['id'] ;
 }
 
 if( $statusTab == 'with_friends' ) {
