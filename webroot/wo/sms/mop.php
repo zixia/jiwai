@@ -87,9 +87,11 @@ function mop_mo()
 		$memcache = JWMemcache::Instance();
 		$old_msg = $memcache->Get( $cut_key );
 
-		if( mb_strlen( $arg_msg , 'GBK') > 3 && $arg_msg[0] == '?' && $arg_msg[2] == '?' ) {
+		if( mb_strlen( $arg_msg , 'GBK') > 3 
+				&& mb_substr($arg_msg,0,1,'GBK') == '?' 
+				&& mb_substr($arg_msg,2,1,'GBK') == '?' ) {
 
-			$net_msg = substr( $arg_msg, 3 );
+			$net_msg = mb_substr( $arg_msg, 3, 67, 'GBK');
 
 			$old_len = mb_strlen( $old_msg, 'GBK' );
 			$net_len = mb_strlen( $net_msg, 'GBK' );
