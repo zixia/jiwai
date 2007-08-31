@@ -75,72 +75,37 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 					);
 ?>
 <html>
-
 <head>
 <?php JWTemplate::html_head() ?>
 </head>
 
 
-<body class="account" id="gadget">
-
+<body class="account" id="settings">
 <?php JWTemplate::accessibility() ?>
-
 <?php JWTemplate::header() ?>
 
-<div id="container" class="subpage">
-	<div id="content" style="margin: 1em 1em">
-		<div id="wrapper" style="margin: 1em 1em">
-
-
-			<h2><?php echo $user['nameScreen']?>的窗可贴</h2>
-
-<?php JWTemplate::UserGadgetNav('javascript'); ?>
-<br />
-
-			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
-
-        	<div class="indent" style="margin:2em 0 1em 0">
-				以下为当前效果的嵌入代码：<br />
-				<input type="text" value="<?php echo htmlspecialchars($gadget_script_html) ?>" onclick="this.select();" style="width:700px">
-				<?php //echo htmlspecialchars($gadget_script_html) ?>
-    		</div>
-	
-			<br/><br/>
-	
-<table width="95%" valign="top">
-	<tr>
-		<td valign="top">
-			<form method="post">
-        
- 				<h4>窗可贴代码生成向导：</h4>
-        
-   				<table align="center">
-   					<tr>
-						<td align="right" width="80" valign="top">显示:</td>
-						<td width="20"/>
-						<td>
-   							<label><input type="radio" name="gadget[selector]" value="user" 
+<div id="container">
+    <?php JWTemplate::UserGadgetNav('javascript'); ?>
+    <div class="tabbody">
+		<h2>配置</h2>
+        <fieldset>
+            <form method="post">
+                    <p>显示 
+   							<label><input style="display:inline;width:20px;" type="radio" name="gadget[selector]" value="user" 
 										<?php 	if ( !isset($gadget['selector']) ) 
 													echo 'checked="checked"';
 												else if ( 'user'===$gadget['selector'] )
 													echo 'checked="checked"';
 										?>/>我自己的</label>
-							<label><input type="radio" name="gadget[selector]" value="friends" 
+							<label><input style="display:inline;width:20px;" type="radio" name="gadget[selector]" value="friends" 
 										<?php 	if ( isset($gadget['selector']) && 'friends'===$gadget['selector'] )
 													echo 'checked="checked"';
 										?>/>我和朋友们的</label>
-   							<label><input type="radio" name="gadget[selector]" value="public" 
+   							<label><input style="display:inline;width:20px;" type="radio" name="gadget[selector]" value="public" 
 										<?php if ( isset($gadget['selector']) && 'public'===$gadget['selector'] )
 													echo 'checked="checked"';
 										?>/>所有人的</label>
-							<br/><br/>
-   						</td>
-					</tr>
-    				<tr>
-						<td align="right" valign="top">选取:</td>
-						<td/>
-						<td>
-    						<label>
+		 &nbsp;
 								最近	
 								<select id="gadget_count" name="gadget[count]">
 <?php
@@ -173,38 +138,11 @@ echo "\t\t\t\t\t\t<option value='40' $selected >40</option>\n"
 ?>
 								</select>
 								条
-							</label>
-							<br/><br/>
+</p>
 
-						</td>
-					</tr>
-   					<tr>
-						<td align="right" height="35" valign="top">图片大小:</td>
-						<td></td>
-						<td>
-   							<label><input type="radio" name="gadget[pictsize]" value="24" 
-										<?php 	if ( !isset($gadget['pictsize']) )
-													echo " checked='checked' ";
-												else if ( 24==$gadget['pictsize'] )
-													echo " checked='checked' ";
-										?>/>小</label>
 
-							<label><input type="radio" name="gadget[pictsize]" value="48" 
-										<?php	if ( isset($gadget['pictsize']) && 48==$gadget['pictsize'] )
-													echo " checked='checked' ";
-										?>/>中</label><br/>
-   							<label><input type="checkbox" name="gadget[hidefollow]" value="1";
-										<?php	if ( !empty($gadget['hidefollow']) ) 
-													echo " checked='checked' ";
-										?>/>不显示叽歪de档案</label><br/><br/>
-							<br/>
-   						</td>
-					</tr>
-    				<tr>
-						<td align="right" valign="top">界面选择:</td>
-						<td/>
-						<td>
-    						<label>
+								<p>
+界面选择:
 								<select id="gadget_theme" name="gadget[theme]">
 <?php 
 function cmp($a, $b)
@@ -240,63 +178,63 @@ _HTML_;
 }
 ?>
 								</select>
-								<br />
-								通过模板效果图选择？<a href="javascript:alert('coming soon!');">点击这里！</a>
-							</label>
-							<br/><br/>
+								&nbsp;
+								图片大小:
+   							<label><input style="display:inline;width:20px;"  type="radio" name="gadget[pictsize]" value="24" 
+										<?php 	if ( !isset($gadget['pictsize']) )
+													echo " checked='checked' ";
+												else if ( 24==$gadget['pictsize'] )
+													echo " checked='checked' ";
+										?>/>小</label>
+							<label><input style="display:inline;width:20px;"  type="radio" name="gadget[pictsize]" value="48" 
+										<?php	if ( isset($gadget['pictsize']) && 48==$gadget['pictsize'] )
+													echo " checked='checked' ";
+										?>/>中</label>
+						&nbsp;
+   							<label><input style="display:inline;width:20px;"  type="checkbox" name="gadget[hidefollow]" value="1";
+										<?php	if ( !empty($gadget['hidefollow']) ) 
+													echo " checked='checked' ";
+										?>/>不显示叽歪de档案链接</label>
+										</p>
+						<p>
+						
 
-						</td>
-					</tr>
- 
-					<tr>
-						<td align="right" height="35" valign="top">文字编码:</td>
-						<td></td>
-						<td valign="top">
-   							<label><input type="radio" name="gadget[encoding]" value="utf-8" 
+							</p>
+							<p>
+文字编码:
+   							<label><input style="display:inline;width:20px;" type="radio" name="gadget[encoding]" value="utf-8" 
 										<?php	if ( !isset($gadget['encoding']) )
 													echo ' checked="checked" ';
 												else if ( 'utf-8'==$gadget['encoding'] )
 													echo ' checked="checked" ';
 										?>/>UTF-8</label>
-   							<label><input type="radio" name="gadget[encoding]" value="gb2312" 
+   							<label><input style="display:inline;width:20px;" type="radio" name="gadget[encoding]" value="gb2312" 
 										<?php	if ( isset($gadget['encoding']) && 'gb2312'==$gadget['encoding'] )
 													echo ' checked="checked" ';
 										?>/>GB2312</label>
-							<br/>
-						</td>
-					</tr>
-   					<tr>
-						<td/><td/>
-						<td>
-   							<br/>
-							<input type="submit" value="预览一下看看？"/>
-						</td>
-					</tr>
-   				</table>
 
+   							</p>
+   							<p>
+							<input type="submit" value="预览一下看看？"/>
+							</p>
    				<br/>
 			</form>
-
-			<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
-
-		</td>
-		<td width="20">
-		<td width="30%" valign="top">
-
-
-    		<h4>窗可贴预览：</h4>
-
+        </fieldset>
+		<h2>代码</h2>
+        <fieldset>
+            <p>
+            <textarea onclick="this.select();" style="width:640px;height:200px;"><?php echo htmlspecialchars($gadget_script_html) ?></textarea>
+            </p>
+        </fieldset>
+		<h2>预览</h2>
+        <fieldset>
 			<?php echo $gadget_script_html ?>
-
-		</td>
-	</tr>
-</table>
-
- 		</div><!-- wrapper -->
-	</div><!-- content -->
-	
-
+        </fieldset>
+			<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
+    </div>
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
+
 
 <?php JWTemplate::footer() ?>
 

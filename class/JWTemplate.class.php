@@ -1877,25 +1877,20 @@ _HTML_;
 	static public function UserGadgetNav($activeMenu='index')
 	{
 		$arr_menu = array (  'index'		=> array ( '/wo/gadget/'			, '窗可贴说明' )
-							,'flash'		=> array ( '/wo/gadget/flash'		, 'Flash版本')
-							,'javascript'	=> array ( '/wo/gadget/javascript'	, 'Javascript版本')
-							,'gif'			=> array ( '/wo/gadget/'			, 'Gif版本(马上就会支持)')
+							,'flash'		=> array ( '/wo/gadget/flash'		, 'Flash')
+							,'javascript'	=> array ( '/wo/gadget/javascript'	, 'JavaScript')
+							//,'gif'			=> array ( '/wo/gadget/'			, 'GIF')
 						);
 
-		echo '	<h4 id="gadgetNav">';
-		$first = true;
+		echo '	<div id="gadgetNav" class="subtab">';
 		foreach ( $arr_menu as $name=>$setting )
 		{
-			if ( $first )	$first = false;
-			else 			echo ' | ';
-
-
 			if ( $activeMenu === $name )
-				echo " $setting[1] ";
+				echo " <a href=\"$setting[0]\" class=\"now\">$setting[1]</a> ";
 			else
 				echo " <a href=\"$setting[0]\">$setting[1]</a> ";
 		}
-		echo "\t</h4>\n";
+		echo "\t</div>\n";
 	}
 
 

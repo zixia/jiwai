@@ -9,36 +9,21 @@ $user_info	= JWUser::GetUserInfo($user_id);
 
 ?>
 <html>
-
 <head>
 <?php JWTemplate::html_head() ?>
 </head>
 
 
-<body class="account" id="gadget">
-
+<body class="account" id="settings">
 <?php JWTemplate::accessibility() ?>
-
 <?php JWTemplate::header() ?>
 
-<div id="container" class="subpage">
-	<div id="content" style="margin: 1em 1em">
-		<div id="wrapper" style="margin: 1em 1em">
+<div id="container">
+    <?php JWTemplate::UserGadgetNav('flash'); ?>
+    <div class="tabbody">
 
-
-			<h2><?php echo $user_info['nameScreen']?>的窗可贴</h2>
-
-<?php JWTemplate::UserGadgetNav('flash'); ?>
-
-
-<br />
-			<h3>想在Blog上自动显示你、好友的最新更新？把这段代码插入你的Blog模板吧！</h3>
-
-
-
-
-<h4>叽歪de你和你的朋友们</h4>
-
+<h2>叽歪de你和你的朋友们</h2>
+<fieldset>
 <div style="width:530px;text-align:center">
 	<embed pluginspage=" http://www.macromedia.com/go/getflashplayer" 
 			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
@@ -48,9 +33,10 @@ $user_info	= JWUser::GetUserInfo($user_id);
 			name="jiwai_badge"/>
 	</embed>
 </div>
+</fieldset>
 
-<h4>叽歪de你自己</h4>
-
+<h2>叽歪de你自己</h2>
+<fieldset>
 <div style="width:600px;text-align:center">
 	<embed pluginspage="http://www.macromedia.com/go/getflashplayer" 
 			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
@@ -60,12 +46,12 @@ $user_info	= JWUser::GetUserInfo($user_id);
 			name="jiwai_badge"/>
 	</embed>
 </div>
-	
- 		</div><!-- wrapper -->
-	</div><!-- content -->
-	
+</fieldset>
 
+    </div>
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
+
 
 <?php JWTemplate::footer() ?>
 
