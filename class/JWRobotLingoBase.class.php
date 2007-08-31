@@ -180,11 +180,18 @@ class JWRobotLingoBase {
 		switch( $idUserConference ) {
 			case 99:
 			{
+				$lingo = array(
+						'GM'	=> array( 'func'=>'Lingo_Reg', 'param'=>2, ),
+					);
+				$alias = array();
 			}
 			break;
 			case 28006:
 			{
-				$alias['A'] = 'FOLLOW';	
+				$lingo = array(
+						'A'	=> array( 'func'=>'Lingo_Follow', 'param'=>1, ),
+					);
+				$alias = array();
 			}
 			break;
 			default:

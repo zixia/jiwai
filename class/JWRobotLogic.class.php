@@ -253,6 +253,7 @@ _STR_;
 						'nameFull'	=> $nameFull,
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
+						'noticeAutoNudge' => 'N', // not nudge
 				);
 
 				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
@@ -284,6 +285,7 @@ _STR_;
 						'nameFull'	=> $nameFull,
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
+						'noticeAutoNudge' => 'N',   //Not nudge
 				);
 
 				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
