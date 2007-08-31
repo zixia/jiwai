@@ -244,6 +244,8 @@ _STR_;
 				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
 				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
 				$nameFull = '午夜过客';
+				$bio = $address;
+				$bio = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
 
 				if( !$nameScreen ){
 					return false;
@@ -251,6 +253,7 @@ _STR_;
 				$new_user_row = array(
 						'nameScreen'	=> $nameScreen,
 						'nameFull'	=> $nameFull,
+						'bio'		=> $bio,
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
 						'noticeAutoNudge' => 'N', // not nudge
@@ -274,8 +277,9 @@ _STR_;
 			{
 				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
 				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
-				$nameFull = $address;
-				$nameFull = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
+				$nameFull = '午夜过客';
+				$bio = $address;
+				$bio = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
 
 				if( !$nameScreen ){
 					return false;
@@ -283,6 +287,7 @@ _STR_;
 				$new_user_row = array(
 						'nameScreen'	=> $nameScreen,
 						'nameFull'	=> $nameFull,
+						'bio'		=> $bio,
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
 						'noticeAutoNudge' => 'N',   //Not nudge
