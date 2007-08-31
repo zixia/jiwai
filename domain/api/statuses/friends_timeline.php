@@ -117,8 +117,17 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 
 	$statuses = array();
 
+	$idUserAuthed = JWApi::GetAuthedUserId();
+
 	foreach ( $status_data['status_ids'] as $status_id ){
 		$user_id = intval($status_rows[$status_id]['idUser']);
+
+		if( $user_rows[$user_id]['protected']=='Y' 
+				&& $idUserAuthed != $user_id
+				&& false == JWFriend::IsFriend($user_id, $idUserAuthed )
+		  ){
+			continue;
+		}
 		
 		$statusInfo = ($needReBuild) ?
 		       	JWApi::ReBuildStatus( $status_rows[$status_id] ) : $status_rows[$status_id];
