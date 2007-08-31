@@ -114,6 +114,7 @@ alert('ok');
 			headers: {'AJAX':true},
 			onSuccess: function() {
 				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
+				el.alt = action=='create' ? '已收藏' : '未收藏';
 			}
 		}).request();
 		el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 

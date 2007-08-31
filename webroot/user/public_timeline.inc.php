@@ -72,12 +72,6 @@ $options = array(	 'title'		=> '叽歪广场'
 	<div id="content">
 		<div id="wrapper">
 
-			<span class="ytf" style="font-family: 黑体">
-			</span>
-			<script type="text/javascript">
-				JiWai.Yft(".ytf");
-			</script>
-
 <?php JWTemplate::ShowActionResultTips(); ?>
 
 			<div class="tab">

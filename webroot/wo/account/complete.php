@@ -45,18 +45,13 @@ _HTML_;
 <?php JWTemplate::html_head() ?>
 </head>
 
-<body class="account" id="profile_image">
+<body class="account" id="create">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
 
-<div class="separator"></div>
-
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper" class="wrapper">
-
 
 <h2>除了手机短信、IM聊天软件以外，你还可以在网页上JiWai&hellip;</h2>
 
@@ -81,7 +76,6 @@ JiWai.Yft('.yft');
 _HTML_;
 }
 ?>
-<hr class="separator">
 
 <p>请填写你使用JiWai时用的手机号码或聊天软件帐号。</p>
 
@@ -98,7 +92,10 @@ _HTML_;
 		<th><label for="screen_name">帐号名</small>(忘记？发送whoami或woshishui查询)</small>：</label></th>
 		<td><input id="screen_name" name="nameScreen" type="text" /></td>
 	</tr>
-	<tr><th></th><td><input name="commit" type="submit" value="继续" /></td></tr>
+	<tr>
+        <th></th>
+        <td><input name="commit" type="submit" value="继续" /></td>
+    </tr>
 </table>
 </fieldset>
 </form>
@@ -111,11 +108,7 @@ $('address').focus();
 
 
 
-		</div><!-- wrapper -->
-	</div><!-- content -->
 </div><!-- #container -->
-
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
