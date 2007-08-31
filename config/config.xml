@@ -19,7 +19,7 @@
 		</alternate>
     </meta>
     <db>
-		<host>10.0.70.10</host>
+		<host>10.1.30.10</host>
 		<username>root</username>
 		<passwd></passwd>
 		<dbname>jiwai</dbname>
@@ -47,12 +47,12 @@
 		<mt>mt/</mt>
 
 		<storage>
-			<root>/750/reiserfs/jiwai/</root>
+			<root>/opt/storage/jiwai/</root>
 			<user>user/</user>
 			<picture>picture/</picture>
 		</storage>
 		<mail>
-			<template>/var/www/vhost/jiwai.de/config/template/mail/</template>
+			<template>/opt/jiwai.de/config/template/mail/</template>
 		</mail>
 		<mutex>/var/cache/tmpfs/jiwai/mutex/</mutex>
 	</directory>

@@ -3,7 +3,7 @@
 // do not change wikka_version manually!
 
 $wakkaConfig = array(
-	'mysql_host' => 'localhost',
+	'mysql_host' => '10.1.30.10',
 	'mysql_database' => 'jiwai_wikka',
 	'mysql_user' => 'jiwai_wikka',
 	'table_prefix' => 'wikka_',
