@@ -721,7 +721,7 @@ _SQL_;
 	  */
 	static public function IsSignatureChanged($idUser, $device, $status){
 		//Sinature logic
-		if( in_array($device,array('gtalk','msn','qq')) ){
+		if( in_array($device,array('gtalk','msn','qq', 'skype')) ){
 			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
 
 			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
