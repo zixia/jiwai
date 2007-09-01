@@ -85,14 +85,14 @@ if ( !empty($err) ){
 <table width="550" border="0" cellspacing="15" cellpadding="0">
     <tr>
         <td width="70" align="right">用户名：</td>
-        <td width="240"><input id="username_or_email" type="text" name="username_or_email" /></td>
+        <td width="240"><input id="username_or_email" type="text" name="username_or_email" tabindex="1"/></td>
         <td>
             <a href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" /></a>
         </td>
     </tr>
     <tr>
         <td align="right">密　码：</td>
-        <td><input type="password" name="password" /></td>
+        <td><input type="password" name="password" tabindex="2"/></td>
         <td>&nbsp;</td>
     </tr>
     <tr>
