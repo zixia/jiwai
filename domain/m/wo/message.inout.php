@@ -14,6 +14,8 @@ $userIds    = $messageInfo['user_ids'];
 $messageRows    = JWMessage::GetMessageDbRowsByIds( $messageIds );
 $userRows       = JWUser::GetUserDbRowsByIds( $userIds);
 
+krsort( $messageRows );
+
 $url = ($action=='sent') ? '/wo/message/sent' : '/wo/message/inbox' ;
 $pageString = paginate( $pagination, $url );
 $shortcut = array('logout', 'public_timeline', 'my', 'friends', 'index' );
