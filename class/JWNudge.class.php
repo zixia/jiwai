@@ -114,17 +114,18 @@ class JWNudge {
 
 				$address 	= $deviceRow[$type]['address'];
             
-                if( $source != 'web' ) {
-                    JWRobot::SendMtRaw($address, $type, $message);
-                }else{
+                if( $source == 'web' ) { // nudge from web command || direct_messages from web
                     
                     $info = array(
                         'status' => $message,
-                        'idUserReplyTo' => $deviceRow['idUser'],
+                        'idUserReplyTo' => $deviceRow[$type]['idUser'],
                         'smssuffix' => null,
                     );
-                    error_log( var_export( $info, true) , 3 ,'/tmp/testlog' );
                     $ret = JWStatusNotifyQueue::Create( null, null, null, $info );
+
+                }else{
+
+                    JWRobot::SendMtRaw($address, $type, $message);
 
                 }
 
