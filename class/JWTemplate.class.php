@@ -1530,7 +1530,7 @@ _HTML_;
 
 	static function sidebar_user_notice($aUserInfo)
 	{
-		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id']);
+		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id'],'thumb96');
 ?>
 		<div class="msg ">
 			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="64" height="64"/><?php echo $aUserInfo['nameFull'];?>的资料
