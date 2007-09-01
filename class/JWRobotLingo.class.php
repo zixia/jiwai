@@ -650,7 +650,7 @@ class JWRobotLingo {
 		}
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
-		$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array($friend_user_db_row['nameScreen'],) );
+		$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array($address_user_db_row['nameScreen'],) );
 		JWNudge::NudgeUserIds(array($friend_user_db_row['idUser']), $nudge_message, 'nudge');
 
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array($friend_user_db_row['nameScreen'],) );
