@@ -286,7 +286,7 @@ _HTML_;
 				'/wo/devices/im' => '聊天软件',
 				'/wo/account/notification' => '系统通知',
 				'/wo/account/profile_settings' => '配色方案',
-				'/wo/openid/' => 'OpenID',
+				'/wo/openid/' => 'OpenID(Beta)',
                 );
 
 		if (!$highlight) {
