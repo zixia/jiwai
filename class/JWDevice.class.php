@@ -650,9 +650,10 @@ _SQL_;
 				break;
 			case 'qq':
 				$name='229516989';
+                $name='742721768'; //beta
 				break;
 			case 'skype':
-				$name='wo.jiwai.de';
+				$name='beta.jiwai.de';
 				break;
             case 'msn':
                 $row = null;
@@ -661,17 +662,19 @@ _SQL_;
                     $row = JWIMOnline::GetDbRowByShortcut( $shortcut );
                 }
                 if( empty( $row ) ){
-			$msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de' );
-			$name = $msnArray[ array_rand($msnArray, 1) ];
-			if( false == empty($address) ) {
-				$shortcut = "$type:$address";
-				JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
-			}
-		} else
+                    $msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de' );
+                    $name = $msnArray[ array_rand($msnArray, 1) ];
+                    if( false == empty($address) ) {
+                        $shortcut = "$type:$address";
+                        JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
+                    }
+                } else {
                     $name = $row['serverAddress'];
+                }
+                $name ='beta@jiwai.de';
                 break;
 			default:
-				$name='wo@jiwai.de';
+				$name='beta@jiwai.de';
 		}
 
 		return $name;

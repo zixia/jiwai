@@ -46,7 +46,6 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
 	<div id="content">
@@ -80,7 +79,6 @@ if ( isset($error_html) )
 	</div><!-- content -->
 
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
