@@ -1533,7 +1533,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id'],'thumb96');
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="64" height="64"/><?php echo $aUserInfo['nameFull'];?>的资料
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="48" height="48"/><?php echo $aUserInfo['nameFull'];?>的资料
 		</div>
 
 <?php
@@ -1644,7 +1644,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($userInfo['id']);
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="64" height="64"/>欢迎你 <?php echo $userInfo['nameFull'];?>
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48"/>欢迎你 <?php echo $userInfo['nameFull'];?>
 		</div>
 
 <?php
