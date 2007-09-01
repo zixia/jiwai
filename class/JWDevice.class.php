@@ -650,10 +650,9 @@ _SQL_;
 				break;
 			case 'qq':
 				$name='229516989';
-                $name='742721768'; //beta
 				break;
 			case 'skype':
-				$name='beta.jiwai.de';
+				$name='wo.jiwai.de';
 				break;
             case 'msn':
                 $row = null;
@@ -671,10 +670,10 @@ _SQL_;
                 } else {
                     $name = $row['serverAddress'];
                 }
-                $name ='beta@jiwai.de';
+                $name ='msn002@jiwai.de';
                 break;
 			default:
-				$name='beta@jiwai.de';
+				$name='wo@jiwai.de';
 		}
 
 		return $name;
