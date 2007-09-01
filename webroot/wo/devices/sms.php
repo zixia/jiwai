@@ -165,10 +165,11 @@ _HTML_;
         </table>
     </fieldset>
 
+<!--
     <div style=" padding:20px 0 0 160px; height:50px;">
     	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
     </div>            
-
+-->
 </form>
 
 <? } ?>
