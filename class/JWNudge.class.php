@@ -114,7 +114,7 @@ class JWNudge {
 
 				$address 	= $deviceRow[$type]['address'];
             
-                if( $source == 'web' ) {
+                if( $source != 'web' ) {
                     JWRobot::SendMtRaw($address, $type, $message);
                 }else{
                     
@@ -123,7 +123,9 @@ class JWNudge {
                         'idUserReplyTo' => $deviceRow['idUser'],
                         'smssuffix' => null,
                     );
-                    JWStatusNotifyQueue::Create( null, null, null, $info );
+                    error_log( var_export( $info, true) , 3 ,'/tmp/testlog' );
+                    $ret = JWStatusNotifyQueue::Create( null, null, null, $info );
+
                 }
 
 				break;
