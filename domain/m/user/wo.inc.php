@@ -1,5 +1,5 @@
 <?php
-$showProtected = $userInfo['isProtected'] == 'N';
+$showProtected = $userInfo['protected'] == 'N';
 if( false == $showProtected ){
     $showProtected = JWFriend::IsFriend( $userInfo['id'], $loginedUserInfo['id'] ) 
                         | $loginedUserInfo['id'] == $userInfo['id'] ;
