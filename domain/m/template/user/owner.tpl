@@ -1,7 +1,7 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2>{$userInfo['nameScreen']}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">{$userInfo['nameScreen']}和好友</a></h2>
+<h2>${htmlSpecialChars($userInfo['nameScreen'])}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">${htmlSpecialChars($userInfo['nameScreen'])}和好友</a></h2>
 <ul>
 <!--{if $showProtected}-->
 <!--{foreach $statuses as $status}-->

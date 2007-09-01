@@ -1,4 +1,4 @@
-<h2>{$userInfo['nameScreen']}的资料</h2>
+<h2>${htmlSpecialChars($userInfo['nameFull'])}的资料</h2>
 <p>位置：{$userInfo['location']}</p>
 <p>网址：{$userInfo['url']}</p>
 <p>自述：{$userInfo['bio']}</p>

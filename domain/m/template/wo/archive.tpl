@@ -6,7 +6,7 @@
 <!--{foreach $statuses as $status}-->
 <li>
     <a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">
-        ${htmlSpecialChars($users[$status['idUser']]['nameScreen'])}
+        ${htmlSpecialChars($users[$status['idUser']]['nameFull'])}
     </a>: 
     {$status['status']}
     <span class="stamp">

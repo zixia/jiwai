@@ -4,7 +4,7 @@
 <!--{foreach $messages as $message}-->
 <li>
     来自 <a href="${buildUrl('/'.$users[$message['idUserSender']]['nameScreen'].'/')}">
-        ${htmlSpecialChars($users[$message['idUserSender']]['nameScreen'])}
+        ${htmlSpecialChars($users[$message['idUserSender']]['nameFull'])}
     </a>: 
     {$message['message']}
     <span class="stamp">

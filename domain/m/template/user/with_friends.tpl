@@ -1,7 +1,7 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2><a href="/{$userInfo['nameScreen']}/">{$userInfo['nameScreen']}的消息</a>｜{$userInfo['nameScreen']}和好友</h2>
+<h2><a href="/{$userInfo['nameScreen']}/">${htmlSpecialChars($userInfo['nameFull'])}的消息</a>｜${htmlSpecialChars($userInfo['nameFull'])}和好友</h2>
 <ul>
 <!--{if $showProtected}-->
     <!--{foreach $statuses as $status}-->
@@ -14,7 +14,7 @@
     <!--{if (false == $protected)}-->
         <li>
             <a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">
-                ${htmlSpecialChars($users[$status['idUser']]['nameScreen'])}
+                ${htmlSpecialChars($users[$status['idUser']]['nameFull'])}
             </a>: 
             {$status['status']}
             <span class="stamp">
