@@ -41,7 +41,7 @@ _HTML_;
 $logined_user_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。
 _NUDGE_;
 
-				$is_succ = JWNudge::NudgeUserIds(array($nudged_user_id), $nudge_message, 'nudge');
+				$is_succ = JWNudge::NudgeUserIds(array($nudged_user_id), $nudge_message, 'nudge', 'web');
 
 				if ($is_succ )
 				{
