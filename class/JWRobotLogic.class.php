@@ -150,6 +150,10 @@ class JWRobotLogic {
         
 		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
+        if( $isSignature == 'Y' && ( empty($device_row) || !empty($device_row['secret']) ) ) {
+            return null;
+        }
+
 		if ( empty($device_row) )
 		{	
 			// user not registed
