@@ -1533,7 +1533,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id']);
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="64" height="64"/><?php echo $aUserInfo['nameScreen'];?>的资料
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="64" height="64"/><?php echo $aUserInfo['nameFull'];?>的资料
 		</div>
 
 <?php
@@ -1576,14 +1576,21 @@ _HTML_;
 	}
 
 
-	static function sidebar_count( $countInfo=null, $user='wo' )
+	static function sidebar_count( $countInfo=null, $userInfo=null )
 	{
+        if ( empty($userInfo) )
+            $user = 'wo';
+        else
+        {
+            $user = $userInfo['nameScreen'];
+            $name_full = $userInfo['nameFull'];
+        }
 		echo <<<_HTML_
 		<ul id="update_count">
 _HTML_;
 
 		if ($user != 'wo') echo <<<_HTML_
-			<li style="font-size:12px; text-indent:12px;">$user 目前有：</li>
+			<li style="font-size:12px; text-indent:12px;">$name_full 目前有：</li>
 _HTML_;
 
 		echo <<<_HTML_

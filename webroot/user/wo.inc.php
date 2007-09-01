@@ -301,7 +301,7 @@ $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
 								, array ('action'	, array($user_action_row,$page_user_info['id']))
-								, array ('count'		, array($arr_count_param,$page_user_info['nameScreen']))
+								, array ('count'		, array($arr_count_param,$page_user_info))
 								//, array ('search'	, array($page_user_info['nameScreen'], $q))
 								, array ('separator'	, array())
 								, array ('friend'	, array($arr_friend_list))
