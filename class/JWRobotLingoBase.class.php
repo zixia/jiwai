@@ -182,6 +182,7 @@ class JWRobotLingoBase {
 			{
 				$lingo = array(
 						'GM'	=> array( 'func'=>'Lingo_Reg', 'param'=>2, ),
+						'WOSHISHUI'	=> array( 'func'=>'Lingo_Whoami', 'param'=>0, ),
 					);
 				$alias = array();
 			}
