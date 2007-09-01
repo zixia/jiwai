@@ -77,6 +77,7 @@ class JWSns {
 									."”"
 									."）"
 								,'direct_messages'
+                                ,$device
 							);
 
 		return true;
@@ -669,39 +670,47 @@ class JWSns {
 	 * @param $smssuffix 
 	 */
 	static public function NotifyFollower( $idSender, $idUserReplyTo=null, $status=null, $smssuffix=null ){
-		$idSender = JWDB::CheckInt( $idSender );
 
-		if( $smssuffix ) {
-			//2007-08-07
-			//$status = preg_replace("/^\s?@\s?\w+/", "", $status );
-			/*
-			$userInfo = JWUser::GetUserInfo( $idUserReplyTo );
-			$status = "$userInfo[nameScreen]: $status";
-			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
-			*/
-			/*
-			 * conference notify enhance 2007-08-06
-			*/
-			$userInfo = JWUser::GetUserInfo( $idSender );
-			$status = "$userInfo[nameScreen]: $status";
-			$follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
-			settype( $follower_ids , 'array' );
+        if( $idSender == null ) { // from nudge, no need idSender
 
-			/** 2007-08-20 */
-			$follower_ids = array_diff( $follower_ids, array( $idSender ) );
-			if( false == ($idSender == $idUserReplyTo ) ){
-				array_push( $follower_ids, $idUserReplyTo );
-			}
-
-		}else if( null == $idUserReplyTo ) {
-			$userInfo = JWUser::GetUserInfo( $idSender );
-			$follower_ids = JWFollower::GetFollowerIds($idSender);
-			$status = "$userInfo[nameScreen]: $status";
-		}else{
-			$userInfo = JWUser::GetUserInfo( $idSender );
 			$follower_ids = array( $idUserReplyTo ) ;
-			$status = "$userInfo[nameScreen]: $status";
-		}
+
+        }else{
+
+            $idSender = JWDB::CheckInt( $idSender );
+
+            if( $smssuffix ) {
+                //2007-08-07
+                //$status = preg_replace("/^\s?@\s?\w+/", "", $status );
+                /*
+                $userInfo = JWUser::GetUserInfo( $idUserReplyTo );
+                $status = "$userInfo[nameScreen]: $status";
+                $follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+                */
+                /*
+                 * conference notify enhance 2007-08-06
+                */
+                $userInfo = JWUser::GetUserInfo( $idSender );
+                $status = "$userInfo[nameScreen]: $status";
+                $follower_ids = JWFollower::GetFollowerIds($idUserReplyTo);
+                settype( $follower_ids , 'array' );
+
+                /** 2007-08-20 */
+                $follower_ids = array_diff( $follower_ids, array( $idSender ) );
+                if( false == ($idSender == $idUserReplyTo ) ){
+                    array_push( $follower_ids, $idUserReplyTo );
+                }
+
+            }else if( null == $idUserReplyTo ) {
+                $userInfo = JWUser::GetUserInfo( $idSender );
+                $follower_ids = JWFollower::GetFollowerIds($idSender);
+                $status = "$userInfo[nameScreen]: $status";
+            }else{
+                $userInfo = JWUser::GetUserInfo( $idSender );
+                $follower_ids = array( $idUserReplyTo ) ;
+                $status = "$userInfo[nameScreen]: $status";
+            }
+        }
 
 		if( empty( $follower_ids ) ) 
 			return true;

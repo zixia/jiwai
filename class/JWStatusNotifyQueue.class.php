@@ -56,8 +56,11 @@ class JWStatusNotifyQueue {
 	}
 
 	static public function Create($idUser, $idStatus, $time=null, $extraInfo=array()){
-		$idUser = JWDB::CheckInt( $idUser );
-		$idStatus = JWDB::CheckInt( $idStatus );
+        
+        if( $idStatus || $idUser ) {  // else is nudge
+            $idUser = JWDB::CheckInt( $idUser );
+            $idStatus = JWDB::CheckInt( $idStatus );
+        }
 
 		$time = ( null == $time ) ? time() : $time;
 		$timeCreate = date("Y-m-d H:i:s", $time);

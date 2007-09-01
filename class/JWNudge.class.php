@@ -40,13 +40,13 @@ class JWNudge {
 	}
 
 	/*
-	 *	向 $idUSers 的设备上发送消息
+	 *	向 $idUsers 的设备上发送消息
 	 *	@param	array of int	$idUsers
 	 *	@param	string			$message
 	 *	@type	string			$messageType	{'nudge'|'direct_messages'}
 	 *	@return	
 	 */
-	static public function NudgeUserIds($idUsers, $message, $messageType='nudge')
+	static public function NudgeUserIds($idUsers, $message, $messageType='nudge', $source='bot')
 	{
 		if( empty($idUsers) )
 			return true;
@@ -69,7 +69,7 @@ class JWNudge {
 			$availableSendVia = self::GetAvailableSendVia( $device_row, $deviceSendVia );
 
 			if ( $availableSendVia && isset( $device_row[$availableSendVia] ) )
-				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType );
+				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType, $source );
 			else
 				JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
 											."[$user_row[deviceSendVia]]"
@@ -87,7 +87,7 @@ class JWNudge {
 	 *	@param	string	$message
 	 *	@param	string	$messageType	{'nudge'|'direct_messages'}
 	 */
-	static public function NudgeDevice( $deviceRow, $type, $message, $messageType , $nudgeFromIdUser = null)
+	static public function NudgeDevice( $deviceRow, $type, $message, $messageType , $source='bot' )
 	{
 		// 对特定的 device ( sms / im） - 查看 Device.enabledFor:
 		// enabledFor 可能有三个值: everything / nothing / direct_messages
@@ -113,8 +113,18 @@ class JWNudge {
 				}
 
 				$address 	= $deviceRow[$type]['address'];
-
-				JWRobot::SendMtRaw($address, $type, $message);
+            
+                if( $source == 'web' ) {
+                    JWRobot::SendMtRaw($address, $type, $message);
+                }else{
+                    
+                    $info = array(
+                        'status' => $message,
+                        'idUserReplyTo' => $deviceRow['idUser'],
+                        'smssuffix' => null,
+                    );
+                    JWStatusNotifyQueue::Create( null, null, null, $info );
+                }
 
 				break;
 
