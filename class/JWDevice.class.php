@@ -670,7 +670,6 @@ _SQL_;
                 } else {
                     $name = $row['serverAddress'];
                 }
-                $name ='msn002@jiwai.de';
                 break;
 			default:
 				$name='wo@jiwai.de';
