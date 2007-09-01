@@ -7,7 +7,7 @@ if( false == $showProtected ){
 
 if( $statusTab == 'with_friends' ) {
 
-    $pageTitle = "$userInfo[nameScreen]和朋友们在做什么";
+    $pageTitle = htmlSpecialChars($userInfo['nameFull'])."和朋友们在做什么";
 
     $statusNum = JWDB_Cache_Status::GetStatusNumFromFriends( $userInfo['id'] );
     $pagination = new JWPagination( $statusNum, $page , 10);
@@ -17,7 +17,7 @@ if( $statusTab == 'with_friends' ) {
     $tpl = 'user/with_friends';
 }else{
 
-    $pageTitle = "$userInfo[nameScreen]在做什么";
+    $pageTitle = htmlSpecialChars($userInfo['nameFull'])."在做什么";
 
     $statusNum = JWDB_Cache_Status::GetStatusNum( $userInfo['id'] );
     $pagination = new JWPagination( $statusNum, $page , 10);
