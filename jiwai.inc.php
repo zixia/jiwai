@@ -42,7 +42,7 @@ define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
 /**
  * Filter Dict File
  */
-define('FILTER_DICT',  JW_ROOT . 'webroot/wo/zdmin/dictionary/filterdict.txt');
+define('FILTER_DICT',  CONFIG_ROOT . 'dictionary/filterdict.txt');
 
 
 /**
