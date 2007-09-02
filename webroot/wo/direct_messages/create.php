@@ -45,9 +45,9 @@ if ( empty($receiver_user_row)
  *	如果提交了消息内容
  *
  */
-if ( isset($_REQUEST['text']) )
+if ( isset($_REQUEST['status']) )
 {
-	$message = $_REQUEST['text'];
+	$message = $_REQUEST['status'];
 
 	$message = trim($message);
 
@@ -96,8 +96,6 @@ _HTML_;
 
 <body class="direct_messages" id="create">
 
-<?php JWTemplate::accessibility() ?>
-
 <?php JWTemplate::header() ?>
 
 <div id="container">
@@ -136,5 +134,3 @@ JWTemplate::sidebar( $arr_menu );
 
 </body>
 </html>
-
-
