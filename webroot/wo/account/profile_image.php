@@ -41,20 +41,15 @@ JWTemplate::html_head($options);
 ?>
 </head>
 
-<body class="account" id="profile_image">
-
-<?php JWTemplate::accessibility() ?>
+<body class="account" id="create">
 
 <?php JWTemplate::header() ?>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper" class="wrapper">
-
 
 			<h2><a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameFull']?></a></h2>
 
-			<p><img alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'picture')?>" /></p>
+			<p style="margin:10px 20px;"><img style="border: 1px dashed #FF8404;padding:2px;" alt="<?php echo $page_user_info['nameFull']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'picture')?>" /></p>
 
 <?php 
 if ( isset($logined_user_info) 
@@ -62,14 +57,12 @@ if ( isset($logined_user_info)
 {
 	echo <<<_HTML_
 
-			<p><small><a href="/wo/account/picture">更换图片？</a></small></p>
+			<p style="margin:10px 20px;"><a href="/wo/account/profile">更换图片？</a></p>
 
 _HTML_;
 }
 ?>
 
-		</div><!-- wrapper -->
-	</div><!-- content -->
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>
