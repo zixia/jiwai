@@ -130,6 +130,8 @@ $page_user_info[nameScreen]($page_user_info[nameFull]) - $page_user_info[bio] $p
 _STR_;
 
 $description = "叽歪de $page_user_info[nameFull] ";
+if ($show_protected_content) {
+
 $description .= @$head_status_rows[$head_status_id]['status'];
 
 foreach ( $status_data['status_ids'] as $status_id )
@@ -141,7 +143,7 @@ foreach ( $status_data['status_ids'] as $status_id )
 			break;
 	}
 }
-
+}
 
 $rss			= array ( 	
 							// User TimeLine RSS & Atom
