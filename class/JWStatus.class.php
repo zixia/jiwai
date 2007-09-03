@@ -151,7 +151,7 @@ class JWStatus {
 
 		return JWDB_Cache::SaveTableRow('Status',
 							array(	 'idUser'	=> $idUser
-									,'status'	=> $status
+									,'status'	=> preg_replace('/\xE2\x80\xAE/U', '', $status)
 									,'device'	=> $device
 									,'timeCreate'		=> Date('Y-m-d H:i:s',$time)
 									,'idStatusReplyTo'	=> $reply_status_id
