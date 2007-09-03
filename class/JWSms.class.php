@@ -139,25 +139,13 @@ class JWSms {
 		JWLog::Instance()->Log(LOG_INFO, "$now ReceiveMo: msg [$smsMsg]"
 					. " from mobile [$mobileNo] to service [$serviceNo]"
 					. " by link [$linkId] through [$gateId]" );
-		
-		$gateNo = 9911;
-		switch( $gateId ){
-			case self::GID_UNICOM:
-				$gateNo = 9501;
-			break;
-			case self::GID_UNICOM_TWO:
-				$gateNo = 9318;
-			break;
-			case self::GID_PAS:
-				$gateNo = 99318;
-			break;
-			case self::GID_CHINAMOBILE:
-				$gateNo = 9911;
-			break;
-			case self::GID_CHINAMOBILE_TWO:
-				$gateNo = 50136;
-			break;
-		}
+
+        $code = JWSPCode::GetCodeByGid( $gateId );
+        if( empty( $code ) ) {
+            $gateNo = 9911;
+        }else{
+            $gateNo = $code['code'];
+        }
 
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($mobileNo, 'sms', $smsMsg, $gateNo.$serviceNo, $linkId);

@@ -132,7 +132,7 @@ function mop_mo()
 		}else{
 			if( $old_msg ) {
 
-				$old_arg_msg = iconv('GBK','UTF-8',urldecode($old_msg));
+				$old_arg_msg = iconv('GBK','UTF-8', $old_msg );
 				if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
 					$arg_linkid = rand(100000000,999999999);
 				}
@@ -141,7 +141,7 @@ function mop_mo()
 			}
 		}
 
-		$arg_msg = iconv('GBK','UTF-8',urldecode($arg_msg));
+		$arg_msg = iconv('GBK','UTF-8', $arg_msg );
 		if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
 			$arg_linkid = rand(100000000,999999999);
 		}
