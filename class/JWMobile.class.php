@@ -154,7 +154,7 @@ class JWMobile {
         
         $code = array();
 
-        if( null == $serverAddress ) 
+        if( null == $serverAddress || 0 == $serverAddress ) 
         {
             $forceRow = self::GetDbRowByMobileNo( $mobileNo );
             if( false == empty($forceRow) ) {
@@ -164,8 +164,10 @@ class JWMobile {
                     {
                         $code['func'] = $forceRow['forceFunc'];
                     }
-                }
-            }
+                }else{
+			$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+		}
+	    }
         }
         else
         {

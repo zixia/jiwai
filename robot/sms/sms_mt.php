@@ -24,7 +24,7 @@ while ($line=JWConsole::getline())
 	else
 		$link_id= $matches[4];
 
-	if ( empty($mobile_no) || empty($sms_msg) || empty($server_address) )
+	if ( empty($mobile_no) || empty($sms_msg) )
 	{
 		echo "ERR need param\n";
 		continue;

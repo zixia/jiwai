@@ -180,7 +180,7 @@ sub sms_deliver_file {
 	my ($head, $body) = ($1,$2);
 	
 
-	my $server_address = '99118816';
+	my $server_address = 0;
 	$server_address = $1 if ( $head=~m#^SERVERADDRESS:\s+(\d+)$#mi );
 
 	my $linkid = '';
