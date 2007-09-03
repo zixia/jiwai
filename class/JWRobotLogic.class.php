@@ -414,8 +414,10 @@ _STR_;
 		/*
 		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
 	 	 */
-		if ( ! $toRegister )
-			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
+		if ( ! $toRegister ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOREG_TIPS' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
 
 
 		/*
