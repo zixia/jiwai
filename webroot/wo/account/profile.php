@@ -23,7 +23,7 @@ if ( $new_user_info )
 {
 
     if( false == isset($new_user_info['protected']) ) {
-        $new_user_info['protected'] == 'N';
+        $new_user_info['protected'] = 'N';
     }
 
 	$file_info = @$_FILES['profile_image'];
