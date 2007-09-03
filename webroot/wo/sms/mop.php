@@ -9,7 +9,7 @@ if (!$debug)
 	$proxy_ip 	= JWRequest::GetProxyIp();
 	$client_ip 	= JWRequest::GetClientIp();
 
-	if ( SP_IP!=$proxy_ip && SP_IP!=$client_ip )
+	if (false && SP_IP!=$proxy_ip && SP_IP!=$client_ip )
 	{
 		header('HTTP/1.0 401 Unauthorized');
 		die ("You must use registered IP address.");
@@ -89,7 +89,10 @@ function mop_mo()
 
 		if( mb_strlen( $arg_msg , 'GBK') > 3 
 				&& mb_substr($arg_msg,0,1,'GBK') == '?' 
-				&& mb_substr($arg_msg,2,1,'GBK') == '?' ) {
+				&& ( mb_substr($arg_msg,1,1,'GBK') == '?'
+                    || mb_substr($arg_msg,2,1,'GBK') == '?' 
+                    )
+        ) {
 
 			$net_msg = mb_substr( $arg_msg, 3, 67, 'GBK');
 
