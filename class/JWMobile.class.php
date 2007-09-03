@@ -44,7 +44,7 @@ class JWMobile {
 	/**
 	 * Get Mobile Db from mobileNo
 	 */
-	static public function GetDBRowByMobileNo( $mobileNo ) {
+	static public function GetDbRowByMobileNo( $mobileNo ) {
 
 		if( strlen( $mobileNo ) <= 10 ) 
 			return array();
@@ -56,14 +56,14 @@ class JWMobile {
 		else
 			$pre = substr( $mobileNo, 0, 4 );
 
-		return self::GetDBRowByPreNum( $pre );
+		return self::GetDbRowByPreNum( $pre );
 
 	}
 
 	/**
 	 * @param prenum of mobile maybe 7 or 4 len
 	 */
-	static public function GetDBRowByPreNum( $prenum ) {
+	static public function GetDbRowByPreNum( $prenum ) {
 		$sql = "SELECT * FROM Mobile WHERE prenum = '$prenum'";
 
 		$row = JWDB::GetQueryResult( $sql, false );
@@ -75,15 +75,11 @@ class JWMobile {
 	 * @param $idLocations 位置 id 数组
 	 * @param $supplier 分 MOBILE | UNICOME | PHS
 	 */
-	static public function GetDbRowsByIdLocations( $idLocations , $supplier = 'MOBILE' ) {
-		settype( $idLocations , 'array' );
+	static public function GetDbRowsByIdLocationProvince( $idLocationProvince , $supplier = 'MOBILE' ) {
 
-		if( empty( $idLocations ) )
-			return array();
+        $idLocationProvince = JWDB::CheckInt( $idLocationProvince );
 
-		$idLocationsString = implode( ',', $idLocations );
-
-		$sql = "SELECT * FROM Mobile WHERE idLocation IN ( $idLocationsString ) AND supplier='$supplier'";
+		$sql = "SELECT * FROM Mobile WHERE idLocationProvince = $idLocationProvince AND supplier='$supplier'";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 
@@ -101,10 +97,8 @@ class JWMobile {
 	/**
 	  * 改变相应（位置，供应商）条件的改变特服号
 	  */
-	static public function UpdateCodeFunc( $idLocations, $supplier='MOBILE', $forceCode = null, $forceFunc=null) {
-		settype( $idLocations, 'array' );
-		if( empty( $idLocations ) )
-			return true;
+	static public function UpdateCodeFunc( $idLocationProvince, $supplier='MOBILE', $forceCode = null, $forceFunc=null) {
+        $idLocationProvince = JWDB::CheckInt( $idLocationProvince );
 
 		if( $forceCode == null )
 			$forceCode = 'NULL';
@@ -113,7 +107,7 @@ class JWMobile {
 
 		$idLocationsString  = implode( ',' , $idLocations );
 
-		$sql = "UPDATE Mobile SET forceCode=$forceCode, forceFunc=$forceFunc WHERE supplier='$supplier' AND idLocation IN ( $idLocationsString ) ";
+		$sql = "UPDATE Mobile SET forceCode=$forceCode, forceFunc=$forceFunc WHERE supplier='$supplier' AND idLocationProvince = $idLocationProvince ";
 
 		return JWDB::Execute( $sql );
 
@@ -122,7 +116,7 @@ class JWMobile {
 	/**
 	 * Get One by id
 	 */
-	static public function GetDBRowById( $idMobile ) {
+	static public function GetDbRowById( $idMobile ) {
 		return array_values( self::GetDbRowsByIds( array( $idMobile ) ));
 	}
 
@@ -151,5 +145,34 @@ class JWMobile {
 
 		return $rtn;
 	}
+
+    static public function Create( $mobileArray = array() ) {
+        return JWDB::SaveTableRow( 'Mobile', $mobileArray );
+    }
+
+    static public function GetSpCode( $mobileNo, $serverAddress = null ) {
+        
+        $code = array();
+
+        if( null == $serverAddress ) 
+        {
+            $forceRow = self::GetDbRowByMobileNo( $mobileNo );
+            if( false == empty($forceRow) ) {
+                if( $forceRow['forceCode'] ){
+                    $code = JWSPCode::GetCodeByCodeNum( $forceRow['forceCode'] );
+                    if( false == empty( $code ) && $forceRow['forceFunc'] ) 
+                    {
+                        $code['func'] = $forceRow['forceFunc'];
+                    }
+                }
+            }
+        }
+        else
+        {
+            $code = JWSPCode::GetCodeByServerAddress( $serverAddress );
+        }
+
+        return $code;
+    }
 }
 ?>
