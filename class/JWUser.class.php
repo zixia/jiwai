@@ -311,6 +311,8 @@ _SQL_;
 
 		if ( array_key_exists('email', $modifiedUserInfo) )
 			$modifiedUserInfo['email'] = strrev($modifiedUserInfo['email']);
+		if ( array_key_exists('nameFull', $modifiedUserInfo) ) 
+            $modifiedUserInfo['nameFull'] = preg_replace( '/\xE2\x80\xAE/U', '', $modifiedUserInfo['nameFull']);
 
 		return JWDB::UpdateTableRow('User', $idUser, $modifiedUserInfo);
 	}
@@ -347,7 +349,7 @@ _SQL_;
 											,'nameScreen'	=> $userInfo['nameScreen']
 											,'pass'			=> $userInfo['pass']
 											,'email'		=> strrev(@$userInfo['email']) // 如果是手机注册，则为空
-											,'nameFull'		=> $userInfo['nameFull']
+											,'nameFull'		=> preg_replace('/\xE2\x80\xAE/U','',$userInfo['nameFull'])
 											,'location'		=> @$userInfo['location']
 											,'protected'	=> $userInfo['protected']
 											,'isWebUser'	=> $userInfo['isWebUser']
