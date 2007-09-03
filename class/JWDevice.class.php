@@ -360,12 +360,33 @@ _SQL_;
 	{
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
-			case self::SP_CHINAMOBILE: 	return '99118816';
-			case self::SP_UNICOM: 		return '95014567';
-			case self::SP_PAS: 		return '99318456';
-
-			case self::SP_UNKNOWN: 		// fall to default
-			default: 			return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
+			case self::SP_CHINAMOBILE: 	
+            {
+                $code = JWMobile::GetSpCode( $mobileNo, null );
+                if( false == empty( $code ) ){
+                    return $code['code'] . $code['func'];
+                }
+                return '99118816';
+            }
+			case self::SP_UNICOM:
+            {
+                $code = JWMobile::GetSpCode( $mobileNo, null );
+                if( false == empty( $code ) ){
+                    return $code['code'] . $code['func'];
+                }
+                return '95014567';
+            }
+			case self::SP_PAS:
+            {
+                $code = JWMobile::GetSpCode( $mobileNo, null );
+                if( false == empty( $code ) ){
+                    return $code['code'] . $code['func'];
+                }
+                return '99318456';
+            }
+			case self::SP_UNKNOWN: 
+			default:
+                return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
 		}
 	}
 
@@ -643,7 +664,15 @@ _SQL_;
 		switch ( $type )
 		{
 			case 'sms':
-				$name='99118816(移动) 83188816(联通)';
+                if( $address ) {
+                    $code = JWMobile::GetSpCode( $address, null );
+                    if( false == empty( $code ) ){
+                        $name = $code['code'] . $code['func'];
+                    }
+                }
+                if( false == isset( $name ) ) {
+                    $name='99118816(移动) 83188816(联通)';
+                }
 				break;
 			case 'newsmth':
 				$name='JiWai';
@@ -661,7 +690,7 @@ _SQL_;
                     $row = JWIMOnline::GetDbRowByShortcut( $shortcut );
                 }
                 if( empty( $row ) ){
-                    $msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de' );
+                    $msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de', 'msn003@jiwai.de' );
                     $name = $msnArray[ array_rand($msnArray, 1) ];
                     if( false == empty($address) ) {
                         $shortcut = "$type:$address";

@@ -8,7 +8,7 @@
 
 /**
  * JiWai.de SPCode Class
- * SUPPLIES must IN ( MOBILE, UNICOM, PHS )
+ * SUPPLIES must IN ( MOBILE, UNICOM, PAS )
  */
 class JWSPCode {
     /**
@@ -16,7 +16,7 @@ class JWSPCode {
      */
     const SP_MOBILE     = 1;
     const SP_UNICOM     = 2;
-    const SP_PHS        = 3;
+    const SP_PAS        = 3;
     const SP_UNKNOWN    = 0;
 
     static private $codeBase = array(
@@ -45,7 +45,7 @@ class JWSPCode {
                     'func' => 8816,
                 ),
         '99318' => array(
-                    'sp' => self::SP_PHS,
+                    'sp' => self::SP_PAS,
                     'code' => 99318,
                     'gid' => 52,
                     'func' => 456,

@@ -8,7 +8,7 @@
 
 /**
  * JiWai.de Mobile Class
- * SUPPLIES must IN ( MOBILE, UNICOM, PHS )
+ * SUPPLIES must IN ( MOBILE, UNICOM, PAS )
  */
 class JWMobile {
 	/**
@@ -73,7 +73,7 @@ class JWMobile {
 
 	/**
 	 * @param $idLocations 位置 id 数组
-	 * @param $supplier 分 MOBILE | UNICOME | PHS
+	 * @param $supplier 分 MOBILE | UNICOME | PAS
 	 */
 	static public function GetDbRowsByIdLocationProvince( $idLocationProvince , $supplier = 'MOBILE' ) {
 
