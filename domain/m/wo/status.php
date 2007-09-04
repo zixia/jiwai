@@ -65,7 +65,7 @@ function update($idUser, $status) {
         }
 
         $robotMsg = new JWRobotMsg();
-        $robotMsg->Set( $idUser , 'web', $status, 'web' );
+        $robotMsg->Set( $idUser , 'wap', $status, 'wap@jiwai.de' );
         $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
 
         if( $replyMsg === false ) {

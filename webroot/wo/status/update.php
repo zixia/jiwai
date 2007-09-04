@@ -30,7 +30,7 @@ if ( array_key_exists('status', $_REQUEST) ){
         */
 
             $robotMsg = new JWRobotMsg();
-            $robotMsg->Set( $idUser , 'web', $status, 'web' );
+            $robotMsg->Set( $idUser , 'web', $status, 'web@jiwai.de' );
             $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
             if( $replyMsg === false ) {
                 JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
