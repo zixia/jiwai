@@ -70,8 +70,8 @@ class JWRobotLogic {
 		$linkId		= $robotMsg->GetLinkId();
 
 		// echo
-        if( false == in_array( $type , array('web','wap') ) )
-            printf("%-35s: %s\n", "MO($type://$address)", $body);
+		if( false == JWDevice::IsAllowedNonRobotDevice($type) )
+			printf("%-35s: %s\n", "MO($type://$address)", $body);
 
 		/*
 		 *	一个 MO 消息有如下几种状态：
@@ -98,7 +98,7 @@ class JWRobotLogic {
 		{
 			$reply_robot_msg 	= call_user_func($lingo_func, $robotMsg);
 
-		} else if ( JWDevice::IsExist($address, $type, false) || in_array( $type, array('web','wap') ) )
+		} else if ( JWDevice::IsExist($address, $type, false) || JWDevice::IsAllowedNonRobotDevice($type) )
 		{
 			// 设备已经设置，(false 代表包含未激活的设备)
 			// 		1、user JiWai status
@@ -124,8 +124,8 @@ class JWRobotLogic {
 						, $reply_robot_msg->GetBody() );
 		}
 
-        if( false == in_array( $type , array('web','wap') ) )
-		    echo $msg;
+		if( false == JWDevice::IsAllowedNonRobotDevice($type) )
+			echo $msg;
 
 		return $reply_robot_msg;
 	}

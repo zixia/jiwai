@@ -28,10 +28,10 @@ class JWDevice {
 	/*
 	 *					0: 不祥 1: 移动 2: 联通 3: 小灵通
 	 */
-	const SP_UNKNOWN 		= 0;
+	const SP_UNKNOWN 	= 0;
 	const SP_CHINAMOBILE 	= 1;
-	const SP_UNICOM			= 2;
-	const SP_PAS			= 3;
+	const SP_UNICOM		= 2;
+	const SP_PAS		= 3;
 
 	/**
 	 * Instance of this singleton class
@@ -82,9 +82,9 @@ class JWDevice {
 			case 'email':
 				// email check email address，为了兼容邮件检查，Device表中没有这种类型
 				return JWUser::IsValidEmail($address,true);
-            case 'web':
-            case 'wap':
-            case 'api':
+			case 'web':
+			case 'wap':
+			case 'api':
 			case 'facebook':
 				return true;
 
@@ -102,25 +102,25 @@ class JWDevice {
 	static public function GetDeviceDbRowByAddress( $address, $type )
 	{
 
-        if( in_array( $type, array('web','wap','api')) ) {
-            return array(
-                'idUser' => $address,
-                'secret' => '',
-                'type' => $type,
-                'idDevice' => 0,
-            );
-        }
+		if( self::IsAllowedNonRobotDevice($type) ) {
+			return array(
+				'idUser' => $address,
+				'secret' => '',
+				'type' => $type,
+				'idDevice' => 0,
+			);
+		}
 
-		$device_ids		= JWDevice::GetDeviceIdsByAddresses(	
-										array( 
-											array('address'=>$address,'type'=>$type) 
-										) );
+		$device_ids = JWDevice::GetDeviceIdsByAddresses(	
+								array( 
+									array('address'=>$address,'type'=>$type ),
+								));
 
 		$device_db_row 	= array();
 
 		if ( ! empty($device_ids) ) 
 		{
-			$device_id		= array_shift($device_ids);
+			$device_id	= array_shift($device_ids);
 			$device_db_row	= JWDevice::GetDeviceDbRowById($device_id);
 		}
 
@@ -245,18 +245,18 @@ _SQL_;
 		try
 		{
 			// 如果已经存在 $address / $type，会和uniq key冲突，产生exception
-			JWDB::DelTableRow('Device',array(	  'type'	=> $type
-												,'address'	=> $address
-											)
-								);
+			JWDB::DelTableRow('Device',array( 
+						'type' => $type ,
+						'address' => $address,
+						));
 
-			JWDB::SaveTableRow('Device',array(	 'idUser'	=> $idUser
-													,'type'		=> $type
-													,'address'	=> $address
-													,'secret'	=> $secret
-													,'timeCreate'	=>	JWDB::MysqlFuncion_Now()
-												)
-								);
+			JWDB::SaveTableRow('Device',array(
+						'idUser' => $idUser,
+						'type' => $type,
+						'address' => $address,
+						'secret' => $secret,
+						'timeCreate' => JWDB::MysqlFuncion_Now(),
+						));
 		}
 		catch(Exception $e)
 		{
@@ -298,24 +298,26 @@ _SQL_;
 	{
 		//XXX MySQL 5.0 比较英文字符的时候忽略大小写
 		if ($idUser) {
-			$device_row = JWDB::GetTableRow('Device',array(	'idUser'	=> $idUser
-													,'type'		=> $type
-													,'secret'	=> $secret
-								) );
+			$device_row = JWDB::GetTableRow('Device',array(	
+						'idUser' => $idUser,
+						'type' => $type,
+						'secret' => $secret,
+						));
 		} else {
-			$device_row = JWDB::GetTableRow('Device',array(	'address'	=> $address
-													,'type'		=> $type
-													,'secret'	=> $secret
-								) );
+			$device_row = JWDB::GetTableRow('Device',array(
+						'address' => $address,
+						'type' => $type,
+						'secret' => $secret,
+						));
 		}
 		$ret = false;
 
 		if ( !empty($device_row) ) // Verify PASS
 		{
-			$ret = JWDB::UpdateTableRow(	 'Device'	
-									,intval($device_row['id'])
-									,array(	 'secret' => '', 'address' => $address  )
-								);
+			$ret = JWDB::UpdateTableRow('Device', intval($device_row['id']), array(
+										'secret' => '',
+										'address' => $address,
+										));
 
 		}
 		else // Verify FAIL
@@ -363,32 +365,32 @@ _SQL_;
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
 			case self::SP_CHINAMOBILE: 	
-            {
-                $code = JWMobile::GetSpCode( $mobileNo, null );
-                if( false == empty( $code ) ){
-                    return $code['code'] . $code['func'];
-                }
-                return '99118816';
-            }
+			{
+				$code = JWMobile::GetSpCode( $mobileNo, null );
+				if( false == empty( $code ) ){
+					return $code['code'] . $code['func'];
+				}
+				return '99118816';
+			}
 			case self::SP_UNICOM:
-            {
-                $code = JWMobile::GetSpCode( $mobileNo, null );
-                if( false == empty( $code ) ){
-                    return $code['code'] . $code['func'];
-                }
-                return '95014567';
-            }
+			{
+				$code = JWMobile::GetSpCode( $mobileNo, null );
+				if( false == empty( $code ) ){
+					return $code['code'] . $code['func'];
+				}
+				return '95014567';
+			}
 			case self::SP_PAS:
-            {
-                $code = JWMobile::GetSpCode( $mobileNo, null );
-                if( false == empty( $code ) ){
-                    return $code['code'] . $code['func'];
-                }
-                return '99318456';
-            }
+			{
+				$code = JWMobile::GetSpCode( $mobileNo, null );
+				if( false == empty( $code ) ){
+					return $code['code'] . $code['func'];
+				}
+				return '99318456';
+			}
 			case self::SP_UNKNOWN: 
 			default:
-                return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
+				return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
 		}
 	}
 
@@ -666,15 +668,15 @@ _SQL_;
 		switch ( $type )
 		{
 			case 'sms':
-                if( $address ) {
-                    $code = JWMobile::GetSpCode( $address, null );
-                    if( false == empty( $code ) ){
-                        $name = $code['code'] . $code['func'];
-                    }
-                }
-                if( false == isset( $name ) ) {
-                    $name='99118816(移动) 83188816(联通)';
-                }
+				if( $address ) {
+					$code = JWMobile::GetSpCode( $address, null );
+					if( false == empty( $code ) ){
+						$name = $code['code'] . $code['func'];
+					}
+				}
+				if( false == isset( $name ) ) {
+					$name='99118816(移动) 83188816(联通)';
+				}
 				break;
 			case 'newsmth':
 				$name='JiWai';
@@ -685,27 +687,26 @@ _SQL_;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
-            case 'msn':
-                $row = null;
-                if( false == empty($address) ) {
-                    $shortcut = "$type:$address";
-                    $row = JWIMOnline::GetDbRowByShortcut( $shortcut );
-                }
-                if( empty( $row ) ){
-                    $msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de', 'msn003@jiwai.de' );
-                    $name = $msnArray[ array_rand($msnArray, 1) ];
-                    if( false == empty($address) ) {
-                        $shortcut = "$type:$address";
-                        JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
-                    }
-                } else {
-                    $name = $row['serverAddress'];
-                }
-                break;
+			case 'msn':
+				$row = null;
+				if( false == empty($address) ) {
+					$shortcut = "$type:$address";
+					$row = JWIMOnline::GetDbRowByShortcut( $shortcut );
+				}
+				if( empty( $row ) ){
+					$msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de', 'msn003@jiwai.de' );
+					$name = $msnArray[ array_rand($msnArray, 1) ];
+					if( false == empty($address) ) {
+						$shortcut = "$type:$address";
+						JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
+					}
+				} else {
+					$name = $row['serverAddress'];
+				}
+				break;
 			default:
 				$name='wo@jiwai.de';
 		}
-
 		return $name;
 	}
 
@@ -750,7 +751,7 @@ _SQL_;
 	  */
 	static public function IsSignatureChanged($idUser, $device, $status){
 		//Sinature logic
-		if( in_array($device,array('gtalk','msn','qq', 'skype')) ){
+		if( self::IsSignatureRecordDevice($device) ){
 			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
 
 			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
@@ -760,7 +761,8 @@ _SQL_;
 
 			if( !empty( $device_data ) 
 					&& strncasecmp($device_data['signature'],$status,140)
-			  ){
+			  )
+			{
 				JWDB::UpdateTableRow('Device', intval($device_data['idDevice']), array(
 							'signature'=>$status
 							));
@@ -779,60 +781,23 @@ _SQL_;
 		return empty($device_db_row['secret']);
 	}
 
-	static public function GetSupportedDeviceTypes()
-	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', /*'facebook' , 'jabber'*/ );
+	/*
+	 * 允许执行指令的非Robot设备
+	 */
+	static public function IsAllowedNonRobotDevice($type='web'){
+		return in_array( $type, array( 'web', 'wap', 'api' ) );	
 	}
 
 	/*
-	 * 更新用户设备在线状态
+	 * 允许记录签名的设备
 	 */
-	static public function UpdateDeviceOnlineStatus( $address, $type='gtalk',  $status='Y' ){
+	static public function IsSignatureRecordDevice($type='msn'){
+		return in_array( $type, array( 'msn', 'gtalk', 'qq', 'skype' ) );	
+	}
 
-		/* Cache the operation */
-		$cachedKey = JWDB_Cache::GetCacheKeyByFunction( array('JWDevice', 'UpdateDeviceOnlineStatus'), array($address, $type ) );
-		$memcache = JWMemcache::Instance();
-		$deviceRow = $memcache->Get( $cachedKey );
-		if ( false === $deviceRow ){
-			$deviceRow = self::GetDeviceDbRowByAddress( $address, $type );
-			$memcache->Set( $cachedKey, $deviceRow , 0, 300 );
-		}
-
-		switch ( $status ){
-			case 'Y':
-				$onlineStatus = 'ONLINE';
-			break;
-			case 'N':
-				$onlineStatus = 'OFFLINE';
-			break;
-			case 'A':
-				$onlineStatus = 'AWAY';
-			break;
-			default:
-			return;
-		}
-		
-		/*
-		 * cache it if changed or return;
-		 */
-		if( empty($deviceRow) || $deviceRow['onlineStatus'] == $onlineStatus ){
-			return;
-		}
-		$deviceRow['onlineStatus'] = $onlineStatus;
-		$memcache->Set( $cachedKey, $deviceRow , 0, 300 );
-
-		
-		/*
-		 * operate mysql
-		 */
-		$sql = <<<SQL
-UPDATE Device 
-	Set
-		`onlineStatus` = '$onlineStatus'
-	WHERE
-		`type` = '$type' AND `address` = '$address'
-SQL;
-		JWDB::Execute( $sql );
+	static public function GetSupportedDeviceTypes()
+	{
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', /*'facebook' , 'jabber'*/ );
 	}
 }
 ?>

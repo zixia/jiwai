@@ -134,7 +134,7 @@ _HTML_;
     <th>&nbsp;</th>
     <td colspan="2"><span class="note" style="margin-left:10px;">发送更新消息给 </span><span class="c_black"><?php echo JWDevice::GetNameFromType($type); ?></span><span class="note"> 上的 </span><span class="c_black"><?php echo JWDevice::GetRobotFromType($type, $address);?></span><span class="note"> 即可更新叽歪</span></td>
 </tr>
-    <?php if ( in_array($type, array('msn','gtalk','qq','skype') ) ) { ?>
+    <?php if ( JWDevice::IsSignatureRecordDevice( $type ) ) { ?>
 <tr height="60px">
     <td>&nbsp;</td>
     <th>&nbsp;</th>

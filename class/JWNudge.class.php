@@ -114,7 +114,7 @@ class JWNudge {
 
 				$address 	= $deviceRow[$type]['address'];
             
-                if( in_array($source, array('web','wap') ) ) { // nudge from web command || direct_messages from web
+                if( JWDevice::IsAllowedNonRobotDevice($source) ) { // nudge from web command || direct_messages from web
                     
                     $info = array(
                         'status' => $message,
