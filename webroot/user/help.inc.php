@@ -108,7 +108,7 @@ _HTML_;
 <?php JWTemplate::ShowActionResultTips() ?>
 
 
-<h3>这里是叽歪de留言板，欢迎给叽歪de留言！先看看<a href="<?php echo JWTemplate::GetConst('UrlFaq')?>" target="_blank">常见问题</a></h3>
+<h3 style="line-height:120%;">这里是叽歪de留言板，欢迎给叽歪de留言！先看看<a href="<?php echo JWTemplate::GetConst('UrlFaq')?>" target="_blank">常见问题</a></h3>
 
 <br />
 
