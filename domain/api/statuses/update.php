@@ -23,7 +23,7 @@ if( ! $idUser ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
 
-$device = 'web';
+$device = 'api';
 $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
 
