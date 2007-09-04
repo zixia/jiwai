@@ -155,21 +155,22 @@ SQL;
 
 			foreach( $queueStatuses as $notify ){
 				$id = $notify['id'];
+
 				$idUser = $notify['idUser'];
 
 				$metaInfo = @json_decode($notify['metaInfo']);
-
 				if( $metaInfo ){
 
-					//var_dump( $metaInfo );
 					if( is_object( $metaInfo ) ){	
+
 						$status = $metaInfo->status;
 						$idUserReplyTo = $metaInfo->idUserReplyTo;
-						$smssuffix = $metaInfo->smssuffix;
+						$idConference = $metaInfo->idConference;
+
 					}else if( is_array( $metaInfo ) ){
 						$status = @$metaInfo['status'];
 						$idUserReplyTo = @$metaInfo['idUserReplyTo'];
-						$smssuffix = @$metaInfo['smssuffix'];
+						$idConference = @$metaInfo['idConference'];
 					}else{
 						self::SetStatusDealStatus( $id, self::DEAL_QUARANTINED );
 						continue;
@@ -178,8 +179,8 @@ SQL;
 					/**
 					 * notify to other
 					 */
-					echo "idUser: $idUser, idUserReplyTo: $idUserReplyTo, status: $status, smssuffix: $smssuffix\n";
-					JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $smssuffix );
+					echo "idUser: $idUser, idUserReplyTo: $idUserReplyTo, status: $status, idConference: $idConference\n";
+					JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $idConference );
 
 					/**
 					 * Set Status 'DEALED'

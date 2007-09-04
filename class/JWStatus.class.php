@@ -76,92 +76,55 @@ class JWStatus {
 	 *	@param	int	$time	unixtime
 	 *	//fix me, the first parameter $idUser, may be an array which comes from table StatusQuarantine. We can use this array to create a new status directly.
 	 */
-	static public function Create( $idUser, $status=null, $device='web',$time=null,$isSignature='N')
+	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $isSignature='N', $options=array() )
 	{
-		/* 
-		 * For Create From Status_Quarantine;
-		 */
-		if( is_array( $idUser ) ) {
-			$row = $idUser;
-			
-			$idUser = $row['idUser'];
-			$status = $row['status'];
-			$device = $row['device'];
-			$time = strtotime($row['timeCreate']);
-			$reply_status_id = $row['idStatusReplyTo'];
-			$reply_user_id = $row['idUserReplyTo'];
-			$picture_id = $row['idPicture'];
-			$isSignature = $row['isSignature'];
-			
-			//user Info
-			$userInfo = JWUser::GetUserInfo( $idUser );
-			$isProtected = $userInfo['protected'];
-			$idUserReplyTo = $row['idUserReplyTo'];
-		}else{
-
-			$status = preg_replace('[\r\n]',' ',$status);
-
-			$time = intval($time);
-
-			if ( 0>=$time )
-				$time = time();
-			
-			// Deal idUser struct as 'idUser:idUserReplyTo' for conference	
-			$idUserReplyTo = null;
-			if( false == is_numeric($idUser) && false !== strpos($idUser, ':') ){
-				@list( $idUser, $idUserReplyTo ) = explode(':', $idUser);
-			}
-			
-			if( null == $idUserReplyTo ) {	
-				$statusPost = JWRobotLingoBase::ConvertCorner($status);
-				$reply_info = JWStatus::GetReplyInfo($statusPost);
-
-				if ( empty($reply_info) )
-				{ 
-					$reply_status_id	= null;
-					$reply_user_id		= null;
-				}
-				else
-				{
-					$status = $statusPost;
-					$reply_status_id	= $reply_info['status_id'];
-					$reply_user_id		= $reply_info['user_id'];
-				}
-			}else{
-				// idUserReplyTo May be not number, such as 'N', for conference use.
-				$reply_user_id = is_numeric( $idUserReplyTo ) ? intval($idUserReplyTo) : null ;
-				$reply_status_id = null;
-			}
-
-			$userInfo = JWUser::GetUserDbRowById($idUser);
-
-			$picture_id = $userInfo['idPicture'];
-			$isProtected = $userInfo['protected'];
-		}
+		//strip status
+		$status = preg_replace('[\r\n]',' ',$status);
 		
-		/** 
-		  * 以下逻辑正确是有前提的：
-		  * Create 参数，是经过JWSns处理过的，JWSns在UpdateStatus时，会正确的将会议用户自己发的更新的回复idUserReplyTo设为会议用户本身，在这个前提下，我们可以通过JWSns::GetSmsSuffix，可以获得idConference.
-		  */
-		$idConference = NULL;
-		if( $idUserReplyTo ) {
-			$suffixInfo = JWSns::GetSmsSuffix( $idUser, $idUserReplyTo, $device );
-			$idConference = empty( $suffixInfo ) ? NULL : $suffixInfo['idConference'];
+		//time set
+		if( isset( $options['timeCreate'] ) ) {
+			$timeCreate = $options['timeCreate'];
+		}else{
+			$timeCreate = ( intval($timeCreate) > 0 ) ? intval($timeCreate) : time();
 		}
 
-		return JWDB_Cache::SaveTableRow('Status',
-							array(	 'idUser'	=> $idUser
-									,'status'	=> preg_replace('/\xE2\x80\xAE/U', '', $status)
-									,'device'	=> $device
-									,'timeCreate'		=> Date('Y-m-d H:i:s',$time)
-									,'idStatusReplyTo'	=> $reply_status_id
-									,'idUserReplyTo'	=> $reply_user_id
-									,'idPicture'		=> $picture_id
-									,'idConference'		=> $idConference
-									,'isProtected'		=> $isProtected
-									,'isSignature'		=> $isSignature
-							)
-						);
+		$userInfo  = JWUser::GetUserInfo( $idUser );
+		$idPicture = $userInfo['idPicture'];
+		$isProtected = $userInfo['protected'];
+
+		$idUserReplyTo = $idStatusReplyTo = null;
+		$idConference = null;
+
+		if( isset( $options['idUserReplyTo'] ) ) {
+			$idUserReplyTo = $options['idUserReplyTo'];
+			$idStatusReplyTo = $options['idStatusReplyTo'];
+		}else{
+			$statusPost = JWRobotLingoBase::ConvertCorner($status);
+			$reply_info = JWStatus::GetReplyInfo($statusPost);
+			if( false == empty( $reply_info ) ){
+				$idUserReplyTo = $reply_info['user_id'];
+				$idStatusReplyTo = $reply_info['status_id'];
+			}
+		}
+
+		if( isset( $options['idConference'] ) && $options['idConference'] ) {
+			$idConference = $options['idConference'];
+		}else{
+			$idConference = $userInfo['idConference'];
+		}
+
+		return JWDB_Cache::SaveTableRow('Status', array( 
+								'idUser' => $idUser,
+								'status' => preg_replace('/\xE2\x80\xAE/U', '', $status),
+								'device' => $device,
+								'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
+								'idUserReplyTo'	=> $idUserReplyTo, 
+								'idStatusReplyTo' => $idStatusReplyTo,
+								'idPicture' => $idPicture,
+								'idConference' => $idConference,
+								'isProtected' => $isProtected,
+								'isSignature' => $isSignature,
+						));
 	}
 
 

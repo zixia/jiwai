@@ -51,45 +51,22 @@ class JWStatusQuarantine {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status=null, $device='web',$time=null,$isSignature='N')
-	{
-		$status = preg_replace('[\r\n]',' ',$status);
+	static public function Create( $idUser, $status=null, $device='web', $isSignature='N', $options= array() ) {
+		$idUser = JWDB::CheckInt( $idUser );
+		$timeCreate = $options['timeCreate'];
+		$idStatusReplyTo = $options['idStatusReplyTo'];
+		$idUserReplyTo = $options['idUserReplyTo'];
+		$idConference = $options['idConference'];
 
-		$time = intval($time);
-
-		if ( 0>=$time )
-			$time = time();
-		
-		$statusPost = JWRobotLingoBase::ConvertCorner($status);
-		$reply_info = JWStatus::GetReplyInfo($statusPost);
-
-		if ( empty($reply_info) )
-		{ 
-			$reply_status_id	= null;
-			$reply_user_id		= null;
-		}
-		else
-		{
-			$status = $statusPost;
-			$reply_status_id	= $reply_info['status_id'];
-			$reply_user_id		= $reply_info['user_id'];
-		}
-
-		$user_db_row = JWUser::GetUserDbRowById($idUser);
-
-		$picture_id = $user_db_row['idPicture'];
-
-		return JWDB::SaveTableRow('StatusQuarantine',
-							array(	 'idUser'	=> $idUser
-									,'status'	=> $status
-									,'device'	=> $device
-									,'timeCreate'	=> date('Y-m-d H:i:s', $time)
-									,'idStatusReplyTo'	=> $reply_status_id
-									,'idUserReplyTo'	=> $reply_user_id
-									,'idPicture'		=> $picture_id
-									,'isSignature'		=> $isSignature
-							)
-						);
+		return JWDB::SaveTableRow('StatusQuarantine', array(
+									'idUser' => $idUser,
+									'status' => $status,
+									'device' => $device,
+									'timeCreate' => $timeCreate,
+									'idStatusReplyTo' => $idStatusReplyTo,
+									'idUserReplyTo'	=> $idUserReplyTo,
+									'isSignature' => $isSignature,
+							) );
 	}
 
 	/**
@@ -245,12 +222,11 @@ _SQL_;
 				return true;
 		}
 
-		$sql = <<< __SQL__
+		$sql = <<<__SQL__
 UPDATE StatusQuarantine 
 	SET dealStatus = '$dealStatusString' 
 	WHERE id IN ( $idStatusesString )
 __SQL__;
-
 		JWDB::Execute( $sql );
 
 	}
@@ -316,32 +292,27 @@ __SQL__;
 		if( empty( $statusRow ) )
 			return true;
 					
-		$createFlag = JWStatus::Create( $statusRow );
-		if( $createFlag ) {
-			//	self::DestroyById( $statusRow['idStatus'] );
-		}else{
-			return false;
-		}
-
 		if( true===$updateFlag ) {
 			self::SetDealStatusByIds( $idStatus, JWStatusQuarantine::DEAL_ALLOWED );
 		}
-			
-		/** Nudge Friends */
 
-		if( $statusRow['idUserReplyTo'] ){
-			$follow_ids = array( $statusRow['idUserReplyTo'] );
-		}else{
-			$follow_ids = JWFollower::GetFollowerIds( $statusRow['idUser'] );
-		}
+		$options = array(
+				'idUserReplyTo' => $statusRow['idUserReplyTo'],
+				'idStatusReplyTo' => $statusRow['idStatusReplyTo'],
+				'idConference' => $statusRow['idConference'],
+				'nofilter' => true,
+			);
 
-		if( !empty( $follow_ids ) ) {
-		$userInfo = JWUser::GetUserInfo( $statusRow['idUser'] );
-			$message = $userInfo['nameScreen'].': '.$statusRow['status'];
-			JWNudge::NudgeUserIds( $follow_ids, $message ) ;
-		}
+		$ret = JWSns::UpdateStatus( 
+				$statusRow['idUser'], 
+				$statusRow['status'], 
+				$statusRow['device'], 
+				strtotime($statusRow['timeCreate']), 
+				$statusRow['isSignature'], 
+				null, 
+				$options );
 
-		return true;	
+		return ( $ret ) ? true : false;
 	}
 
 	/**

@@ -799,5 +799,25 @@ _SQL_;
 	{
 		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', /*'facebook' , 'jabber'*/ );
 	}
+
+	/*
+	 * 获取设备分类 [ Conference 用 ]
+	 */
+	static public function GetDeviceCategory( $type='sms' ) {
+		switch( strtolower($type) ) {
+			case 'web':
+			case 'wap':
+				return 'web';
+			case 'msn':
+			case 'gtalk':
+			case 'qq':
+			case 'skype':
+				return 'im';
+			case 'sms':
+				return 'sms';
+			default:
+				return 'other';
+		}
+	}
 }
 ?>

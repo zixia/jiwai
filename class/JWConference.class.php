@@ -42,6 +42,68 @@ class JWConference {
 		return self::$instance__;
 	}
 
+	/**
+	 * Get idConference from idUser,idUserReplyTo,serverAddress
+	 */
+	static public function FetchConference( $idSender, $idReceiver =null, $device='sms', $serverAddress=null) {
+		$idSender = JWDB::CheckInt( $idSender );
+	
+		//发送者是开启了会议模式用户	
+		$userSender = JWUser::GetUserInfo( $idSender );
+		if( empty($userSender) ) {
+			return array();
+		}
+
+		if( $userSender['idConference'] ){ // Simple...
+			return self::GetDbRowById( $userSender['idConference'] );
+		}
+
+		//会议用户信息
+		$userInfo = $conference = null;
+
+		//优先特服号分析
+		if( $device == 'sms' ){
+			if( isset( self::$smsAlias[ $serverAddress ] ) ){
+				$serverAddress = self::$smsAlias[ $serverAddress ];
+			}
+
+			if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
+				$normalMeeting = $matches[1] == 99 ? true : false;
+				if( $normalMeeting ){
+					$userInfo = JWUser::GetUserInfo( $matches[2] );
+					if( $userInfo['idConference'] ) {
+						$conference = self::GetDbRowById( $userInfo['idConference'] );
+					}
+				}else{
+					$conference = self::GetDbRowFromNumber( $matches[2] );
+					if( false == empty( $conference ) ){
+						$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
+					}
+				}
+			}
+		}
+
+		//如果从特服号中分析不出，再分析 idUserReplyTo 
+		if( $idReceiver && ( empty($userInfo) || empty($conference) ) ) {
+			$userInfo = JWUser::GetUserInfo( $idReceiver );
+			if( false == empty( $userInfo ) && $userInfo['idConference'] ) {
+				$conference = self::GetDbRowById( $userInfo['idConference'] );
+			}
+		}
+
+		//分析 设备类型，好友允许设置
+		if( false == empty( $userInfo ) && false == empty( $conference ) ) {
+			$allowedDevice = $conference['deviceAllow'];
+			if( in_array( $device, explode(',', $allowedDevice) ) ){
+				if( $conference['friendOnly'] == 'N' || JWFriend::IsFriend( $idReceiver, $idSender ) ) {
+					return $conference;
+				}
+			}
+		}
+
+		return array();;
+	}
+
 
 	/**
 	 * Constructing method, save initial state

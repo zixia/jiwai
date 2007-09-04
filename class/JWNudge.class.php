@@ -113,22 +113,16 @@ class JWNudge {
 				}
 
 				$address 	= $deviceRow[$type]['address'];
-            
-                if( JWDevice::IsAllowedNonRobotDevice($source) ) { // nudge from web command || direct_messages from web
-                    
-                    $info = array(
-                        'status' => $message,
-                        'idUserReplyTo' => $deviceRow[$type]['idUser'],
-                        'smssuffix' => null,
-                    );
-                    $ret = JWStatusNotifyQueue::Create( null, null, null, $info );
-
-                }else{
-
-                    JWRobot::SendMtRaw($address, $type, $message);
-
-                }
-
+				if( JWDevice::IsAllowedNonRobotDevice($source) ) { // nudge,dm from wap|web
+					$info = array(
+						'status' => $message,
+						'idUserReplyTo' => $deviceRow[$type]['idUser'],
+						'idConference' => null,
+					);
+					$ret = JWStatusNotifyQueue::Create( null, null, null, $info );
+				}else{
+					JWRobot::SendMtRaw($address, $type, $message);
+				}
 				break;
 
 			case 'nothing':
@@ -137,7 +131,7 @@ class JWNudge {
 				JWLog::Log(LOG_INFO, "JWNudge::Nudge skip Device.enabledFor nothing for idUser"
 									. '[' . $deviceRow[$type]['idUser'] . ']'
 									. ' of device [' . $type
-										. ':' .  $deviceRow[$type]['address']
+									. ':' .  $deviceRow[$type]['address']
 							);
 				break;
 		}
