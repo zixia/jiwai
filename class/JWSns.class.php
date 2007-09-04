@@ -497,7 +497,7 @@ class JWSns {
 
 		
 		//Real Create Status
-		$ret = JWStatus::Create( $idUser, $status, $device, $time, $isSignature, $createOptions);
+		$ret = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
 		if( $ret ) {
 
 			//Notify Follower
