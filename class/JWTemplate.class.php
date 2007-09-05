@@ -525,7 +525,7 @@ i=0;
                   max_nv = ov.substring(0, ++len_max);
               }
           }
-          $('status').value = nv;
+          //$('status').value = nv;  //not cut for bug
 		}
 	};
 
