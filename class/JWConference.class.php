@@ -93,8 +93,9 @@ class JWConference {
 
 		//分析 设备类型，好友允许设置
 		if( false == empty( $userInfo ) && false == empty( $conference ) ) {
+			$deviceCategory = JWDevice::GetDeviceCategory( $device );
 			$allowedDevice = $conference['deviceAllow'];
-			if( in_array( $device, explode(',', $allowedDevice) ) ){
+			if( in_array( $deviceCategory, explode(',', $allowedDevice) ) ){
 				if( $conference['friendOnly'] == 'N' || JWFriend::IsFriend( $idReceiver, $idSender ) ) {
 					return $conference;
 				}

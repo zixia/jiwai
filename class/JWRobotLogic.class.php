@@ -150,9 +150,9 @@ class JWRobotLogic {
         
 		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-        if( $isSignature == 'Y' && ( empty($device_row) || !empty($device_row['secret']) ) ) {
-            return null;
-        }
+		if( $isSignature == 'Y' && ( empty($device_row) || !empty($device_row['secret']) ) ) {
+			return null;
+		}
 
 		if ( empty($device_row) )
 		{	
@@ -173,7 +173,7 @@ class JWRobotLogic {
 			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
-			$ret = JWSns::UpdateStatus($device_row['idUser'], $body,$type,$time,$isSignature, $serverAddress);
+			$ret = JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time, $isSignature, $serverAddress);
 			if( $ret ) {
 				$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_UPDATESTATUS',array($nameFull,));
