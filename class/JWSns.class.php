@@ -181,6 +181,11 @@ class JWSns {
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
 		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
+        if( $friend_request_id ) {
+            $userInfo = JWUser::GetUserInfo( $idUser );
+            $message = "$userInfo[nameScreen] 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
+            JWNudge::NudgeUserIds( array($idFriend), $message, 'nudge', 'web' );
+        }
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id, $note);
 
 		return $friend_request_id;
