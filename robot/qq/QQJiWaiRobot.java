@@ -286,6 +286,9 @@ public class QQJiWaiRobot implements IQQListener, MoMtProcessor {
 			ReceiveIMPacket p = (ReceiveIMPacket) e.getSource();
 			NormalIM m = p.normalIM;
 
+			if( m.replyType != 1 )  // 1 = normal im, other may be auto reply
+				return;
+
 			Integer sender_address = p.normalHeader.sender;
 			byte[] messageBytes = stripFace(m.messageBytes);
 			if (messageBytes.length == 0)
