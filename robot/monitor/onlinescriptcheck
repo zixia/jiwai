@@ -54,7 +54,8 @@ os.chdir( filepath )
 
 for k,v in configure.iteritems():
 	rv = monitor(v);
-	print rv[1];
+	#print rv[1];
 	if rv[0] != 0 : 
 		alert(k)
+		commands.getstatusoutput( './onlinescriptrestart' );
 		break

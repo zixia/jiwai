@@ -1,0 +1,41 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*- 
+import sys
+import re
+import os
+import commands
+import syslog
+import socket
+import time
+import random
+
+#print time.localtime()
+#print time.strftime("%Y-%m-%d %H:%M:%S")
+
+def change(port,status):
+	try:
+		host = 'localhost' 
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect( (host,port) )
+		s.send( "Sig: %s\r\n" % (status))
+		s.recv( 10 )
+		s.close()
+	except socket.error, msg:
+		pass
+
+def onlineScript(port):
+	try:
+		host = 'localhost' 
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect( (host,port) )
+		s.send( "ROnlineScript\r\n" )
+		s.recv( 10 )
+		s.close()
+	except socket.error, msg:
+		pass
+
+#Reload OnlieScript
+onlineScript( 55010 );
+onlineScript( 55020 );
+onlineScript( 55030 );
+onlineScript( 55040 );
