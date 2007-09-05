@@ -670,7 +670,7 @@ _HTML_;
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
 
-			$status_result 	= JWStatus::FormatStatus($status);
+			$status_result 	= JWStatus::FormatStatus($statusRow);
 			$status			= $status_result['status'];
 			$replyto		= $status_result['replyto'];
 
@@ -889,7 +889,7 @@ _HTML_;
 	
 			$device		= JWDevice::GetNameFromType($device);
 
-			$formated_status 	= JWStatus::FormatStatus($status);
+			$formated_status 	= JWStatus::FormatStatus($statusRows[$status_id]);
 
 			$replyto			= $formated_status['replyto'];
 			$status				= $formated_status['status'];

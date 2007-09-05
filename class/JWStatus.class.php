@@ -50,8 +50,10 @@ class JWStatus {
 		if ( empty($status) )
 			return null;
 
-		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) )
-			return null;
+		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) ) {
+            if ( ! preg_match('/^@\s*([^\s]+)\s+(.+)/',$status, $matches) ) 
+                return null;
+        }
 
 		$reply_to_user = $matches[1];
 
@@ -576,10 +578,20 @@ _SQL_;
 	 */
 	static public function FormatStatus ($status, $jsLink=true)
 	{
+
+        $idUserReplyTo = $idStatusReplyTo = null;
+        if( is_array( $status ) ){
+            $idUserReplyTo = $status['idUserReplyTo'];
+            $idStatusReplyTo = $status['idStatusReplyTo'];
+            $status = $status['status'];
+        }
+
 		$replyto	= null;
 
 		if ( preg_match('/^@\s*([\w\._\-]+)/',$status,$matches) )
 			$replyto 	= $matches[1];
+        else if ( preg_match('/^@\s*([^\s]+)\s+(.+)/',$status,$matches) )
+            $replyto    = $matches[1];
 
 
 		/* 
@@ -656,8 +668,18 @@ _HTML_;
 			$status = htmlspecialchars($status);
 		}
 
-		if ( ! empty($replyto) )
-			$status		= preg_replace('/^@\s*([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", $status);
+		if ( ! empty($replyto) ) {
+            if( $idUserReplyTo ) {
+                $userReply = JWUser::GetUserInfo( $idUserReplyTo );
+                if( false == empty( $userReply ) ) {
+                    $replyto = $userReply['nameScreen'];
+                    $status		= preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameScreen]/'>$userReply[nameScreen]</a> ", $status);
+                }
+            }else{
+                $replyto = null;
+            //    $status		= preg_replace('/^@\s*([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", $status);
+            }
+        }
 
 		return array ( 'status'		=> $status
 						, 'replyto'	=> $replyto
