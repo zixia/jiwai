@@ -1,0 +1,60 @@
+#!/usr/bin/python
+import sys
+import re
+import os
+import commands
+import syslog
+import socket
+import time
+import random
+
+#print time.localtime()
+#print time.strftime("%Y-%m-%d %H:%M:%S")
+
+def monitor(cmd):
+	return commands.getstatusoutput( cmd );
+
+def logit(string):
+	syslog.openlog("RobotMonitor", syslog.LOG_PID|syslog.LOG_CONS|syslog.LOG_NDELAY, syslog.LOG_LOCAL0)
+	#datetime = time.strftime("%Y-%m-%d %H:%M:%S")
+	syslog.syslog( string )
+	syslog.closelog()
+	
+
+def alert(robotid):
+	'''Syslog'''
+	string = "%s offline" % (robotid)
+	logit( string )
+	'''Smsalert'''
+	#'''
+	try:
+		host = '60.28.194.36'
+		port = 50020 
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect( (host,port) )
+		s.send( "GET /alert/%s/Offline\r\n" % (robotid))
+		s.recv( 10 )
+		s.close()
+	except socket.error, msg:
+		string = "SmsAlert Daemon maybe down"
+		logit( string )
+	#'''
+
+#### begin #####
+commandTuple = ("nn", "whois", "add", "follow", "leave", "naonao", "get", "nudge", "delete", "nao", "remove", "invite")
+index = random.randint( 0, len( commandTuple ) -1 )
+nowcmd = commandTuple[ index ]
+
+configure = {
+	'onlinemo' : "./online_mo_test.php",
+}
+
+filepath = os.path.split( sys.argv[0] )[0]
+os.chdir( filepath )
+
+for k,v in configure.iteritems():
+	rv = monitor(v);
+	print rv[1];
+	if rv[0] != 0 : 
+		alert(k)
+		break
