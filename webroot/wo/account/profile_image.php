@@ -11,7 +11,7 @@ if ( preg_match('/^\/(\d+)$/',$pathParam,$matches) )
 {
 	$page_user_info = JWUser::GetUserInfo($matches[1]);
 }
-else if ( preg_match('/^\/(\w.+)$/',$pathParam,$matches) )
+else if ( preg_match('/^\/([^\?\/]+)$/',$pathParam,$matches) )
 {
 	$page_user_info = JWUser::GetUserInfo($matches[1]);
 }
