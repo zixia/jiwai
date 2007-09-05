@@ -114,8 +114,12 @@ class JWSns {
 
 		// TODO check idUser permission
 	
-		if ( ! JWFriend::Create($userRow['id'], $friendRow['id']) )
+		if ( ! JWFriend::Create($userRow['id'], $friendRow['id']) ) {
 			throw new JWException('JWFriend::Create failed');
+		}else{
+			$message = "$userRow[nameScreen] 将你加为好友了。";
+			JWNudge::NudgeUserIds( array($friendRow['id']), $message, 'nudge', 'web' );
+		}
 
 		$notice_settings 	= JWUser::GetNotification($friendRow['id']);
 		$need_notice_mail	= ('Y'==$notice_settings['send_new_friend_email']);
@@ -201,6 +205,9 @@ class JWSns {
 		{
 			JWLog::Log(LOG_CRIT, "JWSns::CreateFollower($user_id, $follower_id) failed.");
 			return false;
+		}else{
+			$message = "$followerRow[nameScreen] 订阅了你的更新。";
+			JWNudge::NudgeUserIds(array($user_id), $message, 'nudge', 'web' );
 		}
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
@@ -216,6 +223,11 @@ class JWSns {
 	 */
 	static public function DestroyFollowers($idUser, $idFollowers, $biDirection=false)
 	{
+
+		if( $biDirection ) {
+			$userInfo = JWUser::GetUserInfo( $idUser );
+		}
+
 		foreach ( $idFollowers as $follower_id )
 		{
 			if ( JWFollower::IsFollower($idUser, $follower_id) )
@@ -224,6 +236,11 @@ class JWSns {
 				if ( ! JWFollower::Destroy($idUser, $follower_id) )
 				{
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFollowers JWFollower::Destroy($idUser, $follower_id) failed.");
+				}else
+				{
+					$userFollower = JWUser::GetUserInfo( $follower_id );
+					$message = "$userFollower[nameScreen] 取消订阅你的更新了。";
+					JWNudge::NudgeUserIds(array($idUser), $message, $messageType='nudge', $source='web');
 				}
 			}else if ( $biDirection && JWFollower::IsFollower($follower_id,$idUser) )
 			{
@@ -231,6 +248,10 @@ class JWSns {
 				if ( ! JWFollower::Destroy($follower_id, $idUser) )
 				{
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFollowers JWFollower::Destroy($follower_id, $idUser) failed.");
+				}else
+				{
+					$message = "$userInfo[nameScreen] 取消订阅你的更新了。";
+					JWNudge::NudgeUserIds(array($follower_id), $message, $messageType='nudge', $source='web');
 				}
 			}
 
@@ -678,14 +699,20 @@ class JWSns {
 	 */
 	static public function DestroyFriends($idUser, $idFriends, $biDirection=false)
 	{
+
+		$userInfo = JWUser::GetUserInfo( $idUser );
+
 		foreach ( $idFriends as $friend_id )
 		{
 			if ( JWFriend::IsFriend($idUser, $friend_id) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($idUser,$friend_id).");
-
-				if ( ! JWFriend::Destroy($idUser, $friend_id) )
+				if ( ! JWFriend::Destroy($idUser, $friend_id) ) {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
+				}else{
+					$message = "你已经不再是 $userInfo[nameScreen] 的好友了。";
+					JWNudge::NudgeUserIds( array($friend_id), $message, 'nudge', 'web');
+				}
 
 			}
 
@@ -693,31 +720,17 @@ class JWSns {
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser).");
 
-				if ( ! JWFriend::Destroy($friend_id, $idUser) )
+				if ( ! JWFriend::Destroy($friend_id, $idUser) ) {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
+				}else{
+					$friendInfo = JWUser::GetUserInfo( $friend_id );
+					$message = "你已经不再是 $friendInfo[nameScreen] 的好友了。";
+					JWNudge::NudgeUserIds( array($idUser), $message, 'nudge', 'web');
+				}
 
 			}
 
-			/*
-			 *	处理 Follower
-			 */
-			if ( JWFollower::IsFollower($friend_id,$idUser) )
-			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($friend_id,$idUser).");
-
-				if ( ! JWFollower::Destroy($friend_id,$idUser) )
-					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($friend_id,$idUser) failed.");
-
-			}
-
-			if ( $biDirection && JWFollower::IsFollower($idUser,$friend_id) )
-			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id).");
-
-				if ( ! JWFollower::Destroy($idUser, $friend_id) )
-					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id) failed.");
-
-			}
+			self::DestroyFollowers( $friend_id, array($idUser), $biDirection );
 		}
 
 		return true;

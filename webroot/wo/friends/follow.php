@@ -14,10 +14,14 @@ if ( $idLoginedUser )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idPageUser = intval($match[1]);
 
-		$friend_name = JWUser::GetUserInfo($idPageUser, 'nameFull');
+		$friendRow = JWUser::GetUserInfo( $idPageUser );
+		$userRow = JWUser::GetUserInfo( $idLoginedUser );
+
+		$friend_name = $friendRow['nameFull'];
+
 
 		try {
-			$is_succ = JWFollower::Create($idPageUser, $idLoginedUser);
+			$is_succ = JWSns::CreateFollower($friendRow, $userRow);
 		} catch ( Exception $e ) {
 			$is_succ = false;
 		}
