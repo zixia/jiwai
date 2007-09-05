@@ -1633,7 +1633,7 @@ _HTML_;
 		{
 			$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 			$status_id		= $status_data['status_ids'][0];
-			$current_status	= $status_rows[$status_id]['status'];
+			$current_status	= $status_rows[$status_id];
 		}
 		else
 		{
