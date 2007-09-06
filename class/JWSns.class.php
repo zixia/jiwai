@@ -508,6 +508,10 @@ class JWSns {
 				'timeCreate' => $timeCreate,
 			);
 
+		if( isset( $options['idPicture'] ) ) {
+			$createOptions['idPicture'] = $options['idPicture'] ;
+		}
+
 		/*
 		 *  判断是否需要Filter，如果需要进入status
 		 *

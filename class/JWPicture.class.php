@@ -243,10 +243,10 @@ _SQL_;
 		if ( empty($md5) )
 			return 0;
 
-		return JWDB_Cache::ExistTableRow('Picture', array(	 'idUser'	=> $idUser
-														,'md5'		=> $md5
-													)
-									);
+		return JWDB_Cache::ExistTableRow('Picture', array(	 
+								'idUser' => $idUser,
+								'md5' => $md5,
+							));
 	}
 
 
@@ -256,8 +256,12 @@ _SQL_;
 
 	 * @return 	int		false if fail, otherwise return new PK of picture TB
 	 */
-	static public function SaveUserIcon($idUser, $absFilePathName)
+	static public function SaveUserIcon($idUser, $absFilePathName, $type='ICON')
 	{
+
+		if( false == in_array( $type, array('ICON', 'BG', 'MMS' ) ))
+			return false;
+
 		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
 		{
 			unlink ( $absFilePathName );
@@ -270,10 +274,12 @@ _SQL_;
 		 */
 		$md5  = md5_file($absFilePathName);
 
-		$picture_id = JWPicture::GetIdByMd5($idUser, $md5, 'ICON');
+		$picture_id = JWPicture::GetIdByMd5($idUser, $md5, $type);
 
-		if ( $picture_id )
+		if ( $picture_id ) {
+			unlink( $absFilePathName );
 			return $picture_id;
+		}
 
 
 		$file_name 	= $matches['file_name'];
@@ -286,14 +292,15 @@ _SQL_;
 
 		self::Instance();
 
-		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
-															,'class'	=> 'ICON'
-															,'fileName'	=> $file_name
-															,'fileExt'	=> $dst_file_type
-															,'md5'		=> $md5
-															,'timeCreate'	=> JWDB_Cache::MysqlFuncion_Now()
-														)
-										);
+		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(
+				       	'idUser' => $idUser,
+					'class'	=> $type,
+					'fileName' => $file_name,
+					'fileExt' => $dst_file_type,
+					'md5' => $md5,
+					'timeCreate' => JWDB_Cache::MysqlFuncion_Now(),
+				));
+
 		if ( empty($picture_id) )
 			return 0;
 
@@ -315,35 +322,42 @@ _SQL_;
 
 		$ret = true;
 
-		if ( $ret && ! self::ConvertPictureBig( 	 $absFilePathName
-											,($abs_storage_root . $rel_picture_path_name)) ){
+		if ( $ret && ! self::ConvertPictureBig(  $absFilePathName, 
+					($abs_storage_root . $rel_picture_path_name) ) 
+		){
 			$ret = false;
 		}
 
-		if ( $ret && ! self::ConvertThumbnail96(	 ($abs_storage_root . $rel_picture_path_name)
-											,($abs_storage_root . $rel_thumb96_path_name)) ){
+		if ( $ret && ! self::ConvertThumbnail96( ($abs_storage_root . $rel_picture_path_name), 
+					($abs_storage_root . $rel_thumb96_path_name) ) 
+		){
 			$ret = false;
 		}
 
 
-		if ( $ret && ! self::ConvertThumbnail48(	 ($abs_storage_root . $rel_picture_path_name)
-											,($abs_storage_root . $rel_thumb48_path_name)) ){
+		if ( $ret && ! self::ConvertThumbnail48( ($abs_storage_root . $rel_picture_path_name),
+					($abs_storage_root . $rel_thumb48_path_name) ) 
+		){
 			$ret = false;
 		}
 
 /*
-		if ( $ret && ! self::ConvertThumbnail24(	 ($abs_storage_root . $rel_thumb_path_name)
-											,($abs_storage_root . $rel_thumb24_path_name)) ){
+		if ( $ret && ! self::ConvertThumbnail24( ($abs_storage_root . $rel_thumb_path_name),
+					($abs_storage_root . $rel_thumb24_path_name) ) 
+		){
 			$ret = false;
 		}
 */
 
-		if ( $ret && ! JWFile::Save( array(	 $rel_picture_path_name
-											,$rel_thumb96_path_name
-											,$rel_thumb48_path_name
-											//,$rel_thumb24_path_name
-									) ) )
+		if ( $ret && ! JWFile::Save( array(
+					       	$rel_picture_path_name,
+						$rel_thumb96_path_name,
+						$rel_thumb48_path_name,
+						//$rel_thumb24_path_name,
+					) )
+		) {
 			$ret = false;
+		}
 
 		unlink ( $absFilePathName );
 
@@ -526,15 +540,16 @@ _CMD_;
 
 		self::Instance();
 
-		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(	 'idUser'	=> $idUser
-															,'class'	=> 'BG'
-															,'fileName'	=> $file_name
-															,'fileExt'	=> $dst_file_type
-															,'md5'		=> $md5
-															,'timeCreate'	=> JWDB_Cache::MysqlFuncion_Now()
-														)
-										);
-		if ( empty($picture_id) )
+		$picture_id = JWDB_Cache::SaveTableRow('Picture', array(
+					'idUser' => $idUser,
+					'class'	=> 'BG',
+					'fileName' => $file_name,
+					'fileExt' => $dst_file_type,
+					'md5' => $md5,
+					'timeCreate' => JWDB_Cache::MysqlFuncion_Now(),
+				) );
+
+		if ( empty($picture_id) ) 
 			return 0;
 
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
@@ -551,10 +566,7 @@ _CMD_;
 
 		$ret = true;
 
-		if ( $ret && ! copy(	 $absFilePathName
-								,$abs_storage_root . $rel_bg_path_name 
-							)
-			)
+		if ( $ret && ! copy(	 $absFilePathName, $abs_storage_root . $rel_bg_path_name ) )
 		{
 			$ret = false;
 		}
@@ -574,14 +586,15 @@ _CMD_;
 		return $picture_id;
 	}
 
-    static public function GetMMSNum($idUser){
-        $idUser = JWDB::CheckInt( $idUser );
-        $sql = "SELECT COUNT(1) AS num FROM Picture WHERE idUser=$idUser AND class='MMS'";
-        $row = JWDB::GetQueryResult( $sql );
-        if( empty($row) )
-            return 0;
-        return $row['num'];
-    }
+	static public function GetMMSNum($idUser)
+	{
+		$idUser = JWDB::CheckInt( $idUser );
+		$sql = "SELECT COUNT(1) AS num FROM Picture WHERE idUser=$idUser AND class='MMS'";
+		$row = JWDB::GetQueryResult( $sql );
+		if( empty($row) )
+			return 0;
+		return $row['num'];
+	}
 
 }
 ?>

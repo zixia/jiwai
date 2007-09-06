@@ -97,6 +97,10 @@ class JWStatus {
 		$idUserReplyTo = $idStatusReplyTo = null;
 		$idConference = null;
 
+		if( isset( $options['idPicture'] ) ) {
+			$idPicture = $options['idPicture'] ;
+		}
+
 		if( isset( $options['idUserReplyTo'] ) ) {
 			$idUserReplyTo = $options['idUserReplyTo'];
 			$idStatusReplyTo = $options['idStatusReplyTo'];
