@@ -153,8 +153,9 @@ class JWMmsMail {
 								break;
 							}	
 
-						}else if($filetype =='text') {
-							$mmsArray['status'] = file_get_contents( $realfile );
+						}else if( $filetype=='text' && $suffix=='plain') {
+							$text = file_get_contents( $realfile );
+							$mmsArray['status'] = mb_convert_encoding( $text, 'UTF-8', 'GBK, UTF-8');
 						}
 					}
 				}
@@ -172,7 +173,6 @@ class JWMmsMail {
 
 	static function SaveToStatus($mmsArray = array()){
 
-		$userInfo = JWUser::GetUserInfo( $mmsArray['idUser'] );
 		$device = 'sms';
 		$serverAddress = 'm@jiwai.de';
 		$options = array(
@@ -180,6 +180,7 @@ class JWMmsMail {
 			);
 
 		if( false == isset($mmsArray['status']) || empty($mmsArray['status']) ) {
+			$userInfo = JWUser::GetUserInfo( $mmsArray['idUser'] );
 			$mmsArray['status'] = "$userInfo[nameFull]上传了一条彩信。";
 		}
 
@@ -190,10 +191,10 @@ class JWMmsMail {
 			);
 
 
-		return JWSns::UpdateStatus( $mmsArray['idUser'], 
-						$mmsArray['status'], 
-						$device, 
-						null, 
+		return JWSns::UpdateStatus( $mmsArray['idUser'],
+						$mmsArray['status'],
+						$device,
+						null,
 						$isSignature,
 						$serverAddress,
 					       	$options );	
