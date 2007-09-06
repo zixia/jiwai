@@ -126,6 +126,8 @@ class JWMmsMail {
 				
 				$files = scandir( $undealDirname );
 
+				$readok = true;
+
 				foreach( $files as $f ) {
 
 					$realfile = $undealDirname .'/'. $f ;
@@ -142,15 +144,16 @@ class JWMmsMail {
 						//Fetch image and text
 						if( $filetype == 'image' ) {
 
-							$ufilename = tempnam( "/tmp", 'Mms' ) . '.' . $suffix;
+							$ufilename = uniqid('/tmp/Mms') . '.' . $suffix;
 							@copy( $realfile, $ufilename );
 
-							$idPicture = JWPicture::SaveUserIcon($mmsArray['idUser'],$ufilename, 'MMS');
+							$idPicture = JWPicture::SaveUserIcon( $mmsArray['idUser'], $ufilename, 'MMS', array('origin', 'thumb48', 'thumb96', 'picture') );
+
 							if( $idPicture ) {
 								$mmsArray['idPicture'] = $idPicture;
+								$readok = true;
 							}else{
-								@rename($undealDirname, $quarantinedDirname);
-								break;
+								$readok = false;
 							}	
 
 						}else if( $filetype=='text' && $suffix=='plain') {
@@ -160,7 +163,7 @@ class JWMmsMail {
 					}
 				}
 
-				if( self::SaveToStatus($mmsArray) ){
+				if( $readok && self::SaveToStatus($mmsArray) ){
 					echo "[sms://${phone}] Update MMS Status Successed\n";
 					@rename($undealDirname, $dealedDirname);
 				}else{

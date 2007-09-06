@@ -650,7 +650,7 @@ die(var_dump($db_result));
 	 */
 	static public function GetCacheKeyByCondition($table, $condition, $limit)
 	{
-		$condition 	= sort($condition);
+		ksort($condition);
 
 		$param_string	= serialize($condition);
 		$param_string	= preg_replace('/[\s]+/','_',$param_string);
@@ -667,7 +667,7 @@ die(var_dump($db_result));
 	static public function GetCacheKeyByFunction($function, $param=null)
 	{
 		if ( is_array($param) )
-			sort($param);
+			ksort($param);
 
 		$param_string	= serialize($param);
 

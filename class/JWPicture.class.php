@@ -246,7 +246,8 @@ _SQL_;
 		return JWDB_Cache::ExistTableRow('Picture', array(	 
 								'idUser' => $idUser,
 								'md5' => $md5,
-							));
+								'class' => $class,
+						));
 	}
 
 
@@ -256,10 +257,10 @@ _SQL_;
 
 	 * @return 	int		false if fail, otherwise return new PK of picture TB
 	 */
-	static public function SaveUserIcon($idUser, $absFilePathName, $type='ICON')
+	static public function SaveUserIcon($idUser, $absFilePathName, $type='ICON', $options=array( 'picture', 'thumb48','thumb96') )
 	{
 
-		if( false == in_array( $type, array('ICON', 'BG', 'MMS' ) ))
+		if( false == in_array( $type, array('ICON', 'MMS' ) ))
 			return false;
 
 		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
@@ -267,7 +268,6 @@ _SQL_;
 			unlink ( $absFilePathName );
 			return ;
 		}
-
 
 		/*
 		 *	检查用户是否以前上传过这个图片
@@ -281,14 +281,12 @@ _SQL_;
 			return $picture_id;
 		}
 
-
 		$file_name 	= $matches['file_name'];
 		$file_ext 	= $matches['file_ext'];
 
 		$dst_file_type = 'jpg';
 		if ( 'gif'==$file_ext )
 			$dst_file_type = 'gif';
-
 
 		self::Instance();
 
@@ -306,7 +304,7 @@ _SQL_;
 
 		$abs_storage_root	= JWFile::GetStorageAbsRoot();
 		$picture_path		= self::GetPathRel($picture_id);
-		$abs_path			= $abs_storage_root . $picture_path;
+		$abs_path		= $abs_storage_root . $picture_path;
 
 		if ( ! file_exists($abs_path) )
 			mkdir($abs_path,0770,true);
@@ -314,55 +312,51 @@ _SQL_;
 		if ( ! is_writeable($abs_path) )
 			throw new JWException("$user_path unwriteable");
 
-		$rel_picture_path_name = $picture_path . "picture." . $dst_file_type;
-		$rel_thumb96_path_name = $picture_path . "thumb96." . $dst_file_type;
-		$rel_thumb48_path_name = $picture_path . "thumb48." . $dst_file_type;
-		//$rel_thumb24_path_name = $picture_path . "thumb24." . $dst_file_type;
-
-
 		$ret = true;
+		$rel_save_files = array();
 
-		if ( $ret && ! self::ConvertPictureBig(  $absFilePathName, 
-					($abs_storage_root . $rel_picture_path_name) ) 
-		){
-			$ret = false;
+		foreach( $options as $op ) {
+
+			$rel_file_path = $picture_path . $op . '.' . $dst_file_type;
+			$convert_path_name = $abs_storage_root . $rel_file_path;
+			array_push( $rel_save_files, $rel_file_path );
+
+			switch($op){
+				case 'picture':
+					{
+						$ret = self::ConvertPictureBig( $absFilePathName, $convert_path_name );
+						break;
+					}
+				case 'thumb48':
+					{
+						$ret = self::ConvertThumbnail48( $absFilePathName, $convert_path_name );
+						break;
+					}
+				case 'thumb96':
+					{
+						$ret = self::ConvertThumbnail96( $absFilePathName, $convert_path_name );
+						break;
+					}
+				case 'origin':
+					{
+						$ret = copy( $absFilePathName, $convert_path_name );
+						break;
+					}
+				default:
+					break;
+			}
+
+			if( $ret == false )
+				break;
 		}
-
-		if ( $ret && ! self::ConvertThumbnail96( ($abs_storage_root . $rel_picture_path_name), 
-					($abs_storage_root . $rel_thumb96_path_name) ) 
-		){
-			$ret = false;
-		}
-
-
-		if ( $ret && ! self::ConvertThumbnail48( ($abs_storage_root . $rel_picture_path_name),
-					($abs_storage_root . $rel_thumb48_path_name) ) 
-		){
-			$ret = false;
-		}
-
-/*
-		if ( $ret && ! self::ConvertThumbnail24( ($abs_storage_root . $rel_thumb_path_name),
-					($abs_storage_root . $rel_thumb24_path_name) ) 
-		){
-			$ret = false;
-		}
-*/
-
-		if ( $ret && ! JWFile::Save( array(
-					       	$rel_picture_path_name,
-						$rel_thumb96_path_name,
-						$rel_thumb48_path_name,
-						//$rel_thumb24_path_name,
-					) )
-		) {
+		
+		if ( $ret && ! JWFile::Save( $rel_save_files )) {
 			$ret = false;
 		}
 
 		unlink ( $absFilePathName );
 
-		if ( ! $ret )
-		{
+		if ( ! $ret ) {
 			JWDB_Cache::DelTableRow('Picture', array('id'=>$picture_id) );
 			$picture_id = false;
 		}
