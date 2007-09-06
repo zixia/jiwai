@@ -17,7 +17,7 @@ function user_status($idPageUser, $idStatus)
 
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
-	$formated_status 	= JWStatus::FormatStatus($status_info['status'],false);
+	$formated_status 	= JWStatus::FormatStatus($status_info,false);
     $pettyDevice = JWDevice::GetNameFromType( $status_info['device'] );
 
 	$protected = false;
@@ -66,9 +66,7 @@ JWTemplate::html_head($head_options) ;
     <div id="permalink">
 
         <div class="odd">
-            <div class="head">
-                <a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb96');?>" width="96" height="96"/></a>
-            </div>
+            <div class="head"><a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb96');?>" width="96" height="96"/></a></div>
             <div class="cont">
                 <div class="bg"></div>
                 <table width="100%" border="0" cellspacing="5" cellpadding="0">

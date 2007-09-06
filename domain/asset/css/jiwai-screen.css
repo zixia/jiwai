@@ -212,7 +212,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .direct_messages #tips a {float:right; padding-right:12px; color: #000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
 
 
-#permalink .odd .head {float:left; width:110px; overflow:hidden; height:100px;}
+#permalink .odd .head {float:left; width:110px; overflow:hidden; height:110px;}
 #permalink .odd .head img {border:1px solid #FF9936; padding:2px; background-color:#ffffff;}
 #permalink .odd .cont .bg { background: url(../images/org-con-bg-big.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
 #permalink .odd .cont { border:2px solid #FFCFA8; padding:6px;}
