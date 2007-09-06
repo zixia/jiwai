@@ -23,25 +23,6 @@ def change(port,status):
 	except socket.error, msg:
 		pass
 
-def onlineScript(port):
-	try:
-		host = 'localhost' 
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.connect( (host,port) )
-		s.send( "ROnlineScript\r\n" )
-		s.recv( 10 )
-		s.close()
-	except socket.error, msg:
-		pass
-
-#Reload OnlieScript
-#'''
-onlineScript( 55010 );
-onlineScript( 55020 );
-onlineScript( 55030 );
-onlineScript( 55040 );
-#'''
-
 status = '叽歪de将于9月1日上午8:00开始系统升级blahblah'
 status = '叽歪一下吧！（发送HELP了解更多）'
 
