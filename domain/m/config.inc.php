@@ -94,7 +94,7 @@ function friendsop($idUser, $idFriends, $forFollow=false){
         $ops[ $idFriend ] = $actionString;
     }
 
-    return ( $isArray === false ) ? $ops[ $idFriends[0] ] : $ops;
+    return ( $isArray === false ) ? ( isset($ops[ $idFriends[0] ]) ? $ops[ $idFriends[0] ] : array() ) : $ops;
 }
 
 function pageTitle(){
