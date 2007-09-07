@@ -191,6 +191,8 @@ class JWMmsMail {
 		$isSignature = 'N';
 		$options = array(
 				'idPicture' => $mmsArray['idPicture'],	
+                'isMms' => 'Y',
+                'nofilter' => true,
 			);
 
 

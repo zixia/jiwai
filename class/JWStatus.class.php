@@ -119,6 +119,8 @@ class JWStatus {
 			$idConference = $userInfo['idConference'];
 		}
 
+        $isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
+
 		return JWDB_Cache::SaveTableRow('Status', array( 
 								'idUser' => $idUser,
 								'status' => preg_replace('/\xE2\x80\xAE/U', '', $status),
@@ -130,6 +132,7 @@ class JWStatus {
 								'idConference' => $idConference,
 								'isProtected' => $isProtected,
 								'isSignature' => $isSignature,
+                                'isMms' => $isMms,
 						));
 	}
 

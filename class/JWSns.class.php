@@ -511,6 +511,9 @@ class JWSns {
 		if( isset( $options['idPicture'] ) ) {
 			$createOptions['idPicture'] = $options['idPicture'] ;
 		}
+		if( isset( $options['isMms'] ) ) {
+			$createOptions['isMms'] = $options['isMms'] ;
+		}
 
 		/*
 		 *  判断是否需要Filter，如果需要进入status
