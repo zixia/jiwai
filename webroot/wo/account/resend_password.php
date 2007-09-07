@@ -55,7 +55,10 @@ _HTML_;
 		<th><label for="email">Email 地址：</label></th>
 		<td><input id="email" name="email" type="text" /></td>
 	</tr>
-	<tr><th></th><td><input name="commit" type="submit" value="将重设密码地址发给我！" /></td></tr>
+	<tr height="100">
+		<th></th>
+		<td><input name="commit" style="width:50px;margin:15px 0;" type="submit" value="确定" /></td>
+	</tr>
 </table>
 </fieldset>
 </form>

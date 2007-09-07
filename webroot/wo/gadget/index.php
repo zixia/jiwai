@@ -47,7 +47,7 @@ JWTemplate::html_doctype();
             <li><a class="ext" href="http://help.jiwai.de/NeteaseblogWidget"><img src="http://blog.163.com/style/common/index/image/logo.gif" alt="网易博客">网易博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/TianyaWidget"><img width="151" height="47" src="http://blog.tianya.cn/images/blog_2.gif"/>天涯博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/YculWidget"><img width="185" height="55" border="0" alt="歪酷博客 Ycul Blog - 记录我们的时代" src="http://sta.yculblog.com/images/logo/general-185x55.gif"/>歪酷博客</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/BlogusWidget"><img width="227" height="28" border="0" alt="BlogUS The Our Life" src="http://www.blogus.cn/OblogStyle/SysStyle/blogus/top_logo.gif"/>Blogus</a><span class="exttail">∞</span></li>
+            <!--li><a class="ext" href="http://help.jiwai.de/BlogusWidget"><img width="227" height="28" border="0" alt="BlogUS The Our Life" src="http://www.blogus.cn/OblogStyle/SysStyle/blogus/top_logo.gif"/>Blogus</a><span class="exttail">∞</span></li-->
             </ul>
         </fieldset>
     </div>

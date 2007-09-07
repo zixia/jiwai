@@ -14,7 +14,7 @@ JWLogin::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 
-if ( isset($_REQUEST['commit']) )
+if ( $_POST && isset($_REQUEST['commit']) )
 {
 	/*
 	 * Update User Databse
@@ -41,20 +41,15 @@ _HTML_;
 <?php JWTemplate::html_head() ?>
 </head>
 
-<body class="account" id="delete">
+<body class="account" id="create">
 
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
 
-
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-
+			<h2> <?php echo htmlSpecialChars($user_info['nameFull']); ?> </h2>
 
 			<h2>再……见……？</h2>
 
@@ -65,18 +60,10 @@ if ( isset($error_html) )
 } 
 ?>
 
-			<p><a href="/">再谨慎考虑一下？</a> <strong>删除帐号后，所有相关信息都会被永久删除，并且无法挽回。</strong>是否有话对我们说？<a href="<?php echo JWTemplate::GetConst('UrlContactUs')?>">请告诉我们</a>。</p>
+			<p style="margin:20px;"><a href="/">再谨慎考虑一下？</a> <strong>删除帐号后，所有相关信息都会被永久删除，并且无法挽回。</strong>是否有话对我们说？<a href="<?php echo JWTemplate::GetConst('UrlContactUs')?>">请告诉我们</a>。</p>
 
-			<form action="/wo/account/delete" method="post" name="f">
-				<fieldset>
-					<table>
-						<tr><th></th><td><input name="commit" type="submit" value="是，请删除我。" /></td></tr>
-					</table>
-				</fieldset>
-			</form>
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
+            <form style="display:none;" action="/wo/account/delete" id="f" method="POST"><input type="hidden" name="commit" value="true"/></form>
+            <p style="margin:20px;"><input onClick="if (confirm('自杀后无法挽救，确认要自杀吗？')) { $('f').submit(); }" type="button" value="是，请删除我。"/></p>
 
 </div><!-- #container -->
 

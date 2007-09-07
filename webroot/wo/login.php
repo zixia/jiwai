@@ -73,13 +73,17 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 <div id="container">
 
-<h2>登录到叽歪de</h2>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
-<?php
-if ( !empty($err) ){
-            echo "<p class='notice'> $err </p>\n";
+<?
+if ( !empty($err) ) {
+    echo <<<_HTML_
+	<div class="tipnote">$err</div>
+_HTML_;
 }
 ?>
+
+<h2>登录到叽歪de</h2>
 
 <form id="f" method="POST" action="/wo/login">
 <table width="550" border="0" cellspacing="15" cellpadding="0">
