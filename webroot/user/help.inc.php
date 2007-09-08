@@ -1,10 +1,10 @@
 <?php
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+//JWLogin::MustLogined();
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
-$logined_user_id 	= $logined_user_info['id'];
+//$logined_user_id 	= @$logined_user_info['id'];
 
 $help_user_info	= JWUser::GetUserInfo('help');
 $help_user_id	= $help_user_info['idUser'];
@@ -113,8 +113,10 @@ _HTML_;
 <br />
 
 <?php 
-$options = array ( 'title' => '这一刻，你想对叽歪de说些什么？' );
-JWTemplate::updater($options) ;
+if( false == empty( $logined_user_info ) ) {
+    $options = array ( 'title' => '这一刻，你想对叽歪de说些什么？' );
+    JWTemplate::updater($options) ;
+}
 ?>
 
   			<!-- p class="notice">
