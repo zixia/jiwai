@@ -539,6 +539,12 @@ class JWSns {
 					'idUserReplyTo' => $idUserReplyTo,
 					'idConference' => $idConference,
 					);
+
+			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) {
+				//$notifyInfo['idUserReplyTo'] = 89;
+				$notifyInfo['status'] = "我上传了彩信，请输入 M $ret 免费下载彩信。";
+			}
+
 			JWStatusNotifyQueue::Create( $idUser, $ret, time(), $notifyInfo );
 
 			// Referesh facebook

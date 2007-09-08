@@ -95,6 +95,68 @@ class JWRobotLingo {
 
 	}
 
+	/**
+	 * MMS Deal Function.
+	 */
+	static function Lingo_Mms($robotMsg) {
+		$type = $robotMsg->GetType();
+		$address = $robotMsg->GetAddress();
+		$body = $robotMsg->GetBody();
+
+		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		if ( empty($address_device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		if ( ! preg_match('/^\w+\s+(\d+)\s*$/i',$body,$matches) ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_HELP' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$mmsId = intval( $matches[1] );
+
+		$idUser = JWDevice::IsAllowedNonRobotDevice( $type ) ? $address : $address_device_db_row['idUser'];
+		$userReceiver = JWUser::GetUserInfo( $idUser );
+
+		
+		$mmsRow = JWStatus::GetDbRowById( $mmsId );
+		if( empty($mmsRow) || $mmsRow['isMms']=='N' || $mmsRow['idPicture']==null || $mmsRow['idUser']==null ){
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOMMS', array($userReceiver['nameFull'] ) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$userSender = JWUser::GetUserInfo( $mmsRow['idUser'] );
+
+		if( $mmsRow['isProtected']=='Y' && false == JWFriend::IsFriend( $userSender['id'], $userReceiver['id'] ) ){
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOPERM', array($userReceiver['nameFull'], $userSender['nameFull'] ) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}	
+
+		$sendMMS = ( $type=='sms' ) ? true : false;
+		if( $type != 'sms' ) {
+			$deviceRows = JWDevice::GetDeviceRowByUserId( $idUser );
+			if( false == empty( $deviceRows ) 
+					&& isset($deviceRows['sms']) 
+					&& empty($deviceRows['sms']['secret']) ) {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_SUC_IM', array($userReceiver['nameFull'], $userSender['nameFull'], $mmsId ) );
+				$sendMMS = true;
+			}else{
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOSMS', array($userReceiver['nameFull']) );
+			}
+		}
+
+		if( $sendMMS == true ) {
+			//To do
+			//Send MMS
+		}
+
+		if( isset($reply) && $reply ) {
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		return null;
+	}
+
 
 	/*
 	 *

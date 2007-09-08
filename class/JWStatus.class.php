@@ -119,7 +119,7 @@ class JWStatus {
 			$idConference = $userInfo['idConference'];
 		}
 
-        $isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
+		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
 		return JWDB_Cache::SaveTableRow('Status', array( 
 								'idUser' => $idUser,
@@ -132,7 +132,7 @@ class JWStatus {
 								'idConference' => $idConference,
 								'isProtected' => $isProtected,
 								'isSignature' => $isSignature,
-                                'isMms' => $isMms,
+								'isMms' => $isMms,
 						));
 	}
 
@@ -449,8 +449,8 @@ _SQL_;
 
 	static public function GetDbRowById ($idStatus)
 	{
-		$db_rows = self::GetDbRowByIds(array($idStatus));
-		return $db_rows[$idStatus];
+		$db_rows = self::GetDbRowsByIds(array($idStatus));
+		return empty($db_rows) ? array() : $db_rows[$idStatus];
 	}
 
 	/*

@@ -45,6 +45,8 @@ class JWRobotLingoBase {
 			,'REG'		=> array( 'func'=>'Lingo_Reg' 	,'param'=>2)
 
 			,'WHOAMI'	=> array( 'func'=>'Lingo_Whoami','param'=>0)
+
+			,'MMS'		=> array( 'func'=>'Lingo_Mms'	,'param'=>1)
 		);
 
 
@@ -72,6 +74,8 @@ class JWRobotLingoBase {
 			,'ZC'		=>	'REG'
 			,'GM'		=>	'REG'
 			,'GAIMING'	=>	'REG'
+
+			,'M'		=>	'MMS'
 
 			/*
 		 	 * 	JiWai扩展

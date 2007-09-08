@@ -9,11 +9,11 @@
 /**
  * JiWai.de StatusNotityQueue Class
  */
-class JWMmsMail {
+class JWMmsLogic {
 	/**
 	 * Instance of this singleton
 	 *
-	 * @var JWMmsMail
+	 * @var JWMmsLogic
 	 */
 	static private $instance__;
 
@@ -26,14 +26,15 @@ class JWMmsMail {
 	static private $mSleepUsecMax	= 300000; // 0.3s
 
 
-	static private $mMailUnDealDir = null;
-	static private $mMailDealedDir = null;
-	static private $mMailQuarantinedDir = null;
+	static private $mMoWaitingDir = null;
+	static private $mMoUnDealDir = null;
+	static private $mMoDealedDir = null;
+	static private $mMoQuarantinedDir = null;
 
 	/**
 	 * Instance of this singleton class
 	 *
-	 * @return JWMmsMail
+	 * @return JWMmsLogic
 	 */
 	static public function &instance()
 	{
@@ -51,24 +52,37 @@ class JWMmsMail {
 	 */
 	function __construct()
 	{
+		self::SetMoDir( MMS_STORAGE_ROOT );        
 	}
 
-	static public function SetMailDir( $rootDir ) {
+	static public function SetMoDir( $rootDir ) {
+
 		$rootDir = rtrim( $rootDir );
-		self::$mMailDealedDir = $rootDir .'/d';
-		self::$mMailUnDealDir = $rootDir .'/m';
-		self::$mMailQuarantinedDir = $rootDir .'/f';
+		self::$mMoDealedDir = $rootDir .'/d';
+		self::$mMoWaitingDir = $rootDir .'/w';
+		self::$mMoUnDealDir = $rootDir .'/m';
+		self::$mMoQuarantinedDir = $rootDir .'/f';
 
-		@mkdir( self::$mMailUnDealDir, 777, true );
-		@mkdir( self::$mMailDealedDir, 777, true );
-		@mkdir( self::$mMailQuarantinedDir, 777, true );
+		@mkdir( self::$mMoUnDealDir, 777, true );
+		@mkdir( self::$mMoDealedDir, 777, true );
+		@mkdir( self::$mMoQuarantinedDir, 777, true );
 	}
 
-	static public function GetUndealMail(){
-		$dirs = scandir( self::$mMailUnDealDir );
+	static public function GetUnDealDir(){
+		self::Instance();
+		return self::$mMoUnDealDir;
+	}
+
+	static public function GetWaitingDir(){
+		self::Instance();
+		return self::$mMoWaitingDir;
+	}
+
+	static public function GetUndealMo(){
+		$dirs = scandir( self::$mMoUnDealDir );
 		$rtn = array();
 		foreach( $dirs as $n ) {
-			if( 0 !== strpos($n, '.') && is_dir( self::$mMailUnDealDir.'/'.$n ) ) {
+			if( 0 !== strpos($n, '.') && is_dir( self::$mMoUnDealDir.'/'.$n ) ) {
 				array_push( $rtn, $n );
 			}
 		}
@@ -77,7 +91,8 @@ class JWMmsMail {
 
 	static public function Run () {
 
-		echo "MMS-Mail 机器人已经进入主循环，可以处理数据了...\n";
+		echo "MMS-Mo 机器人已经进入主循环，可以处理数据了...\n";  
+		self::Instance();
 
 		while ( true ){
 			try{
@@ -92,19 +107,19 @@ class JWMmsMail {
 
 	static public function MainLoop(){
 	
-		$queueMails = self::GetUndealMail();	
+		$queueMos = self::GetUndealMo();	
 
-		if ( empty( $queueMails ) ){
+		if ( empty( $queueMos ) ){
 			self::IdleCircle();
 		}else{
 			# It's busy now:
 			self::$mSleepUsec = 0;
 
-			foreach( $queueMails as $dirname ){
+			foreach( $queueMos as $dirname ){
 
-				$undealDirname = self::$mMailUnDealDir . '/' . $dirname ;
-				$dealedDirname = self::$mMailDealedDir .'/' . $dirname ;
-				$quarantinedDirname = self::$mMailQuarantinedDir .'/' . $dirname ;
+				$undealDirname = self::$mMoUnDealDir . '/' . $dirname ;
+				$dealedDirname = self::$mMoDealedDir .'/' . $dirname ;
+				$quarantinedDirname = self::$mMoQuarantinedDir .'/' . $dirname ;
 
 				if( false == preg_match( '/(1[\d]{10})$/', $dirname, $matches ) ) {
 					echo "Not come from a mobile\n";
@@ -116,6 +131,7 @@ class JWMmsMail {
 
 				$deviceRow = JWDevice::GetDeviceDbRowByAddress($phone, 'sms');
 				if( empty( $deviceRow ) ) {
+					echo "$phone is not register in JiWai yet.\n";
 					@rename($undealDirname, $quarantinedDirname);
 					continue;
 				}
@@ -158,7 +174,7 @@ class JWMmsMail {
 
 						}else if( $filetype=='text' && $suffix=='plain') {
 							$text = file_get_contents( $realfile );
-							$mmsArray['status'] = mb_convert_encoding( $text, 'UTF-8', 'GBK, UTF-8');
+							$mmsArray['status'] = mb_convert_encoding( $text, 'UTF-8', 'GB2312, UTF-8');
 						}
 					}
 				}
@@ -191,8 +207,8 @@ class JWMmsMail {
 		$isSignature = 'N';
 		$options = array(
 				'idPicture' => $mmsArray['idPicture'],	
-                'isMms' => 'Y',
-                'nofilter' => true,
+				'isMms' => 'Y',
+				'nofilter' => true,
 			);
 
 
