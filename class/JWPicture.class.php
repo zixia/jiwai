@@ -170,7 +170,7 @@ _SQL_;
 	static public function GetDbRowById($idPicture)
 	{
 		$db_rows = self::GetDbRowsByIds(array($idPicture));
-		return $db_rows[$idPicture];
+		return empty($db_rows) ? array() : $db_rows[$idPicture];
 	}
 
 	static public function GetUrlRowByIds($idPictures, $picSize='thumb48')

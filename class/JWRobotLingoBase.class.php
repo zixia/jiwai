@@ -128,7 +128,7 @@ class JWRobotLingoBase {
 		$idUserConference = self::GetLingoUser( $serverAddress, $type );
 		$robotMsg->SetIdUserConference( $idUserConference );
 
-		if( $body == '00000' || $body == '0000' || $type=='sms' ) {
+		if( ($body == '00000' || $body == '0000') && $type=='sms' ) {
 			return $lingo_function = array('JWRobotLingo', 'Lingo_0000');
 		}
 

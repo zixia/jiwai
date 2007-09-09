@@ -10,9 +10,9 @@
  */
 class JWMms {
 
-    const MMS_AID = 12;   //App_id
-    const MMS_GID = 1;    //gateway_id
-    const MMS_PID = 0;    //product_id
+	const MMS_AID = 12;   //App_id
+	const MMS_GID = 1;    //gateway_id
+	const MMS_PID = 0;    //product_id
 
 	/**
 	 * Instance of this singleton
@@ -35,60 +35,88 @@ class JWMms {
 		return self::$msInstance;
 	}
 
-    function __construct()
-    {
-    }
+	function __construct()
+	{
+	}
 
-    /**
-     * SendMt Raw 
-     */
+	static public function sendStatusMMSMt( $mobileNo, $mmsId, $thumb='picture') {
 
-	static public function sendMt( $to, $imageFile, $subject=null, $text=null ) {
+		$mobileRow = JWMobile::GetDbRowByMobileNo( $mobileNo );
+		if( $mobileRow['supplier'] != 'MOBILE' ) {
+			return true;
+		}
+
+		$statusRow = JWStatus::GetDbRowById( $mmsId );
+
+		if( empty($statusRow) || empty($statusRow['idPicture']) || $statusRow['isMms']=='N' )
+			return true;
+
+		$mmsRow = JWPicture::GetDbRowById( $statusRow['idPicture'] );
+		if( false == empty($mmsRow) || $mmsRow['class'] == 'MMS' ){
+			$pictureFile = JWPicture::GetFullPathNameById( $mmsRow['id'] , $thumb);
+			if( file_exists( $pictureFile ) ) {
+				return self::SendMt( $mobileNo, $pictureFile, $statusRow['status'], $statusRow['status'] );
+			}
+
+			$pictureFile = JWPicture::GetUrlById( $mmsRow['id'] );
+			return self::SendMt( $mobileNo, $pictureFile, $statusRow['status'], $statusRow['status'] );
+		}
+
+		return true;
+	}
+
+	/**
+	* SendMt Raw 
+	*/
+	static public function SendMt( $mobileNo, $imageFile, $subject=null, $text=null ) {
 
 		$MMS_HTTP_POST_URL = "http://211.157.106.172:8000/mms/submit";
 
 		$imageContent = @file_get_contents( $imageFile ) ;
 		if( empty( $imageContent ) )
 			return false;
+
+		$mimeType = mime_content_type( $imageFile );
+		$suffix = 'jpg';
+		if( $mimeType ) {
+			@list( $_, $suffix ) = explode( '/', $mimeType );
+		}else{
+			if( preg_match( '/\.(\w+)$/', basename($imageFile), $matches) ) {
+				$suffix = $matches[1];
+			}
+		}
 		
 		$smil = null;
-
-		$replace = array( 
-				'%APP_ID%' => self::MMS_AID,
-				'%GATEWAY_ID%' => self::MMS_GID,
-				'%TO%' => $to,
-				'%SUBJECT%' => $subject,
-				'%PRODUCT_ID%' => self::MMS_PID,
-				'%SMIL%' => base64_Encode( $smil ),
-				'%TEXT%' => mb_convert_encoding( $text, "GB2312", "UTF-8,GBK"),
-				'%BASE64_IMAGE%' => base64_Encode( $imageContent ),
-			);
+		$appId = self::MMS_AID;
+		$gateId =  self::MMS_GID;
+		$to = $mobileNo;
+		$subject = $subject = mb_convert_encoding( $subject, "GB2312", "UTF-8,GB2312");
+		$productId = self::MMS_PID;
+		$smil = base64_Encode( $smil );
+		$text = mb_convert_encoding( $text, "GB2312", "UTF-8,GB2312");
+		$imageContent = base64_Encode( $imageContent );
 
 $postData = <<<POSTDATA
 <mmsMT>
-	<AppID>%APP_ID%</AppID>
-	<GatewayID>%GATEWAY_ID%</GatewayID>
+	<AppID>$appId</AppID>
+	<GatewayID>$gateId</GatewayID>
 	<Receiver>
-		<to>%TO%</to>
+		<to>$to</to>
 	</Receiver>
-	<Subject>%SUBJECT%</Subject>
-	<ProductID>%PRODUCT_ID%</ProductID>
+	<Subject>$subject</Subject>
+	<ProductID>$productId</ProductID>
 	<MMS>
 		<content>
-			<smil encode="base64">%SMIL%</smil>
-			<item id="1.txt">%TEXT%</item>
-			<item id="1.gif" encode="base64">%BASE64_IMAGE%</item>
+			<smil encode="base64">$smil</smil>
+			<item id="1.txt" encode="base64">$text</item>
+			<item id="1.$suffix" encode="base64">$imageContent</item>
 		</content>
 	</MMS>
 </mmsMT>
 POSTDATA;
 
-		$postContent =  str_replace( array_keys( $replace ), array_values( $replace ), $postData );
+		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData );
 
-		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postContent );
-
-		error_log( $return );
-		
 		return ( $return ) ? true : false;
 	}
 
