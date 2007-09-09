@@ -67,8 +67,13 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
+		$body 		= $robotMsg->GetBody();	
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			return self::Lingo_Follow( $robotMsg );
+		}
 
 		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
@@ -165,12 +170,16 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
+		$body 		= $robotMsg->GetBody();	
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
+		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			return self::Lingo_Leave( $robotMsg );
+		}
 
 		$user_id	= $address_device_db_row['idUser'];
 		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
@@ -214,7 +223,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			/*
 			 * seek 2007/07/25
 			 * 当用户发送follow命令到特服号码，直接follow
@@ -296,7 +305,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			/*
 			 * seek 2007/07/25
 			 * 当用户发送follow命令到特服号码，直接follow
@@ -585,7 +594,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -621,7 +630,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ){
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -684,7 +693,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -732,7 +741,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOIS_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -774,7 +783,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -847,7 +856,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s*$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -916,7 +925,7 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\w+)\s+(.+)$/i',$param_body,$matches) ) {
+		if ( ! preg_match('/^\w+\s+(\S+)\s+(.+)$/i',$param_body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -1085,6 +1094,15 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_IM', array($address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 		}
 
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
+	/**
+  	 * 0000 | 00000
+	 */	 
+	static function Lingo_0000($robotMsg) 
+	{
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_0000_HELP' );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 }

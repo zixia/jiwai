@@ -24,8 +24,8 @@ class JWRobotLingoBase {
 			 'HELP'		=> array( 'func'=>'Lingo_Help' 	,'param'=>1 )
 			,'TIPS'		=> array( 'func'=>'Lingo_Tips' 	,'param'=>0 )
 
-			,'ON'		=> array( 'func'=>'Lingo_On' 	,'param'=>0)
-			,'OFF'		=> array( 'func'=>'Lingo_Off' 	,'param'=>0)
+			,'ON'		=> array( 'func'=>'Lingo_On' 	,'param'=>1)
+			,'OFF'		=> array( 'func'=>'Lingo_Off' 	,'param'=>1)
 
 			,'FOLLOW'	=> array( 'func'=>'Lingo_Follow','param'=>1)
 			,'LEAVE'	=> array( 'func'=>'Lingo_Leave' ,'param'=>1)
@@ -127,6 +127,10 @@ class JWRobotLingoBase {
 		//get and set idUserConference [ only for SMS ]
 		$idUserConference = self::GetLingoUser( $serverAddress, $type );
 		$robotMsg->SetIdUserConference( $idUserConference );
+
+		if( $body == '00000' || $body == '0000' || $type=='sms' ) {
+			return $lingo_function = array('JWRobotLingo', 'Lingo_0000');
+		}
 
 		$body = self::ConvertCorner( $body );
 		if ( ! preg_match('/^([[:alpha:]]+)\s*(\w*)/',$body,$matches) ) 

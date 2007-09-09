@@ -115,6 +115,8 @@ class JWRobotLingoReply {
 			'REPLY_MMS_NOSMS' => '{0}，你没有绑定手机或没有通过手机验证，不能下载彩信。',
 			'REPLY_MMS_SUC_IM' => '{0}，{1}上传的彩信[{2}]即将发往你绑定的手机，请注意查收。',
 			'REPLY_MMS_HELP' => '使用方法：M 彩信编号。',
+
+			'REPLY_0000_HELP' => '发送 OFF 取消手机信息提示。',
 		);
 
 	/**
