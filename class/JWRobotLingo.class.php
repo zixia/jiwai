@@ -151,8 +151,8 @@ class JWRobotLingo {
 		}
 
 		if( $sendMMS == true ) {
-			//To do
-			//Send MMS
+			//Send MMS To Queue [Async]
+			JWMmsQueue::Create( $deviceRows['sms']['address'], $mmsRow['id'] );
 		}
 
 		if( isset($reply) && $reply ) {
