@@ -169,7 +169,7 @@ _SQL_;
 	 * 	@return	array	以 idUser 为 key 的 status row
 	 * 
 	 */
-	static public function GetDbRowsByIds( $idUsers)
+	static public function GetDbRowsByIds($idUsers, $activeOrder=false, $limit=60 )
 	{
 		if ( empty($idUsers) )
 			return array();
@@ -184,6 +184,16 @@ SELECT	*, id as idUser
 FROM	User
 WHERE	id IN ($condition_in)
 _SQL_;
+
+		if( $activeOrder == true ) {
+		$sql = <<<_SQL_
+SELECT	*, id as idUser
+FROM	User
+WHERE	id IN ($condition_in)
+ORDER BY timeStamp DESC
+LIMIT $limit
+_SQL_;
+		}
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -217,9 +227,9 @@ _SQL_;
 	 *	@deprecated 请使用 GetDbRowsByIds
 	 *	兼容老的函数调用
 	 */
-	static public function GetUserDbRowsByIds( $idUsers)
+	static public function GetUserDbRowsByIds( $idUsers, $activeOrder=false, $limit=60)
 	{
-		return self::GetDbRowsByIds($idUsers);
+		return self::GetDbRowsByIds($idUsers, $activeOrder, $limit);
 	}
 
 	static public function GetUserDbRowById( $idUser)
@@ -831,6 +841,15 @@ _SQL_;
         }
         return null;
     }
+
+
+	static public function ActivateUser($idUser) {
+		$idUser = JWDB::CheckInt( $idUser );
+		$updateRow = array(
+			'timeStamp' => null,
+		);
+		return JWDB::UpdateTableRow( 'User', $idUser, $updateRow );
+	}
 
 	static public function GetPossibleName($nameInput, $email=null, $type=null)
 	{

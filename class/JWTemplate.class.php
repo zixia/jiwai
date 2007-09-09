@@ -386,6 +386,7 @@ _HTML_;
 		<li class="first">&copy; 2007 叽歪de</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" 			target="_blank">关于我们</a></li>
+		<li><a href="http://help.jiwai.de/WeAreHiring" 		target="_blank">加入我们</a></li>
 		<li><a href="http://help.jiwai.de/MediaComments" 	target="_blank">媒体和掌声</a></li>
 		<li><a href="http://blog.jiwai.de/" 				target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api"				target="_blank">API</a></li>
@@ -1186,11 +1187,14 @@ _HTML_;
 				break;
 		}
 
-		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
+		//$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
+		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids, true, 40);
 		$picture_ids		= JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row	= JWPicture::GetUrlRowByIds($picture_ids);
 		$n = 0;
+
+		$user_ids = array_keys( $user_db_rows );
 
 		foreach ( $user_ids as $user_id )
 		{
@@ -1706,7 +1710,7 @@ __HTML__;
 		if ( empty($friendIds) )
 			return;
 
-		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'好友', 'id'=>'friend'));
+		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线好友', 'id'=>'friend'));
 		return;
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 

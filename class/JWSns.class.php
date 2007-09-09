@@ -551,6 +551,9 @@ class JWSns {
 			if ( JWFacebook::Verified( $idUser ) ) {
 				JWFacebook::RefreshRef($idUser);
 			}
+
+			//Activate User
+			JWUser::ActivateUser( $idUser );
 		}
 		return $ret;
 	}

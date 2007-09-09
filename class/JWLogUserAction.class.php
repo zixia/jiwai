@@ -53,12 +53,15 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		return JWDB::SaveTableRow('LogUserAction', array(	 'action'	=> 'login'
-															,'idUser'	=> $idUser
-															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
-															,'proxy'	=> JWDB::MysqlFuncion_Aton($proxy)
-														)
-									);
+		//activate user
+		JWUser::ActivateUser( $idUser );
+
+		return JWDB::SaveTableRow('LogUserAction', array( 
+								'action' => 'login',
+								'idUser' => $idUser,
+								'ip' => JWDB::MysqlFuncion_Aton($ip),
+								'proxy' => JWDB::MysqlFuncion_Aton($proxy),
+							));
 	}
 
 	static public function OnRememberLogin($idUser)
@@ -70,12 +73,15 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		return JWDB::SaveTableRow( 'LogUserAction',	array(	 'action'	=> 'rememberlogin'
-															,'idUser'	=> $idUser
-															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
-															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
-														)
-									);
+		//activate user
+		JWUser::ActivateUser( $idUser );
+
+		return JWDB::SaveTableRow( 'LogUserAction', array( 
+								'action' => 'rememberlogin',
+								'idUser' => $idUser,
+								'ip' => JWDB::MysqlFuncion_Aton($ip),
+								'proxy' => JWDB::MysqlFuncion_Aton($proxy),
+							));
 	}
 
 
@@ -88,12 +94,12 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'logout'
-															,'idUser'	=> $idUser
-															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
-															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
-														)
-									);
+		return JWDB::SaveTableRow( 'LogUserAction', array(
+								'action' => 'logout',
+								'idUser' => $idUser,
+								'ip' => JWDB::MysqlFuncion_Aton($ip),
+								'proxy' => JWDB::MysqlFuncion_Aton($proxy),
+							));
 	}
 
 	static public function OnRememberMe($idUser)
@@ -105,12 +111,12 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'rememberme'
-															,'idUser'	=> $idUser
-															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
-															,'proxy'		=> JWDB::MysqlFuncion_Aton($proxy)
-														)
-									);
+		return JWDB::SaveTableRow( 'LogUserAction', array(
+				       				'action' => 'rememberme',
+								'idUser' => $idUser,
+								'ip' => JWDB::MysqlFuncion_Aton($ip),
+								'proxy' => JWDB::MysqlFuncion_Aton($proxy),
+							));
 	}
 
 
@@ -123,12 +129,12 @@ class JWLogUserAction {
 
 		$idUser = JWDB::CheckInt($idUser);
 
-		return JWDB::SaveTableRow( 'LogUserAction', array(	 'action'	=> 'forgetme'
-															,'idUser'	=> $idUser
-															,'ip'		=> JWDB::MysqlFuncion_Aton($ip)
-															,'proxy'	=> JWDB::MysqlFuncion_Aton($proxy)
-														)
-									);
+		return JWDB::SaveTableRow( 'LogUserAction', array(
+								'action' => 'forgetme',
+								'idUser' => $idUser,
+								'ip' => JWDB::MysqlFuncion_Aton($ip),
+								'proxy'	=> JWDB::MysqlFuncion_Aton($proxy),
+							));
 	}
 
 
