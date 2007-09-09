@@ -14,7 +14,10 @@ class FetchGmail:
 	def init(self):
 		pass
 	def login(self,u,p):
-		self.pop = poplib.POP3_SSL('pop.gmail.com', 995 )
+		if Configure.port == 110 :
+			self.pop = poplib.POP3( Configure.host, Configure.port )
+		else:
+			self.pop = poplib.POP3_SSL( Configure.host, Configure.port )
 		self.pop.user(u)
 		self.pop.pass_(p)
 
@@ -23,6 +26,12 @@ class FetchGmail:
 
 	def quit(self):
 		return self.pop.quit()
+	
+	def dele(self, n):
+		try:
+			self.pop.dele(n)
+		except poplib.error_proto:
+			pass
 
 	def retr(self, n):
 		try:
@@ -48,7 +57,7 @@ def saveMail(uid, content):
 
 
 def parseMail(msg, uid, address):
-	dirname = "%s/%s-%s" % (Configure.d, uid, address );
+	dirname = "%s/%s-%s" % (Configure.dir, uid, address );
 	if False == os.path.exists(dirname) : 
 		os.makedirs( dirname, 0777 )
 
@@ -74,11 +83,11 @@ def loopmail():
 	while True:
 
 		fm = FetchGmail();
-		fm.login(Configure.u, Configure.p)
+		fm.login(Configure.user, Configure.pw)
 
 		mails = fm.list()
 		maillen = len(mails)
-		print "Get %d mails from <%s>" % ( maillen , Configure.u )
+		print "Get %d mails from <%s>" % ( maillen , Configure.user )
 
 
 		for index in range( maillen ):
@@ -87,9 +96,10 @@ def loopmail():
 			uid = pair[1]
 			c = fm.retr( order )
 			saveMail( uid, c )
+			fm.dele( order )
 
 		fm.quit()
-		time.sleep( Configure.i )
+		time.sleep( Configure.interv )
 
 if __name__ == '__main__':
 	loopmail()

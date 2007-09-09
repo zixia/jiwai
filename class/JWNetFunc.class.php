@@ -35,14 +35,14 @@ class JWNetFunc {
 	 * send out post data
 	 *
 	 */
-	static public function doPost($urlstr, $data=array()) {
+	static public function DoPost($urlstr, $data=array(), $timeOut=2) {
 
 		$url = parse_url( $urlstr );
 		if (empty($url))
 			return false;
 
 		if ( false == isset($url['port']) )
-			$url['port'] = "";
+			$url['port'] = 80;
 
 		if ( false == isset($url['query']) )
 			$url['query'] = "";
@@ -57,9 +57,11 @@ class JWNetFunc {
 			$encoded = $data;
 		}
 
-		$fp = fsockopen( $url['host'], $url['port'] ? $url['port'] : 80);
-		if (empty($fp) )
+		$fp = fsockopen( $url['host'], $url['port'], $_errno, $_errstr, $timeOut);
+		if (empty($fp) ) {
+			JWLog::Instance("Php")->Log(LOG_INFO, "JWNetFunc::DoPost Can not connect to $url[host]:$url[port] with time_out [$timeOut]s.");
 			return false;
+		}
 
 		fputs($fp, sprintf("POST %s%s%s HTTP/1.0\n", $url['path'], $url['query'] ? "?" : "", $url['query']));
 		fputs($fp, "Host: $url[host]\n");

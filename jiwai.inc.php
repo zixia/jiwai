@@ -44,6 +44,10 @@ define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
  */
 define('FILTER_DICT',  CONFIG_ROOT . 'dictionary/filterdict.txt');
 
+/**
+ * Mms Storage
+ */
+define('MMS_STORAGE_ROOT', '/opt/storage_MMS');
 
 /**
  * Path of config cache
@@ -122,7 +126,6 @@ mb_internal_encoding("UTF-8");
 if (empty($_SERVER['SCRIPT_URI']) && !empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['SCRIPT_URI'] = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 }
-
 
 
 ?>

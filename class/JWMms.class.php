@@ -42,7 +42,7 @@ class JWMms {
 	static public function sendStatusMMSMt( $mobileNo, $mmsId, $thumb='picture') {
 
 		$mobileRow = JWMobile::GetDbRowByMobileNo( $mobileNo );
-		if( $mobileRow['supplier'] != 'MOBILE' ) {
+		if( empty($mobileRow) || $mobileRow['supplier'] != 'MOBILE' ) {
 			return true;
 		}
 
@@ -115,7 +115,7 @@ $postData = <<<POSTDATA
 </mmsMT>
 POSTDATA;
 
-		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData );
+		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData, 1);
 
 		return ( $return ) ? true : false;
 	}
