@@ -165,9 +165,9 @@ class JWMobile {
                         $code['func'] = $forceRow['forceFunc'];
                     }
                 }else{
-			$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-		}
-	    }
+                    $code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+                }
+            }
         }
         else
         {

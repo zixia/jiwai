@@ -1188,7 +1188,7 @@ _HTML_;
 		}
 
 		//$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids, true, 40);
+		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids, true, 100);
 		$picture_ids		= JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row	= JWPicture::GetUrlRowByIds($picture_ids);
