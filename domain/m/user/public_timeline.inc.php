@@ -14,6 +14,9 @@ foreach( $status_rows as $s){
     if( in_array( $s['idUser'], $userIds ) )
         continue;
 
+    $fs = JWStatus::FormatStatus( $s, false );
+    $s['status'] = $fs['status'];
+
     array_push( $userIds, $s['idUser'] );
     array_push( $statuses, $s );
 

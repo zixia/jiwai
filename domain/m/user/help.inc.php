@@ -15,7 +15,9 @@ krsort( $statusRows );
 
 $statuses = array();
 foreach( $statusRows as $k=>$s ){
-    $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
+    $fs = JWStatus::FormatStatus( $s, false );
+    $s['status'] = $fs['status'];
+    //$s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
 
