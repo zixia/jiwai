@@ -583,7 +583,7 @@ _SQL_;
 	 *	@return	array	formated status & other info
 	 *					array ( 'status' => ..., 'replyto' => ... );
 	 */
-	static public function FormatStatus ($status, $jsLink=true)
+	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
 	{
 
         $idUserReplyTo = $idStatusReplyTo = null;
@@ -658,12 +658,15 @@ _HTML_;
 			}
 			else
 			{
-				$url_str		= <<<_HTML_
-<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" 
-		target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');"
-		>http://$url_domain/...</a>
+                if( $urchin ) {
+                    $url_str		= <<<_HTML_
+<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
 _HTML_;
-
+                }else{
+                    $url_str		= <<<_HTML_
+<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
+_HTML_;
+                }
 			}
 
 			$status 		= $head_str . $url_str . $tail_str;
