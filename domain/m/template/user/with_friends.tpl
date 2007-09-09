@@ -13,10 +13,7 @@
     }-->
     <!--{if (false == $protected)}-->
         <li>
-            <a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">
-                ${htmlSpecialChars($users[$status['idUser']]['nameFull'])}
-            </a>: 
-            {$status['status']}
+            <a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${htmlSpecialChars($users[$status['idUser']]['nameFull'])}</a>：{$status['status']}
             <span class="stamp">
             ${JWStatus::GetTimeDesc($status['timeCreate'])}
             通过
