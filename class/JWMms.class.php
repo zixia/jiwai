@@ -86,36 +86,39 @@ class JWMms {
 			}
 		}
 		
-		$smil = null;
 		$appId = self::MMS_AID;
 		$gateId =  self::MMS_GID;
 		$to = $mobileNo;
 		$subject = $subject = mb_convert_encoding( $subject, "GB2312", "UTF-8,GB2312");
 		$productId = self::MMS_PID;
-		$smil = base64_Encode( $smil );
-		$text = mb_convert_encoding( $text, "GB2312", "UTF-8,GB2312");
+		$text = base64_Encode( mb_convert_encoding( $text, "GB2312", "UTF-8,GB2312") );
 		$imageContent = base64_Encode( $imageContent );
 
 $postData = <<<POSTDATA
+<UnimocoMMS>
+<Header>
+	<CmdID>mmsMT</CmdID>
+	<TransactionID></TransactionID>
+</Header>
 <mmsMT>
 	<AppID>$appId</AppID>
 	<GatewayID>$gateId</GatewayID>
-	<Receiver>
-		<to>$to</to>
-	</Receiver>
+	<Receiver><to>$to</to></Receiver>
 	<Subject>$subject</Subject>
 	<ProductID>$productId</ProductID>
 	<MMS>
 		<content>
-			<smil encode="base64">$smil</smil>
 			<item id="1.txt" encode="base64">$text</item>
 			<item id="1.$suffix" encode="base64">$imageContent</item>
 		</content>
 	</MMS>
 </mmsMT>
+</UnimocoMMS>
 POSTDATA;
 
 		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData, 1);
+
+		error_log( $return, 3, '/tmp/postmms' );
 
 		return ( $return ) ? true : false;
 	}
@@ -126,7 +129,8 @@ POSTDATA;
 	 */
 	static public function ReceiveMo( $postedXml , $nameVar='id', $encodeVar='encode' )
 	{
-		$mmsObject = simplexml_load_string( $postedXml );
+		$postObject = simplexml_load_string( $postedXml );
+		$mmsObject = $postObject->mmsMO;
 
 		if( false == $mmsObject ) {
 		    JWLog::Instance()->Log(LOG_INFO, "Parse postedXml failed." );
@@ -142,8 +146,8 @@ POSTDATA;
 		$ret = @mkdir( $waitingDir , 0777, true );
 
 		if( false == $ret ) {
-		    JWLog::Instance()->Log(LOG_INFO, "Create Directory $waitingDir failed." );
-		    return false;
+			JWLog::Instance()->Log(LOG_INFO, "Create Directory $waitingDir failed." );
+			return false;
 		}
 
 		$ret = true;
@@ -151,46 +155,44 @@ POSTDATA;
 
 		for( $index=0; $item = $contentObject->item[$index]; $index++ ){
 
-		    $attr = array(
-			$nameVar => null,
-			$encodeVar => null,
-		    );
+			$attr = array(
+				$nameVar => null,
+				$encodeVar => null,
+			);
 
-		    foreach( $item->attributes() as $k=>$n ) {
-			$attr[ $k ] = $n;
-		    }
-
+			foreach( $item->attributes() as $k=>$n ) {
+				$attr[ $k ] = $n;
+			}
 		    
-		    $contentValue = (string) $item;
-		    if( strtoupper( $attr[ $encodeVar ] ) == 'BASE64' ) {
-			$contentValue = base64_decode( $contentValue );
-		    }
+			$contentValue = (string) $item;
+			if( strtoupper( $attr[ $encodeVar ] ) == 'BASE64' ) {
+				$contentValue = base64_decode( $contentValue );
+			}
 		    
+			$tempFile = uniqid( '/tmp/MOMMS' );
+			$fp = @fopen( $tempFile, 'w+' );
 
-		    $tempFile = tempnam('/tmp', 'MOMMS');
-		    $fp = @fopen( $tempFile, 'w+' );
-		    $ret = ( $fp 
-			&& fwrite( $fp, $contentValue )
-			&& fclose( $fp ) 
+			$ret = ( $fp 
+				&& false !== fwrite( $fp, $contentValue )
+				&& fclose( $fp ) 
 			);
 
 
-		    if( $ret == false ){
-			JWLog::Instance()->Log(LOG_INFO, "Create Tempfile failed." );
-			return false;
-		    }
+			if( $ret == false ){
+				JWLog::Instance()->Log(LOG_INFO, "Create Tempfile failed." );
+				return false;
+			}
 		    
-		    if( $attr[ $nameVar ] == null ) {
-			$id = "part-$index";
-			$typeinfo = @mime_content_type( $tempFile );
-			$type = $suffix = null;
-			@list($type, $suffix) = explode('/', $typeinfo );
-			$id .= '.' . $suffix;
-		    }
+			if( $attr[ $nameVar ] == null ) {
+				$id = "part-$index";
+				$typeinfo = @mime_content_type( $tempFile );
+				$type = $suffix = null;
+				@list($type, $suffix) = explode('/', $typeinfo );
+				$id .= '.' . $suffix;
+			}
 
-		    $realFile = $waitingDir . '/' . $attr[ $nameVar ];
-
-		    $ret = $ret && copy( $tempFile, $realFile ) && unlink( $tempFile );
+			$realFile = $waitingDir . '/' . $attr[ $nameVar ];
+			$ret = $ret && copy( $tempFile, $realFile ) && unlink( $tempFile );
 		}
 
 		return $ret && rename( $waitingDir, $unDealDir );

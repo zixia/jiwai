@@ -316,8 +316,7 @@ class JWDB implements JWDB_Interface
 	 */
 	static public function UpdateTableRow( $tableName, $idPK, $conditionArray )
 	{
-		if ( ! is_int($idPK) )
-			throw new JWException ("idPK need be int");
+		$idPK = JWDB::CheckInt( $idPK );
 
 		$db = self::GetDb();
 
