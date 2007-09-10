@@ -41,11 +41,15 @@ function cmp($a, $b)
 }
 
 usort($friend_rows, "cmp");
+$frs_rows_neworder = array();
+foreach($friend_rows as $f){
+    $frs_rows_neworder[$f['id']] = $f;
+}
 
 JWTemplate::updater(array(
 	'title' 	=> '发送悄悄话',
 	'mode'		=> 1,
-	'friends'	=> $friend_rows
+	'friends'	=> $frs_rows_neworder,
 	));
 ?>
 	</fieldset>
