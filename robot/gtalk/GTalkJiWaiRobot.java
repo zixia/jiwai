@@ -269,6 +269,12 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 						break;
 					}
 
+					//Count momt
+					if( line.equals("CountMOMT") ){
+						out( "mo:"+worker.countMo + " mt:" + worker.countMt );
+						break;
+					}
+
 					Presence p = roster.getPresence( line );
 					if( p == null ){
 						out( "N" );

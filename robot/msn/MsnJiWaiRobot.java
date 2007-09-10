@@ -289,6 +289,12 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 						break;
 					}
 
+					//Count momt
+					if( line.equals("CountMOMT") ){
+						out( "mo:"+worker.countMo + " mt:" + worker.countMt );
+						break;
+					}
+
 					//Change Signature 
 					if( 0 == line.indexOf("Sig: ") ){
 						String sig = line.substring( "Sig: ".length() );
