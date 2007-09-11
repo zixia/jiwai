@@ -118,9 +118,15 @@ POSTDATA;
 
 		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData, 1);
 
-		error_log( $return, 3, '/tmp/postmms' );
+		error_log( "$return\n", 3, '/tmp/postmms' );
 
-		return ( $return ) ? true : false;
+		$returnObj = simplexml_load_string( $return );
+		if( $returnObj ) {
+			$result = (int) $returnObj->Result;
+			return ( $result == 0 );
+		}
+
+		return false; 
 	}
 
 	/*
@@ -152,6 +158,11 @@ POSTDATA;
 
 		$ret = true;
 		$contentObject = $mmsObject->MMS->content;
+
+		$subject = (string) $mmsObject->Subject;
+		$subject = mb_convert_encoding($subject, 'UTF-8', 'GB2312,UTF-8');
+		$subjectFilename = $waitingDir .'/subject.sub';
+		@file_put_contents( $subjectFilename, $subject );
 
 		for( $index=0; $item = $contentObject->item[$index]; $index++ ){
 

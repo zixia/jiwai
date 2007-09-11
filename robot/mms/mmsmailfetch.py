@@ -60,6 +60,14 @@ def parseMail(msg, uid, address):
 	dirname = "%s/%s-%s" % (Configure.dir, uid, address );
 	if False == os.path.exists(dirname) : 
 		os.makedirs( dirname, 0777 )
+	
+	#store subject
+	subject = msg['Subject']
+	subjectfilename = '%s/subject.sub' % ( dirname );
+	fp = open( subjectfilename , 'wb')
+	fp.write( subject )
+	fp.close()
+
 
 	counter = 1
 	for part in msg.walk():

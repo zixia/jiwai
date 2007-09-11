@@ -139,6 +139,7 @@ class JWMmsLogic {
 				$mmsArray = array();
 				$mmsArray['address'] = $phone;
 				$mmsArray['idUser'] = $deviceRow['idUser'];
+				$mmsArray['subject'] = uniqid('/tmp/Mms');
 				
 				$files = scandir( $undealDirname );
 
@@ -148,6 +149,24 @@ class JWMmsLogic {
 
 					$realfile = $undealDirname .'/'. $f ;
 					if( is_file( $realfile ) ) {
+						
+						//parse subject
+						if( $f == 'subject.sub' ) {
+							$content = file_get_contents( $realfile );
+							if( preg_match('/^=\?\w+\?(\w)\?(.*)\?=$/', $content, $matches ) ){
+								switch( strtoupper( $matches[1] ) ){
+									case 'B':
+									$content = base64_Decode($matches[2]);
+									break;
+									case 'Q':
+									$content = quoted_printable_decode($matches[2]);
+									break;
+								}
+							}
+							$content = mb_convert_encoding($content,'UTF-8','GB2312,UTF-8');
+							$mmsArray['subject'] = $content;
+							continue;
+						}
 
 						$pathInfo = pathInfo( $realfile );
 						if( in_array( $pathInfo['extension'] , array('html','smi','smil') ) )
@@ -160,7 +179,7 @@ class JWMmsLogic {
 						//Fetch image and text
 						if( $filetype == 'image' ) {
 
-							$ufilename = uniqid('/tmp/Mms') . '.' . $suffix;
+							$ufilename = $mmsArray['subject'] . '.' . $suffix;
 							@copy( $realfile, $ufilename );
 
 							$idPicture = JWPicture::SaveUserIcon( $mmsArray['idUser'], $ufilename, 'MMS', array('origin', 'thumb48', 'thumb96', 'picture') );
