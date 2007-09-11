@@ -257,8 +257,19 @@ _SQL_;
 
 	 * @return 	int		false if fail, otherwise return new PK of picture TB
 	 */
-	static public function SaveUserIcon($idUser, $absFilePathName, $type='ICON', $options=array( 'picture', 'thumb48','thumb96') )
+	static public function SaveUserIcon($idUser, $absFilePathName, $type='ICON', $options=array() )
 	{
+
+		if( empty( $options ) || empty($options['thumbs']) ) {
+			$thumbs = array( 'thumb48', 'thumb96', 'origin', 'picture') ;
+		}else
+			$thumbs = $options['thumbs'];
+
+		if( empty( $options ) || empty($options['filename']) ) {
+			$filename = null;
+		}else
+			$filename = $options['filename'];
+
 
 		if( false == in_array( $type, array('ICON', 'MMS' ) ))
 			return false;
@@ -281,7 +292,7 @@ _SQL_;
 			return $picture_id;
 		}
 
-		$file_name 	= $matches['file_name'];
+		$file_name 	= ( $filename==null ) ? $matches['file_name'] : $filename;
 		$file_ext 	= $matches['file_ext'];
 
 		$dst_file_type = 'jpg';
@@ -315,7 +326,7 @@ _SQL_;
 		$ret = true;
 		$rel_save_files = array();
 
-		foreach( $options as $op ) {
+		foreach( $thumbs as $op ) {
 
 			$rel_file_path = $picture_path . $op . '.' . $dst_file_type;
 			$convert_path_name = $abs_storage_root . $rel_file_path;

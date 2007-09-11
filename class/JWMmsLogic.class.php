@@ -177,25 +177,39 @@ class JWMmsLogic {
 						@list($filetype, $suffix) = explode( '/', $contentType );
 						
 						//Fetch image and text
-						if( $filetype == 'image' ) {
-
-							$ufilename = $mmsArray['subject'] . '.' . $suffix;
-							@copy( $realfile, $ufilename );
-
-							$idPicture = JWPicture::SaveUserIcon( $mmsArray['idUser'], $ufilename, 'MMS', array('origin', 'thumb48', 'thumb96', 'picture') );
-
-							if( $idPicture ) {
-								$mmsArray['idPicture'] = $idPicture;
-								$readok = true;
-							}else{
-								$readok = false;
-							}	
-
-						}else if( $filetype=='text' && $suffix=='plain') {
+						if( $filetype == 'image' ) 
+						{
+							$mmsArray['imageFile'] = $realfile;
+							$mmsArray['imageSuffix'] = $suffix;
+						}
+						else if( $filetype=='text' && $suffix=='plain') 
+						{
 							$text = file_get_contents( $realfile );
-							$mmsArray['status'] = mb_convert_encoding( $text, 'UTF-8', 'GB2312, UTF-8');
+							$status = mb_convert_encoding( $text, 'UTF-8', 'GB2312, UTF-8');
+							$mmsArray['status'] = $status;
 						}
 					}
+				}
+				
+				if( isset( $mmsArray['imageFile'] ) ){
+					$ufilename = uniqid('/tmp/MMS') . '.' . $mmsArray['imageSuffix'];
+					@copy( $mmsArray['imageFile'], $ufilename );
+
+					$options = array(
+							'thumbs' => array( 'origin', 'thumb48', 'thumb96', 'picture' ),
+							'filename' => $mmsArray['subject'],
+						);
+					$idPicture = JWPicture::SaveUserIcon($mmsArray['idUser'],$ufilename,'MMS',$options);
+
+					if( $idPicture ) 
+					{
+						$mmsArray['idPicture'] = $idPicture;
+						$readok = true;
+					}
+					else
+					{
+						$readok = false;
+					}	
 				}
 
 				if( $readok && self::SaveToStatus($mmsArray) ){
