@@ -14,7 +14,7 @@ if (JWUser::IsProtected($page_user_id)) {
 getOwnTimeline(5);
 
 function getOwnTimeline($count=10) {
-	global $page_user_id;
+	global $page_user_id, $page_user_info;
 	if( $page_user_info['idConference'] ) {
 		//论坛模式用户
 		$user_status_num= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
@@ -39,7 +39,7 @@ function getOwnTimeline($count=10) {
 			'via'=>'来自'.$r['device'].($r['isSignature']?'签名':'')
 			);
 	}
-	//var_dump($a);
+	//var_dump($a);die();
 	return $a;
 }
 function getFriendsTimeline($count=10) {

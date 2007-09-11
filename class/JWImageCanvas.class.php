@@ -35,6 +35,31 @@ class JWImageCanvas {
 	public function border($color=null) {
 		imagerectangle($this->image, 0, 0, $this->width-1, $this->height-1, $this->color($color));
 	}
+	public function rect($l, $t, $w, $h, $c){
+		imagerectangle($this->image, $l, $t, $l+$w-1, $t+$h-1, $this->color($c));
+	}
+	public function gradient($f_c,$s_c){
+		sscanf($f_c, "%2x%2x%2x", $red, $green, $blue);
+		$f_c = array($red,$green,$blue);
+		sscanf($s_c, "%2x%2x%2x", $red, $green, $blue);
+		$s_c = array($red,$green,$blue);
+		if($f_c[0]>$s_c[0]) $r_range=$f_c[0]-$s_c[0]; else $r_range=$s_c[0]-$f_c[0];
+		if($f_c[1]>$s_c[1]) $g_range=$f_c[1]-$s_c[1]; else $g_range=$s_c[1]-$f_c[1];
+		if($f_c[2]>$s_c[2]) $b_range=$f_c[2]-$s_c[2]; else $b_range=$s_c[2]-$f_c[2];
+		$r_px=$r_range/$this->height;
+		$g_px=$g_range/$this->height;
+		$b_px=$b_range/$this->height;
+		$r=$f_c[0];
+		$g=$f_c[1];
+		$b=$f_c[2];
+		for($i=0;$i<=$this->height;$i++){
+			$col=imagecolorallocate($this->image,round($r),round($g),round($b));
+			imageline($this->image,0,$i,$this->width-1,$i,$col);
+			if($f_c[0]<$s_c[0]) $r+=$r_px; else $r-=$r_px;
+			if($f_c[1]<$s_c[1]) $g+=$g_px; else $g-=$g_px;
+			if($f_c[2]<$s_c[2]) $b+=$b_px; else $b-=$b_px;
+   		}
+	}
 	public function clear($color=null) {
 		imagefilledrectangle($this->image, 0, 0, $this->width-1, $this->height-1, $this->color($color));
 	}
@@ -149,7 +174,7 @@ class JWImageCanvas {
 	const prefix = '《‘“';
 	*/
 	const postfix = '!%),.:;>?]}¢¨°·ˇˉ―‖’”…‰′″›℃∶、。〃〉》」』】〕〗〞︶︺︾﹀﹄﹚﹜﹞！＂％＇），．：；？］｀｜｝～￠';
-    const prefix = '$([{£¥·‘“〈《「『【〔〖〝﹙﹛﹝＄（．［｛￡￥';
+	const prefix = '$([{£¥·‘“〈《「『【〔〖〝﹙﹛﹝＄（．［｛￡￥';
 	protected function splitText($text) {
 		$r = array();
 		$s = $text;
