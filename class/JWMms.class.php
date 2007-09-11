@@ -85,6 +85,7 @@ class JWMms {
 				$suffix = $matches[1];
 			}
 		}
+		$suffix = ( strtolower($suffix) == 'gif' ) ? 'gif' : 'jpg';
 		
 		$appId = self::MMS_AID;
 		$gateId =  self::MMS_GID;
@@ -116,9 +117,10 @@ $postData = <<<POSTDATA
 </UnimocoMMS>
 POSTDATA;
 
+		
 		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData, 1);
 
-		error_log( "$return\n", 3, '/tmp/postmms' );
+		error_log( "$to : $return\n", 3, '/tmp/postmms' );
 
 		$returnObj = simplexml_load_string( $return );
 		if( $returnObj ) {
