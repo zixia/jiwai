@@ -245,7 +245,7 @@ class JWSns {
 				{
 					$userFollower = JWUser::GetUserInfo( $follower_id );
 					$message = "$userFollower[nameScreen] 取消订阅你的更新了。";
-					JWNudge::NudgeUserIds(array($idUser), $message, $messageType='nudge', $source='web');
+				//	JWNudge::NudgeUserIds(array($idUser), $message, $messageType='nudge', $source='web');
 				}
 			}else if ( $biDirection && JWFollower::IsFollower($follower_id,$idUser) )
 			{
@@ -256,7 +256,7 @@ class JWSns {
 				}else
 				{
 					$message = "$userInfo[nameScreen] 取消订阅你的更新了。";
-					JWNudge::NudgeUserIds(array($follower_id), $message, $messageType='nudge', $source='web');
+				//	JWNudge::NudgeUserIds(array($follower_id), $message, $messageType='nudge', $source='web');
 				}
 			}
 
@@ -742,7 +742,7 @@ class JWSns {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
 				}else{
 					$message = "你已经不再是 $userInfo[nameScreen] 的好友了。";
-					JWNudge::NudgeUserIds( array($friend_id), $message, 'nudge', 'web');
+				//	JWNudge::NudgeUserIds( array($friend_id), $message, 'nudge', 'web');
 				}
 
 			}
@@ -756,7 +756,7 @@ class JWSns {
 				}else{
 					$friendInfo = JWUser::GetUserInfo( $friend_id );
 					$message = "你已经不再是 $friendInfo[nameScreen] 的好友了。";
-					JWNudge::NudgeUserIds( array($idUser), $message, 'nudge', 'web');
+				//	JWNudge::NudgeUserIds( array($idUser), $message, 'nudge', 'web');
 				}
 
 			}
