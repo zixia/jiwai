@@ -214,27 +214,13 @@ class JWRobotLogic {
 										, $secret
 										);
 
-		if ( $user_id )
-		{
-			$body = <<<_STR_
-搞定了！你已经通过了验证。回复本消息即可进行更新，耶！
-_STR_;
-		}
-		else
-		{
-			$body = <<<_STR_
-哎呀！由于你输入的验证码"$secret"不正确，本次验证未能成功，请你查证后再重试一下吧。
-_STR_;
+		if ( $user_id ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_VERIFY_SUC');
+		} else {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_VERIFY_FAIL', array($secret) );
 		}
 
-		$robot_reply_msg = new JWRobotMsg();
-		
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-								, $robotMsg->GetType()
-								, $body
-							);
-
-		return $robot_reply_msg;
+		return self::ReplyMsg($robotMsg, $reply);
 	}
 
 	/**
@@ -346,20 +332,17 @@ _STR_;
 		}
 
 		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
-		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
 
-		{{{  // Not be invited and not register by lingo REG
-		if ( empty($invitation_id) && null == $nameScreen )
+		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
+		$memcache = JWMemcache::Instance();
+		$beforeRegister = $memcache->Get( $last_robot_msg_key );
+
+		// Not be invited and not register by lingo REG and is the first message
+		/**
+		 * Remember the last message before register
+		 */
+		if ( empty($invitation_id) && null == $nameScreen && empty($beforeRegister) )
 		{
-			
-			/*
-			 * 存下用户注册前发的更新
-			 */
-			
-			/*
-			 * 经过测试 发现，奇怪现象，$robotMsg，存入memcache后，取出时，很多属性为空，是不是因为文件不存在了
-			 * 导致用户注册前的更新丢失；
-			 */
 			$memcache = JWMemcache::Instance();
 			$memcache->Set( $last_robot_msg_key, array(
 						'body' => $body,
@@ -371,60 +354,17 @@ _STR_;
 			/*
 			 * register msg
 			 */
-			$msgRegister = "哇，真可怕！请回复你想用的用户名。";
-			$conference = JWConference::GetDbRowFromServerAddress( $robotMsg->GetServerAddress() );
-			if( false == empty( $conference ) && $conference['msgRegister'] ) {
-				$msgRegister = $conference['msgRegister'];
-			}
-
-			/*
-			 *	1 用户没有被邀请过
-			 */
-
-			/*
-			 *	为这个用户添加一个缺省的好友：JiWai
-			 */
-		
-			$jiwai_user_db_row = JWUser::GetUserInfo('JiWai');
-			
-			if ( empty($jiwai_user_db_row) )
-				throw new JWException('cant fount user JiWai !?');
-
-			$jiwai_user_id = $jiwai_user_db_row['idUser'];
-
-			$ret = JWInvitation::Create(	$jiwai_user_id
-							, $robotMsg->GetAddress()
-							, $robotMsg->GetType()
-							, '用户主动上行注册，自动建立邀请'
-							, JWDevice::GenSecret(32, JWDevice::CHAR_ALL)
-					);
-
-			if ( ! $ret )
-			{
-				JWLog::LogFuncName(LOG_CRIT, "JWInvitation::Create error for "
-									. $robotMsg->GetType() . "://"
-									. $robotMsg->GetAddress() 
-						);
-
-				return JWRobotLogic::ReplyMsg($robotMsg,"哇，真可怕！现在暂时无法处理新用户请求，你过一会儿再来试试吧。");
+			$msgRegister = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOREG_TIPS');
+			$parseInfo = JWFuncCode::FetchConference( $robotMsg->GetServerAddress(), $address );
+			if( false == empty( $parseInfo ) && $parseInfo['conference']['msgRegister'] ) {
+				$msgRegister = $parseInfo['conference']['msgRegister'];
 			}
 
 			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
 		}
 
-		}}} 
-
-		/*
-		 *	2.0 看看用户是否是看到"请输入用户名"的信息转发过来的，如果不是，提示之。
-	 	 */
-		if ( ! $toRegister ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOREG_TIPS' );
-			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-		}
-
-
-		/*
-		 *	2	用户被邀请过（通过设备查找到邀请） || 主动注册 
+		/**
+		 * 用户被邀请过（通过设备查找到邀请） || 主动注册 
 		 */
 		$param_body = $robotMsg->GetBody();
 
@@ -437,8 +377,10 @@ _STR_;
 		}
 
 //die("[$user_name]");
-		if ( empty($user_name) )
-			return self::ReplyMsg($robotMsg, "哎呀！你选择的用户名($user_name)太热门了，已经被使用了。请选择另外的用户名回复吧。");
+		if ( empty($user_name) ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_HOT', array($param_body) );
+			return self::ReplyMsg($robotMsg, $reply);
+		}
 
 	
 		$new_user_row = array( 	'nameScreen'	=> $user_name,
@@ -456,24 +398,18 @@ _STR_;
 
 		if ( $new_user_id )
 		{
-			{{{ //Create User Success
+			//Create User Success
 			if ( ! JWSns::CreateDevice($new_user_id, $address, $type, true) )
 				JWLog::LogFuncName(LOG_CRIT, "JWDevice::Create($new_user_id,$address,$type,true) failed.");
 
 			// 互相加为好友，标识邀请状态
-
 			if( $invitation_id ) {
 				JWSns::FinishInvitation($new_user_id, $invitation_id);
 			}
 
-			$body = <<<_STR_
-欢迎${user_name}！让你的朋友们发送"FOLLOW ${user_name}"来获取你的更新吧，改名请用"GM 新名称"。
-_STR_;
-
 			/*
 			 * 检查用户注册前的更新，将其发出
 			 */
-
 			$memcache = JWMemcache::Instance();
 			$beforeRegister = $memcache->Get( $last_robot_msg_key );
 
@@ -481,14 +417,6 @@ _STR_;
 			{
 				$memcache->Del( $last_robot_msg_key );
 
-				//获取用户注册时用的会议用户id，讲会议用户加为自己的好友
-				$reply_info = JWSns::GetReplyTo( $new_user_id, $beforeRegister['serverAddress'], $beforeRegister['type'] );
-				if( !empty($reply_info) && $reply_info['user_id'] != $new_user_id ){
-					//	JWSns::CreateFriends( $new_user_id, array($reply_info['user_id']) , false );
-					//	JWSns::DestroyFollowers( $reply_info['user_id'], $new_user_id, false );
-				}
-
-				//JWSns::UpdateStatus( $new_user_id, $status, $robotMsg->GetType() );
 				// 7/24/07 zixia: 如果之前的消息有回复，则返回给用户命令操作的返回，而不是注册成功提示。
 				$beforeRegisterMsg = new JWRobotMsg();
 				$beforeRegisterMsg->Set( $beforeRegister['address']
@@ -505,17 +433,15 @@ _STR_;
 					return $reply_msg;
 				}
 			}
-
-			}}}
-		}
+			
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_REPLY_SUC', array($new_user_row['nameScreen']) );
+	       	}
 		else
 		{
-			$body = <<<_STR_
-哇，真可怕！现在暂时无法处理新用户请求，你过一会儿再来试试吧。
-_STR_;
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_500' );
 		}
 
-		return self::ReplyMsg($robotMsg, $body);
+		return self::ReplyMsg($robotMsg, $reply);
 	}
 
 

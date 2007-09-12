@@ -190,24 +190,5 @@ _SQL_;
 		$idConference = JWDB::CheckInt( $idConference );
 		return JWDB::UpdateTableRow( 'Conference' , $idConference, $updatedRow );
 	}
-
-	/**
-	 * GetConference from serverAddress
-	 */
-	static public function GetDbRowFromServerAddress( $serverAddress ) {
-		if( isset( self::$smsAlias[ $serverAddress ] ) )
-			$serverAddress = self::$smsAlias[ $serverAddress ];
-
-		$conference = null;
-		if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
-			if( $matches[1] == 1 ) {
-				$conference = self::GetDbRowFromNumber( $matches[2] );		
-			}else{
-				$conference = self::GetDbRowFromUser( $matches[2] );
-			}
-		}
-
-		return $conference;
-	}
 }
 ?>

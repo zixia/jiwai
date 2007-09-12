@@ -80,6 +80,7 @@ class JWRobotLingoReply {
 			'REPLY_REG_SAME' => '哇，你本来就叫 {0}，压根不需要改哦。',
 			'REPLY_REG_HOT' => '哇，你要修改的账户名 {0} 太热，请重新选择一个吧。',
 			'REPLY_REG_500'  => '哎呀！由于系统故障，你的请求失败了…… 请稍后再试吧。',
+			'REPLY_REG_REPLY_SUC' => '你好，你已经完成了注册，你的用户名是 {0}。',
 
 			'REPLY_NOREG_TIPS' => '你还没有注册，请回复你想要的账户名。',
 
@@ -148,8 +149,9 @@ class JWRobotLingoReply {
 
 		$serverAddress = $robotMsg->GetServerAddress();
 		$type = $robotMsg->GetType();
+		$address = $robotMsg->GetAddress();
 
-		$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $type );
+		$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $address, $type );
 
 		$replyMap = self::GetReplyMap( $idUserConference );
 

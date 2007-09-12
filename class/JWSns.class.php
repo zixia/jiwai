@@ -550,7 +550,7 @@ class JWSns {
 				$message = new stdClass;
 				$message->isMms = 'Y';
 				$message->idStatus = $ret;
-				$message->smsMessage = "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，直接回复 M 免费下载彩信。";
+				$message->smsMessage = "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。";
 				$message->imMessage = "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl";
 				$notifyInfo['status'] = $message;
 			}

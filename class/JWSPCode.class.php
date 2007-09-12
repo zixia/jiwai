@@ -27,7 +27,7 @@ class JWSPCode {
 			'func' => 4567, 'funcPlus' => '', 'default' => true,
 		),
 		array( 'sp' => self::SP_MOBILE, 'code' => 50136, 'gid' => 85, 
-			'func' => 999, 'funcPlus' => '', 'default' => false,
+			'func' => 9, 'funcPlus' => '99', 'default' => false,
 		),
 		array( 'sp' => self::SP_UNICOM, 'code' => 9318, 'gid' => 3, 
 			'func' => 8816, 'funcPlus' => '', 'default' => false,

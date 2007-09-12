@@ -141,8 +141,9 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOPERM', array($userReceiver['nameFull'], $userSender['nameFull'] ) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}	
-
+		
 		$sendMMS = ( $type=='sms' ) ? true : false;
+		/***
 		if( $type != 'sms' ) {
 			$deviceRows = JWDevice::GetDeviceRowByUserId( $idUser );
 			if( false == empty( $deviceRows ) 
@@ -154,10 +155,11 @@ class JWRobotLingo {
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOSMS', array($userReceiver['nameFull']) );
 			}
 		}
+		***/
 
 		if( $sendMMS == true ) {
 			//Send MMS To Queue [Async]
-			JWMmsQueue::Create( $deviceRows['sms']['address'], $mmsRow['id'] );
+			JWMmsQueue::Create( $address, $mmsRow['id'] );
 		}
 
 		if( isset($reply) && $reply ) {

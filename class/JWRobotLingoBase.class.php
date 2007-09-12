@@ -123,9 +123,10 @@ class JWRobotLingoBase {
 		$body = $robotMsg->GetBody();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$type = $robotMsg->GetType();
+		$address = $robotMsg->GetAddress();
 
 		//get and set idUserConference [ only for SMS ]
-		$idUserConference = self::GetLingoUser( $serverAddress, $type );
+		$idUserConference = self::GetLingoUser( $serverAddress, $address, $type );
 		$robotMsg->SetIdUserConference( $idUserConference );
 
 		if( ($body == '00000' || $body == '0000') && $type=='sms' ) {
@@ -215,35 +216,17 @@ class JWRobotLingoBase {
 			    );
 	}
 
-	static function GetLingoUser( $serverAddress , $type = 'sms' ){
+	static function GetLingoUser( $serverAddress, $address, $type = 'sms' ){
 
-		if( $type != 'sms' ) 
+		if( $type != 'sms' )
 			return 0;
 
-		if( isset( JWConference::$smsAlias[ $serverAddress ] ) ){
-			$serverAddress = JWConference::$smsAlias[ $serverAddress ];
-		}
+		$f = func_get_args();
+		$parseInfo = JWFuncCode::FetchConference( $serverAddress, $address );
+		if( empty( $parseInfo ) )
+			return 0;
 
-		$userInfo = null;
-		if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
-			$normalMeeting = $matches[1] == 99 ? true : false;
-			$conference = null;
-			if( $normalMeeting ){
-				$userInfo = JWUser::GetUserInfo( $matches[2] );
-				$conference = JWConference::GetDbRowFromUser( $matches[2] ) ;
-			}else{
-				$conference = JWConference::GetDbRowFromNumber( $matches[2] );
-				if( !empty( $conference ) ){
-					$userInfo = JWUser::GetUserInfo( $conference['id'] );
-				}
-			}
-		}
-		
-		if( empty( $userInfo ) ){
-			return 0;	
-		} 
-		
-		return $userInfo['id'];
+		return $parseInfo['user']['id'];
 	}
 	
 
