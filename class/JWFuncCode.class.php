@@ -41,11 +41,10 @@ class JWFuncCode {
 
 		$postFunc = self::PRE_MMS_NOTIFY . $idStatus;
 
-		$mobileRow = JWMobile::GetDbRowByMobileNo( $mobileNo );
-		if( empty($mobileRow ) )
-			return null;
+		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
 
-		$code = JWSPCode::GetCodeByCodeNumAndSupplier( $mobileRow['forceCode'], $mobileRow['supplier'] );
+		if( empty($code)  )
+			return null;
 
 		return $code['code'] . $code['func'] . $postFunc;
 	}
@@ -104,14 +103,14 @@ class JWFuncCode {
 			}
 
 			if( 0 === strpos( $funcCode, self::PRE_CONF_CUSTOM ) ){
-				$idConference = substr( $funcCode, strlen( self::PRE_CONF_CUSTOM ) );
-				$conference = JWConference::GetDbRowById( $idConference	);
+				$conferenceNum = substr( $funcCode, strlen( self::PRE_CONF_CUSTOM ) );
+				$conference = JWConference::GetDbRowFromNumber( $conferenceNum	);
 				if( empty($conference) )
 					return array();
 
 				$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
 				if( empty($userInfo) || null==$userInfo['idConference'] 
-						|| $userInfo['idConference'] != $idConference )
+						|| $userInfo['idConference'] != $conference['id'] )
 					return array();
 
 				return array(

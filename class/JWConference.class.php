@@ -139,14 +139,13 @@ _SQL_;
 	 * Get Conference Setting By Number
 	 */
 	static public function GetDbRowFromNumber($number){
-		$number = intval( $number );
-		if( $number <=  0 ) 
+		if( null===$number )
 			return array();
 
 		$sql = <<<_SQL_
 SELECT * FROM Conference
 	WHERE
-		`number` = number
+		`number` = '$number'
 	LIMIT 1
 _SQL_;
 
