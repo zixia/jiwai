@@ -124,17 +124,14 @@ class JWNudge {
 					//complex message destruct
 					if( is_a($message, 'stdClass') ) {
 						if( isset($message->isMms) && $message->isMms == 'Y' ) {
-							switch($type){
-								case 'sms':
-									$message = $message->smsMessage;
-									$idStatus = $message->idStatus;
-									$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $idStatus );
-									JWRobot::SendMtRaw($address, $type, $message);
-								break;
-								default:
-									$message = $message->imMessage;
-									JWRobot::SendMtRaw($address, $type, $message);
-								break;
+							if($type=='sms') {
+								$idStatus = $message->idStatus;
+								$message = $message->smsMessage;
+								$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $idStatus );
+								JWRobot::SendMtRaw($address, $type, $message, $serverAddress);
+							}else{
+								$message = $message->imMessage;
+								JWRobot::SendMtRaw($address, $type, $message);
 							}
 						}
 					}else{	
