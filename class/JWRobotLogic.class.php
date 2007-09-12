@@ -173,7 +173,10 @@ class JWRobotLogic {
 			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 
-			$ret = JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time, $isSignature, $serverAddress);
+			$options = array(
+					'address' => $address,
+				);
+			$ret = JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time, $isSignature, $serverAddress, $options );
 			if( $ret ) {
 				$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_UPDATESTATUS',array($nameFull,));

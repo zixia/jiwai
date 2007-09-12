@@ -195,13 +195,14 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		$code = JWMobile::GetSpCode( $mobileNo, $serverAddress , $force=true);
+		$code = JWMobile::GetSpCode( $mobileNo, $serverAddress , true);
 		if( empty( $code ) ) {
 			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt Get Invalid SpCode with ($mobileNo, $serverAddress) .");
 			return true;
 		}
 
-		$func 	= $code['func'];
+		$func 	= ( null == $serverAddress || 0 == $serverAddress ) ? 
+				$code['func'] . $code['funcPlus'] : substr( $serverAddress, strlen($code['code']) );
 		$gid 	= $code['gid'];
 		$appid	= 93;	// 数字，应用编号，需分配
 
@@ -279,7 +280,7 @@ class JWSms {
 		if ( isset($msgfmt) )
 			$rpc_url .= "&msgfmt=$msgfmt";
 
-		//error_log( $rpc_url );
+		error_log( $rpc_url );
 
 		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt Calling: [$rpc_url]");
 

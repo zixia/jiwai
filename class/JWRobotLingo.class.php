@@ -106,6 +106,7 @@ class JWRobotLingo {
 	static function Lingo_Mms($robotMsg) {
 		$type = $robotMsg->GetType();
 		$address = $robotMsg->GetAddress();
+		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
 
 		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
@@ -113,12 +114,16 @@ class JWRobotLingo {
 		if ( empty($address_device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		if ( ! preg_match('/^\w+\s+(\d+)\s*$/i',$body,$matches) ) {
+		if( $type != 'sms' ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$mmsId = intval( $matches[1] );
+		$mmsId = JWFuncCode::FetchMmsIdStatus($serverAddress, $address );
+		if( null == $mmsId ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MMS_ILL' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
 
 		$idUser = JWDevice::IsAllowedNonRobotDevice( $type ) ? $address : $address_device_db_row['idUser'];
 		$userReceiver = JWUser::GetUserInfo( $idUser );

@@ -368,7 +368,7 @@ _SQL_;
 			{
 				$code = JWMobile::GetSpCode( $mobileNo, null );
 				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'];
+					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
 				return '99118816';
 			}
@@ -376,7 +376,7 @@ _SQL_;
 			{
 				$code = JWMobile::GetSpCode( $mobileNo, null );
 				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'];
+					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
 				return '95014567';
 			}
@@ -384,7 +384,7 @@ _SQL_;
 			{
 				$code = JWMobile::GetSpCode( $mobileNo, null );
 				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'];
+					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
 				return '99318456';
 			}

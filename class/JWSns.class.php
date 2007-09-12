@@ -491,8 +491,9 @@ class JWSns {
 		}
 		
 		$idConference = null;
+		$address = isset( $options['address'] ) ? $options['address'] : null;
 		if( false == isset( $options['idConference'] ) ){
-			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo, $device, $serverAddress );
+			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo, $device, $serverAddress, $address );
 			if( false == empty( $conference ) ) {
 				$idConference = $conference['id'];
 			}
@@ -540,9 +541,18 @@ class JWSns {
 					'idConference' => $idConference,
 					);
 
-			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) {
-				//$notifyInfo['idUserReplyTo'] = 89;
-				$notifyInfo['status'] = "我上传了彩信，请输入 M $ret 免费下载彩信。";
+			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
+			{
+				$picUrl = JWPicture::GetUrlById($createOptions['idPicture'], 'origin');
+				$userInfo = JWUser::GetUserInfo( $idUser );
+				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
+
+				$message = new stdClass;
+				$message->isMms = 'Y';
+				$message->idStatus = $ret;
+				$message->smsMessage = "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，直接回复 M 免费下载彩信。";
+				$message->imMessage = "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl";
+				$notifyInfo['status'] = $message;
 			}
 
 			JWStatusNotifyQueue::Create( $idUser, $ret, time(), $notifyInfo );
@@ -592,12 +602,12 @@ class JWSns {
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
 				$follower_ids = JWFollower::GetFollowerIds($idSender);
-				$status = "$userInfo[nameScreen]: $status";
+				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
 			}else{
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
 				$follower_ids = array( $idUserReplyTo ) ;
-				$status = "$userInfo[nameScreen]: $status";
+				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
 			}
 		}
 

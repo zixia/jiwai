@@ -59,7 +59,7 @@ class JWMms {
 			}
 
 			$pictureFile = JWPicture::GetUrlById( $mmsRow['id'] );
-			return self::SendMt( $mobileNo, $pictureFile, $statusRow['status'], $statusRow['status'] );
+			return self::SendMt( $mobileNo, $pictureFile, $mmsRow['fileName'], $statusRow['status'] );
 		}
 
 		return true;
@@ -90,7 +90,7 @@ class JWMms {
 		$appId = self::MMS_AID;
 		$gateId =  self::MMS_GID;
 		$to = $mobileNo;
-		$subject = $subject = mb_convert_encoding( $subject, "GB2312", "UTF-8,GB2312");
+		$subject = mb_convert_encoding( $subject, "GB2312", "UTF-8,GB2312");
 		$productId = self::MMS_PID;
 		$text = base64_Encode( mb_convert_encoding( $text, "GB2312", "UTF-8,GB2312") );
 		$imageContent = base64_Encode( $imageContent );

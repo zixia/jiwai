@@ -47,7 +47,7 @@ class JWConference {
 	/**
 	 * Get idConference from idUser,idUserReplyTo,serverAddress
 	 */
-	static public function FetchConference( $idSender, $idReceiver =null, $device='sms', $serverAddress=null) {
+	static public function FetchConference( $idSender,$idReceiver=null,$device='sms',$serverAddress=null,$address=null) {
 		$idSender = JWDB::CheckInt( $idSender );
 	
 		//发送者是开启了会议模式用户	
@@ -65,23 +65,10 @@ class JWConference {
 
 		//优先特服号分析
 		if( $device == 'sms' ){
-			if( isset( self::$smsAlias[ $serverAddress ] ) ){
-				$serverAddress = self::$smsAlias[ $serverAddress ];
-			}
-
-			if( preg_match("/[0-9]{8}(99|1)(\d+)/", $serverAddress, $matches ) ) {
-				$normalMeeting = $matches[1] == 99 ? true : false;
-				if( $normalMeeting ){
-					$userInfo = JWUser::GetUserInfo( $matches[2] );
-					if( $userInfo['idConference'] ) {
-						$conference = self::GetDbRowById( $userInfo['idConference'] );
-					}
-				}else{
-					$conference = self::GetDbRowFromNumber( $matches[2] );
-					if( false == empty( $conference ) ){
-						$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
-					}
-				}
+			$parseInfo = JWFuncCode::FetchConference( $serverAddress, $address );
+			if( false == empty( $parseInfo ) ){
+				$userInfo = $parseInfo['user'];
+				$conference = $parseInfo['conference'];
 			}
 		}
 

@@ -11,118 +11,135 @@
  * SUPPLIES must IN ( MOBILE, UNICOM, PAS )
  */
 class JWSPCode {
-    /**
-     * SP constant 
-     */
-    const SP_MOBILE     = 1;
-    const SP_UNICOM     = 2;
-    const SP_PAS        = 3;
-    const SP_UNKNOWN    = 0;
+	/**
+	* SP constant 
+	*/
+	const SP_MOBILE 	= 1;
+	const SP_UNICOM 	= 2;
+	const SP_PAS		= 3;
+	const SP_UNKNOWN	= 0;
 
-    static private $codeBase = array(
-        '9911' => array( 
-                    'sp' => self::SP_MOBILE,  
-                    'code' => 9911,
-                    'gid' => 1,
-                    'func' => 8816,
-		    'default' => true,
-                ),
-        '9501' => array(
-                    'sp' => self::SP_UNICOM,
-                    'code' => 9501,
-                    'gid' => 45,
-                    'func' => 4567,
-		    'default' => true,
-                ),
-        '50136' => array(
-                    'sp' => self::SP_MOBILE,
-                    'code' => 50136,
-                    'gid' => 85,
-                    'func' => 999,
-		    'default' => false,
-                ),
-        '9318' => array(
-                    'sp' => self::SP_UNICOM,
-                    'code' => 9318,
-                    'gid' => 3,
-                    'func' => 8816,
-		    'default' => false,
-                ),
-        '99318' => array(
-                    'sp' => self::SP_PAS,
-                    'code' => 99318,
-                    'gid' => 52,
-                    'func' => 456,
-		    'default' => true,
-                ),
-        );
+	static private $codeBase = array(
+		array( 'sp' => self::SP_MOBILE,  'code' => 9911, 'gid' => 1, 
+			'func' => 8816, 'funcPlus' => '', 'default' => true,
+		),
+		array( 'sp' => self::SP_UNICOM, 'code' => 9501, 'gid' => 45, 
+			'func' => 4567, 'funcPlus' => '', 'default' => true,
+		),
+		array( 'sp' => self::SP_MOBILE, 'code' => 50136, 'gid' => 85, 
+			'func' => 999, 'funcPlus' => '', 'default' => false,
+		),
+		array( 'sp' => self::SP_UNICOM, 'code' => 9318, 'gid' => 3, 
+			'func' => 8816, 'funcPlus' => '', 'default' => false,
+		),
+		array( 'sp' => self::SP_PAS, 'code' => 99318, 'gid' => 52, 
+			'func' => 456, 'funcPlus' => '', 'default' => true,
+		),
+	);
 
-    static public function GetCodeBySupplier( $supplier=self::SP_MOBILE , $forceDefault = true) {
-	    foreach( self::$codeBase as $c ){
-		    if( $c['sp'] == $supplier && ( 
-					    $forceDefault == false 
-					    || ( isset($c['default']) && $c['default']==true ) 
-					    )
-		      )
-		    {
-			return $c;
-		    }
-	    }
-	    return array();
-    }
-    static public function GetCodeByServerAddress( $serverAddress )
-    {
-        $keys = array_keys( self::$codeBase );
-        $keysPat = implode( '|', $keys );
-        if( preg_match( '/^('.$keysPat.')/', $serverAddress, $matches ) )
-        {
-            $code = self::$codeBase[ $matches[1] ];
-            $code['func'] = substr( $serverAddress, strlen( $matches[1] ) );
-            return $code;
-        }
-        return array();
-    }
-
-    static public function GetCodeByMobileNo( $mobileNo ) {
-	if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
-			|| preg_match('/^159\d+$/',$mobileNo)
-			|| preg_match('/^158\d+$/',$mobileNo)
-	){
-		return self::GetCodeBySupplier( self::SP_MOBILE );
-			return self::SP_CHINAMOBILE;
+	static public function GetSupplier($supplierString='MOBILE'){
+		switch($supplierString){
+			case 'UNICOM':
+				return self::SP_UNICOM;
+			case 'PAS':
+				return self::SP_PAS;
+			case 'MOBILE':
+				return self::SP_MOBILE;
+			default:
+				return self::SP_MOBILE;
+		}
 	}
 
-	if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) ) {
-		return self::GetCodeBySupplier( self::SP_UNICOM );
+	static public function GetCodeByCodeNumAndSupplier( $codeNum, $supplier=self::SP_MOBILE ) {
+		
+		if( false == is_numeric($supplier) )
+			$supplier = self::GetSupplier( $supplier );
+
+		$code = array();
+		foreach( self::$codeBase as $c ){
+			if( $c['sp'] == $supplier && ( $codeNum==null || $c['code'] == $codeNum ) )
+			{
+				if ( isset($c['default']) && $c['default']==true ) 
+				{
+					return $c;
+				}
+				$code = $c;
+			}
+		}
+		return $code;
 	}
-	if ( preg_match('/^\d{11,12}$/',$mobileNo ) ) {
-		return self::GetCodeBySupplier( self::SP_PAS, false );
+
+	static public function GetCodeByServerAddressAndMobileNo($serverAddress, $mobileNo, $forceFunc=true) {
+		$supplier = self::GetSupplierByMobileNo( $mobileNo );
+		return self::GetCodeByServerAddressAndSupplier( $serverAddress, $supplier , $forceFunc );
 	}
 
-	return array();
-    }
+	static public function GetCodeByServerAddressAndSupplier($serverAddress,$supplier=self::SP_MOBILE,$forceFunc=true){
 
-    static public function GetCodeByCodeNum( $codeNum )
-    {
-        $codeNum = JWDB::CheckInt( $codeNum );
+		if( false == is_numeric($supplier) )
+			$supplier = self::GetSupplier( $supplier );
 
-        if( isset( self::$codeBase[ $codeNum ] ) )
-        {
-            return self::$codeBase[ $codeNum ];
-        }
-        return array();
-    }
+		foreach( self::$codeBase as $c ){
+			$preCode = strval( ($forceFunc == true) ? $c['code'].$c['func'] : $c['code'] );
+			if( $c['sp'] == $supplier && 0 === strpos($serverAddress, $preCode) ){
+				return $c;
+			}
+		}
+		return array();
+	}
 
-    static public function GetCodeByGid( $gid )
-    {
-        $gid = JWDB::CheckInt( $gid );
+	static public function GetCodeBySupplier( $supplier=self::SP_MOBILE ) {
+		return self::GetCodeByCodeNumAndSupplier( null, $supplier );
+	}
 
-        foreach( self::$codeBase as $c )
-        {
-            if( $c['gid'] ==  $gid ) 
-                return $c;
-        }
-        return array();
-    }
+	/**
+	 * if $needForce==true, use mobileRow['force'] forceCode to sent mt message
+	 */
+	static public function GetCodeByMobileNo( $mobileNo , $needForce=true) {
+
+		$supplier = self::GetSupplierByMobileNo( $mobileNo );
+
+		if( $needForce == true )
+			$mobileRow = JWMobile::GetDbRowByMobileNo( $mobileNo );
+		else 
+			$mobileRow = array();
+
+		if( empty( $mobileRow ) )
+			return self::GetCodeByCodeNumAndSupplier( null, $supplier );
+
+		return self::GetCodeByCodeNumAndSupplier( $mobileRow['forceCode'], $supplier );
+	}
+
+	static public function GetCodeByGid( $gid ) {
+
+		$gid = JWDB::CheckInt( $gid );
+
+		foreach( self::$codeBase as $c )
+		{
+			if( $c['gid'] ==  $gid ) 
+				return $c;
+		}
+		return array();
+	}
+
+	static public function GetSupplierByMobileNo( $mobileNo ) {
+		if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
+				|| preg_match('/^159\d+$/',$mobileNo)
+				|| preg_match('/^158\d+$/',$mobileNo)
+				|| preg_match('/^150\d+$/',$mobileNo)
+		){
+			return self::SP_MOBILE;
+		}
+
+		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) ) {
+			return self::SP_UNICOM;
+		}
+
+		if ( preg_match('/^\d{11,12}$/',$mobileNo ) ) {
+			return self::SP_PAS;
+		}
+
+		return self::SP_UNKNOWN;
+	}
 }
 ?>

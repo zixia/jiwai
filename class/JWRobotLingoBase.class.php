@@ -46,7 +46,7 @@ class JWRobotLingoBase {
 
 			,'WHOAMI'	=> array( 'func'=>'Lingo_Whoami','param'=>0)
 
-			,'MMS'		=> array( 'func'=>'Lingo_Mms'	,'param'=>1)
+			,'MMS'		=> array( 'func'=>'Lingo_Mms'	,'param'=>0)
 		);
 
 

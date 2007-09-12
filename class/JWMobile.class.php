@@ -153,25 +153,13 @@ class JWMobile {
     static public function GetSpCode( $mobileNo, $serverAddress = null ) {
         
         $code = array();
-
         if( null == $serverAddress || 0 == $serverAddress ) 
         {
-            $forceRow = self::GetDbRowByMobileNo( $mobileNo );
-            if( false == empty($forceRow) ) {
-                if( $forceRow['forceCode'] ){
-                    $code = JWSPCode::GetCodeByCodeNum( $forceRow['forceCode'] );
-                    if( false == empty( $code ) && $forceRow['forceFunc'] ) 
-                    {
-                        $code['func'] = $forceRow['forceFunc'];
-                    }
-                }else{
-                    $code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-                }
-            }
+	    $code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
         }
         else
         {
-            $code = JWSPCode::GetCodeByServerAddress( $serverAddress );
+            $code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo, false );
         }
 
         return $code;
