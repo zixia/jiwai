@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
 echo date("Y-m-d H:i:s", time()) . " sitemap start\n";
 
-$sitepath 	= "/vhost/jiwai.de/webroot";
+$sitepath 	= "/opt/jiwai.de/webroot";
 $website	= "http://jiwai.de";
 
 chdir($sitepath);
@@ -47,7 +47,7 @@ foreach ( $result as $row )
 //die(var_dump($row));
 	$user_id 	= $row['idUser'];
 	$mtime		= $row['mtime'];
-	$user_name	= JWUser::GetUserInfo($user_id,'nameScreen');
+	$user_name	= htmlspecialchars(JWUser::GetUserInfo($user_id,'nameScreen'));
 
 
 	$mod		= date('c', $mtime);
@@ -85,7 +85,7 @@ if (fwrite($handle, $xml) === FALSE)
 
 fclose($handle);
 
-unlink ( "sitemap.xml.gz" );
+@unlink ( "sitemap.xml.gz" );
 system("gzip sitemap.xml");
 
 

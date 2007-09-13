@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 
-$pic_root = "/750/reiserfs/jiwai/picture/0/";
+$pic_root = "/opt/storage/jiwai/picture/0/";
 // 750/reiserfs/jiwai/picture/0/8/9
 
 list_file($pic_root);
