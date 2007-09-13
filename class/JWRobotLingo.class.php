@@ -567,6 +567,7 @@ class JWRobotLingo {
 
 			//NotifyQueue when invite
 			$status = new stdClass;
+            $status->idUser = $address_user_id;
 			$status->message = $invite_msg;
 			$status->type = $invitee_type;
 			$status->address = $invitee_address;
@@ -575,7 +576,8 @@ class JWRobotLingo {
 					'idUserReplyTo' => null,
 					'idConference' => null,
 				);
-			JWStatusNotifyQueue::Create( $address_user_id, null, null, $notifyInfo );
+
+			JWStatusNotifyQueue::Create( null, null, null, $notifyInfo );
 
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_REQUEST_INVITE' );
 		}
