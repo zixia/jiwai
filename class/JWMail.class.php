@@ -101,7 +101,7 @@ class JWMail {
 	{
 
 		if ( !isset($options['encoding']) )
-			$options['encoding'] 	= 'UTF-8';
+			$options['encoding'] 	= 'GB2312';
 
 		if ( !isset($options['contentType']) )
 			$options['contentType'] = 'text/plain';
