@@ -23,6 +23,11 @@ class JWFuncCode {
 	 */
 	const PRE_MMS_NOTIFY = '20';
 
+	/**
+	 * Mms Invitation
+	 */
+	const PRE_REG_INVITE = '30';
+
 	static private $serverAddressAlias = array(
 			'9911456'  => '991188161199',
 			'50136456' => '5013691199',
@@ -40,6 +45,19 @@ class JWFuncCode {
 		$idStatus = JWDB::CheckInt( $idStatus );
 
 		$postFunc = self::PRE_MMS_NOTIFY . $idStatus;
+
+		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
+
+		if( empty($code)  )
+			return null;
+
+		return $code['code'] . $code['func'] . $postFunc;
+	}
+
+	static public function GetRegInviteFunc($mobileNo, $idUser) {
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$postFunc = self::PRE_REG_INVITE . $idUser;
 
 		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
 

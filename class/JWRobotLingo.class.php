@@ -567,7 +567,8 @@ class JWRobotLingo {
 
 			//NotifyQueue when invite
 			$status = new stdClass;
-            $status->idUser = $address_user_id;
+			$status->idUser = $address_user_id;
+			$status->isInvite = 'Y';
 			$status->message = $invite_msg;
 			$status->type = $invitee_type;
 			$status->address = $invitee_address;

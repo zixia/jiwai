@@ -184,7 +184,7 @@ SQL;
 						$message = $status->message;
 						$address = $status->address;
 						$type = $status->type;
-                        $idUser = $status->idUser;
+						$idUser = $status->idUser;
 						JWSns::Invite($idUser, $address, $type, $message);
 					}else{
 						JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $idConference );
