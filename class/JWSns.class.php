@@ -550,7 +550,7 @@ class JWSns {
 				$message = array(
 					'sms' => "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
 					'im' => "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl",
-					'mms' => 'Y',
+					'type' => 'MMS',
 					'idStatus' => $ret,
 				);
 				$metaInfo['message'] = $message;
@@ -577,10 +577,14 @@ class JWSns {
 	 * @param $status string
 	 * @param $idConference
 	 */
-	static public function NotifyFollower( $idSender, $idUserReplyTo=null, $status=null, $idConference=null , $queueType=JWNotifyQueue::T_STATUS ){
+	static public function NotifyFollower( $idSender=null, $idUserReplyTo=null, $status=null, $idConference=null , $queueType=JWNotifyQueue::T_STATUS ){
 
-		if( $queueType == JWNotifyQueue::T_STATUS ) {
-			
+		if( $idSender == null ) 
+		{
+			$follower_ids = array( $idUserReplyTo ) ;
+		}
+	       	else 
+		{
 			if( $idConference ) {
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
@@ -608,8 +612,6 @@ class JWSns {
 				$follower_ids = array( $idUserReplyTo ) ;
 				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
 			}
-		}else{
-			$follower_ids = array( $idUserReplyTo ) ;
 		}
 
 		if( empty( $follower_ids ) ) 

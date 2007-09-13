@@ -122,7 +122,7 @@ class JWNudge {
 					$ret = JWNotifyQueue::Create( null, $idUserTo, $queueType, $info );
 				}else{
 					if( is_array( $message ) ) {
-						if( isset($message['type']) && $message['mms'] == 'Y' ) {
+						if( isset($message['type']) && $message['type'] == 'MMS' ) {
 							if($type=='sms') {
 								$idStatus = $message['idStatus'];
 								$message = $message['sms'];
@@ -130,7 +130,7 @@ class JWNudge {
 									JWFuncCode::GetMmsNotifyFunc($address,$idStatus );
 								JWRobot::SendMtRaw($address,$type,$message,$serverAddress);
 							}else{
-								$message = $message->imMessage;
+								$message = $message['im'];
 								JWRobot::SendMtRaw($address, $type, $message);
 							}
 						}

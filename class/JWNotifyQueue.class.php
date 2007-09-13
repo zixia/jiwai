@@ -182,7 +182,7 @@ SQL;
 					case self::T_STATUS:
 					{
 						$message = @$metaInfo['message'];
-						$idCondition = @$metaInfo['idConference'];
+						$idConference = @$metaInfo['idConference'];
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
@@ -198,7 +198,7 @@ SQL;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
-							. "message: $message";
+							. "message: $message\n";
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
 					}
@@ -209,7 +209,7 @@ SQL;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
-							. "message: $message";
+							. "message: $message\n";
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
 					}
@@ -222,7 +222,7 @@ SQL;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "type: $type, "
-							. "addressTo: $idUserTo";
+							. "addressTo: $idUserTo\n";
 
 						JWSns::Invite( $idUserFrom, $address, $type, $message );
 					}
