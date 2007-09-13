@@ -564,7 +564,18 @@ class JWRobotLingo {
 			$invite_msg['email'] = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADD_EMAIL', array( $address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 			$invite_msg['im'] = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADD_IM', array( $address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 			$invite_msg['sms'] = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADD_SMS', array( $address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
-			JWSns::Invite($address_user_id, $invitee_address, $invitee_type, $invite_msg);
+
+			//NotifyQueue when invite
+			$status = new stdClass;
+			$status->message = $invite_msg;
+			$status->type = $invitee_type;
+			$status->address = $invitee_address;
+			$notifyInfo = array(
+					'status' => $status,
+					'idUserReplyTo' => null,
+					'idConference' => null,
+				);
+			JWStatusNotifyQueue::Create( $address_user_id, null, null, $notifyInfo );
 
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_REQUEST_INVITE' );
 		}

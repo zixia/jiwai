@@ -180,7 +180,14 @@ SQL;
 					 * notify to other
 					 */
 					echo "idUser: $idUser, idUserReplyTo: $idUserReplyTo, status: $status, idConference: $idConference\n";
-					JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $idConference );
+					if( is_a($status,'stdClass') && isset($status->isInvite) && $status->isInvite=='Y') {
+						$message = $status->message;
+						$address = $status->address;
+						$type = $status->type;
+						JWSns::Invite($idUser, $address, $type, $message);
+					}else{
+						JWSns::NotifyFollower( $idUser, $idUserReplyTo, $status, $idConference );
+					}
 
 					/**
 					 * Set Status 'DEALED'
