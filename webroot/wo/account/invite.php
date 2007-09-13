@@ -30,7 +30,8 @@ $idInvited      = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
 if ( isset($_POST['invite_email_x'] ) ) {
     $emails = $_POST['email_addresses'];
     $subject = $_POST['subject'];
-    $emails = split('/[，, ]/', $emails);
+    $emails = preg_replace('/[，,；;\r\n\t]/', ' ', $emails);
+    $emails = split('\s+', trim($emails) );
     $count = 0;
     foreach( $emails as $email ) {
         if( JWMail::SendMailInvitation( $user_info, $email, $subject, $idInvited ) )
