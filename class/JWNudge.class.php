@@ -115,20 +115,20 @@ class JWNudge {
 				$address 	= $deviceRow[$type]['address'];
 				if( JWDevice::IsAllowedNonRobotDevice($source) ) { // nudge,dm from wap|web
 					$info = array(
-						'status' => $message,
-						'idUserReplyTo' => $deviceRow[$type]['idUser'],
-						'idConference' => null,
+						'message' => $message,
 					);
-					$ret = JWStatusNotifyQueue::Create( null, null, null, $info );
+					$queueType = JWNotifyQueue::T_NUDGE;
+					$idUserTo = $deviceRow[$type]['idUser'];
+					$ret = JWNotifyQueue::Create( null, $idUserTo, $queueType, $info );
 				}else{
-					//complex message destruct
-					if( is_a($message, 'stdClass') ) {
-						if( isset($message->isMms) && $message->isMms == 'Y' ) {
+					if( is_array( $message ) ) {
+						if( isset($message['type']) && $message['mms'] == 'Y' ) {
 							if($type=='sms') {
-								$idStatus = $message->idStatus;
-								$message = $message->smsMessage;
-								$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $idStatus );
-								JWRobot::SendMtRaw($address, $type, $message, $serverAddress);
+								$idStatus = $message['idStatus'];
+								$message = $message['sms'];
+								$serverAddress = 
+									JWFuncCode::GetMmsNotifyFunc($address,$idStatus );
+								JWRobot::SendMtRaw($address,$type,$message,$serverAddress);
 							}else{
 								$message = $message->imMessage;
 								JWRobot::SendMtRaw($address, $type, $message);

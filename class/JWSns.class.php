@@ -535,11 +535,10 @@ class JWSns {
 		if( $ret ) {
 
 			//Notify Follower
-			$notifyInfo = array(
-					'status' => $status,
-					'idUserReplyTo' => $idUserReplyTo,
-					'idConference' => $idConference,
-					);
+			$metaInfo = array();
+			$queueType = JWNotifyQueue::T_STATUS;
+			$metaInfo['message'] = $status;
+			$metaInfo['idConference'] = $idConference; 
 
 			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
 			{
@@ -547,15 +546,18 @@ class JWSns {
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
 
-				$message = new stdClass;
-				$message->isMms = 'Y';
-				$message->idStatus = $ret;
-				$message->smsMessage = "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。";
-				$message->imMessage = "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl";
-				$notifyInfo['status'] = $message;
+
+				$message = array(
+					'sms' => "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
+					'im' => "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl",
+					'mms' => 'Y',
+					'idStatus' => $ret,
+				);
+				$metaInfo['message'] = $message;
+				$queueType = JWNotifyQueue::T_MMS;
 			}
 
-			JWStatusNotifyQueue::Create( $idUser, $ret, time(), $notifyInfo );
+			JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
 
 			// Referesh facebook
 			if ( JWFacebook::Verified( $idUser ) ) {
@@ -575,13 +577,10 @@ class JWSns {
 	 * @param $status string
 	 * @param $idConference
 	 */
-	static public function NotifyFollower( $idSender, $idUserReplyTo=null, $status=null, $idConference=null ){
+	static public function NotifyFollower( $idSender, $idUserReplyTo=null, $status=null, $idConference=null , $queueType=JWNotifyQueue::T_STATUS ){
 
-		if( $idSender == null ) { // from nudge, no need idSender 
-			$follower_ids = array( $idUserReplyTo ) ;
-		}else {
-			$idSender = JWDB::CheckInt( $idSender );
-
+		if( $queueType == JWNotifyQueue::T_STATUS ) {
+			
 			if( $idConference ) {
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
@@ -609,6 +608,8 @@ class JWSns {
 				$follower_ids = array( $idUserReplyTo ) ;
 				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
 			}
+		}else{
+			$follower_ids = array( $idUserReplyTo ) ;
 		}
 
 		if( empty( $follower_ids ) ) 

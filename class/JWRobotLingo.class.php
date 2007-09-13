@@ -557,6 +557,8 @@ class JWRobotLingo {
 		}
 		else
 		{
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_REQUEST_INVITE' );
+
 			/*
 			 *	没有注册用户，发送邀请
 			 *	使用 msg 数组，区分 email / im 的消息
@@ -565,22 +567,11 @@ class JWRobotLingo {
 			$invite_msg['im'] = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADD_IM', array( $address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 			$invite_msg['sms'] = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADD_SMS', array( $address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
 
-			//NotifyQueue when invite
-			$status = new stdClass;
-			$status->idUser = $address_user_id;
-			$status->isInvite = 'Y';
-			$status->message = $invite_msg;
-			$status->type = $invitee_type;
-			$status->address = $invitee_address;
-			$notifyInfo = array(
-					'status' => $status,
-					'idUserReplyTo' => null,
-					'idConference' => null,
-				);
-
-			JWStatusNotifyQueue::Create( null, null, null, $notifyInfo );
-
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_REQUEST_INVITE' );
+			/**
+			 * NotifyQueue When invite
+			 */
+			$metaInfo = array( 'message' => $invite_msg, );
+			JWNotifyQueue::Create( $address_user_id, null, 'INVITE', $metaInfo );
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);

@@ -181,7 +181,12 @@ SQL;
 					 */
 					echo "idUser: $idUser, idUserReplyTo: $idUserReplyTo, status: $status, idConference: $idConference\n";
 					if( is_a($status,'stdClass') && isset($status->isInvite) && $status->isInvite=='Y') {
-						$message = $status->message;
+						$message = array();
+						if( is_a( $status->message , 'stdClass' ) ){
+							$message['im'] = $status->message->im;
+							$message['email'] = $status->message->email;
+							$message['sms'] = $status->message->sms;
+						}
 						$address = $status->address;
 						$type = $status->type;
 						$idUser = $status->idUser;
