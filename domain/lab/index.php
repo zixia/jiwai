@@ -5,80 +5,37 @@ JWTemplate::html_doctype();
 ?>
 
 <html>
-
 <head>
-<?php 
-$options = array(	 'title'		=> "实验室"
-/*
-					,'keywords'		=> htmlspecialchars($keywords)
-					,'description'	=> htmlspecialchars($description)
-					,'author'		=> htmlspecialchars($keywords)
-					,'rss'			=> $rss
-					,'refresh_time'	=> '600'
-					,'refresh_url'	=> ''
-*/
-			);
-
-
-JWTemplate::html_head($options);
-?>
+<?php JWTemplate::html_head() ?>
 </head>
 
 
-<body class="front" id="front">
-
-
+<body class="account" id="settings">
 <?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header(false) ?>
-<div class="separator"></div>
+<?php JWTemplate::header() ?>
 
 <div id="container">
-	<div id="content">
-		<div id="wrapper">
+    <div id="labNav" class="subtab">
+        <a href="/" class="now">叽歪de大中国</a>
+    </div>
+    <div class="tabbody">
+        <h2><a href="/googlemap/">叽歪de大中国 (JiWai.de Vision)</a></h2>
+        <fieldset>
+        <p>在中国地图上观看大家正在叽歪些什么。（自己想出现在地图上？填写自己的位置城市信息就可以啦！）</p>
+        <p>2007/06/13 -          <a style="color: rgb(111, 111, 111);" href="mailto:wo@jiwai.de">给我们反馈</a></p>
 
+        <h2><a href="http://groups.google.com/group/jiwai-development-talk">和大家一起讨论</a></h2>
+        <p><img src="http://groups.google.com/groups/img/3/groups_bar_zh-CN.gif" height=26 width=132 alt="Google 网上论坛"></p>
+        <p>订阅 jiwai-development-talk</p>
+        <form action="http://groups.google.com/group/jiwai-development-talk/boxsubscribe">
+        <p>电子邮件： <input type=text name=email> <input type=submit name="sub" value="订阅"></p>
+        </form>
+        <p><a href="http://groups.google.com/group/jiwai-development-talk">访问此论坛</a></p>
+        </fieldset>
+    </div>
 
-<table border=0>
-<tr>
-<td valign="top" align="right">
-<font size="-1" color="#ff0000">新!</font>
-</td>
-<td valign="top">
-	<b><a href="/googlemap/">叽歪de大中国 (JiWai.de Vision)</a></b><br/>
-	<font size="-1">在中国地图上观看大家正在叽歪些什么。（自己想出现在地图上？填写自己的位置城市信息就可以啦！）</font><br/>
-	<font size="-1" color="#6f6f6f">2007/06/13 -          <a style="color: rgb(111, 111, 111);" href="mailto:wo@jiwai.de">给我们反馈</a>
-	 - <a href="http://groups.google.com/group/jiwai-development-talk" style="color: rgb(111, 111, 111);">和大家一起讨论</a>
-	</font><br/><br/>
-</td>
-</tr>
-</table>
-
-<hr class="separator" />
-<hr class="separator" />
-<hr class="separator" />
-
-<center>
-<table border=0 style="background-color: #fff; padding: 5px;" cellspacing=0>
-  <tr><td>
-    <img src="http://groups.google.com/groups/img/3/groups_bar_zh-CN.gif"
-         height=26 width=132 alt="Google 网上论坛">
-  </td></tr>
-  <tr><td style="padding-left: 5px"> <b>订阅 jiwai-development-talk</b> </td></tr>
-  <form action="http://groups.google.com/group/jiwai-development-talk/boxsubscribe">
-  <tr><td style="padding-left: 5px;"> 电子邮件： <input type=text name=email>
-           <input type=submit name="sub" value="订阅">
-  </td></tr>
-</form>
-<tr><td align=right> <a href="http://groups.google.com/group/jiwai-development-talk">访问此论坛</a> </td></tr>
-</table>
-
-</center>
-
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
+<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
