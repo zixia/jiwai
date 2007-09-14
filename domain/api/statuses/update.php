@@ -5,6 +5,7 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 }
 
 $status = null;
+$idPartner = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
@@ -26,8 +27,12 @@ if( ! $idUser ){
 $device = 'api';
 $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
+$options = array(
+                'idPartner' => $idPartner,
+            );
 
-if( JWSns::UpdateStatus($idUser, $status, $device, $time=null) ){
+
+if( JWSns::UpdateStatus($idUser, $status, $device, $time=null, $options) ){
 	$insertedId = JWDB::GetInsertedId();
 	$status = JWStatus::GetStatusDbRowById( $insertedId );
 	switch($type){
