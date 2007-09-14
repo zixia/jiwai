@@ -225,7 +225,7 @@ SQL;
 							. "type: $type, "
 							. "addressTo: $addressTo\n";
 
-						JWSns::Invite( $idUserFrom, $address, $type, $message, $webInvite);
+						JWSns::Invite( $idUserFrom, $addressTo, $type, $message, $webInvite);
 					}
 					break;
 					default:

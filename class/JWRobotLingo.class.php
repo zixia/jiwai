@@ -314,14 +314,11 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 	
-		if ( ! JWFriend::IsFriend($address_user_id, $followe_user_db_row['idUser']) )
-			JWFriend::Create($address_user_id, $followe_user_db_row['idUser']);
-/*
-7/24/07 zixia: 不用添加好友即可直接 follow.
-				return JWRobotLogic::ReplyMsg($robotMsg, "哎呀！抱歉，你只可以订阅好友的更新。通过ADD ${followe}命令添加好友。"
-											. "了解更多？发送 HELP。"
-										);
-*/
+		if ( $followe_user_db_row['idUser'] != $address_user_id  
+				&& false == JWFriend::IsFriend($address_user_id, $followe_user_db_row['idUser']) ) {
+			JWSns::CreateFriends( $address_user_id, array($followe_user_db_row['idUser']) );
+		}
+		
 		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
 
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', array(
@@ -674,9 +671,11 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_NOUSER', array( $friend_name,));
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
+		
+		$bio = $address_user_row['protected'] == 'Y' || $friend_user_row['protected'] == 'Y';
 
-		JWSns::DestroyFriends	($address_user_id, array($friend_user_row['idUser']));
-		JWSns::DestroyFollowers	($friend_user_row['idUser'], array($address_user_id));
+		JWSns::DestroyFriends	($address_user_id, array($friend_user_row['idUser']), $bio );
+		//JWSns::DestroyFollowers ($friend_user_row['idUser'], array($address_user_id), $bid );
 
 		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_SUC', array( $friend_user_row['nameFull'], $friend_user_row['nameScreen'],) );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
