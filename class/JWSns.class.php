@@ -534,6 +534,9 @@ class JWSns {
 		if( isset( $options['isMms'] ) ) {
 			$createOptions['isMms'] = $options['isMms'] ;
 		}
+		if( isset( $options['idPartner'] ) ) {
+			$createOptions['idPartner'] = $options['idPartner'] ;
+		}
 
 		/*
 		 *  判断是否需要Filter，如果需要进入status

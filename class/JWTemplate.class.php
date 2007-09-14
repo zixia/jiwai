@@ -878,6 +878,7 @@ _HTML_;
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
+			$idPartner	= $statusRows[$status_id]['idPartner'];
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?  '签名' : '';
 			
@@ -888,7 +889,11 @@ _HTML_;
 			else
 				$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
-			$device		= JWDevice::GetNameFromType($device);
+            if( $device == 'api' && $idPartner ) {
+                $partner = JWPartner::GetDbRowById( $idPartner );
+                $deviceName = $partner['nameDevice'];
+            }else
+                $deviceName		= JWDevice::GetNameFromType($device);
 
 			$formated_status 	= JWStatus::FormatStatus($statusRows[$status_id]);
 
@@ -911,7 +916,7 @@ _HTML_;
 <?php } else {
 			echo $duration;	
 } ?>
-			来自 <?php echo "$device $sign"?> 
+			来自 <?php echo "$deviceName $sign"?> 
 <?php if (!empty($replyto) ) { ?>
 			<a href="<?php echo empty($reply_id) ? "/$replyto/" : "/$replyto/statuses/$reply_id"; ?>">给 <?php echo $replyto; ?> 的回复</a>
 <?php } ?>

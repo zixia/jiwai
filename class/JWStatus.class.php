@@ -118,6 +118,14 @@ class JWStatus {
 		}else{
 			$idConference = $userInfo['idConference'];
 		}
+        
+        $idPartner = null;
+        if( isset( $options['idPartner'] ) && intval($options['idPartner']) ){
+            $partner = JWPartner::GetDbRowById( $idPartner );
+            if( false == empty( $partner ) ){
+                $idPartner = $partner['id'];
+            }
+        }
 
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
@@ -131,6 +139,7 @@ class JWStatus {
 								'idPicture' => $idPicture,
 								'idConference' => $idConference,
 								'isProtected' => $isProtected,
+                                'idPartner' => $idPartner,
 								'isSignature' => $isSignature,
 								'isMms' => $isMms,
 						));
