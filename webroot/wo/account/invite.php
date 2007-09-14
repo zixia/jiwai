@@ -50,13 +50,13 @@ if ( isset($_POST['invite_email_x'] ) ) {
 if ( isset($_POST['invite_sms_x'] ) ) {
     JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你的好友！');
 
-    $smss = $_POST['sms'];
+    $smss = $_POST['sms_addresses'];
     $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
     $smss = split('\s+', trim($smss) ); 
     $body = "你好，我是$user_info[nameScreen]($user_info[nameFull])！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。（可以随时停止关注）";
 
     foreach( $smss as $sms ) {
-        JWSns::Invite($user_info['id'], $sms, 'sms', $body, true);
+        JWSns::SmsInvite( $user_info['id'], $sms, $body );
     }
 
     Header("Location: /wo/");
@@ -111,7 +111,7 @@ function shifttab(id){
 <h2>邀请朋友一起来叽歪</h2>
 <p>如果暂时不想邀请朋友，可以点击进入<a href="/wo/">我的首页</a></p>
 
-<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);" class="now">通过Email邀请</a><!--a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a--></p>
+<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);" class="now">通过Email邀请</a><a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a></p>
 
 <div id="invite_msn" style="display:none;">
     <div class="tabbody">
@@ -129,11 +129,11 @@ function shifttab(id){
     <fieldset>
     <table width="548" border="0" cellpadding="0" cellspacing="10">
     <tr>
-        <td align="right"><label for="email_addresses"><nobr>好友手机号：</nobr></label>              </td>
+        <td align="right"><label for="sms_adresses"><nobr>好友手机号：</nobr></label></td>
         <td>
             <table width="420" border="0" cellspacing="0" cellpadding="0" style="margin-top:0; margin-left:0;">
             <tr>
-                <td><textarea cols="30" id="emails" name="sms_addresses" onchange="onEmailChange();" rows="3" style="width:200px;"></textarea></td>
+                <td><textarea cols="30" id="sms_addresses" name="sms_addresses" rows="3" style="width:200px;"></textarea></td>
                 <td><small>多个收件人用回车或者逗号分隔。每次最多发送两人</small></td>
             </tr>
             </table>
@@ -145,7 +145,7 @@ function shifttab(id){
     </tr>
     <tr>
         <td align="right">短信署名：</td>
-        <td><input type="text" name="sig" value="<?php echo $user_info['nameScreen'];?>"/> <small>你的好友收到并回复1，就可以通过手机接收并回复你新的叽歪消息了。</small></td>
+        <td><input type="text" name="sig" value="<?php echo $user_info['nameScreen'];?>"/> <small>你的好友收到并回复F，就可以通过手机接收并回复你新的叽歪消息了。</small></td>
     </tr>
     </table>
     </fieldset>
