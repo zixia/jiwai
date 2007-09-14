@@ -187,7 +187,7 @@ class JWRobotLingo {
 		
 		if( empty( $device_db_row ) ) {
 			$body = $robotMsg->GetBody();
-			$body = JWRobotLingoBase::ConvertCorner( $param_body );
+			$body = JWRobotLingoBase::ConvertCorner( $body );
 			if ( preg_match('/^F\s+(\S+)\s*$/i',$body,$matches) ) {
 				$uaddress = $matches[1];
 			}

@@ -358,7 +358,7 @@ class JWSns {
 				$serverAddress = ( $webInvite == true ) ?
 					JWFuncCode::GetCodeFunc($address, $idUser, JWFuncCode::PRE_REG_INVITE) : null;
 
-				JWRobot::SendMtRaw($address, $type, $sms_message);
+				JWRobot::SendMtRaw($address, $type, $sms_message, $serverAddress);
 				break;
 			default:
 				JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
