@@ -107,7 +107,7 @@ class JWMail {
 			$options['encoding'] 	= 'GB2312';
 
 		if ( !isset($options['contentType']) )
-			$options['contentType'] = 'text/html';
+			$options['contentType'] = 'text/plain';
 
 
 		$message_head = preg_replace("/\n/s",' ',$message);
@@ -118,7 +118,7 @@ class JWMail {
 		if ( 'UTF-8'!=$options['encoding'] )
 			$message = mb_convert_encoding($message, $options['encoding'], 'UTF-8');
 
-		$message	= chunk_split(base64_encode($message),70);
+		$message	= chunk_split(base64_encode($message));
 
 		$subject 	= self::EscapeHeadString($subject	,$options['encoding'], true);
 		$from		= self::EscapeHeadString($from		,$options['encoding']);
