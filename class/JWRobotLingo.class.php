@@ -183,20 +183,22 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 		
-		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $mobileNo, $type );
-		
-		if( empty( $device_db_row ) ) {
+		if ( JWDevice::IsExist( $mobileNo, $type ) ){
+
 			$body = $robotMsg->GetBody();
 			$body = JWRobotLingoBase::ConvertCorner( $body );
-			if ( preg_match('/^F\s+(\S+)\s*$/i',$body,$matches) ) {
+
+			if ( preg_match('/^F\s+(\S+)\s*(\S*)\s*$/i',$body,$matches) ) {
 				$uaddress = $matches[1];
-			}
-			if( false == isset($uaddress) ) {
+				$nameFull = @$matches[2];
+			}else{
 				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $mobileNo);
+				$nameFull = $uaddress;
 			}
+
 			$nameScreen = JWUser::GetPossibleName( $uaddress, $mobileNo, $type );
 
-			JWRobotLogic::CreateAccount($robotMsg, true, $nameScreen);
+			JWRobotLogic::CreateAccount($robotMsg, true, $nameScreen, $nameScreen, $nameFull);
 		}
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $mobileNo, $type );
@@ -205,7 +207,7 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_HOT', array($uaddress) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
-		
+
 		JWSns::CreateFriends($idUser, array($device_db_row['idUser']), true );
 		$userInfo = JWUser::GetUserInfo( $idUser );	
 		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_FOLLOW_SUC', array(
