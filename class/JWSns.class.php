@@ -298,6 +298,9 @@ class JWSns {
      */
      static public function SmsInvite($idUserFrom, $address, $message ) {
          $idUserFrom = JWDB::CheckInt( $idUserFrom);
+         if( false == JWDevice::IsValid( $address, 'sms' ) )
+             return false;
+
          $metaInfo = array(
             'type' => 'sms',
             'address' => $address,

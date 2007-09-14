@@ -38,10 +38,11 @@ if ( isset($_POST['invite_email_x'] ) ) {
             $count ++;
     }
 
-    if( $count )
+    if( $count ) {
         JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你的好友！');
-    else
+    }else{
         JWSession::SetInfo('notice', '对不起，你所填写的朋友的Email地址不合法，我们无法帮你邀请你的的朋友！');
+    }
 
     Header("Location: /wo/");
     exit;
@@ -55,8 +56,16 @@ if ( isset($_POST['invite_sms_x'] ) ) {
     $smss = preg_split('/\s+/', trim($smss) ); 
     $body = "你好，我是$user_info[nameScreen]($user_info[nameFull])！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。（可以随时停止关注）";
 
+    $count=0;
     foreach( $smss as $sms ) {
-        JWSns::SmsInvite( $user_info['id'], $sms, $body );
+        if( JWSns::SmsInvite( $user_info['id'], $sms, $body ) )
+            $count++;
+    }
+
+    if( $count ) {
+        JWSession::SetInfo('notice', '你的邀请，我们已经通过短信发给你的朋友们了，他们注册后会自动成为你的好友！');
+    }else{
+        JWSession::SetInfo('notice', '对不起，你所填写的朋友的手机号码不合法，我们无法帮你邀请你的的朋友！');
     }
 
     Header("Location: /wo/");
