@@ -68,10 +68,13 @@ class JWMail {
 	 *	@param	string	encoding	编码，缺省为UTF-8
 	 *	@return	string	转义过的字符串
 	 */
-	static private function EscapeHeadString($string,$encoding='UTF-8')
+	static private function EscapeHeadString($string,$encoding='UTF-8', $force=false )
 	{
 		if ( 'UTF-8'!=$encoding )
 			$string	= mb_convert_encoding($string, $encoding, "UTF-8");
+
+        if( $force ) 
+            return '=?' . $encoding . '?B?'. base64_Encode($string) .'?=';
 
 		return preg_replace_callback
 			(
@@ -104,7 +107,7 @@ class JWMail {
 			$options['encoding'] 	= 'GB2312';
 
 		if ( !isset($options['contentType']) )
-			$options['contentType'] = 'text/plain';
+			$options['contentType'] = 'text/html';
 
 
 		$message_head = preg_replace("/\n/s",' ',$message);
@@ -117,14 +120,14 @@ class JWMail {
 
 		$message	= chunk_split(base64_encode($message),70);
 
-		$subject 	= self::EscapeHeadString($subject	,$options['encoding']);
+		$subject 	= self::EscapeHeadString($subject	,$options['encoding'], true);
 		$from		= self::EscapeHeadString($from		,$options['encoding']);
 		$to			= self::EscapeHeadString($to		,$options['encoding']);
 
 		$headers = 	
  			 'Mime-Version: 1.0'
-			."\r\n" . "Content-type: $options[contentType]; charset=$options[encoding]"
-			."\r\n" . "Content-Transfer-Encoding: BASE64"
+			."\r\n" . "Content-Type: $options[contentType]; charset=$options[encoding]"
+			."\r\n" . "Content-Transfer-Encoding: base64"
 			."\r\n" . 'X-Mailer: JWMailer/1.0'
  			."\r\n" . "From: $from"
 			."\r\n" . "Reply-To: $from"
