@@ -293,6 +293,20 @@ class JWSns {
 		return true;
 	}
 
+    /**
+     * sms Invite
+     */
+     static public function SmsInvite($idUserFrom, $address, $message ) {
+         $idUserFrom = JWDB::CheckInt( $idUserFrom);
+         $metaInfo = array(
+            'type' => 'sms',
+            'address' => $address,
+            'message' => $message,
+            'webInvite' => true,
+         );
+         return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_INVITE, $metaInfo );
+     }
+
 	/*
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
 	 *	@param	string or array	$message	当为 string 的时候，不去分消息类型

@@ -216,15 +216,16 @@ SQL;
 					break;
 					case self::T_INVITE:
 					{
-						$messageObj = $metaInfo['message'];
-						$address = $message->address;
-						$type = $message->type;
+						$message = $metaInfo['message'];
+						$addressTo = $metaInfo['address'];
+						$type = $metaInfo['type'];
+                        $webInvite = isset($metaInfo['webInvite'])  ? true : false;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "type: $type, "
-							. "addressTo: $idUserTo\n";
+							. "addressTo: $addressTo\n";
 
-						JWSns::Invite( $idUserFrom, $address, $type, $message );
+						JWSns::Invite( $idUserFrom, $address, $type, $message, $webInvite);
 					}
 					break;
 					default:

@@ -615,8 +615,15 @@ class JWRobotLingo {
 			/**
 			 * NotifyQueue When invite
 			 */
-			$metaInfo = array( 'message' => $invite_msg, );
-			JWNotifyQueue::Create( $address_user_id, null, 'INVITE', $metaInfo );
+
+            $msg = ( $invitee_type == 'sms' ) ? $invite_msg['sms'] : ( ($invitee_type == 'email') ? $invite_msg['email'] :  $invite_msg['im'] );
+
+			$metaInfo = array( 
+                'message' => $msg, 
+                'address' => $invitee_address,
+                'type' => $invitee_type,
+            );
+			JWNotifyQueue::Create( $address_user_id, null, JWNotifyQueue::T_INVITE, $metaInfo );
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
