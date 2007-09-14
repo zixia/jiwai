@@ -101,9 +101,9 @@ class JWRobotLingo {
 	}
 
 	/**
-	 * MMS Deal Function.
+	 * M Deal Function.
 	 */
-	static function Lingo_Mms($robotMsg) {
+	static function Lingo_M($robotMsg) {
 		$type = $robotMsg->GetType();
 		$address = $robotMsg->GetAddress();
 		$serverAddress = $robotMsg->GetServerAddress();
@@ -169,6 +169,51 @@ class JWRobotLingo {
 		return null;
 	}
 
+	/**
+	 *
+	 */
+	static function Lingo_F($robotMsg){
+		$serverAddress = $robotMsg->GetServerAddress();
+		$mobileNo = $robotMsg->GetAddress();
+		$type = $robotMsg->GetType();
+
+		$idUser = JWFuncCode::FetchRegIdUser($serverAddress, $mobileNo);
+		if( null == $idUser ) {
+			$reply = "A";
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+		
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $mobileNo, $type );
+		
+		if( empty( $device_db_row ) ) {
+			$body = $robotMsg->GetBody();
+			$body = JWRobotLingoBase::ConvertCorner( $param_body );
+			if ( preg_match('/^F\s+(\S+)\s*$/i',$body,$matches) ) {
+				$uaddress = $matches[1];
+			}
+			if( false == isset($uaddress) ) {
+				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $mobileNo);
+			}
+			$nameScreen = JWUser::GetPossibleName( $uaddress, $mobileNo, $type );
+
+			JWRobotLogic::CreateAccount($robotMsg, true, $nameScreen);
+		}
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $mobileNo, $type );
+
+		if( empty( $device_db_row ) ){
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_HOT', array($uaddress) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+		
+		JWSns::CreateFriends($idUser, array($device_db_row['idUser']), true );
+		$userInfo = JWUser::GetUserInfo( $idUser );	
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_FOLLOW_SUC', array(
+									$userInfo['nameFull'], 
+									$userInfo['nameScreen'],
+								));
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
 
 	/*
 	 *

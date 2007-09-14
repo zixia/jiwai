@@ -293,14 +293,13 @@ class JWSns {
 		return true;
 	}
 
-
 	/*
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
 	 *	@param	string or array	$message	当为 string 的时候，不去分消息类型
 											当为 array 的时候，要有 im / sms / email 的 key
 	 *
 	 */
-	static public function Invite($idUser, $address, $type, $message='')
+	static public function Invite($idUser, $address, $type, $message='', $webInvite=false)
 	{
 		/*
 		 *	支持 string & array 的 message 参数
@@ -319,11 +318,10 @@ class JWSns {
 		}
 
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
-		$id_invite		= JWInvitation::Create($idUser,$address,$type,$email_message, $code_invite);
+		$id_invite	= JWInvitation::Create($idUser,$address,$type,$email_message, $code_invite);
 
 		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
-
 
 		switch ( $type )
 		{
@@ -338,12 +336,16 @@ class JWSns {
 
 			case 'newsmth':
 			case 'skype':
-			case 'sms':
 			case 'qq':
 				// 机器人给设备发送消息
 				JWRobot::SendMtRaw($address, $type, $sms_message);
 				break;
+			case 'sms':
+				$serverAddress = ( $webInvite == true ) ?
+					JWFuncCode::GetCodeFunc($address, $idUser, JWFuncCode::PRE_REG_INVITE) : null;
 
+				JWRobot::SendMtRaw($address, $type, $sms_message);
+				break;
 			default:
 				JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
 				throw new JWException("unsupport type $type");

@@ -129,58 +129,106 @@ class JWRobotLingoBase {
 		$idUserConference = self::GetLingoUser( $serverAddress, $address, $type );
 		$robotMsg->SetIdUserConference( $idUserConference );
 
-		if( ($body == '00000' || $body == '0000') && $type=='sms' ) {
+		if( ($body == '00000' || $body == '0000') && $type=='sms' ) 
+		{
 			return $lingo_function = array('JWRobotLingo', 'Lingo_0000');
 		}
 
 		$body = self::ConvertCorner( $body );
-		if ( ! preg_match('/^([[:alpha:]]+)\s*(\w*)/',$body,$matches) ) 
+		if ( false == preg_match('/^([[:alpha:]]+)\s*(\w*)/',$body,$matches) ) 
+		{
 			return false;
+		}
 
 		$lingo 	= strtoupper($matches[1]);
 		$param	= $matches[2];
+		
+		//Get Lingo Pair [lingo and alias] funccode > conference > ...
+		$lingoPair = self::GetLingoPairFromFuncCode( $serverAddress, $address, $type );
+		$lingoPair = empty($lingoPair) ? self::GetLingoPair( $idUserConference ) : $lingoPair;
 
-		$lingoPair = self::GetLingoPair( $idUserConference ) ;
-
-		if ( isset( $lingoPair['alias'][$lingo] ) ) {
-			// it's a lingo alias
+		if ( isset( $lingoPair['alias'][$lingo] ) ) 
+		{
 			$lingo = $lingoPair['alias'][$lingo];
-
-		} else if ( isset($lingoPair['lingo'][$lingo]) ) {
-			// it's a lingo name, pass.
+		} 
+		else if ( isset($lingoPair['lingo'][$lingo]) ) 
+		{
 			;
-		} else {
-			// no such lingo
+		}
+	       	else 
+		{
 			return false;
 		}
 
 		$lingo_info	= $lingoPair['lingo'][$lingo] ;
 
-		if ( empty($param) )
+		if ( empty($param) ) 
+		{
 			$param_count = 0;
+		}
 		else
+		{
 			$param_count = count( preg_split('/\s+/',$param) );
-
+		}
 
 	 	/* 	lingo_info[param] 设置这个命令接受的最多参数, 如果用户输入多于这个最大值，则不当作lingo处理。
 		 * 	（如用户输入"on the way home"）
 		 */
 
 		if ( $param_count > $lingo_info['param'] )
-			return false;
-
-		$lingo_function = array('JWRobotLingo', $lingo_info['func']);
-
-		if ( ! is_callable($lingo_function) )
 		{
-			JWLog::Log(LOG_ERR, "JWRobotLingo::GetLingoFunctionFromMsg found lingo[$lingo] is unimpl");
 			return false;
 		}
 
+		$lingo_function = array('JWRobotLingo', $lingo_info['func']);
+
+		if ( false == is_callable($lingo_function) )
+		{
+			JWLog::Log(LOG_ERR, "JWRobotLingo::GetLingoFunctionFromMsg found lingo[$lingo] is unimpl");
+			return false;
+		} 
 		return $lingo_function;
 	}
+	
+	/**
+	 * GetLingo from funcode
+	 */
+	static function GetLingoPairFromFuncCode($serverAddress, $mobileNo, $type='sms'){
+		if( $type != 'sms' )
+			return array();
 
+		$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $mobileNo );
+		if( empty($preAndId) )
+			return array();
 
+		$lingo = self::$msRobotLingo;
+		$alias = self::$msRobotLingoAlias;
+		switch( $preAndId['pre'] ) {
+			case JWFuncCode::PRE_REG_INVITE:
+			{
+				$lingo['F'] =  array( 'func'=>'Lingo_F', 'param'=>1, );
+				return array(
+						'alias' => $alias,
+						'lingo' => $lingo,
+					);
+			}
+			break;
+			case JWFuncCode::PRE_MMS_NOTIFY:
+			{
+				$lingo['M'] = array( 'func'=>'Lingo_M', 'param'=>0, );
+				return array(
+						'alias' => $alias,
+						'lingo' => $lingo,
+					);
+			}
+			break;
+		}
+		return array();
+	}
+
+	/**
+	 * GetLingo from idConference;
+	 */
 	static function GetLingoPair( $idUserConference ) {
 
 		$lingo = self::$msRobotLingo;
@@ -228,7 +276,6 @@ class JWRobotLingoBase {
 
 		return $parseInfo['user']['id'];
 	}
-	
 
 	/**
 	 * 将字符串转化为半角，从而支持半角指令

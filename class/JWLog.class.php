@@ -9,7 +9,7 @@
  * JiWai.de Log Class
  */
 
-if(false)
+if(true)
 {
 class JWLog
 {

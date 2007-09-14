@@ -28,6 +28,11 @@ class JWFuncCode {
 	 */
 	const PRE_REG_INVITE = '30';
 
+	/**
+	 * pre_len
+	 */
+	const CONST_PRE_LEN = 2;
+
 	static private $serverAddressAlias = array(
 			'9911456'  => '991188161199',
 			'50136456' => '5013691199',
@@ -41,34 +46,25 @@ class JWFuncCode {
 			'99318921' => '993184561128006',
 		);
 
+	static public function GetCodeFunc($mobileNo, $id, $pre=self::PRE_MMS_NOTIFY) {
+		$id = JWDB::CheckInt( $id );
+
+		$postFunc = $pre . $id;
+
+		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
+
+		if( empty($code)  )
+			return null;
+
+		return $code['code'] . $code['func'] . $postFunc;
+	}
+
 	static public function GetMmsNotifyFunc($mobileNo, $idStatus) {
-		$idStatus = JWDB::CheckInt( $idStatus );
-
-		$postFunc = self::PRE_MMS_NOTIFY . $idStatus;
-
-		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
-
-		if( empty($code)  )
-			return null;
-
-		return $code['code'] . $code['func'] . $postFunc;
+		return self::GetCodeFunc( $mobileNo, $idStatus, self::PRE_MMS_NOTIFY );
 	}
 
-	static public function GetRegInviteFunc($mobileNo, $idUser) {
-		$idUser = JWDB::CheckInt( $idUser );
+	static public function FetchFuncId( $serverAddress, $mobileNo, $pre=self::PRE_MMS_NOTIFY ){
 
-		$postFunc = self::PRE_REG_INVITE . $idUser;
-
-		$code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
-
-		if( empty($code)  )
-			return null;
-
-		return $code['code'] . $code['func'] . $postFunc;
-	}
-
-	static public function FetchMmsIdStatus($serverAddress, $mobileNo){
-		//parse alias
 		if( isset( self::$serverAddressAlias[ $serverAddress ] ) )
 			$serverAddress = self::$serverAddressAlias[ $serverAddress ];
 
@@ -81,33 +77,70 @@ class JWFuncCode {
 		if( 0 === strpos( $serverAddress, $preCode ) )
 		{
 			$funcCode = substr( $serverAddress, strlen($preCode) );
-			if( 0 === strpos( $funcCode, self::PRE_MMS_NOTIFY ) )
+			if( 0 === strpos( $funcCode, $pre ) )
 			{
-				return substr($funcCode, strlen(self::PRE_MMS_NOTIFY) );
+				return substr($funcCode, strlen($pre) );
 			}
 		}
 
 		return null;
 	}
 
-	static public function FetchConference($serverAddress, $mobileNo){
+	static public function FetchMmsIdStatus($serverAddress, $mobileNo){
+		return self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_MMS_NOTIFY );
+	}
 
-		//parse alias
+	static public function FetchRegIdUser($serverAddress, $mobileNo){
+		return self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_REG_INVITE );
+	}
+
+
+	static public function FetchPreAndId($serverAddress, $mobileNo){
+
 		if( isset( self::$serverAddressAlias[ $serverAddress ] ) )
 			$serverAddress = self::$serverAddressAlias[ $serverAddress ];
 
+		$rtn = array();
 		$code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo );
 		if( empty($code) )
-			return array();
+			return $rtn;
 
 		$preCode = $code['code'] . $code['func'];
-		
-		//parse serverAddress
-		if( 0 === strpos( $serverAddress, $preCode ) ) {
-			$funcCode = substr( $serverAddress, strlen($preCode) );
 
-			if( 0 === strpos( $funcCode, self::PRE_CONF_IDUSER ) ){
-				$idUser = substr( $funcCode, strlen( self::PRE_CONF_IDUSER ) );
+		if( 0 === strpos( $serverAddress, $preCode ) )
+		{
+			$funcCode = substr( $serverAddress, strlen($preCode) );
+			if( strlen($funcCode) > self::CONST_PRE_LEN ){
+				if( preg_match('/^([\d]{'.self::CONST_PRE_LEN.'})(\d+)$/', $funcCode, $matches ) ){
+					switch( $matches[1] ) {
+						case self::PRE_REG_INVITE:
+						case self::PRE_MMS_NOTIFY:
+						case self::PRE_CONF_IDUSER:
+						case self::PRE_CONF_CUSTOM:
+						{
+							return array( 'pre' => $matches[1], 'id' => $matches[2], );
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		return $rtn;
+	}
+
+
+	static public function FetchConference($serverAddress, $mobileNo){
+
+		$preAndId = self::FetchPreAndId( $serverAddress, $mobileNo );
+
+		if( empty($preAndId) )
+			return array();
+
+		switch( $preAndId['pre'] ){
+			case self::PRE_CONF_IDUSER:
+			{
+				$idUser = $preAndId['id'];
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				if( empty($userInfo) || null==$userInfo['idConference'] )
 					return array();
@@ -119,9 +152,10 @@ class JWFuncCode {
 						'conference' => $conference,
 					);
 			}
-
-			if( 0 === strpos( $funcCode, self::PRE_CONF_CUSTOM ) ){
-				$conferenceNum = substr( $funcCode, strlen( self::PRE_CONF_CUSTOM ) );
+			break;
+			case self::PRE_CONF_CUSTOM:
+			{
+				$conferenceNum = $preAndId['id'];
 				$conference = JWConference::GetDbRowFromNumber( $conferenceNum	);
 				if( empty($conference) )
 					return array();
@@ -136,7 +170,9 @@ class JWFuncCode {
 						'conference' => $conference,
 					);
 			}
+			break;
 		}
+
 		return array();
 	}
 }

@@ -49,6 +49,16 @@ if ( isset($_POST['invite_email_x'] ) ) {
 
 if ( isset($_POST['invite_sms_x'] ) ) {
     JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你的好友！');
+
+    $smss = $_POST['sms'];
+    $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
+    $smss = split('\s+', trim($smss) ); 
+    $body = "你好，我是$user_info[nameScreen]($user_info[nameFull])！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。（可以随时停止关注）";
+
+    foreach( $smss as $sms ) {
+        JWSns::Invite($user_info['id'], $sms, 'sms', $body, true);
+    }
+
     Header("Location: /wo/");
     exit;
 }
@@ -66,24 +76,24 @@ function shifttab(id){
             $('tab_msn').className='now';
             $('invite_email').style.display='none';
             $('tab_email').className='';
-      //      $('invite_sms').style.display='none';
-       //     $('tab_sms').className='';
+            $('invite_sms').style.display='none';
+            $('tab_sms').className='';
         break;
         case 2:
             $('invite_msn').style.display='none';
             $('tab_msn').className='';
             $('invite_email').style.display='block';
             $('tab_email').className='now';
-    //        $('invite_sms').style.display='none';
-     //       $('tab_sms').className='';
+            $('invite_sms').style.display='none';
+            $('tab_sms').className='';
         break;
         case 3:
             $('invite_msn').style.display='none';
             $('tab_msn').className='';
             $('invite_email').style.display='none';
             $('tab_email').className='';
-  //          $('invite_sms').style.display='block';
-   //         $('tab_sms').className='now';
+            $('invite_sms').style.display='block';
+            $('tab_sms').className='now';
         break;
     }
 }
