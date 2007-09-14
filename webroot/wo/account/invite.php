@@ -31,7 +31,7 @@ if ( isset($_POST['invite_email_x'] ) ) {
     $emails = $_POST['email_addresses'];
     $subject = $_POST['subject'];
     $emails = preg_replace('/[，,；;\r\n\t]/', ' ', $emails);
-    $emails = split('\s+', trim($emails) );
+    $emails = preg_split('/\s+/', trim($emails) );
     $count = 0;
     foreach( $emails as $email ) {
         if( JWMail::SendMailInvitation( $user_info, $email, $subject, $idInvited ) )
@@ -52,7 +52,7 @@ if ( isset($_POST['invite_sms_x'] ) ) {
 
     $smss = $_POST['sms_addresses'];
     $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
-    $smss = split('\s+', trim($smss) ); 
+    $smss = preg_split('/\s+/', trim($smss) ); 
     $body = "你好，我是$user_info[nameScreen]($user_info[nameFull])！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。（可以随时停止关注）";
 
     foreach( $smss as $sms ) {
