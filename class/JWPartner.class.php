@@ -45,7 +45,13 @@ class JWPartner {
 	 * Get One by id
 	 */
 	static public function GetDbRowById( $idPartner ) {
-		return array_values( self::GetDbRowsByIds( array( $idPartner ) ));
+        $idPartner = JWDB::CheckInt( $idPartner );
+
+		$result = self::GetDbRowsByIds( array( $idPartner ) ) ;
+        if( empty( $result ) )
+            return $result;
+
+        return $result[ $idPartner ];
 	}
 
 	/**

@@ -27,12 +27,13 @@ if( ! $idUser ){
 $device = 'api';
 $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
+$isSignature = 'N';
+$serverAddress = null;
 $options = array(
                 'idPartner' => $idPartner,
             );
 
-
-if( JWSns::UpdateStatus($idUser, $status, $device, $time=null, $options) ){
+if( JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) ){
 	$insertedId = JWDB::GetInsertedId();
 	$status = JWStatus::GetStatusDbRowById( $insertedId );
 	switch($type){

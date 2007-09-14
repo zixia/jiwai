@@ -714,8 +714,12 @@ _SQL_;
 	/*
 	 *	根据 Device Type 返回好看的字符串
 	 */
-	static public function GetNameFromType($type)
+	static public function GetNameFromType($type, $idPartner=null)
 	{
+        if( intval( $idPartner ) ){
+            if( $partner = JWPartner::GetDbRowById( intval($idPartner) ) )
+                return $partner['nameDevice']; 
+        }
 		switch ( $type )
 		{
 			case 'sms':

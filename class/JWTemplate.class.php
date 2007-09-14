@@ -666,7 +666,7 @@ _HTML_;
 			$timeCreate	= $statusRow['timeCreate'];
 			$sign		= $statusRow['isSignature'] == 'Y' ? '签名' : '';
 			$device		= $statusRow['device'];
-			$device		= JWDevice::GetNameFromType($device);
+			$device		= JWDevice::GetNameFromType($device, $statusRow['idPartner']);
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
@@ -889,11 +889,7 @@ _HTML_;
 			else
 				$photo_url	= JWPicture::GetUserIconUrl($user_id);
 	
-            if( $device == 'api' && $idPartner ) {
-                $partner = JWPartner::GetDbRowById( $idPartner );
-                $deviceName = $partner['nameDevice'];
-            }else
-                $deviceName		= JWDevice::GetNameFromType($device);
+            $deviceName		= JWDevice::GetNameFromType($device, $statusRows[$status_id]['idPartner'] );
 
 			$formated_status 	= JWStatus::FormatStatus($statusRows[$status_id]);
 

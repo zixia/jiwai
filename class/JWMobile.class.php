@@ -117,7 +117,13 @@ class JWMobile {
 	 * Get One by id
 	 */
 	static public function GetDbRowById( $idMobile ) {
-		return array_values( self::GetDbRowsByIds( array( $idMobile ) ));
+        $idMobile = JWDB::CheckInt( $idMobile );
+        $result = self::GetDbRowsByIds( array( $idMobile ) );
+
+        if( empty( $result ) )
+            return array();
+
+        return $return[ $idMobile ];
 	}
 
 	/**

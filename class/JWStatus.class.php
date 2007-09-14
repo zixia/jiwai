@@ -121,7 +121,7 @@ class JWStatus {
         
         $idPartner = null;
         if( isset( $options['idPartner'] ) && intval($options['idPartner']) ){
-            $partner = JWPartner::GetDbRowById( $idPartner );
+            $partner = JWPartner::GetDbRowById( intval($options['idPartner']) );
             if( false == empty( $partner ) ){
                 $idPartner = $partner['id'];
             }
