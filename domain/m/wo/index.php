@@ -29,7 +29,7 @@ foreach( $statusRows as $k=>$s){
 $friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'friends' );
+$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'friends', 'index', 'replies' );
 $pageString = paginate( $pagination, '/wo/' );
 JWRender::Display( 'wo/archive', array(
     'loginedUserInfo' => $loginedUserInfo,

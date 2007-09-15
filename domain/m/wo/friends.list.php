@@ -10,7 +10,7 @@ $friendOps = friendsop( $loginedUserInfo['id'], $friendIds );
 
 $pageString = paginate( $pagination, '/wo/friends/' );
 
-$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'message' );
+$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'message', 'replies' );
 JWRender::Display( 'wo/friends', array(
                 'friends' => $friendRows,
                 'friendOps' => $friendOps,

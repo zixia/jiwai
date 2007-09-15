@@ -4,7 +4,7 @@
 <!--{/if}-->
 
 <!--{if in_array( 'my', $shortcut ) }-->
-<p>1 <a href="${buildUrl('/'.$loginedUserInfo['nameScreen'].'/')}" accesskey="1">我的档案</a></p>
+<p>1 <a href="${buildUrl('/'.$loginedUserInfo['nameScreen'].'/')}" accesskey="1">我的叽歪</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'friends', $shortcut ) }-->
@@ -15,20 +15,24 @@
 <p>2 <a href="${buildUrl('/wo/followers')}" accesskey="2">我的粉丝({$followersNum})</a></p>
 <!--{/if}-->
 
-<!--{if in_array( 'public_timeline', $shortcut ) }-->
-<p>3 <a href="${buildUrl('/public_timeline/')}" accesskey="3">去叽歪广场看看</a></p>
+<!--{if in_array( 'replies', $shortcut ) }-->
+<p>3 <a href="${buildUrl('/wo/replies')}" accesskey="3">叽友回复</a></p>
 <!--{/if}-->
 
-<!--{if in_array( '---------register', $shortcut ) }-->
-<p>5 <a href="${buildUrl('/wo/account/create')}" accesskey="5">注册叽歪用户</a></p>
+<!--{if in_array( 'public_timeline', $shortcut ) }-->
+<p>5 <a href="${buildUrl('/public_timeline/')}" accesskey="5">叽歪广场</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'message', $shortcut ) }-->
-<p>8 <a href="${buildUrl('/wo/message/inbox')}" accesskey="8">悄悄话</a></p>
+<p>7 <a href="${buildUrl('/wo/message/inbox')}" accesskey="7">悄悄话</a></p>
+<!--{/if}-->
+
+<!--{if in_array( '---------register', $shortcut ) }-->
+<p>8 <a href="${buildUrl('/wo/account/create')}" accesskey="8">注册叽歪</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'index', $shortcut ) }-->
-<p>9 <a href="${buildUrl('/')}" accesskey="9">回首页</a></p>
+<p>9 <a href="${buildUrl('/')}" accesskey="9">首页</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'logout', $shortcut ) }-->

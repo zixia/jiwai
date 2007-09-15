@@ -18,7 +18,7 @@ if( $action == null ) {
 
 switch($action){
     case 'create':
-        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my');
+        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my', 'message', 'friends', 'replies');
         $userInfo = JWUser::GetUserInfo( $value );
         JWRender::Display( 'wo/message_create', array(
                         'userInfo' => $userInfo,
@@ -51,7 +51,7 @@ function destroy( $idUser, $value ){
     $confirm = '确认删除这条悄悄话吗？';
 
     global $loginedUserInfo;
-    $shortcut = array('my','public_timeline','logout','message','index');
+    $shortcut = array('my','public_timeline','logout','message','index', 'friends', 'replies');
     JWRender::Display( 'wo/destroy', array(
                         'object' => $object,
                         'id' => $value,

@@ -37,7 +37,7 @@ function destroy( $idUser, $value ){
     $confirm = '确认删除这条更新吗？';
 
     global $loginedUserInfo;
-    $shortcut = array('my','public_timeline','logout','message','index', 'friends');
+    $shortcut = array('my','public_timeline','logout','message','index', 'friends', 'replies');
     JWRender::Display( 'wo/destroy', array(
                         'object' => $object,
                         'id' => $value,

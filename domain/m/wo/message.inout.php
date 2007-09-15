@@ -18,7 +18,7 @@ krsort( $messageRows );
 
 $url = ($action=='sent') ? '/wo/message/sent' : '/wo/message/inbox' ;
 $pageString = paginate( $pagination, $url );
-$shortcut = array('logout', 'public_timeline', 'my', 'friends', 'index' );
+$shortcut = array('logout', 'public_timeline', 'my', 'friends', 'index', 'message', 'replies');
 $tpl = ($action=='sent') ? 'wo/message_sent' : 'wo/message_inbox' ;
 JWRender::Display( $tpl, array(
             'messages' => $messageRows,

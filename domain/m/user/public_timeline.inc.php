@@ -24,7 +24,7 @@ foreach( $status_rows as $s){
         break;
 }
 
-$shortcut = array( 'index' );
+$shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){
     array_push( $shortcut, 'logout','my','friends','message' );
 }
