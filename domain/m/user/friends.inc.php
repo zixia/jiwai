@@ -10,7 +10,7 @@ $pageString = paginate( $pagination, '/'.$userInfo['nameScreen'].'/friends/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){
-    array_push( $shortcut, 'logout','my','friends','message' );
+    array_push( $shortcut, 'logout','my','friends','message', 'replies');
 }
 
 JWRender::Display( 'user/friends', array(

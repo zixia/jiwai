@@ -8,7 +8,7 @@ $pageString = paginate( $pagination, '/'.$userInfo['nameScreen'].'/followers/' )
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){
-    array_push( $shortcut, 'logout','my','friends','message' );
+    array_push( $shortcut, 'logout','my','friends','message','replies');
 }
 
 $pageTitle = htmlSpecialChars($userInfo['nameFull'])."的粉丝们";
