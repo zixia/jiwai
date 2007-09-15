@@ -8,15 +8,15 @@
 <!--{/if}-->
 
 <!--{if in_array( 'friends', $shortcut ) }-->
-<p>2 <a href="${buildUrl('/wo/friends')}" accesskey="2">我的好友</a></p>
+<p>2 <a href="${buildUrl('/wo/friends/')}" accesskey="2">我的好友</a></p>
 <!--{/if}-->
 
 <!--{if in_array( '---------myfollowers', $shortcut ) }-->
-<p>2 <a href="${buildUrl('/wo/followers')}" accesskey="2">我的粉丝({$followersNum})</a></p>
+<p>2 <a href="${buildUrl('/wo/followers/')}" accesskey="2">我的粉丝({$followersNum})</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'replies', $shortcut ) }-->
-<p>3 <a href="${buildUrl('/wo/replies')}" accesskey="3">叽友回复</a></p>
+<p>3 <a href="${buildUrl('/wo/replies/')}" accesskey="3">叽友回复</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'public_timeline', $shortcut ) }-->
@@ -36,5 +36,5 @@
 <!--{/if}-->
 
 <!--{if in_array( 'logout', $shortcut ) }-->
-<p>0 <a href="${buildUrl('/wo/logout')}" accesskey="0">退出</a></p>
+<p>x <a href="${buildUrl('/wo/logout/')}">退出</a></p>
 <!--{/if}-->

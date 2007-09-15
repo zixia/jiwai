@@ -30,7 +30,7 @@ $friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
 $shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'friends', 'index', 'replies');
-$pageString = paginate( $pagination, '/wo/' );
+$pageString = paginate( $pagination, '/wo/replies/' );
 JWRender::Display( 'wo/replies', array(
     'loginedUserInfo' => $loginedUserInfo,
     'users' => $userRows,

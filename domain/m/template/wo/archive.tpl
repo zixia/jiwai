@@ -1,7 +1,7 @@
 <!--{include header}-->
 <!--{include wo/update}-->
 
-<h2>最新叽歪｜<a href="/wo/replies">叽友回复</a></h2>
+<h2>最新叽歪｜<a href="/wo/replies/">叽友回复</a></h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>
