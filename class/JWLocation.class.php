@@ -112,7 +112,7 @@ class JWLocation {
             $cname = ( empty($city) ) ? null : $city['name'];
         }
 
-        return trim( "$pname $cname" );
+        return ( $pname==null && $cname==null ) ? $location : trim( "$pname $cname" );
     }
 }
 ?>

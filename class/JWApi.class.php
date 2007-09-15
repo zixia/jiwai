@@ -106,7 +106,7 @@ class JWApi{
 		$uInfo['name'] = $user['nameFull'];
 		$uInfo['screen_name'] = $user['nameScreen'];
 		$uInfo['description'] = $user['bio'];
-		$uInfo['location'] = $user['location'];
+		$uInfo['location'] = JWLocation::GetLocationName( $user['location'] );
 		$uInfo['url'] = $user['url'];
 		$uInfo['protected'] = $user['protected']=='Y' ? true : false;
 		$uInfo['profile_image_url'] = JWPicture::GetUserIconUrl( $user['id'],'thumb48');

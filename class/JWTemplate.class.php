@@ -1510,9 +1510,9 @@ _HTML_;
 			if ( !empty($aUserInfo['bio']) )
 				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
 			if ( !empty($aUserInfo['location']) ) {
-                $location = JWLocation::GetLocationName( $aUserInfo['location'] );
-				echo "<li>位置: " .( $location ? $location : $aUserInfo['location'] ). "</li>\n";
-            }
+				$location = JWLocation::GetLocationName( $aUserInfo['location'] );
+				echo "<li>位置: $location</li>\n";
+		    }
 			if ( !empty($aUserInfo['url']) )
 			{
 				$url = $aUserInfo['url'];
