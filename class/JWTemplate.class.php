@@ -91,6 +91,7 @@ _FOOT_;
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico'	   );
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.11.js' );
+		$asset_url_js_location	= self::GetAssetUrl('/js/location.js' );
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -186,6 +187,7 @@ $openid_html
 	<script type="text/javascript">window.ServerTime=$time;</script>
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+	<script type="text/javascript" src="$asset_url_js_location"></script>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
@@ -1507,8 +1509,10 @@ _HTML_;
 <?php
 			if ( !empty($aUserInfo['bio']) )
 				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
-			if ( !empty($aUserInfo['location']) )
-				echo "<li>位置: " . htmlspecialchars($aUserInfo['location']) . "</li>\n";
+			if ( !empty($aUserInfo['location']) ) {
+                $location = JWLocation::GetLocationName( $aUserInfo['location'] );
+				echo "<li>位置: " .( $location ? $location : $aUserInfo['location'] ). "</li>\n";
+            }
 			if ( !empty($aUserInfo['url']) )
 			{
 				$url = $aUserInfo['url'];

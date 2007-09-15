@@ -45,7 +45,7 @@ class JWLocation {
 	 */
 	static public function GetDBRowsByIdParent( $idParent ) {
 
-		$idParent = JWDB::CheckInt( $idParent );
+		$idParent = abs( intval( $idParent ) );
 
 		$sql = "SELECT * FROM Location WHERE idParent=$idParent";
 
@@ -61,14 +61,18 @@ class JWLocation {
 
 		return $rtn;
 	}
-	
+
 	/**
   	 * Get one by id
 	 */	 
 	static public function GetDbRowById( $idLocation ) {
-
 		$idLocation = JWDB::CheckInt( $idLocation );
-		return array_values( self::GetDbRowsByIds( array($idLocation) ) );
+		$result = self::GetDbRowsByIds( array($idLocation) );
+
+		if( empty( $result ) )
+			return array();
+
+		return $result[ $idLocation ];
 	}
 
 	/**
@@ -95,5 +99,20 @@ class JWLocation {
 
 		return $rtn;
 	}
+
+    static public function GetLocationName($location){
+        $pid = $cid = $pname = $cname = null;
+        @list( $pid, $cid ) = explode('-', $location );
+        if( intval($pid) ) {
+            $prov = self::GetDbRowById( intval($pid) );
+            $pname = ( empty($prov) ) ? null : $prov['name'];
+        }
+        if( intval($cid) ) {
+            $city = self::GetDbRowById( intval($cid) );
+            $cname = ( empty($city) ) ? null : $city['name'];
+        }
+
+        return trim( "$pname $cname" );
+    }
 }
 ?>

@@ -135,7 +135,7 @@ _HTML_;
         }
     }
 
-    $new_location = @$_REQUEST['provice']." ".@$_REQUEST['city']." ".@$_REQUEST['country'];
+    $new_location = intval(@$_REQUEST['province'])."-".intval(@$_REQUEST['city']);
     $new_location = trim($new_location);
     if( $new_location != $outInfo['location'] ) {
         $array_changed['location'] = $new_location;
@@ -246,17 +246,21 @@ if ( $has_photo ){
         <td><textarea name="user[bio]" id="user_name" style="height:60px;"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
         <td class="note">一句话的介绍，不超过70个字</td>
     </tr>
-    <!-- tr>
+    <tr>
         <th>来自：</th>
         <td>
-            <label>
-            <select name="province" style="width:75px;"></select>
-            <select name="city" style="width:75px;"></select>
-            <select name="country" style="width:75px;"></select>
-            </label>
+            <select id='provinceSelect' name="province" style="width:112px;" onChange="JiWaiLocation.select('provinceSelect','citySelect', this.options[this.options.selectedIndex].value, 0);"></select>
+            <select id='citySelect' name="city" style="width:112px;"></select>
         </td>
         <td class="note">选择所在地区</td>
-    </tr -->
+        <script defer>
+            <?php 
+                $pid = $cid =0;
+                @list($pid, $cid) = explode('-', $outInfo['location']);
+            ?>
+            JiWaiLocation.select('provinceSelect','citySelect',<?php echo intval($pid);?>,<?php echo intval($cid);?>); 
+        </script>
+    </tr>
     <tr>
         <th>地址：</th>
         <td><input name="user[address]" type="text" id="user_address" value="<?php echo $outInfo['address']; ?>"/></td>

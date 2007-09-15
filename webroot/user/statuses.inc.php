@@ -18,7 +18,8 @@ function user_status($idPageUser, $idStatus)
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
 	$formated_status 	= JWStatus::FormatStatus($status_info,false);
-    $pettyDevice = JWDevice::GetNameFromType( $status_info['device'] );
+
+    $pettyDevice = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
 
 	$protected = false;
 	if ( JWUser::IsProtected($idPageUser) )
