@@ -1046,9 +1046,16 @@ class JWRobotLingo {
 
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( preg_match('/^([[:alpha:]]+)\s+([^\s]+)\s*([^\s]*)$/',$param_body, $matches) ) {
+		if ( preg_match('/^([[:alpha:]]+)\s+([\S]+)\s*([\S]*)$/',$param_body, $matches) ) {
 
 			$nameScreen = $matches[2];
+			
+			if( false == JWUser::IsValidName( $nameScreen ) ){
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_INVALID_NAME', array( $nameScreen, ) );
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply );
+
+			}
+
 			$nameFull = isset( $matches[3] ) ? $matches[3] : null;
 
 			if( false == isset( $matches[3] ) ){

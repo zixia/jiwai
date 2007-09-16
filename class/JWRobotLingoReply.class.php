@@ -78,6 +78,7 @@ class JWRobotLingoReply {
 			'REPLY_REG_SUC_SCREEN' => '好消息，你的帐户名修改为 {0} 成功，如果不满意，可以重新修改！',
 			'REPLY_REG_SUC_ALL' => '好消息，修改账户及昵称为 {1} ({0}) 成功，如果不满意，可以重新修改！',
 			'REPLY_REG_SAME' => '哇，你本来就叫 {0}，压根不需要改哦。',
+			'REPLY_REG_INVALID_NAME' => '你要修改的用户名 {0} 不合法，请重新选择。',
 			'REPLY_REG_HOT' => '哇，你要修改的账户名 {0} 太热，请重新选择一个吧。',
 			'REPLY_REG_500'  => '哎呀！由于系统故障，你的请求失败了…… 请稍后再试吧。',
 			'REPLY_REG_REPLY_SUC' => '你好，你已经完成了注册，你的用户名是 {0}。',
