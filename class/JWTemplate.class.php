@@ -668,7 +668,7 @@ _HTML_;
 			$timeCreate	= $statusRow['timeCreate'];
 			$sign		= $statusRow['isSignature'] == 'Y' ? '签名' : '';
 			$device		= $statusRow['device'];
-			$device		= JWDevice::GetNameFromType($device, $statusRow['idPartner']);
+			$device		= JWDevice::GetNameFromType($device, @$statusRow['idPartner']);
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
@@ -676,6 +676,8 @@ _HTML_;
 			$status_result 	= JWStatus::FormatStatus($statusRow);
 			$status			= $status_result['status'];
 			$replyto		= $status_result['replyto'];
+
+			$isMms			= ( @$statusRow['isMms'] == 'Y') ;
 
 		}
 
@@ -685,7 +687,11 @@ _HTML_;
 ?>
 			<div id="permalink">
 				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0; background: none;">
+				<?php if( @$isMms ) { ?>
+					<div class="head"><a href="/<?php echo $name_screen; ?>/mms/<?php echo $statusRow['id']; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
+				<?php } else { ?>
 					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
+				<?php } ?>
 					<div class="cont">
 						<div class="bg"></div>
 <table width="100%" border="0" cellspacing="5" cellpadding="0">
@@ -764,7 +770,7 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	 * 	显示删除的图标和操作
  	 *
 	 */
-	static public function TrashAction($idStatus)
+	static public function TrashAction($idStatus, $options=array())
 	{
 
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
@@ -772,6 +778,11 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 		$html_str = <<<_HTML_
 	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条叽歪？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
 _HTML_;
+		if( @$options['isMms'] ) {
+			$html_str = <<<_HTML_
+	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条叽歪？" class="del">删除</a>
+_HTML_;
+		}
 
 		return $html_str;
 	}
@@ -835,11 +846,13 @@ _HTML_;
 			$options['protected']	= false;
 		if ( !isset($options['strip']) )
 			$options['strip']	= false;
+		if ( !isset($options['isMms']) )
+			$options['isMms']	= false;
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 		if (!$options['strip']) {
 ?>
-<div id="timeline">
+<div id="timeline" <?php echo ($options['isMms']) ? 'class="wapnew"':'' ?>>
 <?php
 		}
 		$n=0;
@@ -880,18 +893,25 @@ _HTML_;
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
-			$idPartner	= $statusRows[$status_id]['idPartner'];
+			$idPartner	= @$statusRows[$status_id]['idPartner'];
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?  '签名' : '';
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
 
-			if ( !empty($statusRows[$status_id]['idPicture']) )
-				$photo_url	= JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
-			else
+			if ( !empty($statusRows[$status_id]['idPicture']) ) {
+				if( $options['isMms'] ) {
+					$photo_row = JWPicture::GetDbRowById( $statusRows[$status_id]['idPicture'] );
+					$photo_subject = $photo_row['fileName'];
+					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture'], 'picture');
+				} else {
+					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
+				}
+			} else {
 				$photo_url	= JWPicture::GetUserIconUrl($user_id);
+			}
 	
-            $deviceName		= JWDevice::GetNameFromType($device, $statusRows[$status_id]['idPartner'] );
+			$deviceName	= JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
 
 			$formated_status 	= JWStatus::FormatStatus($statusRows[$status_id]);
 
@@ -903,9 +923,40 @@ _HTML_;
 <?php
 			}
 			$n++;
+
+			if( $options['isMms'] ) {
+?>
+
+
+<div class="odd">
+	<div class="head">
+		<a href="/<?php echo $name_screen;?>/mms/<?php echo $status_id;?>"><img alt="<?php echo $photo_subject;?>" src="<?php echo $photo_url;?>"/></a>
+		<div class="meta"><?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?>来自彩信</div>
+	</div>
+	<div class="cont">
+		<div class="bg"></div>
+		<div class="name"><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full;?>"><?php echo $name_full;?></a><span class="meta">拍摄时间：<?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?><span id="status_actions_6361924"></span></span></div>
+		<?php echo $status; ?>
+		<div class="action">
+<?php
+	if ( ( $current_user_id==$user_id || JWUser::IsAdmin($current_user_id) ) 
+			&& $options['trash'] ) {
+		echo self::TrashAction($status_id);
+	}
+	if( $current_user_id ) {
+		$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
+		echo self::FavouriteAction($status_id,$is_fav);
+	}
+?>
+		</div>
+	</div>
+</div>
+
+<?php
+			}else{
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_screen;?>/"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $name_screen;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_full;?></a><?php echo $status?>
 
 		<span class="meta">
@@ -935,6 +986,9 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 		</span><!-- meta -->
 	</div><!-- cont -->
 </div><!-- odd -->
+<?php
+			}
+?>
 <?php 
 		}
 		if ($options['search'] || ( $options['pagination'] && ( $options['pagination']->IsShowNewer() || $options['pagination']->IsShowOlder() ) ) ) {
@@ -1626,9 +1680,20 @@ _HTML_;
 _HTML_;
 		}
 
+
 		echo <<<_HTML_
 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a></li>
 			<li id="status_count"><a href="/$user/">$countInfo[status] 条叽歪</a></li>
+_HTML_;
+
+		if ( 'wo'!=$user && @$countInfo['mms'] )
+		{
+			echo <<<_HTML_
+			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms] 条彩信</a></li>
+_HTML_;
+		}
+
+		echo <<<_HTML_
 		</ul>
 _HTML_;
 	}
@@ -1866,24 +1931,21 @@ _HTML_;
 
 		if ( empty(self::$msJWConst) )
 		{
-			self::$msJWConst = array (	'UrlContactUs'			=>	'http://help.jiwai.de/ContactUs'
-										,'UrlRegister'			=>	'/wo/account/create'
-										,'UrlLogin'				=>	'/wo/login'
-										,'UrlResetPassword'		=>	'http://jiwai.de/wo/account/confirm_password_reset'
-										,'UrlPublicTimeline'	=>	'/public_timeline/'
-
-										,'UrlTermOfService'		=>	'http://help.jiwai.de/TOS'
-										,'UrlFaq'				=>	'http://help.jiwai.de/FAQs'
-
-										,'UrlError404'			=>	'/wo/error/404'
-										,'UrlError500'			=>	'/wo/error/500'
-
-										,'UrlHelp'				=>	'http://help.jiwai.de/'
-										,'UrlHelpComments'		=>	'/help/'
-										,'UrlHelpGadget'		=>	'http://help.jiwai.de/Gadget'
-
-										,'UrlStrangerPicture'	=>	self::GetAssetUrl('/images/org-nobody-96-96.gif')
-								);
+			self::$msJWConst = array (
+				'UrlContactUs' => 'http://help.jiwai.de/ContactUs',
+				'UrlRegister' => '/wo/account/create',
+				'UrlLogin' => '/wo/login',
+				'UrlResetPassword' => 'http://jiwai.de/wo/account/confirm_password_reset',
+				'UrlPublicTimeline' => '/public_timeline/',
+				'UrlTermOfService' => 'http://help.jiwai.de/TOS',
+				'UrlFaq' => 'http://help.jiwai.de/FAQs',
+				'UrlError404' => '/wo/error/404',
+				'UrlError500' => '/wo/error/500',
+				'UrlHelp' => 'http://help.jiwai.de/',
+				'UrlHelpComments' => '/help/',
+				'UrlHelpGadget' => 'http://help.jiwai.de/Gadget',
+				'UrlStrangerPicture' => self::GetAssetUrl('/images/org-nobody-96-96.gif'),
+			);
 		}
 
 		return @self::$msJWConst[$constName];
@@ -1892,11 +1954,20 @@ _HTML_;
 
 	static public function UserGadgetNav($activeMenu='index')
 	{
-		$arr_menu = array (  'index'		=> array ( '/wo/gadget/'			, '窗可贴说明' )
-							,'flash'		=> array ( '/wo/gadget/flash'		, 'Flash')
-							,'javascript'	=> array ( '/wo/gadget/javascript'	, 'JavaScript')
-							//,'gif'			=> array ( '/wo/gadget/'			, 'GIF')
-						);
+		$arr_menu = array (
+				'index' => array (
+					'/wo/gadget/',
+					'窗可贴说明',
+				),
+				'flash' => array ( 
+					'/wo/gadget/flash',
+					'Flash',
+				),
+				'javascript' => array ( 
+					'/wo/gadget/javascript',
+					'JavaScript',
+				),
+			);
 
 		echo '	<div id="gadgetNav" class="subtab">';
 		foreach ( $arr_menu as $name=>$setting )
@@ -1912,17 +1983,17 @@ _HTML_;
 
 	static public function UserSettingNav($activeMenu='account')
 	{
-		$arr_menu = array ( 'account'		=> array ( '/wo/account/settings'			, '帐号' )
-							, 'password'	=> array ( '/wo/account/password'			, '密码')
-							//, 'device'		=> array ( '/wo/devices/'				, '手机短信/聊天软件')
-							, 'device_sms'  => array ( '/wo/devices/?sms'           	, '手机短信')
-							, 'device_im'  => array ( '/wo/devices/?im'           		, '聊天软件')
-							, 'notification'=> array ( '/wo/account/notification'		, '通知')
-							, 'meeting'=> array ( '/wo/account/meeting'		, '会议模式')
-							, 'picture'		=> array ( '/wo/account/picture'			, '头像')
-							, 'profile'		=> array ( '/wo/account/profile_settings'	, '界面')
-							, 'openid'		=> array ( '/wo/openid/'					, 'OpenID')
-						);
+		$arr_menu = array ( 
+				'account' => array ( '/wo/account/settings', '帐号' ),
+				'password' => array ( '/wo/account/password', '密码', ),
+				'device_sms' => array ( '/wo/devices/?sms', '手机短信', ),
+				'device_im' => array ( '/wo/devices/?im', '聊天软件', ),
+				'notification' => array ( '/wo/account/notification', '通知', ),
+				'meeting'=> array ( '/wo/account/meeting', '会议模式', ),
+				'picture' => array ( '/wo/account/picture', '头像',),
+				'profile' => array ( '/wo/account/profile_settings', '界面'),
+				'openid' => array ( '/wo/openid/', 'OpenID', ),
+			);
 		echo '	<h4 id="settingsNav">';
 		$first = true;
 		foreach ( $arr_menu as $name=>$setting )
@@ -2095,6 +2166,7 @@ _HTML_;
         $picture_ids        = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
         $picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);
 
+		$n = 0;
 		foreach ( $idListUsers as $list_user_id )
 		{
 			$list_user_row			= $list_user_rows			[$list_user_id];
@@ -2105,7 +2177,7 @@ _HTML_;
             if ( $list_user_picture_id )
                 $list_user_icon_url      = $picture_url_row[$list_user_picture_id];
 
-			$odd_even			= ($n++ % 2) ? 'odd' : 'even';
+		$odd_even			= ($n++ % 2) ? 'odd' : 'even';
             $statusNum = JWStatus::GetStatusNum( $list_user_id );
             $mmsNum = JWPicture::GetMMSNum( $list_user_id );
         

@@ -119,13 +119,13 @@ class JWStatus {
 			$idConference = $userInfo['idConference'];
 		}
         
-        $idPartner = null;
-        if( isset( $options['idPartner'] ) && intval($options['idPartner']) ){
-            $partner = JWPartner::GetDbRowById( intval($options['idPartner']) );
-            if( false == empty( $partner ) ){
-                $idPartner = $partner['id'];
-            }
-        }
+		$idPartner = null;
+		if( isset( $options['idPartner'] ) && intval($options['idPartner']) ){
+			$partner = JWPartner::GetDbRowById( intval($options['idPartner']) );
+			if( false == empty( $partner ) ){
+				$idPartner = $partner['id'];
+			}
+		}
 
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
@@ -139,7 +139,7 @@ class JWStatus {
 								'idPicture' => $idPicture,
 								'idConference' => $idConference,
 								'isProtected' => $isProtected,
-                                'idPartner' => $idPartner,
+								'idPartner' => $idPartner,
 								'isSignature' => $isSignature,
 								'isMms' => $isMms,
 						));
@@ -176,6 +176,45 @@ SELECT		 id
 			,id as idStatus
 FROM		Status
 WHERE		idUser=$idUser
+		$condition_other
+ORDER BY 	timeCreate desc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
+
+
+		if ( !empty($rows) )
+		{
+			// 装换rows, 返回 id 的 array
+			$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		}
+		else
+		{
+			$status_ids = array();
+		}
+
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> array($idUser)
+					);
+	}
+
+	static public function GetStatusIdsFromUserMms($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		$condition_other = null;
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
+		$sql = <<<_SQL_
+SELECT		 id
+			,id as idStatus
+FROM		Status
+WHERE		idUser=$idUser
+		AND isMms = 'Y'
 		$condition_other
 ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
@@ -376,6 +415,59 @@ FROM
 WHERE	
 		idUser IN ($condition_in)
 		AND timeCreate > (NOW()-INTERVAL 1 WEEK)
+		$condition_other
+ORDER BY
+		timeCreate desc
+LIMIT 
+		$start,$num
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
+
+
+		$status_ids = array();
+		$user_ids = array();
+		if ( !empty($rows) )
+		{
+			$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+			$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+		}
+
+		return array ( 	 'status_ids'	=> $status_ids
+						,'user_ids'		=> $user_ids
+					);
+	}
+
+	static public function GetStatusIdsFromFriendsMms($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= intval($idUser);
+		$num	= intval($num);
+		$start	= intval($start);
+		
+		$condition_other = null;
+
+		if ( 0>=$idUser || 0>=$num )
+			throw new JWException('must int');
+
+		$friend_ids = JWFriend::GetFriendIds($idUser);
+		
+		array_push($friend_ids, $idUser);
+
+		$condition_in = JWDB_Cache::GetInConditionFromArray($friend_ids);
+
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
+		$sql = <<<_SQL_
+SELECT
+		 id
+		,id	as idStatus
+		,idUser as idUser
+FROM	
+		Status
+WHERE	
+		idUser IN ($condition_in)
+		AND isMms = 'Y'
 		$condition_other
 ORDER BY
 		timeCreate desc
@@ -727,6 +819,24 @@ _SQL_;
 		return $row['num'];
 	}
 
+	static public function GetStatusMmsNum($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Status
+WHERE	idUser=$idUser
+	AND isMms = 'Y'
+_SQL_;
+		$row = JWDB_Cache::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
 
 	/*
 	 *	@param	int		$idUser
@@ -795,6 +905,33 @@ FROM
 WHERE
         Status.timeCreate > (NOW()-INTERVAL 24 HOUR)
         AND Status.idUser IN ($condition_in)
+_SQL_;
+		$row = JWDB_Cache::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
+	static public function GetStatusMmsNumFromFriends($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$friend_ids = JWFriend::GetFriendIds($idUser);
+
+		array_push($friend_ids, $idUser);
+
+		$condition_in = JWDB_Cache::GetInConditionFromArray($friend_ids);
+
+		$sql = <<<_SQL_
+SELECT      
+        COUNT(1) as num
+FROM
+        Status
+WHERE
+        Status.idUser IN ($condition_in)
+	AND isMms = 'Y'
 _SQL_;
 		$row = JWDB_Cache::GetQueryResult($sql);
 

@@ -84,6 +84,19 @@ switch ( $func )
 		user_favourites($page_user_id);	
 		break;
 
+	case 'mms_friends':
+	case 'mms':
+		$active = 'mms'; $mmsId = 0;
+		@list( $active, $mmsId ) = explode( '/', trim( $_REQUEST['pathParam'], '/' ) );
+		$g_page_user_id			= $page_user_id;
+
+		if( $active=='mms' && $mmsId=intval($mmsId) ) {
+			require_once(dirname(__FILE__) . "/mms_view.inc.php");
+		}else{
+			require_once(dirname(__FILE__) . "/mms.inc.php");
+		}
+		break;
+
 	case 'with_friends':
 		$g_user_with_friends 	= true;
 		// fall to default
@@ -103,4 +116,3 @@ switch ( $func )
 exit(0);
 
 ?>
-

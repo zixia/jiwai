@@ -33,8 +33,10 @@ $options = array(
                 'idPartner' => $idPartner,
             );
 
-if( JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) ){
-	$insertedId = JWDB::GetInsertedId();
+if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) ){
+	if( $insertedId === true ) {
+		$insertedId = JWDB::GetInsertedId();
+	}
 	$status = JWStatus::GetStatusDbRowById( $insertedId );
 	switch($type){
 		case 'xml':

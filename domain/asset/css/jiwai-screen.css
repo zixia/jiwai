@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {font:12px/120% "宋体", Arial, Helvetica, sans-serif;}
+body {font:12px/120% "宋体", Arial, Helvetica, sans-serif; margin-left:auto;margin-right:auto;}
 form {margin:0;padding:0;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
@@ -64,6 +64,7 @@ a:hover {color:#F87A01;}
 
 #navigation ul { float:right; margin-top:48px; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
+	*+html #navigation ul  {margin-top:48px;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
 #navigation .line1 {background-color:#BDBDBD; width:78px; /*border-left:1px solid #ffffff; border-right:1px solid #ffffff;*/ line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
@@ -191,6 +192,22 @@ html>body #content .tabMenu {margin-top:19px;}
 #content .line {height:1px; overflow:hidden; background-color:#DDE0E3; margin:0 auto; clear:both; width:500px;}
 .odd .head {float:left; width:64px; overflow:hidden; height:62px;}
 	.odd .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
+
+.normal .wapnew .odd {border:1px solid #FFCFA8; margin:11px 17px; padding:8px; min-height:140px;}
+.normal .wapnew .odd .head { width:160px; height:150px;}
+.normal .wapnew .odd .meta { line-height:30px;}
+ .normal .wapnew .odd .head img{ width:149px; height:115px;}
+.normal .wapnew .odd .cont .action {text-align:right;}
+.normal .wapnew .odd .cont .action a {padding-left:18px; font-size:12px; margin-left:5px;}
+.normal .wapnew .odd .cont .action .fav {background:url(../images/org-icon-fav.gif) no-repeat left;}
+.normal .wapnew .odd .cont .action .del {background:url(../images/org-icon-del.gif) no-repeat left;}
+.normal .wapnew .odd .cont .action .mark {background: url(../images/org-icon-mark.gif) no-repeat left;}
+.normal .wapnew .odd .cont {border:none; padding-bottom:0;}
+.normal .wapnew .odd .cont .bg  {display:none;}
+.normal .wapnew .name {text-align:right;}
+.normal .wapnew .name a {float:left;}
+.normal .wapnew .cont .edit { line-height:90px;}
+.normal .wapnew .cont textarea {border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:100%; height:49px; }
 .odd .name {color:#D05D00; padding-right:10px;}
 .odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden;}
 .normal .odd .cont { border:1px solid #FFCFA8; padding:6px 6px 22px 6px; background-color:#ffffff;}
@@ -200,6 +217,7 @@ html>body #content .tabMenu {margin-top:19px;}
 .front .odd .cont .bg  {display:none;}
 .normal .odd .head {}
 .normal #content .line {background-color:#ffffff;}
+.odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color: white;}
 .odd a:hover {color:#FF830B; text-decoration:underline;}
 .odd .meta ,.odd .meta a{color:#929292; padding:0 3px; font-size:12px;}
 .undo {font-size:12px; padding:0 5px; color:#FF830B;}
@@ -470,3 +488,15 @@ a.button2 img { margin-top:8px;}
 #container .tabbody .pop .popbg {background:url(../images/org-pop-bg.gif) repeat-y right; width:269px; padding:0 6px; font-size:12px;}
 #container .tabbody .pop .popleft{background:url(../images/org-pop-left.gif) no-repeat; width:12px; height:11px; position:absolute; margin-left:-17px; margin-top:5px;}
 #container .tabbody .pop .popbottom {background:url(../images/org-pop-bottom.gif) no-repeat top; width:281px; height:4px; padding:0;}
+
+.account #container .h2note {text-align:left; font-size:12px; font-weight:normal; height:18px; overflow:hidden; display:block;}
+.account #container .h2note span {font-size:12px; font-weight:normal; line-height:18px; color:#7D7D7D; margin-right:430px; float:left;}
+.account #container .h2note a {display:block; float:left; margin:0 3px; line-height:18px; height:18px; cursor:pointer;}
+.account #container h2 .icon1 {	background:url(../images/org-wapicon-1.gif) no-repeat center; height: 18px; overflow:hidden; width:18px;}
+.account #container h2 .icon2 {background:url(../images/org-wapicon-2.gif) no-repeat center;height: 18px; overflow:hidden; width:18px;}
+.account #container h2 .icon3 {background:url(../images/org-wapicon-3.gif) no-repeat left; text-indent:18px;width:45px; }
+.account #container h2 .icon4 {background:url(../images/org-wapicon-4.gif) no-repeat left; text-indent:18px;width:45px; }
+.bigimg {width:485px; margin:30px auto;}
+.bigimg img {padding:1px; background-color:#ffffff; border:1px solid #CECECE;}
+.bigimg a {font-size:14px; color:#7D7D7D; line-height:45px;}
+.bigimg {font-size:14px; line-height:25px;}

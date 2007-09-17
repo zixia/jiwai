@@ -460,17 +460,20 @@ class JWSns {
 		$num_pm			= JWMessage::GetMessageNum($idUser);
 		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
 		$num_friend		= JWFriend::GetFriendNum($idUser);
-		$num_follower	= JWFollower::GetFollowerNum($idUser);
+		$num_follower		= JWFollower::GetFollowerNum($idUser);
 
 		//$num_status		= JWStatus::GetStatusNum($idUser);
 		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
+		$num_mms		= JWStatus::GetStatusMmsNum($idUser);
 
-		return array(	'pm'			=> $num_pm
-						, 'fav'			=> $num_fav
-						, 'friend'		=> $num_friend
-						, 'follower'	=> $num_follower
-						, 'status'		=> $num_status
-					);
+		return array(
+				'pm' => $num_pm,
+				'fav' => $num_fav,
+				'friend' => $num_friend,
+				'follower' => $num_follower,
+				'status' => $num_status,
+				'mms' => $num_mms,
+			);
 	}
 	
 	/*

@@ -14,11 +14,15 @@ $page = ( $page < 1 ) ? 1 : $page;
 		$g_page_user_id
  */
 
+$active = 'mms'; $mmsId = 0 ; 
+@list( $active, $mmsId )  = explode( '/', trim( $_REQUEST['pathParam'], '/' ) );
+$mmsId = intval( $mmsId );
+
+
 $page_user_id		= $g_page_user_id;
 
 $logined_user_info	= JWUser::GetCurrentUserInfo();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
-
 
 $show_protected_content = true;
 
@@ -43,12 +47,8 @@ if ( !JWUser::IsAdmin($logined_user_info['idUser'])
 
 $active_tab = 'archive';
 
-if ( isset($g_user_with_friends) && $g_user_with_friends )
+if ( $active == 'mms_friends' )
 	$active_tab = 'friends';
-
-if( $func == 'search' )
-	$active_tab = 'search';
-
 /*
  *	使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
  *
@@ -57,17 +57,11 @@ switch ( $active_tab )
 {
 	default:
 	case 'archive':
-		if( $page_user_info['idConference'] ) {
-			//论坛模式用户
-			$user_status_num	= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
-			$pagination		= new JWPagination($user_status_num-1, $page );
-			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
-		}else{
-			// 显示用户自己的
-			$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
-			$pagination		= new JWPagination($user_status_num-1, $page);
-			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
-		}
+		// 显示用户自己的
+		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id);
+
+		$pagination	= new JWPagination($user_status_num-1, $page);
+		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		break;
 
 	case 'replies':
@@ -78,29 +72,13 @@ switch ( $active_tab )
 		// 显示用户和好友的
 
 		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
+		$user_status_num= JWStatus::GetStatusMmsNumFromFriends($page_user_id);
 
 		$pagination		= new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		$status_data 	= JWStatus::GetStatusIdsFromFriendsMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-		break;
-	case 'search':
-		$searchStatus = new JWSearchStatus();
-
-		$p = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-		$searchStatus->setPageNo( $p );
-
-		$searchStatus->setInSite("jiwai.de/".$page_user_info['nameScreen']."/statuses/");
-		$searchStatus->execute($q);
-
-		$user_status_num = $searchStatus->getTotalSize();
-		$pagination	= new JWPagination($user_status_num, $page);
-		$user_ids = array($page_user_id); 
-
-		$status_ids = $searchStatus->getStatusIds();
-		$status_data = array('user_ids'=>$user_ids, 'status_ids'=>$status_ids);
 		break;
 }
 
@@ -145,39 +123,43 @@ foreach ( $status_data['status_ids'] as $status_id )
 }
 }
 
-$rss			= array ( 	
-							// User TimeLine RSS & Atom
-							 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
-									,'title'	=> "$page_user_info[nameFull] (RSS)"
-									,'type'		=> "rss"
-								)
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom"
-									,'title'	=> "$page_user_info[nameFull] (Atom)"
-									,'type'		=> "atom"
-								)
+$rss = array ( 	
+		// User TimeLine RSS & Atom
+		 array(	 
+		 	'url' => "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss",
+			'title' => "$page_user_info[nameFull] (RSS)",
+			'type' => "rss",
+		),
+		array(
+			'url' => "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom",
+			'title' => "$page_user_info[nameFull] (Atom)",
+			'type' => "atom",
+		),
+		// Friends TimeLine RSS & Atom
+		array(
+			'url' => "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss",
+			'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)",
+			'type' => "rss",
+		),
+		array(
+			'url' => "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom",
+			'title'	=> "$page_user_info[nameFull]和朋友们 (Atom)",
+			'type' => "atom",
+		),
+	);
 
-							// Friends TimeLine RSS & Atom
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss"
-									,'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)"
-									,'type'		=> "rss"
-								)
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom"
-									,'title'	=> "$page_user_info[nameFull]和朋友们 (Atom)"
-									,'type'		=> "atom"
-								)
-						);
-
-$options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[nameFull]"
-					,'keywords'		=> htmlspecialchars($keywords)
-					,'description'	=> htmlspecialchars($description)
-					,'author'		=> htmlspecialchars($keywords)
-					,'rss'			=> $rss
-					,'refresh_time'	=> '60'
-					,'refresh_url'	=> ''
-					,'ui_user_id'	=> $page_user_id
-					,'openid_server'	=> "http://jiwai.de/wo/openid/server"
-					,'openid_delegate'	=> "http://jiwai.de/$page_user_info[nameScreen]/"
-			);
+$options = array(
+		'title' => "$page_user_info[nameScreen] / $page_user_info[nameFull]",
+		'keywords' => htmlspecialchars($keywords),
+		'description' => htmlspecialchars($description),
+		'author' => htmlspecialchars($keywords),
+		'rss' => $rss,
+		'refresh_time' => '60',
+		'refresh_url' => '',
+		'ui_user_id' => $page_user_id,
+		'openid_server'	=> "http://jiwai.de/wo/openid/server",
+		'openid_delegate' => "http://jiwai.de/$page_user_info[nameScreen]/",
+	);
 
 ?>
 <head>
@@ -213,26 +195,17 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 
 <?php 
 $menu_list = array (
-		 'friends'	=> array(	 'active'	=> false	
-								,'name'		=> "和朋友们"
-								,'url'		=> "/$page_user_info[nameScreen]/with_friends"
-							)
-		,'archive'	=> array(	 'active'	=> false
-								,'name'		=> "以前的"
-								,'url'		=> "/$page_user_info[nameScreen]/"
-							)
+		 'friends' => array(
+				'active' => false,
+				'name' => "和朋友们",
+				'url' => "/$page_user_info[nameScreen]/mms_friends/",
+		),
+		'archive' => array(
+				'active' => false,
+				'name' => "以前的",
+				'url' => "/$page_user_info[nameScreen]/mms/",
+		),
 	);
-
-if( null!==$q ){
-	$menu_list['search'] = array(	
-			'active' => false , 
-			'name'	=> "搜索结果" ,
-			'url'		=> "/$page_user_info[nameScreen]/search?q=".urlEncode($q)
-			);
-}
-
-if( $active_tab !== 'search' ) 
-	unset( $menu_list['search'] );
 
 $menu_list[$active_tab]['active'] = true;
 //die(var_dump($menu_list));
@@ -255,19 +228,19 @@ if ( !isset($g_user_with_friends) )
 
 
 // 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
-if ( $show_protected_content )
-
-	JWTemplate::Timeline(	 $status_data['status_ids']
-							,$user_rows
-							,$status_rows
-							,array(	 'icon'	=> $g_user_with_friends
-									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
-									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
-									//,'protected'=> $logined_user_info['idUser']!=$page_user_id
-                                    , 'pagination' => $pagination
-							 )
-						) ;
-
+if ( $show_protected_content ) {
+	JWTemplate::Timeline( $status_data['status_ids'] ,$user_rows ,$status_rows,
+				array(
+					'icon'	=> $g_user_with_friends,
+					//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
+					'protected'=> false == ( $show_protected_content 
+								|| $logined_user_info['idUser']==$page_user_id 
+							),
+                                    	'pagination' => $pagination,
+					'isMms' => true, 
+				 )
+	);
+}
 ?>
   
 <?php 
@@ -300,15 +273,36 @@ else
 $arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
-$arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
-								, array ('user_info'	, array($page_user_info))
-								, array ('action'	, array($user_action_row,$page_user_info['id']))
-								, array ('count'		, array($arr_count_param,$page_user_info))
-								//, array ('search'	, array($page_user_info['nameScreen'], $q))
-								, array ('separator'	, array())
-								, array ('friend'	, array($arr_friend_list))
-								, array ('rss'		, array('user', $page_user_info['nameScreen']))
-							);
+$arr_menu = array(
+		array (
+			'user_notice', 
+			array($page_user_info),
+		),
+		array (
+			'user_info',
+			array($page_user_info),
+		), 
+		array(
+			'action',
+			array($user_action_row,$page_user_info['id'])
+		), 
+		array(
+			'count', 
+			array($arr_count_param,$page_user_info),
+		), 
+		array (
+			'separator', 
+			array(),
+		),
+		array (
+			'friend',
+			array($arr_friend_list),
+		),
+		array (
+			'rss',
+			array( 'user', $page_user_info['nameScreen'],),
+		),
+	);
 
 if ( ! JWLogin::IsLogined() )
 	array_push ( $arr_menu, 

@@ -3,6 +3,9 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
+
 $logined_user_id 	= JWLogin::GetCurrentUserId();
 $logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
 

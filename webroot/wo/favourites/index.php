@@ -80,7 +80,7 @@ if ( isset($status_ids) )
 		</div><!-- wrapper -->
 	</div><!-- content -->
 <?php
-include_once '../sidebar.php';
+include_once dirname( dirname(__FILE__) ).'/sidebar.php';
 JWTemplate::container_ending();
 ?>
 </div><!-- #container -->

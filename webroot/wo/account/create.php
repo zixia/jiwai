@@ -12,11 +12,12 @@ $name_len_min = 4;
 $aUserInfo = array();
 $JWErr = '';
 if ( isset($_REQUEST['user'])
-		&& isset($_REQUEST['user']['nameScreen']) && trim($_REQUEST['user']['nameScreen']) ){
+		&& isset($_REQUEST['user']['nameScreen']) 
+		&& trim($_REQUEST['user']['nameScreen']) ){
 
 	$aUserInfo = $_REQUEST['user'];
-    if( empty( $aUserInfo['nameFull'] )|| !JWUser::IsValidFullName($new_user_info['nameFull']) ) 
-        $aUserInfo['nameFull'] = $aUserInfo['nameScreen'];
+	if( empty( $aUserInfo['nameFull'] )|| !JWUser::IsValidFullName($aUserInfo['nameFull']) ) 
+		$aUserInfo['nameFull'] = $aUserInfo['nameScreen'];
 
 	//echo "<pre>";var_dump($_FILES); die(var_dump($_REQUEST));
 	//JWDebug::trace($aUserInfo);
@@ -24,10 +25,11 @@ if ( isset($_REQUEST['user'])
 	$nameScreen = $aUserInfo['nameScreen'];
 	$email = '';
 
-	$aValid = array (	'nameScreen'	=>	JWUser::IsValidName( $nameScreen )
-						// CAPTCHA , 'captcha'		=>	JWCaptcha::validate( $_REQUEST['key'] )
-						, 'pass'		=>	strlen($aUserInfo['pass'])>0 && $aUserInfo['pass']===$aUserInfo['pass_confirm']
-					);
+	$aValid = array (
+				'nameScreen' => JWUser::IsValidName( $nameScreen ),
+				'pass' => ( strlen($aUserInfo['pass'])>0 
+						&& $aUserInfo['pass']===$aUserInfo['pass_confirm'] ),
+		);
 
 
 	$aValid['email'] = true;

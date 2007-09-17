@@ -716,10 +716,15 @@ _SQL_;
 	 */
 	static public function GetNameFromType($type, $idPartner=null)
 	{
-        if( intval( $idPartner ) ){
-            if( $partner = JWPartner::GetDbRowById( intval($idPartner) ) )
-                return $partner['nameDevice']; 
-        }
+		if( intval( $idPartner ) ){
+			if( $partner = JWPartner::GetDbRowById( intval($idPartner) ) ) {
+				if( $partner['link'] ) {
+					return "<a href='$partner[link]' target='_blank'>$partner[nameDevice]</a>";
+				}else{
+					return $partner['nameDevice']; 
+				}
+			}
+		}
 		switch ( $type )
 		{
 			case 'sms':
