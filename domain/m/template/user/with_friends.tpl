@@ -17,7 +17,7 @@
             <span class="stamp">
             ${JWStatus::GetTimeDesc($status['timeCreate'])}
             通过
-            ${JWDevice::GetNameFromType($status['device'], $status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}
+            ${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}
             </span>
         </li>
     <!--{/foreach}-->
