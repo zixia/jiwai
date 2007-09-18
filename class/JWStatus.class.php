@@ -992,6 +992,17 @@ _SQL_;
 		return $row['idMax'];
 	}
 
+	static public function HtmlEntityDecode( $status ) {
+		$quots = array(
+				'&apos;' => "'",
+			);
+
+		$status = str_replace( array_keys( $quots ), array_values( $quots ), $status );
+		$status = html_entity_decode( $status, ENT_QUOTES );
+
+		return $status;
+	}
+
 
 }
 ?>

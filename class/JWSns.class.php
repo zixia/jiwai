@@ -491,6 +491,7 @@ class JWSns {
 		
 		//check signature changed
 		if( 'Y' == $isSignature ) {
+			$status = JWStatus::HtmlEntityDecode( $status );
 			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
 				return true;
 			}
