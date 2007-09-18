@@ -19,7 +19,7 @@ class JWUnicode {
         '\x{AC00}-\x{D7AF}', //朝鲜文音节
     );
     static private $blocks_n = array (
-        '_\.\-\s', //用户名允许用的特殊字符添加在这里，先允许空格，调用时检查
+        '_\.\- ', //用户名允许用的特殊字符添加在这里，先允许空格，调用时检查\s is pattern, not support change to space
         'A-Za-z0-9',
         //'\x{FF10}-\x{FF19}\x{FF20}-\x{FF3A}\x{FF41}-\x{FF5A}', //全角0-9A-Za-z
         '\x{4E00}-\x{9FBF}', //CJK Unified Ideographs CJK 统一表意符号

@@ -72,7 +72,7 @@ class JWNotifyQueue {
 
 		$metaInfo = base64_Encode( serialize( $extraInfo ) );
 
-		JWDB::SaveTableRow( 'NotifyQueue' , array(
+		return JWDB::SaveTableRow( 'NotifyQueue' , array(
 					'idUserFrom' => $idUserFrom,
 					'idUserTo' => $idUserTo,
 					'type' => $type,
