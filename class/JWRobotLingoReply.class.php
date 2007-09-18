@@ -31,6 +31,7 @@ class JWRobotLingoReply {
 			'REPLY_ADD_NOADDRESS' => '哎呀！抱歉，我太笨了。你添加的 {0} 我不认识，请你输入手机号码或邮件地址。了解更多？发送 HELP。',
 			'REPLY_ADD_REQUEST' => '{0}已经注册！我们已经帮你发送了好友添加请求。',
 			'REPLY_ADD_REQUEST_INVITE' => '搞定了！我们已经帮你发出了邀请！期待很快能得到你朋友的回应。',
+			'REPLY_ADD_SELF' => '{0}，你好，{1} 是你自己的地址，邀请自己没有意义，邀请别人才有意义，活着就要做有意义的事。',
 
 			'REPLY_DENY_SUCC' => '搞定了！你没有接受{0}({1})的邀请。发送GET {1}获取 {0} 的最新更新。',
 			'REPLY_DENY_NOINVITE' => '哎呀！{0} 并没有邀请你。发送HELP了解更多。',

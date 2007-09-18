@@ -183,7 +183,7 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 		
-		if ( JWDevice::IsExist( $mobileNo, $type ) ){
+		if ( false == JWDevice::IsExist( $mobileNo, $type ) ){
 
 			$body = $robotMsg->GetBody();
 			$body = JWRobotLingoBase::ConvertCorner( $body );
@@ -205,6 +205,13 @@ class JWRobotLingo {
 
 		if( empty( $device_db_row ) ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_HOT', array($uaddress) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		//邀请自己，无意义
+		if( $idUser == $device_db_row['idUser'] ) {
+			$yourSelf = JWUser::GetUserInfo( $idUser );
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ADD_SELF', array($yourSelf['nameFull'], $mobileNo) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 

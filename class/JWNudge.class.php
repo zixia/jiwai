@@ -163,6 +163,8 @@ class JWNudge {
 		//如果没有设备，或用户接受设备为web，那么不需要nudge
 		if( empty( $deviceRow ) || $deviceSendVia == 'web' )
 			return null;
+
+		return $deviceSendVia;
 		
 		$originOrder = $deviceSendVia;
 		//$nudgeOrder = explode( ',' , $deviceSendVia );
