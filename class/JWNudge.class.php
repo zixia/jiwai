@@ -170,6 +170,11 @@ class JWNudge {
 
 		$shortcutArray = array();	
 		foreach( $deviceRow as $type=>$row ){
+			// 用户选了不用此设备接受更新，那么算了吧；
+			if( $row['enabledFor'] == 'nothing' ) {
+				$nudgeOrder = array_diff( $nudgeOrder, array( $type ) );
+				continue;
+			}
 			array_push( $shortcutArray, array( 'type' => $type, 'address' => $row['address'] ) );
 		}
 
