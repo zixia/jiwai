@@ -761,12 +761,15 @@ _SQL_;
 	static public function IsSignatureChanged($idUser, $device, $status){
 		//Sinature logic
 		if( self::IsSignatureRecordDevice($device) ){
+
 			$device_row = JWDevice::GetDeviceRowByUserId( $idUser );
 
 			$device_data = isset($device_row[$device]) ? $device_row[$device] : null;
 
 			if ( $device_data['isSignatureRecord'] != 'Y' )
 				return false;
+
+			$status = JWStatus::HtmlEntityDecode( $status );
 
 			if( !empty( $device_data ) 
 					&& strncasecmp($device_data['signature'],$status,140)
