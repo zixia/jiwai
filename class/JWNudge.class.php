@@ -155,16 +155,18 @@ class JWNudge {
 	/**
 	 * 为用户选择发送通知的设备；
 	 * 如果用户默认为 sms ，则未其检查在线其他im
-	 * 如过默认为 web，不发送
+	 * 如过默认为 web，不发送  | default MSN/GTALK/SKYPE/QQ/SMS/WEB
 
 	 */
 	static public function GetAvailableSendVia( $deviceRow = array(), $deviceSendVia = 'web' ) {
-
-
-		if( empty( $deviceRow ) )
+		
+		//如果没有设备，或用户接受设备为web，那么不需要nudge
+		if( empty( $deviceRow ) || $deviceSendVia == 'web' )
 			return null;
 		
-		$nudgeOrder = explode( ',' , $deviceSendVia );
+		$originOrder = $deviceSendVia;
+		//$nudgeOrder = explode( ',' , $deviceSendVia );
+		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'sms' );
 
 		$shortcutArray = array();	
 		foreach( $deviceRow as $type=>$row ){
@@ -173,16 +175,30 @@ class JWNudge {
 
 		$onlineArray = JWIMOnline::GetDbRowsByAddressTypes( $shortcutArray );
 
+		$onlineIms = array();
 		foreach( $nudgeOrder as $device ){
 			foreach( $onlineArray as $key=>$o ){
 				if( 0 == strncasecmp( $key, $device, strlen($device) ) ){
 					if( $o['onlineStatus'] !== 'OFFLINE' ) 
-					       return $device;	
+						array_push( $onlineIms, $device );
 				}
 			}
 		}
-
-		if( isset( $deviceRow['sms']) && in_array('sms', $nudgeOrder) ){
+		
+		//如果有在线的IM 设备，选择发送
+		if( in_array( $originOrder, $onlineIms ) ) {
+			return $originOrder;
+		} else if( false == empty( $onlineIms ) ) {
+			return $onlineIms[0];
+		}
+		
+		//如果选定了QQ，那么即使不在线，也发送，我们无法判定QQ在线
+		if( isset( $deviceRow['qq']) && $originOrder == 'qq' ){
+			return 'qq';
+		}
+		
+		//如果到了这里，且绑定了手机，那么发短信吧；
+		if( isset( $deviceRow['sms']) ){
 			return 'sms';
 		}
 
