@@ -103,6 +103,10 @@ class JWLocation {
     static public function GetLocationName($location){
         $pid = $cid = $pname = $cname = null;
         @list( $pid, $cid ) = explode('-', $location );
+
+	if( substr($location,0,2) == '0-' )
+		return '未知';
+
         if( intval($pid) ) {
             $prov = self::GetDbRowById( intval($pid) );
             $pname = ( empty($prov) ) ? null : $prov['name'];

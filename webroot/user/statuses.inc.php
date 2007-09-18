@@ -6,20 +6,21 @@ function user_status($idPageUser, $idStatus)
 	$status_rows	= JWStatus::GetStatusDbRowsByIds(array($idStatus));
 	$status_info	= @$status_rows[$idStatus];
 
-
-	if ( $status_info['idUser']!==$idPageUser )
+	$page_user_info	= JWUser::GetUserInfo($idPageUser);
+	if ( $status_info['idUser']!==$idPageUser && false == ( @$status_info['idConference']!=null 
+						&& $status_info['idConference'] == $page_user_info['idConference'] 
+					) 
+		)
 	{
 		JWTemplate::RedirectTo404NotFound();
 		exit(0);
 	}
 
-	$page_user_info	= JWUser::GetUserInfo($idPageUser);
-
 	$logined_user_info	= JWUser::GetCurrentUserInfo();
 
 	$formated_status 	= JWStatus::FormatStatus($status_info,false);
 
-    $pettyDevice = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
+	$pettyDevice = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
 
 	$protected = false;
 	if ( JWUser::IsProtected($idPageUser) )

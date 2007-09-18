@@ -82,6 +82,10 @@ class JWStatus {
 	{
 		//strip status
 		$status = preg_replace('[\r\n]',' ',$status);
+
+		if( $isSignature == 'Y' ) {
+			$status = htmlSpecialChars_Decode( $status );
+		}
 		
 		//time set
 		if( isset( $options['timeCreate'] ) ) {

@@ -107,7 +107,7 @@ vertical-align:top;
 
       			<th></th>
       			<td>	
-					<input name="invitation_id" type="hidden" value="<?php echo $invitation_info['id']?>" />
+					<input name="invitation_id" type="hidden" value="<?php echo $inviter_id;?>" />
 					<input name="commit" type="submit" value="登录" />
 				</td>
       		</tr>

@@ -3,7 +3,7 @@ $status = JWDB_Cache_Status::GetDbRowById( $mmsId );
 if( empty( $status ) || $status['isMms'] == 'N' ){
 	JWTemplate::RedirectTo404NotFound();
 }
-$picture = JWPicture::GetDbRowById( $status['idPicture'] );
+$picture = JWDB_Cache_Picture::GetDbRowById( $status['idPicture'] );
 if( empty( $picture ) ){
 	JWTemplate::RedirectTo404NotFound();
 }
