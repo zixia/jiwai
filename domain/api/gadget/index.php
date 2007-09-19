@@ -57,9 +57,6 @@ switch ($pathParam[0])
 			case 'xml':
 				public_timeline_xml($options);
 				break;
-			case 'png':
-				header('Location: http://asset.alpha.jiwai.vm/gadget/image/?'.$_SERVER['QUERY_STRING']);
-				break;
 			default: 
 				break;
 		}

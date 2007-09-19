@@ -11,7 +11,15 @@ if (JWUser::IsProtected($page_user_id)) {
 	echo 'Protected user.';
 	die();
 }
-getOwnTimeline(5);
+$width = (int) $_GET['width'];
+$mode = (int) $_GET['mode'];
+$count = (int) $_GET['count'];
+$last = (int) $_GET['cc1'];
+$sum = crc32('JW'.$page_user_id.$width.$mode.$count.$last);
+if ($sum != $_GET['cc2']) {
+	echo 'Unknown parameters.';
+	die();
+}
 
 function getOwnTimeline($count=10) {
 	global $page_user_id, $page_user_info;

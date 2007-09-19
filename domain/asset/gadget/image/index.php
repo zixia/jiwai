@@ -11,12 +11,12 @@ if ($count<$count_min) $count = $count_min;
 if ($count>$count_max) $count = $count_max;
 
 $modes = array('line', 'bar', 'block');
-$mode = isset($_GET['mode']) ? $_GET['mode'] : 0;
-$mode = isset($modes[$mode]) ? $mode : 0;
+$mode = isset($_GET['mode']) ? $_GET['mode'] : 1;
+$mode = isset($modes[$mode]) ? $mode : 1;
 
 $width_def = array(320, 400, 180);
 $width_min = array(100, 300, 160);
-$width_max = array(1600, 1600, 1600);
+$width_max = array(800, 800, 800);
 $width = isset($_GET['width']) ? (int)$_GET['width'] : $width_def[$mode];
 if ($width<$width_min[$mode]) $width = $width_min[$mode];
 if ($width>$width_max[$mode]) $width = $width_max[$mode];
@@ -71,6 +71,10 @@ function color_check($s, $default = '000000') {
 }
 
 //error_reporting(E_ALL ^ E_NOTICE);
+header('Last-Modified: '.date(DATE_RFC822));
+header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
+header('Pragma: public');
+header("cache-control: max-age=259200");
 
 switch($mode) {
 	case 0:
