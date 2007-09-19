@@ -462,31 +462,31 @@ _SQL_;
 		if ( !isset(self::$msReservedNames) )
 		{
 			self::$msReservedNames = array (	
-												'all'				=> true
-												, 'alpha'			=> true
-												, 'api'				=> true
-												, 'asset'			=> true
-												, 'beta'			=> true
-												, 'blog'			=> true
-												, 'bug'				=> true
-												, 'faq'				=> true
-												, 'help'			=> true
-												, 'jiwai'			=> true
-												, 'jiwaide'			=> true
-												, 'm'				=> true
-												, 'mashup'			=> true
-												, 'public_timeline'	=> true
-												, 'root'			=> true
-												, 'sms'				=> true
-												, 'team'			=> true
-												, 'twitter'			=> true
-												, 'wo'				=> true
-												, 'www'				=> true
-												, 'zixia'			=> true
-											);
+				'all'				=> true
+				, 'alpha'			=> true
+				, 'api'				=> true
+				, 'asset'			=> true
+				, 'beta'			=> true
+				, 'blog'			=> true
+				, 'bug'				=> true
+				, 'faq'				=> true
+				, 'help'			=> true
+				, 'jiwai'			=> true
+				, 'jiwaide'			=> true
+				, 'm'				=> true
+				, 'mashup'			=> true
+				, 'public_timeline'		=> true
+				, 'root'			=> true
+				, 'sms'				=> true
+				, 'team'			=> true
+				, 'twitter'			=> true
+				, 'wo'				=> true
+				, 'www'				=> true
+				, 'zixia'			=> true
+			);
 		}
 
-		if ( isset(self::$msReservedNames[$nameScreen]) )
+		if ( isset(self::$msReservedNames[strtolower($nameScreen)]) )
 			return true;
 
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));

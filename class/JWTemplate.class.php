@@ -1266,7 +1266,7 @@ _HTML_;
 			switch ($options['view']) {
 				case 'list':
 					echo <<<_HTML_
-				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact" onmouseover="JiWai.ShowThumb(this.getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="48" height="48"/></a></li>
+				<li><a href="/$user_db_row[nameScreen]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact" onmouseover="JiWai.ShowThumb($(this).getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="48" height="48"/></a></li>
 
 _HTML_;
 					break;
