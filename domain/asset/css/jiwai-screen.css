@@ -500,3 +500,6 @@ a.button2 img { margin-top:8px;}
 .bigimg img {padding:1px; background-color:#ffffff; border:1px solid #CECECE;}
 .bigimg a {font-size:14px; color:#7D7D7D; line-height:45px;}
 .bigimg {font-size:14px; line-height:25px;}
+
+/*====for hint====*/
+i{color:red;font-size:12px;display:block;margin:1px;font-style:normal;}
