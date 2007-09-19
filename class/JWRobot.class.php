@@ -182,6 +182,10 @@ class JWRobot {
 
 	static function SendMtRaw ($address, $type, $msg, $serverAddress=null)
 	{
+		if( trim($msg) == null ) {
+			JWLog::Instance()->Log(LOG_ERR, "Try to send null msg to $type://$address. [dropped.]");
+			return false;
+		} 
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($address,$type,$msg, $serverAddress);
 		self::SendMt($robot_msg);

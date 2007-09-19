@@ -184,10 +184,19 @@ SQL;
 						$message = @$metaInfo['message'];
 						$idConference = @$metaInfo['idConference'];
 
-						echo "[$queueType] idUserFrom: $idUserFrom, "
-							. "idUserTo: $idUserTo, "
-							. "message: $message, "
-							. "idConference: $idConference\n";
+						if( empty($message) ) {
+							echo "[$queueType] idUserFrom: $idUserFrom, "
+								. "idUserTo: $idUserTo, "
+								. "message: NULL, "
+								. "idConference: $idConference, "
+								. "Operation: Omit\n";
+						}else{
+							echo "[$queueType] idUserFrom: $idUserFrom, "
+								. "idUserTo: $idUserTo, "
+								. "message: $message, "
+								. "idConference: $idConference\n";
+						}
+
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $idConference );
 					}
@@ -219,7 +228,7 @@ SQL;
 						$message = $metaInfo['message'];
 						$addressTo = $metaInfo['address'];
 						$type = $metaInfo['type'];
-                        $webInvite = isset($metaInfo['webInvite'])  ? true : false;
+						$webInvite = isset($metaInfo['webInvite'])  ? true : false;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "type: $type, "
