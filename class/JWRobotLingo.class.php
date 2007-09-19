@@ -1101,7 +1101,11 @@ class JWRobotLingo {
 			//end if
 
 			if( empty($user_name) ) {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_HOT', array($user_name,));
+				if( $registered ) {
+					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_GM_HOT', array($user_name,));
+				} else {
+					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_HOT', array($user_name,));
+				}
 				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 			}else{
 
