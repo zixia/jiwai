@@ -159,6 +159,7 @@ class JWApi{
 			$key = strtolower($key);
 
 			if($value===false) $value='false';
+			if($value===true) $value='true';
 
 			if (is_array($value)) { // 大于一层的 assoc array
 				//Add by seek 2007-06-14 4:45
