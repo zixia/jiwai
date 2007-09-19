@@ -67,6 +67,8 @@ if ( isset($_REQUEST['set']) )
 			</fieldset>
 		</form>
 </h3>
+<!-- tricky unclosed ul tag -->
+<ul class="list_ji">
 _SET_OPENID_;
 }
 else if ( $openid_id )
@@ -75,8 +77,9 @@ else if ( $openid_id )
 	$openid_db_row 	= JWOpenid::GetDbRowById($openid_id);
 	$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
 	echo <<<_USER_OPENID_
-		<h4 style="display:inline">你的 OpenID 为：<strong>$openid_url</strong></h4>
-		<a href="/wo/openid/destroy/$openid_id">使用叽歪de OpenID ?</a>
+		<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">你的 OpenID 为：<strong>$openid_url</strong></h3>
+		<ul class="list_ji"><li><a href="/wo/openid/destroy/$openid_id">使用叽歪de OpenID ?</a></li>
+<!-- tricky unclosed ul tag -->
 _USER_OPENID_;
 
 }
@@ -88,7 +91,9 @@ else
 <h3 style=" padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">您的 OpenID 为：
 	<input name="textfield" type="text" value="http://jiwai.de/$user_info[nameScreen]/" class="input" readonly="readonly" />
 </h3>
-<ul class="list_ji"> <a href="?set" >绑定你自己的 OpenID ?</a>
+<ul class="list_ji">
+<li><a href="?set" >绑定你自己的 OpenID ?</a></li>
+<!-- tricky unclosed ul tag -->
 _JIWAI_OPENID_;
 }
 ?>
@@ -112,10 +117,10 @@ _HTML_;
 }
 }
 ?>
-  <ul class="list_ji">
     <li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
     <li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
   </ul>
+  <!-- end of tricky part -->
 </div>
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->

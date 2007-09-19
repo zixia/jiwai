@@ -57,18 +57,11 @@ if ( isset($_REQUEST['action']) )
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<div class="separator"></div>
 
 <div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
-
-
+<?php JWTemplate::SettingTab('/wo/openid/'); ?>
+<div class="tabbody">
 			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php JWTemplate::UserSettingNav('openid'); ?>
-
-<hr class="separator" />
 
 <?php
 
@@ -81,8 +74,6 @@ JWTemplate::ShowActionResultTips();
 <li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
 <li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
 </ul>
-
-<hr class="separator" />
 
 <?php
 $request = JWOpenid_Server::GetRequestInfo();
@@ -104,12 +95,8 @@ $request = JWOpenid_Server::GetRequestInfo();
 </form>
 
 </div>
-
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
+</div><!-- #tabbody -->
 </div><!-- #container -->
-<hr class="separator" />
 
 <?php JWTemplate::footer() ?>
 
