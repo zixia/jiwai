@@ -26,7 +26,7 @@ $count = (int) $_GET['count'];
 $last = (empty($status_data) || empty($status_data['status_ids'])) ? 0 : $status_data['status_ids'][0];
 $sum = crc32('JW'.$idUser.$width.$mode.$count.$last);
 
-$url = "http://asset.alpha.jiwai.vm/gadget/image/?user=$idUser&mode=$mode&width=$width&count=$count&cc1=$last&cc2=$sum";
+$url = "http://asset.jiwai.de/gadget/image/?user=$idUser&mode=$mode&width=$width&count=$count&cc1=$last&cc2=$sum";
 header('Location: '.$url);
 
 ?>

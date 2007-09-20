@@ -24,13 +24,13 @@ $idUser	= $user['id'];
 		<fieldset>
 			<form method="post" id="f">
                 <p>
-                    <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('w').checked=true;$('only').selected=true;$('c').disabled=true;$('x').disabled=true;" /> 横幅式
-                    <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false;$('x').disabled=false;" checked /> 侧栏式
+                    <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true;" /> 横幅式
+                    <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false;" checked /> 侧栏式
+                    &nbsp;
+                    &nbsp;
+			宽度 <input size="3" name="width" value="200" /> 像素
                 </p>	
                 <p>显示 
-                    <label><input style="display:inline;width:20px;" id="w" type="radio" name="source" value="0" checked />我自己的</label>
-                    <label><input style="display:inline;width:20px;" id="x" type="radio" name="source" value="1" />我和朋友们的</label>
-                    &nbsp;
                     最近
                     <select id="c" name="count">
                         <option value="1" id="only">1</option>
@@ -48,7 +48,7 @@ $idUser	= $user['id'];
                 </p>
 <script type="text/javascript">
 function draw() {
-	var url = "http://asset.alpha.jiwai.vm/gadget/image/?user=<?php echo $idUser;?>&"+$("f").toQueryString();//+'&'+Math.random();
+	var url = "http://api.jiwai.de/gadget/image/<?php echo $idUser;?>.png?"+$("f").toQueryString();//+'&'+Math.random();
 	$('url').value=url; 
 	$("o").src = url;
 }
