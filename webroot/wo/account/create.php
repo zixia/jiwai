@@ -263,7 +263,7 @@ function updateLink(value){
         <tr>
             <td width="70" align="right" valign="top">用户名</td>        
             <td width="240">
-                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" maxlength="16" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" onKeyup="updateLink( this.value );"/><a href="/wo/account/complete">已经通过手机或IM注册过</a>
+                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" maxlength="16" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" onKeyup="updateLink( this.value );" check="null" ajax="nameScreen" alt="用户名"/><i></i><a href="/wo/account/complete">已经通过手机或IM注册过</a>
             </td>
             <td valign="top" class="note">用来登录叽歪de（不可含汉字、空格及特殊字符，最短5个字符） </td>
         </tr>
@@ -274,22 +274,22 @@ function updateLink(value){
         </tr>
         <tr>
             <td align="right">姓　名</td>
-            <td><input type="text" name="user[nameFull]" value="<?php if(array_key_exists('nameFull', $aUserInfo)) echo $aUserInfo['nameFull'];?>" /></td>
+            <td><input type="text" name="user[nameFull]" value="<?php if(array_key_exists('nameFull', $aUserInfo)) echo $aUserInfo['nameFull'];?>" ajax="nameFull" null="true" alt="姓名"/><i></i></td>
             <td class="note">你的真实姓名，可使用中文或空格</td>
         </tr>
         <tr>
             <td align="right">密　码</td>
-            <td><input id="user_pass" type="password" name="user[pass]" /></td>
+            <td><input id="user_pass" type="password" name="user[pass]" alt="密码" /></td>
             <td class="note">至少6个字符</td>
         </tr>
         <tr>
             <td align="right">再输一遍</td>
-            <td><input id="user_pass_confirm" type="password" name="user[pass_confirm]" /></td>
+            <td><input id="user_pass_confirm" type="password" name="user[pass_confirm]" alt="确认密码" compare="user_pass" minlength="6"/></td>
             <td class="note">&nbsp;</td>
         </tr>
         <tr>
             <td align="right">Email</td>
-            <td><input id="user_email" type="text" name="user[email]" value="<?php if(array_key_exists('email',$aUserInfo)) echo $aUserInfo['email'];?>"/></td>
+            <td><input id="user_email" type="text" name="user[email]" value="<?php if(array_key_exists('email',$aUserInfo)) echo $aUserInfo['email'];?>" ajax="email" null="true" alt="Email"/><i></i></td>
             <td class="note">用于找回密码和接收通知</td>
         </tr>
     </table>
@@ -301,7 +301,7 @@ function updateLink(value){
     </li>
 </ul>
     <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>" alt="注册" /></a>
+    	<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>" alt="注册" /></a>
     </div>            
 
 </form>
@@ -316,6 +316,8 @@ function updateLink(value){
 </script>
 
 <?php JWTemplate::footer() ?>
-
+<script defer="true">
+	JWValidator.init('f');
+</script>
 </body>
 </html>
