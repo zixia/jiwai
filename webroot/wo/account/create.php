@@ -284,7 +284,7 @@ function updateLink(value){
         </tr>
         <tr>
             <td align="right">再输一遍</td>
-            <td><input id="user_pass_confirm" type="password" name="user[pass_confirm]" alt="确认密码" compare="user_pass" minlength="6"/></td>
+            <td><input id="user_pass_confirm" type="password" name="user[pass_confirm]" alt="确认密码" compare="user_pass" minLength="6"/></td>
             <td class="note">&nbsp;</td>
         </tr>
         <tr>

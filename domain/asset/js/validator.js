@@ -101,7 +101,7 @@ var JWValidator = {
 				var v= (b) ? m.options[m.selectedIndex].value.replace(/\-+/,'') : m.value;
 				v = v.length;
 
-				var x=parseInt( this.attr(m,'minlength') );
+				var x=parseInt( this.attr(m,'minLength') );
 				var z=parseInt( this.attr(m,'maxLength') );
 				if(isNaN(x))
 					x=0;

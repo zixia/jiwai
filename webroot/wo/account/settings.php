@@ -291,7 +291,7 @@ function updateLink(value){
 			</tr>
 			<tr>
 				<th>重复输入新密码：</th>
-				<td><input id="password_confirmation" name="password_confirmation" type="password" compare="password" alt="确认密码" minlength="6" /></td>
+				<td><input id="password_confirmation" name="password_confirmation" type="password" compare="password" alt="确认密码" minLength="6" /></td>
 				<td>&nbsp;</td>
 			</tr>
 		</table>

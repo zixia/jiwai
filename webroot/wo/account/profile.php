@@ -243,7 +243,7 @@ if ( $has_photo ){
     </tr>
     <tr>
         <th valign="top">自我介绍：</th>
-        <td><textarea name="user[bio]" id="user_name" style="height:60px;"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
+        <td><textarea name="user[bio]" id="user_name" style="height:60px;" maxLength="70" alt="自我介绍"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
         <td class="note">一句话的介绍，不超过70个字</td>
     </tr>
     <tr>
@@ -273,7 +273,7 @@ if ( $has_photo ){
     </tr>
     <tr>
         <th>Email：</th>
-        <td><input name="user[email]" type="text" id="user_email" value="<?php echo $outInfo['email']?>"/></td>
+        <td><input name="user[email]" type="text" id="user_email" value="<?php echo $outInfo['email']?>" ajax="email" null="true" alt="Email"/><i></i></td>
         <td class="note">用于找回密码和接收通知</td>
     </tr>
     <tr><td colspan="3">&nbsp;</td></tr>
