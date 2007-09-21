@@ -98,10 +98,9 @@ var JWValidator = {
 					m.value= this.trim(m.value);
 				var a=this.attr(m,'alt');
 
-				var v= (b) ? m.options[m.selectedIndex].value.replace(/\-+/,'') : m.value;
-				v = v.length;
+				v = this.value(m).length;
 
-				var x=parseInt( this.attr(m,'minLength') );
+				var x=parseInt( this.attr(m,'minlength') );
 				var z=parseInt( this.attr(m,'maxLength') );
 				if(isNaN(x))
 					x=0;

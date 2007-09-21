@@ -263,7 +263,7 @@ function updateLink(value){
         <tr>
             <td width="70" align="right" valign="top">用户名</td>        
             <td width="240">
-                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" maxlength="16" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" onKeyup="updateLink( this.value );" check="null" ajax="nameScreen" alt="用户名"/><i></i><a href="/wo/account/complete">已经通过手机或IM注册过</a>
+                <input id="user_nameScreen" name="user[nameScreen]" size="30" type="text" maxLength="16" value="<?php if(array_key_exists('nameScreen',$aUserInfo)) echo $aUserInfo['nameScreen'];?>" onKeyup="updateLink( this.value );" check="null" ajax="nameScreen" alt="用户名"/><i></i><a href="/wo/account/complete">已经通过手机或IM注册过</a>
             </td>
             <td valign="top" class="note">用来登录叽歪de（不可含汉字、空格及特殊字符，最短5个字符） </td>
         </tr>
