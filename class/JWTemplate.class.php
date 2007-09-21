@@ -92,6 +92,7 @@ _FOOT_;
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
 		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.11.js' );
 		$asset_url_js_location	= self::GetAssetUrl('/js/location.js' );
+		$asset_url_js_validator	= self::GetAssetUrl('/js/validator.js' );
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -188,6 +189,7 @@ $openid_html
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
 	<script type="text/javascript" src="$asset_url_js_location"></script>
+	<script type="text/javascript" src="$asset_url_js_validator"></script>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />

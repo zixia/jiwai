@@ -407,7 +407,7 @@ _SQL_;
 	{
 		$valid = false;
 		
-		$regexp = '/^[\w\d._\-]+@[\w\d._\-]+$/';
+		$regexp = '/^[\w\-\.]+@[\w\-]+(\.[\w\-]+)*(\.[a-z]{2,})$/';
 
 		if ( preg_match($regexp, $email) ){
 			if ( $strict ){
