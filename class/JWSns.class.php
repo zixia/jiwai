@@ -568,14 +568,13 @@ class JWSns {
 
 			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
 			{
-				$picUrl = JWPicture::GetUrlById($createOptions['idPicture'], 'origin');
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-
+				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $createOptions['idPicture'];
 
 				$message = array(
 					'sms' => "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
-					'im' => "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>下载地址：$picUrl",
+					'im' => "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
 					'type' => 'MMS',
 					'idStatus' => $ret,
 				);
