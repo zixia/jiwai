@@ -694,8 +694,7 @@ _SQL_;
 					$row = JWIMOnline::GetDbRowByShortcut( $shortcut );
 				}
 				if( empty( $row ) ){
-					$msnArray = array( 'msn001@jiwai.de', 'msn002@jiwai.de', 'msn003@jiwai.de' );
-					$name = $msnArray[ array_rand($msnArray, 1) ];
+					$name = JWIMOnline::GetServerAddressByType($type);
 					if( false == empty($address) ) {
 						$shortcut = "$type:$address";
 						JWIMOnline::SetIMOnline( $address, $type, $name, 'OFFLINE' );
@@ -809,7 +808,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', /*'facebook' , 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook' /*, 'jabber'*/ );
 	}
 
 	/*

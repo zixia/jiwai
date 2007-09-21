@@ -56,6 +56,23 @@ _SQL_;
 	}
 
 	/**
+	 * Get ServerAddress from Type
+	 */
+	static public function GetServerAddressByType($type='msn'){
+		$sql = <<<_SQL_
+SELECT serverAddress FROM IMOnline 
+	WHERE type='$type' 
+	GROUP BY serverAddress 
+	ORDER BY COUNT(1) ASC
+	limit 1
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql, false );
+		if( empty( $row ) )
+			return null;
+		return $row['serverAddress'];
+	}
+
+	/**
 	 * Get IMOnline By Short cut
 	 */
 	static public function GetDbRowByAddressType($address, $type){
