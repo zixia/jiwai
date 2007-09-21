@@ -230,7 +230,7 @@ if ( $has_photo ){
     <table width="100%" cellspacing="3">
     <tr>
         <th valign="top">姓名：</th>
-        <td width="250"><input name="user[nameFull]" type="text" id="user_nameFull" value="<?php echo $outInfo['nameFull']; ?>" /></td>
+        <td width="250"><input name="user[nameFull]" type="text" id="user_nameFull" value="<?php echo $outInfo['nameFull']; ?>" ajax="nameFull" alt="姓名"/><i></i></td>
         <td class="note">你的真实姓名，可使用中文和空格</td>
     </tr>
     <tr>
@@ -268,7 +268,7 @@ if ( $has_photo ){
     </tr>
     <tr>
         <th>个人网址：</th>
-        <td><input name="user[url]" type="text" id="user_url" value="<?php echo $outInfo['url'] ?>" /></td>
+        <td><input name="user[url]" type="text" id="user_url" value="<?php echo $outInfo['url'] ?>" ajax="url" null="true" alt="网址"/><i></i></td>
         <td class="note">可在叽歪中显示一个相关的网址或个人网站 </td>
     </tr>
     <tr>
@@ -286,9 +286,8 @@ if ( $has_photo ){
 </fieldset>
 
     <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    	<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
     </div>            
-
 
 </form>
 </div>
@@ -296,6 +295,8 @@ if ( $has_photo ){
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>
-
+<script defer="true">
+	JWValidator.init('f');
+</script>
 </body>
 </html>

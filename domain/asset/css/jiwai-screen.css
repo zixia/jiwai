@@ -194,9 +194,9 @@ html>body #content .tabMenu {margin-top:19px;}
 	.odd .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
 
 .normal .wapnew .odd {border:1px solid #FFCFA8; margin:11px 17px; padding:8px; min-height:140px;}
-.normal .wapnew .odd .head { width:160px; height:150px;}
+.normal .wapnew .odd .head { width:160px; height:140px; }
 .normal .wapnew .odd .meta { line-height:30px;}
- .normal .wapnew .odd .head img{ width:149px; height:115px;}
+ .normal .wapnew .odd .head img{ width:149px; }
 .normal .wapnew .odd .cont .action {text-align:right;}
 .normal .wapnew .odd .cont .action a {padding-left:18px; font-size:12px; margin-left:5px;}
 .normal .wapnew .odd .cont .action .fav {background:url(../images/org-icon-fav.gif) no-repeat left;}
@@ -502,4 +502,4 @@ a.button2 img { margin-top:8px;}
 .bigimg {font-size:14px; line-height:25px;}
 
 /*====for hint====*/
-i{color:red;font-size:12px;display:block;margin:1px;font-style:normal;}
+i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}

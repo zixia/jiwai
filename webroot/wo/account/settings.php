@@ -244,7 +244,7 @@ function updateLink(value){
 		<tr>
 			<th valign="top">用户名：</th>
 			<td width="250">
-				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" />
+				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
 			</td>
 			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
 		</tr>
@@ -255,19 +255,19 @@ function updateLink(value){
 		</tr>
 		<tr>
 			<th>姓名：</th>
-			<td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" /></td>
+			<td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" ajax="nameFull" alt="姓名"/><i></i></td>
 			<td class="note">你的真实名字，可以使用中文和空格</td>
 		</tr>
 		<tr>
 			<th>Email：</th>
-			<td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" /></td>
+			<td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" ajax="email" alt="Email"/><i></i></td>
 			<td class="note">用于找回密码和接收通知</td>
 		</tr>
 	</table>
 	</fieldset>
 
 	<div style=" padding:20px 0 0 160px; height:50px;">
-		<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
 	</div>
 
 	</form>
@@ -281,23 +281,23 @@ function updateLink(value){
 		<table width="100%" cellspacing="3">
 			<tr>
 				<th>当前密码：</th>
-				<td width="250"><input id="current_password" name="current_password" type="password" /></td>
+				<td width="250"><input id="current_password" name="current_password" type="password" <?php echo $verify_corrent_password ? 'check="null"' : '' ?> alt="当前密码" /></td>
 				<td class="note">至少6个字符，建议使用数字、符号、字母组合的复杂密码</td>
 			</tr>
 			<tr>
 				<th>新密码：</th>
-				<td><input id="password" name="password" type="password" /></td>
+				<td><input id="password" name="password" type="password" alt="新密码"/></td>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
 				<th>重复输入新密码：</th>
-				<td><input id="password_confirmation" name="password_confirmation" type="password" /></td>
+				<td><input id="password_confirmation" name="password_confirmation" type="password" compare="password" alt="确认密码" minlength="6" /></td>
 				<td>&nbsp;</td>
 			</tr>
 		</table>
 		</fieldset>
 		<div style=" padding:20px 0 0 160px; height:50px;">
-			<a onclick="$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+			<a onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
 			<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
 		</div>			
 	</form>
@@ -309,6 +309,8 @@ function updateLink(value){
 <!-- #container -->
 
 <?php JWTemplate::footer() ?>
-
+<script defer="true">
+	JWValidator.init('f','f1');
+</script>
 </body>
 </html>
