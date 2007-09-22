@@ -557,8 +557,8 @@ class JWSns {
 
 		
 		//Real Create Status
-		$ret = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
-		if( $ret ) {
+		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
+		if( $idStatus ) {
 
 			//Notify Follower
 			$metaInfo = array();
@@ -570,13 +570,14 @@ class JWSns {
 			{
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $ret;
+				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $idStatus;
+				$nameScreen = $userInfo['nameScreen'];
 
 				$message = array(
-					'sms' => "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
-					'im' => "$userInfo[nameScreen]: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
+					'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
+					'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
 					'type' => 'MMS',
-					'idStatus' => $ret,
+					'idStatus' => $idStatus,
 				);
 				$metaInfo['message'] = $message;
 				$queueType = JWNotifyQueue::T_MMS;
@@ -592,7 +593,7 @@ class JWSns {
 			//Activate User
 			JWUser::ActivateUser( $idUser );
 		}
-		return $ret;
+		return $idStatus;
 	}
 
 	/**

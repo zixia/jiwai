@@ -17,6 +17,13 @@ class JWFuncCode {
 	 */
 	const PRE_CONF_CUSTOM = '10';
 	const PRE_CONF_IDUSER = '11';
+	
+	/**
+	 * 股票代码 | 股票行业系统，需要股票代码行业关联关系，叽歪机器人指令不从Conference解析，直接使用
+	 * JWRobotLingoBase::GetLingoFuncFromFuncCode；为 88|86 指定专门的指令系统
+	 */
+	const PRE_STOCK_CODE = '88'; 
+	const PRE_STOCK_CATE = '86';
 
 	/**
 	 * Mms notification
@@ -117,6 +124,8 @@ class JWFuncCode {
 						case self::PRE_MMS_NOTIFY:
 						case self::PRE_CONF_IDUSER:
 						case self::PRE_CONF_CUSTOM:
+						case self::PRE_STOCK_CODE:
+						case self::PRE_STOCK_CATE:
 						{
 							return array( 'pre' => $matches[1], 'id' => $matches[2], );
 						}

@@ -145,9 +145,6 @@ class JWRobotMsg {
 	}
 	public function SetLinkId($linkId)
 	{
-		if ( $this->mReadOnly )
-			throw new JWException('cant modify readonly msg');
-
 		$this->mLinkId = $linkId;
 		$this->mIsValid = null;
 	}
@@ -157,9 +154,6 @@ class JWRobotMsg {
 	}
 	public function SetMsgtype($msgtype)
 	{
-		if ( $this->mReadOnly )
-			throw new JWException('cant modify readonly msg');
-
 		$this->mMsgtype = $msgtype;
 		$this->mIsValid = null;
 	}
@@ -193,8 +187,9 @@ class JWRobotMsg {
 	}
 	public function SetBody($body)
 	{
-		if ( $this->mReadOnly )
+		/**if ( $this->mReadOnly )
 			throw new JWException('cant modify readonly msg');
+		*/
 
 		$this->mBody = $body;
 		$this->mIsValid = null;

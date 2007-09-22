@@ -57,6 +57,7 @@ class JWRobotLingoReply {
 
 			'REPLY_FOLLOW_HELP' => 'FOLLOW命令帮助：FOLLOW 帐号。',
 			'REPLY_FOLLOW_SUC' => '每当{0}更新，你都会收到消息。如果要撤销，请发送LEAVE {1}。发送HELP了解更多。',
+			'REPLY_FOLLOW_SUC_MUL' => '每当{0}更新，你都会收到消息。发送HELP了解更多。',
 			'REPLY_FOLLOW_NOUSER' => '哎呀！抱歉，你订阅的 {0} 我不认识，请你确认输入了正确的叽歪帐号。了解更多？发送 HELP。',
 
 			'REPLY_LEAVE_HELP' => 'LEAVE命令帮助：LEAVE 帐号。',
@@ -104,8 +105,11 @@ class JWRobotLingoReply {
 			'REPLY_VERIFY_SUC' => '搞定了！你已经通过了验证。回复本消息即可进行更新，耶！',
 			'REPLY_VERIFY_FAIL' => '哎呀！由于你输入的验证码"{0}"不正确，本次验证未能成功，请你查证后再重试一下吧。',
 
+			/**
+			 * 一般回复
+			 */
 			'REPLY_500'  => '哇，真可怕！由于系统故障，你的请求失败了…… 请稍后再试吧。',
-			'REPLY_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
+			'REPLY_NOUSER' => '哎呀！没有找到用户 {0}。',
 
 			//Out
 			'OUT_NUDGE' => '{0}挠挠了你一下，提醒你更新！回复本消息既可更新。',
@@ -148,7 +152,8 @@ class JWRobotLingoReply {
 	
 	}
 
-	static function GetReplyString( $robotMsg, $shortcut, $value=array() ){
+	static function GetReplyString( $robotMsg, $shortcut, $value=array() )
+	{
 
 		$serverAddress = $robotMsg->GetServerAddress();
 		$type = $robotMsg->GetType();
@@ -157,21 +162,23 @@ class JWRobotLingoReply {
 		$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $address, $type );
 
 		$replyMap = self::GetReplyMap( $idUserConference );
-
 		$shortcut = strtoupper( $shortcut );
 
-		if( isset( $replyMap[ $shortcut ] ) ){
+		return self::FetchReplyString($replyMap, $shortcut, $value );
+	}
 
+	static function FetchReplyString($replyMap, $shortcut, $value=array())
+	{
+		$shortcut = strtoupper( $shortcut );
+		if( isset( $replyMap[ $shortcut ] ) ){
 			$replyString = $replyMap[ $shortcut ];
 
 			$va = array_values( $value );
 			foreach( $va as $k=>$v ) {
 				$replyString = str_replace( '{'.$k.'}', $v, $replyString ); 
 			}
-
 			return $replyString;
 		}
-
 		return null;
 	}
 

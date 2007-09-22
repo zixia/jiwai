@@ -264,6 +264,11 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Follow($robotMsg)
 	{
+		/**
+		 * 拦截指令
+		 */
+		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
+
 		/*
 		 *	获取发送者的 idUser
 		 */
@@ -284,56 +289,60 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
-			/*
-			 * seek 2007/07/25
-			 * 当用户发送follow命令到特服号码，直接follow
-			 */
-			if( $robotMsg->GetIdUserConference() ) {
-				$followe = $robotMsg->GetIdUserConference();
-				if( $followe == 28006 ) {
-					$followe = 'qzgwclub';
-				}
+		$param_array = preg_split('/\s+/', $param_body );
+		$cmd = array_shift( $param_array );
+		$param_array = array_unique( $param_array );
 
-				if( is_numeric( $followe ) ) {
-					$userInfo = JWUser::GetUserInfo( $followe );
-					if( false == empty($userInfo) ){
-						$followe = $userInfo['nameScreen'];
-					}else{
-						$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array($followe,));
-						return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-					}
-				}
-			}else {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_HELP' );
-				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-			}
-		}else{
-			$followe = $matches[1];
-		}
-
-		/*
-		 *	获取被订阅者的用户信息
-		 *	TODO: 权限检查
-		 */
-		$followe_user_db_row = JWUser::GetUserInfo( $followe );
-
-		if ( empty($followe_user_db_row) ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_NOUSER', array($followe) );
+		if( count( $param_array ) == 0 ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 	
-		if ( $followe_user_db_row['idUser'] != $address_user_id  
-				&& false == JWFriend::IsFriend($address_user_id, $followe_user_db_row['idUser']) ) {
-			JWSns::CreateFriends( $address_user_id, array($followe_user_db_row['idUser']) );
-		}
-		
-		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
+		$count_followe = count( $param_array );
+		$follower_name = array();
+		$followe = null;
 
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', array(
-					$followe_user_db_row['nameFull'],
-					$followe_user_db_row['nameScreen'],
-					));
+		foreach( $param_array as $followe ) {
+
+			if( $followe == 28006 ) {
+				$followe = 'qzgwclub';
+			}
+
+			$userInfoFollower= JWUser::GetUserInfo( $followe );
+			if ( empty($userInfoFollower) ) {
+				continue;
+			}
+
+			if ( $userInfoFollower['idUser'] != $address_user_id  
+					&& false == JWFriend::IsFriend($address_user_id, $userInfoFollower['idUser']) ) {
+				JWSns::CreateFriends( $address_user_id, array($userInfoFollower['idUser']) );
+			}
+			JWSns::CreateFollowers($userInfoFollower['idUser'], array($address_user_id));
+
+			array_push( $follower_name, $userInfoFollower['nameFull'] );
+		}
+
+		if( empty( $follower_name ) ){
+			$fnames = implode('、', $param_array );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', 
+						array( 
+							$fnames,
+						));
+		}else{
+			$fnames = implode('、', $follower_name );
+			if( $count_followe == 1 ){
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', 
+						array(
+							$fnames, $followe, 
+						));
+			}else{
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC_MUL', 
+						array(
+							$fnames,
+						));
+			}
+		}
+
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -343,6 +352,11 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Leave($robotMsg)
 	{
+		/**
+		 * 拦截指令
+		 */
+		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
+
 		/*
 		 *	获取发送者的 idUser
 		 */
@@ -363,38 +377,42 @@ class JWRobotLingo {
 		$param_body = $robotMsg->GetBody();
 		$param_body = JWRobotLingoBase::ConvertCorner( $param_body );
 
-		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$param_body,$matches) ) {
-			/*
-			 * seek 2007/07/25
-			 * 当用户发送follow命令到特服号码，直接follow
-			 */
-			if( $robotMsg->GetIdUserConference() ) {
-				$followe = $robotMsg->GetIdUserConference();
-			}else {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_LEAVE_HELP' );
-				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-			}
-		}else{
-			$followe = $matches[1];
-		}
+		$param_array = preg_split('/\s+/', $param_body );
+		$cmd = array_shift( $param_array );
+		$param_array = array_unique( $param_array );
 
-		/*
-		 *	获取被订阅者的用户信息
-		 */
-		$followe_user_db_row = JWUser::GetUserInfo( $followe );
-
-		if ( empty($followe_user_db_row) ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array( $followe, ) );
+		if( count( $param_array ) == 0 ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_LEAVE_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
+	
+		$count_followe = count( $param_array );
+		$follower_name = array();
+		foreach( $param_array as $followe ) {
 
-		JWSns::DestroyFollowers($followe_user_db_row['idUser'], array($address_user_id));
+			$userInfoFollower= JWUser::GetUserInfo( $followe );
+			if ( empty($userInfoFollower) ) {
+				continue;
+			}
+			JWSns::DestroyFollowers($userInfoFollower['idUser'], array( $address_user_id ) );
+			array_push( $follower_name, $userInfoFollower['nameFull'] );
+		}
 
+		if( empty( $follower_name ) ){
+			$fnames = implode('、', $param_array );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', 
+						array( 
+							$fnames,
+						));
+		}else{
 
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_LEAVE_SUC', array(
-					$followe_user_db_row['nameFull'],
-					$followe_user_db_row['nameScreen'],
+			$fnames = implode('、', $follower_name );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_LEAVE_SUC', 
+					array(
+						$fnames,
 					));
+		}
+
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 

@@ -21,30 +21,30 @@ class JWRobotLingoBase {
 	 *	param 设置这个命令接受的最多参数。如果用户输入多于这个最大值，则不当作lingo处理。（如用户输入"on the way home"）
 	 */
 	static private $msRobotLingo = array (
-			 'HELP'		=> array( 'func'=>'Lingo_Help' 	,'param'=>1 )
-			,'TIPS'		=> array( 'func'=>'Lingo_Tips' 	,'param'=>0 )
+			 'HELP'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help' 	,'param'=>1 )
+			,'TIPS'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips' 	,'param'=>0 )
 
-			,'ON'		=> array( 'func'=>'Lingo_On' 	,'param'=>1)
-			,'OFF'		=> array( 'func'=>'Lingo_Off' 	,'param'=>1)
+			,'ON'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_On' 	,'param'=>1)
+			,'OFF'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off' 	,'param'=>1)
 
-			,'FOLLOW'	=> array( 'func'=>'Lingo_Follow','param'=>1)
-			,'LEAVE'	=> array( 'func'=>'Lingo_Leave' ,'param'=>1)
+			,'FOLLOW'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow','param'=>10)
+			,'LEAVE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave' ,'param'=>10)
 
-			,'ADD'		=> array( 'func'=>'Lingo_Add' 	,'param'=>1)
-			,'DELETE'	=> array( 'func'=>'Lingo_Delete','param'=>1)
+			,'ADD'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add' 	,'param'=>1)
+			,'DELETE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Delete','param'=>1)
 
-			,'GET'		=> array( 'func'=>'Lingo_Get' 	,'param'=>1)
-			,'NUDGE'	=> array( 'func'=>'Lingo_Nudge' ,'param'=>1)
-			,'WHOIS'	=> array( 'func'=>'Lingo_Whois' ,'param'=>1)
+			,'GET'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get' 	,'param'=>1)
+			,'NUDGE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge' ,'param'=>1)
+			,'WHOIS'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whois' ,'param'=>1)
 
-			,'ACCEPT'	=> array( 'func'=>'Lingo_Accept','param'=>1)
-			,'DENY'		=> array( 'func'=>'Lingo_Deny' 	,'param'=>1)
+			,'ACCEPT'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept','param'=>1)
+			,'DENY'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny' 	,'param'=>1)
 
-			,'D'		=> array( 'func'=>'Lingo_D' 	,'param'=>999)
+			,'D'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_D' 	,'param'=>999)
 
-			,'REG'		=> array( 'func'=>'Lingo_Reg' 	,'param'=>2)
+			,'REG'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg' 	,'param'=>2)
 
-			,'WHOAMI'	=> array( 'func'=>'Lingo_Whoami','param'=>0)
+			,'WHOAMI'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami','param'=>0)
 		);
 
 
@@ -138,10 +138,24 @@ class JWRobotLingoBase {
 
 		$lingo 	= strtoupper($matches[1]);
 		$param	= $matches[2];
-		
-		//Get Lingo Pair [lingo and alias] funccode > conference > ...
+
+		//##################################################
+		///########### Begin Lingo Pair Fetch Logic ########
+		//##################################################
+
+		/**
+		 * Get Lingo Pair [lingo and alias] From FuncCode
+		 */
 		$lingoPair = self::GetLingoPairFromFuncCode( $serverAddress, $address, $type );
+
+		/**
+		 * Get Lingo Pair [lingo and alias] From IdConference
+		 */
 		$lingoPair = empty($lingoPair) ? self::GetLingoPair( $idUserConference ) : $lingoPair;
+		
+		//##################################################
+		//########### End Lingo Pair Fetch Logic ###########
+		//##################################################
 
 		if ( isset( $lingoPair['alias'][$lingo] ) ) 
 		{
@@ -156,31 +170,24 @@ class JWRobotLingoBase {
 			return false;
 		}
 
-		$lingo_info	= $lingoPair['lingo'][$lingo] ;
+		$lingo_info = $lingoPair['lingo'][$lingo] ;
+		$param_count = empty($param) ? 0 : count( preg_split('/\s+/',$param) );
 
-		if ( empty($param) ) 
-		{
-			$param_count = 0;
-		}
-		else
-		{
-			$param_count = count( preg_split('/\s+/',$param) );
-		}
-
-	 	/* 	lingo_info[param] 设置这个命令接受的最多参数, 如果用户输入多于这个最大值，则不当作lingo处理。
-		 * 	（如用户输入"on the way home"）
+	 	/**
+	  	 * lingo_info[param] 设置这个命令接受的最多参数
+		 * 如果用户输入多于这个最大值，则不当作lingo处理。
+		 * （如用户输入"on the way home"）
 		 */
-
 		if ( $param_count > $lingo_info['param'] )
 		{
 			return false;
 		}
 
-		$lingo_function = array('JWRobotLingo', $lingo_info['func']);
+		$lingo_function = array($lingo_info['class'], $lingo_info['func']);
 
 		if ( false == is_callable($lingo_function) )
 		{
-			JWLog::Log(LOG_ERR, "JWRobotLingo::GetLingoFunctionFromMsg found lingo[$lingo] is unimpl");
+			JWLog::Log(LOG_ERR, "JWRobotLingoBase::GetLingoFunctionFromMsg found lingo[$lingo] is unimpl");
 			return false;
 		} 
 		return $lingo_function;
@@ -190,6 +197,7 @@ class JWRobotLingoBase {
 	 * GetLingo from funcode
 	 */
 	static function GetLingoPairFromFuncCode($serverAddress, $mobileNo, $type='sms'){
+
 		if( $type != 'sms' )
 			return array();
 
@@ -202,7 +210,11 @@ class JWRobotLingoBase {
 		switch( $preAndId['pre'] ) {
 			case JWFuncCode::PRE_REG_INVITE:
 			{
-				$lingo['F'] =  array( 'func'=>'Lingo_F', 'param'=>1, );
+				$lingo['F'] =  array(
+						'class'=>'JWRobotLingo_Add',
+						'func'=>'Lingo_F',
+						'param'=>1,
+					);
 				return array(
 						'alias' => $alias,
 						'lingo' => $lingo,
@@ -211,7 +223,32 @@ class JWRobotLingoBase {
 			break;
 			case JWFuncCode::PRE_MMS_NOTIFY:
 			{
-				$lingo['M'] = array( 'func'=>'Lingo_M', 'param'=>0, );
+				$lingo['M'] = array(
+						'class'=>'JWRobotLingo_Add',
+						'func'=>'Lingo_M',
+						'param'=>0,
+					);
+				return array(
+						'alias' => $alias,
+						'lingo' => $lingo,
+					);
+			}
+			break;
+			case JWFuncCode::PRE_STOCK_CATE:
+			case JWFuncCode::PRE_STOCK_CODE:
+			{
+				$lingo['FOLLOW'] = array(
+							'class'=>'JWRobotLingo',
+							'func'=>'Lingo_Follow',
+							'param'=>999,
+						);
+				$lingo['LEAVE'] = array(
+							'class'=>'JWRobotLingo_Stock',
+							'func'=>'Lingo_Leave',
+							'param'=>999,
+						);
+				$alias['F'] = 'FOLLOW';
+				$alias['L'] = 'LEAVE';
 				return array(
 						'alias' => $alias,
 						'lingo' => $lingo,
@@ -234,17 +271,29 @@ class JWRobotLingoBase {
 			case 99:
 			{
 				$lingo = array(
-						'GM'	=> array( 'func'=>'Lingo_Reg', 'param'=>2, ),
-						'WOSHISHUI'	=> array( 'func'=>'Lingo_Whoami', 'param'=>0, ),
-					);
+					'GM' => array(
+						'class'=>'JWRobotLingo',
+						'func'=>'Lingo_Reg',
+						'param'=>2,
+					),
+					'WOSHISHUI' => array(
+						'class'=>'JWRobotLingo',
+						'func'=>'Lingo_Whoami',
+						'param'=>0,
+					),
+				);
 				$alias = array();
 			}
 			break;
 			case 28006:
 			{
 				$lingo = array(
-						'A'	=> array( 'func'=>'Lingo_Follow', 'param'=>1, ),
-					);
+					'A' => array(
+						'class'=>'JWRobotLingo_Lingo',
+						'func'=>'Lingo_Follow',
+						'param'=>1,
+					),
+				);
 				$alias = array();
 			}
 			break;
