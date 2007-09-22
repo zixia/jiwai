@@ -570,7 +570,7 @@ class JWSns {
 			{
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $createOptions['idPicture'];
+				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $ret;
 
 				$message = array(
 					'sms' => "$userInfo[nameScreen]: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
