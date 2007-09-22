@@ -22,6 +22,7 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 			if ( JWUser::IsAdmin($idUser) || JWStatus::IsUserOwnStatus($idUser, $idStatus))
 			{
 				JWStatus::Destroy($idStatus);
+				if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
 			}
 			else
 			{
