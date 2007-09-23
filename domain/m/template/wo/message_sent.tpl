@@ -4,10 +4,7 @@
 <ul>
 <!--{foreach $messages as $message}-->
 <li>
-    发给 <a href="${buildUrl('/'.$users[$message['idUserReceiver']]['nameScreen'].'/')}">
-        ${htmlSpecialChars($users[$message['idUserReceiver']]['nameFull'])}
-    </a>: 
-    {$message['message']}
+    发给 <a href="${buildUrl('/'.$users[$message['idUserReceiver']]['nameScreen'].'/')}">${getDisplayName($users[$message['idUserReceiver']])}</a>：{$message['message']}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($message['timeCreate'])}
     <a href="/wo/message/destroy/{$message['idMessage']}">删除</a>

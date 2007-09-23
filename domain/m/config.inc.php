@@ -21,6 +21,12 @@ function buildUrl($url){
 	return $relayUrl;
 }
 
+function getDisplayName($userInfo){
+	return $userInfo['nameScreen'] == $userInfo['nameFull'] ?
+			$userInfo['nameScreen'] :
+			htmlSpecialChars( $userInfo['nameFull'] ) . '('.$userInfo['nameScreen'].')';
+}
+
 function buildReplyUrl($nameScreen){ 
 	$url = buildUrl( "/$nameScreen/" );
 	return "@<a href=\"$url\">".$nameScreen."</a> ";

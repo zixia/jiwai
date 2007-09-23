@@ -50,12 +50,14 @@ function destroy( $idUser, $value ){
 }
 
 function update($idUser, $status) {
+
+    $isHelp = false;
+
     if( $status ){ 
 
         /*
          *	为了 /help/ 留言板的更新都自动加上 @help
          */
-        $isHelp = false;
         $helpUserId	= JWUser::GetUserInfo('help', 'idUser');
         if ( false !== strpos( $_SERVER['HTTP_REFERER'], 'jiwai.de/help/' )
                 && $idUser != $helpUserId
@@ -82,6 +84,11 @@ function update($idUser, $status) {
             }
         }
     }
-    header('Location: /wo/' );
+
+    if( $isHelp ) {
+        header('Location: /help/' );
+    } else {
+        header('Location: /wo/' );
+    }
 }
 ?>

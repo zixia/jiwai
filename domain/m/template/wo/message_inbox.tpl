@@ -3,10 +3,7 @@
 <ul>
 <!--{foreach $messages as $message}-->
 <li>
-    来自 <a href="${buildUrl('/'.$users[$message['idUserSender']]['nameScreen'].'/')}">
-        ${htmlSpecialChars($users[$message['idUserSender']]['nameFull'])}
-    </a>: 
-    {$message['message']}
+    来自 <a href="${buildUrl('/'.$users[$message['idUserSender']]['nameScreen'].'/')}">${getDisplayName($users[$message['idUserSender']])}</a>：{$message['message']}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($message['timeCreate'])}
     <a href="/wo/message/create/{$message['idUserSender']}">回复</a>｜<a href="/wo/message/destroy/{$message['idMessage']}">删除</a>

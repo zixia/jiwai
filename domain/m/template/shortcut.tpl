@@ -27,9 +27,7 @@
 <p>7 <a href="${buildUrl('/wo/message/inbox')}" accesskey="7">悄悄话</a></p>
 <!--{/if}-->
 
-<!--{if in_array( '---------register', $shortcut ) }-->
-<p>8 <a href="${buildUrl('/wo/account/create')}" accesskey="8">注册叽歪</a></p>
-<!--{/if}-->
+<p>8 <a href="${buildUrl('/help/')}" accesskey="8">帮助</a></p>
 
 <!--{if in_array( 'index', $shortcut ) }-->
 <p>9 <a href="${buildUrl('/')}" accesskey="9">首页</a></p>
