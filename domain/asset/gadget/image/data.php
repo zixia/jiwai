@@ -24,19 +24,12 @@ if ($sum != $_GET['cc2']) {
 function getOwnTimeline($count=10) {
 	global $page_user_id, $page_user_info;
 	if( $page_user_info['idConference'] ) {
-		//论坛模式用户
-		$user_status_num= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
-		$status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $count );
+		$status_data    = JWStatus::GetStatusIdsFromConferenceUser($page_user_id, $count);
 	}else{
-		// 显示用户自己的
-		$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $count );
+		$status_data    = JWStatus::GetStatusIdsFromUser($page_user_id, $count);
 	}
-	$status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
-	$status_data['user_ids'][] = $page_user_id;
-	$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
-	//var_dump($status_rows);
-	//var_dump($user_rows);
+	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
 	$a = array();
 	foreach ($status_rows as $r) {
 		$a[] = array(
