@@ -23,6 +23,8 @@ class JWRobotLingoIntercept {
 		if( $type != 'sms' )
 			return;
 
+		$robotMsg->SetBody( self::BodyForStock($body) );
+
 		$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $mobileNo );
 		if( empty( $preAndId ) )
 			return;
@@ -36,7 +38,7 @@ class JWRobotLingoIntercept {
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( $body );
+				$robotMsg->SetBody( self::BodyForStock($body) );
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
@@ -44,9 +46,13 @@ class JWRobotLingoIntercept {
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( $body );
+				$robotMsg->SetBody( self::BodyForStock($body) );
 			break;
 		}
+	}
+
+	static private function BodyForStock($body){
+		return preg_replace( '/\b(\d{6})\b/', "gp\\1", $body );
 	}
 }
 ?>

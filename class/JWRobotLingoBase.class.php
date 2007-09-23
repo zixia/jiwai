@@ -289,9 +289,9 @@ class JWRobotLingoBase {
 			{
 				$lingo = array(
 					'A' => array(
-						'class'=>'JWRobotLingo_Lingo',
+						'class'=>'JWRobotLingo',
 						'func'=>'Lingo_Follow',
-						'param'=>1,
+						'param'=>0,
 					),
 				);
 				$alias = array();

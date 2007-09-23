@@ -341,13 +341,12 @@ _SQL_;
 	 */
 	static function GetMobileSP($mobileNo)
 	{
-		if ( preg_match('/^13[4-9]\d+$/',$mobileNo ) 
-				|| preg_match('/^159\d+$/',$mobileNo)
-				|| preg_match('/^158\d+$/',$mobileNo)
+		if ( preg_match('/^13[4-9]\d{8}$/',$mobileNo ) 
+				|| preg_match('/^15[0-9]\d{8}$/',$mobileNo)
 				)
 			return self::SP_CHINAMOBILE;
 
-		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) )
+		if ( preg_match('/^13[0-3]\d{8}$/',$mobileNo ) )
 			return self::SP_UNICOM;
 
 		if ( preg_match('/^\d{11,12}$/',$mobileNo ) )
