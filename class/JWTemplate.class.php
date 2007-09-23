@@ -273,7 +273,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo 'http://jiwai.de/' . $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo 'http://jiwai.de' . $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -508,7 +508,8 @@ i=0;
 	  	}
 
 		// chinese msg;
-	  	return 70;
+	  	//return 70;
+		return 140;
 	}
 
 // onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
@@ -1767,7 +1768,7 @@ _HTML_;
 			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'">
 				<li class="slect"><?php echo $viaDevName; ?></li>
 <?php
-		foreach ($otherDev as $d => $n) echo <<<__HTML__
+		foreach ($otherDev as $d => $n) if ($d!='facebook') echo <<<__HTML__
 				<li onclick="JiWai.ChangeDevice('$d');">$n</li>
 
 __HTML__;
