@@ -1,11 +1,9 @@
 <!--{include header}-->
-<!--{if (false==empty($loginedUserInfo))}-->
-    <h2>有什么要对叽歪de说的？</h2>
-    <form action="/wo/status/update" method="post">
-    <p><input type="text" name="status"/></p>
-    <p><input type="submit" value="留言"/></p>
-    </form>
-<!--{/if}-->
+<h2>有什么要对叽歪de说的？</h2>
+<form action="/wo/status/update" method="post">
+<p><input type="text" name="status"/></p>
+<p><input type="submit" value="留言"/></p>
+</form>
 <h2>叽歪de留言版</h2>
 <ul>
 <!--{foreach $statuses as $status}-->
