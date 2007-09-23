@@ -273,7 +273,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo 'http://jiwai.de/' . $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -398,6 +398,7 @@ _HTML_;
 		<!--li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li-->
 
 	</ul>
+		<ul><li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li></ul>
 </div>
 
 <?php
@@ -891,7 +892,7 @@ _HTML_;
 				
 			$name_screen	= $userRows[$user_id]['nameScreen'];
 			$name_full	= $userRows[$user_id]['nameFull'];
-			$name_mix	= "$name_full($name_screen)";
+			$name_mix	= strcasecmp($name_full, $name_screen) ? "$name_full($name_screen)" : $name_full;
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
@@ -959,7 +960,7 @@ _HTML_;
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
 	<div class="head"><a href="/<?php echo $name_screen;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
-	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_full;?></a><?php echo $status?>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_mix;?></a><?php echo $status?>
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>
