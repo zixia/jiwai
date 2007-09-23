@@ -3,7 +3,7 @@ $GLOBALS['facebook_config'] = array('debug'=>0);
 require_once JW_ROOT.'/lib/Facebook/facebook.php';
 
 class JWFacebook extends Facebook {
-	static public $ProfileUrl = 'http://api.alpha.jiwai.de/facebook/?profile=';
+	static public $ProfileUrl = 'http://api.jiwai.de/facebook/?profile=';
 	public $user = '';
 	static function CallFromFB() {
 		return !empty($_POST['fb_sig']);
