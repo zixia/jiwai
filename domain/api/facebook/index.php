@@ -6,7 +6,7 @@ if ($action == 'profile') $idUser = (int)$_GET['profile'];
 else {
 	$facebook = new JWFacebook();
 	$idUser = JWDevice::GetDeviceInfoByAddress($facebook->user, 'facebook', 'idUser');
-	$idUser = (count($idUser)) ? $idUser[0] : 0;
+	$idUser = (count($idUser)) ? (int)$idUser[0] : 0;
 }
 
 function title() {
@@ -45,7 +45,6 @@ function bind() {
 		</fb:success>
 <?php
 	} else {
-		$facebook->SetProfile($idUser); //Update user's profile fbml to dynamic handler
 ?>
 		<fb:error>
 			<fb:message>JiWai.de</fb:message>
@@ -53,6 +52,8 @@ function bind() {
 		</fb:error>
 <?php
 	}
+	$facebook->SetProfile($idUser); //Update user's profile fbml to dynamic handler
+	JWFacebook::RefreshRef($idUser);
 }
 
 function verify() {
@@ -77,7 +78,7 @@ function update() {
 }
 
 function profile() {
-	global $idUser;
+	global $idUser, $facebook;
 ?>
 <fb:subtitle>
 	<fb:action href="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameScreen'); ?>/">More...</fb:action>
@@ -94,7 +95,6 @@ function profile() {
 ?>
 <fb:if-is-app-user>
 <else>
-Click <a href="<?php echo $facebook->get_add_url(); ?>">here</a> to put JiWai.de in your profile.
 </else>
 </fb:if-is-app-user>
 <?php
@@ -142,11 +142,12 @@ if (isset($_POST['code'])) {
 <form>
 <table class="doing">
 	<tr><td><textarea class="status_area" name="status" /></td></tr>
-	<tr><td><center><input class="send" type="submit" value="POST" clickrewriteid="statuses" clickrewriteurl="http://api.alpha.jiwai.de/facebook/?update" /></center></td></tr>
+	<tr><td><center><input class="send" type="submit" value="POST" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
 </table>
 </form>
 <div id="statuses">
 <?php 
+	$g_with_friends = 1;
 	include_once 'status.php';
 ?>
 </div>

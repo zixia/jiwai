@@ -52,6 +52,7 @@
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?
 						'signature' : '';
+			$name_mix	= strcasecmp($name_screen, $name_full) ? $name_full.'('.$name_screen.')' : $name_full;
 			
 			$duration	= date('G:i M j', strtotime($timeCreate));//JWStatus::GetTimeDesc($timeCreate);
 
@@ -70,15 +71,14 @@
 					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $status_id;?>">
 <?php if ( $options['icon'] ){ ?>
 						<td class="thumb">
-							<a href="<?php echo $host; ?>/<?php echo $name_screen;?>"><img alt="<?php echo $name_screen;?>" 
+							<a href="<?php echo $host; ?>/<?php echo $name_screen;?>/"><img alt="<?php echo $name_screen;?>" 
 									src="<?php echo $photo_url?>"/></a>
 						</td>
 <?php } ?>
 						<td>	
 <?php if ( $options['icon'] ){ ?>
 							<strong>
-								<a href="<?php echo $host; ?>/<?php echo $name_screen; ?>" 
-										title="<?php echo $name_full?>"><?php echo $name_full; ?></a>
+								<a href="<?php echo $host; ?>/<?php echo $name_screen; ?>/" title="<?php echo $name_full?>"><?php echo $name_mix; ?></a>
 							</strong>
 <?php } ?>
 
@@ -132,17 +132,22 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 	}
 
 
-$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 10);
-$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
-if(!empty($status_rows)) {
-	$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(
+if (empty($g_with_friends)) {
+	$status_data    = JWStatus::GetStatusIdsFromUser($idUser, 10);
+	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+} else {
+	$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 20);
+	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+	if(!empty($status_rows)) {
+		$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(
 			$idUser, $status_data['status_ids'], $status_rows);
-	if( !empty( $mergedStatusResult ) ) {
-		$status_data['status_ids'] = $mergedStatusResult['status_ids'];
-		$status_rows = $mergedStatusResult['status_rows'];
+		if( !empty( $mergedStatusResult ) ) {
+			$status_data['status_ids'] = $mergedStatusResult['status_ids'];
+			$status_rows = $mergedStatusResult['status_rows'];
+		}
 	}
 }
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$user_rows = JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 Timeline($status_data['status_ids'], $user_rows, $status_rows);
 //FIXME friends' status not refresh on f8 profile
 
