@@ -334,7 +334,7 @@ if (!function_exists("wakka2callback")) # DotMG [many lines] : Unclosed tags fix
 			// find out which indent type we want
 			$newIndentType = $matches[2];
 			if (!$newIndentType) { $opener = "<div class=\"indent\">"; $closer = "</div>"; $br = 1; }
-			elseif ($newIndentType == "-") { $opener = "<ul><li>"; $closer = "</li></ul>"; $li = 1; }
+			elseif ($newIndentType == "-") { $opener = "<ol><li>"; $closer = "</li></ol>"; $li = 1; }
 			elseif ($newIndentType == "&") { $opener = "<ul class=\"thread\"><li>"; $closer = "</li></ul>"; $li = 1; } #inline comments
 			else { $opener = "<ol type=\"". substr($newIndentType, 0, 1)."\"><li>"; $closer = "</li></ol>"; $li = 1; }
 

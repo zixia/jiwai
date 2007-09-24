@@ -36,7 +36,7 @@
  */
 
 echo "\n".'<!--starting page content-->'."\n";
-echo '<div class="page"';
+echo '<div class="content"';
 echo (($user = $this->GetUser()) && ($user['doubleclickedit'] == 'N') || !$this->HasAccess('write')) ? '' : 'ondblclick="document.location=\''.$this->Href('edit').'\';" '; #268
 echo '>'."\n"; //TODO: move to templating class
 

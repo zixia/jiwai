@@ -3,13 +3,13 @@
 // do not change wikka_version manually!
 
 $wakkaConfig = array(
-	'mysql_host' => '10.1.30.10',
+	'mysql_host' => '10.0.70.10',
 	'mysql_database' => 'jiwai_wikka',
 	'mysql_user' => 'jiwai_wikka',
 	'table_prefix' => 'wikka_',
 	'root_page' => 'JiWaiHelp',
 	'wakka_name' => '[[JiWaiHelp 叽歪de]]',
-	'base_url' => 'http://help.jiwai.de/',
+	'base_url' => 'http://help.alpha.jiwai.vm/',
 	'rewrite_mode' => '1',
 	'wiki_suffix' => '@jiwai_wikka',
 	'action_path' => 'actions',
