@@ -47,7 +47,7 @@ foreach ( $result as $row )
 //die(var_dump($row));
 	$user_id 	= $row['idUser'];
 	$mtime		= $row['mtime'];
-	$user_name	= htmlspecialchars(JWUser::GetUserInfo($user_id,'nameScreen'));
+	$user_name	= urlencode(JWUser::GetUserInfo($user_id,'nameScreen'));
 
 
 	$mod		= date('c', $mtime);
