@@ -1,5 +1,17 @@
 <?php
+/**
+ * @package	JiWai.de
+ * @copyright	AKA Inc.
+ * @author	shwdai@jiwai.de
+ */
+
+/**
+ * JiWai.de JWCommunity_FollowRecursion Class
+ */
 class JWCommunity_FollowRecursion{
+	/**
+	 * 获得级联follower_ids
+	 */
 	static public function GetSuperior($idUser, $level=1)
 	{
 		$user_ids = array();
@@ -25,7 +37,7 @@ class JWCommunity_FollowRecursion{
 	}
 	
 	/**
-	 *
+	 * 建立用户级联关系
 	 */
 	static public function Create($idUser, $idUserSuperior, $forceReverse=false)
 	{

@@ -32,6 +32,7 @@ class JWNotifyQueue {
 	const T_MMS = 'MMS';
 	const T_NUDGE = 'NUDGE';
 	const T_INVITE = 'INVITE';
+	const T_CONFERENCE = 'CONFERENCE';
 	const T_UNKNOWN = 'UNKNOWN';
 
 	/**
@@ -235,6 +236,18 @@ SQL;
 							. "addressTo: $addressTo\n";
 
 						JWSns::Invite( $idUserFrom, $addressTo, $type, $message, $webInvite);
+					}
+					break;
+					case self::T_CONFERENCE:
+					{
+						$message = $metaInfo['message'];
+						$idUserToArray = $metaInfo['idUserToArray']; 
+
+						echo "[$queueType] idUserToArray: array("
+							. implode( ',', $idUserToArray )
+							. "), message: $message\n";
+
+						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
 					}
 					break;
 					default:

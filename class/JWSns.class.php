@@ -607,7 +607,8 @@ class JWSns {
 
 		if( $idSender == null ) 
 		{
-			$follower_ids = array( $idUserReplyTo ) ;
+			settype( $idUserReplyTo, 'array' );
+			$follower_ids = $idUserReplyTo;
 		}
 	       	else 
 		{
