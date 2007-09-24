@@ -574,7 +574,7 @@ class JWSns {
 				$nameScreen = $userInfo['nameScreen'];
 
 				$message = array(
-					'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复字母M免费下载。",
+					'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
 					'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
 					'type' => 'MMS',
 					'idStatus' => $idStatus,

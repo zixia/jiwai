@@ -5,6 +5,10 @@
  * @author	  	zixia@zixia.net
  */
 
+/* 不能用的短指令，会被 50136 模糊匹配
+ ( AJ, AD, AP, AM, D, M, J, 9, 28, 23, 25, 6, 8, 21, 26, 22 ) 
+ */
+
 /**
  * JiWai.de Robot Lingo Reply Class
  */
@@ -25,7 +29,7 @@ class JWRobotLingo_AddReply {
 		'REPLY_MMS_NOMMS' => '哇，没搞错吧？没有找到你要的彩信信息。',
 		'REPLY_MMS_NOSMS' => '{0}，你没有绑定手机或没有通过手机验证，不能下载彩信。',
 		'REPLY_MMS_SUC_IM' => '{0}，{1}上传的彩信[{2}]即将发往你绑定的手机，请注意查收。',
-		'REPLY_MMS_HELP' => '只能使用手机回复 M 到给定特服号获取彩信。',
+		'REPLY_MMS_HELP' => '只能使用手机回复 DM 到给定特服号获取彩信。',
 		'REPLY_MMS_ILL' => '哇，真可怕！我们不知道你究竟想要作什么！',
 
 		/**

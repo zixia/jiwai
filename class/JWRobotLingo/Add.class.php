@@ -41,9 +41,9 @@ class JWRobotLingo_Add {
 	}
 
 	/**
-	 * M Deal Function.
+	 * DM Deal Function.
 	 */
-	static function Lingo_M($robotMsg) 
+	static function Lingo_DM($robotMsg) 
 	{
 		$type = $robotMsg->GetType();
 		$address = $robotMsg->GetAddress();

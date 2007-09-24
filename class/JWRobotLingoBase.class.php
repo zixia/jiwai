@@ -223,9 +223,9 @@ class JWRobotLingoBase {
 			break;
 			case JWFuncCode::PRE_MMS_NOTIFY:
 			{
-				$lingo['M'] = array(
+				$lingo['DM'] = array(
 						'class'=>'JWRobotLingo_Add',
-						'func'=>'Lingo_M',
+						'func'=>'Lingo_DM',
 						'param'=>0,
 					);
 				return array(
