@@ -484,11 +484,16 @@ class JWSns {
 		//strip \r\n
 		$status = preg_replace('/[\n\r]/' ,' ', $status);
 
-		//filter setting
+		//filter setting | default nofilter
 		if( false == isset( $options['nofilter'] ) ){
 			$options['nofilter'] = true;
 		}
 		
+		//notify to [im|sms|all|web]
+		if( false == isset( $options['notify'] ) ) {
+			$options['notify'] = 'all';
+		}
+
 		//check signature changed
 		if( 'Y' == $isSignature ) {
 			$status = JWStatus::HtmlEntityDecode( $status );
@@ -531,13 +536,16 @@ class JWSns {
 				'idConference' => $idConference,
 				'timeCreate' => $timeCreate,
 			);
-
+		
+		//idPicture set from option;
 		if( isset( $options['idPicture'] ) ) {
 			$createOptions['idPicture'] = $options['idPicture'] ;
 		}
+		//isMms set from option;
 		if( isset( $options['isMms'] ) ) {
 			$createOptions['isMms'] = $options['isMms'] ;
 		}
+		//idPartner set from option;
 		if( isset( $options['idPartner'] ) ) {
 			$createOptions['idPartner'] = $options['idPartner'] ;
 		}
@@ -550,7 +558,14 @@ class JWSns {
 		{
 			JWFilterConfig::Normal();
 			if( JWFilterRule::IsNeedFilter($status, $idUser, $idUserReplyTo, $device) ){
-				JWStatusQuarantine::Create( $idUser, $status, $device, $isSignature, $createOptions);
+
+				$metaInfo = $createOptions;
+				$metaInfo['isSignature'] = $isSignature;
+				$metaInfo['device'] = $device;
+				$metaInfo['status'] = $status;
+				
+				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, 
+								JWQuarantineQueue::T_STATUS, $metaInfo);
 				return true;
 			}
 		}
@@ -583,7 +598,11 @@ class JWSns {
 				$queueType = JWNotifyQueue::T_MMS;
 			}
 
-			JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
+			if( $idConference ) {
+				JWCommunity_NotifyFollower::NotifyFollower( $idStatus, $options['notify'] );
+			}else{
+				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
+			}
 
 			// Referesh facebook
 			if ( JWFacebook::Verified( $idUser ) ) {

@@ -133,20 +133,21 @@ class JWStatus {
 
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
-		return JWDB_Cache::SaveTableRow('Status', array( 
-								'idUser' => $idUser,
-								'status' => preg_replace('/\xE2\x80\xAE/U', '', $status),
-								'device' => $device,
-								'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
-								'idUserReplyTo'	=> $idUserReplyTo, 
-								'idStatusReplyTo' => $idStatusReplyTo,
-								'idPicture' => $idPicture,
-								'idConference' => $idConference,
-								'isProtected' => $isProtected,
-								'idPartner' => $idPartner,
-								'isSignature' => $isSignature,
-								'isMms' => $isMms,
-						));
+		return JWDB_Cache::SaveTableRow('Status', 
+						array( 
+							'idUser' => $idUser,
+							'status' => preg_replace('/\xE2\x80\xAE/U', '', $status),
+							'device' => $device,
+							'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
+							'idUserReplyTo'	=> $idUserReplyTo, 
+							'idStatusReplyTo' => $idStatusReplyTo,
+							'idPicture' => $idPicture,
+							'idConference' => $idConference,
+							'isProtected' => $isProtected,
+							'idPartner' => $idPartner,
+							'isSignature' => $isSignature,
+							'isMms' => $isMms,
+					));
 	}
 
 
@@ -539,8 +540,8 @@ _SQL_;
 		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 
 		return array ( 	 'status_ids'	=> $status_ids
-						,'user_ids'		=> $user_ids
-					);
+				,'user_ids'	=> $user_ids
+		);
 	}
 
 

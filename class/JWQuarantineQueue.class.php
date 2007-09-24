@@ -107,7 +107,7 @@ SQL;
 	/**
 	 * @param status_ids
 	 */
-	static public function GetMergedQuarantineStatusFromUser($idUser=0, $oStatusIds=array(), $oStatusRows=array() ){
+	static public function GetQuarantineStatusFromUser($idUser=0, $oStatusIds=array(), $oStatusRows=array() ){
 
 		if( empty($idUser) || empty($oStatusRows) || empty($oStatusIds) )
 			return array();
@@ -134,6 +134,7 @@ SQL;
 		foreach($q_rows as $k=>$row)
 		{
 			$metaInfo = @unserialize( Base64_Decode( $row['metaInfo'] ) );
+
 			if( empty( $metaInfo ) )
 				continue;
 
@@ -180,7 +181,11 @@ _SQL_;
 		if( empty( $rows ) )
 			return array();
 
-		return $rows;
+		$rtn = array();
+		foreach( $rows as $r ){
+			$rtn[ $r['id'] ] = $r;
+		}
+		return $rtn;
 	}
 
 	/**
