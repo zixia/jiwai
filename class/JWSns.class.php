@@ -486,7 +486,7 @@ class JWSns {
 
 		//filter setting
 		if( false == isset( $options['nofilter'] ) ){
-			$options['nofilter'] = false;
+			$options['nofilter'] = true;
 		}
 		
 		//check signature changed
@@ -546,7 +546,7 @@ class JWSns {
 		 *  判断是否需要Filter，如果需要进入status
 		 *
 		 */
-		if( $options['nofilter'] && false )  // 暂时不升级这快，影响较大
+		if( false == $options['nofilter'] )  // 暂时不升级这快，影响较大
 		{
 			JWFilterConfig::Normal();
 			if( JWFilterRule::IsNeedFilter($status, $idUser, $idUserReplyTo, $device) ){

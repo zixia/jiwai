@@ -131,6 +131,10 @@ class JWFilterRule {
 			return true;
 		}
 
+		$userReciever = JWUser::GetUserInfo( $idReciever );
+		if ( $userReciever['idConference'] )
+			return true;
+
 		return false;
 	}
 }
