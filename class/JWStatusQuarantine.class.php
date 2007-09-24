@@ -58,15 +58,16 @@ class JWStatusQuarantine {
 		$idUserReplyTo = $options['idUserReplyTo'];
 		$idConference = $options['idConference'];
 
-		return JWDB::SaveTableRow('StatusQuarantine', array(
-									'idUser' => $idUser,
-									'status' => $status,
-									'device' => $device,
-									'timeCreate' => $timeCreate,
-									'idStatusReplyTo' => $idStatusReplyTo,
-									'idUserReplyTo'	=> $idUserReplyTo,
-									'isSignature' => $isSignature,
-							) );
+		return JWDB::SaveTableRow('StatusQuarantine', 
+						array(
+							'idUser' => $idUser,
+							'status' => $status,
+							'device' => $device,
+							'timeCreate' => $timeCreate,
+							'idStatusReplyTo' => $idStatusReplyTo,
+							'idUserReplyTo'	=> $idUserReplyTo,
+							'isSignature' => $isSignature,
+						));
 	}
 
 	/**

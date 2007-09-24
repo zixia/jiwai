@@ -489,6 +489,9 @@ _SQL_;
 		if ( isset(self::$msReservedNames[strtolower($nameScreen)]) )
 			return true;
 
+		if ( preg_match( '/^gp\d+$/', $nameScreen ) )   //股票相关用户不允许用户直接注册
+			return true;
+
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
 	}
 	
