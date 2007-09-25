@@ -503,7 +503,7 @@ class JWSns {
 		}
 
 		//timeCreate
-		$timeCreate = intval($timeCreate) > 0 ? intval($timeCreate) : time();
+		$timeCreate = strtotime($timeCreate) > 0 ? strtotime($timeCreate) : time();
 
 		//reply info
 		if( isset( $options['idUserReplyTo'] ) ){
@@ -531,8 +531,8 @@ class JWSns {
 		}
 
 		//forceFilter need idConference to check
-		if( isset( $options['forceFilter'] ) ){
-			$options['forceFilter'] = JWFilterRule::IsIsFilterConference( $idConference );
+		if( false == isset( $options['forceFilter'] ) ){
+			$options['forceFilter'] = JWFilterRule::IsFilterConference( $idConference );
 		}
 
 		//Create Status options

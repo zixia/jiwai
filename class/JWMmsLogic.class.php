@@ -91,7 +91,7 @@ class JWMmsLogic {
 
 	static public function Run () {
 
-		echo "MMS-Mo 机器人已经进入主循环，可以处理数据了...\n";  
+		echo "MMS MO Queue Robot enters the mainLoop.\n";  
 		self::Instance();
 
 		while ( true ){

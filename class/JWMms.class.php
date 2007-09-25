@@ -55,7 +55,7 @@ class JWMms {
 		if( false == empty($mmsRow) || $mmsRow['class'] == 'MMS' ){
 			$pictureFile = JWPicture::GetFullPathNameById( $mmsRow['id'] , $thumb);
 			if( file_exists( $pictureFile ) ) {
-				return self::SendMt( $mobileNo, $pictureFile, $statusRow['status'], $statusRow['status'] );
+				return self::SendMt( $mobileNo, $pictureFile, $mmsRow['fileName'], $statusRow['status'] );
 			}
 
 			$pictureFile = JWPicture::GetUrlById( $mmsRow['id'] );
@@ -119,8 +119,8 @@ POSTDATA;
 
 		
 		$return = JWNetFunc::DoPost( $MMS_HTTP_POST_URL, $postData, 1);
-
-		error_log( "$to : $return\n", 3, '/tmp/postmms' );
+		
+		if( CONSOLE ) echo "$to : $return\n";
 
 		$returnObj = simplexml_load_string( $return );
 		if( $returnObj ) {
