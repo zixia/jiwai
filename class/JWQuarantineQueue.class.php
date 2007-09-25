@@ -264,12 +264,12 @@ _SQL_;
 	}
 
 	/**
-	 * fireConference by Id
+	 * fireConference/Status by Id
 	 */
 	static public function FireStatus($idQuarantine, $to='web', $delete=false ) {
 
 		$quarantine = self::GetDbRowById( $idQuarantine );
-		if( $quarantine['type'] != self::T_CONFERENCE || empty($quarantine['metaInfo']) )
+		if( $quarantine['type'] == self::T_MESSAGE || empty($quarantine['metaInfo']) )
 			return true;
 		
 		if( $delete == true ){

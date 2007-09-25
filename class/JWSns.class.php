@@ -573,8 +573,10 @@ class JWSns {
 				$metaInfo['device'] = $device;
 				$metaInfo['status'] = $status;
 
-				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, 
-								JWQuarantineQueue::T_STATUS, $metaInfo);
+				$queueType = $idConference == null ? 
+						JWQuarantineQueue::T_STATUS : JWQuarantineQueue::T_CONFERENCE;
+
+				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo);
 				return true;
 			}
 		}

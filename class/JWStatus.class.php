@@ -51,9 +51,9 @@ class JWStatus {
 			return null;
 
 		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) ) {
-            if ( ! preg_match('/^@\s*([^\s]+)\s+(.+)/',$status, $matches) ) 
-                return null;
-        }
+		    if ( ! preg_match('/^@\s*(\S+)\s+(.+)$/',$status, $matches) ) 
+			return null;
+		}
 
 		$reply_to_user = $matches[1];
 
@@ -64,9 +64,6 @@ class JWStatus {
 
 		$reply_to_status_id = JWStatus::GetMaxIdStatusByUserId($user_db_row['idUser']);
 
-		if ( empty($reply_to_status_id) )
-			return null;
-		
 		return array ( 	 
 				'user_id' 	=> $user_db_row['idUser'], 
 				'status_id'	=> $reply_to_status_id,

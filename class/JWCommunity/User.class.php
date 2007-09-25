@@ -30,7 +30,7 @@ class JWCommunity_User{
 			'nameScreen' => $nameScreen,
 			'nameFull' => $nameFull,
 		);
-		$idUser = JWUser::SaveTableRow( $userArray );
+		$idUser = JWDB::SaveTableRow( 'User', $userArray );
 		if( $idUser ) {
 
 			$number = isset( $options['number'] ) ? $options['number'] : null;
