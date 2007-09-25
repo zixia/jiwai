@@ -88,7 +88,7 @@ class JWStatus {
 		if( isset( $options['timeCreate'] ) ) {
 			$timeCreate = $options['timeCreate'];
 		}else{
-			$timeCreate = ( intval($timeCreate) > 0 ) ? intval($timeCreate) : time();
+			$timeCreate = ( $timeCreate == null ) ? time() : $timeCreate ;
 		}
 
 		$userInfo  = JWUser::GetUserInfo( $idUser );

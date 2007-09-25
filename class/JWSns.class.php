@@ -503,7 +503,7 @@ class JWSns {
 		}
 
 		//timeCreate
-		$timeCreate = strtotime($timeCreate) > 0 ? strtotime($timeCreate) : time();
+		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
 
 		//reply info
 		if( isset( $options['idUserReplyTo'] ) ){

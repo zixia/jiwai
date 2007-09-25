@@ -91,17 +91,25 @@ _SQL_;
 	 * @param $offset, int
 	 * @return mixed
 	 */
-	static public function GetQuarantineQueue($dealStatus=JWQuarantineQueue::DEAL_NONE, $limit=20,$offset=0){
-
-		$dealCondition = self::GetDealCondition( $dealStatus );
-
+	static public function GetQuarantineQueue($type=self::T_CONFERENCE, $limit=20,$offset=0, $dealStatus=JWQuarantineQueue::DEAL_NONE ){
+		
 		$sql = <<<SQL
 SELECT * FROM QuarantineQueue
-	WHERE $dealCondition
+	WHERE 
+		dealStatus = '$dealStatus'
+		AND type = '$type'
 	ORDER BY id DESC
 	LIMIT $offset , $limit
 SQL;
+
 		$result = JWDB::GetQueryResult( $sql, true );
+		if( empty( $result ) )
+			return array();
+
+		foreach( $result as $k=>$r ) {
+			$result[$k]['metaInfo'] = self::DecodeBase64Serialize( $r['metaInfo'] );
+		}
+
 		return $result;
 	}
 

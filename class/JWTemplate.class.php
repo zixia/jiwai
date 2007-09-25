@@ -478,7 +478,10 @@ _HTML_;
 						</div>
 					</div>
 					<div class="submit">
-						<span class="howtojiwai">叽歪QQ机器人出现故障，正在解决，请大家先使用网页叽歪或使用其他IM。</span><a class="button" href="#" style="margin-left:80px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
+						<a class="howtojiwai" href="http://help.jiwai.de/NewUserGuide" target="_blank">如何用其它方式叽歪</a><br/>
+						<a class="howtojiwai" style="text-decoration:none;">叽歪QQ机器人出现故障，正在解决。</a><br/>
+						<a class="howtojiwai" style="text-decoration:none;">临时QQ机器人帐户：742721768</a><br/>
+						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
 					</div>
 				</fieldset>
 			</form>

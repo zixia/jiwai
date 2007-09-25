@@ -682,6 +682,7 @@ _SQL_;
 				break;
 			case 'qq':
 				$name='229516989';
+				$name='742721768';
 				break;
 			case 'skype':
 				$name='wo.jiwai.de';

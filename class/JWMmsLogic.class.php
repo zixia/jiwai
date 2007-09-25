@@ -187,7 +187,7 @@ class JWMmsLogic {
 						{
 							$mmsArray['imageFile'] = $realfile;
 							$mmsArray['imageSuffix'] = $suffix;
-							$mmsArray['timeCreate'] = date('Y-m-d H:i:s',fileCTime($realfile));
+							$mmsArray['timeCreate'] = fileCTime($realfile);
 						}
 						else if( $filetype=='text' && $suffix=='plain') 
 						{
