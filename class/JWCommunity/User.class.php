@@ -21,7 +21,10 @@ class JWCommunity_User{
 
 		$idUser = JWUser::SaveTableRow( $userArray );
 		if( $idUser ) {
-			$idConference = JWConference::Create( $idUser, 'N', 'sms,im,web', $number );
+			$idConference = JWConference::Create( $idUser, 'N', 'sms,im,web', $number,
+								array(
+									'forceFilter' => 'Y',
+							     ));
 			return JWUser::SetConference( $idUser, $idConference );
 		}
 		return false;

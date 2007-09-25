@@ -16,6 +16,7 @@ class JWQuarantineQueue {
 	 */
 	const DEAL_NONE = 'NONE';
 	const DEAL_SAVE = 'SAVE';
+	const DEAL_DELE = 'DELE';
 
 
 	/**
@@ -53,7 +54,7 @@ class JWQuarantineQueue {
 	 */
 	static public function Create( $idUserFrom=null, $idUserTo=null, $type=self::T_STATUS, $metaInfo=array() ) {
 
-		$metaString = Base64_Encode( serialize( $metaInfo ) );
+		$metaString = self::EncodeBase64Serialize( $metaInfo );
 
 		return JWDB::SaveTableRow('QuarantineQueue', 
 						array(
@@ -133,10 +134,10 @@ SQL;
 
 		foreach($q_rows as $k=>$row)
 		{
-			$metaInfo = @unserialize( Base64_Decode( $row['metaInfo'] ) );
-
-			if( empty( $metaInfo ) )
+			if( empty( $row['metaInfo'] ) )
 				continue;
+
+			$metaInfo = $row['metaInfo'] ;
 
 			$metaInfo['idUser'] = $row['idUserFrom'];
 			$metaInfo['idUserReplyTo'] = $row['idUserTo'];
@@ -163,6 +164,18 @@ SQL;
 
 	}
 
+	static public function GetDbRowById( $idQuarantine ){
+
+		$idQuarantine = JWDB::CheckInt( $idQuarantine );
+
+		$result = self::GetDbRowsByIds( $idQuarantine );
+
+		if( empty( $result ) )
+			return array();
+
+		return $result[ $idQuarantine ];
+	}
+
 	/**
 	 * 获取Db rows;
 	 */
@@ -183,6 +196,7 @@ _SQL_;
 
 		$rtn = array();
 		foreach( $rows as $r ){
+			$r['metaInfo'] = self::DecodeBase64Serialize( $r['metaInfo'] );
 			$rtn[ $r['id'] ] = $r;
 		}
 		return $rtn;
@@ -225,6 +239,77 @@ _SQL_;
 		}
 
 		return $returnedArray;
+	}
+
+	/**
+	 * Deal a quarantine
+	 */
+	static public function DealQueue($idQuarantine, $dealStatus=self::DEAL_DELE ) {
+
+		$idQuarantine = JWDB::CheckInt( $idQuarantine );
+
+		switch( $dealStatus ) {
+			case self::DEAL_DELE:
+				return JWDB::DelTableRow('QuarantineQueue', array('id'=>$idQuarantine,) );
+			case self::DEAL_SAVE:
+			case self::DEAL_NONE:
+				return JWDB::UpdateTableRow('QuarantineQueue', $idQuarantine, 
+						array(
+							'dealStatus' => $dealStatus, 
+						));
+			break;
+			default:
+				return true;
+		}
+	}
+
+	/**
+	 * fireConference by Id
+	 */
+	static public function FireStatus($idQuarantine, $to='web', $delete=false ) {
+
+		$quarantine = self::GetDbRowById( $idQuarantine );
+		if( $quarantine['type'] != self::T_CONFERENCE || empty($quarantine['metaInfo']) )
+			return true;
+		
+		if( $delete == true ){
+			return JWDB::DelTableRow('QuarantineQueue', array( 'id'=>$idQuarantine, ) );
+		}
+
+		$metaInfo = $quarantine['metaInfo'];
+
+		$idSender = $idUserFrom;
+		$timeCreate = isset($metaInfo['timeCreate']) ? $metaInfo['timeCreate'] : $quarantine['timeCreate'];
+		$device = isset($metaInfo['device']) ? $metaInfo['device'] : 'web' ;
+		$isSignature = isset($metaInfo['isSignature']) ? $metaInfo['isSignature'] : 'Y';
+		$serverAddress = isset($metaInfo['serverAddress']) ? $metaInfo['serverAddress'] : null;
+		$status = $metaInfo['status'];
+
+		$options = array(
+				'nofilter' => true,
+				'idUserReplyTo' => $metaInfo['idUserReplyTo'],
+				'idStatusReplyTo' => $metaInfo['idStatusReplyTo'],
+		);
+
+		if( isset( $metaInfo['idPicture'] ) ) $options['idPicture'] = $metaInfo['idPicture'];
+		if( isset( $metaInfo['idPartner'] ) ) $options['idPartner'] = $metaInfo['idPartner'];
+		if( isset( $metaInfo['idConference'] ) ) $options['idConference'] = $metaInfo['idConference'];
+
+		return JWSns::UpdateStatus( $idSender, $status, $device, $timeCreate, $isSignature, $serverAddress, $options );
+	}
+	
+	/**
+	 * Encode metaInfo
+	 */
+	static private function EncodeBase64Serialize( $metaInfo = array()){
+		return Base64_Encode( serialize( $metaInfo ) );
+	}
+
+	/**
+	 * Decode metaInfo 
+	 */
+	static private function DecodeBase64Serialize( $metaString ) {
+		return @unserialize( Base64_Decode( $metaString ) );
 	}
 }
 ?>

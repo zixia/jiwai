@@ -71,7 +71,7 @@ class JWNotifyQueue {
 		$idUserFrom = ( $idUserFrom ) ? JWDB::CheckInt( $idUserFrom ) : null;
 		$idUserTo = ( $idUserTo ) ? JWDB::CheckInt( $idUserTo ) : null;
 
-		$metaInfo = base64_Encode( serialize( $extraInfo ) );
+		$metaInfo = self::EncodeBase64Serialize( $extraInfo );
 
 		return JWDB::SaveTableRow( 'NotifyQueue' , array(
 					'idUserFrom' => $idUserFrom,
@@ -96,7 +96,7 @@ SQL;
 		$result = JWDB::GetQueryResult( $sql , true);
 		if( is_array( $result ) ) {
 			foreach( $result as $k=>$one ) {
-				$one['metaInfo'] = @unserialize( @base64_Decode( $one['metaInfo'] ) );
+				$one['metaInfo'] = self::DecodeBase64Serialize( $one['metaInfo'] );
 				$rtn[ $k ] = $one;
 			}
 		}
@@ -280,6 +280,20 @@ SQL;
 		{
 			self::$mSleepUsec = 1;
 		}
+	}
+
+	/**
+	 * Encode metaInfo
+	 */
+	static private function EncodeBase64Serialize( $metaInfo = array()){
+		return Base64_Encode( serialize( $metaInfo ) );
+	}
+
+	/**
+	 * Decode metaInfo 
+	 */
+	static private function DecodeBase64Serialize( $metaString ) {
+		return @unserialize( Base64_Decode( $metaString ) );
 	}
 }
 ?>

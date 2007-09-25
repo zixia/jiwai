@@ -488,7 +488,7 @@ class JWSns {
 		if( false == isset( $options['nofilter'] ) ){
 			$options['nofilter'] = true;
 		}
-		
+
 		//notify to [im|sms|all|web]
 		if( false == isset( $options['notify'] ) ) {
 			$options['notify'] = 'all';
@@ -520,6 +520,7 @@ class JWSns {
 		
 		$idConference = null;
 		$address = isset( $options['address'] ) ? $options['address'] : null;
+
 		if( false == isset( $options['idConference'] ) ){
 			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo, $device, $serverAddress, $address );
 			if( false == empty( $conference ) ) {
@@ -527,6 +528,11 @@ class JWSns {
 			}
 		}else{
 			$idConference = $options['idConference'];
+		}
+
+		//forceFilter need idConference to check
+		if( isset( $options['forceFilter'] ) ){
+			$options['forceFilter'] = JWFilterRule::IsIsFilterConference( $idConference );
 		}
 
 		//Create Status options
@@ -554,16 +560,19 @@ class JWSns {
 		 *  判断是否需要Filter，如果需要进入status
 		 *
 		 */
-		if( false == $options['nofilter'] )  // 暂时不升级这快，影响较大
-		{
+		if( true == $options['forceFilter'] 
+				|| false == $options['nofilter'] 
+		){
 			JWFilterConfig::Normal();
-			if( JWFilterRule::IsNeedFilter($status, $idUser, $idUserReplyTo, $device) ){
+			if(  true == $options['forceFilter'] 
+					|| JWFilterRule::IsNeedFilter($status, $idUser, $idUserReplyTo, $device) 
+			){
 
 				$metaInfo = $createOptions;
 				$metaInfo['isSignature'] = $isSignature;
 				$metaInfo['device'] = $device;
 				$metaInfo['status'] = $status;
-				
+
 				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, 
 								JWQuarantineQueue::T_STATUS, $metaInfo);
 				return true;
