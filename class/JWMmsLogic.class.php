@@ -91,7 +91,7 @@ class JWMmsLogic {
 
 	static public function Run () {
 
-		echo "MMS MO Queue Robot enters the mainLoop.\n";  
+		echo "MMS-Mo 机器人已经进入主循环，可以处理数据了...\n";  
 		self::Instance();
 
 		while ( true ){
@@ -128,8 +128,14 @@ class JWMmsLogic {
 				}
 
 				$phone = $matches[1];
+				$try = 0;
+				$deviceRow = array();
+				do{ 
+					$deviceRow = JWDevice::GetDeviceDbRowByAddress($phone, 'sms'); 
+					if( false == empty( $deviceRow ) )
+						break;
+				} while( ++$try < 3 );
 
-				$deviceRow = JWDevice::GetDeviceDbRowByAddress($phone, 'sms');
 				if( empty( $deviceRow ) ) {
 					echo "$phone is not register in JiWai yet.\n";
 					@rename($undealDirname, $quarantinedDirname);
@@ -181,6 +187,7 @@ class JWMmsLogic {
 						{
 							$mmsArray['imageFile'] = $realfile;
 							$mmsArray['imageSuffix'] = $suffix;
+							$mmsArray['timeCreate'] = date('Y-m-d H:i:s',fileCTime($realfile));
 						}
 						else if( $filetype=='text' && $suffix=='plain') 
 						{
@@ -227,6 +234,7 @@ class JWMmsLogic {
 
 		$device = 'sms';
 		$serverAddress = 'm@jiwai.de';
+		$timeCreate = $mmsArray['timeCreate'];
 		$options = array(
 				'idPicture' => $mmsArray['idPicture'],	
 			);
@@ -248,7 +256,7 @@ class JWMmsLogic {
 		return JWSns::UpdateStatus( $mmsArray['idUser'],
 						$mmsArray['status'],
 						$device,
-						null,
+						$timeCreate,
 						$isSignature,
 						$serverAddress,
 					       	$options );	
