@@ -14,7 +14,7 @@ class JWCommunity_FollowRecursion{
 	 */
 	static public function GetSuperior($idUser, $level=1)
 	{
-		$user_ids = array();
+		$user_ids = array( $idUser );
 		settype( $idUser, 'array' );
 		
 		$in_ids = $idUser;

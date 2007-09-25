@@ -14,16 +14,33 @@ class JWCommunity_User{
 	 */
 	static public function CreateUserStock($stockNum, $nameFull, $number=null){
 		$nameScreen = 'gp' . $stockNum;
+		$options = array(
+				'number'=> $number,
+				'forceFilter' => 'Y',
+				'deviceAllow' => 'sms,im,web',
+				'friendOnly' => 'N',
+			);
+
+		return self::CreateUserWithConference($nameScreen, $nameFull, $options );
+	}
+
+	static public function CreateUserWithConference($nameScreen, $nameFull, $options=array() ){
+
 		$userArray = array(
 			'nameScreen' => $nameScreen,
 			'nameFull' => $nameFull,
 		);
-
 		$idUser = JWUser::SaveTableRow( $userArray );
 		if( $idUser ) {
-			$idConference = JWConference::Create( $idUser, 'N', 'sms,im,web', $number,
+
+			$number = isset( $options['number'] ) ? $options['number'] : null;
+			$forceFilter = isset( $options['forceFilter'] ) ? $options['forceFilter'] : 'N';
+			$friendOnly = isset( $options['friendOnly'] ) ? $options['friendOnly'] : 'N';
+			$deviceAllow = isset( $options['deviceAllow'] ) ? $options['deviceAllow'] : 'sms,im,web';
+
+			$idConference = JWConference::Create( $idUser, $friendOnly, $deviceAllow, $number,
 								array(
-									'forceFilter' => 'Y',
+									'forceFilter' => $forceFilter,
 							     ));
 			return JWUser::SetConference( $idUser, $idConference );
 		}

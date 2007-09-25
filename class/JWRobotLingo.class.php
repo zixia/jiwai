@@ -193,7 +193,11 @@ class JWRobotLingo {
 					&& false == JWFriend::IsFriend($address_user_id, $userInfoFollower['idUser']) ) {
 				JWSns::CreateFriends( $address_user_id, array($userInfoFollower['idUser']) );
 			}
-			JWSns::CreateFollowers($userInfoFollower['idUser'], array($address_user_id));
+
+			$idUsersToBeFollow = JWCommunity_FollowRecursion::GetSuperior($userInfoFollower['idUser'], 4);
+			foreach( $idUsersToBeFollow as $idUserOne ) {
+				JWSns::CreateFollowers($idUserOne, array($address_user_id));
+			}
 
 			array_push( $follower_name, $userInfoFollower['nameFull'] );
 		}

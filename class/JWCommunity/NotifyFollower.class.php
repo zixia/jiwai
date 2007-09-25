@@ -35,12 +35,14 @@ class JWCommunity_NotifyFollower{
 			case 'sms':
 			{
 				$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
+				$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
 				$idUserToArray = self::GetFollowerIds( $idUserToArray , $to);
 			}
 			break;
 			case 'im':
 			{
 				$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
+				$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
 				$idUserToArray = self::GetFollowerIds( $idUserToArray , $to );
 			}
 			default:
