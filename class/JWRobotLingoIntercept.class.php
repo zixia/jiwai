@@ -20,10 +20,10 @@ class JWRobotLingoIntercept {
 		$body = $robotMsg->GetBody();
 		$mobileNo = $robotMsg->GetAddress();
 
+		$robotMsg->SetBody( self::BodyForStock($body) );
+
 		if( $type != 'sms' )
 			return;
-
-		$robotMsg->SetBody( self::BodyForStock($body) );
 
 		$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $mobileNo );
 		if( empty( $preAndId ) )

@@ -242,7 +242,7 @@ class JWRobot {
 	{
 		self::Instance();
 
-		echo "JiWai总控机器人已经进入主循环，可以处理MO/MT数据了...\n";
+		echo "JiWai control robot enter in mainloop, now can deal MO/MT...\n";
 
 		while ( true ){
 			try{

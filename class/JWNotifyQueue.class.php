@@ -247,7 +247,7 @@ SQL;
 							. implode( ',', $idUserToArray )
 							. "), message: $message\n";
 
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
+						JWSns::NotifyFollower( $idUserFrom, $idUserToArray, $message, null );
 					}
 					break;
 					default:
