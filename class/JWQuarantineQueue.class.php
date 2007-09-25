@@ -24,7 +24,6 @@ class JWQuarantineQueue {
 	 */
 	const T_STATUS = 'STATUS';
 	const T_MESSAGE = 'MESSAGE';
-	const T_CONFERENCE = 'CONFERENCE';
 
 	/**
 	 * Instance of this singleton class
@@ -52,7 +51,7 @@ class JWQuarantineQueue {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUserFrom=null, $idUserTo=null, $type=self::T_STATUS, $metaInfo=array() ) {
+	static public function Create( $idUserFrom=null, $idUserTo=null, $idConference=null, $type=self::T_STATUS, $metaInfo=array() ) {
 
 		$metaString = self::EncodeBase64Serialize( $metaInfo );
 
@@ -60,6 +59,7 @@ class JWQuarantineQueue {
 						array(
 							'idUserFrom' => $idUserFrom,
 							'idUserTo' => $idUserTo,
+							'idConference' => $idConference,
 							'type' => $type,
 							'metaInfo' => $metaString,
 							'timeCreate' => date('Y-m-d H:i:s'),
@@ -91,7 +91,7 @@ _SQL_;
 	 * @param $offset, int
 	 * @return mixed
 	 */
-	static public function GetQuarantineQueue($type=self::T_CONFERENCE, $limit=20,$offset=0, $dealStatus=JWQuarantineQueue::DEAL_NONE ){
+	static public function GetQuarantineQueue($type=self::T_STATUS, $limit=20,$offset=0, $dealStatus=JWQuarantineQueue::DEAL_NONE ){
 		
 		$sql = <<<SQL
 SELECT * FROM QuarantineQueue
@@ -277,8 +277,8 @@ _SQL_;
 	static public function FireStatus($idQuarantine, $to='web', $delete=false ) {
 
 		$quarantine = self::GetDbRowById( $idQuarantine );
-		if( $quarantine['type'] == self::T_MESSAGE || empty($quarantine['metaInfo']) )
-			return true;
+		if( $quarantine['type'] == self::T_STATUS || empty($quarantine['metaInfo']) )
+			return false;
 		
 		if( $delete == true ){
 			return JWDB::DelTableRow('QuarantineQueue', array( 'id'=>$idQuarantine, ) );
