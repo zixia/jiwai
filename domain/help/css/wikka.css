@@ -86,7 +86,7 @@ body {
 /* links */
 
 a {
-	color: #333399;
+	color: #D05D02;
 	text-decoration: none;
 }
 
@@ -95,7 +95,7 @@ a:visited {
 }
 
 a:hover {
-	color: #993333;
+	color: #F87A01;
 }
 
 a:active {
@@ -103,11 +103,11 @@ a:active {
 }
 
 a.ext {
-	color: #333399;
+	color: #D05D02;
 }
 
 a.ext:hover {
-	color: #993333;
+	color: #F87A01;
 }
 
 .exttail {
@@ -117,7 +117,7 @@ a.ext:hover {
 }
 
 .header a:hover {
-	color: #993333;
+	color: #F87A01;
 	background: transparent;
 	border-bottom: 0px;
 }
@@ -127,7 +127,7 @@ a.ext:hover {
 }
 
 .page a:hover {
-	color: #993333;
+	color: #F87A01;
 	text-decoration: underline;
 }
 
@@ -506,7 +506,7 @@ table.calendar tbody.face td {
 	text-align: right;
 }
 table.calendar td.currentday {
-	color: #993333;
+	color: #F87A01;
 	background-color: #AAAAAA;
 	font-weight: bold;
 }
@@ -526,18 +526,18 @@ table.calendar td.nextmonth {
 	font-size: 85%;
 }
 table.calendar a:link {
-	color: #993333;
+	color: #F87A01;
 	text-decoration: none;
 }
 table.calendar a:visited {
-	color: #993333;
+	color: #F87A01;
 	text-decoration: none;
 }
 table.calendar a:hover {
-	color: #993333;
+	color: #F87A01;
 }
 table.calendar a:active {
-	color: #993333;
+	color: #F87A01;
 	text-decoration: none;
 }
 
@@ -570,7 +570,7 @@ table.acls {
 .code .kw1	{ color: #b1b100; }
 .code .kw2	{ color: #000000; font-weight: bold; }
 .code .kw3	{ color: #000066; }
-.code .kw4	{ color: #993333; }
+.code .kw4	{ color: #F87A01; }
 .code .kw5	{ color: #0000ff; }
 .code .me0	{ color: #006600; }
 .code .nu0	{ color: #cc66cc; }

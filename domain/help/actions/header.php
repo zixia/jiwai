@@ -62,13 +62,12 @@ if ($this->GetMethod() != 'edit') {
 <li> <a href="#side">跳转到功能目录</a> </li>
 </ul>
 
-<?php include "../../../jiwai.inc.php" ?>
 <?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header('/help/') ?>
+<?php JWTemplate::header() ?>
 
 <div id="container">
 <h1><span>
-<a href="<?php echo $this->config["root_page"]?>">叽歪de帮助中心</a> :: <a href="/NewUserGuide">新手入门</a> :: <a href="/FAQ">常见问题</a> :: <a href="/JiWaiHelpList">帮助文档</a>
+<a href="<?php echo $this->config["root_page"]?>">叽歪de帮助中心</a> :: <a href="/FAQ">常见问题</a> :: <a href="/JiWaiHelpList">帮助文档</a>
 </span>叽歪de帮助中心 : JiWaiHelp </h1>
 <table width="100%" border="0" cellspacing="10" cellpadding="0">
   <tr>

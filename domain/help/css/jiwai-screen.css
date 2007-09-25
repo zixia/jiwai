@@ -506,6 +506,7 @@ a.button2 img { margin-top:8px;}
 #help #container h1 {font-size:15px; font-weight:bold; height:25px; clear:both; margin:0;  padding:30px 15px 0 15px; overflow:hidden;}
 #help #container h1 span {float:right; font-size:12px; font-weight:normal; margin:0; padding:0;}
 #help #container h1 span a {color:#989898;}
+#help #container h1 span a:hover {color:#FF830B;}
 #help #container table {margin:0 0 15px 0;}
 #help #container table th {vertical-align:top;}
 #help #container table th {border:1px solid #FFC893; text-align:left; font-weight:bold;}
@@ -513,7 +514,7 @@ a.button2 img { margin-top:8px;}
 #help #container table td p {font-size:12px; margin:0 15px; line-height:24px;}
 #help #container table h3 {font-size:14px; font-weight:bold; line-height:31px; text-indent:15px; border-bottom:1px solid #FFC893;}
 #help #container table h4 {font-size:14px; font-weight:bold; line-height:51px; text-indent:15px;}
-#help #container strong {font-size:14px; font-weight:bold; line-height:51px;}
+#help #container strong {font-size:12px; font-weight:bold; line-height:51px;}
 #help #container th ul {width:160px;}
 #help #container th ul li {display:block; list-style: none; list-style-position:inside; margin-left:15px; color:#494949; font-size:13px;}
 #help #container th ul li a {color:#494949; text-decoration:none;}
@@ -522,5 +523,5 @@ a.button2 img { margin-top:8px;}
 #help #container td p {margin-left:25px;}
 #help #container td ol {margin-left:25px;}
 #help #container td ol li {list-style:decimal; list-style-position: inside; font-size:12px; line-height:26px;}
-#help #container td ol li a{text-decoration:none; color:#494949;}
-#help #container td ol li a:hover{ color:#FF830B;}
+#help #container td ol li a{text-decoration:none; color:#D05D02;}
+#help #container td ol li a:hover{ color:#F87A01;}
