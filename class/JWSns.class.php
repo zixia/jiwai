@@ -70,7 +70,7 @@ class JWSns {
 								);
 	
 		
-		$message = "$sender_row[nameScreen]: $message ( 可直接回复 'D $sender_row[nameScreen] 你想说的悄悄话' )";
+		$message = "$sender_row[nameScreen]: $message (可直接回复 'D $sender_row[nameScreen] 你想说的悄悄话')";
 
 		JWNudge::NudgeToUsers( array($idUserReceiver), $message, 'direct_messages', $device );
 
@@ -627,7 +627,7 @@ class JWSns {
 	 */
 	static public function NotifyFollower( $idSender=null, $idUserReplyTo=null, $message=null, $options=array() ){
 
-		$idConference = isset( $options['idConference'] ) ? intval( $idConference ) : null;
+		$idConference = isset( $options['idConference'] ) ? intval( $options['idConference'] ) : null;
 
 		if( $idSender == null ) 
 		{

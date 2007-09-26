@@ -184,23 +184,21 @@ SQL;
 					case self::T_STATUS:
 					{
 						$message = @$metaInfo['message'];
-						$idConference = @$metaInfo['idConference'];
+						$options = @$metaInfo['options'];
 
 						if( empty($message) ) {
 							echo "[$queueType] idUserFrom: $idUserFrom, "
 								. "idUserTo: $idUserTo, "
 								. "message: NULL, "
-								. "idConference: $idConference, "
 								. "Operation: Omit\n";
 						}else{
 							echo "[$queueType] idUserFrom: $idUserFrom, "
 								. "idUserTo: $idUserTo, "
-								. "message: $message, "
-								. "idConference: $idConference\n";
+								. "idStatus: $options[idStatus]\n";
 						}
 
 
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $idConference );
+						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
 					}
 					break;
 					case self::T_MMS:
@@ -210,7 +208,7 @@ SQL;
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
-							. "message: $message\n";
+							. "idStatus: $options[idStatus]\n";
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
 					}
@@ -221,8 +219,7 @@ SQL;
 						$options = @$metaInfo['options'];
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
-							. "idUserTo: $idUserTo, "
-							. "message: $message\n";
+							. "idUserTo: $idUserTo\n";
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
 					}
@@ -250,7 +247,7 @@ SQL;
 
 						echo "[$queueType] idUserToArray: array("
 							. implode( ',', $idUserToArray )
-							. "), message: $message\n";
+							. "), idConference: $options[idConference]\n";
 
 						JWSns::NotifyFollower( $idUserFrom, $idUserToArray, $message, $options );
 					}
@@ -262,6 +259,10 @@ SQL;
 						$messageType = @$metaInfo['messageType'];
 						$source = @$metaInfo['source'];
 						$options = @$metaInfo['options'];
+
+						echo "[$queueType] idUsers: array("
+							. implode( ',', $idUsers )
+							. ")\n";
 
 						if( empty( $idUsers ) || $source != 'bot' )
 							break;
