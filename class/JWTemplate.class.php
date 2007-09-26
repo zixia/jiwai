@@ -273,7 +273,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo 'http://jiwai.de' . $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -1666,23 +1666,17 @@ _HTML_;
 			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
 _HTML_;
 		
-		if ( 'wo'==$user ) 
+		if ( 'wo'==$user || $user === @$_COOKIE['JiWai_de_name_screen'] ) 
 		{
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/$user/followers/">$countInfo[follower] 个粉丝</a></li>
+			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
 _HTML_;
 		} 
-		else 
-		{
-			echo <<<_HTML_
-			<li id="follower_count"><a>$countInfo[follower] 个粉丝</a></li>
-_HTML_;
-		}
 
-		if ( 'wo'==$user )
+		if ( 'wo'==$user || $user === @$_COOKIE['JiWai_de_name_screen'] )
 		{
 			echo <<<_HTML_
-			<li id="message_count"><a href="/$user/direct_messages/">$countInfo[pm] 条悄悄话</a></li>
+			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话</a></li>
 _HTML_;
 		}
 
