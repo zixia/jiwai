@@ -64,7 +64,7 @@ function nudge($idUser, $idFriend){
 
     if ( JWFriend::IsFriend( $idFriend, $idUser ) ){
         $nudgeMessage = "$loginedUserInfo[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。";
-        if( JWNudge::NudgeUserIds( array($idFriend), $nudgeMessage, 'nudge', 'web' ) ){
+        if( JWNudge::NudgeToUsers( array($idFriend), $nudgeMessage, 'nudge', 'web' ) ){
             JWSession::SetInfo('error', "我们已经帮你挠挠了$userInfo[nameScreen]一下！期待很快能得到你朋友的回应。");
         }else{
             JWSession::SetInfo('error', "哎呀！由于系统故障，挠挠好友失败了…… 请稍后再尝试吧。");

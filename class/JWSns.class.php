@@ -70,15 +70,9 @@ class JWSns {
 								);
 	
 		
-		JWNudge::NudgeUserIds(	 array($idUserReceiver)
-								,"$sender_row[nameScreen]: $message "
-									."（可直接回复“"
-									."D $sender_row[nameScreen] 你想说的悄悄话"
-									."”"
-									."）"
-								,'direct_messages'
-                                ,$device
-							);
+		$message = "$sender_row[nameScreen]: $message ( 可直接回复 'D $sender_row[nameScreen] 你想说的悄悄话' )";
+
+		JWNudge::NudgeToUsers( array($idUserReceiver), $message, 'direct_messages', $device );
 
 		return true;
 	}
@@ -118,7 +112,7 @@ class JWSns {
 			throw new JWException('JWFriend::Create failed');
 		}else{
 			$message = "$userRow[nameScreen] (http://JiWai.de/".UrlEncode($userRow['nameScreen'])."/) 将你加为好友了。";
-			JWNudge::NudgeUserIds( array($friendRow['id']), $message, 'nudge', 'web' );
+			JWNudge::NudgeToUsers( array($friendRow['id']), $message, 'nudge', 'web' );
 		}
 
 		$notice_settings 	= JWUser::GetNotification($friendRow['id']);
@@ -181,11 +175,11 @@ class JWSns {
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
 		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
-        if( $friend_request_id ) {
-            $userInfo = JWUser::GetUserInfo( $idUser );
-            $message = "$userInfo[nameScreen] (http://JiWai.de/".UrlEncode($userRow['nameScreen'])."/) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
-            JWNudge::NudgeUserIds( array($idFriend), $message, 'nudge', 'web' );
-        }
+		if( $friend_request_id ) {
+			$userInfo = JWUser::GetUserInfo( $idUser );
+			$message = "$userInfo[nameScreen] (http://JiWai.de/".UrlEncode($userRow['nameScreen'])."/) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
+			JWNudge::NudgeToUsers( array($idFriend), $message, 'nudge', 'web' );
+		}
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id, $note);
 
 		return $friend_request_id;
@@ -212,7 +206,7 @@ class JWSns {
 			return false;
 		}else{
 			$message = "$followerRow[nameScreen] 订阅了你的更新。";
-			JWNudge::NudgeUserIds(array($user_id), $message, 'nudge', 'web' );
+			JWNudge::NudgeToUsers(array($user_id), $message, 'nudge', 'web' );
 		}
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
@@ -245,7 +239,7 @@ class JWSns {
 				{
 					$userFollower = JWUser::GetUserInfo( $follower_id );
 					$message = "$userFollower[nameScreen] 取消订阅你的更新了。";
-				//	JWNudge::NudgeUserIds(array($idUser), $message, $messageType='nudge', $source='web');
+					//JWNudge::NudgeToUsers(array($idUser), $message, 'nudge', 'web');
 				}
 			}else if ( $biDirection && JWFollower::IsFollower($follower_id,$idUser) )
 			{
@@ -256,7 +250,7 @@ class JWSns {
 				}else
 				{
 					$message = "$userInfo[nameScreen] 取消订阅你的更新了。";
-				//	JWNudge::NudgeUserIds(array($follower_id), $message, $messageType='nudge', $source='web');
+					//JWNudge::NudgeToUsers( array($follower_id), $message, 'nudge', 'web' );
 				}
 			}
 
@@ -674,7 +668,7 @@ class JWSns {
 		if( empty( $follower_ids ) ) 
 			return true;
 
-		return JWNudge::NudgeUserIds( $follower_ids, $message, 'nudge', 'bot', $options );
+		return JWNudge::NudgeToUsers( $follower_ids, $message, 'nudge', 'bot', $options );
 	}
 
 	/*
@@ -802,7 +796,7 @@ class JWSns {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
 				}else{
 					$message = "你已经不再是 $userInfo[nameScreen] 的好友了。";
-				//	JWNudge::NudgeUserIds( array($friend_id), $message, 'nudge', 'web');
+					//JWNudge::NudgeToUsers( array($friend_id), $message, 'nudge', 'web' );
 				}
 
 			}
@@ -816,7 +810,7 @@ class JWSns {
 				}else{
 					$friendInfo = JWUser::GetUserInfo( $friend_id );
 					$message = "你已经不再是 $friendInfo[nameScreen] 的好友了。";
-				//	JWNudge::NudgeUserIds( array($idUser), $message, 'nudge', 'web');
+					//JWNudge::NudgeToUsers( array($idUser), $message, 'nudge', 'web' );
 				}
 
 			}

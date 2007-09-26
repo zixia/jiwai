@@ -43,7 +43,7 @@ class JWNudge {
 		if( empty( $idUsers ) )
 			return true;
 
-		if( $source != 'bot' ) {
+		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype') ) ) {
 			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
 				$metaInfo = array(
 					'idUsers' => $idUsers,
@@ -341,8 +341,4 @@ class JWNudge {
 		return null;
 	}
 }
-/**
-require_once( '../jiwai.inc.php' );
-JWNudge::NudgeUserIds( array('89') , 'test', $messageType='nudge');
-**/
 ?>
