@@ -147,9 +147,14 @@ class JWFuncCode {
 			return array();
 
 		switch( $preAndId['pre'] ){
+			case self::PRE_STOCK_CODE:
 			case self::PRE_CONF_IDUSER:
 			{
 				$idUser = $preAndId['id'];
+				if( $preAndId['pre'] == self::PRE_STOCK_CODE ) {
+				       	$idUser = "gp$idUser";
+				}
+
 				$userInfo = JWUser::GetUserInfo( $idUser );
 				if( empty($userInfo) || null==$userInfo['idConference'] )
 					return array();
@@ -162,6 +167,7 @@ class JWFuncCode {
 					);
 			}
 			break;
+			case self::PRE_STOCK_CATE:
 			case self::PRE_CONF_CUSTOM:
 			{
 				$conferenceNum = $preAndId['id'];
