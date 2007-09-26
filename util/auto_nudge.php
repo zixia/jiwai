@@ -63,7 +63,7 @@ _NUDGE_;
 */
 	echo "$nudge_message\n";
 
-	JWNudge::NudgeUserIds(array($idUser), $nudge_message, 'nudge');
+	JWNudge::NudgeToUsers( array($idUser), $nudge_message, 'nudge', 'bot' );
 }
 
 echo date("Y-m-d H:i:s", time()) . " AutoNudge done\n";

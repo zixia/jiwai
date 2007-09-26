@@ -68,6 +68,15 @@ def parseMail(msg, uid, address):
 	fp.write( subject )
 	fp.close()
 
+	#store Date
+	mailtime = msg['Date']
+	if mailtime != None:
+		mailtimefilename = '%s/mail.tim' % ( dirname );
+		fp = open( mailtimefilename , 'wb')
+		fp.write( mailtime )
+		fp.close()
+		
+
 
 	counter = 1
 	for part in msg.walk():

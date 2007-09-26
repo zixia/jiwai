@@ -146,6 +146,7 @@ class JWMmsLogic {
 				$mmsArray['address'] = $phone;
 				$mmsArray['idUser'] = $deviceRow['idUser'];
 				$mmsArray['subject'] = uniqid('/tmp/Mms');
+				$mmsArray['timeCreate'] = 0;
 				
 				$files = scandir( $undealDirname );
 
@@ -174,6 +175,15 @@ class JWMmsLogic {
 							continue;
 						}
 
+						if( $f == 'mail.tim' ) {
+							$content = file_get_contents( $realfile );
+							$contentTime = strtotime( $content );
+							if( $contentTime > 0 ) {
+								$mmsArray['timeCreate'] = strtotime($content);
+							}
+							continue;
+						}
+
 						$pathInfo = pathInfo( $realfile );
 						if( in_array( $pathInfo['extension'] , array('html','smi','smil') ) )
 							continue;
@@ -187,7 +197,9 @@ class JWMmsLogic {
 						{
 							$mmsArray['imageFile'] = $realfile;
 							$mmsArray['imageSuffix'] = $suffix;
-							$mmsArray['timeCreate'] = fileCTime($realfile);
+							if( $mmsArray['timeCreate'] <= 0 ) {
+								$mmsArray['timeCreate'] = fileCTime($realfile);
+							}
 						}
 						else if( $filetype=='text' && $suffix=='plain') 
 						{
