@@ -97,14 +97,15 @@ class JWCommunity_NotifyFollower{
 		if( empty( $conference ) || empty($user) )
 			return $code['code'] . $code['func'] . $code['funcPlus'];
 
-		if( preg_match( '/^gp(\d+)$/', $user['nameScreen'], $matches ) ) {
-			if( $conference['number'] !== null ) {
-				return $code['code'] . $code['func'] 
-					. JWFuncCode::PRE_STOCK_CATE . $conference['number'];
-			}
+		if( preg_match( '/^gp(\d+)$/i', $user['nameScreen'], $matches ) ) {
+			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CODE . $matches[1];
+		}
 
-			return $code['code'] . $code['func'] 
-				. JWFuncCode::PRE_STOCK_CODE . $matches[1];
+		if( preg_match( '/^stock_([0-9a-z]{3,8})$/i', $user['nameScreen'] ) ) {
+			$number = $conference['number'];
+			if( $number !== null ) {
+				return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CATE . $number;
+			}
 		}
 
 		if( $conference['number'] !== null )

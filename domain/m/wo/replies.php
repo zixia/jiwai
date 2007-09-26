@@ -9,12 +9,12 @@ $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
 
-$statusNum= JWStatus::GetStatusNumFromReplies($loginedIdUser);
-$pagination		= new JWPagination($statusNum, $page, 10);
+$statusNum	= JWStatus::GetStatusNumFromReplies($loginedIdUser);
+$pagination	= new JWPagination($statusNum, $page, 10);
 $statusData 	= JWStatus::GetStatusIdsFromReplies($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 $statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
-$userRows		= JWUser::GetUserDbRowsByIds	($statusData['user_ids']);
+$userRows	= JWUser::GetUserDbRowsByIds	($statusData['user_ids']);
 
 krsort( $statusRows );
 

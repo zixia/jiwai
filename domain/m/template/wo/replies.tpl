@@ -9,7 +9,7 @@
     <span class="stamp">
     ${JWStatus::GetTimeDesc($status['timeCreate'])}
     通过
-    ${JWDevice::GetNameFromType($status['device'], $status['idPartner'])}
+    ${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}
     </span>
 </li>
 <!--{/foreach}-->

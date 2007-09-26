@@ -24,6 +24,17 @@ class JWCommunity_User{
 		return self::CreateUserWithConference($nameScreen, $nameFull, $options );
 	}
 
+	static public function CreateUserStockCategory($nameScreen, $nameFull){
+		$options = array(
+				'numberUseIdUser' => true,
+				'forceFilter' => 'Y',
+				'deviceAllow' => 'sms,im,web',
+				'friendOnly' => 'N',
+			);
+
+		return self::CreateUserWithConference($nameScreen, $nameFull, $options );
+	}
+
 	static public function CreateUserWithConference($nameScreen, $nameFull, $options=array() ){
 
 		$userArray = array(
@@ -34,6 +45,10 @@ class JWCommunity_User{
 		if( $idUser ) {
 
 			$number = isset( $options['number'] ) ? $options['number'] : null;
+			if( $number==null ) {
+				$number = isset($options['numberUseIdUser'])  ? $idUser : null;
+			}
+
 			$forceFilter = isset( $options['forceFilter'] ) ? $options['forceFilter'] : 'N';
 			$friendOnly = isset( $options['friendOnly'] ) ? $options['friendOnly'] : 'N';
 			$deviceAllow = isset( $options['deviceAllow'] ) ? $options['deviceAllow'] : 'sms,im,web';
@@ -42,9 +57,10 @@ class JWCommunity_User{
 								array(
 									'forceFilter' => $forceFilter,
 							     ));
-			return JWUser::SetConference( $idUser, $idConference );
+			JWUser::SetConference( $idUser, $idConference );
+
 		}
-		return false;
+		return $idUser;
 	}
 }
 ?>

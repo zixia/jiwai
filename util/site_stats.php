@@ -8,7 +8,7 @@
  *
 */
 
-require_once('../jiwai.inc.php');
+require_once(dirname(__FILE__) . '/../jiwai.inc.php');
 
 $hostname = '10.1.30.10';
 $username = 'root';
@@ -169,6 +169,7 @@ foreach ($templateReplace as $k=>$v) {
 /* Phase of Sendmail */
 $contact = array (
     'Wang Hongwei'  => 'glinus@gmail.com',
+    'Li Zhuahuan'   => 'zixia@zixia.net',
 );
 
 foreach ($contact as $name=>$mail) {
