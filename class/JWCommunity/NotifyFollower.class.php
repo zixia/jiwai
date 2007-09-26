@@ -12,7 +12,7 @@ class JWCommunity_NotifyFollower{
 	/**
 	 * 通知会议用户的follower，按一定级别
 	 */
-	static public function NotifyFollower($idStatus, $to='all')
+	static public function NotifyFollower($idStatus, $to='all', $options=array() )
 	{
 		$idStatus = JWDB::CheckInt( $idStatus );
 		$statusInfo = JWStatus::GetDbRowById( $idStatus );
@@ -20,34 +20,16 @@ class JWCommunity_NotifyFollower{
 		if( empty($statusInfo) || null == $statusInfo['idConference'] )
 			return true;
 
-		$idUserConference = $statusInfo['idConference'];
+		$conference = JWConference::GetDbRowById( $statusInfo['idConference'] );
+		$idUserConference = $conference['idUser'];
 		$userConference = JWUser::GetUserInfo( $idUserConference );
 		$idUserSender = $statusInfo['idUser'];
 		$message = "$userConference[nameScreen]: $statusInfo[status]";
 
-		switch($to){
-			case 'all':
-			{
-				$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
-				$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
-			}
-			break;
-			case 'sms':
-			{
-				$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
-				$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
-				$idUserToArray = self::GetFollowerIds( $idUserToArray , $to);
-			}
-			break;
-			case 'im':
-			{
-				$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
-				$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
-				$idUserToArray = self::GetFollowerIds( $idUserToArray , $to );
-			}
-			default:
-				return true;
-		}
+		$idUserToArray = JWFollower::GetFollowerIds( $idUserConference );
+		$idUserToArray = array_diff( $idUserToArray, array($idUserSender) );
+		$idUserToArray = self::GetFollowerIds( $idUserToArray , $to );
+
 
 		if( empty( $idUserToArray ) )
 			return true;
@@ -55,6 +37,11 @@ class JWCommunity_NotifyFollower{
 		$metaInfo = array(
 			'message' => $message,
 			'idUserToArray' => $idUserToArray,
+			'options' => array(
+						'idConference' => $statusInfo['idConference'],
+						'idStatus' => $idStatus,
+			),
+				
 		);
 
 		return JWNotifyQueue::Create( null, null, JWNotifyQueue::T_CONFERENCE, $metaInfo );
@@ -96,6 +83,34 @@ class JWCommunity_NotifyFollower{
 		}
 
 		return array_unique( $rtn );
+	}
+
+	/**
+	 * 获取会议号；
+	 */
+	static public function GetServerAddress( $mobileNo, $conference, $user ) {
+
+		$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+		if( empty( $code ) )
+			return null;
+
+		if( empty( $conference ) || empty($user) )
+			return $code['code'] . $code['func'] . $code['funcPlus'];
+
+		if( preg_match( '/^gp(\d+)$/', $user['nameScreen'], $matches ) ) {
+			if( $conference['number'] !== null ) {
+				return $code['code'] . $code['func'] 
+					. JWFuncCode::PRE_STOCK_CATE . $conference['number'];
+			}
+
+			return $code['code'] . $code['func'] 
+				. JWFuncCode::PRE_STOCK_CODE . $matches[1];
+		}
+
+		if( $conference['number'] !== null )
+			return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_CUSTOM . $conference['number'];
+
+		return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_IDUSER . $conference['idUser'];
 	}
 }
 ?>

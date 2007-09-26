@@ -587,7 +587,10 @@ class JWSns {
 			$metaInfo = array();
 			$queueType = JWNotifyQueue::T_STATUS;
 			$metaInfo['message'] = $status;
-			$metaInfo['idConference'] = $idConference; 
+			$metaInfo['options'] = array( 
+				'idStatus' => $idStatus,
+				'idConference'=> $idConference,
+			);
 
 			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
 			{
@@ -599,8 +602,6 @@ class JWSns {
 				$message = array(
 					'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
 					'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
-					'type' => 'MMS',
-					'idStatus' => $idStatus,
 				);
 				$metaInfo['message'] = $message;
 				$queueType = JWNotifyQueue::T_MMS;
@@ -630,7 +631,9 @@ class JWSns {
 	 * @param $status string
 	 * @param $idConference
 	 */
-	static public function NotifyFollower( $idSender=null, $idUserReplyTo=null, $status=null, $idConference=null , $queueType=JWNotifyQueue::T_STATUS ){
+	static public function NotifyFollower( $idSender=null, $idUserReplyTo=null, $message=null, $options=array() ){
+
+		$idConference = isset( $options['idConference'] ) ? intval( $idConference ) : null;
 
 		if( $idSender == null ) 
 		{
@@ -642,7 +645,7 @@ class JWSns {
 			if( $idConference ) {
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
-				$status = "$userInfo[nameScreen]: $status";
+				$message = "$userInfo[nameScreen]: $message";
 
 				$conference = JWConference::GetDbRowById( $idConference );
 				$idUserBeFollowed = $conference['idUser'];
@@ -659,19 +662,19 @@ class JWSns {
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
 				$follower_ids = JWFollower::GetFollowerIds($idSender);
-				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
+				$message = is_string($message) ? "$userInfo[nameScreen]: $message" : $message;
 			}else{
 
 				$userInfo = JWUser::GetUserInfo( $idSender );
 				$follower_ids = array( $idUserReplyTo ) ;
-				$status = is_string($status) ? "$userInfo[nameScreen]: $status" : $status;
+				$message = is_string($message) ? "$userInfo[nameScreen]: $message" : $message;
 			}
 		}
 
 		if( empty( $follower_ids ) ) 
 			return true;
 
-		return JWNudge::NudgeUserIds( $follower_ids, $status );
+		return JWNudge::NudgeUserIds( $follower_ids, $message, 'nudge', 'bot', $options );
 	}
 
 	/*

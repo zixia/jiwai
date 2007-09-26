@@ -33,6 +33,7 @@ class JWNotifyQueue {
 	const T_NUDGE = 'NUDGE';
 	const T_INVITE = 'INVITE';
 	const T_CONFERENCE = 'CONFERENCE';
+	const T_WEBNUDGE = 'WEBNUDGE';
 	const T_UNKNOWN = 'UNKNOWN';
 
 	/**
@@ -205,23 +206,25 @@ SQL;
 					case self::T_MMS:
 					{
 						$message = @$metaInfo['message'];
+						$options = @$metaInfo['options'];
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
 							. "message: $message\n";
 
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
+						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
 					}
 					break;
 					case self::T_NUDGE:
 					{
-						$message = $metaInfo['message'];
+						$message = @$metaInfo['message'];
+						$options = @$metaInfo['options'];
 
 						echo "[$queueType] idUserFrom: $idUserFrom, "
 							. "idUserTo: $idUserTo, "
 							. "message: $message\n";
 
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, null );
+						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
 					}
 					break;
 					case self::T_INVITE:
@@ -240,14 +243,30 @@ SQL;
 					break;
 					case self::T_CONFERENCE:
 					{
-						$message = $metaInfo['message'];
-						$idUserToArray = $metaInfo['idUserToArray']; 
+						$message = @$metaInfo['message'];
+						$idUserToArray = @$metaInfo['idUserToArray']; 
+
+						$options = @$metaInfo['options'];
 
 						echo "[$queueType] idUserToArray: array("
 							. implode( ',', $idUserToArray )
 							. "), message: $message\n";
 
-						JWSns::NotifyFollower( $idUserFrom, $idUserToArray, $message, null );
+						JWSns::NotifyFollower( $idUserFrom, $idUserToArray, $message, $options );
+					}
+					break;
+					case self::T_WEBNUDGE:
+					{
+						$idUsers = @$metaInfo['idUsers'];
+						$message = @$metaInfo['message'];
+						$messageType = @$metaInfo['messageType'];
+						$source = @$metaInfo['source'];
+						$options = @$metaInfo['options'];
+
+						if( empty( $idUsers ) || $source != 'bot' )
+							break;
+
+						JWNudge::NudgeToUsers($idUsers,$message,$messageType,$source,$options);
 					}
 					break;
 					default:

@@ -39,6 +39,58 @@ class JWNudge {
 	{
 	}
 
+	static public function NudgeToUsers($idUsers, $message=null, $messageType='nudge', $source='bot', $options=array() ){
+		if( empty( $idUsers ) )
+			return true;
+
+		if( $source != 'bot' ) {
+			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
+				$metaInfo = array(
+					'idUsers' => $idUsers,
+					'message' => $message,
+					'messageType' => $messageType,
+					'source' => 'bot',
+					'options' => $options,
+				);
+				return JWNotifyQueue::Create( null, null, JWNotifyQueue::T_WEBNUDGE, $metaInfo );
+			}
+			return true;
+		}
+
+		$idConference = isset( $options['idConference'] ) ? intval( $options['idConference'] ) : null;
+		$idStatus = isset( $options['idStatus'] ) ? intval( $options['idStatus'] ) : null;
+
+		$status = ( $idStatus == null ) ? null : JWStatus::GetDbRowById( $idStatus );
+		$conference = ( $idConference == null ) ? null : JWConference::GetDbRowById( $idConference );
+		$user = ( $conference == null ) ? null : JWUser::GetUserInfo( $conference['idUser'] );
+		$user = ( $user == null ) ? ( $status == null ? null : JWUser::GetUserInfo($status['idUser']) ) : $user;
+
+		$nudgeOptions = array(
+			'conference' => $conference,
+			'status' => $status,
+			'user' => $user,
+		);
+
+		foreach( $idUsers as $idUser ){
+			$userTo = JWUser::GetUserInfo( $idUser );
+			if( empty( $userTo ) )
+				continue;
+
+			$deviceRows= JWDevice::GetDeviceRowByUserId( $idUser );
+			if( empty( $deviceRows ) )
+				continue;
+
+			$deviceSendVia = $userTo['deviceSendVia'];
+			$availableSendVia = self::GetAvailableSendVia_Temp( $deviceRows, $deviceSendVia );
+
+			if( null == $availableSendVia )
+				continue;
+
+			$deviceRow = $deviceRows[ $availableSendVia ];
+			JWNudge::NudgeToUserDevice( $deviceRow, $message, $messageType, $nudgeOptions );
+		}
+	}
+
 	/*
 	 *	向 $idUsers 的设备上发送消息
 	 *	@param	array of int	$idUsers
@@ -51,7 +103,7 @@ class JWNudge {
 		if( empty($idUsers) )
 			return true;
 
-		$user_rows		= JWUser::GetUserDbRowsByIds			($idUsers);
+		$user_rows	= JWUser::GetUserDbRowsByIds			($idUsers);
 		$device_rows	= JWDevice::GetDeviceRowsByUserIds	($idUsers);
 
 		if( empty( $user_rows ) ) 
@@ -66,7 +118,7 @@ class JWNudge {
 				continue;
 			
 			$deviceSendVia = $user_row['deviceSendVia'];
-			$availableSendVia = self::GetAvailableSendVia( $device_row, $deviceSendVia );
+			$availableSendVia = self::GetAvailableSendVia_Temp( $device_row, $deviceSendVia );
 
 			if ( $availableSendVia && isset( $device_row[$availableSendVia] ) )
 				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType, $source );
@@ -80,6 +132,62 @@ class JWNudge {
 	}
 
 
+	static public function NudgeToUserDevice( $deviceRow, $message, $messageType, &$options=array() ) {
+		
+		switch( $deviceRow['enabledFor'] ){
+			case 'direct_messages':
+				if( 'direct_messages' != $messageType )
+					break;
+			case 'everything':
+				// 检查设备是否已经验证通过
+				$isVerified= $deviceRow['verified'];
+				if ( false == $isVerified )
+				{
+					JWLog::Log(LOG_INFO, "JWNudge::Nudge skip unverfied device for idUser"
+										. '[' . $deviceRow['idUser'] . ']'
+										. ' of device [' . $deviceRow['type'] 
+										. ':' .  $deviceRow['address']
+					);
+					break;
+				}
+				
+				//fetch from nudge options
+				$user = $options['user'];
+				$conference = $options['conference'];
+				$status = $options['status'];
+				$isMms = ( $status == null ) ? false : ($status['isMms']=='Y');
+				
+				//fetch from deviceRow
+				$type = $deviceRow['type'];
+				$address = $deviceRow['address'];
+
+				if( is_array( $message ) ){
+					if( $type == 'sms' ){
+						$message = $message[ 'sms' ];
+					}else{
+						$message = $message[ 'im' ];
+					}
+				}
+
+				$serverAddress = null;
+				if( $type=='sms' && $serverAddress==null && $isMms ) {
+					$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $status['id'] );
+				}
+				if( $type=='sms' && $serverAddress==null ) {
+					$serverAddress = JWCommunity_NotifyFollower::GetServerAddress( $address, $conference, $user );
+				}
+
+				if( $serverAddress == null ) {
+					JWRobot::SendMtRaw($address, $type, $message);
+				}else{
+					JWRobot::SendMtRaw($address, $type, $message, $serverAddress);
+				}
+			break;
+			case 'nothing':
+			break;
+		}
+		return true;	
+	}
 	/*
 	 *	向一个 device 上发送消息
 	 *	@param	array	$deviceRow	JWDevice::GetDeviceRowsByUserIds 的返回结构
@@ -122,16 +230,19 @@ class JWNudge {
 					$ret = JWNotifyQueue::Create( null, $idUserTo, $queueType, $info );
 				}else{
 					if( is_array( $message ) ) {
-						if( isset($message['type']) && $message['type'] == 'MMS' ) {
-							if($type=='sms') {
-								$idStatus = $message['idStatus'];
-								$message = $message['sms'];
-								$serverAddress = 
-									JWFuncCode::GetMmsNotifyFunc($address,$idStatus );
-								JWRobot::SendMtRaw($address,$type,$message,$serverAddress);
-							}else{
-								$message = $message['im'];
-								JWRobot::SendMtRaw($address, $type, $message);
+						if( isset($message['type']) ){
+							if( $message['type'] == 'MMS' ) {
+								if($type=='sms') {
+									$idStatus = $message['idStatus'];
+									$message = $message['sms'];
+									$serverAddress = 
+										JWFuncCode::GetMmsNotifyFunc($address,$idStatus );
+									JWRobot::SendMtRaw($address,$type,$message,$serverAddress);
+								}else{
+									$message = $message['im'];
+									JWRobot::SendMtRaw($address, $type, $message);
+								}
+							}else if( $message['type'] == 'CONFERENCE' ) {
 							}
 						}
 					}else{	
@@ -153,10 +264,28 @@ class JWNudge {
 	}
 	
 	/**
+	 * 选取在线的设备发送，如果选定msn，且不在线，那么不发送； 
+	 */
+	static public function GetAvailableSendVia_Temp( $deviceRows = array(), $deviceSendVia = 'web' ) {
+
+		if( empty( $deviceRows ) || $deviceSendVia == 'web' )
+			return null;
+
+		if( false == isset( $deviceRows[ $deviceSendVia ] ) )
+			return null;
+
+		$online = JWIMOnline::GetDbRowByAddressType( $deviceRows[ $deviceSendVia ]['address'] , $deviceSendVia );
+
+		if( false == empty( $online ) && $online['onlineStatus'] == 'OFFLINE' )
+			return null;
+
+		return $deviceSendVia;
+	}
+	
+	/**
 	 * 为用户选择发送通知的设备；
 	 * 如果用户默认为 sms ，则未其检查在线其他im
 	 * 如过默认为 web，不发送  | default MSN/GTALK/SKYPE/QQ/SMS/WEB
-
 	 */
 	static public function GetAvailableSendVia( $deviceRow = array(), $deviceSendVia = 'web' ) {
 		

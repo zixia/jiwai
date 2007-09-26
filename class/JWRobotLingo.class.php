@@ -520,13 +520,13 @@ class JWRobotLingo {
 			 * NotifyQueue When invite
 			 */
 
-            $msg = ( $invitee_type == 'sms' ) ? $invite_msg['sms'] : ( ($invitee_type == 'email') ? $invite_msg['email'] :  $invite_msg['im'] );
+			$msg = ( $invitee_type == 'sms' ) ? $invite_msg['sms'] : ( ($invitee_type == 'email') ? $invite_msg['email'] :  $invite_msg['im'] );
 
 			$metaInfo = array( 
-                'message' => $msg, 
-                'address' => $invitee_address,
-                'type' => $invitee_type,
-            );
+				'message' => $msg, 
+				'address' => $invitee_address,
+				'type' => $invitee_type,
+			);
 			JWNotifyQueue::Create( $address_user_id, null, JWNotifyQueue::T_INVITE, $metaInfo );
 		}
 
