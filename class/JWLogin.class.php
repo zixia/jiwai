@@ -54,10 +54,6 @@ class JWLogin {
 
 		JWLogUserAction::OnLogin($idUser);
 
-        /* Store the nameScreen value in cookie, expire at the end of session or logout */
-        $user_info = JWUser::GetUserInfo($idUser);
-        setcookie('JiWai_de_name_screen', $user_info['nameScreen'], 0, '/');
-
 		if ( $isRememberMe )
 			self::SetRememberUser();
 		else
@@ -74,7 +70,6 @@ class JWLogin {
 
 		$user_id = $_SESSION['idUser'];
 
-        setcookie('JiWai_de_name_screen', '', time() - 3600, '/');
 		self::ForgetRemembedUser();
 		unset ($_SESSION['idUser']);
 

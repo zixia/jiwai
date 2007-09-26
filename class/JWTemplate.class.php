@@ -1654,6 +1654,7 @@ _HTML_;
             $user = $userInfo['nameScreen'];
             $name_full = $userInfo['nameFull'];
         }
+        $userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
 		echo <<<_HTML_
 		<ul id="update_count">
 _HTML_;
@@ -1666,14 +1667,14 @@ _HTML_;
 			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
 _HTML_;
 		
-		if ( 'wo'==$user || $user === @$_COOKIE['JiWai_de_name_screen'] ) 
+		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] ) 
 		{
 			echo <<<_HTML_
 			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
 _HTML_;
 		} 
 
-		if ( 'wo'==$user || $user === @$_COOKIE['JiWai_de_name_screen'] )
+		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] )
 		{
 			echo <<<_HTML_
 			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话</a></li>
