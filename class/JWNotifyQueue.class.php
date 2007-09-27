@@ -170,7 +170,7 @@ SQL;
 					break;
 					case self::T_INVITE:
 					{
-						JWNotify::NotifyWebNudge( $queue );
+						JWNotify::NotifyInvite( $queue );
 					}
 					break;
 					case self::T_WEBNUDGE:
