@@ -23,6 +23,7 @@ class JWQuarantineQueue {
 	 * const quarantine type
 	 */
 	const T_STATUS = 'STATUS';
+	const T_NOTIFY = 'NOTIFY';
 	const T_MESSAGE = 'MESSAGE';
 
 	/**

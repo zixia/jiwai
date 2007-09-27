@@ -271,17 +271,23 @@ class JWSns {
 			throw new JWException('must array');
 		
 		$follower_user_rows	= JWUser::GetUserDbRowsByIds($idFollowers);
-		$user_row			= JWUser::GetUserInfo($idUser);
+		$idUsers = JWFollowerRecursion::GetSuperior($idUser, 5);
 
-		foreach ( $idFollowers as $follower_id )
-		{
-			if ( $follower_id==$idUser )
-				continue;
+		foreach( $idUsers as $idUser ) {
 
-			JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
+			$user_row = JWUser::GetUserInfo($idUser);
 
-			if ( $isReciprocal )
-				JWSns::CreateFollower($follower_user_rows[$follower_id], $user_row);
+			foreach ( $idFollowers as $follower_id )
+			{
+				if ( $follower_id==$idUser )
+					continue;
+
+				JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
+
+				if ( $isReciprocal )
+					JWSns::CreateFollower($follower_user_rows[$follower_id], $user_row);
+			}
+
 		}
 
 		return true;
@@ -307,7 +313,7 @@ class JWSns {
 	/*
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息
 	 *	@param	string or array	$message	当为 string 的时候，不去分消息类型
-											当为 array 的时候，要有 im / sms / email 的 key
+	 *	当为 array 的时候，要有 im / sms / email 的 key
 	 *
 	 */
 	static public function Invite($idUser, $address, $type, $message='', $webInvite=false)

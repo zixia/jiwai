@@ -174,7 +174,7 @@ class JWNudge {
 					$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $status['id'] );
 				}
 				if( $type=='sms' && $serverAddress==null ) {
-					$serverAddress = JWCommunity_NotifyFollower::GetServerAddress( $address, $conference, $user );
+					$serverAddress = JWNotify::GetServerAddress( $address, $conference, $user );
 				}
 
 				if( $serverAddress == null ) {

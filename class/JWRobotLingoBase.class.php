@@ -237,6 +237,12 @@ class JWRobotLingoBase {
 			case JWFuncCode::PRE_STOCK_CATE:
 			case JWFuncCode::PRE_STOCK_CODE:
 			{
+				$lingo['ZX'] = array(
+						'class'=>'JWRobotLingo_Stock',
+						'func'=>'Lingo_ZX',
+						'param'=>2,
+					);
+				$alias['ZC'] = 'ZX';
 				$alias['F'] = 'FOLLOW';
 				$alias['L'] = 'LEAVE';
 				return array(

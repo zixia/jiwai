@@ -6,7 +6,7 @@
  */
 
 /**
- * JiWai.de JWCommunity_NotifyFollower Class
+ * JiWai.de JWNotify Class
  */
 class JWNotify{
 	

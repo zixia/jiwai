@@ -6,9 +6,9 @@
  */
 
 /**
- * JiWai.de JWCommunity_FollowRecursion Class
+ * JiWai.de JWFollowRecursion Class
  */
-class JWCommunity_FollowRecursion{
+class JWFollowRecursion{
 	/**
 	 * 获得级联follower_ids
 	 */

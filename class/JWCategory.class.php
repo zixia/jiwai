@@ -6,7 +6,7 @@
  */
 
 /**
- * JiWai.de JWCommunity_FollowRecursion Class
+ * JiWai.de JWCategory Class
  */
 class JWCategory {
 

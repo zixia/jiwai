@@ -62,14 +62,31 @@ class JWInvitation {
 			return null;
 		}
 
-		return JWDB::SaveTableRow('Invitation',	array(	 'idUser'	=> $idUser
-														,'address'	=> $address
-														,'type'		=> $type
-														,'message'	=> $message
-														,'code'		=> $inviteCode
-														,'timeCreate'	=> JWDB::MysqlFuncion_Now()
-													)
-									);
+		if( $idExist = JWDB::ExistTableRow( 'Invitation', array(
+							'idUser' => $idUser,
+							'address' => $address,
+							'type' => $type,
+						))  
+		){	
+			$upArray = array(
+					'message' => $message,
+					'code' => $inviteCode,
+					'timeCreate' => JWDB::MysqlFuncion_Now(),
+				);
+
+			JWDB::UpdateTableRow( 'Invitation', $idExist, $upArray );
+
+			return $idExist;
+		}
+
+		return JWDB::SaveTableRow('Invitation',	array(
+				       	'idUser'	=> $idUser
+					,'address'	=> $address
+					,'type'		=> $type
+					,'message'	=> $message
+					,'code'		=> $inviteCode
+					,'timeCreate'	=> JWDB::MysqlFuncion_Now()
+				));
 	}
 
 	/*
