@@ -1173,7 +1173,7 @@ _HTML_;
   			</tr>
   			<tr>
 				<td>&nbsp;</td>
-				<td><button onclick="this.form.submit();">登　录</button></td>
+                <td><input type="submit" class="submitbutton" value="登 录" /></td>
 			</tr>
 		</table>
 		</form>
