@@ -43,7 +43,7 @@ class JWRobotLingoReply {
 			'REPLY_DELETE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 
 			'REPLY_GET_SUC' => '{0}: {1}',
-			'REPLY_GET_HELP' => 'DELETE命令帮助：DELETE 帐号。',
+			'REPLY_GET_HELP' => 'GET命令帮助：GET 帐号。',
 			'REPLY_GET_NOSTATUS' => '还没有更新过。',
 
 			'REPLY_D_HELP' => 'D命令帮助：D 帐号 你想说的悄悄话。',

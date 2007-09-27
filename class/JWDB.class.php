@@ -189,6 +189,8 @@ class JWDB implements JWDB_Interface
 
 			if ( is_int($v) )
 				$sql .= " $k=$v ";
+			else if ( is_null($v) )
+				$sql .= " $k IS NULL ";
 			else
 				$sql .= " $k='" . self::EscapeString($v) . "' ";
 
