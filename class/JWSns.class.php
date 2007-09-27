@@ -501,8 +501,8 @@ class JWSns {
 		
 		//滤除回复字段
 		if( false == empty( $conference ) ){
-			$idUserReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? $idUserReplyTo : null;
-			$idStatusReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? $idStatusReplyTo : null;
+			$idUserReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? null : $idUserReplyTo;
+			$idStatusReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? null : $idStatusReplyTo;
 			$userConference = JWUser::GetUserInfo( $conference['idUser'] );
 			$status = preg_replace( '/(\s*@\s*'.$userConference['nameScreen'].'\s+)/i', '', $status );
 		}
@@ -605,8 +605,8 @@ class JWSns {
 					$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $idStatus;
 					$nameScreen = $userInfo['nameScreen'];
 					$message = array(
-						'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
-						'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
+						'sms' => JWNotify::GetPrettySender($userInfo). ": 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
+						'im' => JWNotify::GetPrettySender($userInfo). ": $status 彩信<$mmsRow[fileName]>地址：$picUrl",
 					);
 
 					$metaInfo['message'] = $message;

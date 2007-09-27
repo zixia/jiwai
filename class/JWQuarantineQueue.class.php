@@ -280,10 +280,6 @@ _SQL_;
 		if( empty($quarantine) || $quarantine['type'] != self::T_CONFERENCE || empty($quarantine['metaInfo']) )
 			return false;
 		
-		if( $delete == true ){
-			return self::DealQueue( $idQuarantine, self::DEAL_DELE );
-		}
-
 		$idSender = $quarantine['idUserFrom'];
 		$idUserConference = $quarantine['idUserTo'];
 		$metaInfo = $quarantine['metaInfo'];
@@ -300,19 +296,25 @@ _SQL_;
 			return self::DealQueue( $idQuarantine, self::DEAL_DELE );
 		}
 
-		if( JWStatus::SetIdConference( $idStatus, $idConference ) ){
-
-			$metaInfo = array(
-				'message' => $status,
-				'options' => array(
-					'idStatus' => $idStatus,
-					'idConference' => $idConference,
-					'idUserConference' => $idUserConference,
-					'notify' => $notify,
-				),
-			);
-			$queueType = JWNotifyQueue::T_CONFERENCE;
-			JWNotifyQueue::Create( $idSender, $idUserReplyTo, $queueType, $metaInfo );
+		if( $delete == true) {
+			/**
+			 * 删除 Status上的idConference
+			 */
+			JWStatus::SetIdConference( $idStatus, null );
+		}else {
+			if( JWStatus::SetIdConference( $idStatus, $idConference ) ) {
+				$metaInfo = array(
+					'message' => $status,
+					'options' => array(
+						'idStatus' => $idStatus,
+						'idConference' => $idConference,
+						'idUserConference' => $idUserConference,
+						'notify' => $notify,
+					),
+				);
+				$queueType = JWNotifyQueue::T_CONFERENCE;
+				JWNotifyQueue::Create( $idSender, $idUserReplyTo, $queueType, $metaInfo );
+			}
 		}
 
 		return self::DealQueue( $idQuarantine, self::DEAL_DELE );

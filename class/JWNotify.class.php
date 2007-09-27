@@ -74,12 +74,13 @@ class JWNotify{
 			$options['notify'] = 'ALL';
 		}
 
+		$userSender = JWUser::GetUserInfo( $idUserFrom );
+
 		$to_ids = array();
 		if( $idUserTo )
 		{
 			$to_ids = array( $idUserTo );	
 
-			$userSender = JWUser::GetUserInfo( $idUserFrom );
 			$message = is_array( $message ) ? 
 					$message : self::GetPrettySender($userSender).': '.$message;
 
@@ -94,20 +95,20 @@ class JWNotify{
 		if( $idUserConference ) 
 		{
 
-			$follwer_ids = JWFollower::GetFollowerIds( $idUserConference );
-			$follwer_ids = self::GetFollowerIds( $follwer_ids, $options['notify'] );
+			$follower_ids = JWFollower::GetFollowerIds( $idUserConference );
+			$follower_ids = self::GetFollowerIds( $follower_ids, $options['notify'] );
 			$follower_ids = array_diff( $follower_ids, array($idUserFrom) );
 			$follower_ids = array_diff( $follower_ids, $to_ids );
 			
 			$userConference = JWUser::GetUserInfo( $idUserConference );
 			$message = is_array( $message ) ? 
-				$message : self::GetPrettySender($userConference).': '.$message;
+				$message : self::GetPrettySender($userConference) ."[$userSender[nameScreen]]: $message";
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idUserConference: $idUserConference, "
 				. "Followers: array("
-				. Implode( ',', $follwer_ids ) . ")\n"; 
+				. Implode( ',', $follower_ids ) . ")\n"; 
 
-			JWNudge::NudgeToUsers( $follwer_ids, $message, 'nudge', 'bot', $options );
+			JWNudge::NudgeToUsers( $follower_ids, $message, 'nudge', 'bot', $options );
 		}
 		
 		// 只有 没有 idUserTo 才通知 idSender 的 Follower
