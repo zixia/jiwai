@@ -46,6 +46,7 @@ function renderJsonStatuses($idUser){
 
 function renderXmlStatuses($idUser){
 	$friendsWithStatus = getFriendsWithStatus( $idUser );
+	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $friendsWithStatus, 1, "users" );
@@ -58,7 +59,9 @@ function getFriendsWithStatus($idUser){
 	$statusIds = array();
 	foreach( $friendIds as $f ){
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
-		$statusIds[$f] = $_rs['status_ids'][0];
+		if( false == empty( $_rs ) ) {
+			$statusIds[$f] = $_rs['status_ids'][0];
+		}
 	}
 	$statuses = JWStatus::GetStatusDbRowsByIds( array_values($statusIds) );
 	

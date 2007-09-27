@@ -496,7 +496,7 @@ class JWSns {
 			$idConference = empty( $conference ) ? null : $conference['id'];
 		}else{
 			$idConference = $options['idConference'];
-			$conference = JWConference::GetDbRowById( $conference );
+			$conference = JWConference::GetDbRowById( $idConference );
 		}
 		
 		//滤除回复字段
