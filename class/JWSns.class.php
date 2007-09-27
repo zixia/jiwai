@@ -501,18 +501,20 @@ class JWSns {
 		
 		//滤除回复字段
 		if( false == empty( $conference ) ){
-			$idUserReplyTo = null;
-			$idStatusReplyTo = null;
+			$idUserReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? $idUserReplyTo : null;
+			$idStatusReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? $idStatusReplyTo : null;
 			$userConference = JWUser::GetUserInfo( $conference['idUser'] );
 			$status = preg_replace( '/(\s*@\s*'.$userConference['nameScreen'].'\s+)/i', '', $status );
 		}
 
 		//过滤处理
 		if( false == isset( $options['filterConference'] ) ){
-			$options['filterConference'] = ( $conference == null ) ? false : ( $conference['filter'] == 'Y' );
+			$options['filterConference'] = ( $conference ) ? ( $conference['filter'] == 'Y' ) : false;
 		}
 
-		//Create Status options
+		/**
+		* 参数用来 JWStatus::Create 方法，新建一条更新
+		*/
 		$createOptions = array(
 				'idUserReplyTo' => $idUserReplyTo,
 				'idStatusReplyTo' => $idStatusReplyTo,
@@ -575,6 +577,7 @@ class JWSns {
 
 				$metaInfo = array(
 					'idStatus' => $idStatus,
+					'idUserReplyTo' => $idUserReplyTo,
 					'device' => $device,
 					'status' => $status,
 					'options' => $metaOptions,

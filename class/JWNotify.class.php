@@ -74,9 +74,10 @@ class JWNotify{
 			$options['notify'] = 'ALL';
 		}
 
+		$to_ids = array();
 		if( $idUserTo )
 		{
-			$follwer_ids = array( $idUserTo );	
+			$to_ids = array( $idUserTo );	
 
 			$userSender = JWUser::GetUserInfo( $idUserFrom );
 			$message = is_array( $message ) ? 
@@ -84,35 +85,41 @@ class JWNotify{
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, " . "idUserReplyTo: $idUserTo\n"; 
 
+			JWNudge::NudgeToUsers( $to_ids, $message, 'nudge', 'bot', $options );
+		}
+
+
+		$follwer_ids = array();
+
+		if( $idUserConference ) 
+		{
+
+			$follwer_ids = JWFollower::GetFollowerIds( $idUserConference );
+			$follwer_ids = self::GetFollowerIds( $follwer_ids, $options['notify'] );
+			$follower_ids = array_diff( $follower_ids, array($idUserFrom) );
+			$follower_ids = array_diff( $follower_ids, $to_ids );
+			
+			$userConference = JWUser::GetUserInfo( $idUserConference );
+			$message = is_array( $message ) ? 
+				$message : self::GetPrettySender($userConference).': '.$message;
+
+			echo "[$queue[type]] idUserFrom: $idUserFrom, idUserConference: $idUserConference, "
+				. "Followers: array("
+				. Implode( ',', $follwer_ids ) . ")\n"; 
+
 			JWNudge::NudgeToUsers( $follwer_ids, $message, 'nudge', 'bot', $options );
-		}else{
-			$follwer_ids = array();
-
-			if( $idUserConference ) {
-
-				$follwer_ids = JWFollower::GetFollowerIds( $idUserConference );
-				$follwer_ids = self::GetFollowerIds( $follwer_ids, $options['notify'] );
-				
-				$userConference = JWUser::GetUserInfo( $idUserConference );
-				$message = is_array( $message ) ? 
-					$message : self::GetPrettySender($userConference).': '.$message;
-
-				echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
-					. "Followers: array("
-					. Implode( ',', $follwer_ids ) . ")\n"; 
-				echo "[$queue[type]] idUserFrom: $idUserFrom, idUserConference: $idUserConference, "
-					. "Followers: array("
-					. Implode( ',', $follwer_ids ) . ")\n"; 
-
-				JWNudge::NudgeToUsers( $follwer_ids, $message, 'nudge', 'bot', $options );
-			}
-
+		}
+		
+		// 只有 没有 idUserTo 才通知 idSender 的 Follower
+		if( null == $idUserTo ) 
+		{
 			$userSender = JWUser::GetUserInfo( $idUserFrom );
 			$message = is_array( $message ) ? 
 				$message : self::GetPrettySender($userSender).': '.$message;
 
 			$sender_follower_ids = JWFollower::GetFollowerIds( $idUserFrom );
 			$sender_follower_ids = array_diff( $sender_follower_ids, $follwer_ids );
+			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
 				. "Followers: array("

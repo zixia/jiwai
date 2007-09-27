@@ -274,43 +274,48 @@ _SQL_;
 	/**
 	 * fireConference/Status by Id
 	 */
-	static public function FireStatus($idQuarantine, $to='all', $delete=false ) {
+	static public function FireConference($idQuarantine, $notify='ALL', $delete=false ) {
 
 		$quarantine = self::GetDbRowById( $idQuarantine );
-		if( empty($quarantine) || $quarantine['type'] != self::T_STATUS || empty($quarantine['metaInfo']) )
+		if( empty($quarantine) || $quarantine['type'] != self::T_CONFERENCE || empty($quarantine['metaInfo']) )
 			return false;
 		
 		if( $delete == true ){
 			return self::DealQueue( $idQuarantine, self::DEAL_DELE );
 		}
 
+		$idSender = $quarantine['idUserFrom'];
+		$idUserConference = $quarantine['idUserTo'];
 		$metaInfo = $quarantine['metaInfo'];
 
-		$idSender = $quarantine['idUserFrom'];
-		$timeCreate = isset($metaInfo['timeCreate']) ? $metaInfo['timeCreate'] : $quarantine['timeCreate'];
-		$device = isset($metaInfo['device']) ? $metaInfo['device'] : 'web' ;
-		$isSignature = isset($metaInfo['isSignature']) ? $metaInfo['isSignature'] : 'Y';
-		$serverAddress = isset($metaInfo['serverAddress']) ? $metaInfo['serverAddress'] : null;
 		$status = $metaInfo['status'];
+		$idStatus = $metaInfo['idStatus'];
+		$options = $metaInfo['options'];
+		$idUserReplyTo = $metaInfo['idUserReplyTo'];
 
-		$options = array(
-				'nofilter' => true,
-				'idUserReplyTo' => $metaInfo['idUserReplyTo'],
-				'idStatusReplyTo' => $metaInfo['idStatusReplyTo'],
-				'notify' => $to,
-				'forceFilter' => false,
-		);
+		$idConference = $options['idConference'];
 
-		if( isset( $metaInfo['idPicture'] ) ) $options['idPicture'] = $metaInfo['idPicture'];
-		if( isset( $metaInfo['idPartner'] ) ) $options['idPartner'] = $metaInfo['idPartner'];
-		if( isset( $metaInfo['idConference'] ) ) $options['idConference'] = $metaInfo['idConference'];
 
-		$idStatus = JWSns::UpdateStatus( $idSender, $status, $device, $timeCreate, $isSignature, $serverAddress, $options );
-		if( $idStatus ){
-			self::DealQueue( $idQuarantine, self::DEAL_DELE );
+		if( null == $idStatus ) {
+			return self::DealQueue( $idQuarantine, self::DEAL_DELE );
 		}
 
-		return $idStatus;
+		if( JWStatus::SetIdConference( $idStatus, $idConference ) ){
+
+			$metaInfo = array(
+				'message' => $status,
+				'options' => array(
+					'idStatus' => $idStatus,
+					'idConference' => $idConference,
+					'idUserConference' => $idUserConference,
+					'notify' => $notify,
+				),
+			);
+			$queueType = JWNotifyQueue::T_CONFERENCE;
+			JWNotifyQueue::Create( $idSender, $idUserReplyTo, $queueType, $metaInfo );
+		}
+
+		return self::DealQueue( $idQuarantine, self::DEAL_DELE );
 	}
 	
 	/**

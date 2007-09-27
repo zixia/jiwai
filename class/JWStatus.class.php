@@ -1001,6 +1001,19 @@ _SQL_;
 		return $status;
 	}
 
+	static public function SetIdConference($idStatus, $idConference=null) {
 
+		$idStatus = JWDB::CheckInt( $idStatus );
+
+		$uArray = array(
+				'idConference' => $idConference,
+			);
+
+		if( JWDB::ExistTableRow( 'Status', array( 'id' => $idStatus ) ) ) {
+			return JWDB::UpdateTableRow( 'Status', $idStatus, $uArray );
+		}
+
+		return false;
+	}
 }
 ?>
