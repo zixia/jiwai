@@ -237,16 +237,6 @@ class JWRobotLingoBase {
 			case JWFuncCode::PRE_STOCK_CATE:
 			case JWFuncCode::PRE_STOCK_CODE:
 			{
-				$lingo['FOLLOW'] = array(
-							'class'=>'JWRobotLingo',
-							'func'=>'Lingo_Follow',
-							'param'=>999,
-						);
-				$lingo['LEAVE'] = array(
-							'class'=>'JWRobotLingo_Stock',
-							'func'=>'Lingo_Leave',
-							'param'=>999,
-						);
 				$alias['F'] = 'FOLLOW';
 				$alias['L'] = 'LEAVE';
 				return array(

@@ -475,46 +475,16 @@ class JWSns {
 	 */
 	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $isSignature='N', $serverAddress=null, $options=array() )
 	{
-		//strip \r\n
-		$status = preg_replace('/[\n\r]/' ,' ', $status);
+		//滤除换行 并 检查签名改变
+		if( null == ( $status = self::StripStatus($idUser, $status, $device, $isSignature ) ) )
+			return true;
 
-		//filter setting | default nofilter
-		if( false == isset( $options['nofilter'] ) ){
-			$options['nofilter'] = true;
-		}
-
-		//notify to [im|sms|all|web]
-		if( false == isset( $options['notify'] ) ) {
-			$options['notify'] = 'all';
-		}
-
-		//check signature changed
-		if( 'Y' == $isSignature ) {
-			$status = JWStatus::HtmlEntityDecode( $status );
-			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
-				return true;
-			}
-		}
-
-		//timeCreate
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
+		list( $status, $idUserReplyTo, $idStatusReplyTo ) = self::FetchStatusReplyInfo( $status, $options );
 
-		//reply info
-		if( isset( $options['idUserReplyTo'] ) ){
-			$idUserReplyTo = $options['idUserReplyTo'];
-			$idStatusReplyTo = $options['idStatusReplyTo'];
-		}else{
-			$statusPost = JWRobotLingoBase::ConvertCorner( $status );
-			$reply_info	= JWStatus::GetReplyInfo($statusPost);	
-
-			$status = empty( $reply_info ) ? $status : $statusPost;
-			$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
-			$idStatusReplyTo = empty( $reply_info ) ? null : $reply_info['status_id'];
-		}
-		
 		$idConference = null;
+		$conference = null;
 		$address = isset( $options['address'] ) ? $options['address'] : null;
-
 		if( false == isset( $options['idConference'] ) ){
 			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo, $device, $serverAddress, $address );
 			if( false == empty( $conference ) ) {
@@ -522,11 +492,20 @@ class JWSns {
 			}
 		}else{
 			$idConference = $options['idConference'];
+			$conference = JWConference::GetDbRowById( $conference );
+		}
+		
+		//滤除回复字段
+		if( false == empty( $conference ) ){
+			$idUserReplyTo = null;
+			$idStatusReplyTo = null;
+			$userConference = JWUser::GetUserInfo( $conference['idUser'] );
+			$status = preg_replace( '/(\s*@\s*'.$userConference['nameScreen'].'\s+)/i', '', $status );
 		}
 
-		//forceFilter need idConference to check
-		if( false == isset( $options['forceFilter'] ) ){
-			$options['forceFilter'] = JWFilterRule::IsFilterConference( $idConference );
+		//过滤处理
+		if( false == isset( $options['filter'] ) ){
+			$options['filter'] = ( $conference == null ) ? false : ( $conference['filter'] == 'Y' );
 		}
 
 		//Create Status options
@@ -554,56 +533,78 @@ class JWSns {
 		 *  判断是否需要Filter，如果需要进入status
 		 *
 		 */
-		if( true == $options['forceFilter'] 
-				|| false == $options['nofilter'] 
-		){
-			JWFilterConfig::Normal();
-			if(  true == $options['forceFilter'] 
-					|| JWFilterRule::IsNeedFilter($status, $idUser, $idUserReplyTo, $device) 
-			){
+		if( true == $options['filter'] ) {
 
-				$metaInfo = $createOptions;
-				$metaInfo['isSignature'] = $isSignature;
-				$metaInfo['device'] = $device;
-				$metaInfo['status'] = $status;
-
-				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $idConference, JWQuarantineQueue::T_STATUS, $metaInfo);
-				return true;
-			}
+			$metaInfo = $createOptions;
+			$metaInfo['isSignature'] = $isSignature;
+			$metaInfo['device'] = $device;
+			$metaInfo['status'] = $status;
+			$queueType = JWQuarantineQueue::T_STATUS;
+			JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $idConference, $queueType, $metaInfo);
+			return true;
 		}
 
+		/*
+		 * 决定通知方式
+		 *
+		 */
+		if( false == isset( $options['notify'] ) ) {
+			if( $conference == null )
+			{
+				$options['notify'] = 'ALL';
+			}
+			else
+			{
+				$options['notify'] = ( $conference['notify'] == 'Y' ) ? 'ALL' : false;
+			}
+		}
 		
 		//Real Create Status
 		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
 		if( $idStatus ) {
 
-			//Notify Follower
-			$metaInfo = array();
-			$queueType = JWNotifyQueue::T_STATUS;
-			$metaInfo['message'] = $status;
-			$metaInfo['options'] = array( 
+			$metaOptions = array(
 				'idStatus' => $idStatus,
-				'idConference'=> $idConference,
+				'idConference' => $idConference,
+				'idUserConference' => ( $conference == null ) ? null : $conference['idUser'],
+				'notify' => $options['notify'],
+				'isMms' => isset( $createOptions['isMms'] ) ? $createOptions['isMms'] : false,
 			);
 
-			if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
-			{
-				$userInfo = JWUser::GetUserInfo( $idUser );
-				$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-				$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $idStatus;
-				$nameScreen = $userInfo['nameScreen'];
-
-				$message = array(
-					'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
-					'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
+			if( $options['notify'] === false ) {
+				$metaInfo = array(
+					'idStatus' => $idStatus,
+					'device' => $device,
+					'status' => $status,
+					'options' => $metaOptions,
 				);
-				$metaInfo['message'] = $message;
-				$queueType = JWNotifyQueue::T_MMS;
-			}
-
-			if( $idConference ) {
-				JWCommunity_NotifyFollower::NotifyFollower( $idStatus, $options['notify'] );
+				$queueType = JWQuarantineQueue::T_STATUS;
+				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $idConference, $queueType, $metaInfo);
+				return true;
 			}else{
+				//Notify Follower
+				$metaInfo = array();
+				$queueType = JWNotifyQueue::T_STATUS;
+				$metaInfo = array(
+					'message' => $status,
+					'options' => $metaOptions,
+				);
+
+				if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
+				{
+					$userInfo = JWUser::GetUserInfo( $idUser );
+					$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
+					$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $idStatus;
+					$nameScreen = $userInfo['nameScreen'];
+					$message = array(
+						'sms' => "${nameScreen}: 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
+						'im' => "${nameScreen}: $status 彩信<$mmsRow[fileName]>地址：$picUrl",
+					);
+
+					$metaInfo['message'] = $message;
+
+					$queueType = JWNotifyQueue::T_MMS;
+				}
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
 			}
 
@@ -616,59 +617,6 @@ class JWSns {
 			JWUser::ActivateUser( $idUser );
 		}
 		return $idStatus;
-	}
-
-	/**
-	 * Nudge updates to follower,consider conference model
-	 * @param $idSender int
-	 * @param $idUserReplyTo int
-	 * @param $status string
-	 * @param $idConference
-	 */
-	static public function NotifyFollower( $idSender=null, $idUserReplyTo=null, $message=null, $options=array() ){
-
-		$idConference = isset( $options['idConference'] ) ? intval( $options['idConference'] ) : null;
-
-		if( $idSender == null ) 
-		{
-			settype( $idUserReplyTo, 'array' );
-			$follower_ids = $idUserReplyTo;
-		}
-	       	else 
-		{
-			if( $idConference ) {
-
-				$userInfo = JWUser::GetUserInfo( $idSender );
-				$message = "$userInfo[nameScreen]: $message";
-
-				$conference = JWConference::GetDbRowById( $idConference );
-				$idUserBeFollowed = $conference['idUser'];
-
-				$follower_ids = JWFollower::GetFollowerIds( $idUserBeFollowed );
-				settype( $follower_ids , 'array' );
-				$follower_ids = array_diff( $follower_ids, array( $idSender ) );
-
-				if( false == ( $idSender == $idUserBeFollowed ) ){  //notice conference user
-					array_push( $follower_ids, $idUserReplyTo );
-				}
-
-			}else if( null == $idUserReplyTo ) { // notice idSender's friend only
-
-				$userInfo = JWUser::GetUserInfo( $idSender );
-				$follower_ids = JWFollower::GetFollowerIds($idSender);
-				$message = is_string($message) ? "$userInfo[nameScreen]: $message" : $message;
-			}else{
-
-				$userInfo = JWUser::GetUserInfo( $idSender );
-				$follower_ids = array( $idUserReplyTo ) ;
-				$message = is_string($message) ? "$userInfo[nameScreen]: $message" : $message;
-			}
-		}
-
-		if( empty( $follower_ids ) ) 
-			return true;
-
-		return JWNudge::NudgeToUsers( $follower_ids, $message, 'nudge', 'bot', $options );
 	}
 
 	/*
@@ -838,5 +786,37 @@ class JWSns {
 		JWMail::ResendPassword($user_db_row, $url);
 	}
 
+
+	static public function StripStatus( $idUser, $status=null, $device='msn', $isSignature='N' ) 
+	{
+		$status = preg_replace('/[\n\r]/' ,' ', $status);
+		if( 'Y' == $isSignature ) {
+			$status = JWStatus::HtmlEntityDecode( $status );
+			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
+				return null;
+			}
+		}
+		return $status;
+	}
+
+	static private function FetchStatusReplyInfo( $status, $options=array() )
+	{
+		if( isset( $options['idUserReplyTo'] ) )
+		{
+			$idUserReplyTo = $options['idUserReplyTo'];
+			$idStatusReplyTo = $options['idStatusReplyTo'];
+		}
+		else
+		{
+			$statusPost = JWRobotLingoBase::ConvertCorner( $status );
+			$reply_info = JWStatus::GetReplyInfo($statusPost);	
+
+			$status = empty( $reply_info ) ? $status : $statusPost;
+			$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
+			$idStatusReplyTo = empty( $reply_info ) ? null : $reply_info['status_id'];
+		}
+
+		return array( $status, $idUserReplyTo, $idStatusReplyTo );
+	}
 }
 ?>

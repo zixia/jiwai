@@ -12,7 +12,7 @@ class JWCommunity_NotifyFollower{
 	/**
 	 * 通知会议用户的follower，按一定级别
 	 */
-	static public function NotifyFollower($idStatus, $to='all', $options=array() )
+	static public function NotifyFollower($idStatus, $to='ALL', $options=array() )
 	{
 		$idStatus = JWDB::CheckInt( $idStatus );
 		$statusInfo = JWStatus::GetDbRowById( $idStatus );
@@ -50,22 +50,20 @@ class JWCommunity_NotifyFollower{
 	/**
 	 * 按条件重新筛选Follower_Ids
 	 */
-	static public function GetFollowerIds($follower_ids, $type='sms'){
+	static public function GetFollowerIds($follower_ids, $type='IM'){
 
 		if( empty( $follower_ids ) )
 			return array();
 
+		$type = strtoupper( $type );
+
 		switch( $type ){
-			case 'sms':
-				$condition = "deviceSendVia='sms'";
-			break;
-			case 'im':
+			case 'IM':
 				$condition = "deviceSendVia IN ('msn','gtalk','skype','qq')";
 			break;
-			case 'all':
+			case 'Y':
+			case 'ALL':
 				return $follower_ids;
-			case 'web':
-				return array();
 			default:
 				return array();
 		}

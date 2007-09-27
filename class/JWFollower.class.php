@@ -159,7 +159,7 @@ _SQL_;
 
 		if ( empty($arr_result) )
 		{
-			return null;
+			return array();
 		}
 
 		$arr_follower_id = array();

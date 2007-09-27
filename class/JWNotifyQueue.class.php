@@ -110,11 +110,10 @@ SQL;
 		if( empty( $id ) )
 			return;
 		$idCondition = implode( ',', $id );
-		$dealStatusString = self::FormatDealStatus( $dealStatus );
 		
 		$sql = <<<SQL
 UPDATE NotifyQueue 
-	SET dealStatus='$dealStatusString'
+	SET dealStatus='$dealStatus'
 	WHERE id IN ($idCondition)
 SQL;
 
@@ -131,20 +130,9 @@ SQL;
 		return JWDB::Execute( $sql );
 	}
 
-	static public function FormatDealStatus( $dealStatus = self::DEAL_NONE ){
-		switch( $dealStatus ) {
-			case self::DEAL_NONE:
-				return 'NONE';
-			case self::DEAL_DEALED:
-				return 'DEALED';
-			case self::DEAL_QUARANTINED:
-				return 'QUARANTINED';
-			default:
-				throw new JWException("Unsupport dealStatus");
-		}
-	}
-
-
+	/**
+	 * 总控
+	 */
 	static public function Run () {
 
 		echo "NotifyQueue Robot enter in the main loop...\n";
@@ -170,118 +158,36 @@ SQL;
 			# It's busy now:
 			self::$mSleepUsec = 0;
 
-			foreach( $notifyQueue as $notify ){
+			foreach( $notifyQueue as $queue ){
 
-				$id = $notify['id'];
-
-				$idUserFrom = $notify['idUserFrom'];
-				$idUserTo = $notify['idUserTo'];
-
-				$queueType = strtoupper($notify['type']);
-				$metaInfo = $notify['metaInfo'];
-
-				switch( $queueType ) {
+				switch( $queue['type'] ) {
+					case self::T_CONFERENCE:
+					case self::T_MMS:
 					case self::T_STATUS:
 					{
-						$message = @$metaInfo['message'];
-						$options = @$metaInfo['options'];
-
-						if( empty($message) ) {
-							echo "[$queueType] idUserFrom: $idUserFrom, "
-								. "idUserTo: $idUserTo, "
-								. "message: NULL, "
-								. "Operation: Omit\n";
-						}else{
-							echo "[$queueType] idUserFrom: $idUserFrom, "
-								. "idUserTo: $idUserTo, "
-								. "idStatus: $options[idStatus]\n";
-						}
-
-
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
-					}
-					break;
-					case self::T_MMS:
-					{
-						$message = @$metaInfo['message'];
-						$options = @$metaInfo['options'];
-
-						echo "[$queueType] idUserFrom: $idUserFrom, "
-							. "idUserTo: $idUserTo, "
-							. "idStatus: $options[idStatus]\n";
-
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
-					}
-					break;
-					case self::T_NUDGE:
-					{
-						$message = @$metaInfo['message'];
-						$options = @$metaInfo['options'];
-
-						echo "[$queueType] idUserFrom: $idUserFrom, "
-							. "idUserTo: $idUserTo\n";
-
-						JWSns::NotifyFollower( $idUserFrom, $idUserTo, $message, $options );
+						JWNotify::NotifyStatus( $queue );
 					}
 					break;
 					case self::T_INVITE:
 					{
-						$message = $metaInfo['message'];
-						$addressTo = $metaInfo['address'];
-						$type = $metaInfo['type'];
-						$webInvite = isset($metaInfo['webInvite'])  ? true : false;
-
-						echo "[$queueType] idUserFrom: $idUserFrom, "
-							. "type: $type, "
-							. "addressTo: $addressTo\n";
-
-						JWSns::Invite( $idUserFrom, $addressTo, $type, $message, $webInvite);
-					}
-					break;
-					case self::T_CONFERENCE:
-					{
-						$message = @$metaInfo['message'];
-						$idUserToArray = @$metaInfo['idUserToArray']; 
-
-						$options = @$metaInfo['options'];
-
-						echo "[$queueType] idUserToArray: array("
-							. implode( ',', $idUserToArray )
-							. "), idConference: $options[idConference]\n";
-
-						JWSns::NotifyFollower( $idUserFrom, $idUserToArray, $message, $options );
+						JWNotify::NotifyWebNudge( $queue );
 					}
 					break;
 					case self::T_WEBNUDGE:
 					{
-						$idUsers = @$metaInfo['idUsers'];
-						$message = @$metaInfo['message'];
-						$messageType = @$metaInfo['messageType'];
-						$source = @$metaInfo['source'];
-						$options = @$metaInfo['options'];
-
-						echo "[$queueType] idUsers: array("
-							. implode( ',', $idUsers )
-							. ")\n";
-
-						if( empty( $idUsers ) || $source != 'bot' )
-							break;
-
-						JWNudge::NudgeToUsers($idUsers,$message,$messageType,$source,$options);
+						JWNotify::NotifyWebNudge( $queue );
 					}
 					break;
-					default:
-					{
-						self::SetDealStatus( $id, self::DEAL_DEALED );
-						return;
-					}	
 				}
-				self::SetDealStatus( $id, self::DEAL_DEALED );
+				self::SetDealStatus( $queue['id'], self::DEAL_DEALED );
 			}
 
 		}
 	}
 
+	/**
+	 * IdleCircle
+	 */
 	static function IdleCircle()
 	{
 		//print ".";
