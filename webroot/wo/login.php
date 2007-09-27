@@ -91,7 +91,7 @@ _HTML_;
         <td width="70" align="right">用户名：</td>
         <td width="240"><input id="username_or_email" type="text" name="username_or_email" tabindex="1"/></td>
         <td>
-            <a href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" /></a>
+            <a href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" tabindex="6"/></a>
         </td>
     </tr>
     <tr>
@@ -107,19 +107,19 @@ _HTML_;
 </table>
 <ul class="choise">
     <li>
-        <input id="every_re" name="remember_me" type="radio" value="0" /> <label for="every_re">每次都重新登录<label>
+        <input id="every_re" name="remember_me" type="radio" value="0" tabindex="3" /> <label for="every_re">每次都重新登录<label>
     </li>
     <li>
-        <input id="month_re" name="remember_me" type="radio" value="1" checked="checked"/> <label for="month_re">一个月内自动登录</label>
+        <input id="month_re" name="remember_me" type="radio" value="1" checked="checked" tabindex="4" /> <label for="month_re">一个月内自动登录</label>
     </li>
     <!--li>
         <input id="never_re" name="remember_me" type="radio" value="2" checked/> <label for="never_re">永久自动登录</label>
     </li-->
+    <div id="login">
     <li style="margin-top:20px;">
-        <div>
-            <a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-login.gif'); ?>" alt="登录" /></a>
-        </div>            
+        <input type="submit" class="submitbutton" value="登 录" tabindex=5 />
     </li>
+    </div>
 </ul>
 </form>
 
