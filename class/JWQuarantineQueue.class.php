@@ -23,7 +23,7 @@ class JWQuarantineQueue {
 	 * const quarantine type
 	 */
 	const T_STATUS = 'STATUS';
-	const T_NOTIFY = 'NOTIFY';
+	const T_CONFERENCE = 'CONFERENCE';  // 会议的Qurantine，是指，已上Status库，但没发出通知，或没显示在Web上的；
 	const T_MESSAGE = 'MESSAGE';
 
 	/**
@@ -52,7 +52,7 @@ class JWQuarantineQueue {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUserFrom=null, $idUserTo=null, $idConference=null, $type=self::T_STATUS, $metaInfo=array() ) {
+	static public function Create( $idUserFrom=null, $idUserTo=null, $type=self::T_STATUS, $metaInfo=array() ) {
 
 		$metaString = self::EncodeBase64Serialize( $metaInfo );
 
@@ -60,7 +60,6 @@ class JWQuarantineQueue {
 						array(
 							'idUserFrom' => $idUserFrom,
 							'idUserTo' => $idUserTo,
-							'idConference' => $idConference,
 							'type' => $type,
 							'metaInfo' => $metaString,
 							'timeCreate' => date('Y-m-d H:i:s'),

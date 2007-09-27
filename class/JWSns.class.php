@@ -490,12 +490,10 @@ class JWSns {
 
 		$idConference = null;
 		$conference = null;
-		$address = isset( $options['address'] ) ? $options['address'] : null;
-		if( false == isset( $options['idConference'] ) ){
-			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo, $device, $serverAddress, $address );
-			if( false == empty( $conference ) ) {
-				$idConference = $conference['id'];
-			}
+		if( false == isset( $options['idConference'] ) || null==$options['idConference'] ){
+			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo , $device);
+			$conference = empty( $conference ) ? null : $conference;
+			$idConference = empty( $conference ) ? null : $conference['id'];
 		}else{
 			$idConference = $options['idConference'];
 			$conference = JWConference::GetDbRowById( $conference );
@@ -510,8 +508,8 @@ class JWSns {
 		}
 
 		//过滤处理
-		if( false == isset( $options['filter'] ) ){
-			$options['filter'] = ( $conference == null ) ? false : ( $conference['filter'] == 'Y' );
+		if( false == isset( $options['filterConference'] ) ){
+			$options['filterConference'] = ( $conference == null ) ? false : ( $conference['filter'] == 'Y' );
 		}
 
 		//Create Status options
@@ -521,33 +519,21 @@ class JWSns {
 				'idConference' => $idConference,
 				'timeCreate' => $timeCreate,
 			);
-		
-		//idPicture set from option;
-		if( isset( $options['idPicture'] ) ) {
-			$createOptions['idPicture'] = $options['idPicture'] ;
-		}
-		//isMms set from option;
-		if( isset( $options['isMms'] ) ) {
-			$createOptions['isMms'] = $options['isMms'] ;
-		}
-		//idPartner set from option;
-		if( isset( $options['idPartner'] ) ) {
-			$createOptions['idPartner'] = $options['idPartner'] ;
+
+		$acceptKeys = array( 'idPicture', 'isMms', 'idPartner' );
+		foreach( $acceptKeys as $key ) {
+			if( isset( $options[ $key ] ) ) {
+				$createOptions[ $key ] = $options[ $key ];
+			}	
 		}
 
 		/*
-		 *  判断是否需要Filter，如果需要进入status
-		 *
+		 *  判断是否需要FilterConference，则叽歪更新，照常发布，但设置idConference = null；
+		 *  将Status的ID记录下，以期以后补上idConference;
 		 */
-		if( true == $options['filter'] ) {
-
-			$metaInfo = $createOptions;
-			$metaInfo['isSignature'] = $isSignature;
-			$metaInfo['device'] = $device;
-			$metaInfo['status'] = $status;
-			$queueType = JWQuarantineQueue::T_STATUS;
-			JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $idConference, $queueType, $metaInfo);
-			return true;
+		if( true == $options['filterConference'] ) {
+			$createOptions['idConference'] = null;
+			$options['notify'] = false;
 		}
 
 		/*
@@ -564,31 +550,44 @@ class JWSns {
 				$options['notify'] = ( $conference['notify'] == 'Y' ) ? 'ALL' : false;
 			}
 		}
-		
+
+
 		//Real Create Status
 		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
 		if( $idStatus ) {
 
 			$metaOptions = array(
 				'idStatus' => $idStatus,
-				'idConference' => $idConference,
-				'idUserConference' => ( $conference == null ) ? null : $conference['idUser'],
+				'idConference' => $createOptions['idConference'],
+				'idUserConference' => ( $createOptions['idConference'] ) ? $conference['idUser'] : null,
 				'notify' => $options['notify'],
 				'isMms' => isset( $createOptions['isMms'] ) ? $createOptions['isMms'] : false,
 			);
 
 			if( $options['notify'] === false ) {
+
+				/**
+				 * 通知论坛模式管理后台时，我们要告知，某条更新是属于某个会议的；
+				 */
+
+				$metaOptions['idConference'] = $idConference;
+				$metaOptions['idUserConference'] = ( $conference ) ? $conference['idUser'] : null;
+
 				$metaInfo = array(
 					'idStatus' => $idStatus,
 					'device' => $device,
 					'status' => $status,
 					'options' => $metaOptions,
 				);
-				$queueType = JWQuarantineQueue::T_STATUS;
-				JWQuarantineQueue::Create( $idUser, $idUserReplyTo, $idConference, $queueType, $metaInfo);
+				
+				$queueType = JWQuarantineQueue::T_CONFERENCE;
+				JWQuarantineQueue::Create( $idUser, $metaOptions['idUserConference'], $queueType, $metaInfo);
 				return true;
+
 			}else{
-				//Notify Follower
+				/**
+				 * 更新被正常发布了，那么我们就应该去通知用户；
+				 */
 				$metaInfo = array();
 				$queueType = JWNotifyQueue::T_STATUS;
 				$metaInfo = array(

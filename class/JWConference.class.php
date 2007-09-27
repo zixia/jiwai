@@ -32,9 +32,10 @@ class JWConference {
 	}
 
 	/**
-	 * Get idConference from idUser,idUserReplyTo,serverAddress
+	 * Get idConference from idUser,idUserReplyTo --- 这个只能从 回复的ID中分析，
+	 * 对于特服号码相关的 会议号分析 请使用 JWFuncCode::FetchConference(serverAddress, mobileNo)方法
 	 */
-	static public function FetchConference( $idSender,$idReceiver=null,$device='sms',$serverAddress=null,$address=null) {
+	static public function FetchConference( $idSender,$idReceiver=null , $device='sms' ) {
 		$idSender = JWDB::CheckInt( $idSender );
 	
 		//发送者是开启了会议模式用户	
@@ -50,16 +51,7 @@ class JWConference {
 		//会议用户信息
 		$userInfo = $conference = null;
 
-		//优先特服号分析
-		if( $device == 'sms' ){
-			$parseInfo = JWFuncCode::FetchConference( $serverAddress, $address );
-			if( false == empty( $parseInfo ) ){
-				$userInfo = $parseInfo['user'];
-				$conference = $parseInfo['conference'];
-			}
-		}
-
-		//如果从特服号中分析不出，再分析 idUserReplyTo 
+		//从特服号中分析不出，分析 idUserReplyTo 
 		if( $idReceiver && ( empty($userInfo) || empty($conference) ) ) {
 			$userInfo = JWUser::GetUserInfo( $idReceiver );
 			if( false == empty( $userInfo ) && $userInfo['idConference'] ) {

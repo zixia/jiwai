@@ -142,53 +142,54 @@ class JWRobotLogic {
 
 		//Todo 2007-06-26
 		$status_msgtype = array(null,'NORMAL','SIG');
-		if( ! in_array( $msgtype, $status_msgtype ) ){
-			//to do;
+		if( false == in_array( $msgtype, $status_msgtype ) ){
 			return null; 
 		}
+
 		$isSignature = ( $msgtype=='SIG' ) ? 'Y' : 'N';
         
 		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if( $isSignature == 'Y' && ( empty($device_row) || !empty($device_row['secret']) ) ) {
+		if( $isSignature == 'Y' && ( empty($device_row ) || false == empty($device_row['secret']) ) ) {
 			return null;
 		}
 
 		if ( empty($device_row) )
 		{	
-			// user not registed
 			JWLog::Instance()->Log(LOG_NOTICE,"JWRobotLogic::ProcessMoStatus UNKNOWN IM: $type://$address");
 			return JWRobotLogic::CreateAccount($robotMsg);
 		}
-		else if ( ! empty($device_row['secret']) )
+		else if ( false == empty($device_row['secret']) )
 		{	
-			// device not verified
 			JWLog::Instance()->Log(LOG_INFO,"VERIFY:\t$device_row[idUser] $device_row[secret]");
 			return self::ProcessMoVerifyDevice($robotMsg);
 		}
 		else
 		{	
 			$time = $robotMsg->GetCreateTime();
-
-			// update jiwai status
 			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
+			$idUser = $device_row['idUser'];
 
-			$options = array(
-					'address' => $address,
-				);
-			$ret = JWSns::UpdateStatus($device_row['idUser'], $body, $type, $time, $isSignature, $serverAddress, $options );
+			$options = array();
+			if( $type == 'sms' ) {
+				$parseInfo = JWFuncCode::FetchConference($serverAddress, $address);
+				if( false == empty( $parseInfo ) ){
+					$options[ 'idConference'] = $parseInfo['conference']['id'] ;
+				}
+			}
+
+			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );
 			if( $ret ) {
 				$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_UPDATESTATUS',array($nameFull,));
 				if( $reply ) {
 					return self::ReplyMsg( $robotMsg, $reply );
 				}else {
-					//KeepSilence
 					return null;
 				}
 			}
 			else
-			{	// update error, need quarantine
+			{
 				return false;
 			}
 		}
