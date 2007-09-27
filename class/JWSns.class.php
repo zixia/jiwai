@@ -271,7 +271,7 @@ class JWSns {
 			throw new JWException('must array');
 		
 		$follower_user_rows	= JWUser::GetUserDbRowsByIds($idFollowers);
-		$idUsers = JWFollowerRecursion::GetSuperior($idUser, 5);
+		$idUsers = JWFollowRecursion::GetSuperior($idUser, 5);
 
 		foreach( $idUsers as $idUser ) {
 

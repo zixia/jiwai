@@ -35,7 +35,7 @@ class JWRobotLingoIntercept {
 				$conference = JWConference::GetDbRowById( $preAndId['id'] );
 				if( empty($conference) )
 					return;
-				$userInfo = JWUser::GetUserInfo( $preAndId['id'] );
+				$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
@@ -43,7 +43,11 @@ class JWRobotLingoIntercept {
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
-				$userInfo = JWUser::GetUserInfo( $preAndId['id'] );
+				if( $preAndId['pre'] == JWFuncCode::PRE_STOCK_CODE ) {
+					$userInfo = JWUser::GetUserInfo( 'gp'.$preAndId['id'] );
+				}else{
+					$userInfo = JWUser::GetUserInfo( $preAndId['id'] );
+				}
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
