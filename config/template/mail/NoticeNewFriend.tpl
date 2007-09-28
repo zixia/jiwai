@@ -7,10 +7,10 @@ FROM: 叽歪de <noreply@jiwai.de>
 
 
 在这里了解%User.nameFull%的最新动态：
-	http://JiWai.de/%User.nameScreen%/
+	http://JiWai.de/%EUser.nameScreen%/
 
 在这里将%User.nameFull%添加为你的好友（页面中点击“添加”）：
-	http://JiWai.de/%User.nameScreen%/
+	http://JiWai.de/%EUser.nameScreen%/
 
 
 耶！

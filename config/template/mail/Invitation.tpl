@@ -9,7 +9,7 @@ FROM: %User.nameFull% <noreply@jiwai.de>
 http://JiWai.de/wo/invitations/i/%INVITATION_ID%
 
 或您可以在这里关注 %User.nameScreen% (%User.nameFull%) 的最新动态：
-http://JiWai.de/%User.nameScreen%/
+http://JiWai.de/%EUser.nameScreen%/
 
 叽歪de能让你用一句话建立自己的博客，用只言片语记录生活轨迹。
 

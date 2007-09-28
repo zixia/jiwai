@@ -153,12 +153,14 @@ class JWMail {
 	static private function RenderTemplate($template, $user, $friend)
 	{
 		$replace_array	= array (
-							 '/%User.nameScreen%/i'	=>	$user['nameScreen']
-							,'/%User.nameFull%/i'	=>	$user['nameFull']
+					 '/%User.nameScreen%/i'	=> $user['nameScreen'],
+					 '/%EUser.nameScreen%/i' => UrlEncode($user['nameScreen']),
+					 '/%User.nameFull%/i' => $user['nameFull'],
 
-							,'/%Friend.nameScreen%/i'=>	@$friend['nameScreen']
-							,'/%Friend.nameFull%/i'	=>	$friend['nameFull']
-							);
+					 '/%Friend.nameScreen%/i' => @$friend['nameScreen'],
+					 '/%EFriend.nameScreen%/i' => UrlEncode($friend['nameScreen']),
+					 '/%Friend.nameFull%/i'	=> @$friend['nameFull'],
+				);
 
 		return preg_replace(	 array_keys		($replace_array)
 								,array_values	($replace_array)
