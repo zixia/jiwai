@@ -57,17 +57,12 @@ if ( isset($_REQUEST['action']) )
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab('/wo/openid/'); ?>
 <div class="tabbody">
 			<h2> <?php echo $user_info['nameScreen']?> </h2>
-
-<?php
-
-JWTemplate::ShowActionResultTips();
-
-?>
 
 
 <?php

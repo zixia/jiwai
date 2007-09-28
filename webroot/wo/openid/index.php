@@ -19,6 +19,7 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab('/wo/openid/'); ?>
@@ -48,8 +49,6 @@ _HTML_;
 		JWSession::SetInfo('error', $error_html);
 	}
 }
-
-JWTemplate::ShowActionResultTips();
 
 ?>
 

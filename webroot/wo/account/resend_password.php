@@ -41,9 +41,9 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <div id="container" class="subpage">
-<?php JWTemplate::ShowActionResultTips(); ?>
 <h2>忘记了？</h2>
 
 <p style="margin:15px;">请输入你的 Email 地址，我们将把密码重设的链接发给你。</p>

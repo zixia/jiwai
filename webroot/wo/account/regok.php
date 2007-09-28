@@ -105,11 +105,11 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <div id="container">
 
 <h2>恭喜你注册成功！</h2>
-<?php JWTemplate::ShowActionResultTips(); ?>
 
 <p>你好，<?php echo htmlSpecialChars($user_info['nameScreen']); ?>，要<a href="/wo/">马上开始叽歪</a>吗？你可以先：</p>
 <p><strong>上传头像图片</strong></p>

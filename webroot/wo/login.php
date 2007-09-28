@@ -71,8 +71,6 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 
 <?php JWTemplate::header() ?>
 
-<div id="container">
-
 <?php JWTemplate::ShowActionResultTips(); ?>
 
 <?
@@ -82,6 +80,8 @@ if ( !empty($err) ) {
 _HTML_;
 }
 ?>
+
+<div id="container">
 
 <h2>登录到叽歪de</h2>
 
