@@ -351,7 +351,7 @@ class JWSms {
 		$onlyOne = false;
 		if( true && $mobileNo )
 		{
-			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $arg_src );
+			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $mobileNo );
 			$memcache = JWMemcache::Instance();
 			$moed = $memcache->Get( $moKey );
 			$onlyOne = ( $moed ) ? false : true;

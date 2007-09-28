@@ -70,16 +70,14 @@ function mop_subscribe()
 
 function mop_mo()
 {
+		global $arg_src, $arg_gid, $arg_dst
+				, $arg_linkid, $arg_msg;
+
 		if ( true ) {
 			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $arg_src );
 			$memcache = JWMemcache::Instance();
 			$memcache->Set( $moKey, time(), 0, 60 );
 		}
-
-		global $arg_src, $arg_gid, $arg_dst
-				, $arg_linkid, $arg_msg;
-
-		//error_log ( "mop.php mop_mo received urlencode msg: [$arg_msg]" );
 		
 		/*
 		 *	FIXME
