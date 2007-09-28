@@ -75,7 +75,7 @@ if ( (isset($g_search) && $g_search) || $q )
 
 
 $menu_list = array (
-		 'archive'=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/account/archive")
+		 'archive'=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/archive/")
 		,'replies'=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
 		,'friends'=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
 	);
@@ -166,8 +166,7 @@ if( ( $active_tab == 'friends' || $active_tab == 'archive' )
 	&& !empty($status_rows) 
 	&& $page == 1
 	) {
-	$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(
-			$logined_user_id, $status_data['status_ids'], $status_rows);
+	$mergedStatusResult = JWQuarantineQueue::GetQuarantineStatusFromUser( $logined_user_id, $status_data['status_ids'], $status_rows);
 	if( !empty( $mergedStatusResult ) ) {
 		$status_data['status_ids'] = $mergedStatusResult['status_ids'];
 		$status_rows = $mergedStatusResult['status_rows'];

@@ -273,7 +273,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo $url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>

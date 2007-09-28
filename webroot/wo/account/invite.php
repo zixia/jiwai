@@ -54,7 +54,7 @@ if ( isset($_POST['invite_sms_x'] ) ) {
     $smss = $_POST['sms_addresses'];
     $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
     $smss = preg_split('/\s+/', trim($smss) ); 
-    $body = "你好，我是$user_info[nameScreen]($user_info[nameFull])！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。（可以随时停止关注）";
+    $body = '你好，我是'.JWNotify::GetPrettySender($user_info).'！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。';
 
     $count=0;
     foreach( $smss as $sms ) {

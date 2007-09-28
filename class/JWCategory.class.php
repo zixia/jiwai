@@ -67,9 +67,12 @@ _SQL_;
 	 */
 	static public function GetDbRowsBySQL( $sql, $moreThanOne = false ) {
 
-		$rows = JWDB::GetQueryResult( $sql, true );
+		$rows = JWDB::GetQueryResult( $sql, $moreThanOne );
 		if( empty( $rows ) )
 			return array();
+
+		if( $moreThanOne == false )
+			return $rows;
 
 		$rtn = array();
 		foreach($rows as $r){

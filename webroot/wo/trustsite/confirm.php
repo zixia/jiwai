@@ -70,11 +70,6 @@ JWTemplate::ShowActionResultTips();
 ?>
 
 
-<ul>
-<li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
-<li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
-</ul>
-
 <?php
 $request = JWOpenid_Server::GetRequestInfo();
 ?>
@@ -84,15 +79,21 @@ $request = JWOpenid_Server::GetRequestInfo();
 <ul>
 <li>网站 <strong><?php echo $confirm_url?></strong> 希望使用你的OpenID进行登录</li>
 <li>你的OpenID是： <strong><?php echo $request->identity?></strong></li>
-</ul>
 
-<h3>你的意见是：</h3>
-
+<li>
 <form method="POST">
+<label>你的意见是：</label>
 <input type="submit" name="action[accept_once]" value="只同意这次" /> 
 <input type="submit" name="action[accept_always]" value="一直同意" /> 
 <input type="submit" name="action[deny]" value="拒绝" /> 
 </form>
+</li>
+</ul>
+
+<ul class="list_ji">
+<li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
+<li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
+</ul>
 
 </div>
 </div><!-- #tabbody -->

@@ -57,7 +57,7 @@ _HTML_;
 				JWSession::SetInfo('error',$error_html);
 			}
 
-			unlink ( $user_named_file );
+			@unlink ( $user_named_file );
 		}
 	}
 	else if ( isset($file_info) 

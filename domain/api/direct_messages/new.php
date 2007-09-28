@@ -8,6 +8,7 @@ $user = $text = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
+
 $type = trim( strtolower($pathParam), '.' );
 if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
@@ -39,6 +40,7 @@ if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device, $time=null)
 		break;
 		case 'json':
 			renderJsonReturn($message);
+		break;
 		default:
 			JWApi::OutHeader(406, true);
 	}	

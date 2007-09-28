@@ -8,11 +8,13 @@
 var JWValidator = { 
 	mVersion : 1,
 
-	ajax_url : '/wo/validator/ajax',
+	ajax_url : '/wo/validator/ajax/',
 	
 	init: function(){
 		for (var index=0; index<arguments.length; index++) {
 			var f = arguments[ index ];
+			if( !$(f) ) continue;
+
 			var c = $(f).elements;
 			for(var i=0;i<c.length;i++){
 				m=c[i];
@@ -169,6 +171,13 @@ var JWValidator = {
 		if( this.value(m) != this.value(n) )
 			return a + '与' + b + '不一致';
 
+		return null;
+	},
+
+	check_number : function(m){
+		var a = this.attr(m, 'alt');
+		if (/[\D]/g.test(this.value(m))) 
+			return a + '必须是全数字';
 		return null;
 	},
 
