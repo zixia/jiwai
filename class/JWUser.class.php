@@ -492,9 +492,6 @@ _SQL_;
 		if ( preg_match( '/^gp\d+$/i', $nameScreen ) )   //股票相关用户不允许用户直接注册
 			return true;
 
-		if ( preg_match( '/^stock_[0-9a-z]{3,8}$/i', $nameScreen ) )   //股票相关用户不允许用户直接注册
-			return true;
-
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
 	}
 	

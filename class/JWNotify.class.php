@@ -90,7 +90,7 @@ class JWNotify{
 		}
 
 
-		$follwer_ids = array();
+		$follower_ids = array();
 		if( $idUserConference ) 
 		{
 			$follower_ids = JWFollower::GetFollowerIds( $idUserConference );
@@ -100,7 +100,10 @@ class JWNotify{
 			
 			$userConference = JWUser::GetUserInfo( $idUserConference );
 			$messageObject = is_array( $message ) ? 
-				$message : self::GetPrettySender($userConference) ."[$userSender[nameScreen]]: $message";
+				$message : self::GetPrettySender($userConference) 
+						.  ( $idUserConference == $idUserFrom ? '' : "[$userSender[nameScreen]]" ) 
+						.  ": $message";
+
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idUserConference: $idUserConference, "
 				. "Followers: array("
@@ -110,23 +113,26 @@ class JWNotify{
 		}
 		
 		/**
-		 * 只有 没有 idUserTo 才通知 idSender 的 Follower
+		 * 只有 没有 idUserTo 才通知 idUserFrom 的 Follower
 		 * 通知发送者的其他 Follower，需要考虑的是，发送者是会议用户本身，则不通知
 		 */
-		if( false == ( $idUserTo || $idSender == $idUserConference ) ) 
+		if( false == ( $idUserTo || $idUserFrom == $idUserConference ) ) 
 		{
 			$userSender = JWUser::GetUserInfo( $idUserFrom );
 			$messageObject = is_array( $message ) ? 
 				$message : self::GetPrettySender($userSender).': '.$message;
 
 			$sender_follower_ids = JWFollower::GetFollowerIds( $idUserFrom );
-			$sender_follower_ids = array_diff( $sender_follower_ids, $follwer_ids );
+			$sender_follower_ids = array_diff( $sender_follower_ids, $follower_ids );
 			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
 				. "Followers: array("
 				. Implode( ',', $sender_follower_ids ) . ")\n"; 
 
+			/**
+			 * 注释下面这行，那么给好友的通知，如果是通过 SMS，将会带上会议特服号；
+			 */
 			$options['idConference'] = null;
 
 			JWNudge::NudgeToUsers( $sender_follower_ids, $messageObject, 'nudge', 'bot', $options );
@@ -181,15 +187,12 @@ class JWNotify{
 		if( empty( $conference ) || empty($user) )
 			return $code['code'] . $code['func'] . $code['funcPlus'];
 
-		if( preg_match( '/^gp(\d+)$/i', $user['nameScreen'], $matches ) ) {
+		if( preg_match( '/^gp(\d{6})$/i', $user['nameScreen'], $matches ) ) {
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CODE . $matches[1];
 		}
 
-		if( preg_match( '/^stock_([0-9a-z]{3,8})$/i', $user['nameScreen'] ) ) {
-			$number = $conference['number'];
-			if( $number !== null ) {
-				return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CATE . $number;
-			}
+		if( preg_match( '/^gp(\d{3})$/i', $user['nameScreen'], $matches ) ) {
+			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CATE . $matches[1];
 		}
 
 		if( $conference['number'] !== null )
