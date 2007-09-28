@@ -107,6 +107,21 @@ a:hover {color:#F87A01;}
     text-align:center;
     cursor:pointer;
   }
+  .submitbutton {
+    background-color:#F97B00;
+    border:medium none;
+    color:#FFEFC8;
+    font-weight:bold;
+    letter-spacing:normal;
+    word-spacing:normal;
+    width:64px;
+    height:21px;
+    line-height:23px;
+    overflow:hidden;
+    padding:0pt 8px;
+    text-align:center;
+    cursor:pointer;
+  }
   #login #remember_me {border:none; width:16px; height:16px;}
 
   #sidebar .msg {padding:8px 10px; background-color:#f2f2f2; }
@@ -167,7 +182,7 @@ a:hover {color:#F87A01;}
 
 
 
-#content #doingForm { background:url(../images/org-doing-bg.gif) #ffffff repeat-x bottom; height:158px; overflow:hidden; border:1px solid #D3D3D5; margin-bottom:12px;}
+#content #doingForm { background:url(../images/org-doing-bg.gif) #ffffff repeat-x bottom; height:200px; overflow:hidden; border:1px solid #D3D3D5; margin-bottom:12px;}
 #content #doingForm .bar {line-height: 2.5em; position: relative; padding-left: 10px; margin: 0px}
 #content #doingForm .bar h3 { font-size:15px ; font-weight:bold; color: #000; padding: 5px 170px 0 0;}
 #content #doingForm .bar span { font-size:12px; display: block; position: absolute; top: 0; right: 10px; color:#A2A2A2;}

@@ -87,7 +87,7 @@ var JiWaiTimeline = {
 
 	}
 	,init : function() {
-		JiWaiTimeline.fetch(JiWaiTimeline.api_url, 20);
+		JiWaiTimeline.fetch(JiWaiTimeline.api_url, 5);
 	}
 	,heartbeat : function() {
 //console.log ( "in heartbeat " + JiWaiTimeline.current_pos );
@@ -153,7 +153,7 @@ console.log ( "set user location : " + user_location );
 //console.log(status_data);
 		JiWaiTimeline.current_pos++;
 
-		while ( JiWaiTimeline.public_timeline.length >= 20 ){
+		while ( JiWaiTimeline.public_timeline.length >= 5 ){
 //console.log("pop");
 			JiWaiTimeline.public_timeline.pop();
 		}
