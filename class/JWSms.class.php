@@ -207,7 +207,7 @@ class JWSms {
 	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816', $linkId=null)
 	{
 		// 第三方下行接口，只对移动有效
-		$MT_HTTP_URL_3RD		= 'http://211.157.106.111:8092/sms/third/submit';
+		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
 
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
@@ -233,8 +233,6 @@ class JWSms {
 			$MT_HTTP_URL = $MT_HTTP_URL_LINKID;
 
 
-
-
 		$mt_type = array('MT_TYPE_MO_FIRST' 	=> 0, // MO点播引起的第一条MT消息
 				 'MT_TYPE_MO_NOT_FIRST'	=> 1, // MO点播引起的非第一条MT消息
 				 'MT_TYPE_NO_MO'	=> 2, // 非MO点播引起的MT消息
@@ -251,9 +249,7 @@ class JWSms {
 		$dst	= $mobileNo;	// 数字,目的手机号 
 		$msgfmt		= 0;	// 英文，如果是中文，就去掉这个参数
 
-
-		list($msg,$msgfmt) = self::FormatSms($smsMsg);
-
+		list($msg,$msgfmt) = self::FormatSms($smsMsg, $dst);
 
 		$pid = 0;
 		if( $gid == self::GID_UNICOM ) {
@@ -343,28 +339,42 @@ class JWSms {
 	 * 根据是否包含中文决定发送 140(ascii) 还是 70(中文)
 	 * @return array, (one_sms_string, msg_fmt)
 	 */
-	static function FormatSms($smsMsg)
+	static function FormatSms($smsMsg, $mobileNo)
 	{
 		$smsMsg = preg_replace('/\r/', "", $smsMsg);
+
 		//$smsMsg = preg_replace('/\n/', "\r\n", $smsMsg);
 		// XXX 
 		// 1. treo 650 显示 \n 有时候不正常
 		// 2. JWRobotMsg->Save()后，文件中为什么会多出\r字符？
 
+		$onlyOne = false;
+		if( true && $mobileNo )
+		{
+			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $arg_src );
+			$memcache = JWMemcache::Instance();
+			$moed = $memcache->Get( $moKey );
+			$onlyOne = ( $moed ) ? false : true;
+		}
+
 		if ( preg_match('/^[\x00-\x7F]+$/', $smsMsg) )
 		{ 	// 英文字符
 
-			return array ( self::SplitSms($smsMsg, 140, 'UTF-8'), 0 );
+			return array ( self::SplitSms($smsMsg, 140, 'UTF-8'), 0 , $onlyOne);
 		}
 
 		// 有中文
 
-		$smsMsg = self::SplitSms( $smsMsg, 70, 'UTF-8' );
+		$smsMsg = self::SplitSms( $smsMsg, 70, 'UTF-8' , $onlyOne);
 
 		return array ($smsMsg, null);
 	}
 
-	static function SplitSms($smsMsg, $len=70, $encoding='UTF-8') {
+	static function SplitSms($smsMsg, $len=70, $encoding='UTF-8', $onlyOne = false ) {
+
+		if( $onlyOne ) {
+			return array( mb_substr($smsMsg, 0, $len, $encoding) );
+		}
 
 		if( ( $strlen = mb_strlen( $smsMsg, $encoding ) ) > $len ) {
 

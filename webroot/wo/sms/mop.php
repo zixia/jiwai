@@ -70,6 +70,12 @@ function mop_subscribe()
 
 function mop_mo()
 {
+		if ( true ) {
+			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $arg_src );
+			$memcache = JWMemcache::Instance();
+			$memcache->Set( $moKey, time(), 0, 60 );
+		}
+
 		global $arg_src, $arg_gid, $arg_dst
 				, $arg_linkid, $arg_msg;
 

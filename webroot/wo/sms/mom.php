@@ -39,11 +39,13 @@ switch ($arg_type)
 		$ret = mom_report();
 		break;
 	default:
-        if( $_POST || true) {
-            $ret = mom_mo();
-        }else {
-            $ret = false;
-        }
+		$postedXml = isset($HTTP_RAW_POST_DATA) ? 
+		       	trim($HTTP_RAW_POST_DATA) : trim(file_get_contents("php://input"));
+		if( $postedXml || CONSOLE ) {
+			$ret = mom_mo( $postedXml );
+		}else {
+			$ret = false;
+		}
 }
 
 if ( $ret )
@@ -66,20 +68,16 @@ function mom_report()
     return true;
 }
 
-function mom_mo()
+function mom_mo( $postedXml = null )
 {
-    $postedXml = isset($HTTP_RAW_POST_DATA) ? 
-            trim($HTTP_RAW_POST_DATA) : trim(file_get_contents("php://input"));
-
-    $f = base64_encode("编码后的数据");
-    $i = base64_encode( file_get_contents('1.gif') );
-    
     if( null == $postedXml ) {
+        $f = base64_encode("编码后的数据");
+        $i = base64_encode( file_get_contents('1.gif') );
 
         $postedXml = <<<DATA
 <mmsMO>
     <GatewayID>1</GatewayID>
-    <Sender>13934567890</Sender>
+    <Sender>13966483592</Sender>
     <Receiver>25208</Receiver>
     <Subject>测试彩信</Subject>
     <LinkID></LinkID>
@@ -92,7 +90,10 @@ function mom_mo()
     </MMS>
 </mmsMO>
 DATA;
-
+	return true;
+    }
+    if( $postedXml || CONSOLE ){
+        error_log( $postedXml, 3, '/tmp/requestmom' );
     }
 
     return JWMms::ReceiveMo( $postedXml );
