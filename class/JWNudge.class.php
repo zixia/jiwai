@@ -43,6 +43,9 @@ class JWNudge {
 		if( empty( $idUsers ) )
 			return true;
 
+		settype( $idUsers, 'array' );
+		$idUsers = array_unique( $idUsers );
+
 		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype') ) ) {
 			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
 				$metaInfo = array(

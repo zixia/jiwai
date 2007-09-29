@@ -93,7 +93,7 @@ class JWNotify{
 		$follower_ids = array();
 		if( $idUserConference ) 
 		{
-			$follower_ids = JWFollower::GetFollowerIds( $idUserConference );
+			$follower_ids = self::GetAvailableFollowerIds( $idUserConference );
 			$follower_ids = self::GetFollowerIds( $follower_ids, $options['notify'] );
 			$follower_ids = array_diff( $follower_ids, array($idUserFrom) );
 			$follower_ids = array_diff( $follower_ids, $to_ids );
@@ -122,7 +122,7 @@ class JWNotify{
 			$messageObject = is_array( $message ) ? 
 				$message : self::GetPrettySender($userSender).': '.$message;
 
-			$sender_follower_ids = JWFollower::GetFollowerIds( $idUserFrom );
+			$sender_follower_ids = self::GetAvailableFollowerIds( $idUserFrom );
 			$sender_follower_ids = array_diff( $sender_follower_ids, $follower_ids );
 			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
 
@@ -137,6 +137,20 @@ class JWNotify{
 
 			JWNudge::NudgeToUsers( $sender_follower_ids, $messageObject, 'nudge', 'bot', $options );
 		}
+	}
+
+	static public function GetAvailableFollowerIds($idUser) {
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$followerIds = JWFollower::GetFollowerIds( $idUser );
+		
+		$userInfo = JWUser::GetUserInfo( $idUser );
+		if( $userInfo['protected'] == 'Y' ) {
+			$friendIds = JWFriend::GetFriendIds( $idUser );
+			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
+		}
+
+		return $followerIds;
 	}
 
 	/**
