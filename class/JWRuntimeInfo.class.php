@@ -31,7 +31,7 @@ _SQL_;
 	/**
 	 * Create / UPDATE 都用这个，该表有唯一索引
 	 */
-	static public function Create( $name, $value ) {
+	static public function Set( $name, $value ) {
 
 		if( $idExist = JWDB::ExistTableRow( 'RuntimeInfo', array( 'name' => $name ) ) ){
 			JWDB::UpdateTableRow( 'RuntimeInfo', $idExist, array(

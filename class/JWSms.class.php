@@ -297,6 +297,11 @@ class JWSms {
 
 	static public function SendSmsViaUrl( $rpc_url ) {
 
+		if( true ) {
+			$v = intval( JWRuntimeInfo::Get('ROBOT_COUNT_SMS_MT') );
+			JWRuntimeInfo::Set( 'ROBOT_COUNT_SMS_MT', ++$v );
+		}
+
 		error_log( $rpc_url );
 
 		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt Calling: [$rpc_url]");

@@ -77,6 +77,10 @@ function mop_mo()
 			$moKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWWosms', 'UserMO'), $arg_src );
 			$memcache = JWMemcache::Instance();
 			$memcache->Set( $moKey, time(), 0, 60 );
+
+			$v = intval( JWRuntimeInfo::Get('ROBOT_COUNT_SMS_MO') );
+			JWRuntimeInfo::Set( 'ROBOT_COUNT_SMS_MO', ++$v );
+
 		}
 		
 		/*
