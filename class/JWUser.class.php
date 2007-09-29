@@ -322,7 +322,7 @@ _SQL_;
 		if ( array_key_exists('email', $modifiedUserInfo) )
 			$modifiedUserInfo['email'] = strrev($modifiedUserInfo['email']);
 		if ( array_key_exists('nameFull', $modifiedUserInfo) ) 
-            $modifiedUserInfo['nameFull'] = preg_replace( '/\xE2\x80\xAE/U', '', $modifiedUserInfo['nameFull']);
+			$modifiedUserInfo['nameFull'] = preg_replace( '/\xE2\x80\xAE/U', '', $modifiedUserInfo['nameFull']);
 
 		return JWDB::UpdateTableRow('User', $idUser, $modifiedUserInfo);
 	}

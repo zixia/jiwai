@@ -134,19 +134,5 @@ class JWFilterRule {
 		return false;
 	}
 
-	/**
-	 * Conference Filter
-	 */
-	static public function IsFilterConference($idConference) {
-		if( null == $idConference )
-			return false;
-
-		$idConference = JWDB::CheckInt( $idConference );
-		$conference = JWConference::GetDbRowById( $idConference );
-		if( empty( $conference ) )
-			return false;
-
-		return $conference['forceFilter'] == 'Y' ;
-	}
 }
 ?>

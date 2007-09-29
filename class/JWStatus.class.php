@@ -879,6 +879,26 @@ _SQL_;
 	}
 
 
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum
+	 */
+	static public function GetStatusNumFromConference($idConference)
+	{
+		$idConference = JWDB::CheckInt($idConference);
+
+		$sql = <<<_SQL_
+SELECT      
+        COUNT(1) as num
+FROM
+        Status
+WHERE
+        idConference = $idConference
+_SQL_;
+		$row = JWDB_Cache::GetQueryResult($sql);
+
+		return $row['num'];
+	}
 
 	/*
 	 *	24小时以内的 idUser 和好友们的更新

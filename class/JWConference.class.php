@@ -136,10 +136,13 @@ _SQL_;
 	/**
 	 * Create User Conference Setting
 	 */
-	static public function Create( $idUser, $friendOnly='Y', $deviceAllow='sms,im,web', 
-						$number=null, $options=array() ){
+	static public function Create( $idUser, $options=array() ){
 
-		$forceFilter = isset($options['forceFilter']) ? $options['forceFilter'] : 'N';
+		$filter = isset($options['filter']) ? $options['filter'] : 'N';
+		$notify = isset($options['notify']) ? $options['notify'] : 'Y';
+		$number = isset($options['number']) ? $options['number'] : null;
+		$deviceAllow = isset($options['deviceAllow']) ? $options['deviceAllow'] : 'sms,im,web';
+		$friendOnly = isset($options['friendOnly']) ? $options['friendOnly'] : 'N';
 		$timeCreate = isset($options['timeCreate']) ? $options['timeCreate'] : date('Y-m-d H:i:s');
 
 		return JWDB::SaveTableRow('Conference', array(
@@ -147,7 +150,8 @@ _SQL_;
 					'friendOnly' => $friendOnly,
 					'deviceAllow' => $deviceAllow,
 					'number' => $number,
-					'forceFilter' => $forceFilter,
+					'filter' => $filter,
+					'notify' => $notify,
 					'timeCreate' => $timeCreate,
 					));
 	}
