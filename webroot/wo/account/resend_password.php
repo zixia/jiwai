@@ -8,7 +8,12 @@ if ( isset($_REQUEST['email']) )
 
 	if ( JWUser::IsValidEmail($email, true) )
 		$user_db_row = JWUser::GetUserInfo($email);
-
+    else
+    {
+		$notice_html = <<<_HTML_
+哎呀！您输入的邮件地址不合法！
+_HTML_;
+    }
 
 	if ( !empty($user_db_row) )
 	{
@@ -23,9 +28,14 @@ _HTML_;
 		exit(0);
 	}
 
-	$notice_html = <<<_HTML_
+    if (empty($notice_html))
+    {
+        $notice_html = <<<_HTML_
 哎呀！我们没有找到你的邮件地址！
 _HTML_;
+    }
+
+    JWSession::SetInfo('notice', $notice_html);
 
 }
 
