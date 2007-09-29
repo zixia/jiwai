@@ -320,7 +320,7 @@ html>body #content .tabMenu {margin-top:19px;}
 }
 .rsshim { display:block; background:url(../images/org-rss-bg.gif) #f2f2f2 no-repeat center; height:27px; line-height:27px; text-indent:34px; text-align:center; margin:0 auto; padding:10px; color:#515151; font-size:12px; text-decoration:none;}
 
-#footer { height:32px; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
+#footer { height:auto; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
   #footer ul { text-align: center; }
   #footer ul li { display: inline; line-height:32px; padding:0 10px; font-family:Verdana, Arial, Helvetica, sans-serif; }
   #footer, #footer a {color:#7D7D7D;}
@@ -399,7 +399,7 @@ input.openid_login {
    
 }
 
-.pages {float:right; width:300px; padding-top:5px; height:100%;}
+.pages {float:right; width:360px; padding-top:5px; height:100%;}
 .pages a { float:left; border:1px solid #E3E3E3; padding:2px 5px; background-color:#F7F7F7; color:#C55400; font-family:Verdana, Arial, Helvetica, sans-serif; margin:5px; text-decoration:none;}
 .pages .now {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
 

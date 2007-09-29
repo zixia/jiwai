@@ -396,9 +396,10 @@ _HTML_;
 		<li><a href="http://help.jiwai.de/Api"				target="_blank">API</a></li>
 		<li><a href="http://help.jiwai.de/"					target="_blank">帮助</a></li>
 		<!--li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li-->
-
 	</ul>
-		<ul><li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li></ul>
+    <ul>
+		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
+    </ul>
 </div>
 
 <?php
