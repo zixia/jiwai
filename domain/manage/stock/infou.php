@@ -21,7 +21,20 @@ function doPost(){
 
 doPost();
 
-$queue = JWQuarantineQueue::GetQuarantineQueue( JWQuarantineQueue::T_CONFERENCE ) ;
+$limit = 20;
+$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
+$page = ($page < 1 ) ? 1 : $page;
+
+
+$idUserStocks = JWComStockAccount::GetIdUsersByType(JWComStockAccount::T_STOCK);
+$idUserCates = JWComStockAccount::GetIdUsersByType(JWComStockAccount::T_CATE);
+$idUsers = array_merge( $idUserCates, $idUserStocks );
+
+$queueNum = JWQuarantineQueue::GetQuarantineQueueNum( JWQuarantineQueue::T_CONFERENCE, $idUsers ) ;
+$pagination = new JWPagination($queueNum, $page, $limit);
+
+$queue = JWQuarantineQueue::GetQuarantineQueue( JWQuarantineQueue::T_CONFERENCE, $idUsers ,
+						$pagination->GetStartPos(), $limit ) ;
 $users = array();
 foreach( $queue as $q ){
 	if( false == isset( $users[ $q['idUserFrom'] ] ) )
@@ -34,5 +47,8 @@ JWRender::Display( 'infou' , array(
 			'queue'=>$queue,
 			'menu_nav' => 'infou',
 			'users'=>$users,
+	 		'pagination' => $pagination,
+			'page' => $page,
+			'queueNum' => $queueNum,
 		));
 ?>

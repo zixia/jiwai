@@ -66,7 +66,17 @@ class JWQuarantineQueue {
 						));
 	}
 
-	static public function GetQuarantineQueueNum($type=self::T_STATUS, $dealStatus=self::DEAL_NONE){
+	static public function GetQuarantineQueueNum($type=self::T_STATUS, $idUsers=array(), $dealStatus=self::DEAL_NONE){
+
+		if( empty( $idUsers ) ) {
+			$inCondition = null;
+		}else{
+			settype($idUsers, 'array');
+			if( $type == self::T_STATUS )
+				$inCondition = 'AND idUserFrom IN (' . Implode(',', $idUsers) . ')';
+			else
+				$inCondition = 'AND idUserTo IN (' . Implode(',', $idUsers) . ')';
+		}
 
 		$sql = <<<_SQL_
 SELECT COUNT(1) AS count 
@@ -74,6 +84,7 @@ SELECT COUNT(1) AS count
 	WHERE 
 		dealStatus = '$dealStatus'
 		AND type = '$type'
+		$inCondition
 _SQL_;
 
 		$result = JWDB::GetQueryResult( $sql, false );
@@ -91,13 +102,24 @@ _SQL_;
 	 * @param $offset, int
 	 * @return mixed
 	 */
-	static public function GetQuarantineQueue($type=self::T_STATUS, $limit=20,$offset=0, $dealStatus=JWQuarantineQueue::DEAL_NONE ){
+	static public function GetQuarantineQueue($type=self::T_STATUS, $idUsers=array(), $offset=0, $limit=20, $dealStatus=self::DEAL_NONE ){
+
+		if( empty( $idUsers ) ) {
+			$inCondition = null;
+		}else{
+			settype($idUsers, 'array');
+			if( $type == self::T_STATUS )
+				$inCondition = 'AND idUserFrom IN (' . Implode(',', $idUsers) . ')';
+			else
+				$inCondition = 'AND idUserTo IN (' . Implode(',', $idUsers) . ')';
+		}
 		
 		$sql = <<<SQL
 SELECT * FROM QuarantineQueue
 	WHERE 
 		dealStatus = '$dealStatus'
 		AND type = '$type'
+		$inCondition
 	ORDER BY id DESC
 	LIMIT $offset , $limit
 SQL;

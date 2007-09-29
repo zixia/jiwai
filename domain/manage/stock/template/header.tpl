@@ -38,6 +38,10 @@ td,th{ font-size:14px; }
 .result th{ background:orange; color:#333; border: 0px solid #777; font-weight: bold; nowrap; }
 .result td{ text-align:right; color:#333; font-weight: normal; nowrap; }
 
+.pages {float:left; width:360px; padding-top:5px; height:100%;}
+.pages a { float:left; border:1px solid #E3E3E3; padding:2px 8px; background-color:#CB4; color:#00F; font-family:Verdana, Arial, Helvetica, sans-serif; margin:5px; text-decoration:none;}
+.pages .now {border:none; background-color:#00F; color:#000000; font-weight:bold;}
+
 i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 </style>
 </head>

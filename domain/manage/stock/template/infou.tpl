@@ -1,6 +1,9 @@
 <!--{include header}-->
 
 <h3>待审核的用户上行信息 - (${count($queue)})</h3>
+
+<!--${JWTemplate::PaginationLimit( $pagination, $page, null, 4 );}-->
+
 <form action="" method="POST" id="f" onSubmit="return JWValidator.validate('f');">
 <table border="1">
 <tr>
