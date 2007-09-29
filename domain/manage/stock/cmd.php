@@ -23,6 +23,6 @@ doPost();
 
 $cmdResult = CmdResult();
 
-JWRender::Display( 'cmd', array( 'result' => $cmdResult, ) );
+JWRender::Display( 'cmd', array( 'menu_nav'=>'cmd', 'result' => $cmdResult, ) );
 
 ?>

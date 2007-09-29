@@ -10,7 +10,11 @@ if( $_GET ){
 	if( $result == false ) {
 		echo "[robot@stock]$ $cmd\n-bash: $cmd : comand not found. send help for more";
 	}else{
-		echo "[robot@stock]$ $cmd\n\n$result\n";
+		if( substr($result,0,1) == '+' ) { // a callback
+			echo $result;
+		}else{
+			echo "[robot@stock]$ $cmd\n\n$result\n";
+		}
 	}
 }
 ?>

@@ -30,9 +30,9 @@ foreach( $queue as $q ){
 		$users[ $q['idUserTo'] ] = JWUser::GetUserInfo( $q['idUserTo'] );
 }
 
-JWRender::Display( 'quarantineUserMo' , array(
+JWRender::Display( 'infou' , array(
 			'queue'=>$queue,
-			'menu_nav' => 'quarantineUserMo',
+			'menu_nav' => 'infou',
 			'users'=>$users,
 		));
 ?>

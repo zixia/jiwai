@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="${JWTemplate::GetAssetUrl('/lib/mootools/mootools.v1.11.js')}"></script>
 <script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/jiwai.js')}"></script>
+<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/location.js')}"></script>
 <script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/validator.js')}"></script>
 <style>
 body { margin:0px; line-height:150%; font-size:14px; width:1000px;}

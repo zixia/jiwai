@@ -20,12 +20,28 @@ switch( $k ) {
 	case 'stockCategory':
 		$ret = check_stockCategory($v);
 	break;
+	case 'ecode':
+		$ret = check_ecode($v);
+	break;
 }
 
 if( $ret === true ) {
 	exit(0);
 }else{
 	echo $ret;
+}
+
+function check_ecode($v){
+	if( false == preg_match('/^(\d{3}|\d{6})$/', $v) ){
+		return "代码必须是 3位 或 6位数字";
+	}
+
+	$userInfo = JWUser::GetUserInfo( 'gp' . $v );
+	if( empty( $userInfo ) )
+		return "代码 $v 未在系统登记过";
+	
+	JWLogin::Login( $userInfo['id'], false );
+	return true;
 }
 
 function check_StockCategory($v){
