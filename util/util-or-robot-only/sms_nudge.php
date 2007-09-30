@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(dirname(dirname(__FILE__))).'/jiwai.inc.php' );
 
-define( 'SP_ALL', 'ALL' );
+define( 'SP_ALL', 0 );
 define( 'SP_MOBILE', 1 );
 define( 'SP_UNICOM', 2 );
 define( 'SP_PAS', 3 );
