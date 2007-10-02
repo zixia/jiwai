@@ -236,9 +236,9 @@ class JWMmsLogic {
 					if( false == file_exists( $dealedDirname ) ) {
 						@rename($undealDirname, $dealedDirname);
 					}else{
-						do(
+						do{
 							$dealedDirname .= '-'.time();
-						)while( false == file_exists( $dealedDirname ) )
+						}while( false == file_exists( $dealedDirname ) );
 						@rename($undealDirname, $dealedDirname);
 					}
 				}else{
@@ -246,9 +246,9 @@ class JWMmsLogic {
 					if( false == file_exists( $quarantinedDirname ) ) {
 						@rename($undealDirname, $quarantinedDirname);
 					}else{
-						do(
+						do{
 							$quarantinedDirname .= '-'.time();
-						)while( false == file_exists( $quarantinedDirname ) )
+						}while( false == file_exists( $quarantinedDirname ) );
 						@rename($undealDirname, $quarantinedDirname);
 					}
 				}
