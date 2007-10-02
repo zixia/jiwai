@@ -829,22 +829,21 @@ _SQL_;
 		return false;
 	}
 
-    static public function GetIdEncodedFromIdUser($idUser = 0)
-    {
-        $idUser = JWDB::CheckInt( $idUser );
-        $prefix = 'JW';
-        return $prefix . base64_Encode( $idUser << 2 );
-    }
+	static public function GetIdEncodedFromIdUser($idUser = 0)
+	{
+		$idUser = JWDB::CheckInt( $idUser );
+		$prefix = 'JW';
+		return $prefix . base64_Encode( $idUser << 2 );
+	}
 
-    static public function GetIdUserFromIdEncoded($idEncoded )
-    {
-        $prefix = 'JW';
-        if( 0 === strpos( $idEncoded, 'JW' ) ) {
-            return @base64_Decode( substr( $idEncoded, 2 ) ) >> 2;
-        }
-        return null;
-    }
-
+	static public function GetIdUserFromIdEncoded($idEncoded )
+	{
+		$prefix = 'JW';
+		if( 0 === strpos( $idEncoded, 'JW' ) ) {
+			return @base64_Decode( substr( $idEncoded, 2 ) ) >> 2;
+		}
+		return null;
+	}
 
 	static public function ActivateUser($idUser) {
 		$idUser = JWDB::CheckInt( $idUser );

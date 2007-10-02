@@ -63,10 +63,11 @@ def parseMail(msg, uid, address):
 	
 	#store subject
 	subject = msg['Subject']
-	subjectfilename = '%s/subject.sub' % ( dirname );
-	fp = open( subjectfilename , 'wb')
-	fp.write( subject )
-	fp.close()
+	if subject != None:
+		subjectfilename = '%s/subject.sub' % ( dirname );
+		fp = open( subjectfilename , 'wb')
+		fp.write( subject )
+		fp.close()
 
 	#store Date
 	mailtime = msg['Date']

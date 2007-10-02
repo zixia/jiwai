@@ -22,7 +22,7 @@ class JWMmsLogic {
 	 *
 	 * @var mSleepUsec
 	 */
-	static private $mSleepUsec		= 0;
+	static private $mSleepUsec	= 0;
 	static private $mSleepUsecMax	= 300000; // 0.3s
 
 
@@ -233,10 +233,14 @@ class JWMmsLogic {
 
 				if( $readok && self::SaveToStatus($mmsArray) ){
 					echo "[sms://${phone}] Update MMS Status Successed\n";
-					@rename($undealDirname, $dealedDirname);
+					if( false == file_exists( $dealedDirname ) ) {
+						@rename($undealDirname, $dealedDirname);
+					}
 				}else{
 					echo "[sms://${phone}] Update MMS Status Failed\n";
-					@rename($undealDirname, $quarantinedDirname);
+					if( false == file_exists( $dealedDirname ) ) {
+						@rename($undealDirname, $quarantinedDirname);
+					}
 				}
 			}
 		}
@@ -247,9 +251,6 @@ class JWMmsLogic {
 		$device = 'sms';
 		$serverAddress = 'm@jiwai.de';
 		$timeCreate = $mmsArray['timeCreate'];
-		$options = array(
-				'idPicture' => $mmsArray['idPicture'],	
-			);
 
 		if( false == isset($mmsArray['status']) || empty($mmsArray['status']) ) {
 			$userInfo = JWUser::GetUserInfo( $mmsArray['idUser'] );
@@ -258,12 +259,11 @@ class JWMmsLogic {
 
 		$serverAddress = 'm@jiwai.de';
 		$isSignature = 'N';
-		$options = array(
-				'idPicture' => $mmsArray['idPicture'],	
-				'isMms' => 'Y',
-				'nofilter' => true,
-			);
-
+		$options = isset( $mmsArray['idPicture'] ) ? array(
+					'idPicture' => $mmsArray['idPicture'],	
+					'isMms' => 'Y',
+					'nofilter' => true,
+				) : array();
 
 		return JWSns::UpdateStatus( $mmsArray['idUser'],
 						$mmsArray['status'],
