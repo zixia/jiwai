@@ -235,10 +235,20 @@ class JWMmsLogic {
 					echo "[sms://${phone}] Update MMS Status Successed\n";
 					if( false == file_exists( $dealedDirname ) ) {
 						@rename($undealDirname, $dealedDirname);
+					}else{
+						do(
+							$dealedDirname .= '-'.time();
+						)while( false == file_exists( $dealedDirname ) )
+						@rename($undealDirname, $dealedDirname);
 					}
 				}else{
 					echo "[sms://${phone}] Update MMS Status Failed\n";
-					if( false == file_exists( $dealedDirname ) ) {
+					if( false == file_exists( $quarantinedDirname ) ) {
+						@rename($undealDirname, $quarantinedDirname);
+					}else{
+						do(
+							$quarantinedDirname .= '-'.time();
+						)while( false == file_exists( $quarantinedDirname ) )
 						@rename($undealDirname, $quarantinedDirname);
 					}
 				}
