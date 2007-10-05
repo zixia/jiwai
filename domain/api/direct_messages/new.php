@@ -14,7 +14,7 @@ if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
 }
 
-if( !$user || !$text ) {
+if( false == ( $user && $text ) ) {
 	JWApi::OutHeader(400, true);
 }
 
@@ -30,6 +30,12 @@ if( !$userReceiver ){
 	JWApi::OutHeader(404, true);
 }
 $idUserReceiver = $userReceiver['id'];
+
+// Check Friend Relation, idUserSender must be idUserSender's friend;
+if( false == JWFriend::IsFriend($idUserReceiver, $idUserSender) ){
+	JWApi::OutHeader(403, true);
+}
+
 $text = urlDecode( $text );
 if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device, $time=null)){
 	$insertedId = JWDB::GetInsertedId();
