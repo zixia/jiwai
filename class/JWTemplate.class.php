@@ -449,26 +449,28 @@ _HTML_;
 			$title = $options['title'];
 		$mode = ( empty($options['mode']) ) ? 0 : $options['mode']; //0:status 1:direct message
 ?>
-			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('status').style.backgroundColor='#eee';" <?php if ($mode==1) echo 'style="height: 185px;"'; ?>>
+			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('status').style.backgroundColor='#eee';">
 				<fieldset>
 					<div class="bar even">
 						<h3>
 							<label for="status">
 								<?php echo $title?>
+<?php if($mode==1) { ?>
+						给：
 							</label>
 						</h3>
-<?php if ($mode==1) { ?>
-						<label for="doing">发给
-						<select style="width: 132px;" name="user[id]" id="user_id">
+						<span class="user_select">
+							<select style="width: 132px;" name="user[id]" id="user_id">
 <?php
-	foreach ($options['friends'] as $id => $f) echo <<<_HTML_
-<option value="$id">$f[nameScreen]</option>
-
+foreach ($options['friends'] as $id => $f) echo <<<_HTML_
+	<option value="$id">$f[nameScreen]</option>
 _HTML_;
 ?>
-						</select> 一条悄悄话。</label>
-<?php } ?>
-						<span id="chars_left_notice" <?php if ($mode==1) echo 'style="margin-top: 35px;"'; ?>>
+							</select>
+						</span>
+<? } ?>
+						</h3>
+						<span id="chars_left_notice" style="margin-top: 5px;">
 							还可输入: <strong id="status-field-char-counter"></strong>个字符。
 						</span>
 					</div>
@@ -480,22 +482,21 @@ _HTML_;
 					</div>
 					<div class="submit">
 						<a class="howtojiwai" href="http://help.jiwai.de/NewUserGuide" target="_blank">如何用其它方式叽歪</a><br/>
-						<a class="howtojiwai" style="text-decoration:none;">叽歪QQ机器人出现故障，正在解决。</a><br/>
-						<a class="howtojiwai" style="text-decoration:none;">临时QQ机器人帐户：742721768</a><br/>
 						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
 					</div>
 				</fieldset>
 			</form>
 
-			<script type="text/javascript">
+<script type="text/javascript">
 //<![CDATA[
-$('status').focus()
+	$('status').focus()
 //]]>
-			</script>
-			<script type="text/javascript">
+</script>
+
+<script type="text/javascript">
 //<![CDATA[
 
-i=0;
+	i=0;
 	function getStatusTextCharLengthMax(value)
 	{
 		i++;
@@ -519,33 +520,36 @@ i=0;
 
 	function updateStatusTextCharCounter(value) {
 
-	  len_max = getStatusTextCharLengthMax(value);
+		len_max = getStatusTextCharLengthMax(value);
 
-	  if (len_max - value.length >= 0) {
-		  $('status-field-char-counter').innerHTML = len_max - value.length;
+		if (len_max - value.length >= 0) {
+			$('status-field-char-counter').innerHTML = len_max - value.length;
 		} else {
-		  $('status-field-char-counter').innerHTML = 0;
-          var ov = $('status').value;
-          var nv = ov.substring(0, len_max);
+			$('status-field-char-counter').innerHTML = 0;
+			/*
+			var ov = $('status').value;
+			var nv = ov.substring(0, len_max);
 
-          if( len_max == 70 ) {
-              var max_nv = ov.substring(0, ++len_max);
-              while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
-                  nv = max_nv;
-                  max_nv = ov.substring(0, ++len_max);
-              }
-          }
-          //$('status').value = nv;  //not cut for bug
+			if( len_max == 70 ) {
+				var max_nv = ov.substring(0, ++len_max);
+				while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
+					nv = max_nv;
+					max_nv = ov.substring(0, ++len_max);
+				}
+			}
+			*/
+			//$('status').value = nv;  //not cut for bug
 		}
 	};
 
 //]]>
-			</script>
-			<script type="text/javascript">
+</script>
+
+<script type="text/javascript">
 //<![CDATA[
-$('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status').value) - $('status').value.length;
+	$('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status').value) - $('status').value.length;
 //]]>
-			</script>
+</script>
 
 <?php
 /*

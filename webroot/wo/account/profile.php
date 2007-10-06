@@ -150,6 +150,9 @@ _HTML_;
     }
 }
 
+//Procince and city id
+$pid = $cid =0;
+@list($pid, $cid) = explode('-', $outInfo['location']);
 ?>
 <html>
 
@@ -253,13 +256,6 @@ if ( $has_photo ){
             <select id='citySelect' name="city" style="width:112px;"></select>
         </td>
         <td class="note">选择所在地区</td>
-        <script defer>
-            <?php 
-                $pid = $cid =0;
-                @list($pid, $cid) = explode('-', $outInfo['location']);
-            ?>
-            JiWaiLocation.select('provinceSelect','citySelect',<?php echo intval($pid);?>,<?php echo intval($cid);?>); 
-        </script>
     </tr>
     <tr>
         <th>地址：</th>
@@ -297,6 +293,7 @@ if ( $has_photo ){
 <?php JWTemplate::footer() ?>
 <script defer="true">
 	JWValidator.init('f');
+	JiWaiLocation.select('provinceSelect','citySelect',<?php echo intval($pid);?>,<?php echo intval($cid);?>); 
 </script>
 </body>
 </html>

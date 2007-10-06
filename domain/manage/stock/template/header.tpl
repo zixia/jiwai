@@ -7,11 +7,11 @@
 <script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/location.js')}"></script>
 <script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/validator.js')}"></script>
 <style>
-body { margin:0px; line-height:150%; font-size:14px; width:1000px;}
+body { margin:0px; line-height:120%; font-size:14px; width:1000px;}
 table{ width: 750px; }
 textarea{font-size:14px;}
-textarea.cmd { width:740px;height:40px; float:left;}
-textarea.res { width:740px;height:380px; color:#FFF; background-color:#000; text-align:left; float:left; }
+textarea.cmd { width:740px;height:40px; float:left; line-height:120%;}
+textarea.res { width:740px;height:380px; color:#FFF; line-height:120%; background-color:#000; text-align:left; }
 
 td,th{ font-size:14px; }
 #header {padding:20px;text-align:center;font-size:32px; font-weight:bold; background-color:#456789; color:#FFF;}
