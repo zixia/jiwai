@@ -220,8 +220,22 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public boolean mtProcessing(MoMtMessage message){
 		Message msg = new Message(message.getAddress());
 		msg.setBody(message.getBody());
+		msg.setType(Message.Type.chat); //Only have this property ,server will store offline message
 		con.sendPacket(msg);
 		return true;
+	}
+
+	static boolean IsOffline( String u ) {
+		Presence p = roster.getPresence( u );
+		if( p == null ){
+			return true;
+		}
+
+		String status = p.getType().toString();
+		if( "error" == status || "unavailable" == status )
+			return true;
+
+		return false;
 	}
 
 	static class Service implements SocketProcessor{
@@ -275,19 +289,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 						break;
 					}
 
-					Presence p = roster.getPresence( line );
-					if( p == null ){
-						out( "N" );
-						continue;
-					}
-
-					String status = p.getType().toString();
-					if( "error" == status || "unavailable" == status )
-						out( "N" );
-					else if ( "away" == status )
-						out( "A" );
-					else
-						out( "Y" );
+					out( IsOffline(line) ? "N" : "Y" );
 				}
 				close();
 			}catch(Exception e){
