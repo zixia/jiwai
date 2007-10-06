@@ -20,25 +20,40 @@ class JWRender{
 	}
 }
 
-class Template_Render{   
+class Template_Render{	
 	
 	//now have fixed the warning to access not exists properties;
 	//used to store value stack of template calling especiall call [part]
-    protected $_properties_array_used_by_overload = array();
-    public static $lastContent = null;
+	protected $_properties_array_used_by_overload = array();
+	public static $lastContent = null;
 
-    public function __get($name=null){
-        return isset($this->_properties_array_used_by_overload[$name]) ?
-            $this->_properties_array_used_by_overload[$name] : false;
-    }
+	public function __get($name=null){
+		switch($name){
+			case '_SESSION':
+				return isset($_SESSION) ? $_SESSION : false;
+			case '_SERVER':
+				return isset($_SERVER) ? $_SERVER : false;
+			case '_REQUEST':
+				return isset($_REQUEST) ? $_REQUEST : false;
+			case '_GET':
+				return isset($_GET) ? $_GET : false;
+			case '_COOKIE':
+				return isset($_COOKIE) ? $_COOKIE : false;
+			case '_POST':
+				return isset($_POST) ? $_POST : false;
+			default:
+				return isset($this->_properties_array_used_by_overload[$name]) ?
+					$this->_properties_array_used_by_overload[$name] : false;
+		}
+	}
 
-    public function __set($name=null,$value=null){
-        return $this->_properties_array_used_by_overload[$name] = $value;
-    }
+	public function __set($name=null,$value=null){
+		return $this->_properties_array_used_by_overload[$name] = $value;
+	}
 
-    public function __call($method=null,$param = array()){
-        return false;
-    }
+	public function __call($method=null,$param = array()){
+		return false;
+	}
 	
 	//following is for template	
 
@@ -95,8 +110,7 @@ class Template_Render{
 
 		if(count($valueArray)){
 			foreach($valueArray as $key=>$value)
-			       $this->$key = $value;
-			$this->_SESSION = isset($_SESSION) ? $_SESSION : array();
+				$this->$key = $value;
 		}
 		
 		if(false===file_exists($templateFile)){
