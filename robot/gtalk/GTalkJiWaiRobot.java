@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
@@ -180,6 +181,8 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 			con = new XMPPConnection(config);
 			con.connect();
 			con.login( mAccount , mPassword );
+
+			gtalk_robot.processOfflineMessage();
 			roster = con.getRoster();
 
 			con.addPacketListener(gtalk_robot , gtalk_robot);
@@ -197,6 +200,19 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 				Thread.sleep( 120000 );
 			}catch(Exception e){
 			}
+		}
+	}
+
+	public void processOfflineMessage(){
+		try{
+			OfflineMessageManager mm = new OfflineMessageManager( con );
+			Iterator<Message> it = mm.getMessages();
+			while( it.hasNext() ){
+				Message msg = it.next();
+				processMessage( msg );
+			}
+			mm.deleteMessages();
+		}catch(XMPPException xmppee){
 		}
 	}
 	
@@ -225,7 +241,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		return true;
 	}
 
-	static boolean IsOffline( String u ) {
+	static boolean isOffline( String u ) {
 		Presence p = roster.getPresence( u );
 		if( p == null ){
 			return true;
@@ -289,7 +305,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 						break;
 					}
 
-					out( IsOffline(line) ? "N" : "Y" );
+					out( isOffline(line) ? "N" : "Y" );
 				}
 				close();
 			}catch(Exception e){
