@@ -7,6 +7,7 @@ import syslog
 import socket
 import time
 import random
+import urllib
 
 #print time.localtime()
 #print time.strftime("%Y-%m-%d %H:%M:%S")
@@ -35,6 +36,10 @@ def alert(robotid):
 		s.send( "GET /alert/%s/Offline\r\n" % (robotid))
 		s.recv( 10 )
 		s.close()
+
+		'''Relogin robot,now only gtalk'''
+		urllib.urlopen('http://sms.jiwai.de/wo/sms/rrobot?u=jiwai&p=jiwaip&s=%s' % (robotid) )
+
 	except socket.error, msg:
 		string = "SmsAlert Daemon maybe down"
 		logit( string )
