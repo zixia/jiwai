@@ -1604,10 +1604,10 @@ _HTML_;
 
 	static function sidebar_user_notice($aUserInfo)
 	{
-		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id'],'thumb96');
+		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id'],'thumb48');
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="48" height="48"/><?php echo $aUserInfo['nameFull'];?>的资料
+			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" /><?php echo $aUserInfo['nameFull'];?>的资料
 		</div>
 
 <?php
