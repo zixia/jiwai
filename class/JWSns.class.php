@@ -83,6 +83,7 @@ class JWSns {
 	{
 		$user_id = JWUser::Create($userRow);
 		JWBalloonMsg::CreateUser($user_id);
+		self::CreateFollowers( $user_id, array($user_id) );
 
 		return $user_id;
 	}

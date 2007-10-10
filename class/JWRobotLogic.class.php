@@ -259,7 +259,7 @@ class JWRobotLogic {
 				}
 		
 				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-				$new_user_id =  JWUser::Create($new_user_row);
+				$new_user_id =  JWSns::CreateUser($new_user_row);
 				if( $new_user_id ) {
 					JWSns::CreateDevice($new_user_id, $address, $type, true);
 				}else{
@@ -293,7 +293,7 @@ class JWRobotLogic {
 				}
 		
 				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-				$new_user_id =  JWUser::Create($new_user_row);
+				$new_user_id =  JWSns::CreateUser($new_user_row);
 				if( $new_user_id ) {
 					JWSns::CreateDevice($new_user_id, $address, $type, true);
 				}else{
@@ -395,7 +395,7 @@ class JWRobotLogic {
 		
 	
 		// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-		$new_user_id =  JWUser::Create($new_user_row);
+		$new_user_id =  JWSns::CreateUser($new_user_row);
 
 		if ( $new_user_id )
 		{
