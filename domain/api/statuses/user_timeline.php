@@ -14,6 +14,11 @@ if( !in_array($type, array('xml','json','atom','rss'))){
 	JWApi::OutHeader(406, true);
 }
 
+/**
+ * Work around on nameScreen in Chinese, especially those encoded with GB2312
+ */
+$idUser = mb_convert_encoding($idUser, 'UTF-8', 'GB2312,UTF-8');
+
 if( !$idUser && !($idUser=JWApi::GetAuthedUserId()) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
