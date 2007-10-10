@@ -424,7 +424,7 @@ function run_google()
         return;
     }
 
-	_uacct = "UA-287835-11";
+	_uacct = "UA-2771171-2";
 	_uOsr[24]="iask"; _uOkw[24]="k";
 	_uOsr[25]="sogou"; _uOkw[25]="query";
 	_uOsr[26]="qihoo"; _uOkw[26]="kw";
