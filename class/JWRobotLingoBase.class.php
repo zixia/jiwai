@@ -45,6 +45,10 @@ class JWRobotLingoBase {
 			,'REG'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg' 	,'param'=>2)
 
 			,'WHOAMI'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami','param'=>0)
+
+			//Track
+			,'TRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Track', 'param'=>6)
+			,'UNTRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnTrack', 'param'=>6)
 		);
 
 

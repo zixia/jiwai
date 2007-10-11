@@ -277,11 +277,11 @@ class JWNudge {
 		if( false == isset( $deviceRows[ $deviceSendVia ] ) )
 			return null;
 
+		/*
 		$online = JWIMOnline::GetDbRowByAddressType( $deviceRows[ $deviceSendVia ]['address'] , $deviceSendVia );
-
 		if( false == empty( $online ) && $online['onlineStatus'] == 'OFFLINE' )
 			return null;
-
+		*/
 		return $deviceSendVia;
 	}
 	

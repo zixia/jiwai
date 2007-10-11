@@ -124,7 +124,7 @@ class JWNotify{
 
 			$sender_follower_ids = self::GetAvailableFollowerIds( $idUserFrom );
 			$sender_follower_ids = array_diff( $sender_follower_ids, $follower_ids );
-			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
+			// $sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
 				. "Followers: array("

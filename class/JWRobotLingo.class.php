@@ -688,7 +688,7 @@ class JWRobotLingo {
 		}
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
-		$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array($address_user_db_row['nameScreen'],) );
+		$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array( JWNotify::GetPrettySender($address_user_db_row), ) );
 		JWNudge::NudgeToUsers( array($friend_user_db_row['idUser']), $nudge_message, 'nudge', $type );
 
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array($friend_user_db_row['nameScreen'],) );
@@ -1082,6 +1082,73 @@ class JWRobotLingo {
 	{
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_0000_HELP' );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
+	/**
+	 * Track
+	 */
+	static function Lingo_Track($robotMsg){
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		if ( empty($device_db_row) ) {
+			return JWRobotLogic::CreateAccount($robotMsg);
+		}
+		
+		$param_array = preg_split( '/\s+/', $body, 2);
+		if( count( $param_array) == 1 ) {
+			$wordList = JWTrackUser::GetWordListByIdUser( $device_db_row['idUser'] );
+			if( null == $wordList ) {
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_TRACK_HELP' );
+			}else{
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_TRACK_SHOW', array($wordList));
+			}
+
+			return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+			// show user,track array
+		}
+
+		$sourceWord = $param_array[1];
+		$words = preg_split( '/,|，/', $sourceWord );
+		foreach( $words as $word ) {
+			JWTrackUser::Create( $device_db_row['idUser'], $word );
+		}
+
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TRACK_SUC', array( $sourceWord ) );
+		return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+	}
+
+	/**
+	 * UnTrack
+	 */
+	static function Lingo_UnTrack($robotMsg){
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		if ( empty($device_db_row) ) {
+			return JWRobotLogic::CreateAccount($robotMsg);
+		}
+
+		$param_array = preg_split( '/\s+/', $body, 2);
+		if( count( $param_array) == 1 ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_UNTRACK_HELP' );
+			return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+		}
+
+		$sourceWord = $param_array[1];
+		$words = preg_split( '/,|，/', $sourceWord );
+		foreach( $words as $word ) {
+			JWTrackUser::Destroy( $device_db_row['idUser'], $word );
+		}
+
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_UNTRACK_SUC', array( $sourceWord ) );
+		return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 	}
 }
 ?>

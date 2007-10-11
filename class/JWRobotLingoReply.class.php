@@ -126,6 +126,13 @@ class JWRobotLingoReply {
 			'REPLY_MMS_ILL' => '哇，真可怕！我们不知道你究竟想要作什么！',
 
 			'REPLY_0000_HELP' => '发送 OFF 取消手机信息提示。',
+
+			//Track
+			'REPLY_TRACK_SHOW' => '你关注的关键词有：{0}。',
+			'REPLY_TRACK_HELP' => '你还没有关注过任何关键词，请输入 TRACK 要关注的关键词',
+			'REPLY_TRACK_SUC' => '你将收到匹配 {0} 的更新，取消关注请输入 UNTRACK {0}',
+			'REPLY_UNTRACK_SUC' => '你将不再收到匹配 {0} 的更新',
+			'REPLY_UNTRACK_HELP' => 'UNTRACK用法：UNTRACK 要取消关注的关键词',
 		);
 
 	/**

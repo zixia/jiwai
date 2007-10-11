@@ -100,5 +100,30 @@ class JWTrackWord{
 		
 		return JWDB::SaveTableRow( 'TrackWord', $uArray );
 	}
-}
+
+	/**
+	 * GetDbRowsByIds
+	 */
+	static public function GetDbRowsByIds( $ids ){
+		if( is_numeric($ids))
+			$ids = JWDB::CheckInt( $ids );
+
+		if( empty( $ids ) )
+			return array();
+
+		settype( $ids, 'array') ;
+
+		$idString = implode(',', $ids);
+
+		$sql = <<<_SQL_
+SELECT * 
+	FROM 
+		TrackWord 
+	WHERE 
+		id IN ( $idString )
+_SQL_;
+
+		return JWDB::GetQueryResult( $sql, true ) ;
+	} 
+} 
 ?>
