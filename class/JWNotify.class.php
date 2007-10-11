@@ -116,6 +116,7 @@ class JWNotify{
 		 * 只有 没有 idUserTo 才通知 idUserFrom 的 Follower
 		 * 通知发送者的其他 Follower，需要考虑的是，发送者是会议用户本身，则不通知
 		 */
+		$sender_follower_ids = array();
 		if( false == ( $idUserTo || $idUserFrom == $idUserConference ) ) 
 		{
 			$userSender = JWUser::GetUserInfo( $idUserFrom );
@@ -137,6 +138,31 @@ class JWNotify{
 
 			JWNudge::NudgeToUsers( $sender_follower_ids, $messageObject, 'nudge', 'bot', $options );
 		}
+
+		/** 
+		 * Track Notify [TEST ONLE]
+		 * 仅当用户的更新为公开时，才转发给其他同学
+		 **/
+		if( is_string($message) && $userSender['protected'] == 'N' ) {
+
+			$idTrackWordSequence = JWTrackWord::GetStatusTrackOrder( $message );
+			$tracker_ids = JWTrackUser::GetIdUsersBySequence( $idTrackWordSequence );
+
+			$tracker_ids = array_diff( $tracker_ids, $sender_follower_ids );
+			$tracker_ids = array_diff( $tracker_ids, $follower_ids );
+			$tracker_ids = array_diff( $tracker_ids, array( $idUserFrom ) );
+			$tracker_ids = array_diff( $tracker_ids, array( $idUserTo ) );
+
+			if( false == empty( $tracker_ids ) ){
+				echo "[TRACK] idUserFrom: $idUserFrom, idStatus: $idStatus, "
+					. "Followers: array("
+					. Implode( ',', $tracker_ids ) . ")\n"; 
+
+				$messageObject = self::GetPrettySender($userSender).': '.$message;
+				JWNudge::NudgeToUsers( $tracker_ids, $messageObject, 'nudge', 'bot', $options );
+			}
+		}
+
 	}
 
 	static public function GetAvailableFollowerIds($idUser) {

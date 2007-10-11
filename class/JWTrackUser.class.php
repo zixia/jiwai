@@ -41,7 +41,7 @@ class JWTrackUser{
 	static function Destroy( $idUser, $word ) {
 		$idUser = JWDB::CheckInt( $idUser );
 
-		$idTrackWordSequence = JWTrackUser::GetUserTrackOrder($word);
+		$idTrackWordSequence = JWTrackWord::GetUserTrackOrder($word);
 		if( null == $idTrackWordSequence )
 			return true;
 
@@ -87,7 +87,7 @@ class JWTrackUser{
 
 		settype( $sequence, 'array' );
 
-		$sequenceString = implode( "'", $sequence );
+		$sequenceString = implode( "','", $sequence );
 		$sql = <<<_SQL_
 SELECT distinct( idUser ) 
 	FROM 

@@ -13,7 +13,9 @@ class JWTrackWord{
 		'!',	'！',	'.',	'。',
 		'~',	'～',	'?',	'？',
 		'、',	'\'',	'’',	'“',
-		'”',
+		'”',	'(',	')',	'（',
+		'）',	'[',	']',	'【',
+		'】',
 	);
 
 
@@ -82,7 +84,7 @@ class JWTrackWord{
 		 * Return words
 		 */
 		if ( $wordString ) {
-			$wordString = mb_convert_encoding( $wordString, 'UTF-8', 'GB2312,UTF-8' );
+			$wordString = @mb_convert_encoding( $wordString, 'UTF-8', 'GB2312,UTF-8' );
 			$wordString = str_replace('+', ' ',$wordString); 
 			$wordArray = preg_split('/\s+/', $wordString );
 			return $wordArray;
@@ -96,9 +98,18 @@ class JWTrackWord{
 	 */
 	static function CreateSentence( $sentence ) {
 
+		$mbLength = mb_strlen( $sentence, 'UTF-8' );
+
 		$wordArray = self::Segment( $sentence );
 		if( false === $wordArray || empty( $wordArray ) )
 			return array();
+
+		/**
+		 * 如果仅仅2个字符，被分为2个词，或单个字，或仅1个词，忽略
+		 */
+		if( $mbLength == 1  || ( $mbLength == 2 && count($wordArray) == 2 ) ){
+			return array();
+		}
 
 		$uniqueArray = array_unique( $wordArray );
 		$keyWords = array();
