@@ -6,6 +6,18 @@
 class JWTrackWord{
 
 	/**
+	 * InterPunction
+	 */
+	private static $punctuation = array(
+		',', 	'，',	':',	'：',
+		'!',	'！',	'.',	'。',
+		'~',	'～',	'?',	'？',
+		'、',	'\'',	'’',	'“',
+		'”',
+	);
+
+
+	/**
 	 * Sentence segment
 	 */
 	static public function Segment($sentence){
@@ -75,7 +87,104 @@ class JWTrackWord{
 			$wordArray = preg_split('/\s+/', $wordString );
 			return $wordArray;
 		}
+
 		return array();	
+	}
+
+	/**
+	 * 将一个句子，存入TrackWord，并考虑各种标点符号的断句效果
+	 */
+	static function CreateSentence( $sentence ) {
+
+		$wordArray = self::Segment( $sentence );
+		if( false === $wordArray || empty( $wordArray ) )
+			return array();
+
+		$uniqueArray = array_unique( $wordArray );
+		$keyWords = array();
+		foreach( $uniqueArray as $word ) {
+			$keyWords[ $word ] = self::Create( $word );
+		}
+		
+		$rtn = array();
+		foreach( $wordArray as $word ) {
+			array_push( $rtn, $keyWords[ $word ] );
+		}
+
+		return $rtn;
+	}
+
+	/**
+	 * GetUserTrackOrder
+	 */
+	static public function GetUserTrackOrder( $sentence, $limit=3 ) {
+		$rtn = self::CreateSentence( $sentence );
+		if( empty( $rtn ) )
+			return false;
+
+		$orderString = self::GetIdSequence( $rtn, false, $limit );
+
+		return $orderString;
+	}
+
+	/**
+	 * GetStatusTrackOrder
+	 */
+	static public function GetStatusTrackOrder( $sentence, $limit=3 ){
+		$rtn = self::CreateSentence( $sentence );
+		if( empty( $rtn ) )
+			return array();
+
+		$orderArray = self::GetIdSequence( $rtn, true, $limit );
+
+		return $orderArray;		
+	}
+
+	/**
+	 * Get Id sequence
+	 */
+	static function GetIdSequence( $idArray=array(), $split=true, $limit=3 ) {
+
+		if( empty( $idArray ) )
+			return array();
+		
+		/** For User Track*/
+		if( $split == false ) {
+			$rtn = null;
+			$index = 0;
+			foreach( $idArray as $id ) {
+				if( $id == false || ++$index > 3 )
+					return trim($rtn, ',');
+
+				$rtn .= ','.$id;
+			}
+
+			return trim($rtn, ',');
+		}
+
+		/** For Sentence split **/
+		$idString = implode( ',', $idArray );
+		$idStringArray = preg_split( '/,{2,}/', $idString, 0, PREG_SPLIT_NO_EMPTY );
+		
+		$idArrays = array();	
+		foreach( $idStringArray as $string ) {
+			$array = explode( ',', $string );
+			
+			for( $j=0; $j<$limit; $j++ ){
+				for($k=0; $k<$limit; $k++) {
+					$idArrays = array_merge($idArrays, array_chunk($array, ($k+1) ) );
+				}
+				array_shift( $array );
+				if( empty($array) ) break;
+			}
+		}
+
+		$rtn = array();
+		foreach( $idArrays as $a ) {
+			array_push( $rtn, implode(',', $a) );	
+		}
+
+		return array_unique( $rtn );
 	}
 
 	/**
@@ -87,8 +196,11 @@ class JWTrackWord{
 		if( null == $word ) {
 			return false;
 		}
+
+		if( in_array( $word, self::$punctuation ) )
+			return false;
 		
-		$idExist = JWDB::ExistTableRow( 'TrackWord', array('word'=>$word,) );
+		$idExist = JWDB::ExistTableRow( 'TrackWord', array( 'word'=>$word, ) );
 		if( $idExist ){
 			return $idExist;
 		}
@@ -124,6 +236,6 @@ SELECT *
 _SQL_;
 
 		return JWDB::GetQueryResult( $sql, true ) ;
-	} 
-} 
+	}
+}
 ?>

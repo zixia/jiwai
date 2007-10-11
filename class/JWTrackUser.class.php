@@ -8,16 +8,17 @@ class JWTrackUser{
 	 * Create TrackUser | If Exists return id
 	 */
 	static function Create( $idUser, $word ) {
+
 		$idUser = JWDB::CheckInt( $idUser );
 
-		$idTrackWord = JWTrackWord::Create( $word );
+		$idTrackWordSequence = JWTrackWord::GetUserTrackOrder($word);
 
-		if( false == $idTrackWord )
-			return false;
+		if( null == $idTrackWordSequence )
+			return true;
 
 		$idExist = JWDB::ExistTableRow( 'TrackUser', array(
 			'idUser' => $idUser,
-			'idTrackWord' => $idTrackWord,
+			'idTrackWordSequence' => $idTrackWordSequence,
 		));
 
 		if( $idExist ){
@@ -26,7 +27,8 @@ class JWTrackUser{
 		
 		$uArray = array(
 			'idUser' => $idUser,
-			'idTrackWord' => $idTrackWord,
+			'idTrackWordSequence' => $idTrackWordSequence,
+			'wordTerm' => $word,
 			'timeCreate' => date('Y-m-d H:i:s'),
 		);
 		
@@ -39,13 +41,13 @@ class JWTrackUser{
 	static function Destroy( $idUser, $word ) {
 		$idUser = JWDB::CheckInt( $idUser );
 
-		$idExist = JWDB::ExistTableRow( 'TrackWord', array( 'word' => strtolower(trim($word)),) );
-		if( false == $idExist )
+		$idTrackWordSequence = JWTrackUser::GetUserTrackOrder($word);
+		if( null == $idTrackWordSequence )
 			return true;
 
 		$eArray = array(
 			'idUser' => $idUser,
-			'idTrackWord' => $idExist,
+			'idTrackWordSequence' => $idTrackWordSequence,
 		);
 		$idExist = JWDB::ExistTableRow( 'TrackUser', $eArray );	
 		
@@ -56,50 +58,54 @@ class JWTrackUser{
 	}
 
 	/**
-	 * Get IdWords by IdUser
-	 */
-	static function GetIdWordsByIdUser( $idUser ){
-		$idUser = JWDB::CheckInt( $idUser );
-		$sql = <<<_SQL_
-SELECT idTrackWord
-	FROM
-		TrackUser
-	WHERE
-		idUser = $idUser
-	ORDER BY timeCreate DESC
-_SQL_;
-		$rows = JWDB::GetQueryResult( $sql , true );
-		if( empty( $rows ) )
-			return array();
-		
-		$rtn = array();
-		foreach( $rows as $r ) {
-			if( $r['idTrackWord'] ) {
-				array_push( $rtn, $r['idTrackWord'] );
-			}
-		}
-
-		return $rtn;
-	}
-
-	/**
 	 * Get WordList by idUser
 	 */
 	static function GetWordListByIdUser( $idUser ){
-		$idWords = self::GetIdWordsByIdUser( $idUser );
-		if( empty( $idWords ) ) 
+
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$sql = "SELECT wordTerm FROM TrackUser WHERE idUser=$idUser";
+		
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
 			return null;
 
-		$trackWords = JWTrackWord::GetDbRowsByIds( $idWords );
-		if( empty( $trackWords ) )
-			return null;
-		
 		$rtn = null;
-		foreach( $trackWords as $r ) {
-			$rtn .= ", $r[word]";
+		foreach( $rows as $r ) {
+			$rtn .= ", $r[wordTerm]";
 		}
 
 		return trim( $rtn, ', ');
+	}
+
+	/**
+	 * GetIdUsersBySequence
+	 */
+	static function GetIdUsersBySequence( $sequence = array() ){
+		if( empty( $sequence ) )
+			return array();
+
+		settype( $sequence, 'array' );
+
+		$sequenceString = implode( "'", $sequence );
+		$sql = <<<_SQL_
+SELECT distinct( idUser ) 
+	FROM 
+		TrackUser
+	WHERE
+		idTrackWordSequence IN ('$sequenceString')
+_SQL_;
+
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$rtn = array();
+		foreach( $rows as $r ) {
+			array_push( $rtn, $r['idUser'] );
+		}
+
+		return $rtn;
 	}
 }
 ?>
