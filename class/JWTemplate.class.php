@@ -482,9 +482,7 @@ _HTML_;
 					</div>
 					<div class="submit" style="height:50pt">
 						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
-                        <div class="bar even">
-                           <span style="margin-right:0px!important; margin-right:337px;">Ctrl+Enter直接叽歪</span>
-                        </div>
+                           <span style="margin-right:-70px!important;margin-right:-82px; margin-top:20px; color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
                     </div>
                     </fieldset>
                         <p><a class="howtojiwai" href="http://help.jiwai.de/StartToJiwai" target="_blank">用手机/QQ/MSN/Gtalk也能叽歪？</a><br/></p>
@@ -1829,7 +1827,7 @@ _HTML_;
 _HTML_;
 	}
 
-	static public function sidebar_rss ( $type, $id )
+	static public function sidebar_rss ( $type, $id , $forceName=null)
 	{
    		$rss_url = "http://api.jiwai.de/statuses/";
 
@@ -1849,8 +1847,10 @@ _HTML_;
 				break;
 		}
 
+		$name = ( $forceName == null ) ? $id : $forceName ;
+
 		echo <<<_HTML_
-				<a href="$rss_url" class="rsshim">订阅 $id</a>
+				<a href="$rss_url" class="rsshim">订阅 $name</a>
 _HTML_;
 	}
 
