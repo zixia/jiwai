@@ -24,11 +24,12 @@ $idUser	= $user['id'];
 		<fieldset>
 			<form method="post" id="f">
                 <p>
-                    <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true;" /> 横幅式
-                    <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false;" checked /> 侧栏式
+		   <input type="hidden" id="m" value="1"/>
+                    <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true; $('m').value=1" /> 横幅式
+                    <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false; $('m').value=2;" checked /> 侧栏式
                     &nbsp;
                     &nbsp;
-			宽度 <input size="3" name="width" value="200" /> 像素
+			宽度 <input size="3" name="width" id="w" value="200" /> 像素
                 </p>	
                 <p>显示 
                     最近
@@ -48,7 +49,9 @@ $idUser	= $user['id'];
                 </p>
 <script type="text/javascript">
 function draw() {
-	var url = "http://api.jiwai.de/gadget/image/<?php echo $idUser;?>.png?"+$("f").toQueryString();//+'&'+Math.random();
+	var url = "http://api.jiwai.de/gadget/image/count" + $("c").value 
+		+ "/width"+ $("w").value 
+		+ "/mode" + $("m").value + "/id<?php echo $idUser;?>/gadget.png";
 	$('url').value=url; 
 	$("o").src = url;
 }
