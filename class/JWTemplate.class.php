@@ -471,78 +471,82 @@ _HTML_;
 <? } ?>
 						</h3>
 						<span id="chars_left_notice" style="margin-top: 5px;">
-							还可输入: <strong id="status-field-char-counter"></strong>个字符。
+							还可输入: <strong id="status-field-char-counter"></strong>个字符
 						</span>
 					</div>
 					<div class="jiwai_icon_vtab">
 						<div>
 							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if(event.ctrlKey)if(event.keyCode==13){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
 						</div>
 					</div>
-					<div class="submit">
-						<a class="howtojiwai" href="http://help.jiwai.de/NewUserGuide" target="_blank">如何用其它方式叽歪</a><br/>
+					<div class="submit" style="height:50pt">
 						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
-					</div>
-				</fieldset>
-			</form>
+                        <div class="bar even">
+                           <span style="margin-right:0px!important; margin-right:337px;">Ctrl+Enter直接叽歪</span>
+                        </div>
+                    </div>
+                    </fieldset>
+                        <p><a class="howtojiwai" href="http://help.jiwai.de/StartToJiwai" target="_blank">用手机/QQ/MSN/Gtalk也能叽歪？</a><br/></p>
 
-<script type="text/javascript">
-//<![CDATA[
-	$('status').focus()
-//]]>
-</script>
+                </form>
 
-<script type="text/javascript">
-//<![CDATA[
+    <script type="text/javascript">
+    //<![CDATA[
+        $('status').focus()
+    //]]>
+    </script>
 
-	i=0;
-	function getStatusTextCharLengthMax(value)
-	{
-		i++;
-		/*
-	  	 * if (/[^\x00-\xff]/g.test(value))
-		 * 这个工作不稳定，一下子匹配中文，一下子不配配中文……
-		 */
+    <script type="text/javascript">
+    //<![CDATA[
 
-	  	// ascii msg
-		if (escape(value).indexOf("%u") < 0)
-	  	{
-			return 140;
-	  	}
+        i=0;
+        function getStatusTextCharLengthMax(value)
+        {
+            i++;
+            /*
+             * if (/[^\x00-\xff]/g.test(value))
+             * 这个工作不稳定，一下子匹配中文，一下子不配配中文……
+             */
 
-		// chinese msg;
-	  	//return 70;
-		return 140;
-	}
+            // ascii msg
+            if (escape(value).indexOf("%u") < 0)
+            {
+                return 140;
+            }
 
-// onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
+            // chinese msg;
+            //return 70;
+            return 140;
+        }
 
-	function updateStatusTextCharCounter(value) {
+    // onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
 
-		len_max = getStatusTextCharLengthMax(value);
+        function updateStatusTextCharCounter(value) {
 
-		if (len_max - value.length >= 0) {
-			$('status-field-char-counter').innerHTML = len_max - value.length;
-		} else {
-			$('status-field-char-counter').innerHTML = 0;
-			/*
-			var ov = $('status').value;
-			var nv = ov.substring(0, len_max);
+            len_max = getStatusTextCharLengthMax(value);
 
-			if( len_max == 70 ) {
-				var max_nv = ov.substring(0, ++len_max);
-				while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
-					nv = max_nv;
-					max_nv = ov.substring(0, ++len_max);
-				}
-			}
-			*/
-			//$('status').value = nv;  //not cut for bug
-		}
-	};
+            if (len_max - value.length >= 0) {
+                $('status-field-char-counter').innerHTML = len_max - value.length;
+            } else {
+                $('status-field-char-counter').innerHTML = 0;
+                /*
+                var ov = $('status').value;
+                var nv = ov.substring(0, len_max);
 
-//]]>
+                if( len_max == 70 ) {
+                    var max_nv = ov.substring(0, ++len_max);
+                    while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
+                        nv = max_nv;
+                        max_nv = ov.substring(0, ++len_max);
+                    }
+                }
+                */
+                //$('status').value = nv;  //not cut for bug
+            }
+        };
+
+    //]]>
 </script>
 
 <script type="text/javascript">
@@ -550,7 +554,6 @@ _HTML_;
 	$('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status').value) - $('status').value.length;
 //]]>
 </script>
-
 <?php
 /*
 		<p class="notice">
@@ -718,7 +721,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 } else {
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 ?>
-      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_full; ?>的粉丝</a>
+      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_full; ?>的粉丝吧</a>
 <?php
 }
 } else {
@@ -784,14 +787,16 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	static public function TrashAction($idStatus, $options=array())
 	{
 
+		$asset_trash_alt = '删除';
+//		$asset_trash_title = '删除';
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条叽歪？"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt"><img border="0" src="$asset_trash_url" /></a>
 _HTML_;
 		if( @$options['isMms'] ) {
 			$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="删除这条叽歪？" class="del">删除</a>
+	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt" class="del"></a>
 _HTML_;
 		}
 
@@ -809,17 +814,21 @@ _HTML_;
 
 		if ( $isFav )
 		{
-			$asset_star_alt = '已收藏';
+			$asset_star_alt = '取消收藏';
+			//$asset_star_title = '已收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
 			$ajax_url		= "/wo/favourites/destroy/$idStatus";
 		}
 		else
 		{
-			$asset_star_alt = '未收藏';
+			$asset_star_alt = '点击收藏';
+			//$asset_star_title = '未收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_empty.gif");
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
-		$html_str = "<img alt=\"$asset_star_alt\" border=\"0\" id=\"status_star_$idStatus\" src=\"$asset_star_url\" onclick=\"JiWai.ToggleStar($idStatus);\" />";
+		$html_str = <<<_HTML_
+    	<a onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /></a>
+_HTML_;
 
 		return $html_str;
 	}
@@ -1660,6 +1669,7 @@ _HTML_;
             $name_full = $userInfo['nameFull'];
         }
         $userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
+		$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
 		echo <<<_HTML_
 		<ul id="update_count">
 _HTML_;
@@ -1688,7 +1698,7 @@ _HTML_;
 
 
 		echo <<<_HTML_
-			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a></li>
+			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a><img border="0" src="$asset_star_url" /></li>
 			<li id="status_count"><a href="/$user/">$countInfo[status] 条叽歪</a></li>
 _HTML_;
 
