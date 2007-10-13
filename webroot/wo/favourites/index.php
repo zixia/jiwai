@@ -65,7 +65,7 @@ if ( $page_user_info['id']==$logined_user_info['id'] )
 } 
 else 
 {
-	JWTemplate::tab_header( array('title' => $page_user_info[nameScreen].'标记的更新') ); 
+	JWTemplate::tab_header( array('title' => $page_user_info['nameScreen'].'标记的更新') ); 
 }
 ?>
 

@@ -37,11 +37,11 @@ function getOwnTimeline($count=10) {
 			'icon'=> ( !empty($r['idPicture']) ?  JWPicture::GetUrlById($r['idPicture']) : JWPicture::GetUserIconUrl($user_id)),
 			'body'=>$r['status'], 
 			'time'=>$r['timeCreate'], 
-			'via'=>'来自'.$r['device'].($r['isSignature']?'签名':'')
+			'via'=>'来自'.$r['device'].($r['isSignature']=='Y'?'签名':'')
 			);
 	}
 	//var_dump($a);die();
-	return $a;
+	return array_reverse($a);
 }
 function getFriendsTimeline($count=10) {
 	$a = array(

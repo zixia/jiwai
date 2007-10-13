@@ -290,7 +290,7 @@ _HTML_;
 				'/wo/devices/im' => '聊天软件',
 				'/wo/account/notification' => '系统通知',
 				'/wo/account/profile_settings' => '配色方案',
-				'/wo/openid/' => 'OpenID(Beta)',
+				'/wo/openid/' => 'OpenID',
                 );
 
 		if (!$highlight) {
@@ -482,12 +482,11 @@ _HTML_;
 					</div>
 					<div class="submit" style="height:50pt">
 						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
-                           <span style="margin-right:-70px!important;margin-right:-82px; margin-top:20px; color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
-                    </div>
-                    </fieldset>
-                        <p><a class="howtojiwai" href="http://help.jiwai.de/StartToJiwai" target="_blank">用手机/QQ/MSN/Gtalk也能叽歪？</a><br/></p>
-
-                </form>
+						<span style="margin-right:-70px!important;margin-right:-82px; margin-top:20px; color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
+					</div>
+				</fieldset>
+				<a class="howtojiwai" href="http://help.jiwai.de/StartToJiwai" target="_blank">用手机/QQ/MSN/Gtalk也能叽歪？</a>
+			</form>
 
     <script type="text/javascript">
     //<![CDATA[
@@ -1982,6 +1981,10 @@ _HTML_;
 				'javascript' => array ( 
 					'/wo/gadget/javascript',
 					'JavaScript',
+				),
+				'image' => array (
+					'/wo/gadget/image',
+					'Image',
 				),
 			);
 

@@ -6,15 +6,15 @@ http://api.jiwai.de/gadget/image/mode2/width200/count5/id89/gadage.png
 */
 
 $pArray = explode('/', trim($_REQUEST['pathParam'], '/') );
+$idUser = intval( array_shift( $pArray ) );
+
 foreach( $pArray as $pv ){
-	if( preg_match( '/^([[:alpha:]]+)(\d+)$/', $pv, $matches) ){
+	if( preg_match( '/^([[:alpha:]])(\d+)$/', $pv, $matches) ){
 		${$matches[1]} = $matches[2];
 	}
 }
 
-if( false == (isset($id)&&isset($width)&&isset($count)&&isset($mode)) ) exit();
-
-$idUser = (int) $id;
+if( false == (isset($w)&&isset($c)&&isset($m)) ) exit();
 
 if (!($page_user_info = JWUser::GetUserInfo($idUser))) {
 	echo 'Invalid user.';
@@ -25,9 +25,9 @@ if (JWUser::IsProtected($idUser)) {
 	die();
 }
 
-$width = intval($width);
-$mode = intval($mode);
-$count = intval($count);
+$width = intval($w);
+$mode = intval($m);
+$count = intval($c);
 
 $last = JWStatus::GetStatusNum($idUser);
 $sum = crc32('JW'.$idUser.$width.$mode.$count.$last);

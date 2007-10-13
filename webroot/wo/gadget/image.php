@@ -24,7 +24,7 @@ $idUser	= $user['id'];
 		<fieldset>
 			<form method="post" id="f">
                 <p>
-		   <input type="hidden" id="m" value="1"/>
+		   <input type="hidden" id="m" value="2"/>
                     <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true; $('m').value=1" /> 横幅式
                     <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false; $('m').value=2;" checked /> 侧栏式
                     &nbsp;
@@ -49,9 +49,9 @@ $idUser	= $user['id'];
                 </p>
 <script type="text/javascript">
 function draw() {
-	var url = "http://api.jiwai.de/gadget/image/count" + $("c").value 
-		+ "/width"+ $("w").value 
-		+ "/mode" + $("m").value + "/id<?php echo $idUser;?>/gadget.png";
+	var url = "http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c" + $("c").value 
+		+ "/w"+ $("w").value 
+		+ "/m" + $("m").value + "/gadget.png";
 	$('url').value=url; 
 	$("o").src = url;
 }
@@ -66,13 +66,13 @@ function draw() {
 		<h2>代码</h2>
 		<fieldset>
 			<p>
-                图片地址: <input id="url" size="70"/>
+                图片地址: <input id="url" size="70" value="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" />
 			</p>
 		</fieldset>
 		<h2>预览</h2>
 		<fieldset>
                 <br/>
-            <p><img id="o" /></p>
+            <p><img id="o" src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png"/></p>
 		</fieldset>
 		<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。
 		采用开源中文字体<a href="http://wenq.org/">文泉驿</a>绘制。</h3>
