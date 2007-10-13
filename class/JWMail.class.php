@@ -6,6 +6,11 @@
  */
 
 /**
+ * Pear::Mail
+ */
+require_once('Mail.php');
+
+/**
  * JiWai.de Mail Class
  */
 class JWMail {
@@ -22,6 +27,13 @@ class JWMail {
 	 * @var
 	 */
 	static private $msTemplateRoot = null;
+
+	/**
+	 * Pear::Mail Object
+	 *
+	 * @var
+	 */
+	static private $msMailObject = null;
 
 
 	/**
@@ -48,17 +60,12 @@ class JWMail {
 		$config 	= JWConfig::Instance();
 		$directory 	= $config->directory;
 
+        self::$msMailObject     =   & Mail::factory('smtp');
 		self::$msTemplateRoot	= 	$directory->mail->template ;
 
 		if ( ! file_exists(self::$msTemplateRoot) ){
 			throw new JWException( "dir not exist [" . self::$msTemplateRoot . "]");
 		}
-
-		$sendmail_path = '/usr/sbin/sendmail -t -i '
-						.' -f noreply@jiwai.de '
-					//	.' -F ' . self::EscapeHeadString('叽歪de'))
-						;
-		ini_set('sendmail_path', $sendmail_path);
 	}
 
 
@@ -103,6 +110,8 @@ class JWMail {
 	static function SendMail($from, $to, $subject, $message, $options=null)
 	{
 
+        self::Instance();
+
 		if ( !isset($options['encoding']) )
 			$options['encoding'] 	= 'GB2312';
 
@@ -124,21 +133,20 @@ class JWMail {
 		$from		= self::EscapeHeadString($from		,$options['encoding']);
 		$to			= self::EscapeHeadString($to		,$options['encoding']);
 
-		$headers = 	
- 			 'Mime-Version: 1.0'
-			."\r\n" . "Content-Type: $options[contentType]; charset=$options[encoding]"
-			."\r\n" . "Content-Transfer-Encoding: base64"
-			."\r\n" . 'X-Mailer: JWMailer/1.0'
- 			."\r\n" . "From: $from"
-			."\r\n" . "Reply-To: $from"
-			;
+        $headers = array(
+            'Mime-Version'  => '1.0',
+            'Content-Type'  => "$options[contentType]; charset=$options[encoding]",
+            'Content-Transfer-Encoding' => 'base64',
+            'X-Mailer'      => 'JMWailer/1.0',
+            'From'          => $from,
+            'To'            => $to,
+            'Subject'       => $subject,
+        );
 
 		if ( isset($options['messageId']) )
-			$headers .= "\r\n" . "Message-Id: <$options[messageId]>";
+			$headers["Message-Id"] = "<$options[messageId]>";
 
-		$headers .= "\r\n";
-
-		return mail($to, $subject, $message, $headers);
+        return self::$msMailObject->send($to, $headers, $message);
 	}
 
 	/*
