@@ -77,7 +77,7 @@ class JWNotify{
 		$userSender = JWUser::GetUserInfo( $idUserFrom );
 
 		$to_ids = array();
-		if( $idUserTo )
+		if( $idUserTo && false == JWBlock::IsBlocked($idUserTo, $idUserFrom) )
 		{
 			$to_ids = array( $idUserTo );	
 
@@ -165,15 +165,26 @@ class JWNotify{
 
 	}
 
+	/**
+	 * 考虑 Friend 关系 2007-09-20
+	 * 考虑 Block 关系 2007-10-15
+	 */
 	static public function GetAvailableFollowerIds($idUser) {
 		$idUser = JWDB::CheckInt( $idUser );
 
 		$followerIds = JWFollower::GetFollowerIds( $idUser );
 		
 		$userInfo = JWUser::GetUserInfo( $idUser );
+
+		/* friend private */
 		if( $userInfo['protected'] == 'Y' ) {
 			$friendIds = JWFriend::GetFriendIds( $idUser );
 			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
+		}
+		/* (who)s block idUser */
+		$blockedIds  = JWBlock::GetIdUsersByIdUserBlock( $idUser );
+		if( false == empty( $blockUserIds ) ) {
+			$followerIds = array_diff( $followerIds, $blockedIds );
 		}
 
 		return $followerIds;

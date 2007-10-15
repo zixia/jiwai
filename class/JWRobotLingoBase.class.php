@@ -49,6 +49,10 @@ class JWRobotLingoBase {
 			//Track
 			,'TRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Track', 'param'=>6)
 			,'UNTRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnTrack', 'param'=>6)
+
+			//Block
+			,'BLOCK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Block', 'param'=>999)
+			,'UNBLOCK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnBlock', 'param'=>999)
 		);
 
 
@@ -81,6 +85,7 @@ class JWRobotLingoBase {
 		 	 * 	JiWai扩展
 			 */
 			,'WOSHISHUI'=>	'WHOAMI'
+			,'TRACKS' => 'TRACK'
 	);
 
 

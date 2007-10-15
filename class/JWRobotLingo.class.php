@@ -1150,5 +1150,96 @@ class JWRobotLingo {
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_UNTRACK_SUC', array( $sourceWord ) );
 		return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 	}
+	
+	/**
+	 * Block Somebody
+	 */
+	static function	Lingo_Block($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$body = JWRobotLingoBase::ConvertCorner( $body );
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		if ( empty($device_db_row) ) {
+			return JWRobotLogic::CreateAccount($robotMsg);
+		}
+
+		/**
+		 * 参数
+		 */
+		$param_array = preg_split('/\s+/', $body );
+		$cmd = array_shift( $param_array );
+		$param_array = array_unique( $param_array );
+
+		if( count( $param_array ) == 0 ) {
+			$idUserBlocks = JWBlock::GetIdUserBlocksByIdUser( $device_db_row['idUser'] );
+			if( empty( $idUserBlocks ) ) {
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_BLOCK_HELP' );
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			}
+
+			$users = JWUser::GetDbRowsByIds( $idUserBlocks, false, count($idUserBlocks) );
+			$nameScreens = null;
+			foreach( $users as $u ) {
+				$nameScreens .= $u['nameScreen'].', ';
+			}
+			
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_BLOCK_LIST', array(trim($nameScreens, ', '),) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+		
+		$nameScreens = null;
+		foreach( $param_array as $p ) {
+			$u = JWUser::GetUserInfo( $p );
+			if(false == empty( $u ) ){
+				JWBlock::Create( $device_db_row['idUser'], $u['id'] );
+				$nameScreens .= $u['nameScreen'].', ';
+			}
+		}
+
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_BLOCK_SUC', array(trim($nameScreens, ', '),) );
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
+	static function	Lingo_UnBlock($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$body = JWRobotLingoBase::ConvertCorner( $body );
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		if ( empty($device_db_row) ) {
+			return JWRobotLogic::CreateAccount($robotMsg);
+		}
+
+		/**
+		 * 参数
+		 */
+		$param_array = preg_split('/\s+/', $body );
+		$cmd = array_shift( $param_array );
+		$param_array = array_unique( $param_array );
+
+		if( count( $param_array ) == 0 ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_UNBLOCK_HELP' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+		
+		$nameScreens = null;
+		foreach( $param_array as $p ) {
+			$u = JWUser::GetUserInfo( $p );
+			if(false == empty( $u ) ){
+				JWBlock::Destroy( $device_db_row['idUser'], $u['id'] );
+				$nameScreens .= $u['nameScreen'].', ';
+			}
+		}
+
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_UNBLOCK_SUC', array(trim($nameScreens, ', '),) );
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
 }
 ?>

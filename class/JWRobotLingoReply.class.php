@@ -133,6 +133,13 @@ class JWRobotLingoReply {
 			'REPLY_TRACK_SUC' => '你将收到匹配 {0} 的更新，取消关注请输入 UNTRACK {0}',
 			'REPLY_UNTRACK_SUC' => '你将不再收到匹配 {0} 的更新',
 			'REPLY_UNTRACK_HELP' => 'UNTRACK用法：UNTRACK 要取消关注的关键词',
+
+			//Block
+			'REPLY_UNBLOCK_HELP' => 'UNBLOCK命令用法：UNBLOCK 用户名',
+			'REPLY_BLOCK_HELP' => '你还没有阻止过任何人，阻止某人请使用 BLOCK 用户名',
+			'REPLY_BLOCK_LIST' => '被你阻止的用户有：{0} ，取消阻止请输入 UNBLOCK 用户名',
+			'REPLY_BLOCK_SUC' => '你阻止用户 {0} 成功，将不再会受其侵扰。',
+			'REPLY_UNBLOCK_SUC' => '你取消了阻止用户 {0}',
 		);
 
 	/**

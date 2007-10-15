@@ -176,6 +176,18 @@ class JWRobotLogic {
 				if( false == empty( $parseInfo ) ){
 					$options[ 'idConference'] = $parseInfo['conference']['id'] ;
 				}
+			}else if( $type == 'qq' ) { 
+				/**
+				 * 以下代码为了把其他客户端QQ的附加话语去除；
+				 */
+				$qqString1 = '(本消息发自腾讯官方';
+				$qqString2 = '（您的好友正在使用手机QQ';
+
+				$index1 = strpos( $body, $qqString1 );
+				if( $index1 ) $body = substr( $body, 0, $index1 );
+
+				$index2 = strpos( $body, $qqString2 );
+				if( $index2 ) $body = substr( $body, 0, $index2 );
 			}
 
 			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );
