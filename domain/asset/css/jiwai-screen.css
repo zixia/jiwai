@@ -536,3 +536,12 @@ a.button2 img { margin-top:8px;}
 
 /*====for hint====*/
 i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
+
+/*imico*/
+.imico img{margin:5px;}
+
+/*copy tips*/
+.copytips {color:#F97B00;display:none;}
+
+/*urltext*/
+.urltext {font-size:12px;border-color:#DDDDDD;border-width:1px;overflow:hidden;width:670px;}

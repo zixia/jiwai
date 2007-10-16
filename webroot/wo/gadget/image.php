@@ -7,6 +7,7 @@ define('DEFAULT_GADGET_COUNT', 3);
 JWLogin::MustLogined();
 $user	= JWUser::GetCurrentUserInfo();
 $idUser	= $user['id'];
+$nameScreen	= $user['nameScreen'];
 
 ?>
 <html>
@@ -48,31 +49,69 @@ $idUser	= $user['id'];
                     条更新
                 </p>
 <script type="text/javascript">
-function draw() {
+function draw() 
+{
+	//alert( $('pic_url') );
 	var url = "http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c" + $("c").value 
 		+ "/w"+ $("w").value 
 		+ "/m" + $("m").value + "/gadget.png";
-	$('url').value=url; 
+	$('pic_url').value=url; 
+	$('ubb_url').value="[url=http://jiwai.de/<?php echo $nameScreen;?>][img]" + url + " [/img][/url]";
+	$('html_url').value='<a href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
 	$("o").src = url;
 }
+function copyToClipboard(obj) {
+	obj.select();
+	txt=obj.value;
+	$(obj.id + "_tip").style.display="inline";
+	if(window.clipboardData) {    
+		window.clipboardData.clearData();    
+		window.clipboardData.setData("Text", txt);    
+	} else if(navigator.userAgent.indexOf("Opera") != -1) {    
+		window.location = txt;    
+	} else if (window.netscape) {    
+	  $(obj.id + "_tip").style.display="none";
+	}    
+}   
 </script>
 
 			</form>
+                <br/>
                 <p>
-                    <button onclick="draw();">生成代码并预览</button>
+                    <input type="button" class="submitbutton" style="margin-left:50px;width:130px" onclick="draw();" value="生成代码并预览" />
                 </p>
                 <br/>
 		</fieldset>
 		<h2>代码</h2>
 		<fieldset>
-			<p>
-                图片地址: <input id="url" size="70" value="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" />
-			</p>
+		<div style="margin-left:20px">
+		    图片网址:
+			<span class=copytips id=pic_url_tip>
+            　　图片网址复制成功。
+			</span>			
+			<br/>
+                <textarea id="pic_url" rows="1" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this);" >http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png</textarea>
+			<br/><br/>
+		    UBB代码:
+			<span class=copytips id=ubb_url_tip>
+            　　UBB代码复制成功。
+			</span>
+			<br/>
+                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameScreen;?>][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
+			<br/><br/>
+		    Html代码:
+			<span class=copytips id=html_url_tip>
+            　　Html代码复制成功。
+			</span>
+			<br/>
+                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this)" ><a href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" title="叽歪" alt="叽歪" /></a> </textarea>
+			<br/>
+		</div>	
 		</fieldset>
 		<h2>预览</h2>
 		<fieldset>
                 <br/>
-            <p><img id="o" src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png"/></p>
+            <p><img id="o" title="叽歪" alt="叽歪" src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png"/></p>
 		</fieldset>
 		<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。
 		采用开源中文字体<a href="http://wenq.org/">文泉驿</a>绘制。</h3>
