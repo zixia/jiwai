@@ -73,9 +73,11 @@ switch ( $message_box_type )
 	default:
 	case JWMessage::INBOX:
 		$options['title'] = '你收到的悄悄话';
+		$owner = '发送者';
 		break;
 	case JWMessage::SENT:
 		$options['title'] = '你发送的悄悄话';
+		$owner = '接收者';
 		break;
 }
 
@@ -88,7 +90,7 @@ JWTemplate::tab_header( $options );
 
           <tr>
             <td width="340" style="border-right:1px solid #D3D3D5;">内容</td>
-            <td width="88" style="border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;">发送人</td>
+            <td width="88" style="border-right:1px solid #D3D3D5; border-left:1px solid #ffffff;"><?php echo $owner;?></td>
             <td style="border-left:1px solid #ffffff;">时间</td>
           </tr>
         </table>
