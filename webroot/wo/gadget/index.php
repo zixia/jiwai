@@ -31,7 +31,7 @@ JWTemplate::html_doctype();
 
         <h2>说明</h2>
         <fieldset>
-            <p>我们目前支持 <a href="javascript">JavaScript</a> 和 <a href="flash">Flash</a>，<a href="image">图片格式</a>。</p>
+            <p>我们目前支持 <a href="javascript">JavaScript</a> 、<a href="flash">Flash</a> 、<a href="image">Image</a> 等三种格式。</p>
             <p>在不同的博客站点，插入叽歪de窗可贴的方法略有不同。</p>
             <p>你的博客是：</p>
             

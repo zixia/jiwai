@@ -193,14 +193,15 @@ foreach ( $supported_device_types as $type )
 }
 
 
-$arr_friend_list	= JWFriend::GetFriendIds($help_user_id);
+$arr_friend_list = JWFriend::GetFriendIds($help_user_id);
 
-$arr_menu 			= array(	array ('status'			, array($help_user_info))
-								, array ('user_info'	, array($help_user_info))
-								, array ('count'		, array($arr_count_param))
-								, array ('friend'		, array($arr_friend_list))
-                                , array ('rss'      , array('user', '叽歪de留言板'))
-							);
+$arr_menu = array(
+	array ('status', array($help_user_info)) ,
+	array ('user_info', array($help_user_info)),
+	array ('count', array($arr_count_param)),
+	array ('friend', array($arr_friend_list)),
+	array ('rss', array('user', 'help', '叽歪de留言板')),
+);
 	
 JWTemplate::sidebar( $arr_menu );
 JWTemplate::container_ending();

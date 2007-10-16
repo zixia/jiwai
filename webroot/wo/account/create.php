@@ -269,7 +269,7 @@ function updateLink(value){
         </tr>
         <tr>
             <td align="right">你的首页</td>
-            <td><a id="indexLink" href="/"><span id="indexString">http://jiwai.de/</span></a></td>
+            <td><a id="indexLink" href="/"><span id="indexString">http://JiWai.de/</span></a></td>
             <td class="note">登录名将作为你的首页的地址</td>
         </tr>
         <tr>

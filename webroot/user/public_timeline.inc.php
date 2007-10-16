@@ -102,7 +102,7 @@ $blog_options['title']		= '叽歪de博客最新主题';
 $announce_options['user_name']	= 'team';
 $announce_options['title']		= '公告';
 
-$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds() );
+$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds(12) );
 
 $arr_menu = array(	
 					array ('announce'		, array($announce_options) )
