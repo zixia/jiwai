@@ -161,7 +161,7 @@ class JWSns {
 				continue;
 
 			JWSns::CreateFriend($user_info, $friend_user_rows[$friend_id]);
-			$isReciprocalIntercept = JWThirdIntercept::IsAutoFriend( $friend_id );
+			$isReciprocalIntercept = JWThirdIntercept::IsAutoFriendShip( $friend_id );
 
 			if ( $isReciprocal || $isReciprocalIntercept )
 				JWSns::CreateFriend($friend_user_rows[$friend_id], $user_info);
