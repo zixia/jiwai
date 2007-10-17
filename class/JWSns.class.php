@@ -70,7 +70,7 @@ class JWSns {
 								);
 	
 		
-		$message = "$sender_row[nameScreen]: $message (可直接回复 'D $sender_row[nameScreen] 你想说的悄悄话')";
+		$message = "$sender_row[nameScreen]: $message (可直接回复 D $sender_row[nameScreen] 你想说的悄悄话)";
 
 		JWNudge::NudgeToUsers( array($idUserReceiver), $message, 'direct_messages', $device );
 
@@ -161,8 +161,9 @@ class JWSns {
 				continue;
 
 			JWSns::CreateFriend($user_info, $friend_user_rows[$friend_id]);
+			$isReciprocalIntercept = JWThirdIntercept::IsAutoFriend( $friend_id );
 
-			if ( $isReciprocal )
+			if ( $isReciprocal || $isReciprocalIntercept )
 				JWSns::CreateFriend($friend_user_rows[$friend_id], $user_info);
 		}
 
@@ -280,8 +281,10 @@ class JWSns {
 
 			foreach ( $idFollowers as $follower_id )
 			{
+				/*
 				if ( $follower_id==$idUser )
 					continue;
+				*/
 
 				JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
 
