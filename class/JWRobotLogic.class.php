@@ -264,6 +264,7 @@ class JWRobotLogic {
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
 						'noticeAutoNudge' => 'N', // not nudge
+						'ip' => JWRequest::GetIpRegister($type),
 				);
 
 				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
@@ -298,6 +299,7 @@ class JWRobotLogic {
 						'pass'		=> JWDevice::GenSecret(16),
 						'isWebUser'	=> 'N', 
 						'noticeAutoNudge' => 'N',   //Not nudge
+						'ip' => JWRequest::GetIpRegister($type),
 				);
 
 				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
@@ -400,6 +402,7 @@ class JWRobotLogic {
 					'nameFull'	=> $user_nameFull,
 					'pass'		=> JWDevice::GenSecret(16),
 					'isWebUser'	=> 'N', // 很重要：设备注册，要设置标志，方便未来Web上设置密码
+					'ip' => JWRequest::GetIpRegister($type),
 				);
 
 		if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) )

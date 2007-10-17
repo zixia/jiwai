@@ -54,6 +54,22 @@ class JWRequest {
 		return null;
 	}
 
+	static public function GetIpRegister( $type ) {
+		switch ( $type ) {
+			case 'msn':
+				return 1;
+			case 'gtalk':
+				return 2;
+			case 'qq':
+				return 3;
+			case 'skype':
+				return 4;
+			case 'sms':
+				return 5;
+			default:
+				return self::GetClientIp();
+		}
+	}
 
 	static public function GetClientIp()
 	{

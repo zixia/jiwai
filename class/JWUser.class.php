@@ -354,17 +354,21 @@ _SQL_;
 		if ( empty($userInfo['protected']) )
 			$userInfo['protected']='N';
 
-		return JWDB_Cache::SaveTableRow(	 'User'
-									,array(	 'timeCreate'	=> JWDB::MysqlFuncion_Now()
-											,'nameScreen'	=> $userInfo['nameScreen']
-											,'pass'			=> $userInfo['pass']
-											,'email'		=> strrev(@$userInfo['email']) // 如果是手机注册，则为空
-											,'nameFull'		=> preg_replace('/\xE2\x80\xAE/U','',$userInfo['nameFull'])
-											,'location'		=> @$userInfo['location']
-											,'protected'	=> $userInfo['protected']
-											,'isWebUser'	=> $userInfo['isWebUser']
-									)
-								);
+		if ( empty($userInfo['ip']) ) {
+			$userInfo['ip'] = JWRequest::GetClientIp();
+		}
+
+		return JWDB_Cache::SaveTableRow( 'User' ,array(
+			'timeCreate' => JWDB::MysqlFuncion_Now(),
+			'nameScreen' => $userInfo['nameScreen'],
+			'pass' => $userInfo['pass'],
+			'email' => strrev(@$userInfo['email']), // 如果是手机注册，则为空 
+			'nameFull' => preg_replace('/\xE2\x80\xAE/U','',$userInfo['nameFull']),
+			'location' => @$userInfo['location'],
+			'protected' => $userInfo['protected'],
+			'isWebUser' => $userInfo['isWebUser'],
+			'ipRegister' => @ip2long($userInfo['ip']),
+		));
 	}
 
 	/*

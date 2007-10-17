@@ -58,6 +58,7 @@ if ( isset($_REQUEST['user'])
 					);
 		if ( !$aExist['nameScreen'] && !$aExist['email'] )
 		{
+			$aUserInfo['ip'] = JWRequest::GetIpRegister();
 			$idUser = JWSns::CreateUser($aUserInfo);
 			if ( $idUser && JWLogin::Login ( $idUser, true ) )
 			{
