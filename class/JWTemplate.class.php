@@ -1988,13 +1988,19 @@ _HTML_;
 	{
    		$rss_url = "http://api.jiwai.de/statuses/";
 
+		if( is_numeric($id) || $id == 'help' ) {
+			$idNumber = $id;
+		}else{
+			$idNumber = JWUser::GetUserInfo( $id, 'id' );
+		}
+
 		switch ( $type )
 		{
 			case 'friends':
-				$rss_url .= "${type}_timeline/$id.rss";
+				$rss_url .= "${type}_timeline/$idNumber.rss";
 				break;
 			case 'user':
-				$rss_url .= "${type}_timeline/$id.rss";
+				$rss_url .= "${type}_timeline/$idNumber.rss";
 				break;
 
 			case 'public_timeline':

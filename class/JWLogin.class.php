@@ -132,13 +132,18 @@ class JWLogin {
 		if( null == $ip )
 			return null;
 		
+		/** Tempory name **/
 		$ipName = preg_replace( '/(\d)$/', 'x', $ip );
-		$userInfo = JWUser::GetUserInfo( $ipName );
+		$ipFullName = $ipName;
 
+		$ipName = 'Anonymous';
+		$ipFullName = '匿名';
+
+		$userInfo = JWUser::GetUserInfo( $ipName );
 		if( $userInfo )
 			return $userInfo['id'];
 	
-		return JWUser::CreateDriftBottle($ipName);
+		return JWUser::CreateDriftBottle($ipName, $ipFullName);
 	}
 
 

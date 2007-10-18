@@ -862,15 +862,18 @@ _SQL_;
 		return JWDB::UpdateTableRow( 'User', $idUser, $updateRow );
 	}
 
-	static public function CreateDriftBottle($ipName=null){
+	static public function CreateDriftBottle($ipName=null, $ipNameFull=null){
 		
 		if( null == $ipName )
 			return null;
 
+		if( null == $ipNameFull )
+			$ipNameFull = $ipName;
+
 		$uArray = array(
 			'ip' => JWRequest::GetClientIp(),
 			'nameScreen' => $ipName,
-			'nameFull' => $ipName,
+			'nameFull' => $ipNameFull,
 			'nameUrl' => $ipName,
 			'pass' => JWDevice::GenSecret(8),
 			'isWebUser' => 'Y',

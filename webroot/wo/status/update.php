@@ -2,13 +2,10 @@
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
-/*$idUser = JWLogin::GetPossibleUserId();
+$idUser = JWLogin::GetPossibleUserId();
 if( null == $idUser ) {
 	JWLogin::MustLogined();
 }
-*/
-JWLogin::MustLogined();
-$idUser = JWLogin::GetCurrentUserId();
 
 if ( array_key_exists('jw_status', $_REQUEST) ){
 	if ( $status = $_REQUEST['jw_status'] )
