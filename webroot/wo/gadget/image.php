@@ -60,25 +60,12 @@ function draw()
 	$('html_url').value='<a href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
 	$("o").src = url;
 }
-function copyToClipboard(obj) {
-	obj.select();
-	txt=obj.value;
-	$(obj.id + "_tip").style.display="inline";
-	if(window.clipboardData) {    
-		window.clipboardData.clearData();    
-		window.clipboardData.setData("Text", txt);    
-	} else if(navigator.userAgent.indexOf("Opera") != -1) {    
-		window.location = txt;    
-	} else if (window.netscape) {    
-	  $(obj.id + "_tip").style.display="none";
-	}    
-}   
 </script>
 
 			</form>
                 <br/>
                 <p>
-                    <input type="button" class="submitbutton" style="margin-left:50px;width:130px" onclick="draw();" value="生成代码并预览" />
+                    <input type="button" class="submitbutton" style="margin-left:0px!important;margin-left:50px;width:120px" onclick="draw();" value="生成代码并预览" />
                 </p>
                 <br/>
 		</fieldset>
@@ -90,21 +77,21 @@ function copyToClipboard(obj) {
             　　图片网址复制成功。
 			</span>			
 			<br/>
-                <textarea id="pic_url" rows="1" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this);" >http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png</textarea>
+                <textarea id="pic_url" rows="1" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this);" >http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png</textarea>
 			<br/><br/>
 		    UBB代码:
 			<span class=copytips id=ubb_url_tip>
             　　UBB代码复制成功。
 			</span>
 			<br/>
-                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameScreen;?>][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
+                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameScreen;?>][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
 			<br/><br/>
 		    Html代码:
 			<span class=copytips id=html_url_tip>
             　　Html代码复制成功。
 			</span>
 			<br/>
-                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="javascript:copyToClipboard(this)" ><a href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" title="叽歪" alt="叽歪" /></a> </textarea>
+                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" ><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" /></a> </textarea>
 			<br/>
 		</div>	
 		</fieldset>

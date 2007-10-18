@@ -108,14 +108,19 @@ alert('ok');
 	},
 	ToggleStar: function(id) {
 		var el = $('status_star_'+id);
+		var el_text = $('status_star_text_'+id);
 		var action = (el.src.indexOf('full')==-1 ? 'create' : 'destroy');
 		new Ajax( '/wo/favourites/'+action+'/'+id, {
 			method: 'get',
 			headers: {'AJAX':true},
 			onSuccess: function() {
 				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
-				el.alt = action=='create' ? '取消收藏' : '点击收藏';
-				el.title = action=='create' ? '取消收藏' : '点击收藏';
+				el.alt = action=='create' ? '不收藏' : '收藏它';
+				el.title = el.alt;
+ /*               el_text.innerText = el.alt;
+                el_text.textContent = el.alt;
+				el_text.alt = el.alt; 
+				el_text.title = el.alt; */
 			}
 		}).request();
 		el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 
@@ -216,3 +221,41 @@ alert('ok');
 }
 
 JiWai.Init();
+
+function copyToClipboard(obj) 
+{
+    obj.select();
+
+    txt=obj.value;
+    $(obj.id + "_tip").style.display="inline";
+    if(window.clipboardData) 
+    {    
+        window.clipboardData.clearData();    
+        window.clipboardData.setData("Text", txt);    
+    }
+    else if(navigator.userAgent.indexOf("Opera") != -1) 
+    {    
+        window.location = txt;    
+    }
+    else if (window.netscape) 
+    {    
+        $(obj.id + "_tip").style.display="none";
+    }    
+}
+
+function onMouseOverOrOut(obj, styleChangeTo, StyleNoChange)
+{
+    
+    if(obj.className == null)
+    {
+        obj.className = styleChangeTo;
+    }
+    else if(StyleNoChange != obj.className)
+    {
+        obj.className = styleChangeTo;
+    }
+    else
+    {
+    }
+
+}

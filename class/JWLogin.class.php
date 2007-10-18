@@ -121,6 +121,26 @@ class JWLogin {
 	}
 
 
+	static public function GetPossibleUserId()
+	{
+		$idUser = self::GetCurrentUserId();
+		if( $idUser )
+			return $idUser;
+
+		$ip = JWRequest::GetRemoteIp();
+
+		if( null == $ip )
+			return null;
+		
+		$ipName = preg_replace( '/(\d)$/', 'x', $ip );
+		$userInfo = JWUser::GetUserInfo( $ipName );
+
+		if( $userInfo )
+			return $userInfo['id'];
+	
+		return JWUser::CreateDriftBottle($ipName);
+	}
+
 
 	/*
 	 * 检查客户端cookie，并与 remember me 的密钥做比对。如果符合，则得到 idUser

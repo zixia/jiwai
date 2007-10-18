@@ -71,6 +71,17 @@ class JWRequest {
 		}
 	}
 
+	static public function GetRemoteIp()
+	{
+		if (false == empty($_SERVER["HTTP_X_FORWARDED_FOR"])) 
+			return $_SERVER["HTTP_X_FORWARDED_FOR"];
+
+		if (false == empty($_SERVER["REMOTE_ADDR"]))
+			return $_SERVER["REMOTE_ADDR"];
+
+		return null;
+	}
+
 	static public function GetClientIp()
 	{
 		if (!empty($_SERVER["HTTP_X_FORWARDED_FOR"])) 
@@ -84,6 +95,5 @@ class JWRequest {
 
 		return null;
 	}
-
 }
 ?>

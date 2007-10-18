@@ -358,12 +358,17 @@ _SQL_;
 			$userInfo['ip'] = JWRequest::GetClientIp();
 		}
 
+		if( empty($userInfo['nameUrl'] ) ) {
+			$userInfo['nameUrl'] = $userInfo['nameScreen'];
+		}
+
 		return JWDB_Cache::SaveTableRow( 'User' ,array(
 			'timeCreate' => JWDB::MysqlFuncion_Now(),
 			'nameScreen' => $userInfo['nameScreen'],
 			'pass' => $userInfo['pass'],
 			'email' => strrev(@$userInfo['email']), // 如果是手机注册，则为空 
 			'nameFull' => preg_replace('/\xE2\x80\xAE/U','',$userInfo['nameFull']),
+			'nameUrl' => @$userInfo['nameUrl'],
 			'location' => @$userInfo['location'],
 			'protected' => $userInfo['protected'],
 			'isWebUser' => $userInfo['isWebUser'],
@@ -855,6 +860,23 @@ _SQL_;
 			'timeStamp' => null,
 		);
 		return JWDB::UpdateTableRow( 'User', $idUser, $updateRow );
+	}
+
+	static public function CreateDriftBottle($ipName=null){
+		
+		if( null == $ipName )
+			return null;
+
+		$uArray = array(
+			'ip' => JWRequest::GetClientIp(),
+			'nameScreen' => $ipName,
+			'nameFull' => $ipName,
+			'nameUrl' => $ipName,
+			'pass' => JWDevice::GenSecret(8),
+			'isWebUser' => 'Y',
+		);
+
+		return self::Create( $uArray );
 	}
 
 	static public function GetPossibleName($nameInput, $email=null, $type=null)

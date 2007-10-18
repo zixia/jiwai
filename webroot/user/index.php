@@ -27,6 +27,7 @@ else
 		die();
 	}
 	$nameScreen = $nameOrId; //XXX go on even if name is invalid
+	$nameScreen .= preg_match( '/\d+\.\d+\.\d+\./', $nameScreen) ? '*' : '';
 	$page_user_id	= JWUser::GetUserInfo($nameScreen,'id');
 }
 

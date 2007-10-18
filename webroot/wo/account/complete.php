@@ -55,7 +55,6 @@ _HTML_;
 
 <h2>除了手机短信、IM聊天软件以外，你还可以在网页上JiWai&hellip;</h2>
 
-<br>
 
 <?php
 if ( isset($nameScreen) )
@@ -77,27 +76,23 @@ _HTML_;
 }
 ?>
 
-<p>请填写你使用JiWai时用的手机号码或聊天软件帐号。</p>
-
-<br>
 
 <form action="/wo/account/complete" method="post" name="f">
 <fieldset>
-<table>
+<table width="550" cellspacing="15" cellpadding="0" border="0">
 	<tr>
-		<th><nobr><label for="address">手机号码或者聊天软件帐号<small>(邮件地址)</small>：</label></nobr></th>
-		<td><input id="address" name="address" type="text" /></td>
+		<td width="70" align="right" />手机号</td>
+		<td width="150" /><input id="address" name="address" type="text" /></td>
+        <td class="note" valign="top" />请填写你使用JiWai时用的手机号码或聊天软件帐号(邮件地址)</td>
 	</tr>
 	<tr>
-		<th><label for="screen_name">帐号名</small>(忘记？发送whoami或woshishui查询)</small>：</label></th>
-		<td><input id="screen_name" name="nameScreen" type="text" /></td>
+		<td width="70" align="right"/>帐号名</td>
+		<td width="150" /><input id="screen_name" name="nameScreen" type="text" /></td>
+        <td class="note" valign="top" />忘记啦？发送　woshishu　到Gtalk机器人（wo@jiwai.de）查询</td>
 	</tr>
-	<tr>
-        <th></th>
-        <td><input name="commit" type="submit" value="继续" /></td>
-    </tr>
 </table>
 </fieldset>
+        <input id="commit" type="submit" class="submitbutton" style="margin-left:270px;width:120px" value="继续" />
 </form>
 
 <script type="text/javascript">

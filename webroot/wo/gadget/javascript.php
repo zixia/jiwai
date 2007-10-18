@@ -12,7 +12,7 @@ $idUser	= $user['id'];
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
-<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>$user[nameFull]的叽歪档案<img src="http://asset.jiwai.de/img/favicon.gif" style="align:middle; border:0" /></a></div></div>
+<div><div id="$div_id"><script type='text/javascript' charset="utf-8" src='http://api.jiwai.de/gadget/timeline/$idUser.js?selector=user&count=3&theme=iChat&thumb=24&gadget_div=$div_id'></script></div><div style='font: 0px/0px sans-serif;clear: both;display: block'> </div><div clear='both' style='text-align:center'><a title='叽歪' alt='叽歪' href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>$user[nameFull]的叽歪档案<img src="http://asset.jiwai.de/img/favicon.gif" style="align:middle; border:0" /></a></div></div>
 _HTML_;
 
 if ( isset($_REQUEST['gadget']) )
@@ -51,7 +51,7 @@ if ( isset($_REQUEST['gadget']) )
 				$sub_user_str = mb_convert_encoding($sub_user_str, $gadget['encoding'], "UTF-8");
 
 			$gadget_script_html .= "<div clear='both' style='text-align:center'>"
-									."<a href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>"
+									."<a title='叽歪' alt='叽歪' href='http://JiWai.de/$user[nameScreen]/' target='_blank' style='align:middle'>"
 									."$sub_user_str"
 									."<img src='http://asset.jiwai.de/img/favicon.gif' border='0' />"
 									."</a>"
@@ -214,21 +214,30 @@ _HTML_;
 										?>/>GB2312</label>
 
    							</p>
+                            <br style="height:10px;" />
    							<p>
-							<input type="submit" value="预览一下看看？"/>
+                            <input type="submit" class="submitbutton" style="margin-left:0px!important;margin-left:50px;width:120px" value="预览一下看看" />
 							</p>
    				<br/>
 			</form>
         </fieldset>
 		<h2>代码</h2>
         <fieldset>
+        <div style="margin-left:20px">
+            JavaScript代码
+            <span class=copytips id=javascript_url_tip>
+            JavaScript代码复制成功。
+            </span>
             <p>
-            <textarea onclick="this.select();" style="width:640px;height:200px;"><?php echo htmlspecialchars($gadget_script_html) ?></textarea>
+            <textarea onclick="copyToClipboard(this);" readonly="readonly" class="urltext" cols="100" rows="7" id="javascript_url" ><?php echo htmlspecialchars($gadget_script_html) ?></textarea>
             </p>
         </fieldset>
 		<h2>预览</h2>
         <fieldset>
-			<?php echo $gadget_script_html ?>
+            <div style="width:670px;">
+			    <?php echo $gadget_script_html ?>
+				<div style="clear: both;"></div>
+            </div>
         </fieldset>
 			<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
     </div>
@@ -240,4 +249,3 @@ _HTML_;
 
 </body>
 </html>
-

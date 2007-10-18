@@ -46,7 +46,10 @@ _HTML_;
 <?php JWTemplate::ShowActionResultTips() ?>
 
 
-<?php JWTemplate::updater() ?>
+<?php
+     $options = array('sendtips' => 'true');
+     JWTemplate::updater($options); 
+?>
 
   			<!-- p class="notice">
   				IM is down at the moment.  We're working on restoring it.  Thanks for your patience!

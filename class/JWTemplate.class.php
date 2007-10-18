@@ -233,7 +233,7 @@ _HTML_;
 				'/' => '首页',
 				'/wo/account/create' 	=> '注册',
 				'/wo/login' 		=> '登录',
-				'/help/' 		=> '帮助'
+				'/help/' 		=> '留言板'
 			);
 		} else {
 			$nav = array(
@@ -242,7 +242,7 @@ _HTML_;
 				'/public_timeline/' 	=> '逛逛',
 				'/wo/gadget/' 		=> '窗可贴',
 				'/wo/account/settings' 	=> '设置',
-				'/help/' 		=> '帮助',
+				'/help/' 		=> '留言板',
 				'/wo/logout' 		=> '退出',
 			);
 		}
@@ -273,7 +273,18 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" <?php if ($highlight==$url) echo 'class="now"'; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" 
+            <?php 
+            if ($highlight==$url)
+            {
+                echo 'class="active"'; 
+            }
+            else
+            {
+             //   echo 'class=""';
+            }
+            ?>
+            onMouseOver="onMouseOverOrOut(this, 'mouseover', 'active');" onMouseOut="onMouseOverOrOut(this, 'mouseout', 'active');"><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -303,7 +314,12 @@ _HTML_;
 
 <div id="settingsNav" class="subtab">
 <?php foreach( $nav as $url=>$text ) { ?>
-    <a href="<?php echo $url;?>" <?php if($url==$highlight) echo "class=\"now\""; ?> ><?php echo $text;?></a>
+    <a href="<?php echo $url;?>" 
+    <?php 
+        if($url==$highlight) echo "class=\"active\""; 
+        echo "onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\">";
+    ?> 
+    <?php echo $text;?></a>
 <?php } ?>
 </div>
 <?php
@@ -344,7 +360,7 @@ _HTML_;
 ?> 
         <p class="subtab">
         <?php foreach ($nav as $k=>$v ){ 
-            echo "<a href=\"".$v[0]."\" ".($k==$highlight?"class=\"now\"":"").">".$v[1]."(".$v[2].")</a>";
+            echo "<a href=\"".$v[0]."\" ".($k==$highlight?"class=\"active\"":"").">".$v[1]."(".$v[2].")</a>";
         }?>
         </p>
 <?php
@@ -449,8 +465,8 @@ _HTML_;
 			$title = $options['title'];
 		$mode = ( empty($options['mode']) ) ? 0 : $options['mode']; //0:status 1:direct message
 ?>
-			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('status').style.backgroundColor='#eee';">
-				<fieldset>
+			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('jw_status').style.backgroundColor='#eee';">
+				<fieldset >
 					<div class="bar even">
 						<h3>
 							<label for="status">
@@ -463,93 +479,81 @@ _HTML_;
 							<select style="width: 132px;" name="user[id]" id="user_id">
 <?php
 foreach ($options['friends'] as $id => $f) echo <<<_HTML_
-	<option value="$id">$f[nameScreen]</option>
+<option value="$id">$f[nameScreen]</option>
 _HTML_;
 ?>
-							</select>
-						</span>
+                        </select>
+                    </span>
 <? } ?>
-						</h3>
-						<span id="chars_left_notice" style="margin-top: 5px;">
-							还可输入: <strong id="status-field-char-counter"></strong>个字符
-						</span>
-					</div>
-					<div class="jiwai_icon_vtab">
-						<div>
-							
-							<textarea  class="jiwai_icon_vtab_inner" id="status" name="status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
-						</div>
-					</div>
-					<div class="submit" style="height:50pt">
-						<a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('status').style.backgroundColor='#eee';$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
-						<span style="margin-right:-70px!important;margin-right:-82px; margin-top:20px; color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
-					</div>
-				</fieldset>
-				<a class="howtojiwai" href="http://help.jiwai.de/StartToJiwai" target="_blank">用手机/QQ/MSN/Gtalk也能叽歪？</a>
-			</form>
-
-    <script type="text/javascript">
-    //<![CDATA[
-        $('status').focus()
-    //]]>
-    </script>
-
-    <script type="text/javascript">
-    //<![CDATA[
-
-        i=0;
-        function getStatusTextCharLengthMax(value)
-        {
-            i++;
-            /*
-             * if (/[^\x00-\xff]/g.test(value))
-             * 这个工作不稳定，一下子匹配中文，一下子不配配中文……
-             */
-
-            // ascii msg
-            if (escape(value).indexOf("%u") < 0)
-            {
-                return 140;
-            }
-
-            // chinese msg;
-            //return 70;
-            return 140;
-        }
-
-    // onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
-
-        function updateStatusTextCharCounter(value) {
-
-            len_max = getStatusTextCharLengthMax(value);
-
-            if (len_max - value.length >= 0) {
-                $('status-field-char-counter').innerHTML = len_max - value.length;
-            } else {
-                $('status-field-char-counter').innerHTML = 0;
-                /*
-                var ov = $('status').value;
-                var nv = ov.substring(0, len_max);
-
-                if( len_max == 70 ) {
-                    var max_nv = ov.substring(0, ++len_max);
-                    while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
-                        nv = max_nv;
-                        max_nv = ov.substring(0, ++len_max);
+                    </h3>
+                    <span id="chars_left_notice" style="margin-top: 5px;">
+                        还可输入: <strong id="status-field-char-counter">140</strong>个字符
+                    </span>
+                </div>
+                <div class="jiwai_icon_vtab">
+                    <div>
+                        
+                        <textarea  class="jiwai_icon_vtab_inner" id="jw_status" name="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
+                    </div>
+                </div>
+                <div class="submit" >
+                    <a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
+                    <span style="margin-left:73px;color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
+                </div>
+                <br /><br />
+            <div >
+            <?php
+                if(false == empty($options['sendtips']))
+                {
+                    $idCurrent = JWLogin::GetCurrentUserId();
+                    $ValidNums = JWTemplate::GetSmsAndImValidNums($idCurrent);
+                
+                    if(0 >= $ValidNums[0])
+                    {
+                        echo '<a class="sendtips" href="/wo/devices/sms" >用手机来叽歪 ！</a><br />';
+                    }
+                    if(0 >= $ValidNums[1])
+                    {
+                        echo '<a class="sendtips" href="/wo/devices/im" >用QQ/MSN也能叽歪 ？</a><br />';
                     }
                 }
-                */
-                //$('status').value = nv;  //not cut for bug
-            }
-        };
-
-    //]]>
-</script>
+            ?>    
+			</div>
+            </fieldset>
+        </form>
+        <br />
 
 <script type="text/javascript">
-//<![CDATA[
-	$('status-field-char-counter').innerHTML = getStatusTextCharLengthMax($('status').value) - $('status').value.length;
+    $('jw_status').focus();
+
+    function updateStatusTextCharCounter(value) {
+
+        len_max = 140;
+
+        if (len_max - value.length >= 0) {
+            $('status-field-char-counter').innerHTML = len_max - value.length;
+        } else {
+            $('status-field-char-counter').innerHTML = 0;
+            /*
+            var ov = $('status').value;
+            var nv = ov.substring(0, len_max);
+
+            if( len_max == 70 ) {
+                var max_nv = ov.substring(0, ++len_max);
+                while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
+                    nv = max_nv;
+                    max_nv = ov.substring(0, ++len_max);
+                }
+            }
+            */
+            //$('status').value = nv;  //not cut for bug
+        }
+    };
+
 //]]>
+</script>
+
+
 </script>
 <?php
 /*
@@ -568,7 +572,7 @@ _HTML_;
 	 *	@param	array	$menuArr	菜单数据，结构如下：
 									array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
 	 */
-	static public function tab_menu( $menuArr, $fix_pos=0 )
+	static public function tab_menu( $menuArr, $fix_pos=1 )
 	{
 		if ( empty($menuArr) )
 		{
@@ -587,9 +591,11 @@ _HTML_;
 			$is_active	= $options['active'];
 
 			if ( $is_active )
-				echo "<li class='active'><a href='$url'>$name</a></li>\n";
+				echo "<li ><a href='$url' class='active'";
 			else
-				echo "<li><a href='$url'>$name</a></li>\n";
+				echo "<li><a href='$url' ";
+
+            echo "onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\">$name</a></li>\n";
 		}
 
 		echo "</ul>\n";
@@ -785,15 +791,16 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	{
 
 		$asset_trash_alt = '删除';
+		$asset_trash_alt2 = '';
 //		$asset_trash_title = '删除';
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt"><img border="0" src="$asset_trash_url" /></a>
+	<a href="#" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt"><img border="0" src="$asset_trash_url" />$asset_trash_alt2</a>
 _HTML_;
 		if( @$options['isMms'] ) {
 			$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt" class="del"></a>
+	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt" class="del">$asset_trash_alt</a>
 _HTML_;
 		}
 
@@ -808,23 +815,24 @@ _HTML_;
 	static public function FavouriteAction($idStatus, $isFav=false)
 	{
 		$asset_throbber_url		= self::GetAssetUrl("/img/icon_throbber.gif");
+		$asset_star_alt2 = '';
 
 		if ( $isFav )
 		{
-			$asset_star_alt = '取消收藏';
+			$asset_star_alt = '不收藏';
 			//$asset_star_title = '已收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
 			$ajax_url		= "/wo/favourites/destroy/$idStatus";
 		}
 		else
 		{
-			$asset_star_alt = '点击收藏';
+			$asset_star_alt = '收藏它';
 			//$asset_star_title = '未收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_empty.gif");
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 		$html_str = <<<_HTML_
-    	<a onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /></a>
+    	<a href="#" onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
 _HTML_;
 
 		return $html_str;
@@ -1576,8 +1584,8 @@ _HTML_;
 	{
 ?>
 		<ul class="about">
-			<li>名字: <?php echo htmlspecialchars($aUserInfo['nameFull'])?></li>
 <?php
+	        echo "<li>名字:" . htmlspecialchars($aUserInfo['nameFull']) . "</li>\n";
 			if ( !empty($aUserInfo['bio']) )
 				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
 			if ( !empty($aUserInfo['location']) ) {
@@ -1607,13 +1615,155 @@ _HTML_;
 <?php
 	}
 
+   /*
+   功能：显示绑定设备信息
+   作者：WqSemc
+   日期：2007-10-16
+   */
+    static function sidebar_device_info($aUserInfo)
+    {       
+             echo "<ul class=imico><li>";
+                            
+              $aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
+              $imicoUrl = "http://blog.jiwai.de/images";
+              
+			  foreach($aDeviceInfo_rows as $aDeviceInfo_row)
+              { 
+                  if (empty($aDeviceInfo_row['secret']))
+                  {
+                     switch( $aDeviceInfo_row['type'])
+                     {
+                         case 'sms':
+                             echo <<<_HTML_
+                                 <a href="/wo/devices/sms"><img src="$imicoUrl/jiwai-mobile.gif" alt="已绑定手机" title="已绑定手机" /></a>
+_HTML_;
+                            break;
+                         case 'qq':
+                             echo <<<_HTML_
+                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-qq.gif" alt="已绑定 QQ" title="已绑定 QQ" /></a>
+_HTML_;
+                            break;
+                         case 'msn':
+                             echo <<<_HTML_
+                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-msn.gif" alt="已绑定 MSN" title="已绑定 MSN" /></a>
+_HTML_;
+                            break;
+                         case 'gtalk':
+                             echo <<<_HTML_
+                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-gtalk.gif" alt="已绑定 Gtalk" title="已绑定 Gtalk" /></a>
+_HTML_;
+                            break;
+                         case 'skype':
+                             echo <<<_HTML_
+                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-skype.gif" alt="已绑定 Skype" title="已绑定 Skype" /></a>
+_HTML_;
+                            break;
+                         case 'newsmth':
+                            echo <<<_HTML_
+                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-newsmth.gif" alt="已绑定 水木清华" title="已绑定 水木清华" /></a>
+_HTML_;
+                            break;
+                         default:
+                     }
+                  }
+              }   
+            echo "</li></ul><br />";
+    }
+
+   /*
+   功能：显示帮助信息
+   作者：WqSemc
+   日期：2007-10-16
+   */
+    static function sidebar_help_info()
+    {       
+        echo <<<_HTML_
+            <div class="sidehelpdiv">是否要问以下的问题呢？</div>
+            <ul class="helpinfo">
+                <li>
+                    <a href=http://help.jiwai.de/Faq target=_blank>常见问题集合(FAQ)</a><br/>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/MobileFAQ target=_blank>手机常见问题</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/IMFAQ target=_blank>QQ、MSN、Gtalk常见问题</a
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/VerifyYourIM target=_blank>如何绑定QQ、MSN、Gtalk？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/VerifyYourPhone target=_blank>如何绑定手机？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/MakeFriend target=_blank>如何添加好友？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/WhatistheRepliestab target=_blank>如何回复别人？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/WhatisaFavorite target=_blank>如何收藏感兴趣的叽歪？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/NotificationsSelection target=_blank>如何用手机和QQ等收到别人的叽歪？</a>
+                </li>
+                <li>
+                    <a href=http://help.jiwai.de/HowToAddWidgetIntoYourBlogs target=_blank>如何在博客上显示我的叽歪？</a>
+                </li>
+            </ul>
+            <div class="sidehelpdiv">没有你要的答案？在左边发给我们吧，我们会尽快回复的。</div>
+_HTML_;
+    }
+
+/*   
+     功能：返回绑定手机数和绑定IM数。
+     作者：WqSemc
+     日期：2007-10-17
+ */
+static function GetSmsAndImValidNums($idUser)
+{            
+
+    $aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($idUser);
+
+    $SmsValidNums = 0;
+    $ImValidNums = 0;
+    foreach($aDeviceInfo_rows as $aDeviceInfo_row)
+    {    
+        if (empty($aDeviceInfo_row['secret']))
+        {    
+            switch( $aDeviceInfo_row['type'])
+            {    
+                case 'sms':
+                   ++$SmsValidNums;
+                break;
+                default:
+                   ++$ImValidNums;
+            }
+        }
+    }
+    
+    return array($SmsValidNums, $ImValidNums);
+}
+
+/*   
+     功能：返回用户目前是否使用系统默认头像。
+     作者：WqSemc
+     日期：2007-10-17
+ */
+static function IsUserUploadPic($idUser)
+{            
+
+    $userInSession = JWUser::GetUserInfo($idUser);
+
+    return !empty($userInSession['idPicture']);
+}
 
 	static function sidebar_user_notice($aUserInfo)
 	{
 		$photo_url		= JWPicture::GetUserIconUrl($aUserInfo['id'],'thumb48');
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" /><?php echo $aUserInfo['nameFull'];?>的资料
+			<img style="display:none;" src="<?php echo $photo_url; ?>" alt="<?php echo $aUserInfo['nameScreen'];?>" width="48" height="48" /><h2 class="forul"><?php echo $aUserInfo['nameScreen'];?>的资料</h2>
 		</div>
 
 <?php
@@ -1731,7 +1881,15 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($userInfo['id']);
 ?>
 		<div class="msg ">
-			<img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48"/>欢迎你 <?php echo $userInfo['nameFull'];?>
+			<a href="http://alpha.jiwai.vm/wo/account/profile"><img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48" align="middle" /></a>欢迎你 <?php echo $userInfo['nameFull'];?>
+            <br />
+            <?php
+            
+                if(false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
+                {
+                    echo '<a class="sendtips" style="margin-left:0" href="http://alpha.jiwai.vm/wo/account/profile">上传头像 ↑ </a>';
+                }
+            ?>
 		</div>
 
 <?php
@@ -1992,9 +2150,11 @@ _HTML_;
 		foreach ( $arr_menu as $name=>$setting )
 		{
 			if ( $activeMenu === $name )
-				echo " <a href=\"$setting[0]\" class=\"now\">$setting[1]</a> ";
+				echo " <a href=\"$setting[0]\" class=\"active\"";
 			else
-				echo " <a href=\"$setting[0]\">$setting[1]</a> ";
+				echo " <a href=\"$setting[0]\"";
+
+            echo " onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\" >$setting[1]</a>";
 		}
 		echo "\t</div>\n";
 	}

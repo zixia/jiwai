@@ -108,15 +108,12 @@ _HTML_;
 <?php JWTemplate::ShowActionResultTips() ?>
 
 
-<h3 style="line-height:120%;">这里是叽歪de留言板，欢迎给叽歪de留言！先看看<a href="<?php echo JWTemplate::GetConst('UrlFaq')?>" target="_blank">常见问题</a></h3>
-
-<br />
-
 <?php 
-if( false == empty( $logined_user_info ) ) {
+//取消登录权限检测
+//if( false == empty( $logined_user_info ) ) {
     $options = array ( 'title' => '这一刻，你想对叽歪de说些什么？' );
     JWTemplate::updater($options) ;
-}
+//}
 ?>
 
   			<!-- p class="notice">
@@ -170,8 +167,8 @@ JWTemplate::pagination($pagination);
 	</div><!-- content -->
 
 <?php 
+/*
 $arr_count_param	= JWSns::GetUserState($help_user_id);
-
 
 $device_row			= JWDevice::GetDeviceRowByUserId($help_user_id);
 
@@ -194,12 +191,14 @@ foreach ( $supported_device_types as $type )
 
 
 $arr_friend_list = JWFriend::GetFriendIds($help_user_id);
-
+*/
 $arr_menu = array(
-	array ('status', array($help_user_info)) ,
+	array ('help_info', array()),
+/*	array ('status', array($help_user_info)) ,
 	array ('user_info', array($help_user_info)),
 	array ('count', array($arr_count_param)),
 	array ('friend', array($arr_friend_list)),
+    */
 	array ('rss', array('user', 'help', '叽歪de留言板')),
 );
 	

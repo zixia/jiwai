@@ -68,8 +68,9 @@ a:hover {color:#F87A01;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
 #navigation .line1 {background-color:#BDBDBD; width:78px; /*border-left:1px solid #ffffff; border-right:1px solid #ffffff;*/ line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
-#navigation .nav a {background-color:#F7F7F7; border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; color:#242424; text-decoration:none; overflow:hidden;}
-#navigation .nav a.now {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
+/*tab menus "我的首页"上面的tab页*/
+#navigation .nav a, #navigation .nav a.mouseout {border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; text-decoration:none; overflow:hidden;color: #242424;background-color: #F7F7F7;}
+#navigation .nav a.active, #navigation .nav a.mouseover {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
 
 
 #container { margin:0 auto; width:776px; }
@@ -88,7 +89,7 @@ a:hover {color:#F87A01;}
   #sidebar h3#sidebar_title {margin:0;background:url(h_sidebar.gif) no-repeat 0 0;text-indent:-8000px;height:42px;}
   #sidebar .sidebar_footer {margin:0;background:#FFF url(f_sidebar.gif) no-repeat 0 0;height:35px;padding:10px 20px;}
   #sidebar button {background-color:#F97B00; border:none; line-height:23px; height:21px; text-align:center; padding:0 8px; color:#FFEFC8; font-weight:bold; overflow:hidden;}
-  .sidediv {border:1px solid #D3D3D5; background-color:#ffffff; padding:3px; margin-top:11px;}
+  .sidediv {border:1px solid #D3D3D5; background-color:#F2F2F2; padding:3px; margin-top:11px;}
   #login form { background-color:#F2F2F2;}
   #login h2 {font-size:14px; font-weight:bold; background:url(../images/org-icon-man.gif) #f2f2f2 no-repeat 10px 12px ; text-indent:27px; line-height:40px; }
   #login input {border:1px solid #B5B5B5; width:152px; height:20px;}
@@ -182,7 +183,7 @@ a:hover {color:#F87A01;}
 
 
 
-#content #doingForm { background:url(../images/org-doing-bg.gif) #ffffff repeat-x bottom; height:180px; overflow:hidden; border:1px solid #D3D3D5; margin-bottom:12px;}
+#content #doingForm { background:url(../images/org-doing-bg.gif) #ffffff repeat-x bottom; overflow:hidden; border:1px solid #D3D3D5; margink-bottom:12px;}
 #content #doingForm .bar {line-height: 150%; height:40px; position: relative; padding-left: 10px; margin-top:5px;}
 #content #doingForm .bar h3 { font-size:15px ; font-weight:bold; color: #000; padding: 5px 170px 0 0;}
 #content #doingForm .bar span { font-size:12px; display: block; position: absolute; top: 0; right: 10px; color:#A2A2A2;}
@@ -196,8 +197,9 @@ a:hover {color:#F87A01;}
 html>body #content .tabMenu {margin-top:19px;}
 *+html #content .tabMenu {margin-top:7px!important}
 #content .tabMenu li { float:left; margin-left:4px;}
-#content .tabMenu li a {display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
-#content .tabMenu li.active a {background:url(../images/org-tab-off.gif) no-repeat; color:#000000;}
+/*tab menu "历史"上面的tab页*/
+#content .tabMenu li a , #content .tabMenu li a.mouseout{display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
+#content .tabMenu li a.active , #content .tabMenu li a.mouseover{background:url(../images/org-tab-off.gif) no-repeat; color:#000000;}
 #content .tab {background: transparent; padding: 0;}
 #content .tab #ad {text-align: center;}
 #content .tab p {text-indent: 1em;}
@@ -402,7 +404,7 @@ input.openid_login {
 
 .pages {float:right; width:360px; padding-top:5px; height:100%;}
 .pages a { float:left; border:1px solid #E3E3E3; padding:2px 5px; background-color:#F7F7F7; color:#C55400; font-family:Verdana, Arial, Helvetica, sans-serif; margin:5px; text-decoration:none;}
-.pages .now {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
+.pages .active {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
 
 .add {clear:both; padding:10px 0 15px 15px;}
 .search { width:170px; padding-top:10px; height:100%; float:left;}
@@ -445,9 +447,9 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 html>body .subtab {height:31px; clear:both;}
 *+html .subtab {height:30px!important; clear:both!important;}
 #settings .subtab {width:740px; margin:10px auto 0 auto;}
-.subtab a {display:block; float:left; line-height:23px; height:23px; margin:7px 2px 0 0; padding:0 8px; border:1px solid #D3D3D5; border-bottom:none; color:#000000; font-size:12px; text-decoration:none; background-color:#ffffff;}
+.subtab a, .subtab a.mouseout {display:block; float:left; line-height:23px; height:23px; margin:7px 2px 0 0; padding:0 8px; border:1px solid #D3D3D5; border-bottom:none; color:#000000; font-size:12px; text-decoration:none; background-color:#ffffff;}
 #settings .subtab a {width:72px; text-align:center;}
-.subtab .now {background-color:#FFC892; border:1px solid #FFC892; border-bottom:none;}
+.subtab a.active, .subtab a.mouseover {background-color:#FFC892; border:1px solid #FFC892; border-bottom:none;}
 #container .tabbody { margin:0 auto; border:1px solid #FFC892; width:548px; padding:0;}
 #settings #container .tabbody { width:738px;background-color:#ffffff;}
 #container .tabbody div { padding:20px 15px 0 15px;}
@@ -538,10 +540,21 @@ a.button2 img { margin-top:8px;}
 i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 
 /*imico*/
-.imico img{margin:5px;}
+.imico {background-color:#F2F2F2;margin-left:10px;}
 
 /*copy tips*/
 .copytips {color:#F97B00;display:none;}
 
 /*urltext*/
-.urltext {font-size:12px;border-color:#DDDDDD;border-width:1px;overflow:hidden;width:670px;}
+.urltext {font-size:12px;border-color:#DDDDDD;border-width:1px;overflow:hidden;width:670px;margin-left:0px!important;margin-left:0px;}
+
+/*help info*/
+.helpinfo {padding-left:15px;line-height:200%;}
+
+/*siderbar div*/
+.sidehelpdiv{padding:10px 5px;line-height:150%;font-size:12.5px;}
+
+/*send tips*/
+.sendtips {margin-left: 10px;padding: 2px 10px;color: #C55400; background-color:#FFF999; line-height: 200%; font-size:12px;}
+
+

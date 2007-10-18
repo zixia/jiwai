@@ -239,7 +239,7 @@ $menu_list[$active_tab]['active'] = true;
 
 
 if ( $show_protected_content )
-	JWTemplate::tab_menu($menu_list, 1); 
+	JWTemplate::tab_menu($menu_list); 
 ?>
 
 			<div class="tab">
@@ -301,6 +301,7 @@ $arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
+								, array ('device_info'	, array($page_user_info))
 								, array ('user_info'	, array($page_user_info))
 								, array ('action'	, array($user_action_row,$page_user_info['id']))
 								, array ('count'		, array($arr_count_param,$page_user_info))
