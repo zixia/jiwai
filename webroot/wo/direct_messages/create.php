@@ -45,9 +45,9 @@ if ( empty($receiver_user_row)
  *	如果提交了消息内容
  *
  */
-if ( isset($_REQUEST['status']) )
+if ( isset($_REQUEST['jw_status']) )
 {
-	$message = $_REQUEST['status'];
+	$message = $_REQUEST['jw_status'];
 
 	$message = trim($message);
 
