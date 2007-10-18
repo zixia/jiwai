@@ -9,7 +9,12 @@ $pathParam = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 $since = ($since) ? $since :  ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null );
 
-@list($idUser, $type) = explode('.', trim( $pathParam, '/' ));
+if( false == preg_match( '/(.*)\.([[:alpha:]]+)$/', trim($pathParam,'/'), $matches ) ){
+	JWApi::OutHeader(406,true);
+}
+
+@list($idUser, $type) = array($matches[1], $matches[2]);
+
 if( !in_array($type, array('xml','json','atom','rss'))){
 	JWApi::OutHeader(406, true);
 }
