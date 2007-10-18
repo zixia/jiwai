@@ -1881,7 +1881,7 @@ _HTML_;
 		$photo_url		= JWPicture::GetUserIconUrl($userInfo['id']);
 ?>
 		<div class="msg ">
-			<a href="http://alpha.jiwai.vm/wo/account/profile"><img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48" align="middle" /></a>欢迎你 <?php echo $userInfo['nameFull'];?>
+			<a href="/wo/account/profile"><img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48" align="middle" /></a>欢迎你 <?php echo $userInfo['nameFull'];?>
             <br />
             <?php
             
