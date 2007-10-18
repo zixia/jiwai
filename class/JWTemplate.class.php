@@ -1556,7 +1556,7 @@ _HTML_;
 		{
 			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
 			echo <<<_HTML_
-			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>将$arr_user_info[nameScreen]添加为好友</a></li>
+			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>加$arr_user_info[nameScreen]为好友</a></li>
 _HTML_;
 		}
 

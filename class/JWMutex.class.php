@@ -28,6 +28,8 @@ class JWMutex {
 
 	private $mBackend;
 
+	private $mMutexFile;
+
 	/**
 	 *	支持两种方式：
 			1、sem ipc
@@ -44,8 +46,8 @@ class JWMutex {
 	 *	设置为 65535 个，可以基本上认为不会有冲突
 	 */
 
-	//const	MAX_SEM_NUM		= 0x0000FFFF; 		// 正式运营数据大一些
-	const	MAX_SEM_NUM		= 0x000000FF;		// debug 时小一点
+	const	MAX_SEM_NUM		= 0x0000FFFF; 		// 正式运营数据大一些
+	//const	MAX_SEM_NUM		= 0x000000FF;		// debug 时小一点
 
 	const	SEM_KEY_PREFIX	= 0xFFFF0000;
 
@@ -92,13 +94,13 @@ class JWMutex {
 				$config 			= JWConfig::Instance();
 				$mutex_file_root 	= $config->directory->mutex;
 
-				$mutex_file			= $mutex_file_root . $this->mMutexKey;
+				$this->mMutexFile = $mutex_file_root . $this->mMutexKey;
 
-				$fp = @fopen($mutex_file, "r");
+				$fp = @fopen( $this->mMutexFile, "r");
 			
 				if ( empty($fp) )
 				{
-					$fp = fopen($mutex_file, "w");
+					$fp = fopen( $this->mMutexFile, "w");
 
 					if ( empty($fp) )
 						throw new JWException("mutex file open failed! [$mutex_file_root]");
@@ -134,12 +136,12 @@ class JWMutex {
     function __destruct()
     {
 		//$this->mSyslog->LogMsg('Removing key ' . $this->mMutexKey);	
+//		有了 MAX_SEM_NUM ，我们就不 remove 了
+	if ( !empty($this->mMutexHandle) ) {
+        	@sem_remove($this->mMutexHandle);
+		@unlink( $this->mMutexFile );
+	}
 
-/*
-		有了 MAX_SEM_NUM ，我们就不 remove 了
-		if ( !empty($this->mMutexHandle) )
-        	sem_remove($this->mMutexHandle);
-*/
     }
 
 	public function Acquire()

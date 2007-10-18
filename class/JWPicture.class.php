@@ -403,7 +403,6 @@ _CMD_;
 
 		$cmd = <<<_CMD_
 convert $srcFile	 \\
-  -thumbnail 96x96	 \\
   -resize x192		 \\
   -resize '192x<'	 \\
   -resize 50%		 \\
@@ -427,7 +426,6 @@ _CMD_;
 
 		$cmd = <<<_CMD_
 convert $srcFile	 \\
-  -thumbnail 48x48	 \\
   -resize x96		 \\
   -resize '96x<'	 \\
   -resize 50%		 \\
