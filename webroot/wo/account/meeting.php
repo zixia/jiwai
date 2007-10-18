@@ -77,10 +77,6 @@ if( preg_match( '/^gp(\d+)$/', $user_info['nameScreen'] , $m) ) {
 	$numberUnicom = '9501456711'.$user_info['idUser'];
 }
 
-var_dump( $numberMobile );
-var_dump( $numberUnicom );
-
-
 ?>
 <html>
 

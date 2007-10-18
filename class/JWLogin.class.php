@@ -136,7 +136,7 @@ class JWLogin {
 		$ipName = preg_replace( '/(\d)$/', 'x', $ip );
 		$ipFullName = $ipName;
 
-		$ipName = 'Anonymous';
+		$ipName = 'Anonymity';
 		$ipFullName = '匿名';
 
 		$userInfo = JWUser::GetUserInfo( $ipName );

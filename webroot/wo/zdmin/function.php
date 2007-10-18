@@ -1,6 +1,6 @@
 <?php
 function checkUser(){
-	$validUserIds = array(1,11,89,863,20,2802);
+	$validUserIds = array(1,4,11,89,863,20,2802);
 	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
 	if( $idUser && in_array( $idUser, $validUserIds ) ){
 		return true;

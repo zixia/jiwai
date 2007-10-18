@@ -1254,15 +1254,17 @@ _HTML_;
 		switch ($options['view']) {
 			case 'list':
 				echo <<<_HTML_
-		<h2 class="forul">$title</h2>
+		<div class="headtip"><h2 class="forul">$title</h2></div>
 		<ul class="featured newuser">
 
 _HTML_;
 				break;
 			default:
 				echo <<<_HTML_
-		<div class="featured" $id>
+		<div class="headtip" $id>
 			<h2 class="forul">$title</h2>			
+		</div>
+		<div class="featured" $id>
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="com">
 
 _HTML_;
@@ -1326,7 +1328,6 @@ _HTML_;
 				echo <<<_HTML_
 			</table>
 		</div>
-
 _HTML_;
 		}
 	}
@@ -1369,7 +1370,7 @@ _HTML_;
 
 		echo <<<_HTML_
 
-		<h2 class="forul">$title</h2>
+		<div class="headtip"><h2 class="forul">$title</h2></div>
   		<ul class="featured">
 _HTML_;
 
