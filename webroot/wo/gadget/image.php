@@ -28,6 +28,7 @@ $nameScreen	= $user['nameScreen'];
 		   <input type="hidden" id="m" value="2"/>
                     <input style="display:inline;width:20px;" type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true; $('m').value=1" /> 横幅式
                     <input style="display:inline;width:20px;" type="radio" name="mode" value="2" onclick="$('c').disabled=false; $('m').value=2;" checked /> 侧栏式
+                    <input style="display:inline;width:20px;" type="radio" name="mode" value="0" onclick="$('c').disabled=false;$('m').value=0;" /> 跑马灯
                     &nbsp;
                     &nbsp;
 			宽度 <input size="3" name="width" id="w" value="200" /> 像素
