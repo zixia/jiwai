@@ -97,6 +97,7 @@ switch($mode) {
 		while ($x + $w > $font_size + $width) {
 			if ($bgimage) $m->tileImage($bg, $bgmode); else //CPU costy
 			$m->clear($color0);
+			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0);
 			//imagerectangle($m->image, 0, 0, $width-1, $height-1, $m->color($color1));
 			$cw = $w;
 			if ($x<1) {
@@ -109,6 +110,7 @@ switch($mode) {
 			}
 			if ($dx+$cw>=$width-1) $cw = $width - 1 - $dx;
 			imagecopymerge($m->image, $v->image, $dx, $y, $sx, 0, $cw, $h, 100);
+			if ($color1) $m->border($color1);
 			$gif->addFrame($m->image);
 			$x -= $font_size;
 		}
