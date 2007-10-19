@@ -183,7 +183,7 @@ class JWImageCanvas {
 		$l = 0;
 		while ($w+($l ? 0 : $this->textCursorLeft)>$this->textAreaWidth) {
 			$s1 = mb_strimwidth($s, 0, mb_strwidth($s)-round(mb_strwidth($s)*$this->textAreaWidth/($this->textAreaWidth-($l ? 0 : $this->textCursorLeft)-$w)));
-			while ($this->getTextWidth($s1)+($l ? 0 : $this->textCursorLeft)>$this->textAreaWidth) $s1 = mb_substr($s1, 0, -1);
+			while ($s1 && $this->getTextWidth($s1)+($l ? 0 : $this->textCursorLeft)>$this->textAreaWidth) $s1 = mb_substr($s1, 0, -1);
 			$i = 0;
 			$s = substr($s, strlen($s1));
 			$last = mb_substr($s1, -1, 1);
