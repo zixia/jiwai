@@ -69,7 +69,7 @@ class StockCmdRobot{
 		if( preg_match( '/^\w+\s+(\d{3}|\d{6})\s+(\S+)$/i', $cmd, $matches ) ) {
 			
 			$number = $matches[1];
-			$isStock = $number > 999 ;
+			$isStock = strlen($number) == 6 ;
 			$nameScreen = 'gp'. $number;
 			$nameFull = $matches[2];
 
@@ -109,7 +109,7 @@ class StockCmdRobot{
 		if( preg_match( '/^\w+\s+(\d{3}|\d{6})\s*$/i', $cmd, $matches ) ) {
 			
 			$number = $matches[1];
-			$isStock = $number > 999 ;
+			$isStock = strlen($number) == 6 ;
 			$nameScreen = 'gp'. $number;
 			$nameFull = $matches[2];
 
@@ -135,7 +135,7 @@ class StockCmdRobot{
 		if( preg_match( '/^\w+\s+(\d{3}|\d{6})\s*$/i', $cmd, $matches ) ) {
 			
 			$number = $matches[1];
-			$isStock = $number > 999 ;
+			$isStock = strlen($number) == 6 ;
 			$nameScreen = 'gp'. $number;
 			$nameFull = $matches[2];
 
@@ -161,7 +161,7 @@ class StockCmdRobot{
 		if( preg_match( '/^\w+\s+(\d{3}|\d{6})\s+(\S+)$/i', $cmd, $matches ) ) {
 			
 			$number = $matches[1];
-			$isStock = $number > 999 ;
+			$isStock = strlen($number) == 6 ;
 			$nameScreen = 'gp'. $number;
 			$nameFull = $matches[2];
 
@@ -236,7 +236,7 @@ class StockCmdRobot{
 			return "SUBCREATE 后第一个参数只能是：3位数字的分类号、6位数字的股票代码。";
 		}
 		
-		$isStock = ( $me > 1000 ) ? true : false;
+		$isStock = strlen($me) == 6;
 		$pattern = $isStock ? '/^\d{3}$/' : '/^\d{6}$/';
 
 		$param_array = array_unique( $param_array );
@@ -287,7 +287,7 @@ class StockCmdRobot{
 			return "SUBDELETE 后第一个参数只能是：3位数字的分类号、6位数字的股票代码。";
 		}
 
-		$isStock = ( $me > 1000 ) ? true : false;
+		$isStock = strlen( $me ) == 6;
 		$pattern = $isStock ? '/^\d{3}$/' : '/^\d{6}$/';
 
 		$param_array = array_unique( $param_array );
@@ -356,7 +356,7 @@ class StockCmdRobot{
 			return "LIST 后第一个参数只能是：3位数字的分类号、6位数字的股票代码。";
 		}
 		
-		$isStock = ( $me > 1000 ) ? true : false;
+		$isStock = strlen( $me ) == 6;
 
 		//获取操作对象
 		$meUser = JWUser::GetUserInfo( 'gp' . $me );
@@ -389,7 +389,7 @@ class StockCmdRobot{
 		if( false == preg_match( '/^(\d{3}|\d{6})$/', $me ) ){
 			return "$cmd 后第一个参数只能是：3位数字的分类号、6位数字的股票代码。";
 		}
-		$isStock = ( $me > 1000 ) ? true : false;
+		$isStock = strlen( $me ) == 6;
 
 		//获取操作对象
 		$meUser = JWUser::GetUserInfo( 'gp' . $me );
@@ -427,7 +427,7 @@ class StockCmdRobot{
 		if( false == preg_match( '/^(\d{3}|\d{6})$/', $me ) ){
 			return "SHOW 后第一个参数只能是：3位数字的分类号、6位数字的股票代码。";
 		}
-		$isStock = ( $me > 1000 ) ? true : false;
+		$isStock = strlen( $me ) == 6;
 
 		//获取操作对象
 		$meUser = JWUser::GetUserInfo( 'gp' . $me );
