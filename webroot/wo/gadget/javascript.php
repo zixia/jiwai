@@ -234,12 +234,12 @@ _HTML_;
         </fieldset>
 		<h2>预览</h2>
         <fieldset>
-            <div style="width:670px;">
-			    <?php echo $gadget_script_html ?>
-				<div style="clear: both;"></div>
+            <div class="none" style="width:670px;padding:0px;margin:0px;">
+		<?php echo $gadget_script_html ?>
+		<div style="clear: both;"></div>
             </div>
         </fieldset>
-			<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
+	<h3>不明白怎么用？看看 <a href="<?php echo JWTemplate::GetConst('UrlHelpGadget')?>">窗可贴指南</a>。</h3>
     </div>
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->

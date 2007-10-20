@@ -222,6 +222,11 @@ function jiwai_de_get_message_html(status)
 			+ "</small></a>";
 }
 
+function jiwai_de_get_picture_url(status)
+{
+	return status.user.profile_image_url;
+}
+
 function jiwai_de_get_picture_html(status)
 {
 	return "<a href='http://JiWai.de/" + status.user.screen_name + "/' target='_blank'>"
@@ -257,6 +262,7 @@ function jiwai_de_callback(statuses)
 		{
 			status_html		= owner_content_template.replace(/%sender%/i	, jiwai_de_get_user_html(statuses[n]));
 			status_html		= status_html.replace(/%userIconPath%/i		, jiwai_de_get_picture_html(statuses[n]));
+			status_html		= status_html.replace(/%userIconUrl%/i		, jiwai_de_get_picture_url(statuses[n]));
 			status_html		= status_html.replace(/%message%/i			, jiwai_de_get_message_html(statuses[n]));
 
 			// 检查下一个(n+1) statuses 中的用户，是不是和当前用户(n)是同一人。如果是，则合并。
@@ -275,6 +281,7 @@ function jiwai_de_callback(statuses)
 		{
 			status_html	= other_content_template.replace(/%sender%/i, jiwai_de_get_user_html(statuses[n]));
 			status_html	= status_html.replace(/%userIconPath%/i 	, jiwai_de_get_picture_html(statuses[n]));
+			status_html	= status_html.replace(/%userIconUrl%/i 		, jiwai_de_get_picture_url(statuses[n]));
 			status_html	= status_html.replace(/%message%/i			, jiwai_de_get_message_html(statuses[n]));
 
 			// 检查下一个(n+1) statuses 中的用户，是不是和当前用户(n)是同一人。如果是，则合并。

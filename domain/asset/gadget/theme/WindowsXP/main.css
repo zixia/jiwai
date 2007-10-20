@@ -28,6 +28,11 @@ DIV.break {
   overflow: hidden;
 }
 
+img .icon {
+height:16px;
+width:16px;
+}
+
 
 DIV .chat .topleft .icon {
 height:16px;

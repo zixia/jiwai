@@ -58,6 +58,11 @@ vertical-align:super;
 filter: progid:DXImageTransform.Microsoft.Gradient(gradientType='1',startColorStr='#0a246a',endColorStr='#a6caf0');
 }
 
+.icon{
+width:16px;
+height: 16px;
+}
+
 DIV .chat .icon {
 width:16px;
 height: 16px;
