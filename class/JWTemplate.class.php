@@ -52,38 +52,13 @@ class JWTemplate {
 	static public function html_doctype( $options=null )
 	{
 		echo <<<_HTML_
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 _HTML_;
+		if( substr(@$_SERVER['SERVER_NAME'],0,5) == 'jiwai' && JWRequest::IsWapBrowser() ) {
+			JWSession::SetInfo( 'notice', '手机WAP浏览器，请访问：http://m.JiWai.de/' );
+		}
 	}
-
-	static public function wml_doctype( $options=null )
-	{
-        Header("Content-Type: text/vnd.wap.wml");
-		echo <<<_HTML_
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE wml PUBLIC "-//WAPFORUM//DTD WML 1.1//EN" "http://www.wapforum.org/DTD/wml_1.1.xml">
-
-_HTML_;
-	}
-
-    static public function wml_head( $options=null )
-    {
-        echo <<<_HEAD_
-<wml>
-<head>
-<meta http-equiv="Cache-Control" content="max-age=7" forua="true"/>
-<meta http-equiv="content-type" content="text/vnd.wap.wml;charset=UTF-8"/>
-</head>
-_HEAD_;
-    }
-
-    static public function wml_foot( $options=null )
-    {
-echo <<<_FOOT_
-</wml>
-_FOOT_;
-    }
 
 	static public function html_head( $options=null )
 	{

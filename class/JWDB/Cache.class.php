@@ -118,7 +118,7 @@ class JWDB_Cache  extends JWDB implements JWDB_Interface, JWDB_Cache_Interface
 		self::Instance();
 
 		if ( empty($ids) )
-			return null;
+			return array();
 
 		if ( empty($function) )
 			$function = array( ("JW".$table), "GetDbRowsByIds");

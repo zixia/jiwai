@@ -95,5 +95,42 @@ class JWRequest {
 
 		return null;
 	}
+
+	static public function IsWapBrowser(){
+		$agent = @$_SERVER['HTTP_USER_AGENT'];
+		if( null == $agent )
+			return  false;
+
+		$preAgent = strToUpper( substr( trim($agent), 0, 4 ) );
+		switch ( $preAgent ) {
+			case 'NOKI': //Nokia phones and emulators
+			case 'ERIC': //Ericsson WAP phones
+			case 'WAPI': //Ericsson WAPIDE 2.0
+			case 'MC21': //Ericsson MC218
+			case 'AUR ': //Ericsson R320
+			case 'R380': //Ericsson R380
+			case 'UP.B': //UP.Browser
+			case 'WinW': //WinWAP Browser
+			case 'UPG1': //UP.SDK 4.0
+			case 'UPSI': //Another kind of UP.Browser
+			case 'QWAP': //Unknown QWAPPER Browser
+			case 'JIGS': //Unknown JiGSaw Browser
+			case 'JAVA': //Unknown JavaBased Browser
+			case 'ALCA': //Unknown Alcatel-BE3 browser
+			case 'MITS': //Unknown Mitsubishi browser
+			case 'MOT-': //Unknown browser (UP based?)
+			case 'MY S': //Unknown Ericsson devkit browser
+			case 'WAPJ': //Virtual WAPJAG
+			case 'FETC': //Fetchpage.cgi Perl script
+			case 'ALAV': //Another unknown UP based browser
+			case 'WAPA': //Another unknown browser
+				return true;
+			default:
+				if( false === strpos( strtoupper($agent), 'WAP' ) )
+					return false;
+				return true;
+		}
+		return false;
+	}
 }
 ?>
