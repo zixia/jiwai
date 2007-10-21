@@ -15,9 +15,7 @@
 <p>2 <a href="${buildUrl('/wo/followers/')}" accesskey="2">我的粉丝({$followersNum})</a></p>
 <!--{/if}-->
 
-<!--{if in_array( 'replies', $shortcut ) }-->
-<p>3 <a href="${buildUrl('/wo/replies/')}" accesskey="3">叽友回复</a></p>
-<!--{/if}-->
+<p>3 <a href="${buildUrl('/wo/favourites/')}" accesskey="3">我的收藏</a></p>
 
 <!--{if in_array( 'public_timeline', $shortcut ) }-->
 <p>5 <a href="${buildUrl('/public_timeline/')}" accesskey="5">叽歪广场</a></p>

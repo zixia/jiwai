@@ -6,12 +6,13 @@
 <!--{if $showProtected}-->
 <!--{foreach $statuses as $status}-->
 <li>
-    {$status['status']}
-    <span class="stamp">
-    ${JWStatus::GetTimeDesc($status['timeCreate'])}
-    通过
-    ${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}
-    </span>
+	{$status['status']}
+	<span class="stamp">
+	${JWStatus::GetTimeDesc($status['timeCreate'])}
+	通过
+	${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}
+	${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''}
+	</span>
 </li>
 <!--{/foreach}-->
 <!--{else}-->
