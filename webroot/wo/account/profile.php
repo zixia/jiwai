@@ -242,6 +242,7 @@ if ( $has_photo ){
             <img src="<?php echo $photo_url; ?>" width="96" height="96" align="left" class="imagb" />
             <span class="note" style="padding-left:5px;">选择图片文件：支持.jpg .gif .png的图片 </span>
             <input type="file" name="profile_image"  style="margin-left:110px; width:248px;"/>
+            <span class="note" style="padding-left:5px;">最大可以上传 2M 大小的图片</span>
         </td>
     </tr>
     <tr>

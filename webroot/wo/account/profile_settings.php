@@ -286,6 +286,7 @@ _HTML_;
 						if ( $user['profile_background_tile'] ) echo 'checked="checked" ';
 					?> name="user[profile_background_tile]" type="checkbox" value="1" />
 					<label for="user_profile_background_tile">平铺</label>
+                    <span class="note" style="padding-left:5px;">最大可以上传 2M 大小的图片</span>
 					<br />
 					当前背景图片：<small>(<?php echo $picture_name?>)</small>
 				</td>
