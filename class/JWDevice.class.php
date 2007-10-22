@@ -770,8 +770,9 @@ _SQL_;
 
 			$status = JWStatus::HtmlEntityDecode( $status );
 
-			if( !empty( $device_data ) 
+			if( false == empty( $device_data ) 
 					&& strncasecmp($device_data['signature'],$status,140)
+					&& false == self::IsHistorySignature( $idUser, $status )
 			  )
 			{
 				JWDB::UpdateTableRow('Device', intval($device_data['idDevice']), array(
@@ -809,6 +810,31 @@ _SQL_;
 	static public function GetSupportedDeviceTypes()
 	{
 		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook' /*, 'jabber'*/ );
+	}
+
+	static public function IsHistorySignature($idUser, $signature){
+		$idUser = JWDB::CheckInt( $idUser );
+		$signature = trim( $signature );
+		$md5Value = md5( $signature );
+
+		$sigKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWDevice', 'IsHistorySignature'), array($idUser) );
+		$memcache = JWMemcache::Instance();
+		$result = $memcache->Get( $sigKey );
+		
+		$isHistory = false;
+		if( false == $result ) {
+			$row = array( $md5Value );
+			$memcache->Set( $sigKey, $row );
+		}else if( is_array( $result ) ){
+			if( in_array( $md5Value, $result ) ) {
+				$isHistory = true;
+			} else{
+				array_push( $result, $md5Value );
+				$memcache->Set( $sigKey, $result );
+			}
+		}
+
+		return $isHistory;
 	}
 
 	/*
