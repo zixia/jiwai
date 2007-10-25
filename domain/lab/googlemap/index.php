@@ -14,7 +14,7 @@ JWTemplate::html_doctype();
 	<meta name="description" content="叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk）和Web，进行组建好友社区并实时与朋友分享的迷你博客服务。" />
 	<meta name="author" content="叽歪de &lt;wo@jiwai.de&gt;" />
 
-<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feed.blog.jiwai.de" />
 
 
 	<style type="text/css">

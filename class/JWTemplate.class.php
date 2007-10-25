@@ -88,7 +88,7 @@ _STR_;
 
 
 		$rss_html = <<<_HTML_
-	<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feeds.feedburner.com/jiwai" />
+	<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feed.blog.jiwai.de" />
 _HTML_;
 
 		if ( !empty($options['rss']) )	
