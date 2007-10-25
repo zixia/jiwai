@@ -11,8 +11,9 @@ if( ! $idUser ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
 
+$since = ($since==null) ? null : ( is_numeric($since) ? date("Y-m-d H:i:s", $since) : $since );
 $timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
-$messageIds = JWMessage::GetMessageIdsFromUser($idUser,JWMessage::INBOX,JWMessage::DEFAULT_MESSAGE_NUM,$start=0,$timeSince);
+$messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::INBOX,JWMessage::DEFAULT_MESSAGE_NUM, 0, $timeSince);
 $messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower($pathParam);
