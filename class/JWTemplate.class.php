@@ -202,34 +202,36 @@ _HTML_;
 
 	static public function header($highlight=null)
 	{
-		$nameScreen = JWUser::GetCurrentUserInfo('nameScreen');
+		$userInfo = JWUser::GetCurrentUserInfo();
+		$nameScreen = $userInfo['nameScreen'];
+		$nameUrl = $userInfo['nameUrl'];
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
-				'/wo/account/create' 	=> '注册',
-				'/wo/login' 		=> '登录',
-				'/help/' 		=> '留言板'
+				'/wo/account/create' => '注册',
+				'/wo/login' => '登录',
+				'/help/' => '留言板'
 			);
 		} else {
 			$nav = array(
-				'/wo/' 			=> '我的首页',
-				'/'.$nameScreen.'/' 	=> '我的叽歪',
-				'/public_timeline/' 	=> '逛逛',
-				'/wo/gadget/' 		=> '窗可贴',
-				'/wo/account/settings' 	=> '设置',
-				'/help/' 		=> '留言板',
-				'/wo/logout' 		=> '退出',
+				'/wo/' => '我的首页',
+				'/'.$nameUrl.'/' => '我的叽歪',
+				'/public_timeline/' => '逛逛',
+				'/wo/gadget/' => '窗可贴',
+				'/wo/account/settings' => '设置',
+				'/help/' => '留言板',
+				'/wo/logout' => '退出',
 			);
 		}
 
-        $highlightAlias  = array(
-            '/wo/account/notification' => '/wo/account/settings',
-            '/wo/account/profile' => '/wo/account/settings',
-            '/wo/devices/' => '/wo/account/settings',
-            '/wo/account/profile_settings' => '/wo/account/settings',
-            '/wo/account/metting' => '/wo/account/settings',
-            '/wo/openid/' => '/wo/account/settings',
-        );
+		$highlightAlias  = array(
+			'/wo/account/notification' => '/wo/account/settings',
+			'/wo/account/profile' => '/wo/account/settings',
+			'/wo/devices/' => '/wo/account/settings',
+			'/wo/account/profile_settings' => '/wo/account/settings',
+			'/wo/account/metting' => '/wo/account/settings',
+			'/wo/openid/' => '/wo/account/settings',
+		);
 
 		if (!$highlight) {
 			$a = array_reverse($nav);
@@ -628,8 +630,9 @@ _HTML_;
 
 	static public function StatusHead($idUser, $userRow, $statusRow, $options=null, $isOpen=true)
 	{
-		$name_screen 	= $userRow['nameScreen'];
-		$name_full		= $userRow['nameFull'];
+		$name_screen = $userRow['nameScreen'];
+		$name_url = $userRow['nameUrl'];
+		$name_full = $userRow['nameFull'];
 
 		if ( !empty($statusRow['idPicture']) )
 			$photo_url	= JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
@@ -680,9 +683,9 @@ _HTML_;
 			<div id="permalink">
 				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0; background: none;">
 				<?php if( @$isMms ) { ?>
-					<div class="head"><a href="/<?php echo $name_screen; ?>/mms/<?php echo $statusRow['id']; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
+					<div class="head"><a href="/<?php echo $name_url; ?>/mms/<?php echo $statusRow['id']; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
 				<?php } else { ?>
-					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
+					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_url; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
 				<?php } ?>
 					<div class="cont">
 						<div class="bg"></div>
@@ -719,7 +722,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 if ( $isOpen && isset($statusRow) ) 
 {
 	echo <<<_HTML_
-  					<a href="/$name_screen/statuses/$status_id">$duration</a>
+  					<a href="/$name_url/statuses/$status_id">$duration</a>
   					来自 $device $sign
 _HTML_;
 
@@ -888,6 +891,7 @@ _HTML_;
 				@$user_showed[$user_id] += 1;
 				
 			$name_screen	= $userRows[$user_id]['nameScreen'];
+			$name_url 	= $userRows[$user_id]['nameUrl'];
 			$name_full	= $userRows[$user_id]['nameFull'];
 			$name_mix	= strcasecmp($name_full, $name_screen) ? "$name_full($name_screen)" : $name_full;
 			$status		= $statusRows[$status_id]['status'];
@@ -930,12 +934,12 @@ _HTML_;
 
 <div class="odd">
 	<div class="head">
-		<a href="/<?php echo $name_screen;?>/mms/<?php echo $status_id;?>"><img alt="<?php echo $photo_subject;?>" src="<?php echo $photo_url;?>"/></a>
+		<a href="/<?php echo $name_url;?>/mms/<?php echo $status_id;?>"><img alt="<?php echo $photo_subject;?>" src="<?php echo $photo_url;?>"/></a>
 		<div class="meta"><?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?>来自彩信</div>
 	</div>
 	<div class="cont">
 		<div class="bg"></div>
-		<div class="name"><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_full;?>"><?php echo $name_full;?></a><span class="meta">拍摄时间：<?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?><span id="status_actions_6361924"></span></span></div>
+		<div class="name"><a href="/<?php echo $name_url;?>/" title="<?php echo $name_full;?>"><?php echo $name_full;?></a><span class="meta">拍摄时间：<?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?><span id="status_actions_6361924"></span></span></div>
 		<?php echo $status; ?>
 		<div class="action">
 <?php
@@ -956,12 +960,12 @@ _HTML_;
 			}else{
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_screen;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
-	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_screen;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_mix;?></a><?php echo $status?>
+	<div class="head"><a href="/<?php echo $name_url;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_url;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_mix;?></a><?php echo $status?>
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>
-			<a href="/<?php echo $name_screen?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
+			<a href="/<?php echo $name_url?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
 <?php } else {
 			echo $duration;	
 } ?>
@@ -1784,14 +1788,14 @@ _HTML_;
 
 	static function sidebar_count( $countInfo=null, $userInfo=null )
 	{
-        if ( empty($userInfo) )
-            $user = 'wo';
-        else
-        {
-            $user = $userInfo['nameScreen'];
-            $name_full = $userInfo['nameFull'];
-        }
-        $userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
+		if ( empty($userInfo) ) {
+		    $user = 'wo';
+		} else {
+		    $user = $userInfo['nameUrl'];
+		    $name_full = $userInfo['nameFull'];
+		}
+
+		$userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
 		$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
 		echo <<<_HTML_
 		<ul id="update_count">
@@ -1812,7 +1816,7 @@ _HTML_;
 _HTML_;
 		} 
 
-		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] )
+		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] )
 		{
 			echo <<<_HTML_
 			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话</a></li>

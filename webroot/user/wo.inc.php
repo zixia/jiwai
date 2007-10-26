@@ -92,7 +92,7 @@ switch ( $active_tab )
 		$p = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 		$searchStatus->setPageNo( $p );
 
-		$searchStatus->setInSite("jiwai.de/".$page_user_info['nameScreen']."/statuses/");
+		$searchStatus->setInSite("jiwai.de/".$page_user_info['nameUrl']."/statuses/");
 		$searchStatus->execute($q);
 
 		$user_status_num = $searchStatus->getTotalSize();
@@ -126,7 +126,7 @@ $head_status_id 	= @array_shift($head_status_data['status_ids']);
  *	设置 html header
  */
 $keywords 		= <<<_STR_
-$page_user_info[nameScreen]($page_user_info[nameFull]) - $page_user_info[bio] $page_user_info[location] 
+$page_user_info[nameUrl]($page_user_info[nameFull]) - $page_user_info[bio] $page_user_info[location] 
 _STR_;
 
 $description = "叽歪de $page_user_info[nameFull] ";
@@ -145,39 +145,43 @@ foreach ( $status_data['status_ids'] as $status_id )
 }
 }
 
-$rss			= array ( 	
-							// User TimeLine RSS & Atom
-							 array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss"
-									,'title'	=> "$page_user_info[nameFull] (RSS)"
-									,'type'		=> "rss"
-								)
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom"
-									,'title'	=> "$page_user_info[nameFull] (Atom)"
-									,'type'		=> "atom"
-								)
+$rss = array ( 	
+	// User TimeLine RSS & Atom
+	array(
+		'url' => "http://api.jiwai.de/statuses/user_timeline/$page_user_id.rss",
+		'title'	=> "$page_user_info[nameFull] (RSS)",
+		'type' => "rss",
+	),
+	array(
+		'url' => "http://api.jiwai.de/statuses/user_timeline/$page_user_id.atom",
+		'title'	=> "$page_user_info[nameFull] (Atom)",
+		'type' => "atom",
+	),
+	// Friends TimeLine RSS & Atom,
+	array(
+		'url' => "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss",
+		'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)",
+		'type' => "rss",
+	),
+	array(
+		'url' => "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom",
+		'title' => "$page_user_info[nameFull]和朋友们 (Atom)",
+		'type' => "atom",
+	),
+);
 
-							// Friends TimeLine RSS & Atom
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.rss"
-									,'title'	=> "$page_user_info[nameFull]和朋友们 (RSS)"
-									,'type'		=> "rss"
-								)
-							,array(	 'url'		=> "http://api.jiwai.de/statuses/friends_timeline/$page_user_id.atom"
-									,'title'	=> "$page_user_info[nameFull]和朋友们 (Atom)"
-									,'type'		=> "atom"
-								)
-						);
-
-$options = array(	 'title'		=> "$page_user_info[nameScreen] / $page_user_info[nameFull]"
-					,'keywords'		=> htmlspecialchars($keywords)
-					,'description'	=> htmlspecialchars($description)
-					,'author'		=> htmlspecialchars($keywords)
-					,'rss'			=> $rss
-					,'refresh_time'	=> '60'
-					,'refresh_url'	=> ''
-					,'ui_user_id'	=> $page_user_id
-					,'openid_server'	=> "http://jiwai.de/wo/openid/server"
-					,'openid_delegate'	=> "http://jiwai.de/$page_user_info[nameScreen]/"
-			);
+$options = array(
+	'title'	=> "$page_user_info[nameScreen] / $page_user_info[nameFull]",
+	'keywords' => htmlspecialchars($keywords),
+	'description' => htmlspecialchars($description),
+	'author' => htmlspecialchars($keywords),
+	'rss' => $rss,
+	'refresh_time' => '60',
+	'refresh_url' => '',
+	'ui_user_id' => $page_user_id,
+	'openid_server'	=> "http://jiwai.de/wo/openid/server",
+	'openid_delegate' => "http://jiwai.de/$page_user_info[nameUrl]/",
+);
 
 ?>
 <head>
@@ -213,22 +217,24 @@ JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_r
 
 <?php 
 $menu_list = array (
-		 'friends'	=> array(	 'active'	=> false	
-								,'name'		=> "和朋友们"
-								,'url'		=> "/$page_user_info[nameScreen]/with_friends"
-							)
-		,'archive'	=> array(	 'active'	=> false
-								,'name'		=> "以前的"
-								,'url'		=> "/$page_user_info[nameScreen]/"
-							)
-	);
+	'friends' => array(
+		'active' => false,
+		'name' => "和朋友们",
+		'url' => "/$page_user_info[nameUrl]/with_friends",
+	),
+	'archive' => array(
+		'active' => false,
+		'name' => "以前的",
+		'url' => "/$page_user_info[nameUrl]/",
+	),
+);
 
 if( null!==$q ){
 	$menu_list['search'] = array(	
-			'active' => false , 
-			'name'	=> "搜索结果" ,
-			'url'		=> "/$page_user_info[nameScreen]/search?q=".urlEncode($q)
-			);
+		'active' => false , 
+		'name' => "搜索结果" ,
+		'url' => "/$page_user_info[nameUrl]/search?q=".urlEncode($q)
+	);
 }
 
 if( $active_tab !== 'search' ) 
@@ -300,16 +306,17 @@ else
 $arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
-$arr_menu 			= array(	array ('user_notice'	, array($page_user_info))
-								, array ('device_info'	, array($page_user_info))
-								, array ('user_info'	, array($page_user_info))
-								, array ('action'	, array($user_action_row,$page_user_info['id']))
-								, array ('count'		, array($arr_count_param,$page_user_info))
-								//, array ('search'	, array($page_user_info['nameScreen'], $q))
-								, array ('separator'	, array())
-								, array ('friend'	, array($arr_friend_list))
-								, array ('rss'		, array('user', $page_user_info['nameScreen']))
-							);
+$arr_menu = array(
+	array ('user_notice', array($page_user_info)),
+	array ('device_info', array($page_user_info)),
+	array ('user_info', array($page_user_info)),
+	array ('action', array($user_action_row,$page_user_info['id'])),
+	array ('count', array($arr_count_param,$page_user_info)),
+	//array ('search', array($page_user_info['nameScreen'], $q)), 
+	array ('separator', array()),
+	array ('friend', array($arr_friend_list)),
+	array ('rss', array('user', $page_user_info['nameScreen'])),
+);
 
 if ( ! JWLogin::IsLogined() )
 	array_push ( $arr_menu, 

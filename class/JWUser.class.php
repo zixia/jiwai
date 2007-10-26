@@ -245,7 +245,7 @@ _SQL_;
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static public function GetUserInfo( $value=null, $one_item=null )
+	static public function GetUserInfo( $value=null, $one_item=null , $byWhat=null)
 	{
 		if ( preg_match('/@/',$value) )
 			$by_what = 'email';
@@ -254,6 +254,8 @@ _SQL_;
 		else
 			$by_what = 'nameScreen';
 
+		$by_what = ( $byWhat == null ) ? $by_what : $byWhat ;
+
 		switch ( $by_what ){
 		case 'idUser':
 			$by_what = 'id';
@@ -261,6 +263,7 @@ _SQL_;
 			break;
 
 		case 'nameScreen':
+		case 'nameUrl':
 			//if ( !self::IsValidName($value) ) return null;
 			$value = JWDB::EscapeString($value);
 			break;
@@ -270,8 +273,6 @@ _SQL_;
 			// email need reverse 
 			$value = JWDB::EscapeString(strrev($value));
 			break;
-
-
 		default:
 			throw new JWException("Unsupport get user info by $by_what");
 		}
