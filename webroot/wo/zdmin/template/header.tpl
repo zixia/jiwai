@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>叽歪de(JiWai&trade;)后台管理系统</title>
 <style>
 body { margin:0px; line-height:150%; font-size:14px; width:1000px;}

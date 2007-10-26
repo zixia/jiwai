@@ -10,7 +10,7 @@ extract($_GET, EXTR_IF_EXISTS);
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
+$logined_user_info = JWUser::GetCurrentUserInfo();
 
 $head_options = array();
 
@@ -55,7 +55,7 @@ $picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
     <tr>
         <td width="285"><a href="#">用户名</a></td>
         <td width="60"><a href="#">消息数</a></td>
-        <!--td width="60"><a href="#">彩信数</a></td-->
+        <td width="60"><a href="#">彩信数</a></td>
         <td><a href="#">最后更新时间</a></td>
     </tr>
     </table>

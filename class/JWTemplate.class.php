@@ -2310,89 +2310,87 @@ _HTML_;
 	static public function ListUser($idUser, $idListUsers, $options=array() )
 	{
 
-        $wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
+		$wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
 
-        if( false == isset( $options['type'] ) ) 
-            $options['type'] = 'friends';
+		if( false == isset( $options['type'] ) ) 
+			$options['type'] = 'friends';
 
-        switch( $options['type'] ) {
-            case 'inrequests':
-            case 'outrequests':
-                $friendRequestRows = $idListUsers ;
-                $idListUsers = array_keys( $idListUsers );
-            break;
-            default:
-                $action_rows	= JWSns::GetUserActions($idUser, $idListUsers);
-            break;
-        }
+		switch( $options['type'] ) {
+			case 'inrequests':
+			case 'outrequests':
+				$friendRequestRows = $idListUsers ;
+				$idListUsers = array_keys( $idListUsers );
+			break;
+			default:
+				$action_rows = JWSns::GetUserActions($idUser, $idListUsers);
+			break;
+		}
 
-		$list_user_rows				= JWUser::GetUserDbRowsByIds			($idListUsers);
+		$list_user_rows = JWUser::GetUserDbRowsByIds($idListUsers);
 
-        $picture_ids        = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
-        $picture_url_row   = JWPicture::GetUrlRowByIds($picture_ids);
+		$picture_ids = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
+		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 
 		$n = 0;
 		foreach ( $idListUsers as $list_user_id )
 		{
-			$list_user_row			= $list_user_rows			[$list_user_id];
+			$list_user_row = $list_user_rows[$list_user_id];
 
-           	$list_user_picture_id   = @$list_user_row['idPicture'];
+			$list_user_picture_id = @$list_user_row['idPicture'];
 
-			$list_user_icon_url     = JWTemplate::GetConst('UrlStrangerPicture');
-            if ( $list_user_picture_id )
-                $list_user_icon_url      = $picture_url_row[$list_user_picture_id];
+			$list_user_icon_url = JWTemplate::GetConst('UrlStrangerPicture');
+			if ( $list_user_picture_id )
+				$list_user_icon_url = $picture_url_row[$list_user_picture_id];
 
-		$odd_even			= ($n++ % 2) ? 'odd' : 'even';
-            $statusNum = JWStatus::GetStatusNum( $list_user_id );
-            $mmsNum = JWPicture::GetMMSNum( $list_user_id );
+			$odd_even = ($n++ % 2) ? 'odd' : 'even';
+			$statusNum = JWStatus::GetStatusNum( $list_user_id );
+			$mmsNum = JWPicture::GetMMSNum( $list_user_id );
         
-            $timeUpdate = $list_user_row['timeStamp'];
+			$timeUpdate = $list_user_row['timeStamp'];
 
-            $action_row = $action = $liNote = null;
-            switch( $options['type'] ) {
-                case 'friends':
-                    $action_row = $action_rows[$list_user_id];
-                    $action = self::FriendsAction($list_user_id, $action_row , $wo);
-                break;
-                case 'followers':
-                    $action_row = $action_rows[$list_user_id];
-                    $action = self::FollowersAction($list_user_id, $action_row , $wo);
-                break;
-                case 'inrequests':
-                    $action = self::InRequestsAction($list_user_id, $action_row , $wo);
-                    $requestRow = $friendRequestRows[ $list_user_id ];
-                    $liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
-                break;
-                case 'outrequests':
-                    $action = self::OutRequestsAction($list_user_id, $action_row , $wo);
-                    $requestRow = $friendRequestRows[ $list_user_id ];
-                    $liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
-                break;
-                case 'search':
-                    $action_row = $action_rows[$list_user_id];
-                    $action = self::FollowersAction($list_user_id, $action_row , false);
-                    $action .= '|'. self::FriendsAction($list_user_id, $action_row , false);
-                    $action = trim( $action, '|' );
-                break;
-            }
+			$action_row = $action = $liNote = null;
+			switch( $options['type'] ) {
+				case 'friends':
+					$action_row = $action_rows[$list_user_id];
+					$action = self::FriendsAction($list_user_id, $action_row , $wo);
+				break;
+				case 'followers':
+					$action_row = $action_rows[$list_user_id];
+					$action = self::FollowersAction($list_user_id, $action_row , $wo);
+				break;
+				case 'inrequests':
+					$action = self::InRequestsAction($list_user_id, $action_row , $wo);
+					$requestRow = $friendRequestRows[ $list_user_id ];
+					$liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
+				break;
+				case 'outrequests':
+					$action = self::OutRequestsAction($list_user_id, $action_row , $wo);
+					$requestRow = $friendRequestRows[ $list_user_id ];
+					$liNote = "<li class=\"note\">".htmlspecialchars($requestRow['note'])."</li>";
+				break;
+				case 'search':
+					$action_row = $action_rows[$list_user_id];
+					$action = self::FollowersAction($list_user_id, $action_row , false);
+					$action .= '|'. self::FriendsAction($list_user_id, $action_row , false);
+					$action = trim( $action, '|' );
+				break;
+			}
 
 			echo <<<_HTML_
-                <ul class="liketable"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
-                    <li class="name"><a href="/$list_user_row[nameScreen]/" title="$list_user_row[nameFull]($list_user_row[nameScreen])">$list_user_row[nameFull]</a></li>
-                    <li class="nob">${statusNum}条</li>
-                    <!--li class="nob">${mmsNum}条</li-->
-                    <li class="time">$timeUpdate</li>
-                    $liNote
-                    <li class="action">$action</li>
-                </ul>
+	<ul class="liketable"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
+		<li class="name"><a href="/$list_user_row[nameUrl]/" title="$list_user_row[nameFull]($list_user_row[nameScreen])">$list_user_row[nameFull]</a></li>
+		<li class="nob">${statusNum}条</li>
+		<li class="nob">${mmsNum}条</li>
+		<li class="time">$timeUpdate</li>
+		$liNote
+		<li class="action">$action</li>
+	</ul>
 _HTML_;
 
             ?>
              <div class="clear" style="border-bottom:none;"></div>
             <?php
-
 		}
-
 	}
 
     static public function FriendsAction($idUser, $actionRow , $wo = true, $separator='|') {
