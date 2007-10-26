@@ -180,11 +180,9 @@ $user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array(
 	'search' => true,
-	'pagination' => ($active_tab!='friends' ? $pagination : false),
-	));
-
-//JWTemplate::pagination($pagination, empty($q) ? array() : array('q'=>$q) );
-
+	//'pagination' => ($active_tab!='friends' ? $pagination : false),
+	'pagination' => $pagination,
+));
 ?>
 
 			</div><!-- tab -->
