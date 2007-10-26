@@ -7,7 +7,8 @@ define('DEFAULT_GADGET_COUNT', 3);
 JWLogin::MustLogined();
 $user	= JWUser::GetCurrentUserInfo();
 $idUser	= $user['id'];
-$nameScreen	= $user['nameScreen'];
+$nameScreen = $user['nameScreen'];
+$nameUrl = $user['nameUrl'];
 
 ?>
 <html>
@@ -57,8 +58,8 @@ function draw()
 		+ "/w"+ $("w").value 
 		+ "/m" + $("m").value + "/gadget.png";
 	$('pic_url').value=url; 
-	$('ubb_url').value="[url=http://jiwai.de/<?php echo $nameScreen;?>][img]" + url + " [/img][/url]";
-	$('html_url').value='<a href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
+	$('ubb_url').value="[url=http://jiwai.de/<?php echo $nameUrl;?>/][img]" + url + " [/img][/url]";
+	$('html_url').value='<a href="http://jiwai.de/<?php echo $nameUrl;?>/" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
 	$("o").src = url;
 }
 </script>
@@ -85,14 +86,14 @@ function draw()
             　　UBB代码复制成功。
 			</span>
 			<br/>
-                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameScreen;?>][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
+                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameUrl;?>/][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
 			<br/><br/>
 		    Html代码:
 			<span class=copytips id=html_url_tip>
             　　Html代码复制成功。
 			</span>
 			<br/>
-                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" ><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $nameScreen;?>" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" /></a> </textarea>
+                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" ><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $nameUrl;?>/" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" /></a> </textarea>
 			<br/>
 		</div>	
 		</fieldset>
