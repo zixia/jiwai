@@ -38,9 +38,9 @@ $arr_menu = array(
 	array ('jwvia', array($active_options, $via_device)) ,
 	array ('invite'	, array()) ,
 	array ('separator', array()) ,
-	array ('friend', array($arr_friend_list)) , 
-	array ('separator', array()) ,
 	array ('vistors', array($idUserVistors)) , 
+	array ('separator', array()) ,
+	array ('friend', array($arr_friend_list)) , 
 );
 	
 JWTemplate::sidebar( $arr_menu );

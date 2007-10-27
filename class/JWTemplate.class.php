@@ -1931,7 +1931,7 @@ __HTML__;
 			return;
 		
 		$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
-		self::sidebar_featured(array('user_ids'=>$idVistors, 'title'=>$title, 'id'=>'vistors'));
+		self::sidebar_featured(array('user_ids'=>$idVistors, 'title'=>$title, 'id'=>'friend'));
 	}
 
 	static function sidebar_friend($friendIds)
