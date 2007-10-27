@@ -54,7 +54,7 @@ class JWRequest {
 		return null;
 	}
 
-	static public function GetIpRegister( $type ) {
+	static public function GetIpRegister( $type=null ) {
 		switch ( $type ) {
 			case 'msn':
 				return 1;

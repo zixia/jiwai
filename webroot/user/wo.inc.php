@@ -262,17 +262,13 @@ if ( !isset($g_user_with_friends) )
 
 // 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
 if ( $show_protected_content )
-
-	JWTemplate::Timeline(	 $status_data['status_ids']
-							,$user_rows
-							,$status_rows
-							,array(	 'icon'	=> $g_user_with_friends
-									//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
-									,'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id )
-									//,'protected'=> $logined_user_info['idUser']!=$page_user_id
-                                    , 'pagination' => $pagination
-							 )
-						) ;
+	JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, array(
+		'icon'	=> $g_user_with_friends,
+		//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
+		'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id ),
+		//,'protected'=> $logined_user_info['idUser']!=$page_user_id
+		'pagination' => $pagination, 
+	) ) ;
 
 ?>
   
@@ -306,32 +302,29 @@ else
 $arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
+$idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], @$logined_user_info['id'] );
+
 $arr_menu = array(
 	array ('user_notice', array($page_user_info)),
 	array ('device_info', array($page_user_info)),
 	array ('user_info', array($page_user_info)),
 	array ('action', array($user_action_row,$page_user_info['id'])),
 	array ('count', array($arr_count_param,$page_user_info)),
-	//array ('search', array($page_user_info['nameScreen'], $q)), 
 	array ('separator', array()),
 	array ('friend', array($arr_friend_list)),
+	array ('separator', array()),
+	array ('vistors', array($idUserVistors )),
 	array ('rss', array('user', $page_user_info['nameScreen'])),
 );
 
-if ( ! JWLogin::IsLogined() )
-	array_push ( $arr_menu, 
-					array('register', array(true) )
-				);
-
+if ( false == JWLogin::IsLogined() )
+	array_push ( $arr_menu, array('register', array(true)) );
 
 JWTemplate::sidebar( $arr_menu, $page_user_id);
 JWTemplate::container_ending();
 ?>
 
 </div><!-- #container -->
-
-
 <?php JWTemplate::footer() ?>
-
 </body>
 </html>

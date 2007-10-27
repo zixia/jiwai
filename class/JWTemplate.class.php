@@ -1251,10 +1251,10 @@ _HTML_;
 		}
 
 		//$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids, true, 100);
-		$picture_ids		= JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
+		$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids, true, 80);
+		$picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
-		$picture_url_row	= JWPicture::GetUrlRowByIds($picture_ids);
+		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 		$n = 0;
 
 		$user_ids = array_keys( $user_db_rows );
@@ -1925,6 +1925,14 @@ __HTML__;
 		if (!$strip) echo "		</div>\n";
 	}
 
+	static function sidebar_vistors( $idVistors=array() )
+	{
+		if ( empty($idVistors) )
+			return;
+		
+		$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
+		self::sidebar_featured(array('user_ids'=>$idVistors, 'title'=>$title, 'id'=>'vistors'));
+	}
 
 	static function sidebar_friend($friendIds)
 	{
@@ -2499,7 +2507,6 @@ _HEAD_;
 		}
 		echo "</div>\n";
     }
-
 
 }
 ?>

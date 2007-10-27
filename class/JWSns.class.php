@@ -798,6 +798,33 @@ class JWSns {
 		JWMail::ResendPassword($user_db_row, $url);
 	}
 
+	static public function GetIdUserVistors( $idUser, $idUserVistor = 0 , $maxNum=12 ) 
+	{
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$vKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWSns', 'GetIdUserVistors'), array($idUser) );
+		$memcache = JWMemcache::Instance();
+		
+		$idVistors = $memcache->Get( $vKey );
+		if( false == $idVistors ) {
+			if ( $idUserVistor > 0 && $idUser != $idUserVistor ) {
+				$idVistors = array( $idUserVistor );
+				$memcache->Set( $vKey, $idVistors );
+				return $idVistors ;
+			}
+			return array();
+		}
+		
+		if( $idUserVistor > 0 && $idUser != $idUserVistor ) {
+			$idVistors = array_unique( array_merge( array($idUserVistor), $idVistors ) );
+			if( count( $idVistors ) > $maxNum ) {
+				$idVistors = array_slice( $idVistors, 0, $maxNum );
+			}
+			$memcache->Set( $vKey, $idVistors );
+		}
+
+		return $idVistors;
+	}
 
 	static public function StripStatus( $idUser, $status=null, $device='msn', $isSignature='N' ) 
 	{
