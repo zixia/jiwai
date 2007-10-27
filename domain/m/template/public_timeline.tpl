@@ -4,7 +4,7 @@
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>
-    <a href="${buildUrl('/'.htmlSpecialChars($users[$status['idUser']]['nameScreen']).'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+    <a href="${buildUrl('/'.htmlSpecialChars($users[$status['idUser']]['nameUrl']).'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($status['timeCreate'])}
     通过

@@ -75,10 +75,10 @@ function send($idUser, $idReceiver){
 
     if( $message ){
         if ( JWSns::CreateMessage($idUser, $idReceiver, $message ) ){
-            JWSession::SetInfo('error', "你的悄悄话已经发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>了，耶！");
+            JWSession::SetInfo('error', "你的悄悄话已经发送给<a href=\"/$userInfo[nameUrl]/\">$userInfo[nameScreen]</a>了，耶！");
             redirect( '/wo/message/inbox' );
         }else{
-            JWSession::SetInfo('error', "哎呀！由于系统临时故障，你的悄悄话未能成功的发送给<a href=\"/$userInfo[nameScreen]/\">$userInfo[nameScreen]</a>，请稍后再试吧。");
+            JWSession::SetInfo('error', "哎呀！由于系统临时故障，你的悄悄话未能成功的发送给<a href=\"/$userInfo[nameUrl]/\">$userInfo[nameScreen]</a>，请稍后再试吧。");
         }
     }
     redirect( );

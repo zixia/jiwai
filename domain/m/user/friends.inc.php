@@ -6,7 +6,7 @@ $friendRows = JWUser::GetUserDbRowsByIds($friendIds);
 
 $pageTitle = htmlSpecialChars($userInfo['nameFull'])."的好友们";
 
-$pageString = paginate( $pagination, '/'.$userInfo['nameScreen'].'/friends/' );
+$pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/friends/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){

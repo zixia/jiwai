@@ -786,7 +786,7 @@ _HTML_;
                 $userReply = JWUser::GetUserInfo( $idUserReplyTo );
                 if( false == empty( $userReply ) ) {
                     $replyto = $userReply['nameScreen'];
-                    $status		= preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameScreen]/'>$userReply[nameScreen]</a> ", $status);
+                    $status		= preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a> ", $status);
                 }
             }else{
                 $replyto = null;

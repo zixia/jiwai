@@ -269,11 +269,6 @@ function updateLink(value){
             <td valign="top" class="note">用来登录叽歪de（不可含汉字、空格及特殊字符，最短5个字符） </td>
         </tr>
         <tr>
-            <td align="right">你的首页</td>
-            <td><a id="indexLink" href="/"><span id="indexString">http://JiWai.de/</span></a></td>
-            <td class="note">登录名将作为你的首页的地址</td>
-        </tr>
-        <tr>
             <td align="right">姓　名</td>
             <td><input type="text" name="user[nameFull]" value="<?php if(array_key_exists('nameFull', $aUserInfo)) echo $aUserInfo['nameFull'];?>" ajax="nameFull" null="true" alt="姓名"/><i></i></td>
             <td class="note">你的真实姓名，可使用中文或空格</td>

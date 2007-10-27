@@ -4,7 +4,7 @@
 <!--{/if}-->
 
 <!--{if in_array( 'my', $shortcut ) }-->
-<p>1 <a href="${buildUrl('/'.$loginedUserInfo['nameScreen'].'/')}" accesskey="1">我的叽歪</a></p>
+<p>1 <a href="${buildUrl('/'.$loginedUserInfo['nameUrl'].'/')}" accesskey="1">我的叽歪</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'friends', $shortcut ) }-->

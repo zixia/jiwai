@@ -112,7 +112,7 @@ class JWSns {
 		if ( ! JWFriend::Create($userRow['id'], $friendRow['id']) ) {
 			throw new JWException('JWFriend::Create failed');
 		}else{
-			$message = "$userRow[nameScreen] ( http://JiWai.de/".UrlEncode($userRow['nameScreen'])."/ ) 将你加为好友了。";
+			$message = "$userRow[nameScreen] ( http://JiWai.de/".UrlEncode($userRow['nameUrl'])."/ ) 将你加为好友了。";
 			JWNudge::NudgeToUsers( array($friendRow['id']), $message, 'nudge', 'web' );
 		}
 
@@ -179,7 +179,7 @@ class JWSns {
 		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
 		if( $friend_request_id ) {
 			$userInfo = JWUser::GetUserInfo( $idUser );
-			$message = "$userInfo[nameScreen] ( http://JiWai.de/".UrlEncode($userInfo['nameScreen'])."/ ) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
+			$message = "$userInfo[nameScreen] ( http://JiWai.de/".UrlEncode($userInfo['nameUrl'])."/ ) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
 			JWNudge::NudgeToUsers( array($idFriend), $message, 'nudge', 'web' );
 		}
 		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id, $note);
@@ -606,7 +606,7 @@ class JWSns {
 				{
 					$userInfo = JWUser::GetUserInfo( $idUser );
 					$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-					$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameScreen']) . '/mms/' . $idStatus;
+					$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameUrl']) . '/mms/' . $idStatus;
 					$nameScreen = $userInfo['nameScreen'];
 					$message = array(
 						'sms' => JWNotify::GetPrettySender($userInfo). ": 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",

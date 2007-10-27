@@ -8,7 +8,7 @@ extract( $_REQUEST, EXTR_IF_EXISTS );
 $func = $param = null;
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
 
-$userInfo = JWUser::GetUserInfo( $nameOrId );
+$userInfo = JWUser::GetUserInfo( $nameOrId , null, 'nameUrl');
 $loginedUserInfo 	= JWUser::GetCurrentUserInfo();
 
 if( empty( $userInfo ) ){

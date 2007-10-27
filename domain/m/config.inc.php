@@ -28,8 +28,12 @@ function getDisplayName($userInfo){
 }
 
 function buildReplyUrl($nameScreen){ 
-	$url = buildUrl( "/$nameScreen/" );
-	return "@<a href=\"$url\">".$nameScreen."</a> ";
+	$user = JWUser::GetUserInfo( $nameScreen );
+	if( false == empty( $user ) ) {
+		$url = buildUrl( "/$user[nameUrl]/" );
+		return "@<a href=\"$url\">".$nameScreen."</a> ";
+	}
+	return "@$nameScreen";
 }
 
 function paginate($pagination, $url){
