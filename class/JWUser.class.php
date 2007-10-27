@@ -111,8 +111,9 @@ _SQL_;
 			throw new JWException('must int');
 
 		$md5_pass = self::CreatePassword($plainPassword);
-
-		return JWDB::UpdateTableRow( 'User', $idUser, array('pass'=>$md5_pass) );
+		
+		//凡是通过Web改了密码，为WebUser
+		return JWDB::UpdateTableRow( 'User', $idUser, array('pass'=>$md5_pass, 'isWebUser'=>'Y', ) );
 	}
 
 
@@ -363,6 +364,10 @@ _SQL_;
 			$userInfo['nameUrl'] = $userInfo['nameScreen'];
 		}
 
+		while( self::IsExistUrl( $userInfo['nameUrl'] ) ) {
+			$userInfo['nameUrl'] = JWDevice::GenSecret(8);
+		}
+
 		return JWDB_Cache::SaveTableRow( 'User' ,array(
 			'timeCreate' => JWDB::MysqlFuncion_Now(),
 			'nameScreen' => $userInfo['nameScreen'],
@@ -466,33 +471,13 @@ _SQL_;
 	 */
 	static public function IsExistName ($nameScreen)
 	{
-		self::Instance();
-
-		// XXX use db in the furture?
-		if ( !isset(self::$msReservedNames) )
-		{
-			self::$msReservedNames = array (	
-				'all'				=> true
-				, 'alpha'			=> true
-				, 'api'				=> true
-				, 'asset'			=> true
-				, 'beta'			=> true
-				, 'blog'			=> true
-				, 'bug'				=> true
-				, 'faq'				=> true
-				, 'help'			=> true
-				, 'jiwai'			=> true
-				, 'jiwaide'			=> true
-				, 'm'				=> true
-				, 'mashup'			=> true
-				, 'public_timeline'		=> true
-				, 'root'			=> true
-				, 'sms'				=> true
-				, 'team'			=> true
-				, 'twitter'			=> true
-				, 'wo'				=> true
-				, 'www'				=> true
-				, 'zixia'			=> true
+		if ( false == isset(self::$msReservedNames) ) {
+			self::$msReservedNames = array ( 
+				'all', 'alpha', 'api', 'asset', 'beta',
+				'blog', 'bug', 'faq', 'help', 'jiwai',
+				'jiwaide', 'm', 'mashup', 'public_timeline', 'root',
+				'sms', 'team', 'twitter', 'wo', 'www',
+			       	'zixia',
 			);
 		}
 
@@ -503,6 +488,31 @@ _SQL_;
 			return true;
 
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
+	}
+
+	/*
+	 *	@param		string	nameUrl
+	 *	@return 	bool	is exist
+	 */
+	static public function IsExistUrl ($nameUrl)
+	{
+		if ( false == isset(self::$msReservedNames) ) {
+			self::$msReservedNames = array ( 
+				'all', 'alpha', 'api', 'asset', 'beta',
+				'blog', 'bug', 'faq', 'help', 'jiwai',
+				'jiwaide', 'm', 'mashup', 'public_timeline', 'root',
+				'sms', 'team', 'twitter', 'wo', 'www',
+			       	'zixia',
+			);
+		}
+
+		if ( isset(self::$msReservedNames[strtolower($nameUrl)]) )
+			return true;
+
+		if ( preg_match( '/^gp\d+$/i', $nameUrl ) )   //股票相关用户不允许用户直接注册
+			return true;
+
+		return JWDB::ExistTableRow('User',array('nameUrl'=>$nameUrl));
 	}
 	
 	/*

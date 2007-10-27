@@ -593,6 +593,7 @@ _CMD_;
 
 	static public function GetMMSNum($idUser)
 	{
+		return JWStatus::GetStatusMmsNum( $idUser );
 		$idUser = JWDB::CheckInt( $idUser );
 		$sql = "SELECT COUNT(1) AS num FROM Picture WHERE idUser=$idUser AND class='MMS'";
 		$row = JWDB::GetQueryResult( $sql );

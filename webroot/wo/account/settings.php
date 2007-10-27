@@ -182,6 +182,20 @@ _HTML_;
 	}
 }
 
+if( isset( $_REQUEST['commit_w'] ) ) {
+	$nameUrl = $_REQUEST['nameUrl'];
+	$oldNameUrl = $user_info['nameUrl'];
+	if( $nameUrl != $oldNameUrl ) {
+		$uArray = array(
+			'nameUrl' => $nameUrl,
+			'isUrlFixed' => 'Y',
+		);
+
+		JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
+		header ( "Location: /wo/account/settings" );
+	}
+}
+
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -250,11 +264,6 @@ function updateLink(value){
 			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
 		</tr>
 		<tr>
-			<th>你的首页：</th>
-			<td><a id="indexLink" href="/<?php echo $outInfo['nameScreen']; ?>/"><span id="indexString">http://JiWai.de/<?php echo $outInfo['nameScreen']; ?>/</span></a></td>
-			<td class="note">用户名也将作为你的叽歪de主页地址</td>
-		</tr>
-		<tr>
 			<th>姓名：</th>
 			<td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" ajax="nameFull" alt="姓名"/><i></i></td>
 			<td class="note">你的真实名字，可以使用中文和空格</td>
@@ -303,6 +312,34 @@ function updateLink(value){
 		</div>			
 	</form>
 
+	<h2>你的URL地址</h2>
+	<h3 style="margin:0 0 0 30px; padding:0px;">你的叽歪的个人主页是：<a href="/<?echo $user_info['nameUrl'];?>/">http://JiWai.de/<?php echo $user_info['nameUrl'];?>/</a></h3>
+
+<?php if( $user_info['isUrlFixed'] == 'N'  ) { ?>
+
+	<div style="padding:10px; margin:-10px 30px 10px 30px; background-color:#EAC006; width:560px;">
+		<span style="font-size:13px;line-height:140%;">
+			你可以设置个性URL地址，但是<Strong>只能修改一次，以后不能修改！</Strong><br/>
+			这样作的原因是避免别人链接到你的主页时产生坏的链接。如果现在你不确定你想要的名字，可以暂时维持现状，等以后再说。
+		</span>
+	<form action="/wo/account/settings" method="post" id="f2" style="width:500px;">
+		<input type="hidden" name="commit_w" value="1"/>
+		<fieldset>
+		<table cellspacing="3">
+			<tr>
+				<td valign="top">永久地址：</td>
+				<td valign="top">http://JiWai.de/</td>
+				<td valign="top"><input id="nameUrl" name="nameUrl" type="text" value="<?php echo $user_info['nameUrl'];?>" style="width:140px;" ajax='nameUrl' alt="主页地址"/><i></i></td>
+			</tr>
+		</table>
+		</fieldset>
+		<div style="padding:10px 0 0 130px; height:40px;">
+			<a onclick="if(JWValidator.validate('f2'))$('f2').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		</div>			
+	</form>
+	</div>
+<? } ?>
+
 </div>
 
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>		  
@@ -311,7 +348,7 @@ function updateLink(value){
 
 <?php JWTemplate::footer() ?>
 <script defer="true">
-	JWValidator.init('f','f1');
+	JWValidator.init('f','f1','f2');
 </script>
 </body>
 </html>

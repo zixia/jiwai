@@ -4,26 +4,12 @@ $k = $v = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 
 $ret = true;
-switch( $k ) {
-	case 'nameScreen':
-		$ret = check_nameScreen($v);
-	break;
-	case  'email':
-		$ret = check_email($v);
-	break;
-	case  'nameFull':
-		$ret = check_nameFull($v);
-	break;
-	case 'url':
-		$ret = check_url($v);
-	break;
+if( $k && function_exists( 'check_'.$k ) ) {
+	$funcName = 'check_'.$k;
+	if( true === ( $ret = $funcName($v) ) )
+		exit(0);
 }
-
-if( $ret === true ) {
-	exit(0);
-}else{
-	echo $ret;
-}
+echo $ret;
 
 function check_nameScreen($v){
 
@@ -43,6 +29,26 @@ function check_nameScreen($v){
 	}
 
 	return "用户名：$v 已经被使用";
+}
+
+function check_nameUrl($v){
+
+	if( false == JWUser::IsValidName($v, false) ){
+		if( preg_match('/^\d/', $v ) ) {
+			return "主页地址 $v 不能以数字开头";
+		}else if( strlen( $v ) < 5 ) {
+			return "主页地址 $v 不能短于 5 个字符";
+		}else{
+			return "主页地址 $v 含有非法字符";
+		}
+	}
+
+	$idExist = intval( JWUser::IsExistUrl($v) );
+	if( $idExist==0 || $idExist==JWLogin::GetCurrentUserId() ) {
+		return true;
+	}
+
+	return "主页地址：$v 已经被使用";
 }
 
 function check_nameFull($v){
