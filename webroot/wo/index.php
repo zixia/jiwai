@@ -16,7 +16,7 @@ $page = ($page < 1 ) ? 1 : $page;
 
 <head>
 <?php 
-$options = array (	'ui_user_id'	=> $logined_user_id );
+$options = array ('ui_user_id' => $logined_user_id );
 JWTemplate::html_head($options);
 ?>
 </head>
@@ -78,13 +78,12 @@ if ( (isset($g_search) && $g_search) || $q )
 
 
 $menu_list = array (
-		 'archive'=> array('active'=>false	,'name'=>'历史'	,'url'=>"/wo/archive/")
-		,'replies'=> array('active'=>false	,'name'=>'回复'	,'url'=>"/wo/replies/")
-		,'friends'=> array('active'=>false	,'name'=>'最新'	,'url'=>"/wo/")
-	);
-
-if( !empty($q) )
-		$menu_list['search'] = array('active'=>false	,'name'=>'搜索结果'	,'url'=>"/wo/search/statuses?q=".urlEncode($q));
+	'archive'=> array('active'=>false, 'name'=>'历史', 'url'=>"/wo/archive/"),
+	'replies'=> array('active'=>false, 'name'=>'回复', 'url'=>"/wo/replies/"),
+	'friends'=> array('active'=>false, 'name'=>'最新', 'url'=>"/wo/"),
+);
+if( false == empty($q) )
+	$menu_list['search'] = array('active'=>false, 'name'=>'搜索结果', 'url'=>"/wo/search/statuses?q=".urlEncode($q));
 
 $menu_list[$active_tab]['active'] = true;
 

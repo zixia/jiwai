@@ -445,7 +445,9 @@ _HTML_;
 ?>
                         </select>
                     </span>
-<? } ?>
+<?php } else { ?> 
+							</label>
+<?php } ?>
                     </h3>
                     <span id="chars_left_notice" style="margin-top: 5px;">
                         还可输入: <strong id="status-field-char-counter">140</strong>个字符
@@ -461,8 +463,8 @@ _HTML_;
                     <a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
                     <span style="margin-left:73px;color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
                 </div>
-                <br /><br />
-            <div >
+                <br/><br/>
+		<div>
             <?php
                 if(false == empty($options['sendtips']))
                 {
@@ -479,10 +481,10 @@ _HTML_;
                     }
                 }
             ?>    
-			</div>
+		</div>
             </fieldset>
         </form>
-        <br />
+	<br/>
 
 <script type="text/javascript">
     $('jw_status').focus();
@@ -531,7 +533,7 @@ _HTML_;
 	 *	显示 tab 方式的列表
 	 *
 	 *	@param	array	$menuArr	菜单数据，结构如下：
-									array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
+	 *	array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
 	 */
 	static public function tab_menu( $menuArr, $fix_pos=1 )
 	{
@@ -568,9 +570,9 @@ _HTML_;
 /*
 		//title2 长了之后，会莫名其妙的影响 tab 布局
 		$vars=array('title'=>'最新动态 - 大家在做什么？' 
-						//, 'title2'=>'你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
-						, 'title2'	=>	'你想叽歪你就说嘛，'
-				);
+		//, 'title2'=>'你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
+		, 'title2'	=>	'你想叽歪你就说嘛，'
+		);
 */
 
 		if ( !array_key_exists('title',$vars) )	

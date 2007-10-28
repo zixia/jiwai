@@ -59,9 +59,9 @@ JWTemplate::updater(array(
 </form>
 <?php
 $menu_list = array (
-		 JWMessage::SENT		=> array('active'=>false	,'name'=>'发件箱'	,'url'=>"/wo/direct_messages/sent")
-		,JWMessage::INBOX		=> array('active'=>false	,'name'=>'收件箱'	,'url'=>"/wo/direct_messages/")
-	);
+	JWMessage::SENT => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
+	JWMessage::INBOX => array('active'=>false, 'name'=>'收件箱', 'url'=>"/wo/direct_messages/"),
+);
 
 $menu_list[$message_box_type]['active'] = true;
 
