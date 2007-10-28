@@ -250,18 +250,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" 
-            <?php 
-            if ($highlight==$url)
-            {
-                echo 'class="active"'; 
-            }
-            else
-            {
-             //   echo 'class=""';
-            }
-            ?>
-            onMouseOver="onMouseOverOrOut(this, 'mouseover', 'active');" onMouseOut="onMouseOverOrOut(this, 'mouseout', 'active');"><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -291,12 +280,7 @@ _HTML_;
 
 <div id="settingsNav" class="subtab">
 <?php foreach( $nav as $url=>$text ) { ?>
-    <a href="<?php echo $url;?>" 
-    <?php 
-        if($url==$highlight) echo "class=\"active\""; 
-        echo "onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\">";
-    ?> 
-    <?php echo $text;?></a>
+    <a href="<?php echo $url;?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $text;?></a>
 <?php } ?>
 </div>
 <?php
@@ -568,11 +552,11 @@ _HTML_;
 			$is_active	= $options['active'];
 
 			if ( $is_active )
-				echo "<li ><a href='$url' class='active'";
+				echo "<li><a href='$url' class='active'";
 			else
 				echo "<li><a href='$url' ";
 
-            echo "onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\">$name</a></li>\n";
+			echo ">$name</a></li>\n";
 		}
 
 		echo "</ul>\n";
@@ -2158,7 +2142,7 @@ _HTML_;
 			else
 				echo " <a href=\"$setting[0]\"";
 
-            echo " onMouseOver=\"onMouseOverOrOut(this, 'mouseover', 'active');\" onMouseOut=\"onMouseOverOrOut(this, 'mouseout', 'active');\" >$setting[1]</a>";
+			echo ">$setting[1]</a>";
 		}
 		echo "\t</div>\n";
 	}

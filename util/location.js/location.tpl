@@ -17,9 +17,9 @@ var JiWaiLocation = {
 			}
 		}
 
+		ec.options.length = 0;
 		var p = JiWaiLocation.o[pid];
 		if( p ) {
-			ec.options.length = 0;
 			ec.options.add( new Option('',0,false,false) );
 			for(var i=0; i<p[1].length; i++){
 				var k = p[1][i][0];

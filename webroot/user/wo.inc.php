@@ -311,9 +311,9 @@ $arr_menu = array(
 	array ('action', array($user_action_row,$page_user_info['id'])),
 	array ('count', array($arr_count_param,$page_user_info)),
 	array ('separator', array()),
-	array ('friend', array($arr_friend_list)),
-	array ('separator', array()),
 	array ('vistors', array($idUserVistors )),
+	array ('separator', array()),
+	array ('friend', array($arr_friend_list)),
 	array ('rss', array('user', $page_user_info['nameScreen'])),
 );
 
