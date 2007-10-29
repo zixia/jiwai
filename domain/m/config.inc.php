@@ -4,6 +4,7 @@ if(!defined('TPL_COMPILED_DIR'))
 if(!defined('TPL_TEMPLATE_DIR')) 
 	define('TPL_TEMPLATE_DIR', dirname(__FILE__).'/template' );
 
+header('Content-Type: text/html;charset=UTF-8');
 require_once( dirname(__FILE__).'/../../jiwai.inc.php' );
 
 function buildUrl($url){
