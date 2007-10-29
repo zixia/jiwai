@@ -317,7 +317,7 @@ function updateLink(value){
 
 <?php if( $user_info['isUrlFixed'] == 'N'  ) { ?>
 
-	<div style="padding:10px; margin:-10px 30px 10px 30px; background-color:#EAC006; width:560px;">
+	<div style="padding:10px; margin:-10px 30px 10px 30px; background-color:#FFF999; width:560px;">
 		<span style="font-size:13px;line-height:140%;">
 			你可以设置个性URL地址，但是<Strong>只能修改一次，以后不能修改！</Strong><br/>
 			这样作的原因是避免别人链接到你的主页时产生坏的链接。如果现在你不确定你想要的名字，可以暂时维持现状，等以后再说。

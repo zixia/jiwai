@@ -6,7 +6,7 @@ ul {list-style: none;
 }
 a img, form, fieldset {border: 0;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
-body {font:12px/120% "瀹嬩綋", Arial, Helvetica, sans-serif;}
+body {font:12px/120% Arial, Helvetica, sans-serif;}
 form {margin:0;padding:0;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
@@ -38,7 +38,7 @@ blockquote {margin:1.5em 0;padding:0 1.5em;}
 a {color:#D05D02;}
 a:hover {color:#F87A01;}
 
-.subhead {text-align:center;font-family:"瀹嬩綋", Georgia, Times, "Times New Roman", serif;margin-bottom:1.5em;font-style:italic;}
+.subhead {text-align:center;font-family:Georgia, Times, "Times New Roman", serif;margin-bottom:1.5em;font-style:italic;}
 .notice {border:1px solid #900; margin:1em 22em; padding:1em 1em 1em 3em; background:#FFD9D9;}
 
 #accessibility, #navigation h3, #footer h3 {position: absolute; left: -8888px; overflow: hidden;}
@@ -57,18 +57,26 @@ a:hover {color:#F87A01;}
   #navigation {}
   #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
+
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
   html>body #header .tip {margin-left:170px;}
   *+html #header .tip {margin-left:0!important}
   #header .tip a {font-weight:bold; margin-left:5px;}
 
-#navigation ul { float:right; margin-top:48px; margin-bottom:0;}
+  #header .navtip { z-index: -22103; font-size:13px; float:right; line-height:20px; margin-top:15px; height:20px; vertical-align:bottom; }
+  #header .navtip a { text-decoration:none; padding:5px; padding:5px; margin:0px;}
+  #header .navtip form { margin:0; display:inline; }
+  #header .navtip input{ height:20px; font-size:12px; padding:0; margin:0; line-height:20px;border:1px solid #B5B5B5;}
+  #header .navtip input.input{ height:20px; width:150px; border:1px solid #B5B5B5;}
+  #header .navtip input.submit{ height:22px; width:60px; border:1px solid #B5B5B5;}
+#navigation ul { float:right; margin-top:-34px!important; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
+	*+html #navigation ul  {margin-top:48px;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
 #navigation .line1 {background-color:#BDBDBD; width:78px; /*border-left:1px solid #ffffff; border-right:1px solid #ffffff;*/ line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
 #navigation .nav a {background-color:#F7F7F7; border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; color:#242424; text-decoration:none; overflow:hidden;}
-#navigation .nav a.now {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
+#navigation .nav a.now, #navigation .nav a.active, #navigation .nav a:hover{background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
 
 
 #container { margin:0 auto; width:776px; }
@@ -291,7 +299,7 @@ html>body #content .tabMenu {margin-top:19px;}
 }
 .rsshim { display:block; background:url(../images/org-rss-bg.gif) #f2f2f2 no-repeat center; height:27px; line-height:27px; text-indent:34px; text-align:center; margin:0 auto; padding:10px; color:#515151; font-size:12px; text-decoration:none;}
 
-#footer { height:32px; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
+#footer { height:64px; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
   #footer ul { text-align: center; }
   #footer ul li { display: inline; line-height:32px; padding:0 10px; font-family:Verdana, Arial, Helvetica, sans-serif; }
   #footer, #footer a {color:#7D7D7D;}
@@ -398,9 +406,13 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 
 #invite #container h2 {width:550px;}
 .account table {margin:20px auto 0 auto;}
-.account table td:first-child {font-size:14px; line-height:24px; vertical-align:top; text-indent:15px;}
 .account .regnow {position:absolute; margin-top:-12px;}
 .account table td input, .account table td textarea{border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:228px; height:24px; line-height:24px; padding-left:5px; display:block;}
+
+/* === for navtip_table === */
+table.navtip_table { margin:0px; }
+table.navtip_table td {font-size:13px; line-height:20px; vertical-align:middle;}
+/* === end === */
 .input {border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:228px; height:24px; line-height:24px; padding-left:5px;}
 .account table .note {font-size:12px; color:#989898;}
 .account #container ul {width:360px; margin:10px auto 10px auto;}

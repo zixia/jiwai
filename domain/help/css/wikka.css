@@ -5,12 +5,6 @@ Wikka Default Stylesheet (screen)
 
 /* global styling */
 
-p, td, li, input, select, textarea {
-	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
-	line-height: 20px;
-	font-size: 13px;
-}
-
 form, h1, h2, h3, h4, h5 {
 	margin: 0px;
 	padding: 0px;
@@ -322,24 +316,6 @@ blockquote {
 }
 
 /* form elements */
-
-input[type=submit], input[type=button] {
-	font-family: Arial, Helvetica, sans-serif;
-	padding: 0px 1px;
-	width: auto;
-	font-size: 9pt;
-	color:#fff;
-	font-weight: bold;
-	background-color: #33A;
-	border-right: 2px solid #336;
-	border-bottom: 2px solid #336;
-}
-
-input[type=submit]:hover, input[type=button]:hover {
-	background-color: #66C;
-	border-right: 2px solid #668;
-	border-bottom: 2px solid #668;
-}
 
 textarea#body{
 	width: 100%;

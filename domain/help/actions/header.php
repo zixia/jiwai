@@ -63,7 +63,7 @@ if ($this->GetMethod() != 'edit') {
 </ul>
 
 <?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header() ?>
+<?php JWTemplate::header('http://help.jiwai.de/') ?>
 
 <div id="container">
 <h1><span>

@@ -248,7 +248,7 @@ _HTML_;
 		<div id="navtip" class="navtip">
 		<form id='f3' action="/wo/search/users" style="display:inline;">
 		<table class="navtip_table"><tr>
-			<td valign="middle">你好，<a href="/<?php echo $nameUrl;?>/"><?php echo $nameScreen;?></a><?php if($nameUrl != 'public_timeline') echo '|<a href="/wo/account/settings/">设置</a>|<a href="/wo/logout">退出</a>'; ?>
+			<td valign="middle">你好，<a href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a><?php if($nameUrl != 'public_timeline') echo '|<a href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a href="'.JW_SRVNAME.'/wo/logout">退出</a>'; ?>
 			</td>
 			<td valign="middle"><input type="text" name="q" value="QQ、Email、姓名" onClick="if(this.value=='QQ、Email、姓名')this.value=''" onBlur="if(this.value=='')this.value='QQ、Email、姓名';" class="input"/></td>
 			<td valign="middle"><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></td>
@@ -260,7 +260,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
