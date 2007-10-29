@@ -213,7 +213,7 @@ _HTML_;
 				'/help/' => '留言板'
 			);
 			$nameScreen = '游客';
-			$nameUrl = '/public_timeline/';
+			$nameUrl = 'public_timeline';
 		} else {
 			$nav = array(
 				'/wo/' => '首页',
@@ -234,9 +234,9 @@ _HTML_;
 
 		if (!$highlight) {
 			$a = array_reverse($nav);
-            $urlNow = $_SERVER['REQUEST_URI'];
-            $urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
-            foreach($highlightAlias as $u=>$aurl) if( 0===strncasecmp($u,$urlNow,strlen($u))){$urlNow=$aurl; break;}
+			$urlNow = $_SERVER['REQUEST_URI'];
+			$urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
+			foreach($highlightAlias as $u=>$aurl) if( 0===strncasecmp($u,$urlNow,strlen($u))){$urlNow=$aurl; break;}
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
 			if (!$highlight && empty($nameScreen) ) $highlight = '/public_timeline/'; //$url;
 		}
@@ -246,11 +246,14 @@ _HTML_;
 	<div id="navigation">
 		<h2><a class="header" href="http://jiwai.de/">叽歪de</a></h2>
 		<div id="navtip" class="navtip">
-		<span style="vertical-align:bottom;">你好，<a href="/<?php echo $nameUrl;?>/"><?php echo $nameScreen;?></a><?php
-			if($nameUrl != '/public_timeline/') echo '|<a href="/wo/account/settings/" style="vertical-align:bottom;">设置</a>|<a href="/wo/logout" style="vertical-align:bottom;">退出</a>';
-		?>
-		</span>
-		<form id='f3' action="/wo/search/users" style="display:inline;"><input type="text" name="q" value="QQ、Email、姓名" onClick="this.value=''" class="input"/><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></form>
+		<form id='f3' action="/wo/search/users" style="display:inline;">
+		<table class="navtip_table"><tr>
+			<td valign="middle">你好，<a href="/<?php echo $nameUrl;?>/"><?php echo $nameScreen;?></a><?php if($nameUrl != 'public_timeline') echo '|<a href="/wo/account/settings/">设置</a>|<a href="/wo/logout">退出</a>'; ?>
+			</td>
+			<td valign="middle"><input type="text" name="q" value="QQ、Email、姓名" onClick="if(this.value=='QQ、Email、姓名')this.value=''" onBlur="if(this.value=='')this.value='QQ、Email、姓名';" class="input"/></td>
+			<td valign="middle"><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></td>
+		</tr></table>
+		</form>
 		</div>
 		<div style="clear:both;"></div>
 		<ul>

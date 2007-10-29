@@ -261,7 +261,7 @@ alert('ok');
                 $(nameToSlide + '2').setStyle('display','block');
                 $(nameToSlide + '1').setStyle('display','none');
                 JWSlide.slideIn(modeToSlide);
-                $('user_email').focus();
+                //$('user_email').focus();
                 }
                 ).delay(600);
                 break;
@@ -286,7 +286,7 @@ alert('ok');
                 $(nameToSlide + '3').setStyle('display','block');
                 $(nameToSlide + '1').setStyle('display','none');
                 JWSlide.slideIn(modeToSlide);
-                $('user_email3').focus();
+                //$('user_email3').focus();
                 }
                 ).delay(600);
                 break;

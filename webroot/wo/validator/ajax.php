@@ -69,11 +69,11 @@ function check_nameFull($v){
 
 	if( false == JWUser::IsValidFullName($v, false) ){
 		if( preg_match('/^\d/', $v ) ) {
-			return "姓名 不能以数字开头！：）：P";
+			return "姓名 不能以数字开头";
 		}else if( strlen( $v ) < 2  || strlen($v) > 40 ) {
-			return "姓名 长度必须在 2-40 字节之间！：）：P";
+			return "姓名 长度必须在 2-40 字节之间";
 		}else{
-			return "姓名 含有非法字符！：（：＄";
+			return "姓名 含有非法字符";
 		}
 	}
 
@@ -83,7 +83,7 @@ function check_nameFull($v){
 function check_email($v){
 
 	if( false == JWUser::IsValidEmail($v, false) ){
-		return "Email地址 不合法！：（：＄";
+		return "Email地址 不合法";
 	}
 
 	$idExist = intval( JWUser::IsExistEmail($v) );
@@ -91,7 +91,7 @@ function check_email($v){
 		return true;
 	}
 
-	return "Email地址 已经被使用！：）：P";
+	return "Email地址 已经被使用";
 }
 
 function check_url($v){
@@ -102,7 +102,7 @@ function check_url($v){
 			)
 		){
 		//return "$info[scheme]网址必须以http://或https://打头";
-		return "网址必须以http://或https://开头！：）：P";
+		return "网址必须以http://或https://开头";
 	}
 
 	if( preg_match( '/^([\w\-]+)(\.[\w\-]+)*(\.[a-z]{2,})$/', @$info['host'] ) 
@@ -112,32 +112,32 @@ function check_url($v){
 	}
 
 	//return "网址中的域名部分$info[host]不合法";
-	return "网址中的域名部分 不合法！：（：＄";
+	return "网址中的域名部分 不合法";
 }
 
 function check_DeviceNoAndNameScreen($v, $v2)
 {
     if( strlen( $v ) < 1 ) 
     {
-        return "号码 不能为空！：）：P";
+        return "号码 不能为空";
     }
 
     if( strlen( $v2 ) < 1 ) 
     {
-        return "用户名 不能为空！：）：P";
+        return "用户名 不能为空";
     }
 
     if( preg_match('/^\d/', $v2 ) ) 
     {
-        return "用户名 不能以数字开头！：）：P";
+        return "用户名 不能以数字开头";
     }
     else if( strlen( $v2 ) < 5 ) 
     {
-        return "用户名 不能少于5个字符！：）：P";
+        return "用户名 不能少于5个字符";
     }
     else if( strlen( $v2 ) > 20 ) 
     {
-        return "用户名 不能长于20个字符！：）：P";
+        return "用户名 不能长于20个字符";
     }
     else
     {
@@ -145,12 +145,12 @@ function check_DeviceNoAndNameScreen($v, $v2)
 
     if(false == JWDevice::IsValid($v, 'all'))
     {
-		return "号码 含有非法字符！：（：＄";
+		return "号码 含有非法字符";
     }
 
 	if( false == JWUser::IsValidName($v2, false) )
     {
-		return "用户名 含有非法字符！：（：＄";
+		return "用户名 含有非法字符";
 	}
 
     $UserId_row       = JWUser::GetUserInfo($v2, 'idUser');
@@ -161,7 +161,7 @@ function check_DeviceNoAndNameScreen($v, $v2)
 
     if ( !$IsExistNameScreen && !$IsExistDeviceNo )
     {
-        return "第一次来?请从左边进入吧！：）：P";
+        return "第一次来?请从左边进入吧";
     }
     else
     {
@@ -171,7 +171,7 @@ function check_DeviceNoAndNameScreen($v, $v2)
             {
                 if ( JWUser::IsWebUser($UserId_row) )
                 {
-                    return '<a href="/wo/login">为什么不重新用网页登录？：）：P</a>';
+                    return '<a href="/wo/login">为什么不重新用网页登录</a>';
                 }
                 else
                 {
@@ -179,7 +179,7 @@ function check_DeviceNoAndNameScreen($v, $v2)
                 }
             }
         }
-        return "号码 或 用户名 不正确！：）：P";
+        return "号码 或 用户名 不正确";
     }
 }
 
@@ -188,25 +188,25 @@ function check_DeviceNoAndNameScreen2($v, $v2){
     $v2=trim($v2," \t");
     if( strlen( $v ) < 1 ) 
     {
-        return "用户名 不能为空！：）：P";
+        return "用户名 不能为空";
     }
 
     if( preg_match('/^\d/', $v ) ) 
     {
-        return "用户名 不能以数字开头！：）：P";
+        return "用户名 不能以数字开头";
     }
     else if( strlen( $v ) < 5 ) 
     {
-        return "用户名 不能少于5个字符！：）：P";
+        return "用户名 不能少于5个字符";
     }
     else if( strlen( $v ) > 20 ) 
     {
-        return "用户名 不能长于20个字符！：）：P";
+        return "用户名 不能长于20个字符";
     }
 	else if( false == JWUser::IsValidName($v, false) )
     {
-		return "用户名 含有非法字符！：（：＄";
-	}
+		return "用户名 含有非法字符";
+    }
     else
     {
     }
@@ -216,7 +216,7 @@ function check_DeviceNoAndNameScreen2($v, $v2){
     {
         if ( JWUser::IsWebUser($idUser) )
         {
-            return '用户名 已经被使用，请更改！：）：P';
+            return '用户名 已经被使用，请更改';
         }
 
         $device_rows     = JWDevice::GetDeviceRowByUserId($idUser);
@@ -230,11 +230,11 @@ function check_DeviceNoAndNameScreen2($v, $v2){
 
                     if(empty($v2))
                     {
-                        return '第一次接触叽歪？换个用户名！用过叽歪？填写<span id="DevName" style="color:#000000">' . $devName . '</span>！：）：P'; 
+                        return '第一次接触叽歪？换个用户名！用过叽歪？填写<span id="DevName" style="color:#000000">' . $devName . '</span>'; 
                     }
                     else if ($v2 != $device_row['address'])
                     {
-                        return $devName . ' 或 用户名 不正确！：）：P';
+                        return $devName . ' 或 用户名 不正确';
                     }
                     else
                     {
@@ -244,7 +244,7 @@ function check_DeviceNoAndNameScreen2($v, $v2){
 
             }   
 
-        return "用户名 已经被使用，请更改！：）：P";
+        return "用户名 已经被使用，请更改";
     }
 
     return true;

@@ -66,9 +66,9 @@ a:hover {color:#F87A01;}
   #header .navtip { z-index: -22103; font-size:13px; float:right; line-height:20px; margin-top:15px; height:20px; vertical-align:bottom; font-family: 宋体, Fixedsys;}
   #header .navtip a { text-decoration:none; padding:5px; padding:5px; margin:0px;}
   #header .navtip form { margin:0; display:inline; }
-  #header .navtip input{ height:18px; vertical-align:bottom; font-size:12px; padding:0px; margin:0px; line-height:16px;}
-  #header .navtip input.input{ margin:0 5px; border:1px solid #B5B5B5; width:152px; }
-  #header .navtip input.submit{ border:1px solid #B5B5B5; height:20px; }
+  #header .navtip input{ height:20px; font-size:12px; padding:0; margin:0; line-height:20px;border:1px solid #B5B5B5;}
+  #header .navtip input.input{ height:20px; width:150px; border:1px solid #B5B5B5;}
+  #header .navtip input.submit{ height:22px; width:60px; border:1px solid #B5B5B5;}
 
 #navigation ul { float:right; margin-top:-34px!important; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
@@ -441,6 +441,12 @@ html>body .droplistopen {margin-top:-20px; margin-left:100px;}
 .account table td {font-size:14px; line-height:24px; vertical-align:top;}
 .account .regnow {position:absolute; margin-top:-12px;}
 .account table td input, .account table td textarea{border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:228px; height:24px; line-height:24px; padding-left:5px; display:block;}
+
+/* === for navtip_table === */
+.account table.navtip_table { margin:0px; }
+.account table.navtip_table td {font-size:13px; line-height:20px; vertical-align:middle;}
+/* === end === */
+
 .input {border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:228px; height:24px; line-height:24px; padding-left:5px;}
 .account table .note {font-size:12px; color:#989898;}
 .account #container ul {width:360px; margin:10px auto 10px auto;}
@@ -569,7 +575,7 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 .RegLeftTitle {color:#DC4206;font-size:28px;margin-top:10px;margin-bottom:30px;text-align: center;line-height:30px;}
 .RegMiddleTitle {font-size:28px;line-height: 60px;text-align: center;background-color: #FFFFFF;}
 .RegRightTitle {color:#DC4206;font-size:16px;}
-.RegRightTips {color:#A2A2A2;font-size:12px;margin-bottom:5px;}
+.RegRightTips {color:#A2A2A2;font-size:12px;margin:2px;}
 .RegErrorTips {color:#C55400;font-size:12px;font-weight: bold;text-align:center;}
 
 /*Reg Left Table*/
@@ -578,8 +584,8 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 .RegRightTable {background-color: #F2F2F2;margin-top:0!important;margin-top:-20px;padding:8px 8px;height:265px!important;height:245px;width:230px;border: 3px solid #FFFFFF;}
 
  /*Reg Return Button*/
- .RegReturn1 {font-size: 16px;margin-left: 200px;}
- .RegReturn2 {font-size: 16px;}
+ a.RegReturn1 {font-size: 16px;margin-left: 200px; text-decoration: none;}
+ a.RegReturn2 {font-size: 16px; text-decoration: none;}
 
  /*Reg Input */
  .RegRightTable table td input {width:152px;}
@@ -588,4 +594,4 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
  .RegRightTable table td {font-size:12px;}
 
  /*Reg Text */
- .RegText {font-size:12px;}
+ .RegText {margin-top:5px; font-size:12px; line-height:150%;}

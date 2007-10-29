@@ -247,7 +247,7 @@ _POD_;
 ?>
 
 <div id=g style="overflow:hidden;display:float;height:390px;border-width:5px;border-color:#FF0000;">
-<div id=g1 style="display:none;">
+<div id=g1 style="display:block;">
 <TABLE cellSpacing=0 cellPadding=0 width=560 border=0>
 <TBODY>
 <TR>
@@ -268,9 +268,10 @@ _POD_;
 <div class="RegRightTitle">已经通过手机、QQ、MSN或者Gtalk使用过叽歪了?</div>
 <div class="RegText">通过这里，你可以登录到自己的帐户，修改密码完成注册，浏览过去的叽歪条目。</div>
 <div class="RegText">号　码　<INPUT style="width:170px;height:20px;display:inline;" id=user_DeviceNo1 alt=号码 title=号码 maxLength=64 size=20 name=user_DeviceNo1 value="" ajax2="DeviceNoAndNameScreen"></div>
-<div class="RegRightTips">手机号码，或是QQ号码，MSN邮件地址等</div>
+<div class="RegRightTips" align="right">手机号码，或是QQ号码，MSN邮件地址等</div>
 <div class="RegText">用户名　<INPUT style="width:170px;height:20px;display:inline;" id=user_nameScreen1 alt=用户名 title=用户名 maxLength=16 size=20 name=user_nameScreen1 value="" ajax2="DeviceNoAndNameScreen" onblur="JWValidator.onNameOrDeviceBlur();"></div>
-<div class="RegRightTips" align="right">你通过上述设备所注册的叽歪名字</div><div class="RegRightTips">不记得了？发送whoami或woshishui查看</div>
+<div class="RegRightTips" align="right">你通过上述设备所注册的叽歪名字</div>
+<div class="RegRightTips" align="right" style="margin-top:-10px;">不记得了？发送whoami或woshishui查看</div>
 <div><input type="button" class="submitbutton" style="width:120px;margin-left:50px;border-style:none;" onclick="if(JWValidator.validate1('RegTips','user_DeviceNo1','user_nameScreen1'))JiWai.slideTo('g','slideOut13',500 ,'horizontal');" value="完成注册"></div>
 <div id=RegTips class="RegErrorTips" style="display:none;"></div>
 </div>
@@ -325,7 +326,7 @@ _POD_;
 
     <div style=" padding:20px 0 0 270px; height:50px;">
     	<a id=reg onclick="if(JWValidator.validate2('f2','RegTips2'))$('f2').submit();return false;" class="button"  alt="注册" title="注册" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>"/></a>
-        <a class=RegReturn1 href=# onclick="JiWai.slideTo('g','slideOut21',500 ,'');">返回<<</a>
+        <a class="RegReturn1" href="javascript:void(0);" onclick="JiWai.slideTo('g','slideOut21',500 ,'');"><< 返回</a>
     </div>            
 
 </form>
@@ -363,7 +364,7 @@ _POD_;
             <td><input id="user_pass_confirm3" type="password" name="user[pass_confirm3]" alt="确认密码" compare="user_pass3" minLength="6" onkeydown="if(event.keyCode == 13)$('reg3').onclick();" maxLength="16" onblur="JWValidator.onPassBlur('user_pass_confirm3');"/><i></i></td>
         </tr>
         <tr>
-            <td><a class=RegReturn2 href=# onclick="JiWai.slideTo('g','slideOut31',500 ,'horizontal');">返回<<</a></td>
+            <td><a class="RegReturn2" href="javascript:void(0);" onclick="JiWai.slideTo('g','slideOut31',500 ,'horizontal');"><< 返回</a></td>
             <td><a id=reg3 onclick="if(JWValidator.validate2('f'))$('f').submit();return false;" class="button" style="margin-left:50px!important;margin-left:30px;" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>" alt="注册" title="注册"/></a></td>
         </tr>
     </table>
@@ -420,7 +421,6 @@ function IsAddressBelongsToName($address,$name)
 <script defer="true">
 	JWValidator.init('f');
 	JWValidator.init('f2');
-    JiWai.slideTo('g','slideIn1', 500,'');
 </script>
 </body>
 </html>

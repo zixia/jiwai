@@ -12,10 +12,10 @@ JWLogin::MustLogined();
 
 //var_dump($_REQUEST);
 
-$user_info		= JWUser::GetCurrentUserInfo();
-$has_photo		= !empty($user_info['idPicture']);
-$protected      = $user_info['protected'] == 'Y';
-$idInvited      = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
+$user_info = JWUser::GetCurrentUserInfo();
+$has_photo = !empty($user_info['idPicture']);
+$protected = $user_info['protected'] == 'Y';
+$idInvited = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
 
  if ( $has_photo ){
     // we have photo
@@ -82,7 +82,7 @@ function shifttab(id){
     switch(id){
         case 1:
             $('invite_msn').style.display='block';
-            $('tab_msn').className='now';
+            $('tab_msn').className='active';
             $('invite_email').style.display='none';
             $('tab_email').className='';
             $('invite_sms').style.display='none';
@@ -92,7 +92,7 @@ function shifttab(id){
             $('invite_msn').style.display='none';
             $('tab_msn').className='';
             $('invite_email').style.display='block';
-            $('tab_email').className='now';
+            $('tab_email').className='active';
             $('invite_sms').style.display='none';
             $('tab_sms').className='';
         break;
@@ -102,7 +102,7 @@ function shifttab(id){
             $('invite_email').style.display='none';
             $('tab_email').className='';
             $('invite_sms').style.display='block';
-            $('tab_sms').className='now';
+            $('tab_sms').className='active';
         break;
     }
 }
@@ -120,7 +120,7 @@ function shifttab(id){
 <h2>邀请朋友一起来叽歪</h2>
 <p>如果暂时不想邀请朋友，可以点击进入<a href="/wo/">我的首页</a></p>
 
-<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);" class="now">通过Email邀请</a><a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a></p>
+<p class="subtab"><a id="tab_msn" href="javascript:shifttab(1);">通过MSN邀请</a><a id="tab_email" href="javascript:shifttab(2);" class="active">通过Email邀请</a><a id="tab_sms" href="javascript:shifttab(3);">通过短信邀请</a></p>
 
 <div id="invite_msn" style="display:none;">
     <div class="tabbody">
