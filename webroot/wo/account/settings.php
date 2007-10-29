@@ -185,7 +185,7 @@ _HTML_;
 if( isset( $_REQUEST['commit_w'] ) ) {
 	$nameUrl = $_REQUEST['nameUrl'];
 	$oldNameUrl = $user_info['nameUrl'];
-	if( $nameUrl != $oldNameUrl ) {
+	if( true || $nameUrl != $oldNameUrl ) {
 		$uArray = array(
 			'nameUrl' => $nameUrl,
 			'isUrlFixed' => 'Y',

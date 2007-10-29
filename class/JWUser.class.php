@@ -205,8 +205,8 @@ _SQL_;
 
 		foreach ( $rows as $row )
 		{
-			$row['email']				= strrev($row['email']);
-			$user_map[$row['idUser']] 	= $row;
+			$row['email'] = strrev($row['email']);
+			$user_map[$row['idUser']] = $row;
 		}
 
 		return $user_map;

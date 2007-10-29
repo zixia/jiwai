@@ -1198,6 +1198,8 @@ _HTML_;
 
 		$user_ids = $options['user_ids'];
 
+		$activeOrder = isset( $options['activeOrder'] ) ? $activeOrder : true;
+
 		if ( empty($options['view']) ) $options['view'] = 'large';
 		
 		if ( !is_array($user_ids) )
@@ -1237,17 +1239,20 @@ _HTML_;
 		}
 
 		//$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids, true, 80);
+		$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids, $activeOrder, 80);
 		$picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 		$n = 0;
 
-		$user_ids = array_keys( $user_db_rows );
+		$user_ids = $activeOrder == true ? array_keys( $user_db_rows ) : $user_ids ;
 
 		foreach ( $user_ids as $user_id )
 		{
-			$user_db_row 		= $user_db_rows			[$user_id];
+			if( false == isset( $user_db_rows[ $user_id ] ) )
+				continue;
+
+			$user_db_row 		= $user_db_rows[$user_id];
 			$user_picture_id	= @$user_db_row['idPicture'];
 
 			$user_icon_url		= JWTemplate::GetConst('UrlStrangerPicture');
@@ -1926,8 +1931,14 @@ __HTML__;
 		if ( empty($idVistors) )
 			return;
 		
-		$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
-		self::sidebar_featured(array('user_ids'=>$idVistors, 'title'=>$title, 'id'=>'friend'));
+		#$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
+		$title = '最近有谁来过';
+		self::sidebar_featured(array(
+				'user_ids' => $idVistors,
+				'title' => $title,
+				'id' => 'friend',
+				'activeOrder' => false,
+		));
 	}
 
 	static function sidebar_friend($friendIds)
