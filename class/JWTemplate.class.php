@@ -246,7 +246,7 @@ _HTML_;
 	<div id="navigation">
 		<h2><a class="header" href="http://jiwai.de/">叽歪de</a></h2>
 		<div id="navtip" class="navtip">
-		<form id='f3' action="/wo/search/users" style="display:inline;">
+		<form id='f3' action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>" style="display:inline;">
 		<table class="navtip_table"><tr>
 			<td valign="middle">你好，<a href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a><?php if($nameUrl != 'public_timeline') echo '|<a href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a href="'.JW_SRVNAME.'/wo/logout">退出</a>'; ?>
 			</td>
