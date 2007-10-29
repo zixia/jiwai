@@ -19,15 +19,15 @@ if ( preg_match('/^\d+$/',$nameOrId) )
 else
 {
 	$nameScreen = $nameOrId;
-
 	if (!JWUnicode::unifyName($nameScreen)) { 
 		//301 to UTF-8 URL if GBK
 		header('HTTP/1.1 301 Moved Permanently');
 		header('Location: http://'.$_SERVER['HTTP_HOST'].'/'.urlencode($nameScreen).$pathParam);
 		die();
 	}
+
 	$nameScreen = $nameOrId; //XXX go on even if name is invalid
-	$nameScreen .= preg_match( '/\d+\.\d+\.\d+\./', $nameScreen) ? '*' : '';
+	$nameScreen .= preg_match( '/\d+\.\d+\.\d+\.$/', $nameScreen) ? '*' : '';
 	$page_user_id	= JWUser::GetUserInfo($nameScreen,'id', 'nameUrl');
 }
 

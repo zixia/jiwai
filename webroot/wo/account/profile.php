@@ -247,8 +247,8 @@ if ( $has_photo ){
     </tr>
     <tr>
         <th valign="top">自我介绍：</th>
-        <td><textarea name="user[bio]" id="user_name" style="height:60px;" maxLength="70" alt="自我介绍"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
-        <td class="note">一句话的介绍，不超过70个字</td>
+        <td><textarea name="user[bio]" id="user_name" style="height:60px;" maxLength="200" alt="自我介绍"><?php echo htmlSpecialChars($outInfo['bio']);?></textarea></td>
+        <td class="note">一句话的介绍，不超过200个字</td>
     </tr>
     <tr>
         <th>来自：</th>

@@ -122,8 +122,8 @@ _HTML_;
 
 <?php 
 $menu_list = array (
-		'archive_n_replies'	=> array('active'=>true	,'name'=>'叽歪de留言板'	,'url'=>"/help/")
-	);
+	'archive_n_replies'	=> array('active'=>true	,'name'=>'留言板', 'url'=>"/help/")
+);
 
 JWTemplate::tab_menu($menu_list) 
 ?>

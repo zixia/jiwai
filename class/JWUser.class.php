@@ -390,11 +390,11 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		if (strlen($name)<4||strlen($name)>20) return false; //最少 4 byte
+		if (strlen($name)<5||strlen($name)>20) return false; //最少 3 byte
 		if (strpos($name, ' ')!==false) return false; //不能包含空格
 		if (preg_match('/^\d/', $name)) return false; //不能以半角数字开头 
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
-			if (mb_strlen($name)<5) return false; //纯西文字符不能短于5
+			if (mb_strlen($name)<5) return false; //纯西文字符不能短于3
 		} else {
 			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; //如果包含非西文字符，则其个数不能少于2
 		}

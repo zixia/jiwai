@@ -75,6 +75,7 @@ var JWValidator = {
 	},
 
 	trim: function(n){
+		if (null==n) n='';
 		return n.replace(/([ \f\t\v]+$)|(^[ \f\t\v]+)/g,'');
 	},
 
@@ -196,7 +197,7 @@ var JWValidator = {
 	notnull : function(o){
 		if ( this.value(o) == '' || this.value(o) == null ) {
 			if( ( this.attr(o, 'null') != null ) ) { //allow null
-				return '';
+				return true;
 			}
 			var s = this.attr(o,'type') == 'SELECT' ? '选' : '填';
 			var a = this.attr(o,'alt') == null ? '该项' : this.attr(o,'alt');
@@ -222,5 +223,155 @@ var JWValidator = {
 				}
 			}
 		).request();
-	}
+	},
+
+    validate2 : function(f,q)
+    {
+		var c= $(f).elements;
+        var m,h;
+
+		for(var i=0;i<c.length;i++)
+        {
+			m=c[i];
+            h=this.hint(m);
+            if(null !=h)
+                return false;
+        }
+
+        if(null==q) return true;
+
+        h=this.hint2($(q));
+        if(null !=h)
+            return false;
+
+        return true;
+    },
+
+   validate1 : function(q,o,w)
+   {
+        var h;
+        if(null==q) return true;
+        q=$(q);
+
+		var notnull = this.notnull($(o));
+		if( notnull != true ){
+			return JWValidator.hint2(q,notnull);
+		}
+
+		notnull = this.notnull($(w));
+		if( notnull != true ){
+			return JWValidator.hint2(q,notnull);
+		}
+
+        h=this.hint2(q);
+        if(null !=h)
+            return false;
+
+        return true;
+    },
+
+    ajax2 : function(o,w,q,s,s2,d,n,t,c)
+    {
+
+        o=$(o);
+        w=$(w);
+        q=$(q);
+
+        if(null==q) q=o;
+
+		var notnull = this.notnull(o);
+		if( notnull != true ){
+			return JWValidator.hint2(q,notnull);
+		}
+
+		notnull = this.notnull(w);
+		if( notnull != true ){
+			return JWValidator.hint2(q,notnull);
+		}
+
+		new Ajax( this.ajax_url, 
+        {
+				method: 'get',
+				data: 'k='
+					+ encodeURIComponent(this.attr(o,'ajax2'))
+					+ '&v='
+					+ encodeURIComponent(this.value(o))
+					+ '&v2='
+					+ encodeURIComponent(this.value(w)) ,
+				onSuccess: function(e,x) 
+                {
+    				JWValidator.hint2(q,e,s,s2,d,n,t,c);
+				}
+		}
+		).request();
+    },
+	
+	hint2: function(o,v,s,s2,d,n,t,c)
+    {
+		var i = o;
+        var b;
+
+		if( i == null )
+			return null;
+
+		if( v == undefined ) 
+        {
+			var v = i.innerHTML;
+			return v=='' ? null : v;
+		}
+
+		i.innerHTML = v;
+		b = (v=='') ? 'none' : 'block';
+        i.setStyle('display',b);
+
+        if (null != s)
+        {
+        b = ( v.indexOf(s) == -1)? 'none' : 'block';
+
+        if ((null != s2)&&('none'==b))
+            b = ( v.indexOf(s2) == -1)? 'none' : 'block';
+
+            if((null != c)&&('none'==b))
+                b = ( $(c).value.length < 1)? 'none' : 'block';
+        
+            if (null != n)
+            {
+                t=$(t);
+                for(var j=1;j<=n;j++)
+                {
+                    if(null!=t )
+                        if (2 != j)//一般不用判断
+                            $(d + j).innerHTML=t.innerHTML;
+                    $(d + j).setStyle('display',b);
+                }
+            }
+        }
+	},
+
+    onNameOrDeviceBlur : function()
+    {
+        this.ajax2('user_DeviceNo1','user_nameScreen1','RegTips');
+    },
+
+    onPassBlur : function(m,d)
+    {
+        var g = this.attr(m, 'compare');
+        if( m!=null && g != null ) {
+            var v,x,z,h;
+            if (null==d) d=$(m);
+
+            h = this.compare_o($(m), $(g));
+            if( h != null )
+                return this.hint(d,h);
+
+            this.hint(d,'');
+        }
+
+            return true;
+    },
+
+    onNameOrDeviceBlur2 : function()
+    {
+        this.ajax2('user_nameScreen','user_DeviceNo','RegTips2','第一次接触','不正确','DevNo2',3,'DevName','user_DeviceNo');
+    }
 }

@@ -79,7 +79,7 @@ function draw()
             　　图片网址复制成功。
 			</span>			
 			<br/>
-                <textarea id="pic_url" rows="1" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this);" >http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png</textarea>
+                <textarea id="pic_url" rows="1" cols="100" class="urltext" readonly="readonly" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png</textarea>
 			<br/><br/>
 		    UBB代码:
 			<span class=copytips id=ubb_url_tip>

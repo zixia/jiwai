@@ -203,8 +203,8 @@ _HTML_;
 	static public function header($highlight=null)
 	{
 		$userInfo = JWUser::GetCurrentUserInfo();
-		$nameScreen = $userInfo['nameScreen'];
-		$nameUrl = $userInfo['nameUrl'];
+		$nameScreen = @$userInfo['nameScreen'];
+		$nameUrl = @$userInfo['nameUrl'];
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
@@ -212,15 +212,14 @@ _HTML_;
 				'/wo/login' => '登录',
 				'/help/' => '留言板'
 			);
+			$nameScreen = '游客';
+			$nameUrl = '/public_timeline/';
 		} else {
 			$nav = array(
-				'/wo/' => '我的首页',
-				'/'.$nameUrl.'/' => '我的叽歪',
+				'/wo/' => '首页',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
-				'/wo/account/settings' => '设置',
-				'/help/' => '留言板',
-				'/wo/logout' => '退出',
+				'http://help.jiwai.de/' => '帮助',
 			);
 		}
 
@@ -241,16 +240,24 @@ _HTML_;
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
 			if (!$highlight && empty($nameScreen) ) $highlight = '/public_timeline/'; //$url;
 		}
+
 ?>
 <div id="header">
 	<div id="navigation">
 		<h2><a class="header" href="http://jiwai.de/">叽歪de</a></h2>
-		<div id="sitetip" class="tip" style="display:none;"></div>
+		<div id="navtip" class="navtip">
+		<span style="vertical-align:bottom;">你好，<a href="/<?php echo $nameUrl;?>/"><?php echo $nameScreen;?></a><?php
+			if($nameUrl != '/public_timeline/') echo '|<a href="/wo/account/settings/" style="vertical-align:bottom;">设置</a>|<a href="/wo/logout" style="vertical-align:bottom;">退出</a>';
+		?>
+		</span>
+		<form id='f3' action="/wo/search/users" style="display:inline;"><input type="text" name="q" value="QQ、Email、姓名" onClick="this.value=''" class="input"/><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></form>
+		</div>
+		<div style="clear:both;"></div>
 		<ul>
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo JW_SRVNAME.$url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -366,13 +373,13 @@ _HTML_;
 	<ul>
 		<li class="first">&copy; 2007 叽歪de</li>
 
-		<li><a href="http://help.jiwai.de/AboutUs" 			target="_blank">关于我们</a></li>
-		<li><a href="http://help.jiwai.de/WeAreHiring" 		target="_blank">加入我们</a></li>
-		<li><a href="http://help.jiwai.de/MediaComments" 	target="_blank">媒体和掌声</a></li>
-		<li><a href="http://blog.jiwai.de/" 				target="_blank">Blog</a></li>
-		<li><a href="http://help.jiwai.de/Api"				target="_blank">API</a></li>
-		<li><a href="http://help.jiwai.de/"					target="_blank">帮助</a></li>
-		<!--li><a href="http://help.jiwai.de/TOS"				target="_blank">使用协议</a></li-->
+		<li><a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a></li>
+		<li><a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a></li>
+		<li><a href="http://help.jiwai.de/MediaComments" target="_blank">媒体和掌声</a></li>
+		<li><a href="http://blog.jiwai.de/" target="_blank">Blog</a></li>
+		<li><a href="http://help.jiwai.de/Api" target="_blank">API</a></li>
+		<li><a href="/help/" target="_blank">帮助留言板</a></li>
+		<!--li><a href="http://help.jiwai.de/TOS" target="_blank">使用协议</a></li-->
 	</ul>
     <ul>
 		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
@@ -464,7 +471,7 @@ _HTML_;
                     <span style="margin-left:73px;color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
                 </div>
                 <br/><br/>
-		<div>
+				<div>
             <?php
                 if(false == empty($options['sendtips']))
                 {
@@ -477,11 +484,11 @@ _HTML_;
                     }
                     if(0 >= $ValidNums[1])
                     {
-                        echo '<a class="sendtips" href="/wo/devices/im" >用QQ/MSN也能叽歪 ？</a><br />';
+                        echo '<a class="sendtips" href=$imicoUrlIm >用QQ/MSN也能叽歪 ？</a><br />';
                     }
                 }
             ?>    
-		</div>
+				</div>
             </fieldset>
         </form>
 	<br/>
@@ -554,9 +561,9 @@ _HTML_;
 			$is_active	= $options['active'];
 
 			if ( $is_active )
-				echo "<li><a href='$url' class='active'";
+				echo "<li><a href = '$url' class = 'active' ";
 			else
-				echo "<li><a href='$url' ";
+				echo "<li><a href = '$url' ";
 
 			echo ">$name</a></li>\n";
 		}
@@ -652,6 +659,7 @@ _HTML_;
 			$device		= JWDevice::GetNameFromType($device, @$statusRow['idPartner']);
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
+			$duration2	= JWStatus::GetTimeDesc($timeCreate, true);
 
 
 			$status_result 	= JWStatus::FormatStatus($statusRow);
@@ -708,7 +716,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 if ( $isOpen && isset($statusRow) ) 
 {
 	echo <<<_HTML_
-  					<a href="/$name_url/statuses/$status_id">$duration</a>
+  					<a href="/$name_url/statuses/$status_id" title="$duration2" alt="$duration2" >$duration</a>
   					来自 $device $sign
 _HTML_;
 
@@ -888,6 +896,7 @@ _HTML_;
 			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?  '签名' : '';
 			
 			$duration	= JWStatus::GetTimeDesc($timeCreate);
+			$duration2	= JWStatus::GetTimeDesc($timeCreate, true);
 
 			if ( !empty($statusRows[$status_id]['idPicture']) ) {
 				if( $options['isMms'] ) {
@@ -951,7 +960,7 @@ _HTML_;
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>
-			<a href="/<?php echo $name_url?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
+			<a href="/<?php echo $name_url?>/statuses/<?php echo $status_id?>" title="<?php echo $duration2; ?>" alt="<?php echo $duration2; ?>"><?php echo $duration?></a>
 <?php } else {
 			echo $duration;	
 } ?>
@@ -1606,48 +1615,69 @@ _HTML_;
              echo "<ul class=imico><li>";
                             
               $aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
+
+              $isUserLogined = JWLogin::IsLogined() ;
               $imicoUrl = "http://blog.jiwai.de/images";
+              $imicoUrlSms = "/wo/devices/sms";
+              $imicoUrlIm = "/wo/devices/im";
+              $imicoUrlHelpSms = "http://help.jiwai.de/VerifyYourPhone";
+              $imicoUrlHelpIm = "http://help.jiwai.de/VerifyYourIM";
+              $imicoUrlHref = "";
               
+              $isUseNewSmth = false;
+              $arrUseDevices =array();
 			  foreach($aDeviceInfo_rows as $aDeviceInfo_row)
               { 
                   if (empty($aDeviceInfo_row['secret']))
                   {
-                     switch( $aDeviceInfo_row['type'])
-                     {
-                         case 'sms':
-                             echo <<<_HTML_
-                                 <a href="/wo/devices/sms"><img src="$imicoUrl/jiwai-mobile.gif" alt="已绑定手机" title="已绑定手机" /></a>
-_HTML_;
-                            break;
-                         case 'qq':
-                             echo <<<_HTML_
-                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-qq.gif" alt="已绑定 QQ" title="已绑定 QQ" /></a>
-_HTML_;
-                            break;
-                         case 'msn':
-                             echo <<<_HTML_
-                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-msn.gif" alt="已绑定 MSN" title="已绑定 MSN" /></a>
-_HTML_;
-                            break;
-                         case 'gtalk':
-                             echo <<<_HTML_
-                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-gtalk.gif" alt="已绑定 Gtalk" title="已绑定 Gtalk" /></a>
-_HTML_;
-                            break;
-                         case 'skype':
-                             echo <<<_HTML_
-                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-skype.gif" alt="已绑定 Skype" title="已绑定 Skype" /></a>
-_HTML_;
-                            break;
-                         case 'newsmth':
-                            echo <<<_HTML_
-                                <a href="/wo/devices/im"><img src="$imicoUrl/jiwai-newsmth.gif" alt="已绑定 水木清华" title="已绑定 水木清华" /></a>
-_HTML_;
-                            break;
-                         default:
-                     }
+                      $arrUseDevices[$aDeviceInfo_row['type']]=true;
                   }
               }   
+
+              if (true== $arrUseDevices['sms'])
+              {
+                  $arrUseDevices['sms']=true;
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-mobile.gif alt="已绑定手机" title="已绑定手机" /></a>
+_HTML_;
+              }
+              if (true== $arrUseDevices['gtalk'])
+              {
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-gtalk.gif" alt="已绑定 Gtalk" title="已绑定 Gtalk" /></a>
+_HTML_;
+              }
+              if (true== $arrUseDevices['msn'])
+              {
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-msn.gif" alt="已绑定 MSN" title="已绑定 MSN" /></a>
+_HTML_;
+              }
+              if (true== $arrUseDevices['qq'])
+              {
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-qq.gif" alt="已绑定 QQ" title="已绑定 QQ" /></a>
+_HTML_;
+              }
+              if (true== $arrUseDevices['skype'])
+              {
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-skype.gif" alt="已绑定 Skype" title="已绑定 Skype" /></a>
+_HTML_;
+              }
+              if(true== $arrUseDevices['newsmth'])
+              {
+                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                  echo <<<_HTML_
+                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-newsmth.gif" alt="已绑定 水木清华" title="已绑定 水木清华" /></a>
+_HTML_;
+              }
+
             echo "</li></ul><br />";
     }
 

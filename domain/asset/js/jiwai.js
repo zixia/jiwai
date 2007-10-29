@@ -210,6 +210,121 @@ alert('ok');
 		}});
 		return false;
 	},
+    slideTo: function(nameToSlide, typeToSlide, timeToSlide, modeToSlide)
+    {
+
+        if(null == typeToSlide ) typeToSlide = 'toggle';
+        if(null == timeToSlide ) timeToSlide = '500';
+
+        var JWSlide = new Fx.Slide(nameToSlide, {duration: timeToSlide});
+        switch(typeToSlide.toLowerCase())
+        {
+            case 'toggle':
+                JWSlide.toggle(modeToSlide);
+                break;
+            case 'slidein':
+                JWSlide.slideIn(modeToSlide);
+                break;
+            case 'slidein1':
+                JWSlide.hide();
+                $(nameToSlide + '1').setStyle('display','block');
+                JWSlide.slideIn(modeToSlide);
+                $('StartReg').focus();
+                //$('user_DeviceNo').focus();
+                break;
+            case 'slidein2':
+                JWSlide.slideIn(modeToSlide);
+                (
+                function()
+                {
+                JWSlide.slideOut(modeToSlide);
+                }
+                ).delay(1000);
+                break;
+            case 'slideout':
+                JWSlide.slideOut(modeToSlide);
+                break;
+            case 'slideout2':
+                JWSlide.slideOut(modeToSlide);
+                (
+                function()
+                {
+                JWSlide.slideIn(modeToSlide);
+                }
+                ).delay(600);
+                break;
+            case 'slideout12':
+                JWSlide.slideOut(modeToSlide);
+                (
+                function()
+                {
+                $(nameToSlide + '2').setStyle('display','block');
+                $(nameToSlide + '1').setStyle('display','none');
+                JWSlide.slideIn(modeToSlide);
+                $('user_email').focus();
+                }
+                ).delay(600);
+                break;
+            case 'slideout21':
+                JWSlide.slideOut(modeToSlide);
+                (
+                function()
+                {
+                $(nameToSlide + '1').setStyle('display','block');
+                $(nameToSlide + '2').setStyle('display','none');
+                JWSlide.slideIn(modeToSlide);
+                }
+                ).delay(600);
+                break;
+            case 'slideout13':
+                JWSlide.slideOut(modeToSlide);
+                (
+                function()
+                {
+                $('user_DeviceNo3').value=$('user_DeviceNo1').value;
+                $('user_nameScreen3').value=$('user_nameScreen1').value;
+                $(nameToSlide + '3').setStyle('display','block');
+                $(nameToSlide + '1').setStyle('display','none');
+                JWSlide.slideIn(modeToSlide);
+                $('user_email3').focus();
+                }
+                ).delay(600);
+                break;
+            case 'slideout31':
+                JWSlide.slideOut(modeToSlide);
+                (
+                function()
+                {
+                $(nameToSlide + '1').setStyle('display','block');
+                $(nameToSlide + '3').setStyle('display','none');
+                JWSlide.slideIn(modeToSlide);
+                }
+                ).delay(600);
+                break;
+        }
+    },
+
+    copyToClipboard: function(obj) 
+    {
+        obj.select();
+
+        txt=obj.value;
+        $(obj.id + "_tip").style.display="inline";
+        if(window.clipboardData) 
+        {    
+            window.clipboardData.clearData();    
+            window.clipboardData.setData("Text", txt);    
+        }
+        else if(navigator.userAgent.indexOf("Opera") != -1) 
+        {    
+            window.location = txt;    
+        }
+        else if (window.netscape) 
+        {    
+            $(obj.id + "_tip").style.display="none";
+        }    
+    },
+
 	onLoad: function() {
 		JiWai.AutoEmote();
 		if (window.RefreshInterval && location.search && location.search.length>1) setTimeout(JiWai.Refresh, RefreshInterval*1000);
@@ -222,40 +337,3 @@ alert('ok');
 
 JiWai.Init();
 
-function copyToClipboard(obj) 
-{
-    obj.select();
-
-    txt=obj.value;
-    $(obj.id + "_tip").style.display="inline";
-    if(window.clipboardData) 
-    {    
-        window.clipboardData.clearData();    
-        window.clipboardData.setData("Text", txt);    
-    }
-    else if(navigator.userAgent.indexOf("Opera") != -1) 
-    {    
-        window.location = txt;    
-    }
-    else if (window.netscape) 
-    {    
-        $(obj.id + "_tip").style.display="none";
-    }    
-}
-
-function onMouseOverOrOut(obj, styleChangeTo, StyleNoChange)
-{
-    
-    if(obj.className == null)
-    {
-        obj.className = styleChangeTo;
-    }
-    else if(StyleNoChange != obj.className)
-    {
-        obj.className = styleChangeTo;
-    }
-    else
-    {
-    }
-
-}

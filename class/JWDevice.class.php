@@ -71,6 +71,8 @@ class JWDevice {
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
+			case 'yahoo':
+				// FIXME @yahoo.(com|com.cn) suffix
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
@@ -87,6 +89,31 @@ class JWDevice {
 			case 'api':
 			case 'facebook':
 				return true;
+            case 'all':
+                if(false != self::IsValid($address, 'sms'))
+                {
+                    return true;
+                }
+                else if(false != self::IsValid($address, 'qq'))
+                {
+                    return true;
+                }
+                else if(false != self::IsValid($address, 'msn'))//gtalk, jabber, email
+                {
+                    return true;
+                }
+                else if(false != self::IsValid($address, 'skype'))
+                {
+                    return true;
+                }
+                else if(false != self::IsValid($address, 'newsmth'))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
 
 			default:
 				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
@@ -687,6 +714,9 @@ _SQL_;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
+			case 'yahoo':
+				$name='jiwai001';
+				break;
 			case 'msn':
 				$row = null;
 				if( false == empty($address) ) {
@@ -809,7 +839,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook' /*, 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook', 'yahoo' /*, 'jabber'*/ );
 	}
 
 	static public function IsHistorySignature($idUser, $signature){

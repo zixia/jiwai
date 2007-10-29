@@ -38,7 +38,7 @@ blockquote {margin:1.5em 0;padding:0 1.5em;}
 a {color:#D05D02;}
 a:hover {color:#F87A01;}
 
-.subhead {text-align:center;font-family:"宋体", Georgia, Times, "Times New Roman", serif;margin-bottom:1.5em;font-style:italic;}
+.subhead {text-align:center;font-family:Georgia, Times, "Times New Roman", serif;margin-bottom:1.5em;font-style:italic;}
 .notice {border:1px solid #900; margin:1em 22em; padding:1em 1em 1em 3em; background:#FFD9D9;}
 
 #accessibility, #navigation h3, #footer h3 {position: absolute; left: -8888px; overflow: hidden;}
@@ -57,12 +57,20 @@ a:hover {color:#F87A01;}
   #navigation {}
   #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
+
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
   html>body #header .tip {margin-left:170px;}
   *+html #header .tip {margin-left:0!important}
   #header .tip a {font-weight:bold; margin-left:5px;}
 
-#navigation ul { float:right; margin-top:48px; margin-bottom:0;}
+  #header .navtip { z-index: -22103; font-size:13px; float:right; line-height:20px; margin-top:15px; height:20px; vertical-align:bottom; font-family: 宋体, Fixedsys;}
+  #header .navtip a { text-decoration:none; padding:5px; padding:5px; margin:0px;}
+  #header .navtip form { margin:0; display:inline; }
+  #header .navtip input{ height:18px; vertical-align:bottom; font-size:12px; padding:0px; margin:0px; line-height:16px;}
+  #header .navtip input.input{ margin:0 5px; border:1px solid #B5B5B5; width:152px; }
+  #header .navtip input.submit{ border:1px solid #B5B5B5; height:20px; }
+
+#navigation ul { float:right; margin-top:-34px!important; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
 	*+html #navigation ul  {margin-top:48px;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
@@ -198,7 +206,7 @@ html>body #content .tabMenu {margin-top:19px;}
 *+html #content .tabMenu {margin-top:7px!important}
 #content .tabMenu li { float:left; margin-left:4px;}
 /*tab menu "历史"上面的tab页*/
-#content .tabMenu li a , #content .tabMenu li {display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
+#content .tabMenu li a {display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
 #content .tabMenu li a.active , #content .tabMenu li a:hover{background:url(../images/org-tab-off.gif) no-repeat; color:#000000;}
 #content .tab {background: transparent; padding: 0;}
 #content .tab #ad {text-align: center;}
@@ -557,4 +565,27 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 /*send tips*/
 .sendtips {margin-left: 10px;padding: 2px 10px;color: #C55400; background-color:#FFF999; line-height: 200%; font-size:12px;}
 
+/*reg tips*/
+.RegLeftTitle {color:#DC4206;font-size:28px;margin-top:10px;margin-bottom:30px;text-align: center;line-height:30px;}
+.RegMiddleTitle {font-size:28px;line-height: 60px;text-align: center;background-color: #FFFFFF;}
+.RegRightTitle {color:#DC4206;font-size:16px;}
+.RegRightTips {color:#A2A2A2;font-size:12px;margin-bottom:5px;}
+.RegErrorTips {color:#C55400;font-size:12px;font-weight: bold;text-align:center;}
 
+/*Reg Left Table*/
+.RegLeftTable {background-color: #F2F2F2;height:170px;width:230px;border: 3px solid #FFFFFF;}
+/*Reg Right Table*/
+.RegRightTable {background-color: #F2F2F2;margin-top:0!important;margin-top:-20px;padding:8px 8px;height:265px!important;height:245px;width:230px;border: 3px solid #FFFFFF;}
+
+ /*Reg Return Button*/
+ .RegReturn1 {font-size: 16px;margin-left: 200px;}
+ .RegReturn2 {font-size: 16px;}
+
+ /*Reg Input */
+ .RegRightTable table td input {width:152px;}
+
+ /*Reg Table */
+ .RegRightTable table td {font-size:12px;}
+
+ /*Reg Text */
+ .RegText {font-size:12px;}

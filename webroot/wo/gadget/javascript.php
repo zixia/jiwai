@@ -64,6 +64,7 @@ if ( isset($_REQUEST['gadget']) )
 }
 
 $theme_list	= array ( 	 'DOS_Box'			=> false
+						,'text'			=> true
 						,'iChat'			=> true
 						,'Lined-Paper'		=> true
 						,'PHP'				=> true
@@ -229,7 +230,7 @@ _HTML_;
             JavaScript代码复制成功。
             </span>
             <p>
-            <textarea onclick="copyToClipboard(this);" readonly="readonly" class="urltext" cols="100" rows="7" id="javascript_url" ><?php echo htmlspecialchars($gadget_script_html) ?></textarea>
+            <textarea onclick="JiWai.copyToClipboard(this);" readonly="readonly" class="urltext" cols="100" rows="7" id="javascript_url" ><?php echo htmlspecialchars($gadget_script_html) ?></textarea>
             </p>
         </fieldset>
 		<h2>预览</h2>
