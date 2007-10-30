@@ -33,6 +33,38 @@ class JWNotify{
 		JWNudge::NudgeToUsers( $idUsers, $message, $messageType, $source, $options );
 	}
 
+	static public function NotifyConfInvite( &$queue ) {
+		if( empty( $queue ) )
+			return ;
+
+		$metaInfo = $queue['metaInfo'];
+
+		$idUserFrom = $queue['idUserFrom'];
+		$message = $metaInfo['message'];
+		$addressTo = $metaInfo['address'];
+		$type = $metaInfo['type'];
+		
+		$deviceRow = JWDevice::GetDeviceDbRowByAddress( $addressTo, $type );
+
+		echo "1\n";
+
+		if( empty( $deviceRow ) ) {
+			$inviteCode = JWDevice::GenSecret( 8 );
+			JWInvitation::Create($idUserFrom, $addressTo, $type, $message, $inviteCode);
+		}
+		echo "2\n";
+		$message .= empty( $deviceRow ) ? ' 请回复你想要的用户名' : ' 请回复 F 确定';
+
+		$user = JWUser::GetUserInfo( $idUserFrom );
+		$conference = JWConference::GetDbRowFromUser( $idUserFrom );
+
+		echo "3\n";
+		$serverAddress = self::GetServerAddress( $addressTo, $conference, $user );
+
+		echo "4\n";
+		return JWRobot::SendMtRaw ( $addressTo, $type, $message, $serverAddress );
+	}
+
 	/**
 	 * 手机邀请
 	 */

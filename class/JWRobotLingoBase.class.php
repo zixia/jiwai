@@ -18,76 +18,86 @@ class JWRobotLingoBase {
 
 	/*
 	 *	记录所有的机器人命令，与函数的对应表。（Lingo函数以 Lingo_ 打头）
-	 *	param 设置这个命令接受的最多参数。如果用户输入多于这个最大值，则不当作lingo处理。（如用户输入"on the way home"）
+	 *	param 设置这个命令接受的最多参数。如果用户输入多于这个最大值，则不当作lingo处理。
+	 *	（如用户输入"on the way home"）
 	 */
 	static private $msRobotLingo = array (
-			 'HELP'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help' 	,'param'=>1 )
-			,'TIPS'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips' 	,'param'=>0 )
-
-			,'ON'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_On' 	,'param'=>1)
-			,'OFF'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off' 	,'param'=>1)
-
-			,'FOLLOW'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow','param'=>10)
-			,'LEAVE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave' ,'param'=>10)
-
-			,'ADD'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add' 	,'param'=>1)
-			,'DELETE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Delete','param'=>1)
-
-			,'GET'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get' 	,'param'=>1)
-			,'NUDGE'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge' ,'param'=>1)
-			,'WHOIS'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whois' ,'param'=>1)
-
-			,'ACCEPT'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept','param'=>1)
-			,'DENY'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny' 	,'param'=>1)
-
-			,'D'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_D' 	,'param'=>999)
-
-			,'REG'		=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg' 	,'param'=>2)
-
-			,'WHOAMI'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami','param'=>0)
-
-			//Track
-			,'TRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Track', 'param'=>6)
-			,'UNTRACK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnTrack', 'param'=>6)
-
-			//Block
-			,'BLOCK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Block', 'param'=>999)
-			,'UNBLOCK'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnBlock', 'param'=>999)
-		);
+		 'HELP' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help', 'param'=>1 ),
+		 'TIPS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips', 'param'=>0 ),
+		 
+		 'ON' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_On', 'param'=>1),
+		 'OFF' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off', 'param'=>1),
+		 
+		 'FOLLOW' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow', 'param'=>10),
+		 'LEAVE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave', 'param'=>10),
+		 
+		 'ADD' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add', 'param'=>1),
+		 'DELETE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Delete', 'param'=>1),
+		 
+		 'GET' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get', 'param'=>1),
+		 'NUDGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge', 'param'=>1),
+		 'WHOIS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whois', 'param'=>1),
+		 
+		 'ACCEPT' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept', 'param'=>1),
+		 'DENY' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny', 'param'=>1),
+		 
+		 'D' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_D', 'param'=>999), 
+		 
+		 'REG' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg', 'param'=>2),
+		 'WHOAMI' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami', 'param'=>0),
+		 
+		 //Track
+		'TRACK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Track', 'param'=>6),
+		'UNTRACK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnTrack', 'param'=>6),
+		
+		//Block
+		'BLOCK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Block', 'param'=>999),
+		'UNBLOCK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnBlock', 'param'=>999),
+	);
 
 
 	/*
 	 *	记录所有的机器人命令的alias
 	 */
 	static private $msRobotLingoAlias = array (
-			 'KAI'		=>	'ON'			// alias of ON
-			,'START'	=>	'ON'			// alias of ON
-			,'WAKE'		=>	'ON'			// alias of ON
 
-			,'GUAN'		=>	'OFF'			// alis of OFF
-			,'STOP'		=>	'OFF'			// alis of OFF
-			,'SLEEP'	=>	'OFF'			// alis of OFF
+		//Alias of ON
+		'KAI' => 'ON',
+		'START' => 'ON',
+		'WAKE' => 'ON',
+		'K' => 'ON',
+		
+		//Alias of OFF
+		'GUAN' => 'OFF', 
+		'STOP' => 'OFF',
+		'SLEEP' => 'OFF',
+		'G' => 'OFF',
+		
+		'INVITE' => 'ADD',
+		'NAO' => 'NUDGE',
+		'NAONAO' => 'NUDGE',
+		'NN' => 'NUDGE',
 
-			,'INVITE'	=>	'ADD'
+		'REMOVE' => 'DELETE',
+		
+		'ZHUCE' => 'REG',
+		'ZC' => 'REG',
+		'GM' => 'REG',
+		'GAIMING' => 'REG',
 
-			,'NAO'		=>	'NUDGE'
-			,'NAONAO'	=>	'NUDGE'
-			,'NN'		=>	'NUDGE'
+		//Follow
+		'F' => 'FOLLOW',
 
-			,'REMOVE'	=>	'DELETE'
+		//Extension 
+		'WOSHISHUI' => 'WHOAMI',
+		'WOSHISHEI' => 'WHOAMI',
 
-			,'ZHUCE'	=>	'REG'
-			,'ZC'		=>	'REG'
-			,'GM'		=>	'REG'
-			,'GAIMING'	=>	'REG'
-
-			/*
-		 	 * 	JiWai扩展
-			 */
-			,'WOSHISHUI'=>	'WHOAMI'
-			,'TRACKS' => 'TRACK'
-	);
-
+		//Track|Trace
+		'TRACKS' => 'TRACK',
+		'TRACE' => 'TRACK',
+		'UNTRACE' => 'UNTRACK',
+		'UNTRACKS' => 'UNTRACK',
+	); 
 
 	/**
 	 * Instance of this singleton class
@@ -219,15 +229,8 @@ class JWRobotLingoBase {
 		switch( $preAndId['pre'] ) {
 			case JWFuncCode::PRE_REG_INVITE:
 			{
-				$lingo['F'] =  array(
-						'class'=>'JWRobotLingo_Add',
-						'func'=>'Lingo_F',
-						'param'=>1,
-					);
-				return array(
-						'alias' => $alias,
-						'lingo' => $lingo,
-					);
+				$lingo['F'] =  array( 'class'=>'JWRobotLingo_Add', 'func'=>'Lingo_F', 'param'=>1,);
+				return array( 'alias' => $alias, 'lingo' => $lingo,);
 			}
 			break;
 			case JWFuncCode::PRE_MMS_NOTIFY:

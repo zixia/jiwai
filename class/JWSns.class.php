@@ -297,6 +297,23 @@ class JWSns {
 		return true;
 	}
 
+	/**
+	 * Conference Invite
+	 */
+	static public function SmsConferenceInvite($idUserFrom, $address, $message ) {
+		$idUserFrom = JWDB::CheckInt( $idUserFrom );
+		$user = JWUser::GetUserInfo( $idUserFrom );	
+		if( null == $user['idConference'] ) 
+			return true;
+		
+		$metaInfo = array(
+			'type' => 'sms',
+			'address' => $address,
+			'message' => $message,
+		);
+		return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_CONFINVITE, $metaInfo );
+	}
+
     /**
      * sms Invite
      */
@@ -610,6 +627,7 @@ class JWSns {
 					$nameScreen = $userInfo['nameScreen'];
 					$message = array(
 						'sms' => JWNotify::GetPrettySender($userInfo). ": 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
+						//'sms' => JWNotify::GetPrettySender($userInfo). ": $status 彩信<$mmsRow[fileName]>",
 						'im' => JWNotify::GetPrettySender($userInfo). ": $status 彩信<$mmsRow[fileName]>地址：$picUrl",
 					);
 

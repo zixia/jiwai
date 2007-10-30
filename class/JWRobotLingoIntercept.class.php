@@ -30,9 +30,9 @@ class JWRobotLingoIntercept {
 			return;
 
 		switch( $preAndId['pre'] ){
-			case JWFuncCode::PRE_STOCK_CATE:
-			case JWFuncCode::PRE_CONF_CUSTOM:
-				$conference = JWConference::GetDbRowById( $preAndId['id'] );
+			case JWFuncCode::PRE_STOCK_CATE: // Must > 100 < 999
+			case JWFuncCode::PRE_CONF_CUSTOM: // Must be 0 - 99
+				$conference = JWConference::GetDbRowFromNumber( $preAndId['id'] );
 				if( empty($conference) )
 					return;
 				$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
