@@ -298,38 +298,21 @@ class JWSns {
 	}
 
 	/**
-	 * Conference Invite
+	 * Conference/User Sms Invite
 	 */
-	static public function SmsConferenceInvite($idUserFrom, $address, $message ) {
+	static public function SmsInvite($idUserFrom, $address, $message ) {
 		$idUserFrom = JWDB::CheckInt( $idUserFrom );
 		$user = JWUser::GetUserInfo( $idUserFrom );	
-		if( null == $user['idConference'] ) 
-			return true;
 		
 		$metaInfo = array(
 			'type' => 'sms',
 			'address' => $address,
 			'message' => $message,
 		);
-		return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_CONFINVITE, $metaInfo );
+
+		return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_SMSINVITE, $metaInfo );
 	}
 
-    /**
-     * sms Invite
-     */
-     static public function SmsInvite($idUserFrom, $address, $message ) {
-         $idUserFrom = JWDB::CheckInt( $idUserFrom);
-         if( false == JWDevice::IsValid( $address, 'sms' ) )
-             return false;
-
-         $metaInfo = array(
-            'type' => 'sms',
-            'address' => $address,
-            'message' => $message,
-            'webInvite' => true,
-         );
-         return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_INVITE, $metaInfo );
-     }
 
 	/*
 	 *	设置邀请一个设备（email/sms/im），并发送相应通知信息

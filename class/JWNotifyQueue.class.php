@@ -31,8 +31,8 @@ class JWNotifyQueue {
 	const T_STATUS = 'STATUS';
 	const T_MMS = 'MMS';
 	const T_NUDGE = 'NUDGE';
+	const T_SMSINVITE = 'SMSINVITE';
 	const T_INVITE = 'INVITE';
-	const T_CONFINVITE = 'CONFINVITE';
 	const T_CONFERENCE = 'CONFERENCE';
 	const T_WEBNUDGE = 'WEBNUDGE';
 	const T_UNKNOWN = 'UNKNOWN';
@@ -179,9 +179,9 @@ SQL;
 						JWNotify::NotifyWebNudge( $queue );
 					}
 					break;
-					case self::T_CONFINVITE:
+					case self::T_SMSINVITE:
 					{
-						JWNotify::NotifyConfInvite( $queue );
+						JWNotify::NotifySmsInvite( $queue );
 					}
 					break;
 				}

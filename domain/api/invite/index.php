@@ -18,12 +18,12 @@ if( false == ( $idUser=JWApi::GetAuthedUserId() ) ){
 $message .= ' 回复 F 确定。';
 
 $user = JWUser::GetUserInfo( $idUser );
-if( !$user ){
+if( empty($user) || null = $user['idConference'] ){
 	JWApi::OutHeader(404, true);
 }
 $idUser = $user['id'];
 
-if( JWSPCode::GetSupplierByMobileNo($phone ) && JWSns::SmsInvite( $idUser, $phone, $message ) ){
+if( JWSPCode::GetSupplierByMobileNo( $phone ) && JWSns::SmsInvite( $idUser, $phone, $message ) ){
 	echo '+OK';	
 }else{
 	echo '-ERR';

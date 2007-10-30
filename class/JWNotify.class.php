@@ -33,7 +33,7 @@ class JWNotify{
 		JWNudge::NudgeToUsers( $idUsers, $message, $messageType, $source, $options );
 	}
 
-	static public function NotifyConfInvite( &$queue ) {
+	static public function NotifySmsInvite( &$queue ) {
 		if( empty( $queue ) )
 			return ;
 
@@ -55,7 +55,11 @@ class JWNotify{
 		$user = JWUser::GetUserInfo( $idUserFrom );
 		$conference = JWConference::GetDbRowFromUser( $idUserFrom );
 
-		$serverAddress = self::GetServerAddress( $addressTo, $conference, $user );
+		if( empty( $conference ) ) {
+			$serverAddress = JWFuncCode::GetCodeFunc( $addressTo, $idUserFrom, JWFuncCode::PRE_REG_INVITE );
+		}else{
+			$serverAddress = self::GetServerAddress( $addressTo, $conference, $user );
+		}
 
 		return JWRobot::SendMtRaw ( $addressTo, $type, $message, $serverAddress );
 	}

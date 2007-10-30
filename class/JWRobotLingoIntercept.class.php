@@ -43,6 +43,7 @@ class JWRobotLingoIntercept {
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
+			case JWFuncCode::PRE_REG_INVITE:
 				if( $preAndId['pre'] == JWFuncCode::PRE_STOCK_CODE ) {
 					$userInfo = JWUser::GetUserInfo( 'gp'.$preAndId['id'] );
 				}else{

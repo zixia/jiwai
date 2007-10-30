@@ -31,7 +31,7 @@ class JWFuncCode {
 	const PRE_MMS_NOTIFY = '20';
 
 	/**
-	 * Mms Invitation
+	 * Sms Invitation
 	 */
 	const PRE_REG_INVITE = '30';
 
