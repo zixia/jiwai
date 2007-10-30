@@ -480,6 +480,8 @@ _HTML_;
                 {
                     $idCurrent = JWLogin::GetCurrentUserId();
                     $ValidNums = JWTemplate::GetSmsAndImValidNums($idCurrent);
+					$imicoUrlSms = "/wo/devices/sms";
+					$imicoUrlIm = "/wo/devices/im";
                 
                     if(0 >= $ValidNums[0])
                     {
