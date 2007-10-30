@@ -483,11 +483,11 @@ _HTML_;
                 
                     if(0 >= $ValidNums[0])
                     {
-                        echo '<a class="sendtips" href="/wo/devices/sms" >用手机来叽歪 ！</a><br />';
+                        echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlSms . '">用手机来叽歪 ！</a><br />';
                     }
                     if(0 >= $ValidNums[1])
                     {
-                        echo '<a class="sendtips" href=$imicoUrlIm >用QQ/MSN也能叽歪 ？</a><br />';
+                        echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlIm . '">用QQ/MSN也能叽歪 ？</a><br />';
                     }
                 }
             ?>    
