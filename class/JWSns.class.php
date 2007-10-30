@@ -207,8 +207,8 @@ class JWSns {
 			JWLog::Log(LOG_CRIT, "JWSns::CreateFollower($user_id, $follower_id) failed.");
 			return false;
 		}else{
-			$message = "$followerRow[nameScreen] 订阅了你的更新。";
-			JWNudge::NudgeToUsers(array($user_id), $message, 'nudge', 'web' );
+			//$message = "$followerRow[nameScreen] 订阅了你的更新。";
+			//JWNudge::NudgeToUsers(array($user_id), $message, 'nudge', 'web' );
 		}
 
 		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
