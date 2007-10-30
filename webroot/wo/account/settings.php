@@ -87,8 +87,6 @@ _HTML_;
 
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
-		if( false == empty($arr_changed) && isset($arr_changed['nameScreen']) ) 
-			$arr_changed['nameUrl'] = $arr_changed['nameScreen'];
 		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
 			$error_html = <<<_HTML_
