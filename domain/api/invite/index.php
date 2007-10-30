@@ -15,10 +15,8 @@ if( false == ( $idUser=JWApi::GetAuthedUserId() ) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
 
-$message .= ' 回复 F 确定。';
-
 $user = JWUser::GetUserInfo( $idUser );
-if( empty($user) || null = $user['idConference'] ){
+if( empty($user) || null == $user['idConference'] ){
 	JWApi::OutHeader(404, true);
 }
 $idUser = $user['id'];
