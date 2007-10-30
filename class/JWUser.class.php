@@ -360,6 +360,10 @@ _SQL_;
 			$userInfo['ip'] = JWRequest::GetClientIp();
 		}
 
+		if( empty($userInfo['nameFull'] ) ) {
+			$userInfo['nameFull'] = $userInfo['nameScreen'];
+		}
+
 		if( empty($userInfo['nameUrl'] ) ) {
 			$userInfo['nameUrl'] = $userInfo['nameScreen'];
 		}

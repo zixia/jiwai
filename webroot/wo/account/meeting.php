@@ -29,7 +29,10 @@ if( $_POST ){
 
 			$conference = JWConference::GetDbRowFromUser( $idUser );
 			if( empty( $conference ) ){
-				$idConference = JWConference::Create($idUser, $friendOnly, $deviceAllow );
+				$idConference = JWConference::Create($idUser, array(
+					'friendOnly' => $friendOnly, 
+					'deviceAllow' => $deviceAllow,
+				));
 				JWUser::SetConference($idUser, $idConference);
 			}else{
 				$idConferenceNow = $conference['id'];
@@ -98,7 +101,7 @@ input.cb{ width:24px; display:inline; }
 	<h2> <?php echo JWNotify::GetPrettySender($user_info); ?> - 会议设置 </h2>
 
 	<fieldset>
-	<form method="post">
+	<form method="post" id='f'>
 		<table width="100%" cellspacing="3">
 			<tr>
 				<th valign="top" width="200">
