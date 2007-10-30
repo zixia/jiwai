@@ -297,6 +297,23 @@ class JWSns {
 		return true;
 	}
 
+	/**
+	 * Conference Invite
+	 */
+	static public function SmsConferenceInvite($idUserFrom, $address, $message ) {
+		$idUserFrom = JWDB::CheckInt( $idUserFrom );
+		$user = JWUser::GetUserInfo( $idUserFrom );	
+		if( null == $user['idConference'] ) 
+			return true;
+		
+        $metaInfo = array(
+            'type' => 'sms',
+            'address' => $address,
+            'message' => $message,
+        );
+		return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_CONFINVITE, $metaInfo );
+	}
+
     /**
      * sms Invite
      */
