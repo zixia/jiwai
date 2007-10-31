@@ -1195,7 +1195,7 @@ class JWRobotLingo {
 		foreach( $param_array as $p ) {
 			$u = JWUser::GetUserInfo( $p );
 			if(false == empty( $u ) ){
-				JWBlock::Create( $device_db_row['idUser'], $u['id'] );
+				JWSns::Block( $device_db_row['idUser'], $u['id'] );
 				$nameScreens .= $u['nameScreen'].', ';
 			}
 		}
@@ -1233,7 +1233,7 @@ class JWRobotLingo {
 		foreach( $param_array as $p ) {
 			$u = JWUser::GetUserInfo( $p );
 			if(false == empty( $u ) ){
-				JWBlock::Destroy( $device_db_row['idUser'], $u['id'] );
+				JWSns::UnBlock( $device_db_row['idUser'], $u['id'] );
 				$nameScreens .= $u['nameScreen'].', ';
 			}
 		}

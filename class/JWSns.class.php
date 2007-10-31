@@ -95,6 +95,10 @@ class JWSns {
 	 */
 	static public function CreateFriend($userRow, $friendRow)
 	{
+		if ( JWBlock::IsBlocked( $friendRow['id'], $userRow['id'] ) ) {
+			return true;
+		}
+
 		if ( $friendRow['id']==$userRow['id'] )
 		{
 			JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id]...) is self");
@@ -421,8 +425,8 @@ class JWSns {
 			else if ( $idUser!=$friend_id )
 			{
  				// not friend, and not myself
-
-				$action_rows[$friend_id]['add']		= true;
+				if( false == JWBlock::IsBlocked( $friend_id, $idUser ) ) 
+					$action_rows[$friend_id]['add']		= true;
 			}
 
 			// 反向也是朋友，则可以 direct_messages / nudge
@@ -782,6 +786,31 @@ class JWSns {
 		return true;
 	}
 
+	/**
+	 * idUser Block $idUserBlock
+	 */
+	static public function Block($idUser, $idUserBlock) {
+		$idUser = JWDB::CheckInt( $idUser );
+		$idUserBlock = JWDB::CheckInt( $idUserBlock );
+		
+		$flag = JWBlock::Create( $idUser, $idUserBlock );
+		if( $flag ) {
+			JWFriend::Destroy( $idUser, $idUserBlock );
+			JWFollower::Destroy( $idUser, $idUserBlock );
+
+			JWFriend::Destroy( $idUserBlock, $idUser );
+			JWFollower::Destroy( $idUserBlock, $idUser );
+		}
+	}
+
+	/**
+	 * idUser unBlock $idUserBlock
+	 */
+	static public function UnBlock($idUser, $idUserBlock) {
+		$idUser = JWDB::CheckInt( $idUser );
+		$idUserBlock = JWDB::CheckInt( $idUserBlock );
+		JWBlock::Destroy( $idUser, $idUserBlock );
+	}
 
 	static public function ResendPassword($idUser)
 	{
