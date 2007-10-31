@@ -176,7 +176,9 @@ class JWNotify{
 		 **/
 		if( is_string($message) && $userSender['protected'] == 'N' ) {
 
-			$idTrackWordSequence = JWTrackWord::GetStatusTrackOrder( $message );
+			$messageCut = mb_substr( $message, 0, 420, 'UTF-8' );  //maybe block .....
+
+			$idTrackWordSequence = JWTrackWord::GetStatusTrackOrder( $messageCut );
 			$tracker_ids = JWTrackUser::GetIdUsersBySequence( $idTrackWordSequence );
 
 			$tracker_ids = array_diff( $tracker_ids, $sender_follower_ids );

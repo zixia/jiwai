@@ -90,7 +90,7 @@ class JWRobotMsg {
 			}
 		}
 
-		$this->mBody		= trim( $body ); // 去掉末尾行的\n
+		$this->mBody		= $this->_StripBody( $body ); // 去掉末尾行的\n
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
 		if( !$this->_SetPropertiesByTagHeads() ){
@@ -191,7 +191,7 @@ class JWRobotMsg {
 			throw new JWException('cant modify readonly msg');
 		*/
 
-		$this->mBody = $body;
+		$this->mBody = $this->_StripBody( $body );
 		$this->mIsValid = null;
 	}
 	public function GetFile()
@@ -365,6 +365,11 @@ class JWRobotMsg {
 			return $this->headTags[ $tagName ];
 		}
 		return null;
+	}
+
+	private function _StripBody($body=null){
+		$body = trim($body, "\x00..\x1F");
+		return trim($body);
 	}
 }
 ?>

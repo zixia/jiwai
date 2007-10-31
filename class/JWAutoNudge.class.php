@@ -115,6 +115,7 @@ _SQL_;
 		 */
 		$id_status_last_day_processed = self::GetIdStatusLastDayProcessed();
 
+/*
 		$sql = <<<_SQL_
 SELECT	DISTINCT idUser
 FROM	Status AS last
@@ -137,9 +138,34 @@ _SQL_;
 		foreach ( $result_array as $result ) {
 			array_push($id_users_need_nudge, $result['idUser']);
 		}
+*/
 
-		JWLog::Instance()->Log(LOG_INFO,"JWAutoNudge::GetIdUserNudgeDay found " 
-									. count($id_users_need_nudge) . " user(s) no update in near 24H");
+/* New CODE shwdai@gmail.com 2007-10-30 */
+		$sql_one = <<<_SQL_
+SELECT DISTINCT(idUser) 
+	FROM Status
+	WHERE 
+		( id BETWEEN $id_status_last_day_processed AND $id_status_before_24h )
+		AND
+		idUser NOT IN 
+			( 
+				SELECT distinct(idUser) 
+				FROM Status 
+				WHERE id BETWEEN $id_status_before_24h+1 AND $id_status_max
+			)
+_SQL_;
+		$r_one = JWDB::GetQueryResult($sql_one, true);
+
+		if( empty($r_one) )
+			return array();
+
+		$id_users_need_nudge = array();
+		foreach( $r_one as $r ) {
+			array_push( $id_users_need_nudge, $r['idUser'] );
+		}
+/* End New CODE */
+
+		JWLog::Instance()->Log(LOG_INFO,"JWAutoNudge::GetIdUserNudgeDay found " . count($id_users_need_nudge) . " user(s) no update in near 24H");
 
 		/*
 		 *	查看用户设置是否 AutoNudge
