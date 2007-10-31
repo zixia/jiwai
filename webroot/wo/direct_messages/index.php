@@ -10,7 +10,7 @@ $logined_user_id 	= JWLogin::GetCurrentUserId();
 $logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
 
 if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
-	$message_box_type = JWMessage::SENT;
+	$message_box_type = JWMessage::OUTBOX;
 else
 	$message_box_type = JWMessage::INBOX;
 ?>
@@ -59,7 +59,7 @@ JWTemplate::updater(array(
 </form>
 <?php
 $menu_list = array (
-	JWMessage::SENT => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
+	JWMessage::OUTBOX => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
 	JWMessage::INBOX => array('active'=>false, 'name'=>'收件箱', 'url'=>"/wo/direct_messages/"),
 );
 
@@ -75,7 +75,7 @@ switch ( $message_box_type )
 		$options['title'] = '你收到的悄悄话';
 		$owner = '发送者';
 		break;
-	case JWMessage::SENT:
+	case JWMessage::OUTBOX:
 		$options['title'] = '你发送的悄悄话';
 		$owner = '接收者';
 		break;
@@ -131,8 +131,10 @@ foreach ( $message_ids as $message_id )
 		default:
 		case JWMessage::INBOX:
 			$user_id 			= $message_db_row['idUserSender'];
+            //将悄悄话设置为已读
+            JWMessage::SetMessageStatus($message_id, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
 			break;
-		case JWMessage::SENT:
+		case JWMessage::OUTBOX:
 			$user_id 			= $message_db_row['idUserReceiver'];
 			break;
 	}
@@ -153,7 +155,12 @@ foreach ( $message_ids as $message_id )
           <div class="odd">
             <div class="head"><a href="/wo/direct_messages/create/$user_id" title="悄悄话发给$user_db_row[nameScreen]"><img alt="$user_db_row[nameFull]" src="$photo_url" width="48" height="48"/></a></div>
             <div class="cont">$message_db_row[message]
+_HTML_;
+	echo <<<_HTML_
 		<a href="/wo/direct_messages/destroy/$message_db_row[idMessage]" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="$asset_trash_url" /></a>
+_HTML_;
+	echo <<<_HTML_
+        <a href="/wo/direct_messages/create/$user_id">回复</a>
             </div>
             <div class="write"><a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a></div>
             <div class="time"> $time_desc </div>

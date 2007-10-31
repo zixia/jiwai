@@ -13,13 +13,17 @@ if ( preg_match('/^\/(\d+)$/',$param,$match) )
 {
 	$message_id = $match[1];
 
-	if ( ! JWMessage::IsUserOwnMessage($logined_user_id, $message_id) )
+    //var_dump($_REQUEST);
+    $UserOwnMessage = JWMessage::IsUserOwnMessage($logined_user_id, $message_id);
+    //var_dump($UserOwnMessage);
+	if ( ! $UserOwnMessage )
 	{
 		JWTemplate::RedirectTo404NotFound();
 		exit(0);
 	}
 
-	if ( JWMessage::Destroy($message_id) )
+	//if ( JWMessage::Destroy($message_id) )
+	if ( JWMessage::SetMessageStatus($message_id, $UserOwnMessage, JWMessage::MESSAGE_DELETE) ) 
 	{
 		$notice_html = <<<_HTML_
 悄悄话已经被删除啦！
