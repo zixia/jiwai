@@ -107,6 +107,17 @@ class JWNotify{
 
 		$userSender = JWUser::GetUserInfo( $idUserFrom );
 
+		/**
+		 * Sync To Twitter, need transfer to other pool service
+		 */
+		$bindOther = JWBindOther::GetBindOther( $idUserFrom );
+		if( isset($bindOther['twitter']) ) {
+			$messageObject = is_array($message) ? (isset($message['im']) ? $message['im'] : null ) : $message;
+			if( $messageObject ) {
+				JWBindOther::PostStatus( $bindOther['twitter'], $message );
+			}
+		}
+
 		$to_ids = array();
 		if( $idUserTo && false == JWBlock::IsBlocked($idUserTo, $idUserFrom) )
 		{
@@ -191,7 +202,7 @@ class JWNotify{
 					. "Followers: array("
 					. Implode( ',', $tracker_ids ) . ")\n"; 
 
-				$messageObject = self::GetPrettySender($userSender).': '.$message;
+				$messageObject = 'TRACK('.$userSender['nameScreen'].'): '.$message;
 				JWNudge::NudgeToUsers( $tracker_ids, $messageObject, 'nudge', 'bot', $options );
 			}
 		}
@@ -289,6 +300,7 @@ class JWNotify{
 	 * Get Pretty Sender
 	 */
 	static public function GetPrettySender( &$userSender ) {
+		return $userSender['nameScreen'];
 		if( strtoupper($userSender['nameScreen']) == strtoupper($userSender['nameFull']) )
 			return $userSender['nameScreen'];
 
