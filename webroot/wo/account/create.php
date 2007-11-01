@@ -281,7 +281,7 @@ _POD_;
 </TABLE>
 </div>
 <div id=g2 style="display:none;">
-<form id="f2" action="/wo/account/create" enctype="multipart/form-data" method="post" name="f2" onsubmit="alert('8');validate_form(this);">
+<form id="f2" action="/wo/account/create" enctype="multipart/form-data" method="post" name="f2" >
 <fieldset>
     <table width="550" border="0" cellspacing="15" cellpadding="0">
         <tr>
