@@ -106,10 +106,17 @@ _SQL_;
 	/**
 	 * Check isBlocked
 	 */
-	static public function IsBlocked( $idUser, $idUserBlock ) {
+	static public function IsBlocked( $idUser, $idUserBlock, $oneDirection=true ) {
 		$exArray = array( 'idUser' => $idUser, 'idUserBlock' => $idUserBlock, );
-		if( JWDB::ExistTableRow( 'Block', $exArray ) )
-			return true;
+
+		if( $oneDirection ) {
+			if( JWDB::ExistTableRow( 'Block', $exArray ) )
+				return true;
+		}else{
+			$exArrayR = array( 'idUser' => $idUserBlock, 'idUserBlock' => $idUser, );
+			if( JWDB::ExistTableRow( 'Block', $exArray ) || JWDB::ExistTableRow( 'Block', $exArrayR ) )
+				return true;	
+		}
 
 		return false;
 	}

@@ -49,6 +49,10 @@ class JWSns {
 	 */
 	static public function CreateMessage($idUserSender, $idUserReceiver, $message, $device='web', $time=null)
 	{
+		
+		if ( JWBlock::IsBlocked( $idUserReceiver, $idUserSender, false ) )  // idUserReceiver blocked idUserSender;
+			return false;		
+
 		if ( ! JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) )
 		{
 			JWLog::LogFuncName("JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) failed");
@@ -438,12 +442,12 @@ class JWSns {
 			else if ( $idUser!=$friend_id )
 			{
  				// not friend, and not myself
-
-				$action_rows[$friend_id]['add']		= true;
+				if( false == JWBlock::IsBlocked( $friend_id, $idUser ) )
+					$action_rows[$friend_id]['add']		= true;
 			}
 
 			// 反向也是朋友，则可以 direct_messages / nudge
-			if ( $friend_relation[$friend_id][$idUser] )
+			if( false == JWBlock::IsBlocked( $friend_id, $idUser, false ) ) 
 			{
 				if ( 'web'!=$send_via_device_rows[$friend_id] )
 					$action_rows[$friend_id]['nudge']		= true;
