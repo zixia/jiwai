@@ -35,7 +35,8 @@ $receiver_user_row	= JWUser::GetUserInfo($receiver_user_id);
  *	如果接受者不存在，或者发送者不是接受者的好友，就404
  */
 if ( empty($receiver_user_row) 
-		|| !JWFriend::IsFriend($receiver_user_id, $logined_user_id) )
+//		|| !JWFriend::IsFriend($receiver_user_id, $logined_user_id) 
+)
 {
 	JWTemplate::RedirectTo404NotFound();
 	exit(0);
