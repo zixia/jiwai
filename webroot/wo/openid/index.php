@@ -5,7 +5,42 @@ JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
+$nameScreen=$_POST['user']['nameScreen'];
+$password=$_POST['user']['password'];
 
+if (isset($_POST['user']) && trim ($nameScreen) && trim ($password))
+{
+    if (JWBindOther::Create($user_info['id'], $nameScreen, $password))
+    {
+        $notice_html = <<<_HTML_
+        绑定 Twitter 成功。
+_HTML_;
+        JWSession::SetInfo('notice', $notice_html);
+    }
+    else
+    {
+        $error_html = <<<_HTML_
+        Twitter 用户名 或 密码 错误。
+_HTML_;
+        JWSession::SetInfo('error', $error_html);
+    }
+
+	header ( "Location: /wo/bindother/" );
+    exit();
+
+}
+
+if (isset($_POST['idDelete']) && ($idDelete=intval($_POST['idDelete'])))
+{
+    JWBindOther::Destroy($user_info['id'], $idDelete);
+    $notice_html = <<<_HTML_
+    解除绑定 Twitter 成功。
+_HTML_;
+    JWSession::SetInfo('notice', $notice_html);
+
+	header ( "Location: /wo/bindother/" );
+    exit();
+}
 ?>
 <html>
 
@@ -20,105 +55,69 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 <?php JWTemplate::header() ?>
 <?php JWTemplate::ShowActionResultTips(); ?>
+<?php
+if ( empty($error_html) )
+	$error_html = JWSession::GetInfo('error');
+if ( empty($notice_html) )
+	$notice_html = JWSession::GetInfo('notice');
 
+if ( !empty($error_html) )
+{
+		echo <<<_HTML_
+			<div class="notice"><ul> $error_html </ul></div>
+_HTML_;
+}
+
+
+if ( !empty($notice_html) )
+{
+	echo <<<_HTML_
+			<div class="notice"><ul>$notice_html</ul></div>
+_HTML_;
+}
+
+?>
 <div id="container" class="subpage">
-<?php JWTemplate::SettingTab('/wo/openid/'); ?>
+<?php JWTemplate::SettingTab(); ?>
 
 <div class="tabbody">
-<h2>设置OpenID</h2>
+<h2>绑定 Twitter</h2>
 
+	<form id="f" method="post">
 <?php
+    $bind = JWBindOther::GetBindOther($user_info['id']);
+    $bind = $bind['twitter'];
 
-$openid_id		= JWOpenid::GetIdByUserId($user_info['idUser']);
-
-if ( isset($_REQUEST['commit']) )
-{
-	// 用户输入了自己的  openid，需要去验证
-	$openid_url = $_REQUEST['user']['openid'];
-
-	if ( JWOpenid::IsPossibleOpenid($openid_url) )
-	{
-		JWOpenid_Consumer::AuthRedirect($openid_url);
-		// if it return, mean $username_or_email is not a valid openid url.
-	}
-	else
-	{
-		$error_html = <<<_HTML_
-你输入的 OpenID：$openid_url 有误，请查证后重试。
-_HTML_;
-		JWSession::SetInfo('error', $error_html);
-	}
-}
-
-?>
-
-<?php
-if ( isset($_REQUEST['set']) )
-{
-	// 用户进行设置自己的 openid
-	echo <<<_SET_OPENID_
-<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">
-		<form action="/wo/openid/" method="POST">
-			<fieldset>
-				<label for="user_openid">OpenID 地址：</label>
-				<input id="user_openid" name="user[openid]" size="30" type="text" class="input"/>
-				<input name="commit" type="submit" value="保存"/>
-			</fieldset>
-		</form>
-</h3>
-<!-- tricky unclosed ul tag -->
-<ul class="list_ji">
-_SET_OPENID_;
-}
-else if ( $openid_id )
-{
-	// 用户自己的 openid
-	$openid_db_row 	= JWOpenid::GetDbRowById($openid_id);
-	$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
-	echo <<<_USER_OPENID_
-		<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">你的 OpenID 为：<strong>$openid_url</strong></h3>
-		<ul class="list_ji"><li><a href="/wo/openid/destroy/$openid_id">使用叽歪de OpenID ?</a></li>
-<!-- tricky unclosed ul tag -->
-_USER_OPENID_;
-
-}
-else
-{
-	
-	// 用户使用 jiwai de openid
-	echo <<<_JIWAI_OPENID_
-<h3 style=" padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">您的 OpenID 为：
-	<input name="textfield" type="text" value="http://jiwai.de/$user_info[nameScreen]/" class="input" readonly="readonly" />
-</h3>
-<ul class="list_ji">
-<li><a href="?set" >绑定你自己的 OpenID ?</a></li>
-<!-- tricky unclosed ul tag -->
-_JIWAI_OPENID_;
-}
-?>
-
-<?php
-
-$trusted_site_ids 		= JWOpenid_TrustSite::GetIdsByUserId($user_info['id']);
-$trusted_site_db_rows 	= JWOpenid_TrustSite::GetDbRowsByIds($trusted_site_ids);
-
-if ( count($trusted_site_ids) )
-{
+    if (!empty($bind))
 	echo <<<_HTML_
-<h4>你当前允许在以下网站登录你的 OpenID</h4>
+    <div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 Twitter (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 Twitter 绑定吗？'))$('f').submit();return false;">删除</a>)</div>
+	<input type="hidden" name="idDelete" value="$bind[id]"/>
 _HTML_;
-foreach ( $trusted_site_ids as $trusted_site_id )
-{
-	$db_row = $trusted_site_db_rows[$trusted_site_id];
-	echo <<<_HTML_
-<a href="/wo/trustsite/destroy/$db_row[id]">删除</a> <a href="$db_row[urlTrusted]" target="_blank"><strong>$db_row[urlTrusted]</strong></a><br />
-_HTML_;
-}
-}
 ?>
-    <li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
-    <li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
-  </ul>
+	<fieldset>
+	<table width="100%" cellspacing="3">
+		<tr>
+			<th valign="top">用户名：</th>
+			<td width="260">
+				<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $bind['loginName'];?>" alt="用户名" title="用户名" check="null"/><i></i>
+			</td>
+			<td class="note">用来登陆 Twitter 的用户名</td>
+		</tr>
+		<tr>
+			<th>密码：</th>
+			<td><input id="user[password]" name="user[password]" type="password" value="" alt="密码" title="密码" check="null"/><i></i></td>
+			<td class="note">用来登陆 Twitter 的密码</td>
+		</tr>
+	</table>
+	</fieldset>
+
+	<div style=" padding:20px 0 0 160px; height:50px;">
+		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+	</div>
+
+	</form>
+
+
   <!-- end of tricky part -->
 </div>
 <div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
