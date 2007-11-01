@@ -910,6 +910,7 @@ class JWRobotLingo {
 
 		$friend_id = $friend_row['idUser'];
 
+		/*
 		if ( !JWFriend::IsFriend($friend_id, $address_user_id) )
 		{
 			if ( JWFriend::IsFriend($address_user_id, $friend_id) )
@@ -923,7 +924,8 @@ class JWRobotLingo {
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 			}
 		}
-		
+		*/	
+
 		JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type);
 		return null;
 	}
