@@ -175,6 +175,9 @@ class JWRobot {
 			self::QuarantineMsg($robotMsg);
 			$ret = false;
 		}
+
+		self::LogMoMt( $robotMsg->GetType(), $robotMsg->GetAddress(), false );
+
 //die(var_dump($ret));
 		return $ret;
 	}
@@ -214,7 +217,8 @@ class JWRobot {
 			$file = self::$mQueuePathMo . $file;
 
 			$robot_msg = new JWRobotMsg($file);
-
+			
+			self::LogMoMt( $robot_msg->GetType(), $robot_msg->GetAddress(), $robot_msg->GetCreateTime(), true );
 		
 			/*
 			 * 只需要一个，返回。
@@ -355,6 +359,27 @@ class JWRobot {
 		{
 			self::$mSleepUsec = 1;
 		}
+	}
+
+	static public function LogMoMt( $type=null, $address=null, $message = true, $mo = true ) {
+		if( null == $type || null == $address )
+			return true;
+
+		if( is_bool( $message ) ) $mo = $message ;
+
+		$device = $type . '://'. $address;
+		$message = $device . ( is_bool($message) ? null : ' time://'.$message );
+
+
+		define_syslog_variables();
+		$ident = ( $mo ) ? 'RobotMO' : 'RobotMT';
+		if ( openLog( $ident, LOG_PID | LOG_CONS, LOG_LOCAL6 ) ) {
+			syslog( LOG_INFO, $message );
+			closelog();
+			return true;
+		}
+
+		return false;
 	}
 
 }

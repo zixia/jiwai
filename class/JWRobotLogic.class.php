@@ -167,7 +167,7 @@ class JWRobotLogic {
 		else
 		{	
 			$time = $robotMsg->GetCreateTime();
-			syslog(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
+			JWLog::Instance()->Log(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 			$idUser = $device_row['idUser'];
 
 			$options = array();
