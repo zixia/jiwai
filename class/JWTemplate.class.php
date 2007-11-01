@@ -690,7 +690,7 @@ _HTML_;
 						<div class="bg"></div>
 <table width="100%" border="0" cellspacing="5" cellpadding="0">
   <tr>
-    <td><h3><?php echo $name_full; ?></h3></td>
+    <td><h3><?php echo $name_screen; ?></h3></td>
     <td align="right">
 <?php
 if ($current_user_id!=$idUser) {
@@ -701,7 +701,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 } else {
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 ?>
-      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_full; ?>的粉丝吧</a>
+      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_screen; ?>的粉丝吧</a>
 <?php
 }
 } else {
@@ -892,7 +892,6 @@ _HTML_;
 			$name_screen	= $userRows[$user_id]['nameScreen'];
 			$name_url 	= $userRows[$user_id]['nameUrl'];
 			$name_full	= $userRows[$user_id]['nameFull'];
-			$name_mix	= strcasecmp($name_full, $name_screen) ? "$name_full($name_screen)" : $name_full;
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
@@ -960,8 +959,8 @@ _HTML_;
 			}else{
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_url;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_mix; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
-	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_url;?>/" title="<?php echo $name_mix; ?>" class="name"><?php echo $name_mix;?></a><?php echo $status?>
+	<div class="head"><a href="/<?php echo $name_url;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_screen; ?>" alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="cont"><div class="bg"></div><a href="/<?php echo $name_url;?>/" title="<?php echo $name_screen; ?>" class="name"><?php echo $name_screen;?></a><?php echo $status; ?>
 
 		<span class="meta">
 <?php if (is_numeric($status_id)) {?>
@@ -1277,16 +1276,16 @@ _HTML_;
 			switch ($options['view']) {
 				case 'list':
 					echo <<<_HTML_
-				<li><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact" onmouseover="JiWai.ShowThumb($(this).getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameFull]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameScreen]" width="48" height="48"/></a></li>
+				<li><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameScreen]" rel="contact" onmouseover="JiWai.ShowThumb($(this).getFirst());" onmouseout="JiWai.HideThumb(this.getFirst());">$user_db_row[nameScreen]<img src="$user_icon_url" class="tip" style="display:none;" alt="$user_db_row[nameFull]" width="48" height="48"/></a></li>
 
 _HTML_;
 					break;
 				default:
 					if ($n % 4 == 0) echo "			<tr>\n";
-					$name = $user_db_row['nameFull'];
+					$name = $user_db_row['nameScreen'];
 					//if (mb_strwidth($name)>8) $name = mb_strimwidth($name, 6, '...');
 					echo <<<_HTML_
-				<td><div><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameFull]($user_db_row[nameScreen])" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameScreen]" border="0" />$name</a></div></td>
+				<td><div><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameScreen]" rel="contact"><img src="$user_icon_url" alt="$user_db_row[nameFull]" border="0" />$name</a></div></td>
 
 _HTML_;
 					if ($n % 4 == 3) echo "			</tr>\n";
@@ -1829,6 +1828,7 @@ _HTML_;
 		} else {
 		    $user = $userInfo['nameUrl'];
 		    $name_full = $userInfo['nameFull'];
+			$name_screen = $userInfo['nameScreen'];
 		}
 
 		$userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
@@ -1838,7 +1838,7 @@ _HTML_;
 _HTML_;
 
 		if ($user != 'wo') echo <<<_HTML_
-			<li style="font-size:12px; text-indent:12px;">$name_full 目前有：</li>
+			<li style="font-size:12px; text-indent:12px;">$name_screen 目前有：</li>
 _HTML_;
 
 		echo <<<_HTML_
@@ -2428,7 +2428,7 @@ _HTML_;
 
 			echo <<<_HTML_
 	<ul class="liketable"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
-		<li class="name"><a href="/$list_user_row[nameUrl]/" title="$list_user_row[nameFull]($list_user_row[nameScreen])">$list_user_row[nameFull]</a></li>
+		<li class="name"><a href="/$list_user_row[nameUrl]/" title="$list_user_row[nameScreen]">$list_user_row[nameScreen]</a></li>
 		<li class="nob">${statusNum}条</li>
 		<li class="nob">${mmsNum}条</li>
 		<li class="time">$timeUpdate</li>
