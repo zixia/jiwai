@@ -57,7 +57,7 @@ class JWDevice {
 	}
 
 
-	static function IsValid( $address, $type )
+	static function IsValid( &$address, $type )
 	{
 		if ( strlen($address) > 64 ){ // too long
 			JWLog::Instance()->Log(LOG_CRIT, "device: address[$address] too long");
@@ -72,7 +72,11 @@ class JWDevice {
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
 			case 'yahoo':
-				// FIXME @yahoo.(com|com.cn) suffix
+                // Strip the yahoo.com(|.(cn|hk|tw|...)) suffix
+				if (JWUser::IsValidEmail($address, true)) {
+                    list($address) = split('@', $address);
+                }
+                return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
@@ -103,6 +107,10 @@ class JWDevice {
                     return true;
                 }
                 else if(false != self::IsValid($address, 'skype'))
+                {
+                    return true;
+                }
+                else if(false != self::IsValid($address, 'yahoo'))
                 {
                     return true;
                 }
@@ -777,6 +785,9 @@ _SQL_;
 			case 'skype':
 				$name='Skype';
 				break;
+			case 'yahoo':
+				$name='Yahoo!';
+				break;
 			default:
 				$name=strtoupper($type);
 		}
@@ -879,6 +890,7 @@ _SQL_;
 			case 'gtalk':
 			case 'qq':
 			case 'skype':
+			case 'yahoo':
 				return 'im';
 			case 'sms':
 				return 'sms';
