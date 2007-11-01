@@ -369,7 +369,8 @@ class JWRobotMsg {
 
 	private function _StripBody($body=null){
 		$body = trim($body, "\x00..\x1F");
-		return trim($body);
+		$body = strip_tags( $body );
+		return mb_substr( trim($body), 0, 420, 'UTF-8' );
 	}
 }
 ?>
