@@ -20,8 +20,13 @@ class JWMessage {
 	const	DEFAULT_NUM_MAX		= 9999;
 	const	DEFAULT_MESSAGE_NUM	= 20;
 
-	const	SENT	= 1;
+	const	OUTBOX	= 1;
 	const	INBOX	= 2;
+
+	const   MESSAGE_DELETE = 'delete';
+	const   MESSAGE_HAVEREAD = 'haveRead';
+	const   MESSAGE_NOTREAD = 'notRead';
+	const   MESSAGE_NORMAL = 'normal';
 
 	/**
 	 * Instance of this singleton class
@@ -96,27 +101,28 @@ class JWMessage {
 		$idUser 	= intval($idUser);
 		$idMessage	= intval($idMessage);
 
-		return (
-			JWDB::ExistTableRow('Message', array (	 'id'			=> intval($idMessage)
+		if(	JWDB::ExistTableRow('Message', array (	 'id'			=> intval($idMessage)
 													,'idUserSender'	=> intval($idUser)
-											) )
-			||
-			JWDB::ExistTableRow('Message', array (	 'id'				=> intval($idMessage)
+											) ) )
+            return JWMessage::OUTBOX;
+		else if ( JWDB::ExistTableRow('Message', array (	 'id'				=> intval($idMessage)
 													,'idUserReceiver'	=> intval($idUser)
-											) )
-		);
+											) ) )
+            return JWMessage::INBOX;
+		else
+            return false;
 	}
 
 
 	/*
 	 *	获取用户的 idMessage 
 	 *	@param	int		$idUser	用户的id
-	 *	@param	int	$type	INBOX or SENT
+	 *	@param	int	$type	INBOX or OUTBOX
 	 *	@return	array	array ( 'message_ids'=>array(), 'user_ids'=>array() )
 	 *	
-	 *	根据 $type 选取 INBOX / SENT ，返回的数组中，会自动将不是自己的用户的数据库col name命名为 idUser
+	 *	根据 $type 选取 INBOX / OUTBOX ，返回的数组中，会自动将不是自己的用户的数据库col name命名为 idUser
 	 */
-	static public function GetMessageIdsFromUser($idUser, $type=JWMessage::INBOX, $num=JWMessage::DEFAULT_MESSAGE_NUM, $start=0, $timeSince = null)
+	static public function GetMessageIdsFromUser($idUser, $type=JWMessage::INBOX, $num=JWMessage::DEFAULT_MESSAGE_NUM, $start=0, $timeSince = null, $messageType=JWMessage::MESSAGE_NORMAL)
 	{
 		$idUser	= JWDB::CheckInt($idUser);
 		$num	= JWDB::CheckInt($num);
@@ -133,17 +139,19 @@ class JWMessage {
 				$where_col_name 	= 'idUserReceiver';
 				$select_col_name	= ", idUserSender as idUser, idUserReceiver";
 				break;
-			case JWMessage::SENT :
+			case JWMessage::OUTBOX :
 				$where_col_name 	= 'idUserSender';
 				$select_col_name	= ", idUserSender, idUserReceiver as idUser";
 				break;
 		}
 
+        $messageStatus=JWMessage::GetMessageStatusSql($type, $messageType);
+
 		$sql = <<<_SQL_
 SELECT		id	as idMessage $select_col_name
 FROM		Message
 WHERE		$where_col_name=$idUser
-		$condition_other
+		$condition_other $messageStatus
 ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;
@@ -210,7 +218,7 @@ _SQL_;
 	 * 	@return	array	以 idMessage 为 key 的 message row
 	 * 
 	 */
-	static public function GetMessageDbRowsByIds ($idMessages)
+	static public function GetMessageDbRowsByIds ($idMessages, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL )
 	{
 		if ( empty($idMessages) )
 			return array();
@@ -222,6 +230,7 @@ _SQL_;
 
 		$condition_in = JWDB::GetInConditionFromArray($idMessages);
 
+        $messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
 		$sql = <<<_SQL_
 SELECT
 		id as idMessage
@@ -231,7 +240,7 @@ SELECT
 		, UNIX_TIMESTAMP(timeCreate) AS timeCreate
 		, device
 FROM	Message
-WHERE	id IN ($condition_in)
+WHERE	(id IN ($condition_in)) $messageStatus
 _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
@@ -248,9 +257,9 @@ _SQL_;
 		return $message_map;
 	}
 
-	static public function GetMessageDbRowById ($idMessage)
+	static public function GetMessageDbRowById ($idMessage, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL)
 	{
-		$message_db_rows = JWMessage::GetMessageDbRowsByIds(array($idMessage));
+		$message_db_rows = JWMessage::GetMessageDbRowsByIds(array($idMessage),$type, $messageType);
 
 		if ( empty($message_db_rows) )
 			return array();
@@ -277,7 +286,7 @@ _SQL_;
 	 *	@param	int		$type
 	 *	@return	int		$messageNum for $idUser
 	 */
-	static public function GetMessageNum($idUser, $type=JWMessage::INBOX)
+	static public function GetMessageNum($idUser, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL)
 	{
 		$idUser = JWDB::CheckInt($idUser);
 
@@ -287,16 +296,17 @@ _SQL_;
 			case JWMessage::INBOX :
 				$col_name = 'idUserReceiver';
 				break;
-			case JWMessage::SENT :
+			case JWMessage::OUTBOX :
 				$col_name = 'idUserSender';
 				break;
 		}
 
+        $messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
 FROM	Message
-WHERE	$col_name=$idUser
+WHERE	$col_name=$idUser $messageStatus
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
 
@@ -304,5 +314,89 @@ _SQL_;
 	}
 
 
+	/*
+	 *	@param	int		$idUser
+	 *	@param	int		$type
+	 *	@param	enum('Y','N')		$messageStatus
+	 *	@return	int		$messageStatusNum for $idUser
+	 */
+	static public function GetMessageStatusNum($idUser, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		switch ( $type )
+		{
+			default:
+			case JWMessage::INBOX :
+				$col_name = 'idUserReceiver';
+				break;
+			case JWMessage::OUTBOX :
+				$col_name = 'idUserSender';
+				break;
+		}
+
+        $messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
+
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Message
+WHERE	$col_name=$idUser $messageStatus 
+_SQL_;
+
+		$row = JWDB::GetQueryResult($sql);
+		return $row['num'];
+	}
+
+
+
+	/*
+	 *	@param	int		$idMessage
+	 *	@param	int		$type
+	 *	@param	enum('Y','N')		$messageStatus
+	 *	@return	
+	 */
+	static public function SetMessageStatus($idMessage, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL)
+	{
+		switch ( $type )
+		{
+			default:
+			case JWMessage::INBOX :
+                $message_type= 'messageStatusReceiver';
+				break;
+			case JWMessage::OUTBOX :
+                $message_type= 'messageStatusSender';
+				break;
+		}
+
+        $conditionArray=array( $message_type => $messageType );
+        return JWDB::UpdateTableRow( 'Message', $idMessage, $conditionArray );
+    }
+
+    static public function GetMessageStatusSql($type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL )
+    {
+		switch ( $type )
+		{
+			default:
+			case JWMessage::INBOX :
+                $message_type= 'messageStatusReceiver';
+				break;
+			case JWMessage::OUTBOX :
+                $message_type= 'messageStatusSender';
+				break;
+		}
+
+        switch( $messageType )
+        {
+            case JWMessage::MESSAGE_NORMAL:
+               $messageStatus = ' AND ( ' .$message_type .'= \''.JWMessage::MESSAGE_NOTREAD.'\' OR  '.$message_type.'= \''.JWMessage::MESSAGE_HAVEREAD.'\')';
+               break;
+            default:
+               $messageStatus = ' AND '.$message_type.'= \''.$messageType .'\'';
+               break;
+        }
+
+        return $messageStatus;
+    }
 }
 ?>
