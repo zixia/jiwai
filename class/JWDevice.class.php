@@ -57,7 +57,7 @@ class JWDevice {
 	}
 
 
-	static function IsValid( $address, $type )
+	static function IsValid( &$address, $type )
 	{
 		if ( strlen($address) > 64 ){ // too long
 			JWLog::Instance()->Log(LOG_CRIT, "device: address[$address] too long");
@@ -72,7 +72,12 @@ class JWDevice {
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
 			case 'yahoo':
-				// FIXME @yahoo.(com|com.cn) suffix
+				// Yahoo! supports both EMail and Username like account name
+				// Strip the yahoo.com(|.(cn|hk|tw|...)) suffix
+				if (JWUser::IsValidEmail($address, true)) {
+					list($address) = split('@', $address);
+				}
+				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
@@ -89,32 +94,35 @@ class JWDevice {
 			case 'api':
 			case 'facebook':
 				return true;
-            case 'all':
-                if(false != self::IsValid($address, 'sms'))
-                {
-                    return true;
-                }
-                else if(false != self::IsValid($address, 'qq'))
-                {
-                    return true;
-                }
-                else if(false != self::IsValid($address, 'msn'))//gtalk, jabber, email
-                {
-                    return true;
-                }
-                else if(false != self::IsValid($address, 'skype'))
-                {
-                    return true;
-                }
-                else if(false != self::IsValid($address, 'newsmth'))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
+			case 'all':
+				if(false != self::IsValid($address, 'sms'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'qq'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'msn'))//gtalk, jabber, email
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'skype'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'yahoo'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'newsmth'))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			default:
 				JWLog::Instance()->Log(LOG_CRIT, "unsupport device address type[$type]");
 				return false;
@@ -777,6 +785,9 @@ _SQL_;
 			case 'skype':
 				$name='Skype';
 				break;
+			case 'yahoo':
+				$name='Yahoo!';
+				break;
 			default:
 				$name=strtoupper($type);
 		}
@@ -839,7 +850,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook', 'yahoo' /*, 'jabber'*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook', 'yahoo', /*'jabber',*/ );
 	}
 
 	static public function IsHistorySignature($idUser, $signature){
@@ -879,6 +890,7 @@ _SQL_;
 			case 'gtalk':
 			case 'qq':
 			case 'skype':
+			case 'yahoo':
 				return 'im';
 			case 'sms':
 				return 'sms';
