@@ -86,6 +86,7 @@ class JWRobotLingoReply {
 			'REPLY_GM_HOT' => '哇，你要修改的账户名 {0} 太热，请重新选择一个吧。',
 			'REPLY_REG_500'  => '哎呀！由于系统故障，你的请求失败了…… 请稍后再试吧。',
 			'REPLY_REG_REPLY_SUC' => '你好，你已经完成了注册，你的用户名是 {0}。',
+			'REPLY_CREATE_USER_FIRST' => '恭喜您成功获得用户名 {0} ！改名请回复 GM+空格+新用户名',
 
 			'REPLY_NOREG_TIPS' => '你还没有注册，请回复你想要的账户名。',
 

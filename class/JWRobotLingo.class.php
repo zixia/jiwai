@@ -69,17 +69,21 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();	
 		$body 		= $robotMsg->GetBody();	
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			return self::Lingo_Follow( $robotMsg );
 		}
+		
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
-		if ( empty($address_device_db_row) )
+		if ( empty($device_db_row) ) 
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$user_id	= $address_device_db_row['idUser'];
-		$device_id	= $address_device_db_row['idDevice'];
+		$user_id	= $device_db_row['idUser'];
+		$device_id	= $device_db_row['idDevice'];
 
 		
 		$ret = JWUser::SetSendViaDevice($user_id, $type);
@@ -109,16 +113,20 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();	
 		$body 		= $robotMsg->GetBody();	
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row) )
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			return self::Lingo_Leave( $robotMsg );
 		}
 
-		$user_id	= $address_device_db_row['idUser'];
+		$user_id	= $device_db_row['idUser'];
 		$device_for_user	= JWDevice::GetDeviceRowByUserId($user_id);
 
 		if( $type != 'web' )
@@ -153,12 +161,16 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();	
 		$body = $robotMsg->GetBody();
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row['idUser']) )
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row['idUser']) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id	= $address_device_db_row['idUser'];
+		$address_user_id	= $device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -240,13 +252,17 @@ class JWRobotLingo {
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row['idUser']) )
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row['idUser']) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
-		$address_user_id	= $address_device_db_row['idUser'];
+		$address_user_id	= $device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -307,24 +323,20 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Add($robotMsg)
 	{
-		/*
-		 *	获取发送者的 idUser
-		 */
+		$type = $robotMsg->GetType();
+		$address = $robotMsg->GetAddress();
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress(
-						 $robotMsg->GetAddress()
-						,$robotMsg->GetType()
-					);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress( $address, $type );
 
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
-		if ( empty($address_device_db_row) )
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id		= $address_device_db_row['idUser'];
+		$address_user_id		= $device_db_row['idUser'];
 		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
-
-		if ( empty($address_user_row) )
-			return JWRobotLogic::CreateAccount($robotMsg);
 
 		/*
 	 	 *	解析命令参数
@@ -543,11 +555,16 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();	
 
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
-		$address_user_id		= $address_device_db_row['idUser'];
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
 		if ( empty($address_user_id) )
 			return JWRobotLogic::CreateAccount($robotMsg);
+
+		$address_user_id		= $device_db_row['idUser'];
 
 
 		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
@@ -645,14 +662,17 @@ class JWRobotLingo {
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		// 用户没有注册过
-		if ( empty($address_device_db_row) )
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
-		$address_user_id = $address_device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -691,7 +711,7 @@ class JWRobotLingo {
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
 
-		if( $address_device_db_row['idUser'] == $friend_user_db_row['id'] ) {
+		if( $device_db_row['idUser'] == $friend_user_db_row['id'] ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SELF' );
 		}else{
 			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
@@ -773,7 +793,7 @@ class JWRobotLingo {
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
 		/*
 		 *	分为三种情况处理：
@@ -781,12 +801,12 @@ class JWRobotLingo {
 				2、用户没有注册，但是有邀请
 				3、用户没有注册，没有邀请
 		 */
-		if ( ! empty($address_device_db_row) && !empty($inviter_user_row) )
+		if ( ! empty($device_db_row) && !empty($inviter_user_row) )
 		{
 			/*
 			 *	 1、用户已经注册
 			 */
-			$address_user_id	= $address_device_db_row['idUser'];
+			$address_user_id	= $device_db_row['idUser'];
 
 			if( JWFriendRequest::IsExist($inviter_user_row['id'], $address_user_id) ) {
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameScreen'],) );
@@ -893,6 +913,10 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType() ;
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
 		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
@@ -1061,6 +1085,10 @@ class JWRobotLingo {
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
 		if ( empty($device_db_row) ) {
 			return JWRobotLogic::CreateAccount($robotMsg);
 		}
@@ -1103,11 +1131,15 @@ class JWRobotLingo {
 	 * Track
 	 */
 	static function Lingo_Track($robotMsg){
-		$address 	= $robotMsg->GetAddress();
-		$type 		= $robotMsg->GetType();
+		$address = $robotMsg->GetAddress();
+		$type = $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
 		if ( empty($device_db_row) ) {
 			return JWRobotLogic::CreateAccount($robotMsg);
@@ -1178,6 +1210,11 @@ class JWRobotLingo {
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
 		if ( empty($device_db_row) ) {
 			return JWRobotLogic::CreateAccount($robotMsg);
 		}
@@ -1228,9 +1265,13 @@ class JWRobotLingo {
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
-		if ( empty($device_db_row) ) {
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) ) 
 			return JWRobotLogic::CreateAccount($robotMsg);
-		}
 
 		/**
 		 * 参数
@@ -1255,6 +1296,58 @@ class JWRobotLingo {
 
 		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_UNBLOCK_SUC', array(trim($nameScreens, ', '),) );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
+	static public function CreateAccount($robotMsg) {
+		
+		$address = $robotMsg->GetAddress();
+		$type = $robotMsg->GetType();
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $address, $type );
+		if( false == empty( $device_db_row ) ) {
+			return $device_db_row;
+		}
+
+		switch($type) {
+			case 'qq':
+				$nameScreen = 'QQ'.$address;
+			break;
+			case 'sms':
+				$nameScreen = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
+			break;
+			case 'skype':
+			case 'yahoo':
+				$nameScreen = $address;
+			break;
+			default:
+				list($nameScreen) = split( '@', $address );
+		}
+
+		$nameFull = $nameScreen;
+		$nameScreen = JWUser::GetPossibleName( $nameScreen );
+
+		$uArray = array(
+			'nameScreen' => $nameScreen,
+			'nameFull' => $nameFull,
+			'pass' => JWDevice::GenSecret(16),
+			'isWebUser' => 'N', 
+			'noticeAutoNudge' => 'Y',   //Not nudge
+			'ip' => JWRequest::GetIpRegister($type),
+		);
+
+		$idUser =  JWSns::CreateUser($uArray);
+		if( $idUser ) {
+			if( JWSns::CreateDevice($idUser, $address, $type, true) ) {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_CREATE_USER_FIRST', array(
+					$nameScreen,
+				));
+				$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+				JWRobot::SendMt( $replyRobotMsg );
+				return JWDevice::GetDeviceDbRowByAddress( $address, $type );
+			}
+		}else{
+			return array();
+		}
 	}
 }
 ?>

@@ -265,7 +265,6 @@ _SQL_;
 
 		case 'nameScreen':
 		case 'nameUrl':
-			//if ( !self::IsValidName($value) ) return null;
 			$value = JWDB::EscapeString($value);
 			break;
 
@@ -396,7 +395,7 @@ _SQL_;
 	{
 		if (strlen($name)<5||strlen($name)>20) return false; //最少 3 byte
 		if (strpos($name, ' ')!==false) return false; //不能包含空格
-		if (preg_match('/^\d/', $name)) return false; //不能以半角数字开头 
+		if (preg_match('/^\d+$/', $name)) return false; //不能全是数字，
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
 			if (mb_strlen($name)<5) return false; //纯西文字符不能短于3
 		} else {
@@ -911,10 +910,10 @@ _SQL_;
 		{	$user_name = $nameInput;
 		}
 
-		// zixia: 7/24/07 我们允许中文用户名
+		// zixia: 7/24/07 我们允许中文用户名，允许用户名数字打头[IM注册]；
 		//$user_name = preg_replace("/[^\w]+/"	,""	,$user_name);
 		$user_name = preg_replace("/\s+/"		,""	,$user_name);
-		$user_name = preg_replace("/^\d+/"		,""	,$user_name);
+		//$user_name = preg_replace("/^\d+/"		,""	,$user_name);
 		
 		if ( empty($user_name) && !empty($email) )
 		{

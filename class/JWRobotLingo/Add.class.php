@@ -50,9 +50,13 @@ class JWRobotLingo_Add {
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row) )
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		if( $type != 'sms' ) {
@@ -66,7 +70,7 @@ class JWRobotLingo_Add {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$idUser = JWDevice::IsAllowedNonRobotDevice( $type ) ? $address : $address_device_db_row['idUser'];
+		$idUser = JWDevice::IsAllowedNonRobotDevice( $type ) ? $address : $device_db_row['idUser'];
 		$userReceiver = JWUser::GetUserInfo( $idUser );
 
 		
