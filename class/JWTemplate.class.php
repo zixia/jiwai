@@ -695,15 +695,15 @@ _HTML_;
     <td align="right">
 <?php
 if ($current_user_id!=$idUser) {
-if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id) ) {
+if ( isset($current_user_id) && JWFollower::IsFollower($userRow['id'], $current_user_id) ) {
 ?>
       <small> 已订阅 </small>
 <?php
 } else {
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
-	if( false == JWBlock::IsBlocked( $idUser, $current_user_id ) ) {
+	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
 		echo <<<_HTML_
-	<a href="/wo/friendships/create/$idUser" $oc>成为{$name_screen}的粉丝吧</a>
+	<a href="/wo/friendships/create/$userRow[id]" $oc>成为{$name_screen}的粉丝吧</a>
 _HTML_;
 	}
 }
