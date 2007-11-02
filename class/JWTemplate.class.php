@@ -812,7 +812,7 @@ _HTML_;
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 		$html_str = <<<_HTML_
-    	<a href="javascript:void(0);" onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
+    	<a href="javascript:void(0);" onclick="JiWai.ToggleStar($idStatus); return false;" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
 _HTML_;
 
 		return $html_str;
