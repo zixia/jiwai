@@ -961,8 +961,10 @@ class JWRobotLingo {
 		*/	
 
 		if ( JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type) ) {
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_SUC', array($friend_name,) );
-			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			if( false == in_array( $type, array( 'sms', 'api' ) ) {
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_SUC', array($friend_name,));
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			}
 		}
 		return null;
 	}
