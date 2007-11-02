@@ -1144,6 +1144,21 @@ _HTML_;
 		}
 	}
 
+	static function sidebar_block($idUser, $idUserPage){
+		if( $idUser == $idUserPage )
+			return true;
+
+		if( false == JWBlock::IsBlocked( $idUser, $idUserPage ) ) {
+			echo <<<_HTML_
+<a style="margin:0 10px; color:#AAA; text-decoration:none;" href="/wo/block/b/$idUserPage">阻止此人</a>
+_HTML_;
+		}else{
+			echo <<<_HTML_
+<a style="margin:0 10px; color:#AAA; text-decoration:none;" href="/wo/block/u/$idUserPage">解除阻止</a>
+_HTML_;
+		}
+	}
+
 	/*
 	 *	@param	options		focus	=> true	: 是否激活输入焦点到email框
 	 *

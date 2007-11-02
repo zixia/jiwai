@@ -317,8 +317,11 @@ $arr_menu = array(
 	array ('rss', array('user', $page_user_info['nameScreen'])),
 );
 
-if ( false == JWLogin::IsLogined() )
+if ( false == JWLogin::IsLogined() ) {
 	array_push ( $arr_menu, array('register', array(true)) );
+} else {
+	array_push ( $arr_menu, array('block', array($logined_user_info['id'], $page_user_id)) );
+}
 
 JWTemplate::sidebar( $arr_menu, $page_user_id);
 JWTemplate::container_ending();
