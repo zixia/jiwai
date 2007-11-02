@@ -33,12 +33,12 @@ class JWRobotLingoReply {
 			'REPLY_ADD_REQUEST_INVITE' => '搞定了！我们已经帮你发出了邀请！期待很快能得到你朋友的回应。',
 			'REPLY_ADD_SELF' => '{0}，你好，{1} 是你自己的地址，邀请自己没有意义，邀请别人才有意义，活着就要做有意义的事。',
 
-			'REPLY_DENY_SUCC' => '搞定了！你没有接受{0}({1})的邀请。发送GET {1}获取 {0} 的最新更新。',
+			'REPLY_DENY_SUCC' => '搞定了！你没有接受 {0} 的邀请。发送GET {0} 获取 {0} 的最新更新。',
 			'REPLY_DENY_NOINVITE' => '哎呀！{0} 并没有邀请你。发送HELP了解更多。',
 			'REPLY_DENY_HELP' => 'DENY命令帮助：DENY 帐号。',
 			'REPLY_DENY_NOUSER' => '哎呀！没有找到邀请你的朋友 {0}。',
 
-			'REPLY_DELETE_SUC' => '搞定了！{0}({1})已经不再是你的好友了。',
+			'REPLY_DELETE_SUC' => '搞定了！{0} 已经不再是你的好友了。',
 			'REPLY_DELETE_HELP' => 'DELETE命令帮助：DELETE 帐号。',
 			'REPLY_DELETE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 
@@ -47,7 +47,7 @@ class JWRobotLingoReply {
 			'REPLY_GET_NOSTATUS' => '还没有更新过。',
 
 			'REPLY_D_HELP' => 'D命令帮助：D 帐号 你想说的悄悄话。',
-			'REPLY_D_SUC'	=> '',
+			'REPLY_D_SUC'	=> '悄悄话已经发送给 {0} ，也许 {0} 会马上回复你的哦。',
 			'REPLY_D_NOPERM_BIO' => '你还不在{0}的好友列表中，无法悄悄话。你可以发送ADD {0}将{0}添加为好友， 然后期待也被对方添加为好友啦！',
 			'REPLY_D_NOPERM' => '你还不在{0}的好友列表中，无法悄悄话。',
 			'REPLY_D_NOUSER' => '哎呀！没有找到 {0} 这个用户。了解更多？发送 HELP。',
@@ -56,9 +56,9 @@ class JWRobotLingoReply {
 			'REPLY_OFF_SUC' => '通知消息已关闭。发送ON可开启。',
 
 			'REPLY_FOLLOW_HELP' => 'FOLLOW命令帮助：FOLLOW 帐号。',
-			'REPLY_FOLLOW_SUC' => '每当{0}更新，你都会收到消息。如果要撤销，请发送LEAVE {1}。发送HELP了解更多。',
-			'REPLY_FOLLOW_SUC_MUL' => '每当{0}更新，你都会收到消息。发送HELP了解更多。',
-			'REPLY_FOLLOW_NOUSER' => '哎呀！抱歉，你订阅的 {0} 我不认识，请你确认输入了正确的叽歪帐号。了解更多？发送 HELP。',
+			'REPLY_FOLLOW_SUC' => '每当 {0} 更新，你都会收到消息。如果要撤销，请发送LEAVE {0}。',
+			'REPLY_FOLLOW_SUC_MUL' => '每当{0}更新，你都会收到消息。',
+			'REPLY_FOLLOW_NOUSER' => '哎呀！抱歉，你订阅的 {0} 我不认识，请你确认输入了正确的叽歪帐号。',
 
 			'REPLY_LEAVE_HELP' => 'LEAVE命令帮助：LEAVE 帐号。',
 			'REPLY_LEAVE_SUC' => '你已退定了{0}。',
@@ -69,6 +69,7 @@ class JWRobotLingoReply {
 			'REPLY_WHOIS_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 
 			'REPLY_NUDGE_HELP' => '使用方法：NAO 帐号。',
+			'REPLY_NUDGE_SELF' => '后背痒痒？自己挠是够不着的，我想你得等着别人来挠你了。',
 			'REPLY_NUDGE_DENY' => '{0}已经关闭了通知，不想被挠挠。。。要不你稍后再试吧？',
 			'REPLY_NUDGE_SUC' => '我们已经帮你挠挠了{0}一下！期待很快能得到你朋友的回应。',
 			'REPLY_NUDGE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
@@ -88,11 +89,11 @@ class JWRobotLingoReply {
 
 			'REPLY_NOREG_TIPS' => '你还没有注册，请回复你想要的账户名。',
 
-			'REPLY_WHOAMI' => '你是{0}({1})。',
-			'REPLY_WHOAMI_WEB' => '你是{0}({1})，你的叽歪档案位于：http://JiWai.de/{1}',
-			'REPLY_WHOAMI_IM' => '你是{0}({1})，设置密码请来这里：http://JiWai.de/wo/account/complete',
+			'REPLY_WHOAMI' => '你是 {0}。',
+			'REPLY_WHOAMI_WEB' => '你是 {0}，你的叽歪档案位于：http://JiWai.de/{0}',
+			'REPLY_WHOAMI_IM' => '你是 {0}，设置密码请来这里：http://JiWai.de/wo/account/complete',
 
-			'REPLY_ACCEPT_SUC' => '搞定了！你和{0}({1})已经成为好友！回复GET {1}查看最新更新。',
+			'REPLY_ACCEPT_SUC' => '搞定了！你和 {0} 已经成为好友！回复 GET {0} 查看最新更新。',
 			'REPLY_ACCEPT_HELP' => 'ACCEPT命令帮助：ACCEPT 帐号。',
 			'REPLY_ACCEPT_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 			'REPLY_ACCEPT_INVITE' => '哎呀！{0}没有邀请过你。请回复你希望使用的用户名。',
@@ -114,9 +115,9 @@ class JWRobotLingoReply {
 			//Out
 			'OUT_NUDGE' => '{0}挠挠了你一下，提醒你更新！回复本消息既可更新。',
 
-			'OUT_ADD_EMAIL' => '{0}({1})邀请你来使用我们的服务！',
-			'OUT_ADD_IM' => '{0}({1})邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。',
-			'OUT_ADD_SMS' => '{0}({1})邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。(本短信服务免费)',
+			'OUT_ADD_EMAIL' => '{0}({1}) 邀请你来使用我们的服务！',
+			'OUT_ADD_IM' => '{0}({1}) 邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。',
+			'OUT_ADD_SMS' => '{0}({1}) 邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。(本短信服务免费)',
 
 			'REPLY_MMS_NOPERM' => '{0}，你好。由于{1}设置了私密，而你还不是{1}的好友，不能下载彩信。',
 			'REPLY_MMS_NOMMS' => '哇，没搞错吧？没有找到你要的彩信信息。',

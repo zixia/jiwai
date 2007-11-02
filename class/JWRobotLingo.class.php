@@ -196,7 +196,7 @@ class JWRobotLingo {
 
 			JWSns::CreateFollowers($userInfoFollower['idUser'], array($address_user_id));
 
-			array_push( $follower_name, $userInfoFollower['nameFull'] );
+			array_push( $follower_name, $userInfoFollower['nameScreen'] );
 		}
 
 		if( empty( $follower_name ) ){
@@ -272,7 +272,7 @@ class JWRobotLingo {
 				continue;
 			}
 			JWSns::DestroyFollowers($userInfoFollower['idUser'], array( $address_user_id ) );
-			array_push( $follower_name, $userInfoFollower['nameFull'] );
+			array_push( $follower_name, $userInfoFollower['nameScreen'] );
 		}
 
 		if( empty( $follower_name ) ){
@@ -581,7 +581,7 @@ class JWRobotLingo {
 		JWSns::DestroyFriends	($address_user_id, array($friend_user_row['idUser']), $bio );
 		//JWSns::DestroyFollowers ($friend_user_row['idUser'], array($address_user_id), $bid );
 
-		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_SUC', array( $friend_user_row['nameFull'], $friend_user_row['nameScreen'],) );
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_SUC', array( $friend_user_row['nameScreen'],) );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -678,20 +678,30 @@ class JWRobotLingo {
 
 		// TODO 要考虑判断用户的 device 是否已经通过验证激活
 		if ( 'web'==$send_via_device ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_DENY', array($friend_user_db_row['nameFull'],) );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_DENY', array($friend_user_db_row['nameScreen'],) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
 
+		/**
 		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_NOPERM', array($friend_user_db_row['nameFull'],) );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_NOPERM', array($friend_user_db_row['nameScreen'],) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
+		*/
 
 		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
-		$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array( JWNotify::GetPrettySender($address_user_db_row), ) );
-		JWNudge::NudgeToUsers( array($friend_user_db_row['idUser']), $nudge_message, 'nudge', $type );
 
-		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array($friend_user_db_row['nameScreen'],) );
+		if( $address_device_db_row['idUser'] == $friend_user_db_row['id'] ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SELF' );
+		}else{
+			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
+				JWNotify::GetPrettySender($address_user_db_row),
+			));
+			JWNudge::NudgeToUsers( array($friend_user_db_row['idUser']), $nudge_message, 'nudge', $type );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array(
+						$friend_user_db_row['nameScreen'],
+			));
+		}
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -724,7 +734,7 @@ class JWRobotLingo {
 
 		$register_date	= date("Y年n月",strtotime($friend_user_row['timeCreate']));
 	
-		$reply= "$friend_user_row[nameFull]，注册时间：$register_date";
+		$reply= "姓名：$friend_user_row[nameFull]，注册时间：$register_date";
 
 		if ( !empty($friend_user_row['bio']) )
 			$reply .= "，自述：$friend_user_row[bio]";
@@ -779,12 +789,12 @@ class JWRobotLingo {
 			$address_user_id	= $address_device_db_row['idUser'];
 
 			if( JWFriendRequest::IsExist($inviter_user_row['id'], $address_user_id) ) {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameFull'],) );
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameScreen'],) );
 			}else{
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_NOREQUEST', array($inviter_user_row['nameFull'],) );
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_NOREQUEST', array($inviter_user_row['nameScreen'],) );
 			}
 			if( false == JWSns::CreateFriends($inviter_user_row['id'], array($address_user_id), false) ){
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_500', array($inviter_user_row['nameFull'],) );
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_500', array($inviter_user_row['nameScreen'],) );
 			}
 		}
 		else if ( !empty($inviter_user_row) )
@@ -867,7 +877,7 @@ class JWRobotLingo {
 		}
 		else
 		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_SUC', array($friend_db_row['nameFull'], $friend_db_row['nameScreen'],) );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_SUC', array( $friend_db_row['nameScreen'], ) );
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -926,7 +936,10 @@ class JWRobotLingo {
 		}
 		*/	
 
-		JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type);
+		if ( JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type) ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_SUC', array($friend_name,) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
 		return null;
 	}
 
@@ -1067,11 +1080,11 @@ class JWRobotLingo {
 	
 		if ( $is_web_user )
 		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_WEB', array($address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_WEB', array( $address_user_row['nameScreen'], ) );
 		}
 		else
 		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_IM', array($address_user_row['nameFull'], $address_user_row['nameScreen'], ) );
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_IM', array( $address_user_row['nameScreen'], ) );
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
