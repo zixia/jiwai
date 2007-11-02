@@ -701,9 +701,11 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 <?php
 } else {
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
-?>
-      <a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_screen; ?>的粉丝吧</a>
-<?php
+	if( false == JWBlock::IsBlocked( $idUser, $current_user_id ) ) {
+		echo <<<_HTML_
+	<a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_screen; ?>的粉丝吧</a>
+_HTML_;
+	}
 }
 } else {
 ?>
@@ -1141,6 +1143,21 @@ _HTML_;
 				</div>
 
 <?php
+		}
+	}
+
+	static function sidebar_block($idUser, $idUserPage){
+		if( $idUser == $idUserPage )
+			return true;
+
+		if( false == JWBlock::IsBlocked( $idUser, $idUserPage ) ) {
+			echo <<<_HTML_
+<a style="margin:0 10px; color:#AAA; text-decoration:none;" href="/wo/block/b/$idUserPage">阻止此人</a>
+_HTML_;
+		}else{
+			echo <<<_HTML_
+<a style="margin:0 10px; color:#AAA; text-decoration:none;" href="/wo/block/u/$idUserPage">解除阻止</a>
+_HTML_;
 		}
 	}
 

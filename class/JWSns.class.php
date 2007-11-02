@@ -99,6 +99,13 @@ class JWSns {
 	 */
 	static public function CreateFriend($userRow, $friendRow)
 	{
+		/** 被对方阻止，则不能加对方为好友 **/
+		if( JWBlock::IsBlocked( $friendRow['id'], $userRow['id'] ) )
+			return false;
+
+ 		/** 加好友自动解除 block 关系 **/
+ 		self::UnBlock( $userRow['id'], $friendRow['id'] );
+
 		if ( JWBlock::IsBlocked( $friendRow['id'], $userRow['id'] ) ) {
 			return true;
 		}
@@ -436,7 +443,7 @@ class JWSns {
 			// 反向也是朋友，则可以 direct_messages / nudge
 			if( false == JWBlock::IsBlocked( $friend_id, $idUser, false ) ) 
 			{
-				if ( 'web'!=$send_via_device_rows[$friend_id] )
+				if ( 'web'!=$send_via_device_rows[$friend_id] && $friend_id != $idUser )
 					$action_rows[$friend_id]['nudge']		= true;
 
 				$action_rows[$friend_id]['d']			= true;
