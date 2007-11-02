@@ -592,3 +592,7 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 
  /*Reg Text */
  .RegText {margin-top:5px; font-size:12px; line-height:150%;}
+
+ /*Feature image*/
+.featured li.FeaturedImage a {border-style:none; vertical-align:middle;}
+.featured li.FeaturedImage a:hover {border-style:none; vertical-align:middle;}

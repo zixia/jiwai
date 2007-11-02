@@ -1356,6 +1356,9 @@ _HTML_;
 		else
 			$title = $options['title'];
 
+        if ($title =='公告')
+            $isAnnounce=true;
+
 
 		$user_db_row	= JWUser::GetUserInfo($user_name);
 
@@ -1371,6 +1374,19 @@ _HTML_;
 
 		<div class="headtip"><h2 class="forul">$title</h2></div>
   		<ul class="featured">
+_HTML_;
+
+        if($isAnnounce)
+		echo <<<_HTML_
+			<li class="FeaturedImage">
+				<a href="http://e.jiwai.de/cbc2007/" target="_blank"><img title="叽歪de× 中文网志年会" alt="叽歪de× 中文网志年会" height="25" src="http://blog.jiwai.de/images/jiwaicbc.gif" /></a>
+			</li>
+			<li class="FeaturedImage">
+				<a href="/wo/bindother/" target="_blank"><img title="绑定 Twitter" alt="绑定 Twitter" height="25" src="http://blog.jiwai.de/images/twitterbind.gif" /></a>
+			</li>
+			<li class="FeaturedImage">
+				<a href="/wo/devices/im/" target="_blank"><img title="绑定 Yahoo" alt="绑定 Yahoo" height="25" src="http://blog.jiwai.de/images/yahoobind.gif" /></a>
+			</li>
 _HTML_;
 
 		$status_db_row = JWDB_Cache_Status::GetDbRowsByIds($user_status_ids['status_ids']);
@@ -1396,7 +1412,7 @@ _HTML_;
 
 			echo <<<_HTML_
 			<li>
-				<a href="$url" target="_blank">·  $desc</a>
+				<a href="$url" target="_blank">$desc</a>
 			</li>
 _HTML_;
 		}
