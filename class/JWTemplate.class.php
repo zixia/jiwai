@@ -1842,12 +1842,16 @@ _HTML_;
 			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
 _HTML_;
 		
-		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] ) 
+		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] )
 		{
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
+				<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
 _HTML_;
-		} 
+		}else{
+			echo <<<_HTML_
+				<li id="follower_count"><a style="text-decoration:none;" href="javascript:void(0);">$countInfo[follower] 个粉丝</a></li>
+_HTML_;
+		}
 
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] )
 		{
