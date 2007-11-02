@@ -14,7 +14,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="keywords" content="<?php echo $this->GetConfigValue("meta_keywords") ?>" />
     <meta name="description" content="<?php echo $this->GetConfigValue("meta_description") ?>" />
-    <link rel="stylesheet" type="text/css" href="css/<?php echo $this->GetConfigValue("stylesheet") ?>" />
     <link href="css/jiwai-screen.css" media="screen, projection" rel="Stylesheet" type="text/css" />
     <link rel="shortcut icon" href="http://asset1.jiwai.de/img/favicon.ico?1183979714" type="image/icon" />
     <script type="text/javascript" src="js/jiwai.js"></script>
@@ -56,12 +55,7 @@ if ($this->GetMethod() != 'edit') {
   }
 </script>
 
-<body <?php echo $message ? "onLoad=\"alert('".$message."');\" " : "" ?> class="account" id="help" >
-<ul id="accessibility">
-<li> <a href="#navigation" accesskey="2">跳转到导航目录</a> </li>
-<li> <a href="#side">跳转到功能目录</a> </li>
-</ul>
-
+<body class="account" id="help" >
 <?php JWTemplate::accessibility() ?>
 <?php JWTemplate::header('http://help.jiwai.de/') ?>
 
