@@ -159,7 +159,8 @@ class JWNotify{
 		 * 通知发送者的其他 Follower，需要考虑的是，发送者是会议用户本身，则不通知
 		 */
 		$sender_follower_ids = array();
-		if( false == ( $idUserTo || $idUserFrom == $idUserConference ) ) 
+		//if( false == ( $idUserTo || $idUserFrom == $idUserConference ) ) 
+		if( false == ( $idUserFrom == $idUserConference ) ) 
 		{
 			$userSender = JWUser::GetUserInfo( $idUserFrom );
 			$messageObject = is_array( $message ) ? 
@@ -167,6 +168,7 @@ class JWNotify{
 
 			$sender_follower_ids = self::GetAvailableFollowerIds( $idUserFrom );
 			$sender_follower_ids = array_diff( $sender_follower_ids, $follower_ids );
+			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserTo) );
 			// $sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
 
 			echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
@@ -202,7 +204,7 @@ class JWNotify{
 					. "Followers: array("
 					. Implode( ',', $tracker_ids ) . ")\n"; 
 
-				$messageObject = 'TRACK('.$userSender['nameScreen'].'): '.$message;
+				$messageObject = '('.$userSender['nameScreen'].'): '.$message;
 				JWNudge::NudgeToUsers( $tracker_ids, $messageObject, 'nudge', 'bot', $options );
 			}
 		}
