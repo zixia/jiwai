@@ -1230,7 +1230,7 @@ _HTML_;
 		if ( isset($options['id']) )
 			$id = 'id="'.$options['id'].'"';
 		else
-			$id = '';
+			$id = 'id="friend"';
 
 		switch ($options['view']) {
 			case 'list':
