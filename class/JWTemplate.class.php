@@ -1643,81 +1643,49 @@ _HTML_;
 <?php
 	}
 
-   /*
-   功能：显示绑定设备信息
-   作者：WqSemc
-   日期：2007-10-16
-   */
-    static function sidebar_device_info($aUserInfo)
-    {       
-             echo "<ul class=imico><li>";
-                            
-              $aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
+	/**
+ 	  * 功能：显示绑定设备信息
+	  * 作者：WqSemc
+	  * 日期：2007-10-16
+	  */
+	static function sidebar_device_info($aUserInfo)
+	{       
+		echo "<ul class=imico><li>";
 
-              $isUserLogined = JWLogin::IsLogined() ;
-              $imicoUrl = "http://blog.jiwai.de/images";
-              $imicoUrlSms = "/wo/devices/sms";
-              $imicoUrlIm = "/wo/devices/im";
-              $imicoUrlHelpSms = "http://help.jiwai.de/VerifyYourPhone";
-              $imicoUrlHelpIm = "http://help.jiwai.de/VerifyYourIM";
-              $imicoUrlHref = "";
-              
-              $isUseNewSmth = false;
-              $arrUseDevices =array();
-			  foreach($aDeviceInfo_rows as $aDeviceInfo_row)
-              { 
-                  if (empty($aDeviceInfo_row['secret']))
-                  {
-                      $arrUseDevices[$aDeviceInfo_row['type']]=true;
-                  }
-              }   
+		$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
 
-              if (true== $arrUseDevices['sms'])
-              {
-                  $arrUseDevices['sms']=true;
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-mobile.gif alt="已绑定手机" title="已绑定手机" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['gtalk'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-gtalk.gif" alt="已绑定 Gtalk" title="已绑定 Gtalk" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['msn'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-msn.gif" alt="已绑定 MSN" title="已绑定 MSN" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['qq'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-qq.gif" alt="已绑定 QQ" title="已绑定 QQ" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['skype'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-skype.gif" alt="已绑定 Skype" title="已绑定 Skype" /></a>
-_HTML_;
-              }
-              if(true== $arrUseDevices['newsmth'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-newsmth.gif" alt="已绑定 水木清华" title="已绑定 水木清华" /></a>
-_HTML_;
-              }
+		$isUserLogined = JWLogin::IsLogined() ;
+		$imicoUrl = "http://blog.jiwai.de/images";
+		$imicoUrlSms = "/wo/devices/sms";
+		$imicoUrlIm = "/wo/devices/im";
+		$imicoUrlHelpSms = "http://help.jiwai.de/VerifyYourPhone";
+		$imicoUrlHelpIm = "http://help.jiwai.de/VerifyYourIM";
+		$imicoUrlHref = "";
 
-            echo "</li></ul><br />";
-    }
+		$isUseNewSmth = false;
+
+		$pArray = array( 
+				'sms' => '已绑定 手机', 
+				'gtalk' => '已绑定 GTalk', 
+				'msn' => '已绑定 MSN',
+				'qq' => '已绑定 QQ',
+				'skype' => '已绑定 Skype',
+				'yahoo' => '已绑定 Yahoo!',
+				'newsmth' => '已绑定 水木清华',
+			       );
+
+		foreach( $pArray as $key=>$bindTip ) {
+			if ( isset($aDeviceInfo_rows[$key]) && empty($aDeviceInfo_rows[$key]['secret']) )
+			{
+				$imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
+				echo <<<_HTML_
+					<a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-${key}.gif alt="$bindTip" title="$bindTip" /></a>
+_HTML_;
+			}
+		}
+
+		echo "</li></ul><br />";
+	}
 
    /*
    功能：显示帮助信息
