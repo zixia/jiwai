@@ -98,7 +98,10 @@ class JWRobotLogic {
 		{
 			$reply_robot_msg 	= call_user_func($lingo_func, $robotMsg);
 
-		} else if ( JWDevice::IsExist($address, $type, false) || JWDevice::IsAllowedNonRobotDevice($type) )
+		} else if ( JWDevice::IsExist($address, $type, false) 
+				|| JWDevice::IsAllowedNonRobotDevice($type) 
+				|| JWRobotLingo::CreateAccount($robotMsg)
+		)
 		{
 			// 设备已经设置，(false 代表包含未激活的设备)
 			// 		1、user JiWai status
