@@ -471,7 +471,7 @@ _HTML_;
                     </div>
                 </div>
                 <div class="submit" >
-                    <a class="button" href="#" style="margin-left:210px!important; margin-left:105px;" onclick="$('doingForm').submit();return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
+                    <a class="button" href="javascript:void(0);" style="margin-left:210px!important; margin-left:105px;" onclick="if($('jw_status').value){$('doingForm').submit();}return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
                     <span style="margin-left:73px;color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
                 </div>
                 <br/><br/>
@@ -774,11 +774,11 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
-	<a href="#" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt"><img border="0" src="$asset_trash_url" />$asset_trash_alt2</a>
+	<a href="javascript:void(0);" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt"><img border="0" src="$asset_trash_url" />$asset_trash_alt2</a>
 _HTML_;
 		if( @$options['isMms'] ) {
 			$html_str = <<<_HTML_
-	<a onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt" class="del">$asset_trash_alt</a>
+	<a href="javascript:void(0);" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" alt="$asset_trash_alt" class="del">$asset_trash_alt</a>
 _HTML_;
 		}
 
@@ -810,7 +810,7 @@ _HTML_;
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 		$html_str = <<<_HTML_
-    	<a href="#" onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
+    	<a href="javascript:void(0);" onclick="JiWai.ToggleStar($idStatus);" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
 _HTML_;
 
 		return $html_str;
