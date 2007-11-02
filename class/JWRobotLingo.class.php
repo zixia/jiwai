@@ -1324,6 +1324,12 @@ class JWRobotLingo {
 				$nameScreen = is_numeric($nameScreen) ? 'M'.$nameScreen : $nameScreen;
 		}
 
+		/* 如果 nameScreen 长度小于 5，则补齐 */
+		if( strlen($nameScreen) < 5 ) {
+			$plusLen = 5 - strlen( $nameScreen ) ;
+			$nameScreen .= JWDevice::GenSecret( $plusLen );
+		}
+
 		$nameFull = $nameScreen;
 		$nameScreen = JWUser::GetPossibleName( $nameScreen );
 
