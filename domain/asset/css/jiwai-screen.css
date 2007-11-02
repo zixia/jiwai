@@ -459,7 +459,7 @@ html>body .subtab {height:31px; clear:both;}
 *+html .subtab {height:30px!important; clear:both!important;}
 #settings .subtab {width:740px; margin:10px auto 0 auto;}
 .subtab a, .subtab a:hover {display:block; float:left; line-height:23px; height:23px; margin:7px 2px 0 0; padding:0 8px; border:1px solid #D3D3D5; border-bottom:none; color:#000000; font-size:12px; text-decoration:none; background-color:#ffffff;}
-#settings .subtab a {width:72px; text-align:center;}
+#settings .subtab a {width:70px; text-align:center;}
 .subtab a.active, .subtab a:hover {background-color:#FFC892; border:1px solid #FFC892; border-bottom:none;}
 #container .tabbody { margin:0 auto; border:1px solid #FFC892; width:548px; padding:0;}
 #settings #container .tabbody { width:738px;background-color:#ffffff;}

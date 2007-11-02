@@ -278,6 +278,7 @@ _HTML_;
 				'/wo/account/notification' => '系统通知',
 				'/wo/account/profile_settings' => '配色方案',
 				'/wo/openid/' => 'OpenID',
+				'/wo/bindother/' => '绑定Twitter',
                 );
 
 		if (!$highlight) {

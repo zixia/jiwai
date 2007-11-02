@@ -53,6 +53,16 @@ class JWBindOther {
 		return false;
 	}
 
+	static public function Destroy( $idUser, $idBindOrder ) { 
+		$idBindOrder = JWDB::CheckInt( $idBindOrder );
+		$idUser = JWDB::CheckInt( $idUser );
+		$delArray = array(
+				'idUser' => $idUser,
+				'id' => $idBindOrder,
+				);  
+		return JWDB::DelTableRow( 'BindOther', $delArray );
+	}   
+
 	static public function Disable( $idBindOrder ) {
 		$idBindOrder = JWDB::CheckInt( $idBindOrder );
 		$uArray = array(
