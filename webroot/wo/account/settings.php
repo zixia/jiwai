@@ -22,7 +22,6 @@ $outInfo = $user_info;
 
 if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 {
-	$nameFull	= trim(@$new_user_info['nameFull']);
 	$nameScreen	= trim(@$new_user_info['nameScreen']);
 	$email		= trim(@$new_user_info['email']);
 
@@ -33,18 +32,6 @@ if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 	$arr_changed 	= array();
 	$error_html 	= null;
 	$notice_html	= null;
-
-	if ( isset($nameFull) && $nameFull!=$user_info['nameFull'] )
-	{
-		$arr_changed['nameFull'] = $nameFull;
-		$outInfo['nameFull'] = $nameFull;
-		if ( !JWUser::IsValidFullName($nameFull) )
-		{
-			$error_html .= <<<_HTML_
-<li>姓名 <strong>$nameFull</strong> 需为2个字以上的中日韩英文名字。</li>
-_HTML_;
-		}
-	}
 
 	if ( isset($nameScreen) && $nameScreen!=$user_info['nameScreen'] )
 	{
@@ -87,8 +74,6 @@ _HTML_;
 
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
-		if( false == empty($arr_changed) && isset($arr_changed['nameScreen']) ) 
-			$arr_changed['nameUrl'] = $arr_changed['nameScreen'];
 		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
 			$error_html = <<<_HTML_
@@ -262,11 +247,6 @@ function updateLink(value){
 				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
 			</td>
 			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
-		</tr>
-		<tr>
-			<th>姓名：</th>
-			<td><input id="user_name" name="user[nameFull]" type="text" value="<?php echo $outInfo['nameFull']; ?>" ajax="nameFull" alt="姓名"/><i></i></td>
-			<td class="note">你的真实名字，可以使用中文和空格</td>
 		</tr>
 		<tr>
 			<th>Email：</th>
