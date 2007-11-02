@@ -703,7 +703,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($idUser, $current_user_id
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 	if( false == JWBlock::IsBlocked( $idUser, $current_user_id ) ) {
 		echo <<<_HTML_
-	<a href="/wo/friendships/create/<?php echo $idUser;?>" <?php echo $oc; ?>>成为<?php echo $name_screen; ?>的粉丝吧</a>
+	<a href="/wo/friendships/create/$idUser" $oc>成为{$name_screen}的粉丝吧</a>
 _HTML_;
 	}
 }
@@ -1247,7 +1247,7 @@ _HTML_;
 		if ( isset($options['id']) )
 			$id = 'id="'.$options['id'].'"';
 		else
-			$id = '';
+			$id = 'id="friend"';
 
 		switch ($options['view']) {
 			case 'list':
