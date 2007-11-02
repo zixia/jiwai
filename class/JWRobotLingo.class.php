@@ -1321,6 +1321,7 @@ class JWRobotLingo {
 			break;
 			default:
 				list($nameScreen) = split( '@', $address );
+				$nameScreen = is_numeric($nameScreen) ? 'M'.$nameScreen : $nameScreen;
 		}
 
 		$nameFull = $nameScreen;
