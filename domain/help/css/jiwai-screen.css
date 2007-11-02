@@ -44,7 +44,7 @@ a:hover {color:#F87A01;}
 #accessibility, #navigation h3, #footer h3 {position: absolute; left: -8888px; overflow: hidden;}
 .error {color:#F00;font-size:12px;margin:.5em;font-weight:bold;}
 
-.separator { height:104px; border:1px solid #D3D3D5; width:774px; margin:1px auto 0 auto; background:url(../images/org-note-bg.gif) repeat-x center;}
+.separator { height:104px; border:1px solid #D3D3D5; width:774px; margin:1px auto 0 auto; background:url(http://asset1.jiwai.de/images/org-note-bg.gif) repeat-x center;}
  .separator div {height:79px; float:left; width:257px; margin-top:15px; background-repeat:no-repeat; background-position:left center;}
  .separator .note1 { background-image:url(../images/org-note1.gif);}
  .separator .note2 { background-image:url(../images/org-note2.gif);}
@@ -55,7 +55,7 @@ a:hover {color:#F87A01;}
 
 #header {margin:0 auto; height:80px;width:776px; border-bottom:5px solid #F97B00;}
   #navigation {}
-  #header h2 {width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
+  #header h2 {width:175px; height:63px; float:left; background:url(http://asset5.jiwai.de/images/org-logo.gif) no-repeat; margin-top:16px; margin-left:0px;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
 
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
