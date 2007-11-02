@@ -1633,55 +1633,20 @@ _HTML_;
               $arrUseDevices =array();
 			  foreach($aDeviceInfo_rows as $aDeviceInfo_row)
               { 
+                  $deviceType = $aDeviceInfo_row['type'];
                   if (empty($aDeviceInfo_row['secret']))
                   {
                       $arrUseDevices[$aDeviceInfo_row['type']]=true;
+                      if ($aDeviceInfo_row['type'] == 'sms') {
+                          $imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
+                      } else {
+                          $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
+                      }
+                      echo <<<_HTML_
+                          <a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-$deviceType.gif alt="$deviceType" title="$deviceType" /></a>
+_HTML_;
                   }
               }   
-
-              if (true== $arrUseDevices['sms'])
-              {
-                  $arrUseDevices['sms']=true;
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-mobile.gif alt="已绑定手机" title="已绑定手机" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['gtalk'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-gtalk.gif" alt="已绑定 Gtalk" title="已绑定 Gtalk" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['msn'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-msn.gif" alt="已绑定 MSN" title="已绑定 MSN" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['qq'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-qq.gif" alt="已绑定 QQ" title="已绑定 QQ" /></a>
-_HTML_;
-              }
-              if (true== $arrUseDevices['skype'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-skype.gif" alt="已绑定 Skype" title="已绑定 Skype" /></a>
-_HTML_;
-              }
-              if(true== $arrUseDevices['newsmth'])
-              {
-                  $imicoUrlHref = $isUserLogined ? $imicoUrlIm : $imicoUrlHelpIm;
-                  echo <<<_HTML_
-                      <a href="$imicoUrlHref"><img src="$imicoUrl/jiwai-newsmth.gif" alt="已绑定 水木清华" title="已绑定 水木清华" /></a>
-_HTML_;
-              }
 
             echo "</li></ul><br />";
     }
