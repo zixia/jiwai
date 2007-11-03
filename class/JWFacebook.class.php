@@ -34,6 +34,17 @@ class JWFacebook extends Facebook {
 		if (!$i) $i = new JWFacebook(true);
 		return $i;
 	}
+	static function PublishAction($fbid, $name_url, $status_id, $status, $via, $img=null, $img_link=null) {
+		$s = json_encode(array(
+			'link_user'=>'http://jiwai.de/'.$name_url.'/',
+			'link_status'=>'http://jiwai.de/'.$name_url.'/statuses/'.$status_id,
+			'status'=>$status, 'via'=>$via));
+		self::instance()->api_client->feed_publishTemplatizedAction($fbid,
+			'{actor} posted a message on <a href="{link_user}">JiWai</a> via {via}', $s,
+			'<a href="{link_status}">{status}</a>', $s,
+			'', $img, $img_link);
+		error_log($s, 3, '/tmp/fb');
+	}
 	static function RefreshRef($id) {
 		self::instance()->api_client->fbml_refreshRefUrl(self::$ProfileUrl.$id);
 	}
@@ -45,12 +56,15 @@ class JWFacebook extends Facebook {
 		if (!is_array($fbid)) $fbid = array($fbid);
 		self::instance()->api_client->notifications_send($fbid, $fbml);
 	}
-	static function Verified($idUser) {
+	static function GetFBbyUser($idUser) {
 		$dev = JWDevice::GetDeviceRowByUserId($idUser);
 		if (empty($dev)) return false;
 		if (empty($dev['facebook'])) return false;
 		if (!empty($dev['facebook']['secret'])) return false;
-		return true;
+		return $dev['facebook']['address'];
+	}
+	static function Verified($idUser) {
+		return (self::GetFBbyUser($idUser)!=false);
 	}
 }
 ?>

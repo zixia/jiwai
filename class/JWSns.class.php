@@ -634,11 +634,19 @@ class JWSns {
 					$queueType = JWNotifyQueue::T_MMS;
 				}
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
-			}
-
-			// Referesh facebook
-			if ( JWFacebook::Verified( $idUser ) ) {
-				JWFacebook::RefreshRef($idUser);
+				// Referesh facebook
+				$idFacebook = JWFacebook::GetFBbyUser( $idUser );
+				if ( $idFacebook ) {
+					JWFacebook::RefreshRef($idUser);
+					if (empty($picUrl)) {
+						$picUrl = null;
+						$pic = null;
+						$userInfo = JWUser::GetUserInfo( $idUser );
+					} else {
+						$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
+					}
+					JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], idStatus, $status, $device, $pic, $picUrl);
+				}
 			}
 
 			//Activate User
