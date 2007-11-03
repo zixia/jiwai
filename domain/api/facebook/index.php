@@ -76,6 +76,7 @@ function update() {
 	$s = trim($_POST['status']);
 	if ($s && $idUser) {
 		JWSns::UpdateStatus($idUser, $s, 'facebook');
+		$facebook->SetStatus($s);
 	}
 	$g_with_friends = 1;
 	include_once 'status.php';

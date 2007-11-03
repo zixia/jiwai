@@ -43,7 +43,12 @@ class JWFacebook extends Facebook {
 			'{actor} posted a message on <a href="{link_user}">JiWai</a> via {via}', $s,
 			'<a href="{link_status}">{status}</a>', $s,
 			'', $img, $img_link);
-		error_log($s, 3, '/tmp/fb');
+	}
+	function SetStatus($status) {
+		try {
+			$this->api_client->call_method('facebook.users.setStatus', array('status' => $status));
+		} catch (Exception $e) {
+		}
 	}
 	static function RefreshRef($id) {
 		self::instance()->api_client->fbml_refreshRefUrl(self::$ProfileUrl.$id);
