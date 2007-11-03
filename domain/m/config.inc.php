@@ -23,6 +23,7 @@ function buildUrl($url){
 }
 
 function getDisplayName($userInfo){
+	return $userInfo['nameScreen'];
 	return $userInfo['nameScreen'] == $userInfo['nameFull'] ?
 			$userInfo['nameScreen'] :
 			htmlSpecialChars( $userInfo['nameFull'] ) . '('.$userInfo['nameScreen'].')';
