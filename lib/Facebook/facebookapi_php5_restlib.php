@@ -140,8 +140,7 @@ function toggleDisplay(id, type) {
                                           $image_1=null, $image_1_link=null,
                                           $image_2=null, $image_2_link=null,
                                           $image_3=null, $image_3_link=null,
-                                          $image_4=null, $image_4_link=null,
-                                          $priority=1) {
+                                          $image_4=null, $image_4_link=null) {
     return $this->call_method('facebook.feed.publishStoryToUser',
       array('title' => $title,
             'body' => $body,
@@ -152,16 +151,14 @@ function toggleDisplay(id, type) {
             'image_3' => $image_3,
             'image_3_link' => $image_3_link,
             'image_4' => $image_4,
-            'image_4_link' => $image_4_link,
-            'priority' => $priority));
+            'image_4_link' => $image_4_link));
   }
                                           
   public function feed_publishActionOfUser($title, $body, 
                                            $image_1=null, $image_1_link=null,
                                            $image_2=null, $image_2_link=null,
                                            $image_3=null, $image_3_link=null,
-                                           $image_4=null, $image_4_link=null,
-                                           $priority=1) {
+                                           $image_4=null, $image_4_link=null) {
     return $this->call_method('facebook.feed.publishActionOfUser',
       array('title' => $title,
             'body' => $body,
@@ -172,8 +169,32 @@ function toggleDisplay(id, type) {
             'image_3' => $image_3,
             'image_3_link' => $image_3_link,
             'image_4' => $image_4,
+            'image_4_link' => $image_4_link));
+  }
+
+  public function feed_publishTemplatizedAction($actor_id, $title_template, $title_data,
+                                                $body_template, $body_data, $body_general, 
+                                                $image_1=null, $image_1_link=null,
+                                                $image_2=null, $image_2_link=null,
+                                                $image_3=null, $image_3_link=null,
+                                                $image_4=null, $image_4_link=null,
+                                                $target_ids='') {
+    return $this->call_method('facebook.feed.publishTemplatizedAction',
+      array('actor_id' => $actor_id,
+            'title_template' => $title_template,
+            'title_data' => $title_data,
+            'body_template' => $body_template,
+            'body_data' => $body_data,
+            'body_general' => $body_general,
+            'image_1' => $image_1,
+            'image_1_link' => $image_1_link,
+            'image_2' => $image_2,
+            'image_2_link' => $image_2_link,
+            'image_3' => $image_3,
+            'image_3_link' => $image_3_link,
+            'image_4' => $image_4,
             'image_4_link' => $image_4_link,
-            'priority' => $priority));
+            'target_ids' => $target_ids));
   }
 
   /**
@@ -369,6 +390,907 @@ function toggleDisplay(id, type) {
     return $this->call_method('facebook.fbml.setRefHandle', array('handle' => $handle, 'fbml' => $fbml));
   }
 
+  /**
+   * Get all the marketplace categories
+   *
+   * @return array  A list of category names
+   */
+  function marketplace_getCategories() {
+    return $this->call_method('facebook.marketplace.getCategories', array());
+  }
+
+  /**
+   * Get all the marketplace subcategories for a particular category
+   *
+   * @param  category  The category for which we are pulling subcategories
+   * @return array     A list of subcategory names
+   */
+  function marketplace_getSubCategories($category) {
+    return $this->call_method('facebook.marketplace.getSubCategories', array('category' => $category));
+  }
+
+  /**
+   * Get listings by either listing_id or user
+   *
+   * @param listing_ids   An array of listing_ids (optional)
+   * @param uids          An array of user ids (optional)
+   * @return array        The data for matched listings
+   */
+  function marketplace_getListings($listing_ids, $uids) {
+    return $this->call_method('facebook.marketplace.getListings', array('listing_ids' => $listing_ids, 'uids' => $uids));
+  }
+
+  /**
+   * Search for Marketplace listings.  All arguments are optional, though at least
+   * one must be filled out to retrieve results.
+   *
+   * @param category     The category in which to search (optional)
+   * @param subcategory  The subcategory in which to search (optional)
+   * @param query        A query string (optional)
+   * @return array       The data for matched listings
+   */
+  function marketplace_search($category, $subcategory, $query) {
+    return $this->call_method('facebook.marketplace.search', array('category' => $category, 'subcategory' => $subcategory, 'query' => $query));
+  }
+
+  /**
+   * Remove a listing from Marketplace
+   *
+   * @param listing_id  The id of the listing to be removed
+   * @param status      'SUCCESS', 'NOT_SUCCESS', or 'DEFAULT'
+   * @return bool       True on success
+   */
+  function marketplace_removeListing($listing_id, $status='DEFAULT') {
+    return $this->call_method('facebook.marketplace.removeListing', 
+                              array('listing_id'=>$listing_id, 
+                                    'status'=>$status));
+  }
+
+  /**
+   * Create/modify a Marketplace listing for the loggedinuser
+   * 
+   * @param int              listing_id   The id of a listing to be modified, 0 for a new listing.
+   * @param show_on_profile  bool         Should we show this listing on the user's profile
+   * @param attrs            array        An array of the listing data
+   * @return                 int          The listing_id (unchanged if modifying an existing listing)
+   */
+  function marketplace_createListing($listing_id, $show_on_profile, $attrs) {
+    return $this->call_method('facebook.marketplace.createListing', 
+                              array('listing_id'=>$listing_id, 
+                                    'show_on_profile'=>$show_on_profile, 
+                                    'attrs'=>json_encode($attrs)));
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Data Store API
+  
+  /**
+   * Set a user preference.
+   *
+   * @param  pref_id    preference identifier (0-200)
+   * @param  value      preferece's value
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setUserPreference($pref_id, $value) {
+    return $this->call_method
+      ('facebook.data.setUserPreference',
+       array('pref_id' => $pref_id,
+             'value' => $value));
+  }
+
+  /**
+   * Set a user's all preferences for this application.
+   *
+   * @param  values     preferece values in an associative arrays
+   * @param  replace    whether to replace all existing preferences or 
+   *                    merge into them.
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setUserPreferences($values, $replace = false) {
+    return $this->call_method
+      ('facebook.data.setUserPreferences',
+       array('values' => json_encode($values),
+             'replace' => $replace));
+  }
+
+  /**
+   * Get a user preference.
+   *
+   * @param  pref_id    preference identifier (0-200)
+   * @return            preference's value
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getUserPreference($pref_id) {
+    return $this->call_method
+      ('facebook.data.getUserPreference',
+       array('pref_id' => $pref_id));
+  }
+
+  /**
+   * Get a user preference.
+   *
+   * @return           preference values
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getUserPreferences() {
+    return $this->call_method
+      ('facebook.data.getUserPreferences',
+       array());
+  }
+
+  /**
+   * Create a new object type.
+   *
+   * @param  name       object type's name
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_createObjectType($name) {
+    return $this->call_method
+      ('facebook.data.createObjectType',
+       array('name' => $name));
+  }
+
+  /**
+   * Delete an object type.
+   *
+   * @param  obj_type       object type's name
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_dropObjectType($obj_type) {
+    return $this->call_method
+      ('facebook.data.dropObjectType',
+       array('obj_type' => $obj_type));
+  }
+
+  /**
+   * Rename an object type.
+   *
+   * @param  obj_type       object type's name
+   * @param  new_name       new object type's name
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_renameObjectType($obj_type, $new_name) {
+    return $this->call_method
+      ('facebook.data.renameObjectType',
+       array('obj_type' => $obj_type,
+             'new_name' => $new_name));
+  }
+
+  /**
+   * Add a new property to an object type.
+   *
+   * @param  obj_type       object type's name
+   * @param  prop_name      name of the property to add
+   * @param  prop_type      1: integer; 2: string; 3: text blob
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_defineObjectProperty($obj_type, $prop_name, $prop_type){
+    return $this->call_method
+      ('facebook.data.defineObjectProperty',
+       array('obj_type' => $obj_type,
+             'prop_name' => $prop_name,
+             'prop_type' => $prop_type));
+  }
+
+  /**
+   * Remove a previously defined property from an object type.
+   * 
+   * @param  obj_type      object type's name
+   * @param  prop_name     name of the property to remove
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_undefineObjectProperty($obj_type, $prop_name) {
+    return $this->call_method
+      ('facebook.data.undefineObjectProperty',
+       array('obj_type' => $obj_type,
+             'prop_name' => $prop_name));
+  }
+
+  /**
+   * Rename a previously defined property of an object type.
+   * 
+   * @param  obj_type      object type's name
+   * @param  prop_name     name of the property to rename
+   * @param  new_name      new name to use
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_renameObjectProperty($obj_type, $prop_name,
+                                            $new_name) {
+    return $this->call_method
+      ('facebook.data.renameObjectProperty',
+       array('obj_type' => $obj_type,
+             'prop_name' => $prop_name,
+             'new_name' => $new_name));
+  }
+
+  /**
+   * Retrieve a list of all object types that have defined for the application.
+   *
+   * @return               a list of object type names
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getObjectTypes() {
+    return $this->call_method
+      ('facebook.data.getObjectTypes',
+       array());
+  }
+
+  /**
+   * Get definitions of all properties of an object type.
+   *
+   * @param obj_type       object type's name
+   * @return               pairs of property name and property types
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getObjectType($obj_type) {
+    return $this->call_method
+      ('facebook.data.getObjectType',
+       array('obj_type' => $obj_type));
+  }
+
+  /**
+   * Create a new object.
+   * 
+   * @param  obj_type      object type's name
+   * @param  properties    (optional) properties to set initially
+   * @return               newly created object's id
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_createObject($obj_type, $properties = null) {
+    return $this->call_method
+      ('facebook.data.createObject',
+       array('obj_type' => $obj_type,
+             'properties' => json_encode($properties)));
+  }
+
+  /**
+   * Update an existing object.
+   *
+   * @param  obj_id        object's id
+   * @param  properties    new properties
+   * @param  replace       true for replacing existing properties; false for merging
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_updateObject($obj_id, $properties, $replace = false) {
+    return $this->call_method
+      ('facebook.data.updateObject',
+       array('obj_id' => $obj_id,
+             'properties' => json_encode($properties),
+             'replace' => $replace));
+  }
+
+  /**
+   * Delete an existing object.
+   *
+   * @param  obj_id        object's id
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_deleteObject($obj_id) {
+    return $this->call_method
+      ('facebook.data.deleteObject',
+       array('obj_id' => $obj_id));
+  }
+
+  /**
+   * Delete a list of objects.
+   *
+   * @param  obj_ids       objects to delete
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_deleteObjects($obj_ids) {
+    return $this->call_method
+      ('facebook.data.deleteObjects',
+       array('obj_ids' => json_encode($obj_ids)));
+  }
+
+  /**
+   * Get a single property value of an object.
+   *
+   * @param  obj_id        object's id
+   * @param  prop_name     individual property's name
+   * @return               individual property's value
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getObjectProperty($obj_id, $prop_name) {
+    return $this->call_method
+      ('facebook.data.getObjectProperty',
+       array('obj_id' => $obj_id,
+             'prop_name' => $prop_name));
+  }
+
+  /**
+   * Get properties of an object.
+   *
+   * @param  obj_id      object's id
+   * @param  prop_names  (optional) properties to return; null for all.
+   * @return             specified properties of an object
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getObject($obj_id, $prop_names = null) {
+    return $this->call_method
+      ('facebook.data.getObject',
+       array('obj_id' => $obj_id,
+             'prop_names' => json_encode($prop_names)));
+  }
+
+  /**
+   * Get properties of a list of objects.
+   *
+   * @param  obj_ids     object ids
+   * @param  prop_names  (optional) properties to return; null for all.
+   * @return             specified properties of an object
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getObjects($obj_ids, $prop_names = null) {
+    return $this->call_method
+      ('facebook.data.getObjects',
+       array('obj_ids' => json_encode($obj_ids),
+             'prop_names' => json_encode($prop_names)));
+  }
+
+  /**
+   * Set a single property value of an object.
+   *
+   * @param  obj_id        object's id
+   * @param  prop_name     individual property's name
+   * @param  prop_value    new value to set
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setObjectProperty($obj_id, $prop_name,
+                                         $prop_value) {
+    return $this->call_method
+      ('facebook.data.setObjectProperty',
+       array('obj_id' => $obj_id,
+             'prop_name' => $prop_name,
+             'prop_value' => $prop_value));
+  }
+
+  /**
+   * Read hash value by key.
+   * 
+   * @param  obj_type      object type's name
+   * @param  key           hash key
+   * @param  prop_name     (optional) individual property's name
+   * @return               hash value
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getHashValue($obj_type, $key, $prop_name = null) {
+    return $this->call_method
+      ('facebook.data.getHashValue',
+       array('obj_type' => $obj_type,
+             'key' => $key,
+             'prop_name' => $prop_name));
+  }
+
+  /**
+   * Write hash value by key.
+   * 
+   * @param  obj_type      object type's name
+   * @param  key           hash key
+   * @param  value         hash value
+   * @param  prop_name     (optional) individual property's name
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setHashValue($obj_type, $key, $value, $prop_name = null) {
+    return $this->call_method
+      ('facebook.data.setHashValue',
+       array('obj_type' => $obj_type,
+             'key' => $key,
+             'value' => $value,
+             'prop_name' => $prop_name));
+  }
+
+  /**
+   * Increase a hash value by specified increment atomically.
+   * 
+   * @param  obj_type      object type's name
+   * @param  key           hash key
+   * @param  prop_name     individual property's name
+   * @param  increment     (optional) default is 1
+   * @return               incremented hash value
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_incHashValue($obj_type, $key, $prop_name, $increment = 1) {
+    return $this->call_method
+      ('facebook.data.incHashValue',
+       array('obj_type' => $obj_type,
+             'key' => $key,
+             'prop_name' => $prop_name,
+             'increment' => $increment));
+  }
+
+  /**
+   * Remove a hash key and its values.
+   *
+   * @param  obj_type    object type's name
+   * @param  key         hash key
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_removeHashKey($obj_type, $key) {
+    return $this->call_method
+      ('facebook.data.removeHashKey',
+       array('obj_type' => $obj_type,
+             'key' => $key));
+  }
+
+  /**
+   * Remove hash keys and their values.
+   *
+   * @param  obj_type    object type's name
+   * @param  keys        hash keys
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_removeHashKeys($obj_type, $keys) {
+    return $this->call_method
+      ('facebook.data.removeHashKeys',
+       array('obj_type' => $obj_type,
+             'keys' => json_encode($keys)));
+  }
+
+
+  /**
+   * Define an object association.
+   *
+   * @param  name        name of this association
+   * @param  assoc_type  1: one-way 2: two-way symmetric 3: two-way asymmetric
+   * @param  assoc_info1 needed info about first object type
+   * @param  assoc_info2 needed info about second object type
+   * @param  inverse     (optional) name of reverse association
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_defineAssociation($name, $assoc_type, $assoc_info1,
+                                         $assoc_info2, $inverse = null) {
+    return $this->call_method
+      ('facebook.data.defineAssociation',
+       array('name' => $name,
+             'assoc_type' => $assoc_type,
+             'assoc_info1' => json_encode($assoc_info1),
+             'assoc_info2' => json_encode($assoc_info2),
+             'inverse' => $inverse));
+  }
+  
+  /**
+   * Undefine an object association.
+   *
+   * @param  name        name of this association
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_undefineAssociation($name) {
+    return $this->call_method
+      ('facebook.data.undefineAssociation',
+       array('name' => $name));
+  }
+
+  /**
+   * Rename an object association or aliases.
+   *
+   * @param  name        name of this association
+   * @param  new_name    (optional) new name of this association
+   * @param  new_alias1  (optional) new alias for object type 1
+   * @param  new_alias2  (optional) new alias for object type 2
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_ALREADY_EXISTS
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_renameAssociation($name, $new_name, $new_alias1 = null,
+                                         $new_alias2 = null) {
+    return $this->call_method
+      ('facebook.data.renameAssociation',
+       array('name' => $name,
+             'new_name' => $new_name,
+             'new_alias1' => $new_alias1,
+             'new_alias2' => $new_alias2));
+  }
+  
+  /**
+   * Get definition of an object association.
+   *
+   * @param  name        name of this association
+   * @return             specified association
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociationDefinition($name) {
+    return $this->call_method
+      ('facebook.data.getAssociationDefinition',
+       array('name' => $name));
+  }
+  
+  /**
+   * Get definition of all associations.
+   *
+   * @return             all defined associations
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociationDefinitions() {
+    return $this->call_method
+      ('facebook.data.getAssociationDefinitions',
+       array());
+  }
+
+  /**
+   * Create or modify an association between two objects.
+   * 
+   * @param  name        name of association
+   * @param  obj_id1     id of first object
+   * @param  obj_id2     id of second object
+   * @param  data        (optional) extra string data to store
+   * @param  assoc_time  (optional) extra time data; default to creation time
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setAssociation($name, $obj_id1, $obj_id2, $data = null,
+                                      $assoc_time = null) {
+    return $this->call_method
+      ('facebook.data.setAssociation',
+       array('name' => $name,
+             'obj_id1' => $obj_id1,
+             'obj_id2' => $obj_id2,
+             'data' => $data,
+             'assoc_time' => $assoc_time));
+  }
+
+  /**
+   * Create or modify associations between objects.
+   * 
+   * @param  assocs      associations to set
+   * @param  name        (optional) name of association
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_setAssociations($assocs, $name = null) {
+    return $this->call_method
+      ('facebook.data.setAssociations',
+       array('assocs' => json_encode($assocs),
+             'name' => $name));
+  }
+
+  /**
+   * Remove an association between two objects.
+   * 
+   * @param  name        name of association
+   * @param  obj_id1     id of first object
+   * @param  obj_id2     id of second object
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_removeAssociation($name, $obj_id1, $obj_id2) {
+    return $this->call_method
+      ('facebook.data.removeAssociation',
+       array('name' => $name, 
+             'obj_id1' => $obj_id1,
+             'obj_id2' => $obj_id2));
+  }
+
+  /**
+   * Remove associations between objects by specifying pairs of object ids.
+   * 
+   * @param  assocs      associations to remove
+   * @param  name        (optional) name of association
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_removeAssociations($assocs, $name = null) {
+    return $this->call_method
+      ('facebook.data.removeAssociations',
+       array('assocs' => json_encode($assocs),
+             'name' => $name));
+  }
+
+  /**
+   * Remove associations between objects by specifying one object id.
+   * 
+   * @param  name        name of association
+   * @param  obj_id      who's association to remove
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_removeAssociatedObjects($name, $obj_id) {
+    return $this->call_method
+      ('facebook.data.removeAssociatedObjects',
+       array('name' => $name,
+             'obj_id' => $obj_id));
+  }
+
+  /**
+   * Retrieve a list of associated objects.
+   *
+   * @param  name        name of association
+   * @param  obj_id      who's association to retrieve
+   * @param  no_data     only return object ids
+   * @return             associated objects
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociatedObjects($name, $obj_id, $no_data = true) {
+    return $this->call_method
+      ('facebook.data.getAssociatedObjects',
+       array('name' => $name, 
+             'obj_id' => $obj_id,
+             'no_data' => $no_data));
+  }
+
+  /**
+   * Count associated objects.
+   *
+   * @param  name        name of association
+   * @param  obj_id      who's association to retrieve
+   * @return             associated object's count
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociatedObjectCount($name, $obj_id) {
+    return $this->call_method
+      ('facebook.data.getAssociatedObjectCount',
+       array('name' => $name,
+             'obj_id' => $obj_id));
+  }
+
+  /**
+   * Get a list of associated object counts.
+   *
+   * @param  name        name of association
+   * @param  obj_ids     whose association to retrieve
+   * @return             associated object counts
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_DATA_OBJECT_NOT_FOUND
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_INVALID_OPERATION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociatedObjectCounts($name, $obj_ids) {
+    return $this->call_method
+      ('facebook.data.getAssociatedObjectCounts',
+       array('name' => $name,
+             'obj_ids' => json_encode($obj_ids)));
+  }
+
+  /**
+   * Find all associations between two objects.
+   *
+   * @param  obj_id1     id of first object
+   * @param  obj_id2     id of second object
+   * @param  no_data     only return association names without data
+   * @return             all associations between objects
+   * @error
+   *    API_EC_DATA_DATABASE_ERROR
+   *    API_EC_PARAM
+   *    API_EC_PERMISSION
+   *    API_EC_DATA_QUOTA_EXCEEDED
+   *    API_EC_DATA_UNKNOWN_ERROR
+   */
+  public function data_getAssociations($obj_id1, $obj_id2, $no_data = true) {
+    return $this->call_method
+      ('facebook.data.getAssociations',
+       array('obj_id1' => $obj_id1,
+             'obj_id2' => $obj_id2,
+             'no_data' => $no_data));
+  }
+
   /* UTILITY FUNCTIONS */
 
   public function call_method($method, $params) {
@@ -514,6 +1436,16 @@ class FacebookAPIErrorCodes {
   const FQL_EC_UNKNOWN_FIELD = 602;
   const FQL_EC_UNKNOWN_TABLE = 603;
   const FQL_EC_NOT_INDEXABLE = 604;
+
+  /**
+   * DATA STORE API ERRORS
+   */
+  const API_EC_DATA_UNKNOWN_ERROR = 800;
+  const API_EC_DATA_INVALID_OPERATION = 801;
+  const API_EC_DATA_QUOTA_EXCEEDED = 802;
+  const API_EC_DATA_OBJECT_NOT_FOUND = 803;
+  const API_EC_DATA_OBJECT_ALREADY_EXISTS = 804;
+  const API_EC_DATA_DATABASE_ERROR = 805;
  
   public static $api_error_descriptions = array(
       API_EC_SUCCESS           => 'Success',
@@ -541,6 +1473,12 @@ class FacebookAPIErrorCodes {
       FQL_EC_NOT_INDEXABLE     => 'FQL: Statement not indexable',
       FQL_EC_UNKNOWN_FUNCTION  => 'FQL: Attempted to call unknown function',
       FQL_EC_INVALID_PARAM     => 'FQL: Invalid parameter passed in',
+      API_EC_DATA_UNKNOWN_ERROR => 'Unknown data store API error',
+      API_EC_DATA_INVALID_OPERATION => 'Invalid operation',
+      API_EC_DATA_QUOTA_EXCEEDED => 'Data store allowable quota was exceeded',
+      API_EC_DATA_OBJECT_NOT_FOUND => 'Specified object cannot be found',
+      API_EC_DATA_OBJECT_ALREADY_EXISTS => 'Specified object already exists',
+      API_EC_DATA_DATABASE_ERROR => 'A database error occurred. Please try again',
   );
 }
 
