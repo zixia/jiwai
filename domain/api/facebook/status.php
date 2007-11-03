@@ -45,6 +45,7 @@
 				@$user_showed[$user_id] += 1;
 				
 			$name_screen= $userRows[$user_id]['nameScreen'];
+			$name_url= $userRows[$user_id]['nameUrl'];
 			$name_full	= $userRows[$user_id]['nameFull'];
 			$status		= $statusRows[$status_id]['status'];
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
@@ -52,7 +53,7 @@
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
 			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?
 						'signature' : '';
-			$name_mix	= strcasecmp($name_screen, $name_full) ? $name_full.'('.$name_screen.')' : $name_full;
+			$name_mix	= $name_screen; //strcasecmp($name_screen, $name_full) ? $name_full.'('.$name_screen.')' : $name_full;
 			
 			$duration	= date('G:i M j', strtotime($timeCreate));//JWStatus::GetTimeDesc($timeCreate);
 
@@ -71,14 +72,14 @@
 					<tr class="<?php echo $n++%2?'even':'odd';?>" id="status_<?php echo $status_id;?>">
 <?php if ( $options['icon'] ){ ?>
 						<td class="thumb">
-							<a href="<?php echo $host; ?>/<?php echo $name_screen;?>/"><img alt="<?php echo $name_screen;?>" 
+							<a href="<?php echo $host; ?>/<?php echo $name_url;?>/"><img alt="<?php echo $name_screen;?>" 
 									src="<?php echo $photo_url?>"/></a>
 						</td>
 <?php } ?>
 						<td>	
 <?php if ( $options['icon'] ){ ?>
 							<strong>
-								<a href="<?php echo $host; ?>/<?php echo $name_screen; ?>/" title="<?php echo $name_full?>"><?php echo $name_mix; ?></a>
+								<a href="<?php echo $host; ?>/<?php echo $name_url; ?>/" title="<?php echo $name_full?>"><?php echo $name_mix; ?></a>
 							</strong>
 <?php } ?>
 
@@ -86,7 +87,7 @@
 			
 							<span class="meta">
 								<?php if (is_numeric($status_id)) {?>
-								<a href="<?php echo $host; ?>/<?php echo $name_screen; ?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
+								<a href="<?php echo $host; ?>/<?php echo $name_url; ?>/statuses/<?php echo $status_id?>"><?php echo $duration?></a>
 								<?php } else {
 									echo $duration;	
 								} ?>
@@ -148,7 +149,7 @@ if (empty($g_with_friends)) {
 	}
 }
 $user_rows = JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
-Timeline($status_data['status_ids'], $user_rows, $status_rows);
+Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>!empty($g_with_friends)));
 //FIXME friends' status not refresh on f8 profile
 
 ?>

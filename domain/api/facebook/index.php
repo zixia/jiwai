@@ -14,11 +14,10 @@ function title() {
 ?>
 <fb:title>JiWai.de</fb:title>
 <fb:dashboard>
-  <fb:action href="http://jiwai.de/">JiWai.de</fb:action>
-  <fb:action href="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameScreen'); ?>/">Profile</fb:action>
-  <fb:action href="http://jiwai.de/wo/account/settings">More settings</fb:action>
-  <fb:action href="?verify">(re)Verify account</fb:action>
-  <fb:help href="http://help.jiwai.de/" title="Go to JiWai.de">Go to JiWai.de</fb:help>
+  <fb:action href="http://apps.facebook.com/jiwaide/">首页</fb:action>
+  <fb:action href="?verify">帐号设置</fb:action>
+  <fb:action href="http://jiwai.de/wo/account/settings">其他设置</fb:action>
+  <fb:help href="http://jiwai.de/" title="Go to JiWai.de">叽歪de</fb:help>
 </fb:dashboard>
 <?php
 }
@@ -35,7 +34,7 @@ function bind() {
 ?>
 		<fb:success>
 			<fb:message>JiWai.de</fb:message>
-			Account verified! <br />
+			成功关联帐号！<br />
 			<fb:if-user-has-added-app>
 				<a href="http://jiwai.de/">Go back to JiWai.de</a>
 				<fb:else>
@@ -48,7 +47,7 @@ function bind() {
 ?>
 		<fb:error>
 			<fb:message>JiWai.de</fb:message>
-			Failed to verify your account at JiWai.de: <?php echo $err; ?>
+			帐号关联失败。<?php echo $err; ?>
 		</fb:error>
 <?php
 	}
@@ -57,36 +56,55 @@ function bind() {
 }
 
 function verify() {
+	global $facebook;
 ?>
 		<fb:editor action="?bind">
-			<fb:editor-text label="Username" name="username" value=""/>
-			<fb:editor-text label="Verification" name="code" value=""/>
+			<fb:editor-text label="登录名" name="username" value=""/>
+			<fb:editor-text label="验证码" name="code" value=""/>
 			<fb:editor-buttonset>
-				<fb:editor-button value="Verify your JiWai.de account"/>
+				<fb:editor-button value="关联叽歪帐号"/>
 			</fb:editor-buttonset>
+		</fb:editor>
+		<fb:editor action="?bind">
+			<a href="<?php echo JWFacebook::GetPermUrl('status_update'); ?>">让叽歪更新我的Facebook状态</a>
 		</fb:editor>
 <?php
 }
 
 function update() { 
-	global $facebook, $idUser;
+	global $facebook, $idUser, $g_with_friends;
 	$s = trim($_POST['status']);
 	if ($s && $idUser) {
 		JWSns::UpdateStatus($idUser, $s, 'facebook');
 	}
+	$g_with_friends = 1;
 	include_once 'status.php';
 }
 
 function profile() {
 	global $idUser, $facebook;
 ?>
-<fb:subtitle>
-	<fb:action href="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameScreen'); ?>/">More...</fb:action>
-	叽歪de我和朋友们
-</fb:subtitle>
+<fb:if-is-own-profile>
+        <fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
+		View your JiWai status
+	</fb:profile-action>
+	<fb:else>
+		<fb:if-is-app-user uid="profileowner">
+                        <fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
+				View this person's JiWai status
+			</fb:profile-action>
+			<fb:else>
+				<fb:profile-action url="http://apps.facebook.com/jiwaide/?invite">
+					Invite this person to JiWai
+				</fb:profile-action>
+			</fb:else>
+		</fb:if-is-app-user>
+	</fb:else>
+</fb:if-is-own-profile>
 <style>
 .thumb img {width: 24px; height: 24px; margin: 2px;}
 .odd {background-color:#F7F7F7;}
+.even {background-color:#FFFFFF;}
 .meta {color: #999;}
 .meta a {color: #999;}
 </style>

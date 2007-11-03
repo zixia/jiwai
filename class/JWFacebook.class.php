@@ -8,6 +8,9 @@ class JWFacebook extends Facebook {
 	static function CallFromFB() {
 		return !empty($_POST['fb_sig']);
 	}
+	static function GetPermUrl($perm, $next='http://apps.facebook.com/jiwaide/', $next_cancel='http://apps.facebook.com/jiwaide/') {
+		return 'http://www.facebook.com/authorize.php?api_key=4d373987420c13a7a3080bc597216ef4&v=1.0&ext_perm='.urlencode($perm).'&next='.urlencode($next).'&next_cancel='.urlencode($next);
+	}
 	function __construct($ForcePrivateAuthToken=false) {
 		$api_key = '4d373987420c13a7a3080bc597216ef4';
 		$secret  = '861eaecde72e5e0a6eac8696e3d576f0';
