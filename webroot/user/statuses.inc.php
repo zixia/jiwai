@@ -80,7 +80,8 @@ JWTemplate::html_head($head_options) ;
                             if ( JWFriend::IsFriend($logined_user_info['idUser'], $idPageUser) ) {
                                 echo "$page_user_info[nameScreen]是你的好友";
                             }else{
-                                echo "<a href='/wo/friendships/create/$idPageUser'>加$page_user_info[nameFull]为好友</a>";
+				if( false == JWBlock::IsBlocked( $idPageUser, $logined_user_info['id'] ) )
+				echo "<a href='/wo/friendships/create/$idPageUser'>加$page_user_info[nameScreen]为好友</a>";
                             }
                         } 
                         ?>
