@@ -185,12 +185,16 @@ class JWRobotLogic {
 				 */
 				$qqString1 = '(本消息发自腾讯官方';
 				$qqString2 = '（您的好友正在使用手机QQ';
+				$qqString3 = '（ 您的好友正在使用手机QQ';
 
 				$index1 = strpos( $body, $qqString1 );
 				if( $index1 ) $body = substr( $body, 0, $index1 );
 
 				$index2 = strpos( $body, $qqString2 );
 				if( $index2 ) $body = substr( $body, 0, $index2 );
+
+				$index3 = strpos( $body, $qqString3 );
+				if( $index3 ) $body = substr( $body, 0, $index3 );
 			}
 
 			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );

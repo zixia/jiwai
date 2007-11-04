@@ -678,11 +678,11 @@ class JWSns {
 	 *	建立设备，则设置最新验证设备为接收设备
 	 *	@return	int		成功返回$device_id 失败返回false
 	 */
-	static public function CreateDevice($idUser, $address, $type, $isVerified=false)
+	static public function CreateDevice($idUser, $address, $type, $isVerified=false, $options=array() )
 	{
 		$ret = false;
 
-		$device_id = JWDevice::Create($idUser, $address , $type , $isVerified);
+		$device_id = JWDevice::Create($idUser, $address , $type , $isVerified, $options);
 		
 		if ( empty($device_id) )
 		{

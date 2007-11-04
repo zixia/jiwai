@@ -132,7 +132,7 @@ class JWMmsLogic {
 				$deviceRow = array();
 				do{ 
 					$deviceRow = JWDevice::GetDeviceDbRowByAddress($phone, 'sms'); 
-					if( false == empty( $deviceRow ) ) {
+					if( empty( $deviceRow ) ) {
 						$vRobotMsg = new JWRobotMsg();
 						$vRobotMsg->Set( $phone, 'sms', '[MMS]: CreateAccount' );
 						$deviceRow = JWRobotLingo::CreateAccount( $vRobotMsg );

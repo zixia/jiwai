@@ -244,7 +244,7 @@ _SQL_;
 			false: 已经被占用 
 			null: 非法address/type
 	 */
-	static public function Create( $idUser, $address, $type, $isVerified=false )
+	static public function Create( $idUser, $address, $type, $isVerified=false, $options=array() )
 	{
 		if ( ! self::IsValid($address,$type) ){
 			return null;
@@ -254,6 +254,8 @@ _SQL_;
 		if ( self::IsExist($address,$type,true) ){
 			return false;
 		}
+
+		$isSignatureRecord = isset( $options['isSignatureRecord'] ) ? $options['isSignatureRecord'] : 'N';
 		
 		// 建立的时候可以指定免验证
 		if ( $isVerified ) {
@@ -291,6 +293,7 @@ _SQL_;
 						'address' => $address,
 						'secret' => $secret,
 						'timeCreate' => JWDB::MysqlFuncion_Now(),
+						'isSignatureRecord' => $isSignatureRecord,
 						));
 		}
 		catch(Exception $e)

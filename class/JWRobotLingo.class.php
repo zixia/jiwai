@@ -1346,7 +1346,9 @@ class JWRobotLingo {
 
 		$idUser =  JWSns::CreateUser($uArray);
 		if( $idUser ) {
-			if( JWSns::CreateDevice($idUser, $address, $type, true) ) {
+			if( JWSns::CreateDevice($idUser, $address, $type, true, array(
+					'isSignatureRecord' => 'Y', ) )
+			){
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_CREATE_USER_FIRST', array(
 					$nameScreen,
 				));
