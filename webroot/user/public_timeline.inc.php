@@ -38,7 +38,7 @@ $options = array(	 'title'		=> '叽歪广场'
 					,'author'		=> htmlspecialchars($keywords)
 					,'rss_url'		=> 'http://api.jiwai.de/status/public_timeline.rss'
 					,'rss_title'	=> '叽歪de - 叽歪广场 [RSS]'
-					,'refresh_time'	=> '60'
+					,'refresh_time'	=> '120'
 					,'refresh_url'	=> ''
 			);
 
@@ -76,14 +76,17 @@ $options = array(	 'title'		=> '叽歪广场'
 
 			<div class="tab">
 
-<?php JWTemplate::tab_header( array( 'title'	=>	'看看大家都在叽歪什么...' 
-									, 'title2'	=>	''//你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
-                                    , 'find' => true
-							) );
+<?php 
+JWTemplate::tab_header( array( 
+	'title' => '看看大家都在叽歪什么...',
+	'title2' => '', //你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
+));
 
-$options	= array ( 	 'uniq'		=> 2
-						,'nummax'	=> 10
-					 );
+$options = array (
+	'uniq' => 2,
+	'nummax' => 10,
+);
+
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
 ?>
 			</div><!-- tab -->

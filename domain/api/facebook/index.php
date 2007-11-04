@@ -161,7 +161,7 @@ if (isset($_POST['code'])) {
 <form>
 <table class="doing">
 	<tr><td><textarea class="status_area" name="status" /></td></tr>
-	<tr><td><center><input class="send" type="submit" value="POST" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
+	<tr><td><center><input class="send" type="submit" value="叽歪一下" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
 </table>
 </form>
 <div id="statuses">

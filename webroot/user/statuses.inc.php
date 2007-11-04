@@ -68,17 +68,17 @@ JWTemplate::html_head($head_options) ;
     <div id="permalink">
 
         <div class="odd">
-            <div class="head"><a href="/<?php echo $page_user_info['nameScreen'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb96');?>" width="96" height="96"/></a></div>
+            <div class="head"><a href="/<?php echo $page_user_info['nameUrl'];?>/"><img alt="<?php echo $page_user_info['nameFull'];?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'], 'thumb96');?>" width="96" height="96"/></a></div>
             <div class="cont">
                 <div class="bg"></div>
                 <table width="100%" border="0" cellspacing="5" cellpadding="0">
                 <tr>
-                    <td><h3><?php echo $page_user_info['nameFull'];?></h3></td>
+                    <td><h3><?php echo $page_user_info['nameScreen'];?></h3></td>
                     <td align="right">
                         <?php 
                         if ( ! empty($logined_user_info) && $logined_user_info['idUser'] != $idPageUser ) {
                             if ( JWFriend::IsFriend($logined_user_info['idUser'], $idPageUser) ) {
-                                echo "$page_user_info[nameFull]是你的好友";
+                                echo "$page_user_info[nameScreen]是你的好友";
                             }else{
                                 echo "<a href='/wo/friendships/create/$idPageUser'>加$page_user_info[nameFull]为好友</a>";
                             }
@@ -106,7 +106,7 @@ JWTemplate::html_head($head_options) ;
                     <td colspan="2"><?php echo $formated_status['status'] ?><?php echo $replyHtml; ?></td>
                 </tr>
                 <tr>
-                    <td><span class="meta"><a href="/<?php echo $page_user_info['nameScreen'];?>/statuses/<?php echo $status_info['idStatus'];?>"><?php echo JWStatus::GetTimeDesc($status_info['timeCreate']);?></a>来自于 <?php echo $pettyDevice;?><span id="status_actions_<?php echo $status_info['idStatus'];?>"></span></span></td>
+                    <td><span class="meta"><a href="/<?php echo $page_user_info['nameUrl'];?>/statuses/<?php echo $status_info['idStatus'];?>"><?php echo JWStatus::GetTimeDesc($status_info['timeCreate']);?></a>来自于 <?php echo $pettyDevice;?><span id="status_actions_<?php echo $status_info['idStatus'];?>"></span></span></td>
                     <?php if ( JWLogin::IsLogined() ) { 
 
                         $id_user_logined 	= JWLogin::GetCurrentUserId();

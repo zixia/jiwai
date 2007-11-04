@@ -33,7 +33,7 @@ function getOwnTimeline($count=10) {
 	$a = array();
 	foreach ($status_rows as $r) {
 		$a[] = array(
-			'from'=>$user_rows[$r['idUser']]['nameFull'], 
+			'from'=>$user_rows[$r['idUser']]['nameScreen'], 
 			'icon'=> ( !empty($r['idPicture']) ?  JWPicture::GetUrlById($r['idPicture']) : JWPicture::GetUserIconUrl($user_id)),
 			'body'=>$r['status'], 
 			'time'=>$r['timeCreate'], 

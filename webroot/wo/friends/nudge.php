@@ -35,7 +35,8 @@ _HTML_;
 		}
 		else
 		{
-			if ( JWFriend::IsFriend($nudged_user_id, $logined_user_id) )
+			if ( $nudged_user_id != $logined_user_id 
+				&& JWFriend::IsFriend($nudged_user_id, $logined_user_id) )
 			{
 				$nudge_message = <<<_NUDGE_
 $logined_user_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。

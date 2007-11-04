@@ -6,6 +6,7 @@ require_once('./function.php');
 
 $m = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
+if( null == $m ) $m = date('Y-m');
 
 $mArray = getLastMonth();
 

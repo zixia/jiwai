@@ -20,7 +20,7 @@ if( $statusTab == 'with_friends' ) {
 	$pageTitle = htmlSpecialChars($userInfo['nameFull'])."在做什么";
 	
 	if( $userInfo['idConference'] ) {
-		$statusNum = JWDB_Cache_Status::GetStatusNumFromSelfNReplies( $userInfo['id'] );
+		$statusNum = JWStatus::GetStatusNumFromConference( $userInfo['idConference'] );
 		$pagination = new JWPagination( $statusNum, $page, 10);
 		$statusData = JWStatus::GetStatusIdsFromConferenceUser( $userInfo['id'],  $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		$userRows = JWUser::GetUserDbRowsByIds( $statusData['user_ids']);

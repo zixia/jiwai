@@ -18,7 +18,7 @@ if ( preg_match('/^\/(\d+)$/',@$_REQUEST['pathParam'] ,$matches) )
 {
 	$receiver_user_id	= $matches[1];
 }
-else if ( preg_match('/^\/(\w+)$/',@$_REQUEST['pathParam'] ,$matches) )
+else if ( preg_match('/^\/(\S+)$/',@$_REQUEST['pathParam'] ,$matches) )
 {
 	$receiver_user_id	= JWUser::GetUserInfo($matches[1],'idUser');
 }

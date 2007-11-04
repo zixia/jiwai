@@ -86,14 +86,14 @@ function draw()
             　　UBB代码复制成功。
 			</span>
 			<br/>
-                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameUrl;?>/][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
+                <textarea id="ubb_url" rows="2" cols="100" class="urltext" readonly="readonly" onclick="JiWai.copyToClipboard(this)" >[url=http://jiwai.de/<?php echo $nameUrl;?>/][img]http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png[/img][/url] </textarea>
 			<br/><br/>
 		    Html代码:
 			<span class=copytips id=html_url_tip>
             　　Html代码复制成功。
 			</span>
 			<br/>
-                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="copyToClipboard(this)" ><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $nameUrl;?>/" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" /></a> </textarea>
+                <textarea id="html_url" rows="3" cols="100" class="urltext" readonly="readonly" onclick="JiWai.copyToClipboard(this)" ><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $nameUrl;?>/" target="_blank"><img src="http://api.jiwai.de/gadget/image/<?php echo $idUser;?>/c5/w200/m2/gadget.png" /></a> </textarea>
 			<br/>
 		</div>	
 		</fieldset>

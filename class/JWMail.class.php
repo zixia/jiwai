@@ -113,7 +113,7 @@ class JWMail {
         self::Instance();
 
 		if ( !isset($options['encoding']) )
-			$options['encoding'] 	= 'GB2312';
+			$options['encoding'] 	= 'GBK';
 
 		if ( !isset($options['contentType']) )
 			$options['contentType'] = 'text/plain';

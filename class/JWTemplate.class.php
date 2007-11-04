@@ -601,14 +601,6 @@ _HTML_;
 						</td>
 						<td class="bg_tab_top_mid">
 							<h2><?php echo $vars['title']; ?></h2>
-<?php
-		if (!empty($vars['find'])) {
-            global $q;
-?>
-<form action="/wo/search/users" method="GET" id="search_user"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '用户名、Email';?>" onclick='this.value=""' /><button onClick='$("search_user").submit();'>找</button></form>
-<?php
-		}
-?>
 						</td>
 						<td class="bg_tab_top_right">
 						</td>
@@ -1677,7 +1669,8 @@ _HTML_;
 		foreach( $pArray as $key=>$bindTip ) {
 			if ( isset($aDeviceInfo_rows[$key]) && empty($aDeviceInfo_rows[$key]['secret']) )
 			{
-				$imicoUrlHref = $isUserLogined ? $imicoUrlSms : $imicoUrlHelpSms;
+				$imicoUrlHref = $isUserLogined ?
+					( $key=='sms' ? $imicoUrlSms : $imicoUrlIm ) : $imicoUrlHelpSms;
 				echo <<<_HTML_
 					<a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-${key}.gif alt="$bindTip" title="$bindTip" /></a>
 _HTML_;

@@ -59,7 +59,7 @@ switch ( $active_tab )
 	case 'archive':
 		if( $page_user_info['idConference'] ) {
 			//论坛模式用户
-			$user_status_num	= JWDB_Cache_Status::GetStatusNumFromSelfNReplies($page_user_id);
+			$user_status_num	= JWStatus::GetStatusNumFromConference($page_user_info['idConference']);
 			$pagination		= new JWPagination($user_status_num-1, $page );
 			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		}else{
@@ -176,7 +176,7 @@ $options = array(
 	'description' => htmlspecialchars($description),
 	'author' => htmlspecialchars($keywords),
 	'rss' => $rss,
-	'refresh_time' => '60',
+	'refresh_time' => '600',
 	'refresh_url' => '',
 	'ui_user_id' => $page_user_id,
 	'openid_server'	=> "http://jiwai.de/wo/openid/server",

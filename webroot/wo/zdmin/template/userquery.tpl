@@ -24,9 +24,9 @@
 		</tr>
 		<!--{foreach $unResult as $one}-->
 		<tr>
-			<td><a href="http://jiwai.de/{$one['nameScreen']}/"><img src="${JWPicture::GetUrlById($one['idPicture'])}" border="0"></a></td>
+			<td><a href="http://jiwai.de/{$one['nameUrl']}/"><img src="${JWPicture::GetUrlById($one['idPicture'])}" border="0"></a></td>
 			<td>{$one['id']}</td>
-			<td><a href="http://jiwai.de/{$one['nameScreen']}/">{$one['nameScreen']}</a></td>
+			<td><a href="http://jiwai.de/{$one['nameUrl']}/">{$one['nameScreen']}</a></td>
 			<td>{$one['nameFull']}</td>
 			<td>${number_format($one['numStatus'])}</td>
 			<td>${number_format($one['numFriend'])}</td>

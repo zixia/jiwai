@@ -112,7 +112,7 @@ input.cb{ width:24px; display:inline; }
 					<input <?php if ( null!==$idConference ) echo ' checked="checked" ';?> id="enable_conference" name="enableConference" type="checkbox" value="Y" style="width:24px; display:inline;" /><label for="enable_conference">启动会议模式</label>
 					<p>
 						使用方法：<br/>
-						1、手机发送短信给 9911881699<?php echo $user_info['idUser'] ?><br/>
+						1、手机发送短信给 9911881611<?php echo $user_info['idUser'] ?><br/>
 						2、发消息时增加头 "@<?php echo $user_info['nameScreen'] ?>"
 					</p>
 				</td>
