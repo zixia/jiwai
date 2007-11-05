@@ -46,7 +46,7 @@ sub _buildMail {
     ) or die Mail::Bulkmail->error();
 
     $bulk->header("MIME-Version", "1.0");
-    $bulk->header("Content-type", 'text/html; charset="'.$charset.'"');
+    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_002E_01C81D68.794EA2A0"');
 =pod
     $bulk->header("Content-Transfer-Encoding", "quoted-printable");
 =cut
@@ -63,7 +63,7 @@ sub _buildList {
 
     my $newlist = '/tmp/bulkmail.' . $$;
     open FD, ">", $newlist;
-    unlink $newlist;
+    ##unlink $newlist;
 
     my $sth = $dbh->prepare("SELECT email FROM " . $table);
     $sth->execute();

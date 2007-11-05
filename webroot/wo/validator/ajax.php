@@ -96,13 +96,17 @@ function check_email($v){
 
 function check_url($v){
 	$info = @parse_url( $v );
-	if( false == isset( $info['scheme'] ) 
-			|| ( strtolower( $info['scheme'] ) != 'http'
+	if( isset( $info['scheme'] ) 
+			&& ( strtolower( $info['scheme'] ) != 'http'
 				&& strtolower($info['scheme']) != 'https'
 			)
 		){
 		//return "$info[scheme]网址必须以http://或https://打头";
 		return "网址必须以http://或https://开头";
+	}
+
+	if( false == isset( $info['scheme'] ) ) {
+		@list($info['host'], $info['path']) = explode( '/', ltrim($info['path'], '/'), 2 );
 	}
 
 	if( preg_match( '/^([\w\-]+)(\.[\w\-]+)*(\.[a-z]{2,})$/', @$info['host'] ) 

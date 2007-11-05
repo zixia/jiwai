@@ -16,6 +16,12 @@
 define('JW_ROOT',     dirname(__FILE__) . '/');
 
 /**
+ * Hostname of JiWai.de
+ *
+ */
+define('JW_SRVNAME',  'http://jiwai.de');
+
+/**
  * Path of configuration
  *
  */

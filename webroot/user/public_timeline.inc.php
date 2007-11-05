@@ -84,7 +84,7 @@ JWTemplate::tab_header( array(
 
 $options = array (
 	'uniq' => 2,
-	'nummax' => 10,
+	'nummax' => 20,
 );
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $options) 
