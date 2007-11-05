@@ -142,6 +142,10 @@ class JWRobotLingoReply {
 			'REPLY_BLOCK_LIST' => '被你阻止的用户有：{0} ，取消阻止请输入 UNBLOCK 用户名',
 			'REPLY_BLOCK_SUC' => '你阻止用户 {0} 成功，将不再会受其侵扰。',
 			'REPLY_UNBLOCK_SUC' => '你取消了阻止用户 {0}',
+
+			//PASS
+			'REPLY_PASS_SUC' => '你好，{0} 你的新密码是：{1} 到 http://JiWai.de/wo/login 上登录去吧',
+			'REPLY_PASS_HELP' => '设定新密码 请使用 PASS+空格+新密码',
 		);
 
 	/**

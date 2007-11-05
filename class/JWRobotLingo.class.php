@@ -1300,6 +1300,46 @@ class JWRobotLingo {
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+	static function	Lingo_Pass($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$body = JWRobotLingoBase::ConvertCorner( $body );
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) ) 
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		/**
+		 * 参数
+		 */
+		$param_array = preg_split('/\s+/', $body, 2);
+		$cmd = array_shift( $param_array );
+		$param_array = array_unique( $param_array );
+
+		if( count( $param_array ) == 0 ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_PASS_HELP' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
+		$password = array_shift( $param_array );
+		JWUser::ChangePassword( $device_db_row['idUser'], $password );
+
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_PASS_SUC', array(
+					$userInfo['nameScreen'], 
+					$password,
+		));
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
 	static public function CreateAccount($robotMsg) {
 		
 		$address = $robotMsg->GetAddress();

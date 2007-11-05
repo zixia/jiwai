@@ -53,6 +53,9 @@ class JWRobotLingoBase {
 		//Block
 		'BLOCK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Block', 'param'=>999),
 		'UNBLOCK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_UnBlock', 'param'=>999),
+
+		//PASS
+		'PASS'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Pass', 'param'=>1 ),
 	);
 
 
@@ -97,6 +100,13 @@ class JWRobotLingoBase {
 		'TRACE' => 'TRACK',
 		'UNTRACE' => 'UNTRACK',
 		'UNTRACKS' => 'UNTRACK',
+
+		//Passwrod
+		'PASSWORD' => 'PASS',
+		'PWD' => 'PASS',
+		'PW' => 'PASS',
+		'PASSWD' => 'PASS',
+		'MIMA' => 'PASS',
 	); 
 
 	/**
