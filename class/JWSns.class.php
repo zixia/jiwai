@@ -53,7 +53,7 @@ class JWSns {
 		if ( JWBlock::IsBlocked( $idUserReceiver, $idUserSender, false ) )  // idUserReceiver blocked idUserSender;
 			return false;		
 
-		if ( $idMessage = JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) )
+		if ( false == ($idMessage = JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time)) )
 		{
 			JWLog::LogFuncName("JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) failed");
 			return false;

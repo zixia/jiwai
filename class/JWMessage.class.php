@@ -68,14 +68,13 @@ class JWMessage {
 		// 去掉回车，替换为空格
 		$message = preg_replace('[\r\n]',' ',$message);
 
-		return JWDB::SaveTableRow('Message'
-								,array(	 'idUserSender'		=> $idUserSender
-										,'idUserReceiver'	=> $idUserReceiver
-										,'message'			=> $message
-										,'device'			=> $device
-										,'timeCreate'		=> JWDB::MysqlFuncion_Now($time)
-								)
-							);
+		return JWDB::SaveTableRow('Message', array(
+			'idUserSender' => $idUserSender,
+			'idUserReceiver' => $idUserReceiver,
+			'message' => $message,
+			'device' => $device,
+			'timeCreate' => JWDB::MysqlFuncion_Now($time),
+		));
 	}
 
 
