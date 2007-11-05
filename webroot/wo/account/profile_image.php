@@ -47,7 +47,7 @@ JWTemplate::html_head($options);
 
 <div id="container" class="subpage">
 
-			<h2><a href="/<?php echo $page_user_info['nameScreen']?>/"><?php echo $page_user_info['nameScreen']?></a></h2>
+			<h2><a href="/<?php echo $page_user_info['nameUrl']?>/"><?php echo $page_user_info['nameScreen']?></a></h2>
 
 			<p style="margin:10px 20px;"><img style="border: 1px dashed #FF8404;padding:2px;" alt="<?php echo $page_user_info['nameScreen']?>" src="<?php echo JWPicture::GetUserIconUrl($page_user_info['id'],'picture')?>" /></p>
 
