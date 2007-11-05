@@ -245,7 +245,7 @@ _HTML_;
 			$msgString = '';
 		}else{
 			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
-			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;你有&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">'.$msgCount.'</a>&nbsp;条悄悄话&nbsp;';
+			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">'.$msgCount.'</a>&nbsp;条&nbsp;';
 		}
 
 ?>

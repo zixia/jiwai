@@ -6,13 +6,41 @@ JWLogin::MustLogined();
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
-$logined_user_id 	= JWLogin::GetCurrentUserId();
-$logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
+$logined_user_id = JWLogin::GetCurrentUserId();
+$logined_user_info = JWUser::GetUserInfo($logined_user_id);
 
 if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
 	$message_box_type = JWMessage::OUTBOX;
 else
 	$message_box_type = JWMessage::INBOX;
+
+
+$n=0;
+
+$message_num = JWMessage::GetMessageNum($logined_user_id, $message_box_type);
+
+$pagination = new JWPagination($message_num, $page);
+
+$message_info = JWMessage::GetMessageIdsFromUser( $logined_user_id, $message_box_type, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+
+$message_ids = $message_info['message_ids'];
+$user_ids = $message_info['user_ids'];
+
+$message_db_rows = JWMessage::GetMessageDbRowsByIds($message_ids);
+$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids);
+
+$picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
+$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
+
+if ( $message_box_type == JWMessage::INBOX ) {
+	$messageIdsUpdate = array();
+	foreach ( $message_ids as $message_id ) {
+		if( $message_db_rows[$message_id]['messageStatusReceiver'] == JWMessage::MESSAGE_NOTREAD )
+			array_push( $messageIdsUpdate, $message_id );
+	}
+	JWMessage::SetMessageStatus($messageIdsUpdate, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
+}
+
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -98,60 +126,32 @@ JWTemplate::tab_header( $options );
         <div id="timeline" style="margin-top:0;">
 
 <?php
-$n=0;
 
-$message_num		= JWMessage::GetMessageNum 			($logined_user_id, $message_box_type);
-
-$pagination			= new JWPagination					($message_num, @$_REQUEST['page']);
-
-$message_info 		= JWMessage::GetMessageIdsFromUser	(	 $logined_user_id
-															,$message_box_type
-															,$pagination->GetNumPerPage()
-															,$pagination->GetStartPos()
-														);
-
-$message_ids		= $message_info['message_ids'];
-$user_ids			= $message_info['user_ids'];
-
-$message_db_rows 	= JWMessage::GetMessageDbRowsByIds	($message_ids);
-$user_db_rows 		= JWUser::GetUserDbRowsByIds		($user_ids);
-
-$picture_ids        = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
-$picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
-
-//$photo_url_rows		= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
-
-$messageIdsUpdate = array();
 foreach ( $message_ids as $message_id )
 {
-	//die(var_dump($message_ids));
-	$message_db_row 	= $message_db_rows[$message_id];
+	$message_db_row = $message_db_rows[$message_id];
 	
 	switch ($message_box_type)
 	{
 		default:
 		case JWMessage::INBOX:
-			$user_id            = $message_db_row['idUserSender'];
-			//将悄悄话设置为已读
+			$user_id = $message_db_row['idUserSender'];
 			break;
 		case JWMessage::OUTBOX:
-			$user_id            = $message_db_row['idUserReceiver'];
+			$user_id = $message_db_row['idUserReceiver'];
 			break;
 	}
 
-	if( $message_db_row['messageStatusReceiver'] == JWMessage::MESSAGE_NOTREAD )
-		array_push( $messageIdsUpdate, $message_id );
+	$user_db_row = $user_db_rows[$user_id];
 
-	$user_db_row		= $user_db_rows		[$user_id];
-
-	$user_picture_id    = @$user_db_row['idPicture'];
-	$photo_url      = JWTemplate::GetConst('UrlStrangerPicture');
+	$user_picture_id = @$user_db_row['idPicture'];
+	$photo_url = JWTemplate::GetConst('UrlStrangerPicture');
 	if ( $user_picture_id )
-		$photo_url		= $picture_url_row[$user_picture_id];
+		$photo_url = $picture_url_row[$user_picture_id];
 
-	$asset_trash_url	= JWTemplate::GetAssetUrl("/img/icon_trash.gif");
+	$asset_trash_url = JWTemplate::GetAssetUrl("/img/icon_trash.gif");
 
-	$time_desc			= JWMessage::GetTimeDesc($message_db_row['timeCreate']);
+	$time_desc = JWMessage::GetTimeDesc($message_db_row['timeCreate']);
 
 	echo <<<_HTML_
           <div class="odd">
@@ -166,8 +166,6 @@ foreach ( $message_ids as $message_id )
 
 _HTML_;
 }
-
-JWMessage::SetMessageStatus($messageIdsUpdate, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
 ?>
 	</div>
 </div>
