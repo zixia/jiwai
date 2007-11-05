@@ -241,6 +241,13 @@ _HTML_;
 			if (!$highlight && empty($nameScreen) ) $highlight = '/public_timeline/'; //$url;
 		}
 
+		if( empty( $userInfo ) ) {
+			$msgString = '';
+		}else{
+			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
+			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;你有&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">'.$msgCount.'</a>&nbsp;条悄悄话&nbsp;';
+		}
+
 ?>
 <div id="header">
 	<div id="navigation">
@@ -248,7 +255,7 @@ _HTML_;
 		<div id="navtip" class="navtip">
 		<form id='f3' action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>" style="display:inline;">
 		<table class="navtip_table"><tr>
-			<td valign="middle">你好，<a href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a><?php if($nameUrl != 'public_timeline') echo '|<a href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a href="'.JW_SRVNAME.'/wo/logout">退出</a>'; ?>
+			<td valign="middle">你好，<a href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a><?php echo $msgString; ?><?php if($nameUrl != 'public_timeline') echo '|<a href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a href="'.JW_SRVNAME.'/wo/logout">退出</a>'; ?>
 			</td>
 			<td valign="middle"><input type="text" name="q" value="QQ、Email、姓名" onClick="if(this.value=='QQ、Email、姓名')this.value=''" onBlur="if(this.value=='')this.value='QQ、Email、姓名';" class="input"/></td>
 			<td valign="middle"><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></td>
