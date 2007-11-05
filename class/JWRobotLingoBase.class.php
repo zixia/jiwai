@@ -56,6 +56,9 @@ class JWRobotLingoBase {
 
 		//PASS
 		'PASS'	=> array('class'=>'JWRobotLingo', 'func'=>'Lingo_Pass', 'param'=>1 ),
+
+		//Merge
+		'MERGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Merge', 'param'=>2 ),
 	);
 
 
@@ -107,6 +110,9 @@ class JWRobotLingoBase {
 		'PW' => 'PASS',
 		'PASSWD' => 'PASS',
 		'MIMA' => 'PASS',
+
+		//MerGE
+		'HEBING' => 'MERGE',
 	); 
 
 	/**

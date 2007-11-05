@@ -1340,6 +1340,96 @@ class JWRobotLingo {
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+	static public function Lingo_Merge($robotMsg){
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$body = $robotMsg->GetBody();
+		$body = JWRobotLingoBase::ConvertCorner( $body );
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) {
+			$device_db_row = self::CreateAccount($robotMsg);
+			return null;
+		}
+
+		if ( empty($device_db_row) ) 
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		if( false == in_array( $type, array('qq','msn','gtalk','skype','yahoo','sms') ) ){
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MSG_WEBREQ' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		/**
+		 * 参数
+		 */
+		$param_array = preg_split('/\s+/', $body, 3);
+
+		$cmd = array_shift( $param_array );
+		$nameScreen = array_shift( $param_array );
+		$password = array_shift( $param_array );
+
+		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
+		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen );
+
+		if( $userInfo['isWebUser'] == 'Y' ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_WEBUSER' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		if( $userInfo['id'] == $mergeToUserInfo['id'] ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_OWN', array($nameScreen) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		if( JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
+			//Suc
+			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
+			if( count( $dDeviceRows ) > 1 ) {
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_MULTI');
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			}
+
+			$mDeviceRows = JWDevice::GetDeviceRowByUserId( $mergeToUserInfo['id'] );
+			if( isset($mDeviceRows[$type]) ){
+				if( empty($mDeviceRows[$type]['secret']) ){
+					$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_HAVE', array(
+						$nameScreen, $type, $mDeviceRows[$type]['address'],
+					));
+					return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+				}else{
+					JWDevice::Destroy( $mDeviceRows[$type]['id'] );
+				}
+			}
+
+			//merge device;
+			$upArray = array( 'idUser' => $mergeToUserInfo['id'] );
+			JWDB::UpdateTableRow( 'Device', $device_db_row['id'], $upArray );
+			
+			//merge status;
+			$sql = "UPDATE Status SET idUser=$mergeToUserInfo[id] WHERE idUser=$device_db_row[idUser]";
+			JWDB::Execute( $sql );
+
+			//destroy user;
+			JWUser::Destroy( $device_db_row['idUser'] );
+
+			//reply
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_SUC', array(
+				$type, $address, $nameScreen,
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+
+		}else{
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_ERR', array(
+				$nameScreen,
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+	}
+
 	static public function CreateAccount($robotMsg) {
 		
 		$address = $robotMsg->GetAddress();

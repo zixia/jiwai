@@ -146,6 +146,15 @@ class JWRobotLingoReply {
 			//PASS
 			'REPLY_PASS_SUC' => '你好，{0} 你的新密码是：{1} 到 http://JiWai.de/wo/login 上登录去吧',
 			'REPLY_PASS_HELP' => '设定新密码 请使用 PASS+空格+新密码',
+
+			//Merge
+			'REPLY_MERGE_OWN' => '你好，当前设备绑定的用户正是 {0} ，无需合并',
+			'REPLY_MERGE_WEBUSER' => '你好，你当前设备用户已经在 WEB 上登录并设定了密码，请联系管理员吧',
+			'REPLY_MERGE_SUC' => '你好，当前设备 {0}://{1} 已转移绑定到用户 {2} ，常回来叽歪呀～',
+			'REPLY_MERGE_MULTI' => '你好，你的当前用户，已经绑定了多个设备，还是继续使用吧',
+			'REPLY_MERGE_HAVE' => '你好，{0} 已经绑定了 {1}://{2} ，删除绑定后才能合并过来',
+			'REPLY_MERGE_ERR' => '你提供的合并用户名 {0} 和你提供的密码不匹配，无法完成操作',
+			'REPLY_MERGE_WEBREQ' => '你好，合并帐户的请求只能从 (MSN/QQ/Skype/GTalk/Yahoo!/SMS) 端发起',
 		);
 
 	/**
