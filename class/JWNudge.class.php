@@ -46,7 +46,7 @@ class JWNudge {
 		settype( $idUsers, 'array' );
 		$idUsers = array_unique( $idUsers );
 
-		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype') ) ) {
+		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype','yahoo') ) ) {
 			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
 				$metaInfo = array(
 					'idUsers' => $idUsers,
@@ -91,7 +91,7 @@ class JWNudge {
 
 			if( $messageType == 'direct_messages' ) {
 				$idMessage = $message['idMessage'];
-				JWMessage::SetMessageStatus( $idUser, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD );
+				JWMessage::SetMessageStatus( $idMessage, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD );
 				$message = $message['message'];
 			}
 
