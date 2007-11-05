@@ -393,7 +393,7 @@ _SQL_;
 	 */
 	static public function IsValidName( $name )
 	{
-		if (strlen($name)<5||strlen($name)>20) return false; //最少 3 byte
+		if (strlen($name)<4||strlen($name)>20) return false; //最少 3 byte
 		if (strpos($name, ' ')!==false) return false; //不能包含空格
 		if (preg_match('/^\d+$/', $name)) return false; //不能全是数字，
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {

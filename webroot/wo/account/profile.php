@@ -116,7 +116,7 @@ _HTML_;
     }
 
     if( $new_user_info['url'] != $outInfo['url'] ) {
-	$new_user_info['url'] = rtrim( $new_user_info['url'], '/' );
+	$new_user_info['url'] = ltrim( $new_user_info['url'], '/' );
 	if( $new_user_info['url'] && false == preg_match( '/^(http:|https:)/', strtolower($new_user_info['url']) ) ) {
 		$new_user_info['url'] = 'http://' . $new_user_info['url'];
 	}
