@@ -1819,10 +1819,10 @@ _HTML_;
 	static function sidebar_count( $countInfo=null, $userInfo=null )
 	{
 		if ( empty($userInfo) ) {
-		    $user = 'wo';
+			$user = 'wo';
 		} else {
-		    $user = $userInfo['nameUrl'];
-		    $name_full = $userInfo['nameFull'];
+			$user = $userInfo['nameUrl'];
+			$name_full = $userInfo['nameFull'];
 			$name_screen = $userInfo['nameScreen'];
 		}
 
@@ -1840,7 +1840,7 @@ _HTML_;
 			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
 _HTML_;
 		
-		if ( 'wo'==$user || $user === @$userInSession['nameScreen'] ) 
+		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
 		{
 			echo <<<_HTML_
 			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
