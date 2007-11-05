@@ -112,8 +112,11 @@ class JWMail {
 
         self::Instance();
 
+		if ( !isset($options['subjectenc']) )
+			$options['subjectenc'] 	= 'GBK';
+
 		if ( !isset($options['encoding']) )
-			$options['encoding'] 	= 'GBK';
+			$options['encoding'] 	= 'UTF-8';
 
 		if ( !isset($options['contentType']) )
 			$options['contentType'] = 'text/plain';
@@ -129,9 +132,9 @@ class JWMail {
 
 		$message	= chunk_split(base64_encode($message));
 
-		$subject 	= self::EscapeHeadString($subject	,$options['encoding'], true);
-		$from		= self::EscapeHeadString($from		,$options['encoding']);
-		$to			= self::EscapeHeadString($to		,$options['encoding']);
+		$subject 	= self::EscapeHeadString($subject	,$options['subjectenc'], true);
+		$from		= self::EscapeHeadString($from		,$options['subjectenc']);
+		$to			= self::EscapeHeadString($to		,$options['subjectenc']);
 
         $headers = array(
             'Mime-Version'  => '1.0',

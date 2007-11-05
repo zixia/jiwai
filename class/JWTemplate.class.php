@@ -677,7 +677,7 @@ _HTML_;
 				<?php if( @$isMms ) { ?>
 					<div class="head"><a href="/<?php echo $name_url; ?>/mms/<?php echo $statusRow['id']; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
 				<?php } else { ?>
-					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_url; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
+					<div class="head"><a href="/wo/account/profile_image/<?php echo $name_screen; ?>"><img alt="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
 				<?php } ?>
 					<div class="cont">
 						<div class="bg"></div>
