@@ -1,6 +1,6 @@
 <?php
 $pageTitle = ($action=='sent') ? "我发出去的悄悄话" : "我接受到的悄悄话" ;
-$boxType = ($action=='sent') ? JWMessage::SENT : JWMessage::INBOX ;
+$boxType = ($action=='sent') ? JWMessage::OUTBOX : JWMessage::INBOX ;
 
 
 $messageNum = JWMessage::GetMessageNum( $loginedUserInfo['id'], $boxType );
@@ -13,6 +13,16 @@ $userIds    = $messageInfo['user_ids'];
 
 $messageRows    = JWMessage::GetMessageDbRowsByIds( $messageIds );
 $userRows       = JWUser::GetUserDbRowsByIds( $userIds);
+
+if( $boxType == JWMessage::INBOX ) {
+	$messageIdsUpdate = array();
+	foreach( $messageRows as $r ) {
+		if( $r['messageStatusReceiver'] == JWMessage::MESSAGE_NOTREAD ) {
+			array_push( $messageIdsUpdate, $r['id'] );
+		}
+	}
+	JWMessage::SetMessageStatus( $messageIdsUpdate, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD );
+}
 
 krsort( $messageRows );
 

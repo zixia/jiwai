@@ -17,14 +17,29 @@ if( $action == null ) {
 
 switch($action){
 	case 'message':
-		if( JWMessage::IsUserOwnMessage( $loginedUserInfo['id'], $value ) ){
-			if( JWMessage::Destroy( $value ) ){
+		$messageRow = JWMessage::GetMessageDbRowById( $value );
+		if( empty($messageRow) ||
+			false == ( $messageRow['idUserSender'] == $loginedUserInfo['id']
+				|| $messageRow['idUserReceiver'] == $loginedUserInfo['id']
+			)
+		){
+			JWSession::SetInfo('error', "你无权删除这条悄悄话（编号 $value）。");
+			redirect( $redirect );
+		}else{
+
+			$flag = true;
+			if( $flag && $messageRow['idUserSender'] == $loginedUserInfo['id'] ) {
+				$flag &= JWMessage::SetMessageStatus($value, JWMessage::OUTBOX, JWMessage::MESSAGE_DELETE);
+			}
+			if( $flag && $messageRow['idUserReceiver'] == $loginedUserInfo['id'] ) {
+				$flag &= JWMessage::SetMessageStatus($value, JWMessage::INBOX, JWMessage::MESSAGE_DELETE);
+			}
+
+			if( $flag ) {
 				JWSession::SetInfo('error', "悄悄话已经被删除啦！");
 			}else{
 				JWSession::SetInfo('error', "哎呀！由于系统故障，删除悄悄话失败了…… 请稍后再试。。");
 			}
-		}else{
-			JWSession::SetInfo('error', "你无权删除这条悄悄话（编号 $value）。");
 		}
 		redirect( $redirect );
 	break;

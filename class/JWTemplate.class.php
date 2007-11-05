@@ -1853,8 +1853,10 @@ _HTML_;
 
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] )
 		{
+			$msg_count = JWMessage::GetMessageStatusNum($userInSession['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
+			$msg_string = ( $msg_count == 0 ) ? '' : " ( $msg_count 条新 )";
 			echo <<<_HTML_
-			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话</a></li>
+			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话${msg_string}</a></li>
 _HTML_;
 		}
 

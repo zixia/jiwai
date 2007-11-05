@@ -89,6 +89,12 @@ class JWNudge {
 			if( null == $availableSendVia )
 				continue;
 
+			if( $messageType == 'direct_messages' ) {
+				$idMessage = $message['idMessage'];
+				JWMessage::SetMessageStatus( $idUser, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD );
+				$messge = $messge['messge'];
+			}
+
 			$deviceRow = $deviceRows[ $availableSendVia ];
 			JWNudge::NudgeToUserDevice( $deviceRow, $message, $messageType, $nudgeOptions );
 		}

@@ -22,7 +22,11 @@
 <!--{/if}-->
 
 <!--{if in_array( 'message', $shortcut ) }-->
-<p>7 <a href="${buildUrl('/wo/message/inbox')}" accesskey="7">悄悄话</a></p>
+<!--${
+	$msgCount = JWMessage::GetMessageStatusNum($loginedUserInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD);
+	$msgString = ( $msgCount == 0 ) ? '' : '('.$msgCount.'条)';
+}-->
+<p>7 <a href="${buildUrl('/wo/message/inbox')}" accesskey="7">悄悄话{$msgString}</a></p>
 <!--{/if}-->
 
 <p>8 <a href="${buildUrl('/help/')}" accesskey="8">帮助</a></p>

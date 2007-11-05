@@ -53,7 +53,7 @@ class JWSns {
 		if ( JWBlock::IsBlocked( $idUserReceiver, $idUserSender, false ) )  // idUserReceiver blocked idUserSender;
 			return false;		
 
-		if ( ! JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) )
+		if ( $idMessage = JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) )
 		{
 			JWLog::LogFuncName("JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) failed");
 			return false;
@@ -75,8 +75,12 @@ class JWSns {
 	
 		
 		$message = "$sender_row[nameScreen]: $message (可直接回复 D $sender_row[nameScreen] 你想说的悄悄话)";
+		$messageInfo = array(
+			'message' => $message,
+			'idMessage' => $idMessage,
+		);
 
-		JWNudge::NudgeToUsers( array($idUserReceiver), $message, 'direct_messages', $device );
+		JWNudge::NudgeToUsers( array($idUserReceiver), $messageInfo, 'direct_messages', $device );
 
 		return true;
 	}

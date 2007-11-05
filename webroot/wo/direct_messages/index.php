@@ -10,7 +10,7 @@ $logined_user_id 	= JWLogin::GetCurrentUserId();
 $logined_user_info 	= JWUser::GetUserInfo($logined_user_id);
 
 if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
-	$message_box_type = JWMessage::SENT;
+	$message_box_type = JWMessage::OUTBOX;
 else
 	$message_box_type = JWMessage::INBOX;
 ?>
@@ -59,7 +59,7 @@ JWTemplate::updater(array(
 </form>
 <?php
 $menu_list = array (
-	JWMessage::SENT => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
+	JWMessage::OUTBOX => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
 	JWMessage::INBOX => array('active'=>false, 'name'=>'收件箱', 'url'=>"/wo/direct_messages/"),
 );
 
@@ -75,7 +75,7 @@ switch ( $message_box_type )
 		$options['title'] = '你收到的悄悄话';
 		$owner = '发送者';
 		break;
-	case JWMessage::SENT:
+	case JWMessage::OUTBOX:
 		$options['title'] = '你发送的悄悄话';
 		$owner = '接收者';
 		break;
@@ -121,6 +121,7 @@ $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
 
 //$photo_url_rows		= JWPicture::GetUserIconUrlRowsByUserIds($user_ids);
 
+$messageIdsUpdate = array();
 foreach ( $message_ids as $message_id )
 {
 	//die(var_dump($message_ids));
@@ -130,13 +131,16 @@ foreach ( $message_ids as $message_id )
 	{
 		default:
 		case JWMessage::INBOX:
-			$user_id 			= $message_db_row['idUserSender'];
+			$user_id            = $message_db_row['idUserSender'];
+			//将悄悄话设置为已读
 			break;
-		case JWMessage::SENT:
-			$user_id 			= $message_db_row['idUserReceiver'];
+		case JWMessage::OUTBOX:
+			$user_id            = $message_db_row['idUserReceiver'];
 			break;
 	}
-			
+
+	if( $message_db_row['messageStatusReceiver'] == JWMessage::MESSAGE_NOTREAD )
+		array_push( $messageIdsUpdate, $message_id );
 
 	$user_db_row		= $user_db_rows		[$user_id];
 
@@ -162,6 +166,8 @@ foreach ( $message_ids as $message_id )
 
 _HTML_;
 }
+
+JWMessage::SetMessageStatus($messageIdsUpdate, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
 ?>
 	</div>
 </div>
