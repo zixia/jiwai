@@ -19,7 +19,7 @@ $user_info		= JWUser::GetCurrentUserInfo();
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTips(); ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab('/wo/openid/'); ?>

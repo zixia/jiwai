@@ -1357,8 +1357,10 @@ _HTML_;
 		else
 			$title = $options['title'];
 
-        if ($title =='公告')
-            $isAnnounce=true;
+		if ($title =='公告')
+			$isAnnounce = true;
+		else
+			$isAnnounce = false;
 
 
 		$user_db_row	= JWUser::GetUserInfo($user_name);
@@ -2327,17 +2329,18 @@ _HTML_;
 	}
 
 
-	static public function	ShowActionResultTips()
+	static public function	ShowActionResultTips($display=true)
 	{
-		$error_html		= JWSession::GetInfo('error');
+		$error_html	= JWSession::GetInfo('error');
 		$notice_html	= JWSession::GetInfo('notice');
 
 		$is_exist = false;
+		$tips_content = null;
 
 		if ( !empty($error_html) )
 		{
 			$is_exist = true;
-			echo <<<_HTML_
+			$tips_content .= <<<_HTML_
 			<div class="tipnote-red" onclick="return JiWai.KillNote(this);"> $error_html </div>
 _HTML_;
 		}
@@ -2346,15 +2349,30 @@ _HTML_;
 		if ( !empty($notice_html) )
 		{
 			$is_exist = true;
-			echo <<<_HTML_
+			$tips_content .= <<<_HTML_
 			<div class="tipnote" onclick="return JiWai.KillNote(this);"> $notice_html </div>
 _HTML_;
 		}
 
 		if ( $is_exist )
 		{
-			echo <<<_HTML_
+			$tips_content .= <<<_HTML_
 <script type="text/javascript">JiWai.Yft(".notice");</script>
+_HTML_;
+		}
+
+		if( $display ) {
+			echo $tips_content;
+		} else {
+			return $tips_content;
+		}
+	}
+
+	static public function ShowActionResultTipsMain() {
+		$tips_content = self::ShowActionResultTips( false );
+		if( $tips_content ) {
+			echo <<<_HTML_
+<div style="width:776px; margin:0 auto -8px auto!important; margin:0 auto -16px auto; padding:0px;">$tips_content</div>
 _HTML_;
 		}
 	}

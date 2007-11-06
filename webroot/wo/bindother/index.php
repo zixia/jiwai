@@ -54,29 +54,8 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTips(); ?>
-<?php
-if ( empty($error_html) )
-	$error_html = JWSession::GetInfo('error');
-if ( empty($notice_html) )
-	$notice_html = JWSession::GetInfo('notice');
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
-if ( !empty($error_html) )
-{
-		echo <<<_HTML_
-			<div class="notice"><ul> $error_html </ul></div>
-_HTML_;
-}
-
-
-if ( !empty($notice_html) )
-{
-	echo <<<_HTML_
-			<div class="notice"><ul>$notice_html</ul></div>
-_HTML_;
-}
-
-?>
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab(); ?>
 
