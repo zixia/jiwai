@@ -2163,7 +2163,7 @@ _HTML_;
 				'UrlHelp' => 'http://help.jiwai.de/',
 				'UrlHelpComments' => '/help/',
 				'UrlHelpGadget' => 'http://help.jiwai.de/Gadget',
-				'UrlStrangerPicture' => self::GetAssetUrl('/images/org-nobody-48-48.gif'),
+				'UrlStrangerPicture' => self::GetAssetUrl('/images/org-nobody-96-96.gif'),
 			);
 		}
 
