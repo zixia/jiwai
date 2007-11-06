@@ -115,7 +115,10 @@ public class YahooJiWaiRobot implements MoMtProcessor {
 		MoMtMessage msg = new MoMtMessage(DEVICE);
 		msg.setAddress(m.getFrom());
 		msg.setServerAddress(mAddress);
-		msg.setBody(m.getMessage());
+
+        String msgBody = m.getMessage().replaceAll("<.*?>", "");
+        msgBody = msgBody.replaceAll(".*?m", "");
+		msg.setBody(msgBody);
 		worker.saveMoMessage(msg);
 	}
 
