@@ -45,6 +45,7 @@ class JWRobotLingoReply {
 			'REPLY_GET_SUC' => '{0}: {1}',
 			'REPLY_GET_HELP' => 'GET命令帮助：GET 帐号。',
 			'REPLY_GET_NOSTATUS' => '还没有更新过。',
+			'REPLY_GET_NOPERM' => '哎呀！{0} 设置了只对好友开发叽歪更新，而你还不是 {0} 的好友',
 
 			'REPLY_D_HELP' => 'D命令帮助：D 帐号 你想说的悄悄话。',
 			'REPLY_D_SUC'	=> '悄悄话已经发送给 {0} ，也许 {0} 会马上回复你的哦。',
