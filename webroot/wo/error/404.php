@@ -42,12 +42,12 @@ JWTemplate::html_doctype();
 <div id="container">
 
 <style type="text/css">
-table td { margin: 10px; padding:10px; }
-table h2 { font-size:20px; margin:10px; padding:10px; margin-left: 0px;padding-left: 0px; }
-table h3 { font-size:28px; margin:10px; padding:10px; margin-left: 0px;padding-left: 0px; }
-table .right { text-align:top }
+#container table td { margin: 10px; padding:10px; }
+#container table h2 { font-size:20px; margin:10px; padding:10px; margin-left: 0px;padding-left: 0px; }
+#container table h3 { font-size:28px; margin:10px; padding:10px; margin-left: 0px;padding-left: 0px; }
+#container table .right { text-align:top }
 
-table ul {
+#container table ul {
 margin: 20px;
 font-size: 1.5em;
 list-style-image:none;
