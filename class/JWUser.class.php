@@ -397,7 +397,7 @@ _SQL_;
 		if (strpos($name, ' ')!==false) return false; //不能包含空格
 		if (preg_match('/^\d+$/', $name)) return false; //不能全是数字，
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
-			if (mb_strlen($name)<5) return false; //纯西文字符不能短于3
+			if (mb_strlen($name)<4) return false; //纯西文字符不能短于3
 		} else {
 			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; //如果包含非西文字符，则其个数不能少于2
 		}
@@ -484,7 +484,7 @@ _SQL_;
 			);
 		}
 
-		if ( isset(self::$msReservedNames[strtolower($nameScreen)]) )
+		if ( in_array(strtolower($nameScreen) , self::$msReservedNames ) )
 			return true;
 
 		if ( preg_match( '/^gp\d+$/i', $nameScreen ) )   //股票相关用户不允许用户直接注册
@@ -509,7 +509,7 @@ _SQL_;
 			);
 		}
 
-		if ( isset(self::$msReservedNames[strtolower($nameUrl)]) )
+		if ( in_array(strtolower($nameUrl) , self::$msReservedNames ) )
 			return true;
 
 		if ( preg_match( '/^gp\d+$/i', $nameUrl ) )   //股票相关用户不允许用户直接注册
