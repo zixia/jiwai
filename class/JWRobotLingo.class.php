@@ -1408,9 +1408,16 @@ class JWRobotLingo {
 		 */
 		$param_array = preg_split('/\s+/', $body, 3);
 
+		if( count( $param_array ) < 3 ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_TIPS', array(
+				array_shift($param_array),
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
 		$cmd = array_shift( $param_array );
-		$nameScreen = array_shift( $param_array );
-		$password = array_shift( $param_array );
+		$nameScreen = @array_shift( $param_array );
+		$password = @array_shift( $param_array );
 
 		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
 		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen );
@@ -1420,12 +1427,14 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		if( $userInfo['id'] == $mergeToUserInfo['id'] ) {
+		if( false==empty($mergeToUserInfo) && $userInfo['id'] == $mergeToUserInfo['id'] ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_OWN', array($nameScreen) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		if( JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
+		if( false==empty($mergeToUserInfo)
+				&& false==empty($password) 
+				&& JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
 			//Suc
 			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
 			if( count( $dDeviceRows ) > 1 ) {

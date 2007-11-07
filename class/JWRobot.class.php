@@ -218,7 +218,6 @@ class JWRobot {
 
 			$robot_msg = new JWRobotMsg($file);
 			
-			self::LogMoMt( $robot_msg->GetType(), $robot_msg->GetAddress(), $robot_msg->GetCreateTime(), true );
 		
 			/*
 			 * 只需要一个，返回。
@@ -288,13 +287,22 @@ class JWRobot {
 					JWLog::Instance()->Log(LOG_ERR, 'JWRobotLogic::process_mo failed, quarantined.');
 				}
 				else if ( null===$robot_reply_msg )
-				{	// no need to reply. just keep silence
+				{
+					self::LogMoMt( $robot_msg->GetType(), 
+							$robot_msg->GetAddress(), 
+							$robot_msg->GetCreateTime(), true );
+
+					// no need to reply. just keep silence
 					$robot_msg->Destroy();
 				}
 				else
 				{	// some msg returned
 					if ( self::SendMt($robot_reply_msg) )
-					{	// msg only be destroied when be delivered successful.
+					{	
+						self::LogMoMt( $robot_msg->GetType(), 
+								$robot_msg->GetAddress(), 
+								$robot_msg->GetCreateTime(), true );
+						// msg only be destroied when be delivered successful.
 						$robot_msg->Destroy();
 					}
 					else
