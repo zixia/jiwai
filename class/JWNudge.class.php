@@ -133,9 +133,9 @@ class JWNudge {
 				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType, $source );
 			else
 				JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
-											."[$user_row[deviceSendVia]]"
- 											."not exist in the device for user id[$user_id], skiped."
-								);
+					. "[$user_row[deviceSendVia]]"
+ 					. "not exist in the device for user id[$user_id], skiped."
+				);
 		}
 		return true;
 	}

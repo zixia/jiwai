@@ -130,6 +130,42 @@ class JWFriend {
 		return $is_friend_rows[$idUser][$idFriend];
 	}
 
+	/**
+	 * 	Get ids of whom is $idUser's friend (bio)
+	 *	@return array	array of friend id list
+	 */
+	static function GetBioFriendIds($idUser, $numMax=9999, $start=0)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
+		$start  = intval($start);
+
+		$sql = <<<_SQL_
+SELECT	idFriend
+FROM	Friend
+WHERE	idUser=$idUser 
+		AND idFriend IN
+		(
+		 SELECT idUser FROM Friend WHERE idFriend=$idUser 
+		)
+ORDER BY id DESC
+LIMIT $start,$numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+		{
+			return array();
+		}
+
+		$arr_friend_id = array();
+		foreach ( $arr_result as $row )
+			array_push($arr_friend_id, $row['idFriend']);
+
+		return $arr_friend_id;
+	}
+
 
 	/**
 	 * 	Get ids of whom is $idUser's friend.
@@ -137,12 +173,9 @@ class JWFriend {
 	 */
 	static function GetFriendIds($idUser, $numMax=9999, $start=0)
 	{
-		$idUser = intval($idUser);
-		$numMax = intval($numMax);
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
 		$start  = intval($start);
-
-		if ( 0==$idUser || 0==$numMax )
-			throw new JWException('not int');
 
 		$sql = <<<_SQL_
 SELECT	idFriend

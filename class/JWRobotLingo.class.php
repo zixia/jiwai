@@ -170,7 +170,7 @@ class JWRobotLingo {
 		if ( empty($device_db_row['idUser']) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id	= $device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -262,7 +262,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 
-		$address_user_id	= $device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 		/*
 	 	 *	解析命令参数
@@ -335,8 +335,8 @@ class JWRobotLingo {
 		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id		= $device_db_row['idUser'];
-		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
+		$address_user_id = $device_db_row['idUser'];
+		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
 
 		/*
 	 	 *	解析命令参数
@@ -459,8 +459,8 @@ class JWRobotLingo {
 				}
 				else	// not protected
 				{
-					JWSns::CreateFriends	( $address_user_id	,array($friend_user_id) );
-					JWSns::CreateFollowers	( $friend_user_id	,array($address_user_id) );
+					JWSns::CreateFriends( $address_user_id, array($friend_user_id) );
+					JWSns::CreateFollowers( $friend_user_id, array($address_user_id) );
 					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_SUC', array($invitee_address,) );
 				}
 			}
@@ -494,8 +494,8 @@ class JWRobotLingo {
 		/*
 		 *	查看被添加的地址是否已经存在
 		 */
-		$invitee_device_id 	= JWDevice::GetDeviceIdByAddress(array('address'=>$invitee_address,'type'=>$invitee_type) );
-		$invitee_device_db_row	= JWDevice::GetDeviceDbRowById($invitee_device_id);
+		$invitee_device_id = JWDevice::GetDeviceIdByAddress(array('address'=>$invitee_address,'type'=>$invitee_type) );
+		$invitee_device_db_row = JWDevice::GetDeviceDbRowById($invitee_device_id);
 
 		if ( !empty($invitee_device_db_row) )
 		{
@@ -506,10 +506,10 @@ class JWRobotLingo {
 			/*
 			 * 互相添加为好友和粉丝
 			 */
-			JWSns::CreateFriends	( $address_user_id	,array($invitee_user_id), true );
-			JWSns::CreateFollowers	( $invitee_user_id	,array($address_user_id), true );
+			JWSns::CreateFriends( $address_user_id, array($invitee_user_id), true );
+			JWSns::CreateFollowers( $invitee_user_id, array($address_user_id), true );
 
-			$invitee_user_row 	= JWUser::GetUserDbRowById($invitee_user_id);
+			$invitee_user_row = JWUser::GetUserDbRowById($invitee_user_id);
 
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ADD_REQUEST', array( $invitee_address, ));
 		}
@@ -561,13 +561,13 @@ class JWRobotLingo {
 		if ( empty($device_db_row) ) 
 			$device_db_row = self::CreateAccount($robotMsg);
 
-		if ( empty($address_user_id) )
+		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id		= $device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 
-		$address_user_row	= JWUser::GetUserDbRowById($address_user_id);
+		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
 
 
 		/*
@@ -595,7 +595,7 @@ class JWRobotLingo {
 		
 		$bio = $address_user_row['protected'] == 'Y' || $friend_user_row['protected'] == 'Y';
 
-		JWSns::DestroyFriends	($address_user_id, array($friend_user_row['idUser']), $bio );
+		JWSns::DestroyFriends($address_user_id, array($friend_user_row['idUser']), $bio );
 		//JWSns::DestroyFollowers ($friend_user_row['idUser'], array($address_user_id), $bid );
 
 		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_SUC', array( $friend_user_row['nameScreen'],) );
@@ -614,6 +614,22 @@ class JWRobotLingo {
 		$body = $robotMsg->GetBody();
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
+		$address = $robotMsg->GetAddress();	
+		$type = $robotMsg->GetType();	
+
+
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		$address_user_id = $device_db_row['idUser'];
+		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
+
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_HELP' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -631,7 +647,25 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$status_ids	= JWStatus::GetStatusIdsFromUser($friend_user_db_row['idUser'], 1);
+		/*
+		 * 检查好友关系
+		 */
+		if( $friend_user_db_row['protected'] == 'Y' 
+				&& false == JWFriend::IsFriend( $friend_user_db_row['idUser'], $address_user_id )
+		  ){
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_NOPERM', array(
+				$friend_user_db_row['nameScreen'],
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		if( $friend_user_db_row['idConference'] ) {
+			$status_ids = JWStatus::GetStatusIdsFromConferenceUser($friend_user_db_row['idUser'], 1);
+		}else{
+			$status_ids = JWStatus::GetStatusIdsFromUser($friend_user_db_row['idUser'], 1);
+		}
+
+		$sender = $friend_user_db_row['nameScreen'];
 
 		if ( empty($status_ids['status_ids']) )
 		{
@@ -639,14 +673,20 @@ class JWRobotLingo {
 		}
 		else
 		{
-			$status_id		= $status_ids['status_ids'][0];
+			$status_id = $status_ids['status_ids'][0];
 
-			$status_rows	= JWStatus::GetStatusDbRowsByIds ( array($status_id) );
-			$status_row		= $status_rows[$status_id];
+			$status_rows = JWStatus::GetStatusDbRowsByIds ( array($status_id) );
+			$status_row = $status_rows[$status_id];
 			$status	= $status_row['status'];
-		}
 
-		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_SUC', array($friend_user_db_row['nameScreen'], $status, ) );
+			if( $status_row['idUser'] != $friend_user_db_row['idUser'] ) {
+				$senderUser = JWUser::GetUserInfo( $status_row['idUser'] );
+				$sender = $sender.'['.$senderUser['nameScreen'].']';
+			}
+		}
+		
+
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_SUC', array($sender, $status, ) );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 	}
 
@@ -685,8 +725,25 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$friend_name 		= $matches[1];
-		$friend_user_db_row	= JWUser::GetUserInfo($friend_name);
+		$address_user_db_row = JWUser::GetUserDbRowById($address_user_id);
+		$friend_name = $matches[1];
+
+		if( strtolower( trim($friend_name) ) == 'all' ) {
+			$friendIds = JWFriend::GetBioFriendIds( $device_db_row['idUser'] );
+			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
+				JWNotify::GetPrettySender($address_user_db_row),
+			));
+			foreach( $friendIds as $idFriend ) {
+				JWNudge::NudgeToUsers($idFriend, $nudge_message, 'nudge', $type);
+			}
+
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array(
+				'和你紧密联系的人',
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
+		}
+
+		$friend_user_db_row = JWUser::GetUserInfo($friend_name);
 
 		if ( empty($friend_user_db_row) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array($friend_name,) );
@@ -702,14 +759,11 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
 
-		/**
-		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) ) {
+		if ( false == JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_NOPERM', array($friend_user_db_row['nameScreen'],) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
-		*/
 
-		$address_user_db_row	= JWUser::GetUserDbRowById($address_user_id);
 
 		if( $device_db_row['idUser'] == $friend_user_db_row['id'] ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SELF' );
@@ -806,7 +860,7 @@ class JWRobotLingo {
 			/*
 			 *	 1、用户已经注册
 			 */
-			$address_user_id	= $device_db_row['idUser'];
+			$address_user_id = $device_db_row['idUser'];
 
 			if( JWFriendRequest::IsExist($inviter_user_row['id'], $address_user_id) ) {
 				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameScreen'],) );
@@ -921,7 +975,7 @@ class JWRobotLingo {
 		if ( empty($device_db_row) )
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		$address_user_id	= $device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 		$body = $robotMsg->GetBody();
 		$body = JWRobotLingoBase::ConvertCorner( $body );
@@ -1095,7 +1149,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 		}
 
-		$address_user_id	= $device_db_row['idUser'];
+		$address_user_id = $device_db_row['idUser'];
 
 		if ( empty($address_user_id) )
 		{
@@ -1105,8 +1159,8 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 		}
 
-		$address_user_row	= JWUser::GetUserInfo($address_user_id);
-		$is_web_user		= JWUser::IsWebUser($address_user_row['idUser']);
+		$address_user_row = JWUser::GetUserInfo($address_user_id);
+		$is_web_user = JWUser::IsWebUser($address_user_row['idUser']);
 	
 		if ( $is_web_user )
 		{
@@ -1368,9 +1422,16 @@ class JWRobotLingo {
 		 */
 		$param_array = preg_split('/\s+/', $body, 3);
 
+		if( count( $param_array ) < 3 ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_TIPS', array(
+				array_shift($param_array),
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
 		$cmd = array_shift( $param_array );
-		$nameScreen = array_shift( $param_array );
-		$password = array_shift( $param_array );
+		$nameScreen = @array_shift( $param_array );
+		$password = @array_shift( $param_array );
 
 		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
 		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen );
@@ -1380,12 +1441,14 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		if( $userInfo['id'] == $mergeToUserInfo['id'] ) {
+		if( false==empty($mergeToUserInfo) && $userInfo['id'] == $mergeToUserInfo['id'] ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_OWN', array($nameScreen) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		if( JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
+		if( false==empty($mergeToUserInfo)
+				&& false==empty($password) 
+				&& JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
 			//Suc
 			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
 			if( count( $dDeviceRows ) > 1 ) {
