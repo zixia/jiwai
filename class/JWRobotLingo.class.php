@@ -725,7 +725,24 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
+		$address_user_db_row = JWUser::GetUserDbRowById($address_user_id);
 		$friend_name = $matches[1];
+
+		if( strtolower( trim($friend_name) ) == 'all' ) {
+			$friendIds = JWFriend::GetBioFriendIds( $device_db_row['idUser'] );
+			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
+				JWNotify::GetPrettySender($address_user_db_row),
+			));
+			foreach( $friendIds as $idFriend ) {
+				JWNudge::NudgeToUsers($idFriend, $nudge_message, 'nudge', $type);
+			}
+
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array(
+				'和你紧密联系的人',
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
+		}
+
 		$friend_user_db_row = JWUser::GetUserInfo($friend_name);
 
 		if ( empty($friend_user_db_row) ) {
@@ -742,14 +759,11 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
 
-		/**
-		if ( ! JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) ) {
+		if ( false == JWFriend::IsFriend($friend_user_db_row['idUser'], $address_user_id) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_NOPERM', array($friend_user_db_row['nameScreen'],) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
-		*/
 
-		$address_user_db_row = JWUser::GetUserDbRowById($address_user_id);
 
 		if( $device_db_row['idUser'] == $friend_user_db_row['id'] ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SELF' );
