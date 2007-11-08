@@ -33,9 +33,9 @@ function destroy($idUser, $idFriend){
         $bidirection = true;
 
     if ( JWSns::DestroyFriends($idUser, array($idFriend), $bidirection) ) {
-        JWSession::SetInfo( 'error', "$userInfo[nameScreen] 已经不再是你的好友了。");
+        JWSession::SetInfo( 'error', "已经停止对 $userInfo[nameScreen] 的关注了。");
     }else{
-        JWSession::SetInfo( 'error', "系统故障，暂时无法删除好友。");
+        JWSession::SetInfo( 'error', "系统故障，暂时无法删除你关注的人。");
     }
 
     redirect();
@@ -44,25 +44,25 @@ function destroy($idUser, $idFriend){
 function create($idUser, $idFriend){
     $userInfo = JWUser::GetUserInfo( $idFriend );
 	if ( empty($userInfo) ) {
-        JWSession::SetInfo('error', '添加好友失败：没有这个用户');
+        JWSession::SetInfo('error', '添加关注失败：没有这个用户');
         redirect();
 	}
 
 	if ( JWUser::IsProtected($idFriend) && !JWFriend::IsFriend($idUser, $idFriend) ) {
 		if ( JWFriendRequest::IsExist($idUser, $idFriend) ) {
-                JWSession::SetInfo('error', "你向$userInfo[nameScreen]发送的添加好友请求，他还没有回应，再等等吧。");
+                JWSession::SetInfo('error', "你向$userInfo[nameScreen]发送的关注请求，他还没有回应，再等等吧。");
 		}else{
             if( JWSns::CreateFriendRequest($idUser, $idFriend) ) {
-                JWSession::SetInfo('error', "已经向$userInfo[nameScreen]发送了添加好友请求，希望能很快得到回应。");
+                JWSession::SetInfo('error', "已经向$userInfo[nameScreen]发送了关注请求，希望能很快得到回应。");
             } else {
-                JWSession::SetInfo('error', "哎呀！由于系统故障，发送好友请求失败了…… 请稍后再尝试吧。。");
+                JWSession::SetInfo('error', "哎呀！由于系统故障，添加关注请求失败了…… 请稍后再尝试吧。。");
             }
         }
 	} else {
 		if ( JWSns::CreateFriends($idUser, array($idFriend) )) {
-            JWSession::SetInfo('error', "已经将$userInfo[nameScreen]添加为好友，耶！");
+            JWSession::SetInfo('error', "已经开始关注 $userInfo[nameScreen]，耶！");
 		} else {
-            JWSession::SetInfo('error', "哎呀！由于系统故障，好友添加失败了…… 请稍后再尝试吧。。");
+            JWSession::SetInfo('error', "哎呀！由于系统故障，添加关注失败了…… 请稍后再尝试吧。。");
 		} 
 	}
     

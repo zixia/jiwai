@@ -65,7 +65,7 @@ if ( isset($_REQUEST['commit_x']) )
 <p>好友通知：
     <input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
             id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
-    <label for="user_send_new_friend_email">当我被别人加为好友时发邮件给我</label>
+    <label for="user_send_new_friend_email">当我被别人关注时发邮件给我</label>
 </p>
 <p>&nbsp;</p>
 <p>悄悄话通知：

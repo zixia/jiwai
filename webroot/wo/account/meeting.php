@@ -143,7 +143,7 @@ input.cb{ width:24px; display:inline; }
 				<td style="padding-bottom:20px;">
 					<br/>
 					<input <?php if ( 'Y'==$conferenceSetting['friendOnly'] ) echo ' checked="checked" ';?> id="conf_friend_only" name="conf[friendOnly]" type="checkbox" value="Y" style="width:24px; display:inline;" />
-					<label for="conf_friend_only">只允许好友回复给我</label>
+					<label for="conf_friend_only">只允许你关注的人回复给我</label>
 					<br/>
 				</td>
 			</tr>

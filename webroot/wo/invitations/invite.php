@@ -111,7 +111,7 @@ if ( preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 
   			<p>
 				与朋友一起分享叽歪de乐趣！输入你朋友们的Email地址，我们将向他们发送一份邀请。
-				当他们接受邀请后，你们就成为叽歪的好友啦！
+				当他们接受邀请后，你们就成为在叽歪上互相关注对方啦！
   			</p>
 <?php
 if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
@@ -138,7 +138,7 @@ if ( !preg_match('#/wo/account/create#i',@$_SERVER['HTTP_REFERER']) ){
 		  					<td>
 
 		    					<input id="reciprocal" name="reciprocal" type="checkbox" value="1" /><br />
-		    					<p><small>如果你邀请的朋友之间互相也是好友，那么他们在注册之后，会自动互相加为好友。</small></p>
+		    					<p><small>如果你邀请的朋友之间互相关注，那么他们在注册之后，会自动互相关注。</small></p>
 		  					</td>
 						</tr>
 						<!--tr>

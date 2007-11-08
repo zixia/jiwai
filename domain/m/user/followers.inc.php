@@ -11,7 +11,7 @@ if( false == empty($loginedUserInfo) ){
     array_push( $shortcut, 'logout','my','friends','message','replies');
 }
 
-$pageTitle = htmlSpecialChars($userInfo['nameFull'])."的粉丝们";
+$pageTitle = "关注 ".htmlSpecialChars($userInfo['nameFull'])." 的人";
 
 JWRender::Display( 'user/followers', array(
                 'followers' => $followerRows,

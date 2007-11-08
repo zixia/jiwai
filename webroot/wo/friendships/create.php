@@ -34,7 +34,7 @@ _HTML_;
 		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
 			$notice_html =<<<_HTML_
-你向${page_user_name}发送的添加好友请求，他还没有回应，再等等吧。
+你向${page_user_name}发送的关注请求，他还没有回应，再等等吧。
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
@@ -44,14 +44,14 @@ _HTML_;
 		if ($is_succ )
 		{
 			$notice_html =<<<_HTML_
-已经向${page_user_name}发送了添加好友请求，希望能很快得到回应。
+已经向${page_user_name}发送了关注请求，希望能很快得到回应。
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 		else
 		{
 			$error_html=<<<_HTML_
-哎呀！由于系统故障，发送好友请求失败了……
+哎呀！由于系统故障，发送关注请求失败了……
 请稍后再尝试吧。
 _HTML_;
 			return array('error_html'=>$error_html);
@@ -64,14 +64,14 @@ _HTML_;
 		if ($is_succ )
 		{
 			$notice_html = <<<_HTML_
-已经将${page_user_name}添加为好友，耶！
+已经关注${page_user_name}，耶！
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！由于系统故障，好友添加失败了……
+哎呀！由于系统故障，关注此人失败了……
 请稍后再尝试吧。
 _HTML_;
 			return array('error_html'=>$error_html);

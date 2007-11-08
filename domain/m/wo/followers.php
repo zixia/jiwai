@@ -6,7 +6,7 @@ extract( $_REQUEST, EXTR_IF_EXISTS );
 
 JWLogin::MustLogined();
 
-$pageTitle = "我的粉丝们";
+$pageTitle = "关注你的人";
 
 $loginedUserInfo = JWUser::GetCurrentUserInfo();
 

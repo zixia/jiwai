@@ -321,14 +321,14 @@ _HTML_;
         }else {
             if( $wo ) {
                 $nav = array(
-                    'friends' => array("/wo/friends/", "我的好友", $friendsNum),
-                    'followers' => array("/wo/followers/","我的粉丝", $followersNum),
-                    'inrequests' => array("/wo/friend_requests/","待审核好友",$inRequestsNum),
-                    'outrequests' => array("/wo/friend_requests/?out","发出的好友请求",$outRequestsNum),
+                    'friends' => array("/wo/friends/", "你关注的人", $friendsNum),
+                    'followers' => array("/wo/followers/","关注你的人", $followersNum),
+                    'inrequests' => array("/wo/friend_requests/","待审核关注",$inRequestsNum),
+                    'outrequests' => array("/wo/friend_requests/?out","发出的关注请求",$outRequestsNum),
                 );
             }else{
                 $nav = array(
-                    'friends' => array("/$userInfo[nameScreen]/friends/", "$userInfo[nameFull]的好友", $friendsNum),
+                    'friends' => array("/$userInfo[nameScreen]/friends/", "你关注的人", $friendsNum),
                     //'followers' => array("$prefix/followers/","$userInfo[nameFull]的粉丝", $followersNum),
                 );
             }
@@ -575,7 +575,7 @@ _TAB_;
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="return JiWai.requestFriend($idUser, this);">加我为好友。</a>
+我只和关注我人分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="return JiWai.requestFriend($idUser, this);">开始关注我。</a>
 _HTML_;
 
 		}
@@ -631,7 +631,7 @@ if ( isset($current_user_id) && JWFollower::IsFollower($userRow['id'], $current_
 	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
 		echo <<<_HTML_
-	<a href="/wo/friendships/create/$userRow[id]" $oc>成为{$name_screen}的粉丝吧</a>
+	<a href="/wo/friendships/create/$userRow[id]" $oc>关注此人</a>
 _HTML_;
 	}
 }
@@ -1470,7 +1470,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠 $arr_user_info[nameScreen]</a>
+				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠此人</a>
 			</li>
 _HTML_;
 		}
@@ -1479,7 +1479,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/direct_messages/create/$arr_user_info[id]">向$arr_user_info[nameScreen]发悄悄话</a>
+				<a href="/wo/direct_messages/create/$arr_user_info[id]">向此人发悄悄话</a>
 			</li>
 _HTML_;
 		}
@@ -1489,7 +1489,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/follow/$arr_user_info[id]">成为 $arr_user_info[nameScreen] 的粉丝</a>
+				<a href="/wo/friends/follow/$arr_user_info[id]">打开对此人的通知</a>
 			</li>
 _HTML_;
 		}
@@ -1498,7 +1498,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/leave/$arr_user_info[id]">退定 $arr_user_info[nameScreen]</a>
+				<a href="/wo/friends/leave/$arr_user_info[id]">取消对此人的通知</a>
 			</li>
 _HTML_;
 		}
@@ -1506,7 +1506,7 @@ _HTML_;
 		if ( isset($action['cancel']) )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消请求 $arr_user_info[nameScreen]</a></li>
+			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消向此人的请求</a></li>
 _HTML_;
 		}
 
@@ -1515,7 +1515,7 @@ _HTML_;
 		{
 			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
 			echo <<<_HTML_
-			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>加$arr_user_info[nameScreen]为好友</a></li>
+			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>关注此人</a></li>
 _HTML_;
 		}
 
@@ -1524,7 +1524,7 @@ _HTML_;
 			echo <<<_HTML_
 			<li>
 				<a href="/wo/friendships/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除好友 $arr_user_info[nameScreen]</a>
+						onclick="return confirm('请确认取消对 $arr_user_info[nameScreen] 的关注')">取消关注此人</a>
 			</li>
 _HTML_;
 		}
@@ -1747,7 +1747,7 @@ static function IsUserUploadPic($idUser)
 		echo <<<_HTML_
 		<ul class="featured">
 			<li>
-				<a href="/wo/friend_requests/">${num}个好友添加请求！</a>
+				<a href="/wo/friend_requests/">${num}个添加关注请求！</a>
 			</li>
 		</ul>
 
@@ -1776,17 +1776,17 @@ _HTML_;
 _HTML_;
 
 		echo <<<_HTML_
-			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
+			<li id="friend_count"><a href="/$user/friends/">关注 $countInfo[friend] 人</a></li>
 _HTML_;
 		
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
 		{
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
+			<li id="follower_count"><a href="/wo/followers/">被$countInfo[follower] 人关注</a></li>
 _HTML_;
 		}else{
 			echo <<<_HTML_
-			<li id="follower_count"><a style="text-decoration:none;" href="javascript:void(0);">$countInfo[follower] 个粉丝</a></li>
+			<li id="follower_count"><a style="text-decoration:none;" href="javascript:void(0);">被 $countInfo[follower] 人关注</a></li>
 _HTML_;
 		}
 
@@ -1921,7 +1921,7 @@ __HTML__;
 		if ( empty($friendIds) )
 			return;
 
-		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线好友', 'id'=>'friend'));
+		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线关注我的人', 'id'=>'friend'));
 		return;
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 
@@ -2438,7 +2438,7 @@ _HTML_;
         $idUser = JWDB::CheckInt( $idUser );
         $action = null;
         if( isset( $actionRow['add'] ) )
-            $action .= "<a href='/wo/friendships/create/$idUser'>加为好友</a>$separator";
+            $action .= "<a href='/wo/friendships/create/$idUser'>关注此人</a>$separator";
 
         if( isset( $actionRow['nudge'] ) )
             $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";

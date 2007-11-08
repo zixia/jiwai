@@ -54,7 +54,7 @@ if ( ! isset($inviter_user_info) )
 	$inviter_name_full 	= $inviter_user_info['nameFull'];
 	$inviter_icon_url 	= JWPicture::GetUserIconUrl($inviter_user_info['id']);
 	echo <<<_HTML_
-<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望和你成为叽歪de好友</h2>
+<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望在叽歪上关注你</h2>
 _HTML_;
 
 ?>
@@ -123,7 +123,7 @@ vertical-align:top;
 	if ( $friend_ids )
 	{
   		echo <<<_HTML_
-<h3>${inviter_name_full}的好友们：</h3>
+<h3>${inviter_name_full}关注的人：</h3>
   <ul class="friends">
 _HTML_;
 
@@ -152,7 +152,7 @@ _HTML_;
 	}
 	else
 	{
-  		echo "<h3>你是${inviter_name_full}的第一位好友！</h3>";
+  		echo "<h3>你是${inviter_name_full}关注的第一人！</h3>";
 	}
 
   // end 有效邀请代码

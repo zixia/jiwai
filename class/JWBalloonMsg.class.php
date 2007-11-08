@@ -59,8 +59,8 @@ _HTML_;
 		$user_row = JWUser::GetUserInfo($idUser);
 
 		$html = <<<_HTML_
-你被 $user_row[nameFull]($user_row[nameScreen]) 加为好友了。
-<a href="BALLOON_URL:/wo/friendships/create/$user_row[idUser]">将 $user_row[nameFull]($user_row[nameScreen]) 添加为好友</a>
+你被 $user_row[nameFull]($user_row[nameScreen]) 关注了。
+<a href="BALLOON_URL:/wo/friendships/create/$user_row[idUser]">关注 $user_row[nameFull]($user_row[nameScreen]) </a>
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 

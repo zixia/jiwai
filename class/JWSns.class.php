@@ -783,7 +783,7 @@ class JWSns {
 				if ( ! JWFriend::Destroy($idUser, $friend_id) ) {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
 				}else{
-					$message = "你已经不再是 $userInfo[nameScreen] 的好友了。";
+					$message = " $userInfo[nameScreen] 不再关注你了。";
 					//JWNudge::NudgeToUsers( array($friend_id), $message, 'nudge', 'web' );
 				}
 
@@ -797,7 +797,7 @@ class JWSns {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
 				}else{
 					$friendInfo = JWUser::GetUserInfo( $friend_id );
-					$message = "你已经不再是 $friendInfo[nameScreen] 的好友了。";
+					$message = " $friendInfo[nameScreen] 不再关注你了。";
 					//JWNudge::NudgeToUsers( array($idUser), $message, 'nudge', 'web' );
 				}
 

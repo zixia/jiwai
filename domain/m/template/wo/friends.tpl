@@ -1,6 +1,6 @@
 <!--{include header}-->
 
-<h2>我的${JWFriend::GetFriendNum($loginedUserInfo['id'])}位好友｜<a href="/wo/followers/">我的${JWFollower::GetFollowerNum($loginedUserInfo['id'])}位粉丝</a></h2>
+<h2>我关注的${JWFriend::GetFriendNum($loginedUserInfo['id'])}人｜<a href="/wo/followers/">关注我的${JWFollower::GetFollowerNum($loginedUserInfo['id'])}人</a></h2>
 <ul>
 <!--{foreach $friends as $friend}-->
 <li>

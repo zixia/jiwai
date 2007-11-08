@@ -69,7 +69,7 @@ function send($idUser, $idReceiver){
     $userInfo = JWUser::GetUserInfo( $idReceiver );
 
     if ( empty($userInfo) || !JWFriend::IsFriend($idReceiver, $idUser) ) {
-        JWSession::SetInfo('error', "用户不存在，或用户不是你的好友。");
+        JWSession::SetInfo('error', "用户不存在，或你没有关注此用户。");
         redirect();
     }
 

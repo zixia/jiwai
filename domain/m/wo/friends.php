@@ -35,9 +35,9 @@ switch($action){
 function leave($idUser, $idFriend){
     $userInfo = JWUser::GetUserInfo( $idFriend );
     if ( JWFollower::Destroy($idFriend, $idUser) ) {
-        JWSession::SetInfo( 'error', "退订成功，你将不会再在手机或聊天软件上收到$userInfo[nameScreen]的更新。");
+        JWSession::SetInfo( 'error', "取消关注退订成功，你将不会再在手机或聊天软件上收到$userInfo[nameScreen]的更新。");
     }else{
-        JWSession::SetInfo( 'error', "哎呀！由于系统故障，退订$userInfo[nameScreen]失败了…… 请稍后再试吧。");
+        JWSession::SetInfo( 'error', "哎呀！由于系统故障，你未能成功取消关注 $userInfo[nameScreen] …… 请稍后再试吧。");
     }
 
     redirect();
@@ -46,9 +46,9 @@ function leave($idUser, $idFriend){
 function follow($idUser, $idFriend){
     $userInfo = JWUser::GetUserInfo( $idFriend );
     if ( JWFollower::Create($idFriend, $idUser) ) {
-        JWSession::SetInfo( 'error', "订阅成功。$userInfo[nameScreen]的更新将会发送到你的手机或聊天软件上。");
+        JWSession::SetInfo( 'error', "打开通知成功。$userInfo[nameScreen]的更新将会发送到你的手机或聊天软件上。");
     }else{
-        JWSession::SetInfo( 'error', "哎呀！由于系统临时故障，你未能成为$userInfo[nameScreen]的粉丝，订阅失败了… 请稍后再试吧。");
+        JWSession::SetInfo( 'error', "哎呀！由于系统临时故障，你未能成功打开 $userInfo[nameScreen]的通知… 请稍后再试吧。");
     }
 
     redirect();
@@ -67,7 +67,7 @@ function nudge($idUser, $idFriend){
         if( JWNudge::NudgeToUsers( array($idFriend), $nudgeMessage, 'nudge', 'web' ) ){
             JWSession::SetInfo('error', "我们已经帮你挠挠了$userInfo[nameScreen]一下！期待很快能得到你朋友的回应。");
         }else{
-            JWSession::SetInfo('error', "哎呀！由于系统故障，挠挠好友失败了…… 请稍后再尝试吧。");
+            JWSession::SetInfo('error', "哎呀！由于系统故障，挠挠失败了…… 请稍后再尝试吧。");
         }
     }else{
         JWSession::SetInfo('error', "你现在还不是$userInfo[nameScreen]的好友，不能挠挠。");
@@ -75,9 +75,9 @@ function nudge($idUser, $idFriend){
 
     redirect();
     if ( JWFollower::Create($idFriend, $idUser) ) {
-        JWSession::SetInfo( 'error', "订阅成功。$userInfo[nameScreen]的更新将会发送到你的手机或聊天软件上。");
+        JWSession::SetInfo( 'error', "关注成功。$userInfo[nameScreen]的更新将会发送到你的手机或聊天软件上。");
     }else{
-        JWSession::SetInfo( 'error', "哎呀！由于系统临时故障，你未能成为$userInfo[nameScreen]的粉丝，订阅失败了… 请稍后再试吧。");
+        JWSession::SetInfo( 'error', "哎呀！由于系统临时故障，你未能关注成功$userInfo[nameScreen]… 请稍后再试吧。");
     }
 
     redirect();

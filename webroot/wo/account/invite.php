@@ -39,7 +39,7 @@ if ( isset($_POST['invite_email_x'] ) ) {
     }
 
     if( $count ) {
-        JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你的好友！');
+        JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你关注的人！');
     }else{
         JWSession::SetInfo('notice', '对不起，你所填写的朋友的Email地址不合法，我们无法帮你邀请你的的朋友！');
     }
@@ -49,7 +49,7 @@ if ( isset($_POST['invite_email_x'] ) ) {
 }
 
 if ( isset($_POST['invite_sms_x'] ) ) {
-    JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你的好友！');
+    JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
 
     $smss = $_POST['sms_addresses'];
     $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
@@ -63,7 +63,7 @@ if ( isset($_POST['invite_sms_x'] ) ) {
     }
 
     if( $count ) {
-        JWSession::SetInfo('notice', '你的邀请，我们已经通过短信发给你的朋友们了，他们注册后会自动成为你的好友！');
+        JWSession::SetInfo('notice', '你的邀请，我们已经通过短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
     }else{
         JWSession::SetInfo('notice', '对不起，你所填写的朋友的手机号码不合法，我们无法帮你邀请你的的朋友！');
     }
@@ -128,7 +128,7 @@ function shifttab(id){
         <div>
                 <input type="text" size="50" value="http://JiWai.de/wo/invitations/i/<?php echo $idInvited; ?>"/>
         </div>
-        <div style="margin-bottom:20px;">朋友注册后你们自动成为叽歪上的好友。</div>
+        <div style="margin-bottom:20px;">朋友注册后你们自动在叽歪上关注对方。</div>
     </div>
 </div>
 
@@ -197,7 +197,7 @@ function shifttab(id){
 自己的动向，希望你能来看看我。
 
 
-请点击这里接受邀请，注册后直接成为<?php echo $user_info['nameScreen'];?>的好友：：
+请点击这里接受邀请，注册后直接开始关注<?php echo $user_info['nameScreen'];?>：
 <a href="http://JiWai.de/wo/invitations/i/<?php echo $idInvited;?>">http://JiWai.de/wo/invitations/i/<?php echo $idInvited;?></a>
 
 或您可以在这里关注 <?php echo $user_info['nameScreen']; ?> (<?php echo $user_info['nameFull'];?>) 的最新动态：
