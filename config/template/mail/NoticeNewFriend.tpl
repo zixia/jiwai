@@ -3,13 +3,13 @@ FROM: 叽歪de <noreply@jiwai.de>
 
 %Friend.nameFull%你好！
 
-%User.nameFull% (%User.nameScreen%) 刚刚将你添加为她(他)的好友了！
+%User.nameFull% (%User.nameScreen%) 刚刚关注你了！
 
 
 在这里了解%User.nameFull%的最新动态：
 	http://JiWai.de/%EUser.nameScreen%/
 
-在这里将%User.nameFull%添加为你的好友（页面中点击“添加”）：
+在这里关注%User.nameFull%：
 	http://JiWai.de/%EUser.nameScreen%/
 
 
