@@ -73,14 +73,10 @@ $options = array(	 'title'		=> '叽歪广场'
 		<div id="wrapper">
 
 <?php JWTemplate::ShowActionResultTips(); ?>
+<?php JWTemplate::tab_menu( array(), '看看大家都在叽歪什么...' ); ?>
 
 			<div class="tab">
-
 <?php 
-JWTemplate::tab_header( array( 
-	'title' => '看看大家都在叽歪什么...',
-	'title2' => '', //你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢？：-）'
-));
 
 $options = array (
 	'uniq' => 2,

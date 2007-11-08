@@ -212,15 +212,10 @@ $menu_list[$active_tab]['active'] = true;
 
 
 if ( $show_protected_content )
-	JWTemplate::tab_menu($menu_list, 1); 
+	JWTemplate::tab_menu($menu_list); 
 ?>
 
 			<div class="tab">
-
-<?php 
-if ( $show_protected_content )
-	JWTemplate::tab_header( array() ) 
-?>
 
 <?php 
 if ( !isset($g_user_with_friends) )

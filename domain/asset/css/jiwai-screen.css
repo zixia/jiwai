@@ -33,8 +33,8 @@ fieldset th, fieldset td,  {
 }
 /* new update start */
 input, button, select { font-size:12px; vertical-align:middle; }
-input.submitbutton  { height:23px; padding:0px 10px 1px 15px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
-button.submitbutton { height:23px; padding:0px 10px 1px 15px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+input.submitbutton  { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+button.submitbutton { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 .submitbutton:focus { border-color:#000;}
 .jwselect { padding:0; font-size:12px; width:138px; height:18px;}
 .ctrlenter {margin:0;font-size:12px;color:#999;text-align: right;float: right;font-weight: 100;padding: 9px 0 0 0;}
@@ -200,7 +200,7 @@ html>body #content .tabMenu {margin-top:19px;}
 #content .tab p {text-indent: 1em;}
 
 
-#timeline { border:1px solid #D3D3D5; margin-top:6px; height:100%; }
+#timeline { border:1px solid #D3D3D5; margin-top:8px; height:100%; }
 
 .layout_table {margin:0; padding:0;}
 .bg_tab_top_left { width:2px; height:46px; background:url(../images/org-tit-l.gif) no-repeat right; font-size:1px; overflow:hidden;}
@@ -584,3 +584,13 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
  /*Feature image*/
 .featured li.FeaturedImage a {border-style:none; vertical-align:middle;}
 .featured li.FeaturedImage a:hover {border-style:none; vertical-align:middle;}
+
+/*Table Menu*/
+#wtTableMenu {width: 534px;height: 46px;border:0px;text-align: center;background-color: #FFF;margin: 0;}
+#wtTableMenu h2{font-size:15px; color:#FFEFC8; font-weight:bold; text-indent:15px; line-height:15px; padding: 15px 0 0 0px;margin-top:0px;} 
+#wtTableMenu .left {float: left;width: 2px;height:46px;padding: 0 0 0 0;background: url(../images/org-tit-l.gif) no-repeat right bottom;background-color: #FFF;}
+#wtTableMenu .middle {float: left;width: 530px;height: 46px;text-align: left;font-size: 12px;background: url(../images/org-tit-bg.gif) repeat-x right bottom;background-color: #FFF;margin: 0 0 0 0;}
+#wtTableMenu .right {float: right;width: 2px;height:46px;padding: 0 0 0 0;background: url(../images/org-tit-r.gif) no-repeat right bottom;background-color: #FFF;} 
+#wtTableMenu a,#wtTableMenu a:link,#wtTableMenu a:visited {float: right;width: 73px;height: 21px;display: block;background: url(../images/org-tab-on.gif) no-repeat 0 0;text-align: center;line-height: 18px;color: #FFF;font-size: 14px; font-weight: bold;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 
+#wtTableMenu a:hover,#wtTableMenu a:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;}
+#wtTableMenu a.active,#wtTableMenu a.active:link,#wtTableMenu a.active:visited,#wtTableMenu a.active:hover,#wtTableMenu a.active:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 

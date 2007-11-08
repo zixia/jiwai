@@ -10,15 +10,13 @@ JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
 
-$user_info		= JWUser::GetCurrentUserInfo();
-$new_user_info	= @$_REQUEST['user'];
+$user_info = JWUser::GetCurrentUserInfo();
+$new_user_info = @$_REQUEST['user'];
 
-$is_reset_password	= JWSession::GetInfo('reset_password', false);
+$is_reset_password = JWSession::GetInfo('reset_password', false);
 $is_web_user = JWUser::IsWebUser($user_info['idUser']);
 
 $outInfo = $user_info;
-
-//var_dump($user_info);
 
 if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 {
@@ -72,35 +70,33 @@ _HTML_;
 		}
 	}
 
+
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
 		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
-			$error_html = <<<_HTML_
-<li>用户信息更新失败，请稍后再试。</li>
-_HTML_;
-			JWSession::SetInfo('error', $error_html);
+			JWSession::SetInfo('error', '用户信息更新失败，请稍后再试。');
 		}
 
-		$notice_html = <<<_HTML_
-<li>用户信息修改成功！</li>
-_HTML_;
-		JWSession::SetInfo('notice', $notice_html);
+		JWSession::SetInfo('notice', '用户信息修改成功！');
 
-		header ( "Location: /wo/account/settings" );
+	}else{
+		JWSession::SetInfo('error', $error_html);
 	}
+
+	header ( "Location: /wo/account/settings" );
 }
 
 /** check if reset_password */
 
-	if ( $is_web_user && !$is_reset_password )
-	{
-		$verify_corrent_password = true;
-	}
-	else
-	{
-		$verify_corrent_password = false;
-	}
+if ( $is_web_user && !$is_reset_password )
+{
+	$verify_corrent_password = true;
+}
+else
+{
+	$verify_corrent_password = false;
+}
 
 if ( isset($_REQUEST['commit_p']) ) {
 	if ( isset($_REQUEST['password']) )
@@ -111,9 +107,9 @@ if ( isset($_REQUEST['commit_p']) ) {
 
 		if ( $verify_corrent_password
 				&& (	empty($current_password) 
-						|| empty($password)
-						|| empty($password_confirmation) 
-				) )
+					|| empty($password)
+					|| empty($password_confirmation) 
+				   ) )
 		{
 			$error_html = <<<_HTML_
 				<li>请完整填写三处密码输入框</li>
@@ -122,7 +118,7 @@ _HTML_;
 
 		if ( $password !== $password_confirmation )
 		{
-				$error_html .= <<<_HTML_
+			$error_html .= <<<_HTML_
 				<li>两次输入密码不一致！请重新输入</li>
 _HTML_;
 		}
@@ -130,8 +126,8 @@ _HTML_;
 		if ( $verify_corrent_password &&
 				! JWUser::VerifyPassword($user_info['id'], $current_password) )
 		{
-				$error_html .= <<<_HTML_
-	<li>当前密码输入错误，清除新输入</li>
+			$error_html .= <<<_HTML_
+				<li>当前密码输入错误，清除新输入</li>
 _HTML_;
 		}
 	}
@@ -143,16 +139,10 @@ _HTML_;
 	{
 		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
 		{
-			$error_html = <<<_HTML_
-<li>密码修改失败，请稍后再试。</li>
-_HTML_;
-			JWSession::SetInfo('error', $error_html);
+			JWSession::SetInfo('error', '密码修改失败，请稍后再试。');
 		}
 		else
 		{
-			$notice_html = <<<_HTML_
-<li>密码修改成功！</li>
-_HTML_;
 			if ( !$is_web_user )
 				JWUser::SetWebUser($user_info['idUser']);
 
@@ -160,11 +150,12 @@ _HTML_;
 			if ( $is_reset_password	)
 				JWSession::GetInfo('reset_password');
 
-			JWSession::SetInfo('notice', $notice_html);
+			JWSession::SetInfo('notice', '密码修改成功！');
 		}
 
-		header ( "Location: /wo/account/settings" );
 	}
+
+	header ( "Location: /wo/account/settings" );
 }
 
 if( isset( $_REQUEST['commit_w'] ) ) {
@@ -177,6 +168,7 @@ if( isset( $_REQUEST['commit_w'] ) ) {
 		);
 
 		JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
+		JWSession::SetInfo('notice', '修改个人主页地址成功');
 		header ( "Location: /wo/account/settings" );
 	}
 }
@@ -194,27 +186,15 @@ if( isset( $_REQUEST['commit_w'] ) ) {
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTipsMain() ?>
 
 <?php
 if ( empty($error_html) )
 	$error_html = JWSession::GetInfo('error');
 if ( empty($notice_html) )
 	$notice_html = JWSession::GetInfo('notice');
-
-if ( !empty($error_html) )
-{
-		echo <<<_HTML_
-			<div class="notice">信息无法修改：<ul> $error_html </ul></div>
-_HTML_;
-}
-
-
-if ( !empty($notice_html) )
-{
-	echo <<<_HTML_
-			<div class="notice"><ul>$notice_html</ul></div>
-_HTML_;
-}
+echo $notice_html;
+echo $error_html;
 ?>
 
 

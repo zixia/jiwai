@@ -83,8 +83,6 @@ JWTemplate::updater(array(
 	'friends'	=> $frs_rows_neworder,
 	));
 ?>
-	</fieldset>
-</form>
 <?php
 $menu_list = array (
 	JWMessage::OUTBOX => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
@@ -92,8 +90,6 @@ $menu_list = array (
 );
 
 $menu_list[$message_box_type]['active'] = true;
-
-JWTemplate::tab_menu($menu_list) ;
 
 $options = array ( 'title2'=>'' );
 switch ( $message_box_type )
@@ -109,7 +105,7 @@ switch ( $message_box_type )
 		break;
 }
 
-JWTemplate::tab_header( $options );
+JWTemplate::tab_menu( $menu_list, $options['title'] );
 ?>
 
 <div class="tab">

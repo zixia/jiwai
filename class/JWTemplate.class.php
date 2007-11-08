@@ -370,9 +370,7 @@ _HTML_;
 
 	static public function container_ending()
 	{
-?>
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"/>
-<?php
+		echo '<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>';
 	}
 
 	static public function footer()
@@ -444,75 +442,48 @@ _HTML_;
 			$title = $options['title'];
 		$mode = ( empty($options['mode']) ) ? 0 : $options['mode']; //0:status 1:direct message
 ?>
-			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="doingForm" method="post" onsubmit="$('jw_status').style.backgroundColor='#eee';">
-				<fieldset >
-					<div class="bar even">
-						<h3>
-							<label for="status">
-								<?php echo $title?>
-<?php if($mode==1) { ?>
-						给：
-							</label>
-						</h3>
-						<span class="user_select">
-							<select style="width: 132px;" name="user[id]" id="user_id">
-<?php
+		<div id="jwupdate">
+			<form action="<?php echo $mode==1 ? '/wo/direct_messages/create' : '/wo/status/update'; ?>" id="updaterForm" method="post" onsubmit="$('jw_status').style.backgroundColor='#eee';">
+				<h2>
+					<span class="tip">还可输入：<span class="counter" id="status-field-char-counter">140</span> 个字符</span><?php echo $title;?><?php if($mode) { ?>给：<select name="user[id]" class="jwselect" id="user_id"> <?php
 foreach ($options['friends'] as $id => $f) echo <<<_HTML_
 <option value="$id">$f[nameScreen]</option>
 _HTML_;
-?>
-                        </select>
-                    </span>
-<?php } else { ?> 
-							</label>
-<?php } ?>
-                    </h3>
-                    <span id="chars_left_notice" style="margin-top: 5px;">
-                        还可输入: <strong id="status-field-char-counter">140</strong>个字符
-                    </span>
-                </div>
-                <div class="jiwai_icon_vtab">
-                    <div>
-                        
-                        <textarea  class="jiwai_icon_vtab_inner" id="jw_status" name="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('doingForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" rows="3" cols="15"></textarea>
-                    </div>
-                </div>
-                <div class="submit" >
-                    <a class="button" href="javascript:void(0);" style="margin-left:210px!important; margin-left:105px;" onclick="if($('jw_status').value){$('doingForm').submit();}return false;"><img src="<?php echo self::GetAssetUrl("/images/org-text-jiwai.gif"); ?>" alt="叽歪一下" /></a>
-                    <span style="margin-left:73px;color:#A2A2A2;">Ctrl+Enter直接叽歪</span>
-                </div>
-                <br/><br/>
-				<div>
+?></select>
+					<?php } ?>
+				</h2>
+				<p>
+					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" ></textarea>
+				</p>
+				<p class="act">
+					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
+					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value){$('updaterForm').submit();}return false;" value="叽歪一下"/>
+				</p>	
             <?php
                 if(false == empty($options['sendtips']))
                 {
-                    $idCurrent = JWLogin::GetCurrentUserId();
-                    $ValidNums = JWTemplate::GetSmsAndImValidNums($idCurrent);
-					$imicoUrlSms = "/wo/devices/sms";
-					$imicoUrlIm = "/wo/devices/im";
-                
-                    if(0 >= $ValidNums[0])
-                    {
-                        echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlSms . '">用手机来叽歪 ！</a><br />';
-                    }
-                    if(0 >= $ValidNums[1])
-                    {
-                        echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlIm . '">用QQ/MSN也能叽歪 ？</a><br />';
-                    }
+			$idCurrent = JWLogin::GetCurrentUserId();
+			$ValidNums = JWTemplate::GetSmsAndImValidNums($idCurrent);
+			$imicoUrlSms = "/wo/devices/sms";
+			$imicoUrlIm = "/wo/devices/im";
+			echo '<p style="margin-left:-8px;">';
+			if(0 >= $ValidNums[0])
+			{
+				echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlSms . '">用手机SMS来叽歪 ！</a>';
+			}
+			if(0 >= $ValidNums[1])
+			{
+				echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlIm . '">用QQ/MSN也能叽歪 ？</a>';
+			}
+			echo '</p>';
                 }
             ?>    
-				</div>
-            </fieldset>
-        </form>
-	<br/>
-
+			</form>
+                 </div>
 <script type="text/javascript">
     $('jw_status').focus();
-
     function updateStatusTextCharCounter(value) {
-
         len_max = 140;
-
         if (len_max - value.length >= 0) {
             $('status-field-char-counter').innerHTML = len_max - value.length;
         } else {
@@ -520,7 +491,6 @@ _HTML_;
             /*
             var ov = $('status').value;
             var nv = ov.substring(0, len_max);
-
             if( len_max == 70 ) {
                 var max_nv = ov.substring(0, ++len_max);
                 while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
@@ -528,15 +498,10 @@ _HTML_;
                     max_nv = ov.substring(0, ++len_max);
                 }
             }
-            */
             //$('status').value = nv;  //not cut for bug
+            */
         }
     };
-
-//]]>
-</script>
-
-
 </script>
 <?php
 /*
@@ -555,18 +520,13 @@ _HTML_;
 	 *	@param	array	$menuArr	菜单数据，结构如下：
 	 *	array ( 'menu1' => array ( 'active'=true, 'url'='/' ), 'menu2'=>array(...), ... );
 	 */
-	static public function tab_menu( $menuArr, $fix_pos=1 )
+	static public function tab_menu( $menuArr, $menuTips=null )
 	{
-		if ( empty($menuArr) )
-		{
-			JWLog::LogFuncName(LOG_CRIT, "need param menuArr") ;
-			return;
-		}
-
-		$left = 510 - 80 * count($menuArr);
-		$fix = $fix_pos ? 'margin-top: 7px;' : '';
-		echo "<ul class=\"tabMenu\" style=\"margin-left: ${left}px; $fix\">";
-
+		echo <<<_TAB_
+<div id="wtTableMenu">
+	<div class="left"></div>
+	<div class="middle">
+_TAB_;
 		foreach ( $menuArr as $menu => $options )
 		{
 			$name 		= $options['name'];
@@ -574,55 +534,24 @@ _HTML_;
 			$is_active	= $options['active'];
 
 			if ( $is_active )
-				echo "<li><a href = '$url' class = 'active' ";
+				echo "<a href = '$url' class = 'active' ";
 			else
-				echo "<li><a href = '$url' ";
+				echo "<a href = '$url' ";
 
-			echo ">$name</a></li>\n";
+			echo ">$name</a>\n";
 		}
 
-		echo "</ul>\n";
+		echo $menuTips==null ? null : "<h2>$menuTips</h2>\n";
+		echo <<<_TAB_
+	</div>
+	<div class="right"></div>
+</div>
+_TAB_;
 	}
 
 
 	static public function tab_header( $vars=array() )
 	{
-/*
-		//title2 长了之后，会莫名其妙的影响 tab 布局
-		$vars=array('title'=>'最新动态 - 大家在做什么？' 
-		//, 'title2'=>'你想叽歪你就说嘛，你不说我怎么知道你想叽歪呢'//？'//：-）'
-		, 'title2'	=>	'你想叽歪你就说嘛，'
-		);
-*/
-
-		if ( !array_key_exists('title',$vars) )	
-			$vars['title'] = '你和你的朋友们在做什么?';
-
-		if ( !array_key_exists('title2',$vars) )	
-			$vars['title2'] = '每分钟自动刷新一次。';
-?>
-
-				<table class="layout_table" cellpadding="0" cellspacing="0" width="100%">
-					<tr>
-						<td class="bg_tab_top_left">
-						</td>
-						<td class="bg_tab_top_mid">
-							<h2><?php echo $vars['title']; ?></h2>
-						</td>
-						<td class="bg_tab_top_right">
-						</td>
-					</tr>
-					<tr class="odd">
-						<td class="bg_tab_top2_left">
-						</td>
-						<td colspan="2" class="bg_tab_top2_right">
-							<?php //echo $vars['title2']; ?>
-						</td>
-					</tr>
-
-				</table>
-
-<?php
 	}
 
 
@@ -1425,7 +1354,7 @@ _HTML_;
 _HTML_;
 		if ($title=='公告') echo<<<_HTML_
 
-			<div class="but"><input type="button" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="叽歪大记事" /><input type="button" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="更多公告" style="margin-left:10px;"></div>
+			<div class="but"><input type="button" style="width:95px;" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="叽歪大事记" /><input type="button" style="margin-left:10px; width:80px;" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="更多公告" ></div>
 _HTML_;
 	}
 
@@ -2557,25 +2486,28 @@ _HTML_;
 		return substr($html, $l, $r-$l+1);
 	}
 
-    static public function ShowBalloon( $idUser )
-    {
+	static public function ShowBalloon( $idUser )
+	{
 		$balloon_ids = JWBalloon::GetBalloonIds($idUser);
 
 		$balloon_rows	= JWBalloon::GetDbRowsByIds($balloon_ids);
 
-		echo "<div>\n";
-		foreach ( $balloon_ids as $balloon_id )
-		{
-			$balloon_row = $balloon_rows[$balloon_id];
-			$html = JWBalloonMsg::FormatMsg($balloon_id,$balloon_row['html']);
-        echo <<<_HEAD_
+		if( false == empty( $balloon_ids ) ) {
+
+			echo "<div>\n";
+			foreach ( $balloon_ids as $balloon_id )
+			{
+				$balloon_row = $balloon_rows[$balloon_id];
+				$html = JWBalloonMsg::FormatMsg($balloon_id,$balloon_row['html']);
+				echo <<<_HEAD_
 <div class="tipnote">
-$html
+	$html
 </div>
 _HEAD_;
+			}
+			echo "</div>\n";
 		}
-		echo "</div>\n";
-    }
+	}
 
 }
 ?>

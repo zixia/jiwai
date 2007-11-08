@@ -9,7 +9,6 @@ require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
-
 //var_dump($_REQUEST);
 
 $user_info		= JWUser::GetCurrentUserInfo();
@@ -17,27 +16,25 @@ $new_user_info = @$_REQUEST['user'];
 $outInfo = $user_info;
 $has_photo		= !empty($user_info['idPicture']);
 
-//echo "<pre>"; die(var_dump($user_info));
-//var_dump($file_info);
 if ( $new_user_info )
 {
 
-    if( false == isset($new_user_info['protected']) ) {
-        $new_user_info['protected'] = 'N';
-    }
+	if( false == isset($new_user_info['protected']) ) {
+		$new_user_info['protected'] = 'N';
+	}
 
 	$file_info = @$_FILES['profile_image'];
 
-    $notice_html = null;
-    $error_html = null;
-    $pic_changed = true;
-	
+	$notice_html = null;
+	$error_html = null;
+	$pic_changed = true;
+
 	if ( isset($file_info) 
 			&& 0===$file_info['error'] 
 			&& preg_match('/image/',$file_info['type']) 
-			)
+	   )
 	{
-			
+
 		$user_named_file = '/tmp/' . $file_info['name'];
 
 		if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) )
@@ -49,7 +46,7 @@ if ( $new_user_info )
 
 				JWUser::SetIcon($user_info['id'],$idPicture);
 
-                $pic_changed = true;
+				$pic_changed = true;
 
 				$notice_html = <<<_HTML_
 <li>头像修改成功！</li>
@@ -61,7 +58,7 @@ _HTML_;
 			{
 				$contact_url = JWTemplate::GetConst('UrlContactUs');
 
-                $pic_changed = false;
+				$pic_changed = false;
 
 				$error_html = <<<_HTML_
 <li>上传头像失败，请检查头像图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="$contact_url">联系我们</a></li>
@@ -76,82 +73,76 @@ _HTML_;
 	else if ( isset($file_info) 
 			&& $file_info['error']>0 
 			&& 4!==$file_info['error']
-			)
+		)
 	{
 		// PHP upload error, except NO FILE(that mean user want to delete).
 		switch ( $file_info['error'] )
 		{
 			case UPLOAD_ERR_INI_SIZE:
-				$error_html = <<<_HTML_
-<li>头像文件尺寸太大了，请将图片缩小分辨率后重新上载。<li>
-_HTML_;
-				JWSession::SetInfo('notice',$error_html);
+				JWSession::SetInfo('notice', '头像文件尺寸太大了，请将图片缩小分辨率后重新上载。');
 				break;
 			default:
-				$error_html = <<<_HTML_
-<li>抱歉，你选择的图像没有上传成功，请重试。<li>
-_HTML_;
-				JWSession::SetInfo('notice',$error_html);
-				//throw new JWException("upload error $file_info[error]");
+				JWSession::SetInfo('notice','抱歉，你选择的图像没有上传成功，请重试。');
 				break;
 		}
 	}
 
-    $array_changed = array();
-    if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
-        if ($new_user_info['nameFull'] === '')
-            $array_changed['nameFull'] = $outInfo['nameScreen'];
-	elseif (JWUser::IsValidFullName($new_user_info['nameFull']))
-            $array_changed['nameFull'] = $new_user_info['nameFull'];
-    }
-    if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
-        if( $new_user_info['nameFull'] === '' )
-            $array_changed['nameFull'] = $outInfo['nameScreen'];
-        else
-            $array_changed['nameFull'] = $new_user_info['nameFull'];
-    }
-
-    if( $new_user_info['protected'] != $outInfo['protected'] ) {
-        $array_changed['protected'] = $new_user_info['protected'];
-    }
-
-    if( $new_user_info['url'] != $outInfo['url'] ) {
-	$new_user_info['url'] = ltrim( $new_user_info['url'], '/' );
-	if( $new_user_info['url'] && false == preg_match( '/^(http:|https:)/', strtolower($new_user_info['url']) ) ) {
-		$new_user_info['url'] = 'http://' . $new_user_info['url'];
+	$array_changed = array();
+	if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
+		if ($new_user_info['nameFull'] === '')
+			$array_changed['nameFull'] = $outInfo['nameScreen'];
+		elseif (JWUser::IsValidFullName($new_user_info['nameFull']))
+			$array_changed['nameFull'] = $new_user_info['nameFull'];
 	}
-        $array_changed['url'] = $new_user_info['url'];
-    }
+	if( $new_user_info['nameFull'] != $outInfo['nameFull'] ) {
+		if( $new_user_info['nameFull'] === '' )
+			$array_changed['nameFull'] = $outInfo['nameScreen'];
+		else
+			$array_changed['nameFull'] = $new_user_info['nameFull'];
+	}
 
-    if( $new_user_info['email'] != $outInfo['email'] ) {
-        $array_changed['email'] = $new_user_info['email'];
-    }
+	if( $new_user_info['protected'] != $outInfo['protected'] ) {
+		$array_changed['protected'] = $new_user_info['protected'];
+	}
 
-    if( $new_user_info['address'] != @$outInfo['address'] ) {
-        $array_changed['address'] = $new_user_info['address'];
-    }
+	if( $new_user_info['url'] != $outInfo['url'] ) {
+		$new_user_info['url'] = ltrim( $new_user_info['url'], '/' );
+		if( $new_user_info['url'] && false == preg_match( '/^(http:|https:)/', strtolower($new_user_info['url']) ) ) {
+			$new_user_info['url'] = 'http://' . $new_user_info['url'];
+		}
+		$array_changed['url'] = $new_user_info['url'];
+	}
 
-    if( $new_user_info['bio'] != $outInfo['bio'] ) {
-        if( $new_user_info['bio'] === '' ) {
-            $array_changed['bio'] = $outInfo['nameFull'];
-        } else {
-            $array_changed['bio'] = $new_user_info['bio'];
-        }
-    }
+	if( $new_user_info['email'] != $outInfo['email'] ) {
+		$array_changed['email'] = $new_user_info['email'];
+	}
 
-    $new_location = intval(@$_REQUEST['province'])."-".intval(@$_REQUEST['city']);
-    $new_location = trim($new_location);
-    if( $new_location != $outInfo['location'] ) {
-        $array_changed['location'] = $new_location;
-    }
+	if( $new_user_info['address'] != @$outInfo['address'] ) {
+		$array_changed['address'] = $new_user_info['address'];
+	}
 
-    if( count( $array_changed ) || $pic_changed ) {
-        if( count( $array_changed ) ) {
-            JWUser::Modify( $user_info['id'], $array_changed );
-        }
-        Header('Location: /wo/account/profile');
-        exit(0);
-    }
+	if( $new_user_info['bio'] != $outInfo['bio'] ) {
+		if( $new_user_info['bio'] === '' ) {
+			$array_changed['bio'] = $outInfo['nameFull'];
+		} else {
+			$array_changed['bio'] = $new_user_info['bio'];
+		}
+	}
+
+	$new_location = intval(@$_REQUEST['province'])."-".intval(@$_REQUEST['city']);
+	$new_location = trim($new_location);
+	if( $new_location != $outInfo['location'] ) {
+		$array_changed['location'] = $new_location;
+	}
+
+	if( count( $array_changed ) || $pic_changed ) {
+		if( count( $array_changed ) ) {
+			JWUser::Modify( $user_info['id'], $array_changed );
+			JWSession::SetInfo('notice', '修改个人资料成功');
+		}
+		Header('Location: /wo/account/profile');
+		exit(0);
+	}
 }
 
 //Procince and city id
