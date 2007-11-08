@@ -159,7 +159,7 @@ foreach ( $message_ids as $message_id )
             <div class="cont">$message_db_row[message]
 		<a href="/wo/direct_messages/destroy/$message_db_row[idMessage]" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="$asset_trash_url" /></a>
             </div>
-            <div class="write"><a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a></div>
+            <div class="write"><a href="/$user_db_row[nameUrl]/">$user_db_row[nameScreen]</a></div>
             <div class="time"> $time_desc </div>
           </div>
         <div style="clear:both;"></div>
