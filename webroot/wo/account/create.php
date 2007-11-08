@@ -256,7 +256,7 @@ _POD_;
 <div class="RegLeftTable" >
 <div class="RegLeftTitle">第一次接触叽歪?</div><br/>
 <div align="center" class="RegText" style="height:30px;margin-bottom:10px;">请先阅读和接受我们的<a href="http://help.jiwai.de/Tos" target="_blank">服务条款</a>。</div>
-<div align="center" ><input type="button" id="StartReg" class="submitbutton" style="width:135px;border-style:none;" onclick="JiWai.slideTo('g','slideOut12',500,'');" value="接受，开始注册吧"></div>
+<div align="center" ><input type="button" id="StartReg" class="submitbutton" style="width:130px;border-color:rgb(255, 235, 215) rgb(153, 50, 0) rgb(153, 50, 0) rgb(255, 235, 215);" onclick="JiWai.slideTo('g','slideOut12',500,'');" value="接受，开始注册吧"></div>
 </div>
 </div>
 </TD>
@@ -272,7 +272,7 @@ _POD_;
 <div class="RegText">用户名　<INPUT style="width:170px;height:20px;display:inline;" id=user_nameScreen1 alt=用户名 title=用户名 maxLength=16 size=20 name=user_nameScreen1 value="" ajax2="DeviceNoAndNameScreen" onblur="JWValidator.onNameOrDeviceBlur();"></div>
 <div class="RegRightTips" align="right">你通过上述设备所注册的叽歪名字</div>
 <div class="RegRightTips" align="right" style="margin-top:-10px;">不记得了？发送whoami或woshishui查看</div>
-<div><input type="button" class="submitbutton" style="width:120px;margin-left:50px;border-style:none;" onclick="if(JWValidator.validate1('RegTips','user_DeviceNo1','user_nameScreen1'))JiWai.slideTo('g','slideOut13',500 ,'horizontal');" value="完成注册"></div>
+<div><input type="button" class="submitbutton" style="margin-left:50px;width:70px;border-color:rgb(255, 235, 215) rgb(153, 50, 0) rgb(153, 50, 0) rgb(255, 235, 215);" onclick="if(JWValidator.validate1('RegTips','user_DeviceNo1','user_nameScreen1'))JiWai.slideTo('g','slideOut13',500 ,'horizontal');" value="完成注册"></div>
 <div id=RegTips class="RegErrorTips" style="display:none;"></div>
 </div>
 </div>
@@ -302,7 +302,7 @@ _POD_;
         <tr>
             <td width="70" align="right" valign="top">用户名</td>        
             <td width="240" colspan="1">
-               <input id="user_nameScreen" style="display:inline;margin-right:20px;" name="user[nameScreen]" size="30" type="text" minLength="5" maxLength="16" value="" alt="用户名" title="用户名" onkeydown="if(event.keyCode == 13)$('reg').onclick();" onblur="JWValidator.onNameOrDeviceBlur2();" ajax2="DeviceNoAndNameScreen2"/><i></i><td><span class="note">字母、数字或汉字，至少5位</span></td>
+               <input id="user_nameScreen" style="display:inline;margin-right:20px;" name="user[nameScreen]" size="30" type="text" minLength="5" maxLength="16" value="" alt="用户名" title="用户名" onkeydown="if(event.keyCode == 13)$('reg').onclick();" onblur="JWValidator.onNameOrDeviceBlur2();" ajax2="DeviceNoAndNameScreen2"/><i></i><td><span class="note">汉字、字母或数字，最少5位</span></td>
             </td>
         </tr>
         <tr>
@@ -325,7 +325,7 @@ _POD_;
 </fieldset>
 
     <div style=" padding:20px 0 0 270px; height:50px;">
-    	<a id=reg onclick="if(JWValidator.validate2('f2','RegTips2'))$('f2').submit();return false;" class="button"  alt="注册" title="注册" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>"/></a>
+    	<input type="button" id="reg" onclick="if(JWValidator.validate2('f2','RegTips2'))$('f2').submit();return false;" class="submitbutton" value="开始注册" />
         <a class="RegReturn1" href="javascript:void(0);" onclick="JiWai.slideTo('g','slideOut21',500 ,'');"><< 返回</a>
     </div>            
 
@@ -333,7 +333,10 @@ _POD_;
 </div>
 <div id=g3 style="display:none;">
         <form id="f" action="/wo/account/create" enctype="multipart/form-data" method="post" name="f" >
-<table width="700"><tr><td>
+<table width="700">
+<tr>
+<td width="30"></td>
+<td>
 <div style="border:1px solid #C2C2C2;">
 <div class="RegRightTable" style="background-color:#C2C2C2;">
 <div class="RegRightTitle">　已经通过手机、QQ、MSN或者Gtalk使用过叽歪了?</div>
@@ -341,13 +344,14 @@ _POD_;
 <div class="RegText">号　码　<INPUT style="width:170px;height:20px;display:inline;background-color:#CDCDCD;" id=user_DeviceNo3 alt=号码 title=号码 maxLength=64 size=20 name=user_DeviceNo3 value="" readonly="true"></div>
 <div class="RegRightTips">手机号码，或是QQ号码，MSN邮件地址等</div>
 <div class="RegText">用户名　<INPUT style="width:170px;height:20px;display:inline;background-color:#CDCDCD;" id=user_nameScreen3 alt=用户名 title=用户名 maxLength=16 size=20 name=user[nameScreen3] value="" readonly="true"></div>
-<div class="RegRightTips" align="right">你通过上述设备所注册的叽歪名字</div><div class="RegRightTips">不记得了？发送whoami或woshishui查看</div>
-<div><input type="button" class="submitbutton" style="width:120px;margin-left:50px;" disabled="true" value="完成注册"></div>
+<div class="RegRightTips" align="right">你通过上述设备所注册的叽歪名字</div>
+<div class="RegRightTips" align="right" style="margin-top:-10px;">不记得了？发送whoami或woshishui查看</div>
+<div><input type="button" class="submitbutton" style="width:70px;margin-left:50px;background-color:#CDCDCD;border-color:#FFEBD7;" disabled="true" value="完成注册"></div>
 <div id=RegTips3 class="RegErrorTips"></div>
 </div>
 </div>
 </td>
-<td width="100"></td>
+<td width="70"></td>
 <td>
 <fieldset>
     <table border="0" cellspacing="15" cellpadding="0">
@@ -365,7 +369,9 @@ _POD_;
         </tr>
         <tr>
             <td><a class="RegReturn2" href="javascript:void(0);" onclick="JiWai.slideTo('g','slideOut31',500 ,'horizontal');"><< 返回</a></td>
-            <td><a id=reg3 onclick="if(JWValidator.validate2('f'))$('f').submit();return false;" class="button" style="margin-left:50px!important;margin-left:30px;" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-regest.gif'); ?>" alt="注册" title="注册"/></a></td>
+            <td>
+            <input type="button" id="reg3" onclick="if(JWValidator.validate2('f'))$('f').submit();return false;" class="submitbutton" style="margin-left:50px!important;margin-left:30px;width:120px;" value="完成注册"/>
+            </td>
         </tr>
     </table>
 </fieldset>

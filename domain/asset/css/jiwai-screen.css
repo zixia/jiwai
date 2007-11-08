@@ -1,4 +1,4 @@
-* {margin: 0; padding: 0;}
+* {margin: 0; padding: 0;font-family:Arial,Helvetica,sans-serif;}
 a {text-decoration: underline; color: blue;}
 ul {list-style: none;
 	list-style-image: none;
@@ -31,8 +31,25 @@ fieldset th {
 fieldset th, fieldset td,  {
 	word-break:break-all;
 }
+/* new update start */
+input, button, select { font-size:12px; vertical-align:middle; }
+input.submitbutton  { height:23px; padding:0px 10px 1px 15px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+button.submitbutton { height:23px; padding:0px 10px 1px 15px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+.submitbutton:focus { border-color:#000;}
+.jwselect { padding:0; font-size:12px; width:138px; height:18px;}
+.ctrlenter {margin:0;font-size:12px;color:#999;text-align: right;float: right;font-weight: 100;padding: 9px 0 0 0;}
 
-
+#jwupdate { margin:0 0 10px 0; border:1px solid #D3D3D5; background:#fff;}
+#jwupdate h2 {font-size:15px;font-weight:bold;margin: 0.5em 0 0 0;width: 510px; line-height:24px;}
+#jwupdate h2 select { font-weight:normal;}
+#jwupdate form { position:relative; padding:0 10px;}
+#jwupdate p { margin:.6em 0;}
+#jwupdate textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:496px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
+#jwupdate .act {text-align:center;width: 510px;}
+#jwupdate .tip {margin:0;text-align: right;font-size:12px;color:#999;float: right;font-weight: 100;padding: 0 0 0 0;}
+#jwupdate .tip .counter { color:#000; font-weight:bold;}
+#jwupdate .caution, #jwupdate .caution .counter { color:#c00;}
+/* new update end */
 blockquote {margin:1.5em 0;padding:0 1.5em;}
 
 a {color:#D05D02;}
@@ -99,37 +116,8 @@ a:hover {color:#F87A01;}
   .sidediv {border:1px solid #D3D3D5; background-color:#F2F2F2; padding:3px; margin-top:11px;}
   #login form { background-color:#F2F2F2;}
   #login h2 {font-size:14px; font-weight:bold; background:url(../images/org-icon-man.gif) #f2f2f2 no-repeat 10px 12px ; text-indent:27px; line-height:40px; }
-  #login input {border:1px solid #B5B5B5; width:152px; height:20px;}
-  #login .submitbutton {
-    background-color:#F97B00;
-    border:medium none;
-    color:#FFEFC8;
-    font-weight:bold;
-    letter-spacing:normal;
-    word-spacing:normal;
-    width:64px;
-    height:21px;
-    line-height:23px;
-    overflow:hidden;
-    padding:0pt 8px;
-    text-align:center;
-    cursor:pointer;
-  }
-  .submitbutton {
-    background-color:#F97B00;
-    border:medium none;
-    color:#FFEFC8;
-    font-weight:bold;
-    letter-spacing:normal;
-    word-spacing:normal;
-    width:64px;
-    height:21px;
-    line-height:23px;
-    overflow:hidden;
-    padding:0pt 8px;
-    text-align:center;
-    cursor:pointer;
-  }
+  .logininput {border:1px solid #B5B5B5; height:20px;width:152px;}
+
   #login #remember_me {border:none; width:16px; height:16px;}
 
   #sidebar .msg {padding:8px 10px; background-color:#f2f2f2; }

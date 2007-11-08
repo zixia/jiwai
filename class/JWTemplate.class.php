@@ -913,7 +913,8 @@ _HTML_;
 					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
 				}
 			} else {
-				$photo_url	= JWPicture::GetUserIconUrl($user_id);
+//				$photo_url	= JWPicture::GetUserIconUrl($user_id);
+                $photo_url  = JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif');
 			}
 	
 			$deviceName	= JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
@@ -1175,11 +1176,11 @@ _HTML_;
 		<table width="100%" border="0" cellspacing="10" cellpadding="0">
   			<tr>
     				<td width="50" align="center">用户名</td>
-				<td><input type="text" name="username_or_email" id="email" /></td>
+				<td><input type="text" name="username_or_email" id="email" class="logininput"/></td>
 			</tr>
  			<tr>
     				<td align="center">密　码</td>
-    				<td><input type="password" name="password" /></td>
+    				<td><input type="password" name="password" class="logininput"/></td>
   			</tr>
   			<tr>
     				<td>&nbsp;</td>
@@ -1187,7 +1188,7 @@ _HTML_;
   			</tr>
   			<tr>
 				<td>&nbsp;</td>
-                <td><input type="submit" class="submitbutton" value="登 录" /></td>
+                <td><input type="submit" class="submitbutton" value="登录" /></td>
 			</tr>
 		</table>
 		</form>
@@ -1424,7 +1425,7 @@ _HTML_;
 _HTML_;
 		if ($title=='公告') echo<<<_HTML_
 
-			<div class="but"><button onclick="window.open('http://blog.jiwai.de/');">叽歪大记事</button><button onclick="window.open('http://blog.jiwai.de/');">更多公告</button></div>
+			<div class="but"><input type="button" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="叽歪大记事" /><input type="button" class="submitbutton" onclick="window.open('http://blog.jiwai.de/');" value="更多公告" style="margin-left:10px;"></div>
 _HTML_;
 	}
 

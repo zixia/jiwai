@@ -67,7 +67,7 @@ function draw()
 			</form>
                 <br/>
                 <p>
-                    <input type="button" class="submitbutton" style="margin-left:0px!important;margin-left:50px;width:120px" onclick="draw();" value="生成代码并预览" />
+                    <input type="button" class="submitbutton" style="margin-left:0px!important;margin-left:50px;" onclick="draw();" value="生成代码并预览" />
                 </p>
                 <br/>
 		</fieldset>

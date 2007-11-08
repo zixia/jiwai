@@ -221,18 +221,6 @@ _HTML_;
 <div id="container">
 <?php JWTemplate::SettingTab() ;?>
 
-<script type="text/javascript">
-function updateLink(value){
-	if( value.length > 0 ) {
-		$('indexLink').href = '/' + value + '/';
-		$('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
-	}else{
-		$('indexLink').href = '/';
-		$('indexString').innerHTML = 'http://JiWai.de/';
-	}
-}
-</script>
-
 <div class="tabbody">
 
 <?php if (false == $is_reset_password ) { ?>
@@ -244,7 +232,7 @@ function updateLink(value){
 		<tr>
 			<th valign="top">用户名：</th>
 			<td width="250">
-				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
+				<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
 			</td>
 			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
 		</tr>
@@ -257,7 +245,7 @@ function updateLink(value){
 	</fieldset>
 
 	<div style=" padding:20px 0 0 160px; height:50px;">
-		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
 	</div>
 
 	</form>
@@ -287,8 +275,7 @@ function updateLink(value){
 		</table>
 		</fieldset>
 		<div style=" padding:20px 0 0 160px; height:50px;">
-			<a onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
-			<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
+		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存"/>
 		</div>			
 	</form>
 
@@ -314,7 +301,7 @@ function updateLink(value){
 		</table>
 		</fieldset>
 		<div style="padding:10px 0 0 130px; height:40px;">
-			<a onclick="if(JWValidator.validate('f2'))$('f2').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存" style="margin-left:-17px;"/>
 		</div>			
 	</form>
 	</div>

@@ -297,8 +297,8 @@ _HTML_;
 		<input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
   
 	</fieldset>
-    <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    <div style=" padding:20px 0 0 5px; height:50px;margin-left:139px;">
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
     </div>
 	<a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a>
 

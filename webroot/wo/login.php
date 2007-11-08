@@ -117,7 +117,7 @@ _HTML_;
     </li-->
     <div id="login">
     <li style="margin-top:20px;">
-        <input type="submit" class="submitbutton" value="登 录" tabindex=5 />
+        <input type="submit" class="submitbutton" value="登录" tabindex=5 />
     </li>
     </div>
 </ul>
