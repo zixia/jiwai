@@ -67,7 +67,7 @@ _HTML_;
 	</tr>
 	<tr height="100">
 		<th></th>
-		<td><input name="commit" style="width:50px;margin:15px 0;" type="submit" value="确定" /></td>
+		<td><input name="commit" style="width:50px;margin:15px 0;" type="submit" value="确定" class="submitbutton"/></td>
 	</tr>
 </table>
 </fieldset>

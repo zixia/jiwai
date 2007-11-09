@@ -62,7 +62,7 @@ if ( isset($_REQUEST['set']) )
 			<fieldset>
 				<label for="user_openid">OpenID 地址：</label>
 				<input id="user_openid" name="user[openid]" size="30" type="text" class="input"/>
-				<input name="commit" type="submit" value="保存"/>
+				<input name="commit" type="submit" value="保存"  class="submitbutton"/>
 			</fieldset>
 		</form>
 </h3>
