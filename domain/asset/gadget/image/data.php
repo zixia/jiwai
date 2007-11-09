@@ -34,7 +34,7 @@ function getOwnTimeline($count=10) {
 	foreach ($status_rows as $r) {
 		$a[] = array(
 			'from'=>$user_rows[$r['idUser']]['nameScreen'], 
-			'icon'=> ( !empty($r['idPicture']) ?  JWPicture::GetUrlById($r['idPicture']) : JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif')),
+			'icon'=> ( !empty($r['idPicture']) ?  JWPicture::GetUrlById($r['idPicture']) : JWPicture::GetUserIconUrl($user_id)),
 			'body'=>$r['status'], 
 			'time'=>$r['timeCreate'], 
 			'via'=>'来自'.$r['device'].($r['isSignature']=='Y'?'签名':'')

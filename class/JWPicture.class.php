@@ -207,6 +207,15 @@ _SQL_;
 
 	static public function GetUrlById($idPicture, $picSize='thumb48')
 	{
+		if (empty($idPicture))
+			switch($picSize)
+			{
+				case 'thumb48':
+					return JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif');
+				case 'thumb96':
+					return JWTemplate::GetAssetUrl('/images/org-nobody-96-96.gif');
+				default:
+			}
 		$url_row = JWPicture::GetUrlRowByIds(array($idPicture),$picSize);
 		return $url_row[$idPicture];
 	}

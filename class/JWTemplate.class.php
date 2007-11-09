@@ -842,8 +842,7 @@ _HTML_;
 					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
 				}
 			} else {
-//				$photo_url	= JWPicture::GetUserIconUrl($user_id);
-                $photo_url  = JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif');
+				$photo_url	= JWPicture::GetUserIconUrl($user_id);
 			}
 	
 			$deviceName	= JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
