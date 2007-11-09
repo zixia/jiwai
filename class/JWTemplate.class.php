@@ -1371,7 +1371,7 @@ _HTML_;
 		//XXX: bookmarklets in IE6 are limited to 508 characters. 
 ?>
 		<div class="featured" id="bookmarklet" style="line-height:30px;">
-			<p><a onclick="if(confirm('将此按钮拖拽或添加到浏览器的收藏夹或工具栏上，即可方便的分享网址信息到叽歪。\r\n需要了解详细的使用方法吗？'))location.href='http://help.jiwai.de/BookmarkletUsage';return false;" href="javascript:var%20d=document,w=window,l=d.location,e=encodeURIComponent,x=w.getSelection?w.getSelection().toString():d.getSelection?d.getSelection():d.selection.createRange().text;if(!x){var%20m=d.getElementsByTagName('meta');for(var%20i=0;i<m.length;i++)if(/esc/.test(m[i].name))x=m[i].content;}var%20u='http://jiwai.de/wo/share/?u='+e(l.href)+'&t='+e(d.title)+'&d='+e(x);var%20o=function(){if(!w.open(u,'J','toolbar=0'))l.href=u+'&f'};if(/refo/.test(navigator.userAgent))setTimeout(o,0);else{o()};void(0)">分享到叽歪</a></p>
+			<p><a onClick="if(confirm('将此按钮添加到浏览器的收藏夹或工具栏上，即可方便地收藏网址信息到叽歪。\r\n需要了解详细的使用方法吗？'))location.href='http://help.jiwai.de/BookmarkletUsage';return false;" href="javascript:var d=document,w=window,f='<?php echo JW_SRVNAME;?>/wo/share/',l=d.location,e=encodeURIComponent,p='?u='+e(l.href)+'&amp;t='+e(d.title)+'&amp;d='+e(w.getSelection?w.getSelection().toString():d.getSelection?d.getSelection():d.selection.createRange().text);a=function(){if(!w.open(f+'s'+p,'sharer','toolbar=0,status=0,resizable=0,width=540,height=310'))l.href=f+'w'+p};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else{a()}void(0)" class="sharebtn"><img src="<?php echo self::GetAssetUrl('/images/org-share-collect.gif');?>" alt="收藏到叽歪" /></a></p>
 		</div>
 
 <?php
