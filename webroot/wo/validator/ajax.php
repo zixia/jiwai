@@ -135,9 +135,9 @@ function check_DeviceNoAndNameScreen($v, $v2)
     {
         return "用户名 不能以数字开头";
     }
-    else if( strlen( $v2 ) < 5 ) 
+    else if( strlen( $v2 ) < 4 ) 
     {
-        return "用户名 不能少于5个字符";
+        return "用户名 不能少于4个字符";
     }
     else if( strlen( $v2 ) > 20 ) 
     {
@@ -199,9 +199,9 @@ function check_DeviceNoAndNameScreen2($v, $v2){
     {
         return "用户名 不能以数字开头";
     }
-    else if( strlen( $v ) < 5 ) 
+    else if( strlen( $v ) < 4 ) 
     {
-        return "用户名 不能少于5个字符";
+        return "用户名 不能少于4个字符";
     }
     else if( strlen( $v ) > 20 ) 
     {

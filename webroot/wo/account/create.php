@@ -302,7 +302,7 @@ _POD_;
         <tr>
             <td width="70" align="right" valign="top">用户名</td>        
             <td width="240" colspan="1">
-               <input id="user_nameScreen" style="display:inline;margin-right:20px;" name="user[nameScreen]" size="30" type="text" minLength="5" maxLength="16" value="" alt="用户名" title="用户名" onkeydown="if(event.keyCode == 13)$('reg').onclick();" onblur="JWValidator.onNameOrDeviceBlur2();" ajax2="DeviceNoAndNameScreen2"/><i></i><td><span class="note">汉字、字母或数字，最少5位</span></td>
+               <input id="user_nameScreen" style="display:inline;margin-right:20px;" name="user[nameScreen]" size="30" type="text" minLength="4" maxLength="16" value="" alt="用户名" title="用户名" onkeydown="if(event.keyCode == 13)$('reg').onclick();" onblur="JWValidator.onNameOrDeviceBlur2();" ajax2="DeviceNoAndNameScreen2"/><i></i><td><span class="note">汉字、字母或数字，最少4位</span></td>
             </td>
         </tr>
         <tr>
