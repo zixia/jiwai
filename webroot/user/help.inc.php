@@ -125,15 +125,10 @@ $menu_list = array (
 	'archive_n_replies'	=> array('active'=>true	,'name'=>'留言板', 'url'=>"/help/")
 );
 
-JWTemplate::tab_menu($menu_list) 
+JWTemplate::tab_menu($menu_list, '这一刻，大家都想告诉叽歪de什么呢？') ;
 ?>
 
 			<div class="tab">
-
-<?php 
-
-JWTemplate::tab_header( array('title'=>'这一刻，大家都想告诉叽歪de什么呢？') ) 
-?>
 
 <?php 
 // when show archive, we set $show_archive=true, then include this file.

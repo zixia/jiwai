@@ -44,7 +44,7 @@ $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
 </head>
 
 
-<body class="front">
+<body class="normal">
 
 
 <?php JWTemplate::accessibility() ?>
@@ -55,19 +55,14 @@ $user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
 <div id="container" class="subpage">
 	<div id="content">
 		<div id="wrapper">
-
-			<div class="tab">
-
 <?php 
-if ( $page_user_info['id']==$logined_user_info['id'] )
-{
-	JWTemplate::tab_header( array('title' => '我标记的更新', 'title2'=>'将更新旁边的星标点亮后，它们就会被存在这里啦！') ); 
-} 
-else 
-{
-	JWTemplate::tab_header( array('title' => $page_user_info['nameScreen'].'标记的更新') ); 
+if ( $page_user_info['id']==$logined_user_info['id'] ) {
+	JWTemplate::tab_menu( array( array('name'=>'我的收藏', 'url'=>'javascript:void(0);', 'active'=>true, ) ) );
+} else {
+	JWTemplate::tab_menu( array( array('name'=>'此人收藏', 'url'=>'javascript:void(0);', 'active'=>true, ) ) );
 }
 ?>
+			<div class="tab">
 
 <?php
 $n = 0;
@@ -83,10 +78,10 @@ if ( isset($status_ids) )
 include_once dirname( dirname(__FILE__) ).'/sidebar.php';
 JWTemplate::container_ending();
 ?>
+
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>
 
 </body>
 </html>
-

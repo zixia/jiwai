@@ -198,7 +198,6 @@ JWTemplate::html_head($options);
 <?php JWTemplate::header() ?>
 
 <div id="container">
-	<!-- div id="flaginfo">zixia</div -->
 <!-- google_ad_section_start -->
 	<div id="content">
 		<div id="wrapper">
@@ -253,11 +252,6 @@ if ( $show_protected_content )
 ?>
 
 			<div class="tab">
-
-<?php 
-if ( $show_protected_content )
-	JWTemplate::tab_header( array() ) 
-?>
 
 <?php 
 if ( !isset($g_user_with_friends) )

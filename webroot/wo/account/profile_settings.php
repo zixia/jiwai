@@ -16,15 +16,9 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 $ui = new JWDesign($user_info['idUser']);
 
-
-//var_dump($file_info);
 if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 {
-	
-//echo "<pre>"; die(var_dump($_REQUEST));
-//die(var_dump($user));
 	$file_info = @$_FILES['profile_background_image'];
-//die(var_dump($file_info));
 	
 	if ( ! $user['profile_use_background_image'] 
 		&& !isset($file_info) )
@@ -222,6 +216,7 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTipsMain() ?>
 
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab('/wo/account/profile_settings'); ?>
@@ -229,25 +224,6 @@ _HTML_;
 <div class="tabbody">
 <h2>设计你自己de叽歪档案</h2>
 <div style="width:500px; margin:30px auto; font-size:14px;">
-
-<?php
-
-if ( empty($error_html) )
-	$error_html	= JWSession::GetInfo('error');
-
-if ( empty($notice_html) )
-{
-	$notice_html	= JWSession::GetInfo('notice');
-}
-
-if ( !empty($error_html) )
-{
-		echo <<<_HTML_
-			<div class="notice">头像未能上传：<ul> $error_html </ul></div>
-_HTML_;
-}
-
-?>
 
 <!-- p>
 	下面是你当前叽歪档案的设计方案，<br />
@@ -259,7 +235,7 @@ _HTML_;
 		<table width="100%" cellspacing="3">
 			<tr>
 				<td>背景颜色：</td>
-				<td width="350"><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="<?php echo $user['profile_background_color']?>" /></td>
+				<td width="390"><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="<?php echo $user['profile_background_color']?>" /></td>
 			    <td class="note"></td>
 			</tr>
 			<tr>
@@ -280,7 +256,7 @@ _HTML_;
 							}
 						}
 					?> id="user_profile_use_background_image" name="user[profile_use_background_image]" type="checkbox" value="<?php echo $picture_id?>" />
-					<input style="display:inline;border:0px;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" />
+					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" />
 					<br />
 			    	<input id="user_profile_background_tile" style="display:inline;border:0;width:20px;"<?php
 						if ( $user['profile_background_tile'] ) echo 'checked="checked" ';
@@ -297,8 +273,8 @@ _HTML_;
 		<input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
   
 	</fieldset>
-    <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+    <div style=" padding:20px 0 0 5px; height:50px;margin-left:50px;">
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
     </div>
 	<a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a>
 

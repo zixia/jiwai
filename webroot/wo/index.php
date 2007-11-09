@@ -51,18 +51,7 @@ _HTML_;
      JWTemplate::updater($options); 
 ?>
 
-  			<!-- p class="notice">
-  				IM is down at the moment.  We're working on restoring it.  Thanks for your patience!
-  			</p-->
-<?php
-if( false == isset($notice_html) )
-    $notice_html = JWSession::GetInfo('notice');
-if( false == empty($notice_html) ){
-    echo <<<NOTICE
-        <p class="notice">$notice_html</p>
-NOTICE;
-}
-?>
+<?php JWTemplate::ShowActionResultTips(); ?>
 
 <?php 
 $active_tab = 'friends';
@@ -87,16 +76,10 @@ if( false == empty($q) )
 
 $menu_list[$active_tab]['active'] = true;
 
-JWTemplate::tab_menu($menu_list) 
+JWTemplate::tab_menu($menu_list, '你和你的朋友们在做什么？');
+
 ?>
-
-			<div class="tab">
-
-<?php 
-
-JWTemplate::tab_header( array() ) 
-?>
-
+<div class="tab">
 <?php 
 // when show archive, we set $show_archive=true, then include this file.
 
@@ -185,20 +168,6 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array
 ?>
 
 			</div><!-- tab -->
-
-  			<script type="text/javascript">
-//<![CDATA[  
-/*new PeriodicalExecuter(function() { new Ajax.Request('/account/refresh?last_check=' + $('timeline').getElementsByTagName('tr')[0].id.split("_")[1], 
-    {
-      asynchronous:true, 
-      evalScripts:true,
-      onLoading: function(request) { Effect.Appear('timeline_refresh', {duration:0.3 }); },
-      onComplete: function(request) { Element.hide('timeline_refresh'); }
-    })}, 120);
-*/
-  //]]>
-			</script>
-
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
@@ -206,7 +175,7 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array
 include_once ( dirname(__FILE__) . '/sidebar.php' );
 JWTemplate::container_ending();
 ?>
-
+</div>
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>

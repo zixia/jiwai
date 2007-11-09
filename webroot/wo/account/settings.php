@@ -10,15 +10,13 @@ JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
 
-$user_info		= JWUser::GetCurrentUserInfo();
-$new_user_info	= @$_REQUEST['user'];
+$user_info = JWUser::GetCurrentUserInfo();
+$new_user_info = @$_REQUEST['user'];
 
-$is_reset_password	= JWSession::GetInfo('reset_password', false);
+$is_reset_password = JWSession::GetInfo('reset_password', false);
 $is_web_user = JWUser::IsWebUser($user_info['idUser']);
 
 $outInfo = $user_info;
-
-//var_dump($user_info);
 
 if ( isset($new_user_info) && $_REQUEST['commit_u'] )
 {
@@ -72,35 +70,33 @@ _HTML_;
 		}
 	}
 
+
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
 		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
-			$error_html = <<<_HTML_
-<li>用户信息更新失败，请稍后再试。</li>
-_HTML_;
-			JWSession::SetInfo('error', $error_html);
+			JWSession::SetInfo('error', '用户信息更新失败，请稍后再试。');
 		}
 
-		$notice_html = <<<_HTML_
-<li>用户信息修改成功！</li>
-_HTML_;
-		JWSession::SetInfo('notice', $notice_html);
+		JWSession::SetInfo('notice', '用户信息修改成功！');
 
-		header ( "Location: /wo/account/settings" );
+	}else{
+		JWSession::SetInfo('error', $error_html);
 	}
+
+	header ( "Location: /wo/account/settings" );
 }
 
 /** check if reset_password */
 
-	if ( $is_web_user && !$is_reset_password )
-	{
-		$verify_corrent_password = true;
-	}
-	else
-	{
-		$verify_corrent_password = false;
-	}
+if ( $is_web_user && !$is_reset_password )
+{
+	$verify_corrent_password = true;
+}
+else
+{
+	$verify_corrent_password = false;
+}
 
 if ( isset($_REQUEST['commit_p']) ) {
 	if ( isset($_REQUEST['password']) )
@@ -111,9 +107,9 @@ if ( isset($_REQUEST['commit_p']) ) {
 
 		if ( $verify_corrent_password
 				&& (	empty($current_password) 
-						|| empty($password)
-						|| empty($password_confirmation) 
-				) )
+					|| empty($password)
+					|| empty($password_confirmation) 
+				   ) )
 		{
 			$error_html = <<<_HTML_
 				<li>请完整填写三处密码输入框</li>
@@ -122,7 +118,7 @@ _HTML_;
 
 		if ( $password !== $password_confirmation )
 		{
-				$error_html .= <<<_HTML_
+			$error_html .= <<<_HTML_
 				<li>两次输入密码不一致！请重新输入</li>
 _HTML_;
 		}
@@ -130,8 +126,8 @@ _HTML_;
 		if ( $verify_corrent_password &&
 				! JWUser::VerifyPassword($user_info['id'], $current_password) )
 		{
-				$error_html .= <<<_HTML_
-	<li>当前密码输入错误，清除新输入</li>
+			$error_html .= <<<_HTML_
+				<li>当前密码输入错误，清除新输入</li>
 _HTML_;
 		}
 	}
@@ -143,16 +139,10 @@ _HTML_;
 	{
 		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
 		{
-			$error_html = <<<_HTML_
-<li>密码修改失败，请稍后再试。</li>
-_HTML_;
-			JWSession::SetInfo('error', $error_html);
+			JWSession::SetInfo('error', '密码修改失败，请稍后再试。');
 		}
 		else
 		{
-			$notice_html = <<<_HTML_
-<li>密码修改成功！</li>
-_HTML_;
 			if ( !$is_web_user )
 				JWUser::SetWebUser($user_info['idUser']);
 
@@ -160,11 +150,12 @@ _HTML_;
 			if ( $is_reset_password	)
 				JWSession::GetInfo('reset_password');
 
-			JWSession::SetInfo('notice', $notice_html);
+			JWSession::SetInfo('notice', '密码修改成功！');
 		}
 
-		header ( "Location: /wo/account/settings" );
 	}
+
+	header ( "Location: /wo/account/settings" );
 }
 
 if( isset( $_REQUEST['commit_w'] ) ) {
@@ -177,6 +168,7 @@ if( isset( $_REQUEST['commit_w'] ) ) {
 		);
 
 		JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
+		JWSession::SetInfo('notice', '修改个人主页地址成功');
 		header ( "Location: /wo/account/settings" );
 	}
 }
@@ -194,44 +186,20 @@ if( isset( $_REQUEST['commit_w'] ) ) {
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTipsMain() ?>
 
 <?php
 if ( empty($error_html) )
 	$error_html = JWSession::GetInfo('error');
 if ( empty($notice_html) )
 	$notice_html = JWSession::GetInfo('notice');
-
-if ( !empty($error_html) )
-{
-		echo <<<_HTML_
-			<div class="notice">信息无法修改：<ul> $error_html </ul></div>
-_HTML_;
-}
-
-
-if ( !empty($notice_html) )
-{
-	echo <<<_HTML_
-			<div class="notice"><ul>$notice_html</ul></div>
-_HTML_;
-}
+echo $notice_html;
+echo $error_html;
 ?>
 
 
 <div id="container">
 <?php JWTemplate::SettingTab() ;?>
-
-<script type="text/javascript">
-function updateLink(value){
-	if( value.length > 0 ) {
-		$('indexLink').href = '/' + value + '/';
-		$('indexString').innerHTML = 'http://JiWai.de/' + value + '/';
-	}else{
-		$('indexLink').href = '/';
-		$('indexString').innerHTML = 'http://JiWai.de/';
-	}
-}
-</script>
 
 <div class="tabbody">
 
@@ -244,7 +212,7 @@ function updateLink(value){
 		<tr>
 			<th valign="top">用户名：</th>
 			<td width="250">
-				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
+				<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
 			</td>
 			<td class="note">用来登陆叽歪de（4个字符以上字母数字下划线）</td>
 		</tr>
@@ -257,7 +225,7 @@ function updateLink(value){
 	</fieldset>
 
 	<div style=" padding:20px 0 0 160px; height:50px;">
-		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="javascript:void(0);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
 	</div>
 
 	</form>
@@ -287,8 +255,7 @@ function updateLink(value){
 		</table>
 		</fieldset>
 		<div style=" padding:20px 0 0 160px; height:50px;">
-			<a onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
-			<a class="button2" href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back.gif'); ?>" alt="返回" /></a>
+		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存"/>
 		</div>			
 	</form>
 
@@ -314,7 +281,7 @@ function updateLink(value){
 		</table>
 		</fieldset>
 		<div style="padding:10px 0 0 130px; height:40px;">
-			<a onclick="if(JWValidator.validate('f2')){$('f2').submit();}return false;" class="button" href="javascript:void(0);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存" style="margin-left:-17px;"/>
 		</div>			
 	</form>
 	</div>

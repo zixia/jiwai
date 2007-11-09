@@ -60,7 +60,7 @@ _HTML_;
 <?php JWTemplate::SettingTab(); ?>
 
 <div class="tabbody">
-<h2>绑定 Twitter</h2>
+<h2>绑定Twitter&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<span style="font-size:14px;">将你的叽歪自动同步到Twitter，而不是从Twitter更新到叽歪</span></h2>
 
 	<form id="f" method="post">
 <?php
@@ -91,7 +91,7 @@ _HTML_;
 	</fieldset>
 
 	<div style=" padding:20px 0 0 160px; height:50px;">
-		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
 	</div>
 
 	</form>

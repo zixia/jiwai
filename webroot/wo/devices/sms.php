@@ -16,17 +16,11 @@ if ( isset($_REQUEST['commit_x']) )
 
 	if ( ! JWUser::SetNotification($user_info['id'], $user_new_setting) )
 	{
-		$error_html = <<<_HTML_
-<li>通知设置由于系统故障未能保存成功，请稍后再试。</li>
-_HTML_;
-		JWSession::SetInfo('error', $error_html);
+		JWSession::SetInfo('error','通知设置由于系统故障未能保存成功，请稍后再试。');
 	}
 	else
 	{
-		$notice_html = <<<_HTML_
-<li>通知设置保存成功！</li>
-_HTML_;
-		JWSession::SetInfo('notice', $notice_html);
+		JWSession::SetInfo('notice', '通知设置保存成功！');
 	}
 
 	header('Location: ' . $_SERVER['REQUEST_URI']);
@@ -46,34 +40,10 @@ _HTML_;
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header('/wo/account/settings') ?>
+<?php JWTemplate::ShowActionResultTipsMain() ?>
 
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab(); ?>
-
-<?php
-
-if ( empty($error_html) )
-	$error_html	= JWSession::GetInfo('error');
-
-if ( empty($notice_html) )
-{
-	$notice_html	= JWSession::GetInfo('notice');
-}
-
-if ( !empty($error_html) )
-{
-		echo <<<_HTML_
-			<div class="notice">系统通知修改：<ul> $error_html </ul></div>
-_HTML_;
-}
-
-if ( !empty($notice_html) )
-{
-	echo <<<_HTML_
-			<div class="notice"><ul>$notice_html</ul></div>
-_HTML_;
-}
-?>
 
 <div class="tabbody">
 
@@ -97,7 +67,7 @@ _HTML_;
         </table>
     </fieldset>
     <div style=" padding:20px 0 0 160px; height:50px;">
-    	<a onclick="$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
     </div>            
 
 </form>

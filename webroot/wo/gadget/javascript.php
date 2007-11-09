@@ -217,7 +217,7 @@ _HTML_;
    							</p>
                             <br style="height:10px;" />
    							<p>
-                            <input type="submit" class="submitbutton" style="margin-left:0px!important;margin-left:50px;width:120px" value="预览一下看看" />
+                            <input type="submit" class="submitbutton" style="margin-left:0px!important;margin-left:50px;" value="预览一下看看" />
 							</p>
    				<br/>
 			</form>

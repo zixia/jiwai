@@ -92,8 +92,6 @@ $menu_list = array (
 
 $menu_list[$message_box_type]['active'] = true;
 
-JWTemplate::tab_menu($menu_list) ;
-
 $options = array ( 'title2'=>'' );
 switch ( $message_box_type )
 {
@@ -108,7 +106,7 @@ switch ( $message_box_type )
 		break;
 }
 
-JWTemplate::tab_header( $options );
+JWTemplate::tab_menu( $menu_list, $options['title'] );
 ?>
 
 <div class="tab">
