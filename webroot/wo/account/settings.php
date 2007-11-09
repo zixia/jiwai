@@ -246,7 +246,7 @@ function updateLink(value){
 			<td width="250">
 				<input name="user[nameScreen]" type="text" id="user_nameScreen" onKeyup='updateLink(this.value)' value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
 			</td>
-			<td class="note">用来登陆叽歪de（5个字符以上字母数字下划线）</td>
+			<td class="note">用来登陆叽歪de（4个字符以上字母数字下划线）</td>
 		</tr>
 		<tr>
 			<th>Email：</th>
@@ -257,7 +257,7 @@ function updateLink(value){
 	</fieldset>
 
 	<div style=" padding:20px 0 0 160px; height:50px;">
-		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+		<a onclick="if(JWValidator.validate('f'))$('f').submit();return false;" class="button" href="javascript:void(0);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
 	</div>
 
 	</form>
@@ -309,12 +309,12 @@ function updateLink(value){
 			<tr>
 				<td valign="top">永久地址：</td>
 				<td valign="top">http://JiWai.de/</td>
-				<td valign="top"><input id="nameUrl" name="nameUrl" type="text" value="<?php echo $user_info['nameUrl'];?>" style="width:140px;" ajax='nameUrl' alt="主页地址"/><i></i></td>
+				<td valign="top"><input id="nameUrl" name="nameUrl" type="text" value="<?php echo $user_info['nameUrl'];?>" style="width:140px;" ajax="nameUrl" minlength="4" alt="主页地址"/><i></i></td>
 			</tr>
 		</table>
 		</fieldset>
 		<div style="padding:10px 0 0 130px; height:40px;">
-			<a onclick="if(JWValidator.validate('f2'))$('f2').submit();return false;" class="button" href="#"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
+			<a onclick="if(JWValidator.validate('f2')){$('f2').submit();}return false;" class="button" href="javascript:void(0);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-save.gif'); ?>" alt="保存" /></a>
 		</div>			
 	</form>
 	</div>

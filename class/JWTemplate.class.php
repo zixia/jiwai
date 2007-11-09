@@ -1869,10 +1869,10 @@ _HTML_;
 _HTML_;
 		}
 
-
+		$archive = ( $user == 'wo' ) ? 'archive/' : null;
 		echo <<<_HTML_
 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a><img border="0" src="$asset_star_url" /></li>
-			<li id="status_count"><a href="/$user/">$countInfo[status] 条叽歪</a></li>
+			<li id="status_count"><a href="/$user/$archive">$countInfo[status] 条叽歪</a></li>
 _HTML_;
 
 		if ( 'wo'!=$user && @$countInfo['mms'] )

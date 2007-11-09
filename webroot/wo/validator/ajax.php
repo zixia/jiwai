@@ -4,7 +4,7 @@ $k = $v = $v2 = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 
 $ret = true;
-if(null==v2)
+if(null==$v2)
 {
 	if( $k && function_exists( 'check_'.$k ) ) 
 	{
@@ -28,10 +28,10 @@ echo $ret;
 function check_nameScreen($v){
 
 	if( false == JWUser::IsValidName($v, false) ){
-		if( preg_match('/^\d/', $v ) ) {
-			return "用户名 $v 不能以数字开头";
-		}else if( strlen( $v ) < 5 ) {
-			return "用户名 $v 不能短于 5 个字符";
+		if( preg_match('/^\d+$/', $v ) ) {
+			return "用户名 $v 不能完全是数字";
+		}else if( strlen( $v ) < 4 ) {
+			return "用户名 $v 不能短于 4 个字符";
 		}else{
 			return "用户名 $v 含有非法字符";
 		}
@@ -48,10 +48,10 @@ function check_nameScreen($v){
 function check_nameUrl($v){
 
 	if( false == JWUser::IsValidName($v, false) ){
-		if( preg_match('/^\d/', $v ) ) {
-			return "主页地址 $v 不能以数字开头";
-		}else if( strlen( $v ) < 5 ) {
-			return "主页地址 $v 不能短于 5 个字符";
+		if( preg_match('/^\d+$/', $v ) ) {
+			return "主页地址 $v 不能完全是数字";
+		}else if( strlen( $v ) < 4 ) {
+			return "主页地址 $v 不能短于 4 个字符";
 		}else{
 			return "主页地址 $v 含有非法字符";
 		}

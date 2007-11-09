@@ -27,7 +27,7 @@ JWTemplate::html_doctype();
 
 <div id="container">
     <?php JWTemplate::UserGadgetNav('index'); ?>
-    <div class="tabbody">
+    <div class="tabbody" style="height:680px;" >
 
         <h2>说明</h2>
         <fieldset>
@@ -40,6 +40,7 @@ JWTemplate::html_doctype();
             </style>
             
             <ul id="blogs">
+            <li><a class="ext" href="http://help.jiwai.de/BlogbusWidget"><img width="185" height="55" border="0" alt="博客大巴" src="http://www.blogbus.com/images/site_v4/logo.gif"/>BlogBus</a><span class="exttail">∞</span></li><br/>
             <li><a class="ext" href="http://help.jiwai.de/SinablogWidget"><img width="180" height="33" alt="新浪博客" src="http://image2.sina.com.cn/blog/in061204img/yocc061219/3.5logo.gif"/>新浪博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/SohublogWidget"><img border="0" alt="SohuBlog" src="http://blog.sohu.com/home/new/style/images/bloglogo.jpg"/>Sohu博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/MsnSpaceWidget"><span style="font-size:2em">Windows Live<span class="tm">™</span> Spaces</span> MSN Space</a><span class="exttail">∞</span></li><br>
@@ -47,7 +48,6 @@ JWTemplate::html_doctype();
             <li><a class="ext" href="http://help.jiwai.de/NeteaseblogWidget"><img src="http://blog.163.com/style/common/index/image/logo.gif" alt="网易博客">网易博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/TianyaWidget"><img width="151" height="47" src="http://blog.tianya.cn/images/blog_2.gif"/>天涯博客</a><span class="exttail">∞</span></li><br>
             <li><a class="ext" href="http://help.jiwai.de/YculWidget"><img width="185" height="55" border="0" alt="歪酷博客 Ycul Blog - 记录我们的时代" src="http://sta.yculblog.com/images/logo/general-185x55.gif"/>歪酷博客</a><span class="exttail">∞</span></li><br>
-            <!--li><a class="ext" href="http://help.jiwai.de/BlogusWidget"><img width="227" height="28" border="0" alt="BlogUS The Our Life" src="http://www.blogus.cn/OblogStyle/SysStyle/blogus/top_logo.gif"/>Blogus</a><span class="exttail">∞</span></li-->
             </ul>
         </fieldset>
     </div>

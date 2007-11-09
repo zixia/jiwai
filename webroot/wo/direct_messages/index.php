@@ -83,8 +83,7 @@ JWTemplate::updater(array(
 	'friends'	=> $frs_rows_neworder,
 	));
 ?>
-	</fieldset>
-</form>
+
 <?php
 $menu_list = array (
 	JWMessage::OUTBOX => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
