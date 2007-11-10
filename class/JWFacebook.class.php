@@ -35,14 +35,17 @@ class JWFacebook extends Facebook {
 		return $i;
 	}
 	static function PublishAction($fbid, $name_url, $status_id, $status, $via, $img=null, $img_link=null) {
-		$s = json_encode(array(
-			'link_user'=>'http://jiwai.de/'.$name_url.'/',
-			'link_status'=>'http://jiwai.de/'.$name_url.'/statuses/'.$status_id,
-			'status'=>$status, 'via'=>$via));
-		self::instance()->api_client->feed_publishTemplatizedAction($fbid,
-			'{actor} posted a message on <a href="{link_user}">JiWai</a> via {via}', $s,
-			'<a href="{link_status}">{status}</a>', $s,
-			'', $img, $img_link);
+		try {
+			$s = json_encode(array(
+				'link_user'=>'http://jiwai.de/'.$name_url.'/',
+				'link_status'=>'http://jiwai.de/'.$name_url.'/statuses/'.$status_id,
+				'status'=>$status, 'via'=>$via));
+			self::instance()->api_client->feed_publishTemplatizedAction($fbid,
+				'{actor} posted a message on <a href="{link_user}">JiWai</a> via {via}', $s,
+				'<a href="{link_status}">{status}</a>', $s,
+				'', $img, $img_link);
+		} catch (Exception $e) {
+		}
 	}
 	function SetStatus($status) {
 		try {
@@ -51,15 +54,25 @@ class JWFacebook extends Facebook {
 		}
 	}
 	static function RefreshRef($id) {
-		self::instance()->api_client->fbml_refreshRefUrl(self::$ProfileUrl.$id);
+		try {
+			self::instance()->api_client->fbml_refreshRefUrl(self::$ProfileUrl.$id);
+		} catch (Exception $e) {
+		}
 	}
 	static function GetName($fbid) {
-		$u = self::instance()->api_client->users_getInfo(array($fbid), array('name'));
-		return count($u) ? $u[0]['name'] : '';
+		try {
+			$u = self::instance()->api_client->users_getInfo(array($fbid), array('name'));
+			return count($u) ? $u[0]['name'] : '';
+		} catch (Exception $e) {
+			return '';
+		}
 	}
 	static function SendNotification($fbid, $fbml) {
-		if (!is_array($fbid)) $fbid = array($fbid);
-		self::instance()->api_client->notifications_send($fbid, $fbml);
+		try {
+			if (!is_array($fbid)) $fbid = array($fbid);
+			self::instance()->api_client->notifications_send($fbid, $fbml);
+		} catch (Exception $e) {
+		}
 	}
 	static function GetFBbyUser($idUser) {
 		$dev = JWDevice::GetDeviceRowByUserId($idUser);
