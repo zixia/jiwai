@@ -642,14 +642,16 @@ class JWSns {
 				$idFacebook = JWFacebook::GetFBbyUser( $idUser );
 				if ( $idFacebook ) {
 					JWFacebook::RefreshRef($idUser);
-					if (empty($picUrl)) {
-						$picUrl = null;
-						$pic = null;
-						$userInfo = JWUser::GetUserInfo( $idUser );
-					} else {
-						$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
+					if ( !$idUserReplyTo ) {
+						if (empty($picUrl)) {
+							$picUrl = null;
+							$pic = null;
+							$userInfo = JWUser::GetUserInfo( $idUser );
+						} else {
+							$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
+						}
+						JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
 					}
-					JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
 				}
 			}
 
