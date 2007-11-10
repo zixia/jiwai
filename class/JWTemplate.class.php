@@ -1601,7 +1601,7 @@ _HTML_;
 				'qq' => '已绑定 QQ',
 				'skype' => '已绑定 Skype',
 				'yahoo' => '已绑定 Yahoo!',
-				'newsmth' => '已绑定 水木清华',
+				'newsmth' => '已绑定 水木社区:',
 			       );
 
 		foreach( $pArray as $key=>$bindTip ) {
