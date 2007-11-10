@@ -725,6 +725,9 @@ _SQL_;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
+			case 'facebook':
+				$name='<a href="http://apps.facebook.com/jiwaide/" target="_blank">叽歪de Application</a>';
+				break;
 			case 'yahoo':
 				$name='jiwai001';
 				break;
