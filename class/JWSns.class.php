@@ -649,7 +649,7 @@ class JWSns {
 					} else {
 						$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
 					}
-					JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
+					JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
 				}
 			}
 
