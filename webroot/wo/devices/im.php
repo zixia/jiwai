@@ -46,7 +46,7 @@ if ( isset($_REQUEST['_shortcut']) )
 <form>
 <?php
    foreach ( $supported_devices as $type ) {
-	if ($type == 'facebook' && JWLogin::GetCurrentUserId()!=20) continue;
+	//if ($type == 'facebook' && JWLogin::GetCurrentUserId()!=20) continue;
        $bind = isset( $device_row[ $type ] );
        $readonly = $bind ? 'readonly' : '';
        $address = $bind ? $device_row[ $type ]['address'] : '';
