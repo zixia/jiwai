@@ -86,7 +86,7 @@ if ( isset($_REQUEST['_shortcut']) )
                     <div class="popbg">
                         <div class="popleft"></div>
                 你好，请按照以下步骤绑定facebook帐号：<br/>
-                1、访问 <a href="http://apps.facebook.com/jiwaide/?verify">JiWai.de @ Facebook</a> 并安装；<br/>
+                1、访问 <a href="http://apps.facebook.com/jiwaide/?verify">叽歪de Facebook Application</a> 并安装；<br/>
                 2、输入如下验证码进行验证：<br/>
                 <strong><?php echo $secret;?><strong>
                     </div>
