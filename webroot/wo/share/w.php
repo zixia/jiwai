@@ -16,6 +16,19 @@ $u = mb_convert_encoding($u, 'UTF-8', 'UTF-8,GB2312');
 input.cb{ width:24px; display:inline; }
 </style>
 <?php JWTemplate::html_head(); ?>
+<script>
+function collectToJiWai(){
+	new Ajax( '/wo/share/u', {
+		method: 'post',
+		data: $('f').toQueryString(),
+		headers: {'AJAX':true},
+		onSuccess: function() {
+			alert('收藏到叽歪成功');
+			window.close();
+		}
+	}).request();
+}
+</script>
 </head>
 
 <?php echo JWTemplate::Header(); ?>
