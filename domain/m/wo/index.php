@@ -13,7 +13,7 @@ $statusNum= JWStatus::GetStatusNumFromFriends($loginedIdUser);
 $pagination		= new JWPagination($statusNum, $page, 10);
 $statusData 	= JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-$statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
+$statusRows	= JWStatus::GetDbRowsByIds($statusData['status_ids']);
 $userRows		= JWUser::GetUserDbRowsByIds	($statusData['user_ids']);
 
 krsort( $statusRows );
@@ -23,8 +23,13 @@ foreach( $statusRows as $k=>$s){
     $fs = JWStatus::FormatStatus( $s, false );
     $s['status'] = $fs['status'];
    // $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
+    $s['mmsUrl'] = null;
+    if( $s['isMms'] == 'Y' ) {
+        $s['mmsUrl'] = JWPicture::GetUrlById( $s['idPicture'] , 'picture' );
+    }
     $statuses[ $k ] = $s;
 }
+
 
 $friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );

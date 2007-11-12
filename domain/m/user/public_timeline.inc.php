@@ -15,8 +15,12 @@ foreach( $status_rows as $s){
         continue;
 
     $fs = JWStatus::FormatStatus( $s, false );
-    $s['status'] = $fs['status'];
+    $s['status'] = $fs['status']; 
 
+    $s['mmsUrl'] = null;
+    if( $s['isMms'] == 'Y' ) {
+    $s['mmsUrl'] = JWPicture::GetUrlById( $s['idPicture'] , 'picture' );
+    }
     array_push( $userIds, $s['idUser'] );
     array_push( $statuses, $s );
 

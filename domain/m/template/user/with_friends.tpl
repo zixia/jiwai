@@ -14,7 +14,9 @@
 	<!--{if (false == $protected)}-->
 		<li>
 			<a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
-			<span class="stamp">
+			
+            ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
+            <span class="stamp">
 			${JWStatus::GetTimeDesc($status['timeCreate'])}
 			通过
 			${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}

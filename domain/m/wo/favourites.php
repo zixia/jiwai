@@ -13,7 +13,6 @@ $statusNum = JWFavourite::GetFavouriteNum($loginedUserInfo['id']);
 
 $pagination = new JWPagination($statusNum, $page, 10);
 $statusIds = JWFavourite::GetFavourite($loginedUserInfo['id'],$pagination->GetNumPerPage(),$pagination->GetStartPos());
-
 $statusRows = JWDB_Cache_Status::GetDbRowsByIds($statusIds);
 $userIds = array_map( create_function('$row','return $row["idUser"];'), $statusRows );
 $userRows = JWUser::GetUserDbRowsByIds( $userIds );
@@ -24,7 +23,13 @@ $statuses = array();
 foreach( $statusRows as $k=>$s){
     $fs = JWStatus::FormatStatus( $s, false );
     $s['status'] = $fs['status'];
-   // $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
+    
+    
+    $s['mmsUrl'] = null;
+    if( $s['isMms'] == 'Y' ) {
+    $s['mmsUrl'] = JWPicture::GetUrlById( $s['idPicture'] , 'picture' );
+    }    
+    // $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
 

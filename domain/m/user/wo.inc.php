@@ -31,8 +31,10 @@ if( $statusTab == 'with_friends' ) {
 		$userRows = array();
 	}
 
-	$statusRows = JWDB_Cache_Status::GetDbRowsByIds( $statusData['status_ids']);
-	$tpl = 'user/owner';
+    $statusRows = JWDB_Cache_Status::GetDbRowsByIds( $statusData['status_ids']);
+	
+    
+    $tpl = 'user/owner';
 }
 
 krsort( $statusRows );
@@ -40,6 +42,11 @@ $statuses = array();
 foreach( $statusRows as $k=>$s ){
 	$fs = JWStatus::FormatStatus( $s, false );
 	$s['status'] = $fs['status'];
+
+    if( $s['isMms'] == 'Y' ) {
+    $s['mmsUrl'] = JWPicture::GetUrlById( $s['idPicture'] , 'picture' );
+    }
+
 	//$s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
 	$statuses[ $k ] = $s;
 }

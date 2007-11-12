@@ -6,6 +6,8 @@
 <!--{foreach $statuses as $status}-->
 <li>
 	<a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+   
+    ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
 	<span class="stamp">
 	${JWStatus::GetTimeDesc($status['timeCreate'])}
 	通过
@@ -13,7 +15,7 @@
 	${($loginedUserInfo['id']==$status['idUser']) ? "<a href=\"/wo/status/destroy/".$status['id']."\">删除</a>" : ''}
 	${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''}
 	</span>
-</li>
+    </li>
 <!--{/foreach}-->
 </ul>
 {$pageString}

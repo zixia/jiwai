@@ -5,6 +5,8 @@
 <!--{foreach $statuses as $status}-->
 <li>
     <a href="${buildUrl('/'.htmlSpecialChars($users[$status['idUser']]['nameUrl']).'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+    ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
+    
     <span class="stamp">
     ${JWStatus::GetTimeDesc($status['timeCreate'])}
     通过

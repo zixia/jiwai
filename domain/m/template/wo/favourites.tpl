@@ -1,11 +1,11 @@
 <!--{include header}-->
 <!--{include wo/update}-->
-
 <h2>我收藏的更新</h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>
     <a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+    ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
     <span class="stamp">
     ${JWStatus::GetTimeDesc($status['timeCreate'])}
     通过

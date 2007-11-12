@@ -7,13 +7,15 @@
 <!--{foreach $statuses as $status}-->
 <li>
 	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
-	<span class="stamp">
+    
+    ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
+    <span class="stamp">
 	${JWStatus::GetTimeDesc($status['timeCreate'])}
 	通过
 	${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}${$status['isSignature'] == 'Y' ? '签名' : ''}
-	${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''}
-	</span>
+	${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''} </span>
 </li>
+
 <!--{/foreach}-->
 <!--{else}-->
 <li>
