@@ -594,3 +594,21 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 #wtTableMenu a,#wtTableMenu a:link,#wtTableMenu a:visited {float: right;width: 73px;height: 21px;display: block;background: url(../images/org-tab-on.gif) no-repeat 0 0;text-align: center;line-height: 18px;color: #FFF;font-size: 14px; font-weight: bold;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 
 #wtTableMenu a:hover,#wtTableMenu a:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;}
 #wtTableMenu a.active,#wtTableMenu a.active:link,#wtTableMenu a.active:visited,#wtTableMenu a.active:hover,#wtTableMenu a.active:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 
+
+/*Favourite Collection*/
+#wtCollectionMain {width: 530px;border: #FF6000 1px solid;margin:15px auto;font-size: 14px;text-align: left;background-color:#FFFFFF;}
+#wtCollectionMain h1 { font-size: 15px;border-bottom: #C2C2C2 1px solid;margin: 14px 10px 23px 10px;height: 24px;text-indent: 6px; line-height:24px; font-weight:bold;}
+#wtCollectionMain p { margin: 0 0 15px 0;padding: 0 50px;}
+#wtCollectionMain .mar { margin: 0 0 0 1em;}
+#wtCollectionMain .pad1 { padding-left:56px;color:#FF6000;display: block;}
+#wtCollectionMain a.pad1,#wtCollectionMain a.pad1:link,#wtCollectionMain a.pad1:visited,#wtCollectionMain a.pad1:active { text-decoration: underline;}
+#wtCollectionMain a.pad1:hover { text-decoration: none;}
+#wtCollectionMain .pad2 { padding-left:53px;font-size:12px;display: block;}
+#wtCollectionMain .po { padding: 0 0 0 105px;}
+#wtCollectionMain .po2 { padding: 0 0 0 105px; margin: 8px 0 15px 0;}
+#wtCollectionMain .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 198px;height:18px;}
+#wtCollectionMain .inputStyle2 {  padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 300px; height:18px;}
+#wtCollectionMain div#tips { width: 156px;height: 53px;float: right;background: url(../images/bg.gif) no-repeat 0 0;padding: 15px 50px 0 0;text-align: center;font-size: 12px;font-weight: bold;color: #515151;}
+#wtCollectionMain div#tips p { padding: 0;margin: 0 0 9px 0;}
+#wtCollectionMain .textarea {padding:5px 5px 0;font-size:12px;color:#666;width:350px;height:86px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
+#wtCollectionMain .left {float: left;}
