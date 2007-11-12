@@ -2,7 +2,9 @@
 require_once("../../../jiwai.inc.php");
 
 $pathParam = null;
+$page = 1;
 extract($_REQUEST, EXTR_IF_EXISTS);
+$page = ( $page < 1 ) ? 1 : intval($page);
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
@@ -83,7 +85,12 @@ function renderFeedStatuses($idUser, $feedType) {
   * @param $needRebuild, 是不是按照 xml/json方式，重新组织field名
   */
 function getStatusesWithUser($idUser, $needReBuild=true){
-	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20);
+
+	global $page;
+	if( 1>=$page ) $page = 1;
+	$start = 20 * ( $page - 1 );
+
+	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20, $start);
 	$statuses = JWStatus::GetStatusDbRowsByIds( $statusIds['status_ids'] );
 	$statusesWithUser = array();
 	$userTemp = array();

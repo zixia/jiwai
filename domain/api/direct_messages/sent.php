@@ -16,7 +16,7 @@ if( ! $idUser ){
 
 $since = ($since==null) ? null : ( is_numeric($since) ? date("Y-m-d H:i:s", $since) : $since );
 $timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
-$messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::INBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $timeSince);
+$messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::OUTBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $timeSince);
 $messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower(trim($pathParam,'.'));
@@ -68,28 +68,29 @@ function renderXmlReturn( $messages ){
 function renderFeedReturn( $messages, $idUser, $feedType=JWFeed::RSS20 ){
 
 	$tempUser = array();
-	$userReceiver = isset( $tempUser[$idUser] ) ?
+	$userSender = isset( $tempUser[$idUser] ) ?
 		$tempUser[$idUser] :
 		( $tempUser[$idUser] = JWUser::GetUserInfo( $idUser ) );
 
 	$feed = new JWFeed(array(
-				'title'	=> $userReceiver['nameScreen'].'收到的悄悄话' , 
+				'title'	=> $userSender['nameScreen'].'发出的悄悄话' , 
 				'url'	=> 'http://JiWai.de/direct_messages/' , 
-				'desc'	=> '所有发给'.$userReceiver['nameScreen'].'悄悄话' , 
+				'desc'	=> '所有'.$userSender['nameScreen'].'发出的悄悄话' , 
 				'language' => 'zh_cn',
 				'ttl'	=> 40,
 				));
 	
 	foreach ( $messages as $m ) {
-		$userSender = isset( $tempUser[$m['idUserSender']] ) ?
-			$tempUser[$idUserSender] :
-			( $tempUser[$idUserSender] = JWUser::GetUserInfo( $m['idUserSender'] ) );
+		$idUserReceiver = $m['idUserReceiver'];
+		$userReceiver = isset( $tempUser[$idUserReceiver] ) ?
+			$tempUser[$idUserReceiver] :
+			( $tempUser[$idUserReceiver] = JWUser::GetUserInfo( $idUserReceiver ) );
 
 		$feed->AddItem(array( 
 				'title'	=> $userSender['nameScreen'] . '给'. $userReceiver['nameScreen'].'的悄悄话',
 				'desc'	=> JWApi::RemoveInvalidChar($m['message']) , 
-				'author' => $userSender['nameScreen'],
 				'date'	=> $m['timeCreate'], 
+				'author' => $userSender['nameScreen'],
 				'guid'	=> "http://JiWai.de/direct_messages/" . $m['idMessage'],
 				'url'	=> "http://JiWai.de/direct_messages/" . $m['idMessage'],
 				));

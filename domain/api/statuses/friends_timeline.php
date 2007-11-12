@@ -4,10 +4,12 @@ $callback = null;
 $count = 20;
 $since_id = null;
 $since = null;
+$page = 1;
 $thumb = 48;
 $pathParam = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 $since = ($since) ? $since :  ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null );
+$page = ( $page < 1 ) ? 1 : intval($page);
 
 if( false == preg_match( '/(.*)\.([[:alpha:]]+)$/', trim($pathParam,'/'), $matches ) ){
 	JWApi::OutHeader(406,true);
@@ -36,6 +38,7 @@ $options = array(
 		'thumb' => $thumb,
 		'callback' => $callback,
 		'idUser' => $idUser,
+		'page' => $page,
 		);
 
 switch($type){
@@ -113,10 +116,14 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 	if ( 0>=$count )
 		$count = JWStatus::DEFAULT_STATUS_NUM;
 
+	$page = intval($options['page']);
+	if( 1>=$page ) $page = 1;
+	$start = $count * ( $page - 1 );
+
 	//TODO: since_id / since
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
 
-	$status_data    = JWStatus::GetStatusIdsFromFriends($options['idUser'],$count, 0, $options['since_id'], $timeSince);
+	$status_data    = JWStatus::GetStatusIdsFromFriends($options['idUser'],$count, $start, $options['since_id'], $timeSince);
 	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
 	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
 
