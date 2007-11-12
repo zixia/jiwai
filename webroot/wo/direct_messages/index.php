@@ -150,13 +150,21 @@ foreach ( $message_ids as $message_id )
 
 	$time_desc = JWMessage::GetTimeDesc($message_db_row['timeCreate']);
 
+	if( $message_box_type == JWMessage::INBOX ){
+		$replyString = <<<_REPLY_
+		<a href="/wo/direct_messages/create/$user_id">回复</a>
+_REPLY_;
+	}else{
+		$replyString = null;
+	}
+
 	echo <<<_HTML_
           <div class="odd">
-            <div class="head"><a href="/wo/direct_messages/create/$user_id" title="悄悄话发给$user_db_row[nameScreen]"><img alt="$user_db_row[nameFull]" src="$photo_url" width="48" height="48"/></a></div>
-            <div class="cont">$message_db_row[message]
+            <div class="head"><a href="/wo/direct_messages/create/$user_id" title="悄悄话发给$user_db_row[nameScreen]"><img alt="$user_db_row[nameScreen]" src="$photo_url" width="48" height="48"/></a></div>
+            <div class="cont">$message_db_row[message] $replyString
 		<a href="/wo/direct_messages/destroy/$message_db_row[idMessage]" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');"><img alt="删除" border="0" src="$asset_trash_url" /></a>
             </div>
-            <div class="write"><a href="/$user_db_row[nameScreen]/">$user_db_row[nameFull]</a></div>
+            <div class="write"><a href="/$user_db_row[nameUrl]/">$user_db_row[nameScreen]</a></div>
             <div class="time"> $time_desc </div>
           </div>
         <div style="clear:both;"></div>

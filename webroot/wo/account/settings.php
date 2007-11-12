@@ -281,7 +281,7 @@ echo $error_html;
 		</table>
 		</fieldset>
 		<div style="padding:10px 0 0 130px; height:40px;">
-		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存" style="margin-left:-17px;"/>
+		<input onclick="if(JWValidator.validate('f2'))$('f2').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存" style="margin-left:-4px;"/>
 		</div>			
 	</form>
 	</div>

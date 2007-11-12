@@ -124,8 +124,8 @@ $arr_menu 			= array(	array ('status'			, array($logined_user_info))
 								, array ('friend'		, array($arr_friend_list))
 							);
 	
-JWTemplate::container_ending();
 JWTemplate::sidebar( $arr_menu );
+JWTemplate::container_ending();
 
 ?>
 	
