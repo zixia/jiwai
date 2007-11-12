@@ -110,7 +110,7 @@ function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 	foreach ( $statuses as $status ){
 
 		$feed->AddItem(array( 
-				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'title'	=> JWApi::RemoveInvalidChar($status['status']) , 
 				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'date'	=> strtotime( $status['timeCreate'] ), 
 				'author'=> $status['user']['nameFull'] , 
