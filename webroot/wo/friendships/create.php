@@ -29,7 +29,7 @@ _HTML_;
 		return array('error_html'=>$error_html);
 	}
 	// 如果页面用户设置了保护，并且页面用户没有添加当前登录用户位好友，则需要发送验证请求
-	if ( JWUser::IsProtected($idPageUser) && !JWFriend::IsFriend($idPageUser, $idLoginedUser) )
+	if ( JWUser::IsProtected($idPageUser) && !JWFollower::IsFollowing($idPageUser, $idLoginedUser) )
 	{
 		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
@@ -59,7 +59,9 @@ _HTML_;
 	}
 	else
 	{
+var_dump(111);
 		$is_succ = JWSns::CreateFriends($idLoginedUser, array($idPageUser));
+var_dump(222);
 
 		if ($is_succ )
 		{

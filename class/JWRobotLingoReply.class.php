@@ -21,9 +21,7 @@ class JWRobotLingoReply {
 			'REPLY_HELP_SUC'	=> '告诉我们这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。',
 			'REPLY_TIPS_SUC'	=> '命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。',
 
-			'REPLY_ADD_SUC' => '搞定了！已经成功关注 {0} 了！',
 			'REPLY_ADD_HELP' => 'ADD命令帮助：ADD 帐号。',
-			'REPLY_ADD_EXISTS' => '好消息！{0} 已经被你关注了，不用重复添加啦。',
 			'REPLY_ADD_WAIT_EXISTS' => '你向 {0} 发送的关注请求，他还没有回应，再等等看吧。',
 			'REPLY_ADD_WAIT_SUC' => '搞定了！我们已经帮你向 {0} 发送了关注请求，希望能够很快得到{0}的回应。',
 			'REPLY_ADD_NOUSER' => '哎呀！抱歉，你添加的 {0} 我不认识，请你输入帐号或手机号、邮件地址。了解更多？发送 HELP。',
@@ -52,16 +50,24 @@ class JWRobotLingoReply {
 			'REPLY_D_NOPERM' => '你还不在 {0} 的好友列表中，无法悄悄话。',
 			'REPLY_D_NOUSER' => '哎呀！没有找到 {0} 这个用户。了解更多？发送 HELP。',
 
-			'REPLY_ON_SUC' => '搞定了！你在做什么呢？任何时候发送OFF都可以随时关掉通知。',
-			'REPLY_OFF_SUC' => '通知消息已关闭。发送ON可开启。',
+			'REPLY_ON_SUC' => '搞定了！你在做什么呢？任何时候发送 OFF 都可以随时关掉通知。',
+			'REPLY_ON_ERR' => '哎呀！抱歉，打开通知失败，我们会尽快解决。',
+			'REPLY_ON_SUC_USER' => '搞定了！设置接受 {0} 的更新通知成功，发送 OFF {0} 关闭更新通知。',
+			'REPLY_ON_ERR_USER' => '哎呀！抱歉，设置接收 {0} 的更新通知失败，我们会尽快解决。',
+
+			'REPLY_OFF_SUC' => '通知消息已关闭。发送 ON 可开启。',
+			'REPLY_OFF_SUC_USER' => '搞定了！设置不接受 {0} 的更新通知成功，发送 ON {0} 可启更新通知。',
+
+			'REPLY_ON_SUC_MUL' => '搞定了！设置接受 {0} 的更新通知成功。',
+			'REPLY_OFF_SUC_MUL' => '搞定了！设置不接受 {0} 的更新通知成功。',
 
 			'REPLY_FOLLOW_HELP' => 'FOLLOW命令帮助：FOLLOW 帐号。',
-			'REPLY_FOLLOW_SUC' => '每当 {0} 更新，你都会收到消息。如果要撤销，请发送LEAVE {0}',
-			'REPLY_FOLLOW_SUC_MUL' => '每当 {0} 更新，你都会收到消息。',
-			'REPLY_FOLLOW_NOUSER' => '哎呀！抱歉，你订阅的 {0} 我不认识，请你确认输入了正确的叽歪帐号。',
+			'REPLY_FOLLOW_SUC' => '搞定了！已经成功关注 {0} 了！',
+			'REPLY_FOLLOW_NOUSER' => '哎呀！抱歉，你关注的 {0} 我不认识，请你确认输入了正确的叽歪帐号。',
+			'REPLY_FOLLOW_EXISTS' => '好消息！你已经关注 {0} 了。',
 
 			'REPLY_LEAVE_HELP' => 'LEAVE命令帮助：LEAVE 帐号。',
-			'REPLY_LEAVE_SUC' => '你已退定了 {0}',
+			'REPLY_LEAVE_SUC' => '你已经取消对 {0} 的关注。',
 			'REPLY_LEAVE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
 
 			'REPLY_WHOIS_HELP' => '使用方法：WHOIS 帐号。',
@@ -73,7 +79,7 @@ class JWRobotLingoReply {
 			'REPLY_NUDGE_DENY' => '{0} 已经关闭了通知，不想被挠挠。。。要不你稍后再试吧？',
 			'REPLY_NUDGE_SUC' => '我们已经帮你挠挠了 {0} 一下！期待很快能得到你朋友的回应。',
 			'REPLY_NUDGE_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
-			'REPLY_NUDGE_NOPERM' => '对不起，你还不是 {0} 的好友呢，不能随便挠挠。等你被加为好友后，再挠吧！',
+			'REPLY_NUDGE_NOPERM' => '对不起，你暂时不能对 {0} 执行挠挠操作。',
 
 			'REPLY_REG_HELP' => '使用方法：REG 账户 [昵称]，[]内为可选。',
 			'REPLY_REG_HELP_GM' => '使用方法：GM 账户 [昵称]，[]内为可选。',

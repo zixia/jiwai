@@ -14,25 +14,41 @@ $loginedUserInfo = JWUser::GetCurrentUserInfo();
 
 if( $action == null ) {
     $action = 'list';
+}else{
+	$receiverRow = JWUser::GetUserInfo( $value );
+	if( empty( $receiverRow )) {
+		JWSession::SetInfo('notice', "不存在编号为 {$value} 的用户");
+		redirect();
+	}
+	$value = $receiverRow[nameScreen];
 }
 
 switch($action){
-    case 'leave':
-        leave($loginedUserInfo['id'], $value);
-    break;
-    case 'follow':
-        follow($loginedUserInfo['id'], $value);
-    break;
-    case 'nudge':
-        nudge($loginedUserInfo['id'], $value);
-    break;
-    case 'list':
-       require_once( './friends.list.php' ); 
-    break;
+	case 'nudge':
+		JWSns::ExecWeb($loginedUserInfo['id'], $action .' '. $value, '挠挠此人');
+		break;
+	case 'follow':
+		JWSns::ExecWeb($loginedUserInfo['id'], $action .' '. $value, '打开关注');
+		break;
+	case 'leave':
+		JWSns::ExecWeb($loginedUserInfo['id'], $action .' '. $value, '取消关注');
+		break;
+	case 'on':
+		JWSns::ExecWeb($loginedUserInfo['id'], $action .' '. $value, '接收通知');
+		break;
+	case 'off':
+		JWSns::ExecWeb($loginedUserInfo['id'], $action .' '. $value, '取消通知');
+		break;
+	case 'list':
+		require_once( './followings.list.php' ); 
+		exit(0);
 }
+
+redirect();
 
 
 function leave($idUser, $idFriend){
+	JWSns::ExecWeb($idUser, "");
     $userInfo = JWUser::GetUserInfo( $idFriend );
     if ( JWFollower::Destroy($idFriend, $idUser) ) {
         JWSession::SetInfo( 'error', "取消关注退订成功，你将不会再在手机或聊天软件上收到$userInfo[nameScreen]的更新。");
@@ -62,7 +78,7 @@ function nudge($idUser, $idFriend){
         redirect();
     }
 
-    if ( JWFriend::IsFriend( $idFriend, $idUser ) ){
+    if ( JWFollower::IsFollower( $idUser, $idFriend ) ){
         $nudgeMessage = "$loginedUserInfo[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。";
         if( JWNudge::NudgeToUsers( array($idFriend), $nudgeMessage, 'nudge', 'web' ) ){
             JWSession::SetInfo('error', "我们已经帮你挠挠了$userInfo[nameScreen]一下！期待很快能得到你朋友的回应。");
@@ -80,6 +96,37 @@ function nudge($idUser, $idFriend){
         JWSession::SetInfo( 'error', "哎呀！由于系统临时故障，你未能关注成功$userInfo[nameScreen]… 请稍后再试吧。");
     }
 
+    redirect();
+}
+function destroy($idUser, $idFriend){
+    $userInfo = JWUser::GetUserInfo( $idFriend );
+
+    $bidirection = false;
+    if ( JWUser::IsProtected($idUser) )
+        $bidirection = true;
+
+    if ( JWSns::DestroyFriends($idUser, array($idFriend), $bidirection) ) {
+        JWSession::SetInfo( 'error', "已经停止对 $userInfo[nameScreen] 的关注了。");
+    }else{
+        JWSession::SetInfo( 'error', "系统故障，暂时无法删除你关注的人。");
+    }
+
+    redirect();
+}
+
+function create($idUser, $idFriend){
+    $userInfo = JWUser::GetUserInfo( $idFriend );
+	if ( empty($userInfo) ) {
+		JWSession::SetInfo('error', '添加关注失败：没有这个用户');
+		redirect();
+	}
+
+	if ( JWSns::CreateFollower($idFriend, $idUser )) {
+		JWSession::SetInfo('error', "已经开始关注 $userInfo[nameScreen]，耶！");
+	} else {
+		JWSession::SetInfo('error', "哎呀！由于系统故障，添加关注失败了…… 请稍后再尝试吧。。");
+	}
+    
     redirect();
 }
 ?>

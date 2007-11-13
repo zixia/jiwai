@@ -74,7 +74,7 @@ class JWRobotLingo_Conference {
 		}
 	
 		if ( $followe_user_db_row['idUser'] != $address_user_id  
-				&& false == JWFriend::IsFriend($address_user_id, $followe_user_db_row['idUser']) ) {
+				&& false == JWFollower::IsFollowing($address_user_id, $followe_user_db_row['idUser']) ) {
 			JWSns::CreateFriends( $address_user_id, array($followe_user_db_row['idUser']) );
 		}
 		

@@ -28,7 +28,7 @@ if ( !JWUser::IsAdmin($logined_user_info['idUser'])
 {
 	if ( empty($logined_user_info) )
 		$show_protected_content= false;
-	else if ( ! JWFriend::IsFriend($page_user_id, $logined_user_info['idUser']) )
+	else if ( ! JWFollower::IsFollower($page_user_id, $logined_user_info['idUser']) )
 		$show_protected_content= false;
 }
 
@@ -269,26 +269,12 @@ if ( $show_protected_content )
 	) ) ;
 
 ?>
-  
-<?php 
-/*
-if ( $show_protected_content )
-	JWTemplate::pagination($pagination, (null===$q) ? array() : array('q'=>$q) );
-if ( $show_protected_content )
-	JWTemplate::rss( $g_user_with_friends ? 'friends' : 'user' ,$page_user_id) 
-*/
-?>
-
 			</div><!-- tab -->
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
 
 <?php 
-
-
-//$arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
-
 $user_action_rows	= JWSns::GetUserActions($logined_user_info['id'] , array($page_user_info['id']) );
 
 if ( empty($user_action_rows) )
@@ -297,7 +283,7 @@ else
 	$user_action_row	= $user_action_rows[$page_user_info['id']];
 
 
-$arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
+$arr_friend_list	= JWFollower::GetFollowingIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], @$logined_user_info['id'] );
@@ -312,6 +298,7 @@ $arr_menu = array(
 	array ('vistors', array($idUserVistors )),
 	array ('separator', array()),
 	array ('friend', array($arr_friend_list)),
+	array ('listfollowing', array( $nameScreen, count($arr_friend_list) > 60 ) ),
 	array ('rss', array('user', $page_user_info['nameScreen'])),
 );
 

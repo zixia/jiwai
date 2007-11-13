@@ -7,8 +7,8 @@
 <p>1 <a href="${buildUrl('/'.$loginedUserInfo['nameUrl'].'/')}" accesskey="1">我的叽歪</a></p>
 <!--{/if}-->
 
-<!--{if in_array( 'friends', $shortcut ) }-->
-<p>2 <a href="${buildUrl('/wo/friends/')}" accesskey="2">我关注的人</a></p>
+<!--{if in_array( 'followings', $shortcut ) }-->
+<p>2 <a href="${buildUrl('/wo/followings/')}" accesskey="2">关注的人</a></p>
 <!--{/if}-->
 
 <!--{if in_array( '---------myfollowers', $shortcut ) }-->

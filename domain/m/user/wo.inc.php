@@ -1,12 +1,12 @@
 <?php
 $showProtected = $userInfo['protected'] == 'N';
 if( false == $showProtected ){
-	$showProtected = JWFriend::IsFriend( $userInfo['id'], $loginedUserInfo['id'] ) | $loginedUserInfo['id'] == $userInfo['id'] ;
+	$showProtected = JWFollower::IsFollower($loginedUserInfo['id'], $userInfo['id']) | $loginedUserInfo['id'] == $userInfo['id'] ;
 }
 
 if( $statusTab == 'with_friends' ) {
 
-	$pageTitle = htmlSpecialChars($userInfo['nameFull'])."和朋友们在做什么";
+	$pageTitle = htmlSpecialChars($userInfo['nameScreen'])."和别人在做什么";
 
 	$statusNum = JWDB_Cache_Status::GetStatusNumFromFriends( $userInfo['id'] );
 	$pagination = new JWPagination( $statusNum, $page , 10);
@@ -17,7 +17,7 @@ if( $statusTab == 'with_friends' ) {
 	$tpl = 'user/with_friends';
 }else{
 
-	$pageTitle = htmlSpecialChars($userInfo['nameFull'])."在做什么";
+	$pageTitle = htmlSpecialChars($userInfo['nameScreen'])."在做什么";
 	
 	if( $userInfo['idConference'] ) {
 		$statusNum = JWStatus::GetStatusNumFromConference( $userInfo['idConference'] );
@@ -53,7 +53,7 @@ foreach( $statusRows as $k=>$s ){
 
 $shortcut = array('public_timeline', 'index');
 if( JWLogin::isLogined() ) {
-	array_push( $shortcut, 'logout', 'my', 'message', 'friends', 'replies' );
+	array_push( $shortcut, 'logout', 'my', 'message', 'followings', 'replies' );
 }else{
 	array_push( $shortcut, 'register' );
 }

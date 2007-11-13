@@ -1,19 +1,19 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2><a href="/{$userInfo['nameScreen']}/">${htmlSpecialChars($userInfo['nameFull'])}的消息</a>｜${htmlSpecialChars($userInfo['nameFull'])}和我关注的人</h2>
+<h2><a href="/{$userInfo['nameUrl']}/">${htmlSpecialChars($userInfo['nameScreen'])}的消息</a>｜${htmlSpecialChars($userInfo['nameUrl'])}和别人</h2>
 <ul>
 <!--{if $showProtected}-->
 	<!--{foreach $statuses as $status}-->
 	<!--${
 		$protected = ( $users[$status['idUser']]['protected'] == 'Y' 
 						&& $status['idUser'] != $loginedUserInfo['id']
-						&& false == JWFriend::IsFriend($status['idUser'], $loginedUserInfo['id'])
+						&& false == JWFollower::IsFollower($loginedUserInfo['id'], $status['idUser'])
 					 );
 	}-->
 	<!--{if (false == $protected)}-->
 		<li>
-			<a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+			<a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
 			
             ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
             <span class="stamp">

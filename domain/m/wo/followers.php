@@ -15,7 +15,7 @@ $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds = JWFollower::GetFollowerIds($loginedUserInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
 $followerRows = JWUser::GetUserDbRowsByIds($followerIds);
 
-$followerOps = friendsop( $loginedUserInfo['id'], $followerIds , $forFollow = true);
+$followerOps = actionop( $loginedUserInfo['id'], $followerIds , $forFollow = true);
 
 $pageString = paginate( $pagination, '/wo/followers/' );
 

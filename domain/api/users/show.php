@@ -84,7 +84,7 @@ function getUserExtendWithStatus($user){
 		<utc_offset>28800</utc_offset>
 		<statuses_count>168</statuses_count>
 	*/
-	$userInfo['friends_count'] = JWFriend::GetFriendNum($idUser);
+	$userInfo['friends_count'] = JWFollower::GetFollowingNum($idUser);
 	$userInfo['followers_count'] = JWFollower::GetFollowerNum($idUser);
 	$userInfo['favourite_count'] = JWFavourite::GetFavouriteNum( $idUser );
 	$userInfo['utc_offset'] = 28800;

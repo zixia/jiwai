@@ -28,7 +28,7 @@ function user_status($idPageUser, $idStatus)
 		$protected = true;
 		if ( ! empty($logined_user_info) )
 		{
-			if ( JWFriend::IsFriend($idPageUser, $logined_user_info['idUser']) || $logined_user_info['idUser']==$idPageUser )
+			if ( JWFollower::IsFollower($logined_user_info['idUser'], $idPageUser) || $logined_user_info['idUser']==$idPageUser )
 				$protected = false;
 		}
 	}
@@ -77,7 +77,7 @@ JWTemplate::html_head($head_options) ;
                     <td align="right">
                         <?php 
                         if ( ! empty($logined_user_info) && $logined_user_info['idUser'] != $idPageUser ) {
-                            if ( JWFriend::IsFriend($logined_user_info['idUser'], $idPageUser) ) {
+                            if ( JWFollower::IsFollowing($logined_user_info['idUser'], $idPageUser) ) {
                                 echo "$page_user_info[nameScreen]被你关注";
                             }else{
 				if( false == JWBlock::IsBlocked( $idPageUser, $logined_user_info['id'] ) )

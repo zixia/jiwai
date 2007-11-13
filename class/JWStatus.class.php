@@ -398,7 +398,7 @@ _SQL_;
 		if ( 0>=$idUser || 0>=$num )
 			throw new JWException('must int');
 
-		$friend_ids = JWFriend::GetFriendIds($idUser);
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
 		
 		array_push($friend_ids, $idUser);
 
@@ -451,7 +451,7 @@ _SQL_;
 		if ( 0>=$idUser || 0>=$num )
 			throw new JWException('must int');
 
-		$friend_ids = JWFriend::GetFriendIds($idUser);
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
 		
 		array_push($friend_ids, $idUser);
 
@@ -913,7 +913,7 @@ _SQL_;
 		if ( !is_int($idUser) )
 			throw new JWException('must be int');
 
-		$friend_ids = JWFriend::GetFriendIds($idUser);
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
 
 		array_push($friend_ids, $idUser);
 
@@ -940,7 +940,7 @@ _SQL_;
 		if ( !is_int($idUser) )
 			throw new JWException('must be int');
 
-		$friend_ids = JWFriend::GetFriendIds($idUser);
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
 
 		array_push($friend_ids, $idUser);
 

@@ -120,16 +120,16 @@ class JWSns {
 			return true;
 		}
 
-		if ( JWFriend::IsFriend($userRow['id'], $friendRow['id']) )
+		if ( JWFollower::IsFollowing($userRow['id'], $friendRow['id']) )
 		{
 			JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]) already friends");
 			return true;
 		}
 
+//var_dump(888888);	
 		// TODO check idUser permission
-	
-		if ( ! JWFriend::Create($userRow['id'], $friendRow['id']) ) {
-			throw new JWException('JWFriend::Create failed');
+		if ( ! JWFollower::Create( $friendRow['id'], $userRow['id']) ) {
+			throw new JWException('JWFollower::Create failed');
 		}else{
 			$message = "$userRow[nameScreen] ( http://JiWai.de/".UrlEncode($userRow['nameUrl'])."/ ) 将你加为好友了。";
 			JWNudge::NudgeToUsers( array($friendRow['id']), $message, 'nudge', 'web' );
@@ -151,7 +151,7 @@ class JWSns {
 		 *	2007-05-24 暂时取消这个功能，由用户主动follow.
 		 *	2007-06-07 回复这个功能，自动follow.
 		*/
-		if ( ! JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
+		if ( false == JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
 			self::CreateFollower($friendRow, $userRow);
 
 		JWBalloonMsg::CreateFriend($userRow['id'],$friendRow['id']);
@@ -195,7 +195,7 @@ class JWSns {
 	 */
 	static public function CreateFriendRequest($idUser, $idFriend, $note='')
 	{
-		$friend_request_id = JWFriendRequest::Create($idUser, $idFriend, $note);
+		$friend_request_id = JWFollowerRequest::Create($idUser, $idFriend, $note);
 		if( $friend_request_id ) {
 			$userInfo = JWUser::GetUserInfo( $idUser );
 			$message = "$userInfo[nameScreen] ( http://JiWai.de/".UrlEncode($userInfo['nameUrl'])."/ ) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
@@ -211,28 +211,19 @@ class JWSns {
 	/*
 	 *	将 idFollower 添加为 idUser 的粉丝，并负责处理相关逻辑（是否允许添加粉丝，发送通知邮件等）
 	 */
-	static public function CreateFollower($userRow, $followerRow)
+	static public function CreateFollower($idUser, $idFollower, $notification='N')
 	{
-		$user_id 		= $userRow['idUser'];
-		$follower_id 	= $followerRow['idUser'];
-
-		// TODO check idUser permission
-		
-		if ( JWFollower::IsFollower	($user_id, $follower_id) )
+		if ( JWFollower::IsFollower($idUser, $idFollower) )
 			return true;
-
-		if ( ! JWFollower::Create	($user_id, $follower_id) )
+		if ( false == JWFollower::Create($idUser, $idFollower, $notification) )
 		{
 			JWLog::Log(LOG_CRIT, "JWSns::CreateFollower($user_id, $follower_id) failed.");
 			return false;
-		}else{
-			//$message = "$followerRow[nameScreen] 订阅了你的更新。";
-			//JWNudge::NudgeToUsers(array($user_id), $message, 'nudge', 'web' );
 		}
 
-		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($userRow[idUser],$followerRow[idUser]).");
+		JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFollower($idUser, $idFollower).");
 		
-		JWBalloonMsg::CreateFollower($userRow['id'],$followerRow['id']);
+		JWBalloonMsg::CreateFollower( $idUser, $idFollower );
 
 		return true;
 	}
@@ -291,26 +282,17 @@ class JWSns {
 		if ( !is_array($idFollowers) )
 			throw new JWException('must array');
 		
-		$follower_user_rows	= JWUser::GetUserDbRowsByIds($idFollowers);
 		$idUsers = JWFollowRecursion::GetSuperior($idUser, 5);
 
-		foreach( $idUsers as $idUser ) {
-
+		foreach( $idUsers as $idUser ) 
+		{
 			$user_row = JWUser::GetUserInfo($idUser);
-
-			foreach ( $idFollowers as $follower_id )
+			foreach ( $idFollowers as $idFollower )
 			{
-				/*
-				if ( $follower_id==$idUser )
-					continue;
-				*/
-
-				JWSns::CreateFollower($user_row, $follower_user_rows[$follower_id]);
-
+				JWSns::CreateFollower( $idUser, $idFollower );
 				if ( $isReciprocal )
-					JWSns::CreateFollower($follower_user_rows[$follower_id], $user_row);
+					JWSns::CreateFollower( $idFollower, $idUser );
 			}
-
 		}
 
 		return true;
@@ -398,62 +380,66 @@ class JWSns {
 	/*
 	 *	检查 $idUser 可以对 $idFriends 做哪些 Sns 操作
 	 *	$return	array of array		action_rows
-										array 	
-											key1: 		idFriend
-											value1:		array
-												key2(s): 	add/remove(friend) follow/leave nudge/d
-												value2: bool
-									ie. array(1=>array('add'=>true,'remove'=>...), 2=>array(...))
+			array 	
+				key1: 		idFriend
+				value1:		array
+				key2(s): 	add/remove(friend) follow/leave nudge/d
+				value2: bool
+				ie. array(1=>array('add'=>true,'remove'=>...), 2=>array(...))
 	 */
-	static public function GetUserActions($idUser, $idFriends)
+	static public function GetUserActions($idUser, $idOthers)
 	{
-		if ( empty($idUser) || empty($idFriends) )
+		if ( empty($idUser) || empty($idOthers) )
 			return array();
 
-		if ( !is_array($idFriends) )
+		if ( false == is_array($idOthers) )
 			throw new JWException('must array');
 
+		$followingInfos = JWFollower::GetFollowingInfos($idUser);
 
-		$friend_relation		= JWFriend::IsFriends				($idUser, $idFriends	,true);
-		$follower_relation		= JWFollower::IsFollowers			($idUser, $idFriends	,true);
+		$request_friend_ids = JWFriendRequest::GetFriendIds($idUser);
 
-		$request_friend_ids		= JWFriendRequest::GetFriendIds		($idUser);
-
-		$send_via_device_rows	= JWUser::GetSendViaDeviceRowsByUserIds($idFriends);
+		$send_via_device_rows = JWUser::GetSendViaDeviceRowsByUserIds($idOthers);
 
 		$action_rows = array();
-		foreach ( $idFriends as $friend_id )
+		$init_action = array(
+			'nudge' => false,
+			'on' => false,
+			'off' => false,
+			'follow' => false,
+			'leave' => false,
+			'd' => false,	
+		);
+
+		foreach ( $idOthers as $other_id )
 		{
-			if ( $friend_relation[$idUser][$friend_id] )
-			{
-				$action_rows[$friend_id]['remove']	= true;
+			$action = $init_action;
 
-				if ( $follower_relation[$friend_id][$idUser] )	
-					$action_rows[$friend_id]['leave']	= true;
-				else
-					$action_rows[$friend_id]['follow']	= true;
-			}
-			else if ( in_array($friend_id, $request_friend_ids) )
-			{
-				$action_rows[$friend_id]['cancel']	= true;
-			}
-			else if ( $idUser!=$friend_id )
-			{
- 				// not friend, and not myself
-				if( false == JWBlock::IsBlocked( $friend_id, $idUser ) ) 
-					$action_rows[$friend_id]['add']		= true;
+			if( isset( $followingInfos[$other_id] ) ) {
+				if( $followingInfos[$other_id]['notification'] == 'Y' ) {
+					$action['off'] = true;
+				}else{
+					$action['on'] = true;
+				}
+				$action['leave'] = true;
+			}else{
+				$action['follow'] = true;
 			}
 
-			// 反向也是朋友，则可以 direct_messages / nudge
-			if( false == JWBlock::IsBlocked( $friend_id, $idUser, false ) ) 
-			{
-				if ( 'web'!=$send_via_device_rows[$friend_id] && $friend_id != $idUser )
-					$action_rows[$friend_id]['nudge']		= true;
+			if( false == JWBlock::IsBlocked( $other_id, $idUser, false ) ) {
+				$action['d'] = true;
 
-				$action_rows[$friend_id]['d']			= true;
+				if( isset( $send_via_device_rows[$other_id] ) ) {
+					if ( 'web' != $send_via_device_rows[$other_id] && $other_id != $idUser )
+						$action['nudge'] = true;
+				}
+			}else{
+				$action = $init_action;
 			}
-
+		
+			$action_rows[ $other_id ] = $action;
 		}
+
 		return $action_rows;
 	}
 
@@ -482,17 +468,16 @@ class JWSns {
 		//TODO
 		$num_pm			= JWMessage::GetMessageNum($idUser);
 		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
-		$num_friend		= JWFriend::GetFriendNum($idUser);
+		$num_following		= JWFollower::GetFollowingNum($idUser);
 		$num_follower		= JWFollower::GetFollowerNum($idUser);
 
-		//$num_status		= JWStatus::GetStatusNum($idUser);
 		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
 		$num_mms		= JWStatus::GetStatusMmsNum($idUser);
 
 		return array(
 				'pm' => $num_pm,
 				'fav' => $num_fav,
-				'friend' => $num_friend,
+				'following' => $num_following,
 				'follower' => $num_follower,
 				'status' => $num_status,
 				'mms' => $num_mms,
@@ -777,11 +762,11 @@ class JWSns {
 
 		foreach ( $idFriends as $friend_id )
 		{
-			if ( JWFriend::IsFriend($idUser, $friend_id) )
+			if ( JWFollower::IsFollowing($idUser, $friend_id) )
 			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($idUser,$friend_id).");
-				if ( ! JWFriend::Destroy($idUser, $friend_id) ) {
-					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($idUser, $friend_id) failed.");
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id).");
+				if ( ! JWFollower::Destroy($idUser, $friend_id) ) {
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($idUser, $friend_id) failed.");
 				}else{
 					$message = " $userInfo[nameScreen] 不再关注你了。";
 					//JWNudge::NudgeToUsers( array($friend_id), $message, 'nudge', 'web' );
@@ -789,12 +774,12 @@ class JWSns {
 
 			}
 
-			if ( $biDirection && JWFriend::IsFriend($friend_id,$idUser) )
+			if ( $biDirection && JWFollower::IsFollowing($friend_id,$idUser) )
 			{
-				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser).");
+				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($friend_id, $idUser).");
 
-				if ( ! JWFriend::Destroy($friend_id, $idUser) ) {
-					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFriend::Destroy($friend_id, $idUser) failed.");
+				if ( ! JWFollower::Destroy($friend_id, $idUser) ) {
+					JWLog::Log(LOG_CRIT, "JWSns::DestroyFriends JWFollower::Destroy($friend_id, $idUser) failed.");
 				}else{
 					$friendInfo = JWUser::GetUserInfo( $friend_id );
 					$message = " $friendInfo[nameScreen] 不再关注你了。";
@@ -818,10 +803,10 @@ class JWSns {
 		
 		$flag = JWBlock::Create( $idUser, $idUserBlock );
 		if( $flag ) {
-			JWFriend::Destroy( $idUser, $idUserBlock );
+			JWFollower::Destroy( $idUser, $idUserBlock );
 			JWFollower::Destroy( $idUser, $idUserBlock );
 
-			JWFriend::Destroy( $idUserBlock, $idUser );
+			JWFollower::Destroy( $idUserBlock, $idUser );
 			JWFollower::Destroy( $idUserBlock, $idUser );
 		}
 	}
@@ -909,6 +894,21 @@ class JWSns {
 		}
 
 		return array( $status, $idUserReplyTo, $idStatusReplyTo );
+	}
+
+	static public function ExecWeb($idUser, $status, $operateName='操作')
+	{
+		$robotMsg = new JWRobotMsg();
+		$robotMsg->Set( $idUser , 'web', $status, 'web@jiwai.de' );
+		$replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
+
+		if( $replyMsg === false ) {
+			JWSession::SetInfo('error', '哎呀！由于系统故障，'.$operateName.'失败了');
+			JWLog::Instance()->Log(LOG_ERR, "$status failed");
+		}
+		if( false == empty( $replyMsg ) ){
+			JWSession::SetInfo('notice', $replyMsg->GetBody() );
+		}	
 	}
 }
 ?>

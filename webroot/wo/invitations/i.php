@@ -118,7 +118,7 @@ vertical-align:top;
 
 
 <?php
-	$friend_ids = JWFriend::GetFriendIds($inviter_user_info['id']);
+	$friend_ids = JWFollower::GetFollowingIds($inviter_user_info['id']);
 
 	if ( $friend_ids )
 	{

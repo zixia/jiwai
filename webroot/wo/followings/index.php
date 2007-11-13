@@ -8,9 +8,13 @@ $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
 /*
+ *	除了显示 /wo/friends/ 之外，还负责显示 /zixia/friends/
+ *	如果是其他用户的 friends 页(/zixia/friends)，则 $g_user_friends = true, 并且 $g_page_user_id 是页面用户 id
  *
  */
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
+
+$head_options = array();
 
 if ( isset($g_user_friends) && $g_user_friends ) {
 	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
@@ -20,32 +24,32 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
-$pagination         = new JWPagination($follower_num, $page, 15);
-$follower_ids         = JWFollower::GetFollowerIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-$follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
+$friend_num			= JWFollower::GetFollowingNum	($page_user_info['id']);
+$pagination         = new JWPagination($friend_num, $page, 15);
+$friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
 
-$picture_ids        = JWFunction::GetColArrayFromRows($follower_user_rows, 'idPicture');
-$picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
+/*
+$picture_ids        = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPicture');
+$picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
+*/
 
 ?>
 
 <html>
 
 <head>
-<?php JWTemplate::html_head() ?>
+<?php JWTemplate::html_head($head_options) ?>
 </head>
 
-
 <body class="account" id="friends">
-
 <?php JWTemplate::header("/wo/account/settings") ?>
 <?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
-<?php JWTemplate::FriendsTab($page_user_info['id'], 'followers' ); ?>
-
+<?php JWTemplate::FriendsTab( $page_user_info['id'], 'friends' ); ?>
 <div class="tabbody" id="myfriend">
+
     <table width="100%" border="0" cellspacing="1" cellpadding="0" class="tablehead">
     <tr>
         <td width="285"><a href="#">用户名</a></td>
@@ -54,8 +58,9 @@ $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
         <td><a href="#">最后更新时间</a></td>
     </tr>
     </table>
-	
-<?php JWTemplate::ListUser($logined_user_info['id'], $follower_ids, array('type'=>'followers')); ?>
+
+
+<?php JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('type'=>'following')); ?>
 </div>
 
 <?php JWTemplate::PaginationLimit( $pagination, $page, null, $limit = 4 ) ; ?>
@@ -67,4 +72,3 @@ $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
 
 </body>
 </html>
-

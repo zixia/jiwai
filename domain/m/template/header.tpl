@@ -13,6 +13,7 @@ h2{background:#EEEEEE}
 .n{border:1px solid #ffed00;background:#fffcaa}
 .t,.a,.stamp,#ft{color:#999;font-size:small}
 a{color:#C55400;}
+img{border:0px;}
 h1 a{color:#FFFFFF; text-decoration:none;}
 </style>
 </head>

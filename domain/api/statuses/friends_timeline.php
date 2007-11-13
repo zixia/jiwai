@@ -129,7 +129,7 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 
 		if( $user_rows[$user_id]['protected']=='Y' 
 				&& $idUserAuthed != $user_id
-				&& false == JWFriend::IsFriend($user_id, $idUserAuthed )
+				&& false == JWFollower::IsFollower($idUserAuthed, $user_id )
 		  ){
 			continue;
 		}

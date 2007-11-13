@@ -31,16 +31,16 @@ foreach( $statusRows as $k=>$s){
     $statuses[ $k ] = $s;
 }
 
-$friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
+$followingsNum = JWFollower::GetFollowingNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'friends', 'index', 'replies');
+$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'followings', 'index', 'replies');
 $pageString = paginate( $pagination, '/wo/replies/' );
 JWRender::Display( 'wo/replies', array(
     'loginedUserInfo' => $loginedUserInfo,
     'users' => $userRows,
     'statuses' => $statuses,
-    'friendsNum' => $friendsNum,
+    'followingsNum' => $followingsNum,
     'followersNum' => $followersNum,
     'shortcut' => $shortcut,
     'pageString' => $pageString,

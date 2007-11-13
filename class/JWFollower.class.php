@@ -17,7 +17,7 @@ class JWFollower {
 	 */
 	static private $msInstance;
 
-	const	DEFAULT_FOLLOWER_MAX	= 9999;
+	const DEFAULT_FOLLOWER_MAX = 9999;
 	/**
 	 * Instance of this singleton class
 	 *
@@ -41,118 +41,45 @@ class JWFollower {
 	{
 	}
 
-
-	/**
-	 *	这个函数有些复杂。;-)
-
-	 * 	Is idFollowers is idUser's follower? or check bidirection? 
-	 *	根据 $idFollowers，返回二维($idUser,$idFollowers) 为 key 的 array，true为是朋友，false 为不是朋友
-	 *
-	 *	@param	array of int	$idFollowers
-	 *	@param	bool			$biDirection	如果是 true，则检查双向关系
-
-	 *	@return	array	$follower_relation[idUser][idFollower] = true/false
-						如果 biDirection, 还会有 $follower_rows[idFollower][idUser] 来确认 idUser 有没有被 idFollower 订阅 
-						ie.	array(1=>array(2=>true, 4=>false), 2=>array(...) );
-						如果 true，说明 idFollower 是 idUesr 订阅者
-	 */
-	static function IsFollowers($idUser, $idFollowers, $biDirection=false)
-	{
-		$idUser = intval($idUser);
-
-		if ( 0>=$idUser )
-			throw new JWException('must int');
-
-		if ( empty($idFollowers) )
-			return array();
-
-		if ( !is_array($idFollowers) )
-			throw new JWException('must array');
-
-		// prepare for memcache, key may like this: Follower_IdFollower_of_$IdUser_$user_follower_version
-		// $user_follower_version 	= JWDB::GetMaxId('Follower', array('idUser'=>$idUser));
-
-		$user_follower_ids 		= JWFollower::GetFollowerIds	($idUser, 9999);
-		
-		$user_follower_rows = array();
-
-		if ( !empty($user_follower_ids) ) {
-			foreach ( $user_follower_ids as $user_follower_id ) {
-				$user_follower_rows[$idUser][$user_follower_id] = true;
-			}
-		}
-
-		/*
-		 *	如果查找双向的关系，找出都有谁添加了 $idUser 为好友
-	 	 */
-		if ( $biDirection )
-		{
-			$user_be_follower_ids		= JWFollower::GetBeFollowerIds	($idUser, 9999);
-		
-			if ( !empty($user_be_follower_ids) ) {
-				foreach ( $user_be_follower_ids as $user_be_follower_id ) {
-					$user_follower_rows[$user_be_follower_id][$idUser] = true;
-				}
-			}
-		}
-
-		$return_follower_relation = array();
-
-		foreach ( $idFollowers as $follower_id )
-		{
-			// 检查正向订阅关系
-			if ( isset($user_follower_rows[$idUser][$follower_id]) )
-				$return_follower_relation[$idUser][$follower_id] = true;
-			else
-				$return_follower_relation[$idUser][$follower_id] = false;
-
-
-			// 检查反向订阅关系
-			if ( $biDirection )
-			{
-				if ( isset($user_follower_rows[$follower_id][$idUser]) )
-					$return_follower_relation[$follower_id][$idUser] = true;
-				else
-					$return_follower_relation[$follower_id][$idUser] = false;
-			}
-			
-		}
-
-		return $return_follower_relation;
-	}
-
-
 	/**
 	 * Is idFollower is idUser's follower?
 	 *
 	 */
 	static function IsFollower($idUser, $idFollower)
 	{
-		$is_follower_rows = self::IsFollowers($idUser, array($idFollower));
+		$idUser = JWDB::CheckInt( $idUser );
+		$idFollower = JWDB::CheckInt( $idFollower );
 
-		return $is_follower_rows[$idUser][$idFollower];
+		$followerArray = self::GetFollowerIds( $idUser );
+
+		return in_array( $idFollower, $followerArray );
 	}
+
 
 
 	/**
 	 * 	Get follower list
 	 *	@return array	array of follower id list
 	 */
-	static function GetFollowerIds($idUser, $numMax=JWFollower::DEFAULT_FOLLOWER_MAX, $offset = 0)
+	static function GetFollowerIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset = 0)
 	{
-		$idUser = intval($idUser);
-		$numMax = intval($numMax);
+		$followerInfos = self::GetFollowerInfos( $idUser, $numMax, $offset );
+		return array_keys( $followerInfos );
+	}
 
-		if ( 0>=$idUser || 0>=$numMax )
-			throw new JWException('not int');
+	static function GetNotificationIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset = 0)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
 
 		$sql = <<<_SQL_
 SELECT	idFollower
-FROM	Follower
-WHERE	idUser=$idUser
-		AND idFollower IS NOT NULL
-		ORDER BY id DESC
-LIMIT $offset,$numMax
+	FROM	Follower
+	WHERE	
+		idUser=$idUser 
+		AND notification='Y'
+	ORDER BY id DESC
+	LIMIT $offset,$numMax
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);
@@ -170,43 +97,8 @@ _SQL_;
 	}
 
 
-	/**
-	 * 	Get ids of whom is follower with $idUser
-	 *	@return array	array of be-follower id list
-	 */
-	static function GetBeFollowerIds($idFollower, $numMax=40, $start=0)
-	{
-		$idFollower 	= intval($idFollower);
-		$numMax 	= intval($numMax);
-		$start  	= intval($start);
-
-		if ( 0==$idFollower || 0==$numMax )
-			throw new JWException('not int');
-
-		$sql = <<<_SQL_
-SELECT	idUser
-FROM	Follower
-WHERE	idFollower=$idFollower
-		AND idUser IS NOT NULL
-LIMIT	$start,$numMax
-_SQL_;
-
-		$arr_result = JWDB::GetQueryResult($sql, true);
-
-		if ( empty($arr_result) )
-			return array();
-
-		$arr_user_id = array();
-		foreach ( $arr_result as $row )
-			array_push($arr_user_id, $row['idUser']);
-
-		return $arr_user_id;
-	}
-
-
-
 	/*
-	 *	取消 idUser 的 follower idFollower
+	 * 取消 idUser 的 follower idFollower
 	 * @param	int	idFollower
 	 * @param	int	idUser
 	 * @return 
@@ -215,34 +107,200 @@ _SQL_;
 	 */
 	static public function Destroy($idUser, $idFollower)
 	{
-		$idUser 	= JWDB::CheckInt($idUser);
+		$idUser = JWDB::CheckInt($idUser);
 		$idFollower = JWDB::CheckInt($idFollower);
 
-		return JWDB::DelTableRow('Follower', array(	 'idUser'	=> $idUser
-													,'idFollower'	=> $idFollower
-												)
-								);
+		return JWDB::DelTableRow('Follower', array(
+			'idUser' => $idUser,
+			'idFollower' => $idFollower,
+		));
 	}
 
 
 	/*
-	 *	添加 idFollower 为 idUser 订阅者
+	 * 添加 idFollower 为 idUser 关注者
 	 * @param	int	idFollower
 	 * @param	int	idUser
 	 * @return 
 			true: 成功 
 			false: 失败
 	 */
-	static public function Create($idUser, $idFollower)
+	static public function Create($idUser, $idFollower, $notification='N')
 	{
-		$idUser 	= JWDB::CheckInt($idUser);
+		$idUser = JWDB::CheckInt($idUser);
 		$idFollower = JWDB::CheckInt($idFollower);
 
-		return JWDB::SaveTableRow('Follower', array(	 'idUser'		=> $idUser
-														,'idFollower'	=> $idFollower
-														,'timeCreate'	=> JWDB::MysqlFuncion_Now()
-												)
-									);
+		return JWDB::SaveTableRow('Follower', array(
+			'idUser' => $idUser,
+			'idFollower' => $idFollower,
+			'notification' => $notification,
+			'timeCreate' => JWDB::MysqlFuncion_Now(),
+		));
+	}
+
+	static public function SetNotification($idUser, $idFollower, $notification='N'){
+		$idUser = JWDB::CheckInt($idUser);
+		$idFollower = JWDB::CheckInt($idFollower);
+		
+		$idExist = JWDB::ExistTableRow( 'Follower', array(
+			'idUser' => $idUser,
+			'idFollower' => $idFollower,
+		));
+
+		if( $idExist ) {
+			return JWDB::UpdateTableRow( 'Follower', $idExist, array(
+				'notification' => $notification,
+			));
+		}
+		
+		return true;	
+	}
+
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$friendNum for $idUser
+	 */
+	static public function GetFriendNum($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Follower
+WHERE	idFollower=$idUser
+		AND idUser IS NOT NULL
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
+	}
+
+	/**
+	 * 	Get ids of whom is $idUser's friend.
+	 *	@return array	array of friend id list
+	 */
+	static function GetFollowingIds($idUser, $numMax=9999, $offset=0)
+	{
+		$followingInfos = self::GetFollowingInfos( $idUser, $numMax, $offset );
+		return array_keys( $followingInfos );
+	}
+
+	/**
+	 * 	Get ids of whom is $idUser's friend (bio)
+	 *	@return array	array of friend id list
+	 */
+	static function GetBioFollowingIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
+		$offset  = intval($offset);
+
+		$sql = <<<_SQL_
+SELECT	idUser
+FROM	Follower
+WHERE	idFollower=$idUser 
+		AND idUser IN
+		(
+		 SELECT idFollower FROM Follower WHERE idUser=$idUser 
+		)
+ORDER BY id DESC
+LIMIT $offset,$numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+		{
+			return array();
+		}
+
+		$rtn = array();
+		foreach ( $arr_result as $row )
+			array_push($rtn, $row['idUser']);
+
+		return $rtn;
+	}
+
+	static function GetFollowerInfos($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
+
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
+		
+		$sql = <<<_SQL_
+SELECT	*
+	FROM	Follower
+	WHERE	
+		idUser=$idUser
+		AND idFollower IS NOT NULL
+	ORDER BY id DESC
+	LIMIT $offset, $numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$rtn = array();
+		foreach ( $arr_result as $row ){
+			$rtn[ $row['idFollower'] ] = $row;
+		}
+
+		return $rtn;
+	}
+
+	static function GetFollowingInfos($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
+
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
+
+		$sql = <<<_SQL_
+SELECT	*
+	FROM	Follower
+	WHERE	
+		idFollower=$idUser
+		AND idUser IS NOT NULL
+	ORDER BY id DESC
+	LIMIT $offset, $numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$rtn = array();
+		foreach ( $arr_result as $row ){
+			$rtn[ $row['idUser'] ] = $row;
+		}
+
+		return $rtn;
+	}
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$friendNum for $idUser
+	 */
+	static public function GetFollowingNum($idUser)
+	{
+		$idUser = intval($idUser);
+
+		if ( !is_int($idUser) )
+			throw new JWException('must be int');
+
+		$sql = <<<_SQL_
+SELECT	COUNT(*) as num
+FROM	Follower
+WHERE	idFollower=$idUser
+		AND idUser IS NOT NULL
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['num'];
 	}
 
 	/*
@@ -251,10 +309,7 @@ _SQL_;
 	 */
 	static public function GetFollowerNum($idUser)
 	{
-		$idUser = intval($idUser);
-
-		if ( !is_int($idUser) )
-			throw new JWException('must be int');
+		$idUser = JWDB::CheckInt($idUser);
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num

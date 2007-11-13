@@ -34,7 +34,7 @@ function favourite( $idUser, $value ){
 	if(false == JWFavourite::IsFavourite( $idUser, $value ) ) {
 		JWFavourite::Create($idUser, $value);
 	}
-	Header("Location: $_SERVER[HTTP_REFERER]");
+	redirect();
 }
 
 function unfavourite( $idUser, $value ) {
@@ -49,7 +49,7 @@ function unfavourite( $idUser, $value ) {
 	$confirm = '确认取消收藏这条更新吗？';
 
 	global $loginedUserInfo;
-	$shortcut = array('my','public_timeline','logout','message','index', 'friends', 'replies');
+	$shortcut = array('my','public_timeline','logout','message','index', 'followings', 'replies');
 	JWRender::Display( 'wo/destroy', array(
 		'object' => $object,
 		'id' => $value,
@@ -74,7 +74,7 @@ function destroy( $idUser, $value ){
 	$confirm = '确认删除这条更新吗？';
 
 	global $loginedUserInfo;
-	$shortcut = array('my','public_timeline','logout','message','index', 'friends', 'replies');
+	$shortcut = array('my','public_timeline','logout','message','index', 'followings', 'replies');
 	JWRender::Display( 'wo/destroy', array(
 		'object' => $object,
 		'id' => $value,

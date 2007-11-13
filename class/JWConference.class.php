@@ -64,7 +64,7 @@ class JWConference {
 			$deviceCategory = JWDevice::GetDeviceCategory( $device );
 			$allowedDevice = $conference['deviceAllow'];
 			if( in_array( $deviceCategory, explode(',', $allowedDevice) ) ){
-				if( $conference['friendOnly'] == 'N' || JWFriend::IsFriend( $idReceiver, $idSender ) ) {
+				if( $conference['friendOnly'] == 'N' || JWFollower::IsFollowing( $idReceiver, $idSender ) ) {
 					return $conference;
 				}
 			}

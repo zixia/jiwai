@@ -30,7 +30,7 @@ if( !empty($unResult) ){
 //Friends
 if( !empty($unResult) ){
 	$unResult[0]['numStatus'] = JWStatus::GetStatusNum( $unResult[0]['id'] );
-	$unResult[0]['numFriend'] = JWFriend::GetFriendNum( $unResult[0]['id'] );
+	$unResult[0]['numFriend'] = JWFollower::GetFollowingNum( $unResult[0]['id'] );
 	$unResult[0]['numFollower'] = JWFollower::GetFollowerNum( $unResult[0]['id'] );
 	$unResult[0]['numMessage'] = JWMessage::GetMessageNum( $unResult[0]['id'], JWMessage::INBOX );
 	$unResult[0]['numFavourite'] = JWFavourite::GetFavouriteNum( $unResult[0]['id'] );

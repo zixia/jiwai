@@ -1,12 +1,12 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2>${htmlSpecialChars($userInfo['nameFull'])}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">${htmlSpecialChars($userInfo['nameFull'])}和我关注的人</a></h2>
+<h2>${htmlSpecialChars($userInfo['nameScreen'])}的消息｜<a href="/{$userInfo['nameUrl']}/with_friends/">${htmlSpecialChars($userInfo['nameScreen'])}和别人</a></h2>
 <ul>
 <!--{if $showProtected}-->
 <!--{foreach $statuses as $status}-->
 <li>
-	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
+	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
     
     ${$status['mmsUrl'] ? '<img src="'.$status['mmsUrl'].'"/>' : '';}
     <span class="stamp">

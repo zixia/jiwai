@@ -24,6 +24,8 @@ class JWRobotLingoBase {
 	static private $msRobotLingo = array (
 		 'HELP' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help', 'param'=>1 ),
 		 'TIPS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips', 'param'=>0 ),
+
+		 'ADD' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add', 'param'=>1 ),
 		 
 		 'ON' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_On', 'param'=>1),
 		 'OFF' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off', 'param'=>1),
@@ -31,7 +33,7 @@ class JWRobotLingoBase {
 		 'FOLLOW' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow', 'param'=>10),
 		 'LEAVE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave', 'param'=>10),
 		 
-		 'ADD' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add', 'param'=>1),
+		 'NOTICE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_NOTICE', 'param'=>1),
 		 'DELETE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Delete', 'param'=>1),
 		 
 		 'GET' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get', 'param'=>1),
