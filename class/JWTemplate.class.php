@@ -1158,7 +1158,7 @@ _HTML_;
 
 		$user_ids = $options['user_ids'];
 
-		$activeOrder = isset( $options['activeOrder'] ) ? $activeOrder : true;
+		$activeOrder = isset( $options['activeOrder'] ) ? $options['activeOrder'] : true;
 
 		if ( empty($options['view']) ) $options['view'] = 'large';
 		

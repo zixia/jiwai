@@ -31,7 +31,7 @@ $wakkaConfig = array(
 	'require_edit_note' => '0',
 	'anony_delete_own_comments' => '1',
 	'public_sysinfo' => '0',
-	'double_doublequote_html' => 'safe',
+	'double_doublequote_html' => 'raw',
 	'external_link_tail' => '<span class="exttail">&#8734;</span>',
 	'sql_debugging' => '0',
 	'admin_users' => 'ZiXia',

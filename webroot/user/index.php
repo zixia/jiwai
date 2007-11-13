@@ -31,7 +31,7 @@ else
 	if( false == ( $page_user_id = JWUser::GetUserInfo($nameScreen,'id', 'nameUrl') ) ) {
 		$page_user_info = JWUser::GetUserInfo($nameScreen, null, 'nameScreen');
 		if( false == empty($page_user_info) ){
-			Header("Location: /$page_user_info[nameUrl]/");
+			header( 'Location: /'. urlencode( $page_user_info['nameUrl'] ) . $pathParam );
 			exit;
 		}
 	}

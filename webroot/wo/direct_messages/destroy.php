@@ -28,7 +28,7 @@ if ( preg_match('/^\/(\d+)$/',$param,$match) )
 		$flag &= JWMessage::SetMessageStatus($message_id, JWMessage::OUTBOX, JWMessage::MESSAGE_DELETE);
 	}
 	if( $flag && $messageRow['idUserReceiver'] == $logined_user_id ) {
-		$falg &= JWMessage::SetMessageStatus($message_id, JWMessage::INBOX, JWMessage::MESSAGE_DELETE);
+		$flag &= JWMessage::SetMessageStatus($message_id, JWMessage::INBOX, JWMessage::MESSAGE_DELETE);
 	}
 	//if ( JWMessage::Destroy($message_id) )
 	if ( $flag ) 

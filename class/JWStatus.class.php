@@ -689,58 +689,46 @@ _SQL_;
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
 	{
 
-        $idUserReplyTo = $idStatusReplyTo = null;
-        if( is_array( $status ) ){
-            $idUserReplyTo = $status['idUserReplyTo'];
-            $idStatusReplyTo = $status['idStatusReplyTo'];
-            $status = $status['status'];
-        }
+		$idUserReplyTo = $idStatusReplyTo = null;
+		if( is_array( $status ) ){
+			$idUserReplyTo = $status['idUserReplyTo'];
+			$idStatusReplyTo = $status['idStatusReplyTo'];
+			$status = $status['status'];
+		}
 
-		$replyto	= null;
+		$replyto = null;
 
 		if ( preg_match('/^@\s*([\w\._\-]+)/',$status,$matches) )
-			$replyto 	= $matches[1];
-        else if ( preg_match('/^@\s*([^\s]+)\s+(.+)/',$status,$matches) )
-            $replyto    = $matches[1];
+			$replyto = $matches[1];
+		else if ( preg_match('/^@\s*([^\s]+)\s+(.+)/',$status,$matches) )
+			$replyto = $matches[1];
 
+		$skip_url_regex = '#'.'(komoo.cn)'
+				// .'|(fanfou.com)'
+				.'#';
 
-		/* 
-		 * if status contains URL, we split status str to 4 parts: url_before, url_domain, url_path, url_after.
-		 *
-		 * URL is ascii. UTF8 ascii is 1 byte so we use 0x00-0xff to match ascii.
-		 * 		":" is 0x3a
-		 *		"/" is 0x2F
-		 *		' ' is 0x20
-		 *
-		 */
-
-		$skip_url_regex = 	 '#'
-							.'(komoo.cn)'
-			#				.'|(fanfou.com)'
-							.'#'
-						;
 		$status = preg_replace('/[\n\r]/' ,' ', $status);
 
 		if ( !preg_match($skip_url_regex,$status)
 				&& preg_match(	'#'
-									// head_str
-									. '^(.*?)'
-									. 'http://'
-										// url_domain
-										. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
-										// url_path
-										. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
-									// tail_str
-									. '(.*)$#is'
-							, $status
-							, $matches 
-						) )
+						// head_str
+						. '^(.*?)'
+						. 'http://'
+						// url_domain
+						. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
+						// url_path
+						. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
+						// tail_str
+						. '(.*)$#is'
+						, $status
+						, $matches 
+					) )
 		{
 			//die(var_dump($matches));
-			$head_str		= htmlspecialchars($matches[1]);
-			$url_domain		= htmlspecialchars($matches[2]);
-			$url_path		= htmlspecialchars($matches[3]);
-			$tail_str		= htmlspecialchars($matches[4]);
+			$head_str = htmlspecialchars($matches[1]);
+			$url_domain = htmlspecialchars($matches[2]);
+			$url_path = htmlspecialchars($matches[3]);
+			$tail_str = htmlspecialchars($matches[4]);
 
 
 			/*
@@ -756,47 +744,47 @@ _SQL_;
 			if ( $jsLink )
 			{
 				$url_str		= <<<_HTML_
-<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$url_domain$url_path');return false;">http://$url_domain/...</a>
+					<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$url_domain$url_path');return false;">http://$url_domain/...</a>
 _HTML_;
 			}
 			else
 			{
-                if( $urchin ) {
-                    $url_str		= <<<_HTML_
-<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
+				if( $urchin ) {
+					$url_str		= <<<_HTML_
+						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
 _HTML_;
-                }else{
-                    $url_str		= <<<_HTML_
-<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
+				}else{
+					$url_str		= <<<_HTML_
+						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
 _HTML_;
-                }
+				}
 			}
 
-			$status 		= $head_str . $url_str . $tail_str;
+			$status = $head_str . $url_str . $tail_str;
 
-//$status = htmlspecialchars($status);
 		}
 		else
 		{
 			$status = htmlspecialchars($status);
 		}
 
-		if ( ! empty($replyto) ) {
-            if( $idUserReplyTo ) {
-                $userReply = JWUser::GetUserInfo( $idUserReplyTo );
-                if( false == empty( $userReply ) ) {
-                    $replyto = $userReply['nameScreen'];
-                    $status		= preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a> ", $status);
-                }
-            }else{
-                $replyto = null;
-            //    $status		= preg_replace('/^@\s*([\w\._\-]+)/',"@<a href='/$1/'>$1</a> ", $status);
-            }
-        }
+		if( $idUserReplyTo ) {
+			$userReply = JWUser::GetUserInfo( $idUserReplyTo );
+			if ( false == empty($replyto) ) {
+				$replyto = $userReply['nameUrl'];
+				$status = preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a> ", $status);
+			}else{
+				$replyto = $userReply['nameUrl'];
+				$status = "@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a>  $status";
+			}
+		}else{
+			$replyto = null;
+		}
 
-		return array ( 'status'		=> $status
-						, 'replyto'	=> $replyto
-					);
+		return array ( 
+			'status' => $status, 
+			'replyto' => $replyto,
+		);
 	}
 	
 
