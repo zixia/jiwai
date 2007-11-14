@@ -24,7 +24,6 @@ $idInvited = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
     // we have no photo
     $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
 }
-
 //echo "<pre>"; die(var_dump($user_info));
 //var_dump($file_info);
 if ( isset($_POST['invite_email_x'] ) ) {
@@ -160,7 +159,7 @@ function shifttab(id){
     </fieldset>
     </div>
     <div class="but">
-        <input name="invite_sms" type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-sure.gif'); ?>" alt="确定" width="112" height="33" border="0" />　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-skip.gif'); ?>" alt="跳过" width="112" height="33" border="0" /></a>
+        <input name="invite_sms_x" type="submit" class="submitbutton" value="邀请" />　　<input type="button" class="submitbutton" value="跳过" onclick="javascritp:location.href=/wo/"/>
     </div>
     </form>
 </div>
@@ -213,7 +212,7 @@ function shifttab(id){
     </fieldset>
     </div>
     <div class="but">
-        <input name="invite_email" type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-sure.gif'); ?>" alt="确定" width="112" height="33" border="0" />　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-skip.gif'); ?>" alt="跳过" width="112" height="33" border="0" /></a>
+        <input name="invite_email_x" type="submit" class="submitbutton" value="邀请"/>　　<input type="button" class="submitbutton" value="跳过" onclick="javascritp:location.href=/wo/" />
     </div>
     </form>
 </div>
