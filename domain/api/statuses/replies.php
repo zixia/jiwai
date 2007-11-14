@@ -59,21 +59,21 @@ function renderFeedStatuses($idUser, $feedType) {
 	$statusesWithUser = getStatusesWithUser( $idUser , false);
 
 	$feed = new JWFeed( array (	
-				'title'		=> 'JiWai/叽歪 - 对'.$user['nameFull'].'的回复' , 
-				'url'		=> 'http://JiWai.de/'.$user['nameScreen'] ,
-				'desc'		=> 'JiWai/叽歪 - 对'.$user['nameFull'].'的回复' , 
+				'title'		=> 'JiWai/叽歪 - 对'.$user['nameScreen'].'的回复' , 
+				'url'		=> 'http://JiWai.de/'.$user['nameUrl'] ,
+				'desc'		=> 'JiWai/叽歪 - 对'.$user['nameScreen'].'的回复' , 
 				'ttl'		=> 40,
 			));
 
 	foreach ( $statusesWithUser as $status )
 	{
 		$feed->AddItem(array( 
-				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'title'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'desc'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'date'	=> $status['timeCreate'] , 
-				'author'=> $status['user']['nameFull'] , 
-				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
-				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
+				'author'=> $status['user']['nameScreen'] , 
+				'guid'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 
+				'url'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 
 			) );
 	}
 	$feed->OutputFeed($feedType);

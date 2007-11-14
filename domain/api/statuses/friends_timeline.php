@@ -84,20 +84,20 @@ function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 	$statuses = getFriendsTimelineStatuses( $options, false );
 
 	$feed = new JWFeed(array(
-				'title'	=> '叽歪 / '.$user['nameFull'].'和朋友们' ,
-			       	'url'	=> 'http://JiWai.de/'.$user['nameScreen'].'/with_friends/', 
-				'desc'	=> $user['nameFull'].'和朋友们的叽歪de更新' , 
+				'title'	=> '叽歪 / '.$user['nameScreen'].'和朋友们' ,
+			       	'url'	=> 'http://JiWai.de/'.$user['nameUrl'].'/with_friends/', 
+				'desc'	=> $user['nameScreen'].'和朋友们的叽歪de更新' , 
 				'ttl'	=> 40,
 				)); 
 
 	foreach ( $statuses as $status ){
 		$feed->AddItem(array( 
-				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'title'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'desc'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'date'	=> strtotime( $status['timeCreate'] ), 
-				'author'=> $status['user']['nameFull'] , 
-				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
-				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'],
+				'author'=> $status['user']['nameScreen'] , 
+				'guid'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 
+				'url'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'],
 				));
 	}
 	$feed->OutputFeed($feedType);

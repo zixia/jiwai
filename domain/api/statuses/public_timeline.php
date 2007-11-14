@@ -73,12 +73,12 @@ function renderFeedReturn($options, $feedType=JWFeed::ATOM){
 
 	foreach ( $statuses as $status ){
 		$feed->AddItem(array( 
-				'title'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'desc'	=> $status['user']['nameFull'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'title'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
+				'desc'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'date'	=> strtotime( $status['timeCreate'] ) , 
-				'author'=> $status['user']['nameFull'] , 
-				'guid'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'] , 
-				'url'	=> "http://JiWai.de/" . $status['user']['nameScreen'] . "/statuses/" . $status['idStatus'],
+				'author'=> $status['user']['nameScreen'] , 
+				'guid'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 
+				'url'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'],
 				));
 	}
 	$feed->OutputFeed($feedType);
