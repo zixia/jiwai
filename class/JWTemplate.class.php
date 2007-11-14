@@ -184,9 +184,9 @@ _HTML_;
 
 
 <!-- ul id="accessibility">
-    <li>
-      你正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
-    </li>
+	<li>
+	  你正在使用手机吗？请来这里：<a href="http://m.JiWai.de/">m.JiWai.de</a>!
+	</li>
 	<li>
 		<a href="#navigation" accesskey="2">跳转到导航目录</a>
 	</li>
@@ -276,7 +276,7 @@ _HTML_;
 <?php
 	}
 
-    static public function SettingTab($highlight=null){
+	static public function SettingTab($highlight=null){
 			$nav = array(
 				'/wo/account/settings' => '帐号&amp;密码',
 				'/wo/account/profile' => '个人资料',
@@ -286,11 +286,11 @@ _HTML_;
 				'/wo/account/profile_settings' => '配色方案',
 				'/wo/openid/' => 'OpenID',
 				'/wo/bindother/' => '绑定Twitter',
-                );
+				);
 
 		if (!$highlight) {
 			$a = array_reverse($nav);
-            $urlNow = $_SERVER['REQUEST_URI'];
+			$urlNow = $_SERVER['REQUEST_URI'];
 			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
 			if (!$highlight) $highlight = '/wo/account/settings'; //$url;
 		}
@@ -298,52 +298,52 @@ _HTML_;
 
 <div id="settingsNav" class="subtab">
 <?php foreach( $nav as $url=>$text ) { ?>
-    <a href="<?php echo $url;?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $text;?></a>
+	<a href="<?php echo $url;?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $text;?></a>
 <?php } ?>
 </div>
 <?php
-    }
+	}
 
-    static public function FriendsTab( $idUser, $highlight=null ){
-        $userInfo = JWUser::GetUserInfo( $idUser );
-        $wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
+	static public function FriendsTab( $idUser, $highlight=null ){
+		$userInfo = JWUser::GetUserInfo( $idUser );
+		$wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
 
-        $friendsNum = JWFriend::GetFriendNum( $idUser );
-        $followersNum = JWFollower::GetFollowerNum( $idUser );
-        $inRequestsNum = JWFriendRequest::GetUserNum( $idUser );
-        $outRequestsNum = JWFriendRequest::GetFriendNum( $idUser );
+		$followingsNum = JWFollower::GetFollowingNum( $idUser );
+		$followersNum = JWFollower::GetFollowerNum( $idUser );
+		$inRequestsNum = JWFriendRequest::GetUserNum( $idUser );
+		$outRequestsNum = JWFriendRequest::GetFriendNum( $idUser );
 
-        if( $highlight == 'search' ) {
-            global $q , $searched_num;
-            $nav = array(
-                    'search' => array("javascript:void(0);", "共找到符合\"$q\"的用户", $searched_num),
-            );
-        }else {
-            if( $wo ) {
-                $nav = array(
-                    'friends' => array("/wo/friends/", "我的好友", $friendsNum),
-                    'followers' => array("/wo/followers/","我的粉丝", $followersNum),
-                    'inrequests' => array("/wo/friend_requests/","待审核好友",$inRequestsNum),
-                    'outrequests' => array("/wo/friend_requests/?out","发出的好友请求",$outRequestsNum),
-                );
-            }else{
-                $nav = array(
-                    'friends' => array("/$userInfo[nameScreen]/friends/", "$userInfo[nameFull]的好友", $friendsNum),
-                    //'followers' => array("$prefix/followers/","$userInfo[nameFull]的粉丝", $followersNum),
-                );
-            }
-        }
+		if( $highlight == 'search' ) {
+			global $q , $searched_num;
+			$nav = array(
+					'search' => array("javascript:void(0);", "共找到符合\"$q\"的用户", $searched_num),
+			);
+		}else {
+			if( $wo ) {
+				$nav = array(
+					'friends' => array("/wo/followings/", "你关注的人", $followingsNum),
+					'followers' => array("/wo/followers/","关注你的人", $followersNum),
+					'inrequests' => array("/wo/friend_requests/","待审核关注",$inRequestsNum),
+					'outrequests' => array("/wo/friend_requests/?out","发出的关注请求",$outRequestsNum),
+				);
+			}else{
+				$nav = array(
+					'friends' => array("../followings/", "此人关注的人", $followingsNum),
+					//'followers' => array("../followers/","关注此人的人", $followersNum),
+				);
+			}
+		}
 
-        if( !$highlight ) 
-            $highlight = 'friends';
+		if( !$highlight ) 
+			$highlight = 'friends';
 ?> 
-        <p class="subtab">
-        <?php foreach ($nav as $k=>$v ){ 
-            echo "<a href=\"".$v[0]."\" ".($k==$highlight?"class=\"active\"":"").">".$v[1]."(".$v[2].")</a>";
-        }?>
-        </p>
+		<p class="subtab">
+		<?php foreach ($nav as $k=>$v ){ 
+			echo "<a href=\"".$v[0]."\" ".($k==$highlight?"class=\"active\"":"").">".$v[1]."(".$v[2].")</a>";
+		}?>
+		</p>
 <?php
-    }
+	}
 
 
 	static public function slogon()
@@ -390,9 +390,9 @@ _HTML_;
 		<li><a href="/help/" target="_blank">帮助留言板</a></li>
 		<!--li><a href="http://help.jiwai.de/TOS" target="_blank">使用协议</a></li-->
 	</ul>
-    <ul>
+	<ul>
 		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
-    </ul>
+	</ul>
 </div>
 
 <?php
@@ -412,10 +412,10 @@ setTimeout("run_google();", 100);
 
 function run_google() 
 {
-    if (!window.urchinTracker) {
-        setTimeout(run_google, 500);
-        return;
-    }
+	if (!window.urchinTracker) {
+		setTimeout(run_google, 500);
+		return;
+	}
 
 	_uacct = "UA-2771171-2";
 	_uOsr[24]="iask"; _uOkw[24]="k";
@@ -459,9 +459,9 @@ _HTML_;
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
 					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value){$('updaterForm').submit();}return false;" value="叽歪一下"/>
 				</p>	
-            <?php
-                if(false == empty($options['sendtips']))
-                {
+			<?php
+				if(false == empty($options['sendtips']))
+				{
 			$idCurrent = JWLogin::GetCurrentUserId();
 			$ValidNums = JWTemplate::GetSmsAndImValidNums($idCurrent);
 			$imicoUrlSms = "/wo/devices/sms";
@@ -476,32 +476,32 @@ _HTML_;
 				echo '<a class="sendtips" href="'. JW_SRVNAME . $imicoUrlIm . '">用QQ/MSN也能叽歪 ？</a>';
 			}
 			echo '</p>';
-                }
-            ?>    
+				}
+			?>	
 			</form>
-                 </div>
+				 </div>
 <script type="text/javascript">
-    $('jw_status').focus();
-    function updateStatusTextCharCounter(value) {
-        len_max = 140;
-        if (len_max - value.length >= 0) {
-            $('status-field-char-counter').innerHTML = len_max - value.length;
-        } else {
-            $('status-field-char-counter').innerHTML = 0;
-            /*
-            var ov = $('status').value;
-            var nv = ov.substring(0, len_max);
-            if( len_max == 70 ) {
-                var max_nv = ov.substring(0, ++len_max);
-                while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
-                    nv = max_nv;
-                    max_nv = ov.substring(0, ++len_max);
-                }
-            }
-            //$('status').value = nv;  //not cut for bug
-            */
-        }
-    };
+	$('jw_status').focus();
+	function updateStatusTextCharCounter(value) {
+		len_max = 140;
+		if (len_max - value.length >= 0) {
+			$('status-field-char-counter').innerHTML = len_max - value.length;
+		} else {
+			$('status-field-char-counter').innerHTML = 0;
+			/*
+			var ov = $('status').value;
+			var nv = ov.substring(0, len_max);
+			if( len_max == 70 ) {
+				var max_nv = ov.substring(0, ++len_max);
+				while( getStatusTextCharLengthMax( max_nv ) == 140 ) {
+					nv = max_nv;
+					max_nv = ov.substring(0, ++len_max);
+				}
+			}
+			//$('status').value = nv;  //not cut for bug
+			*/
+		}
+	};
 </script>
 <?php
 /*
@@ -575,7 +575,7 @@ _TAB_;
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和我的好友分享我的叽歪de。<br /><a href="/wo/friendships/create/$idUser" onclick="return JiWai.requestFriend($idUser, this);">加我为好友。</a>
+我只和关注我人分享我的叽歪de。<br /><a href="/wo/followings/follow/$idUser" onclick="return JiWai.requestFriend($idUser, this);">开始关注我。</a>
 _HTML_;
 
 		}
@@ -619,19 +619,19 @@ _HTML_;
 						<div class="bg"></div>
 <table width="100%" border="0" cellspacing="5" cellpadding="0">
   <tr>
-    <td><h3><?php echo $name_screen; ?></h3></td>
-    <td align="right">
+	<td><h3><?php echo $name_screen; ?></h3></td>
+	<td align="right">
 <?php
 if ($current_user_id!=$idUser) {
 if ( isset($current_user_id) && JWFollower::IsFollower($userRow['id'], $current_user_id) ) {
 ?>
-      <small> 已订阅 </small>
+	  <small> 已关注 </small>
 <?php
 } else {
-	$oc = ( JWUser::IsProtected($idUser) && !JWFriend::IsFriend($idUser, $current_user_id) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
+	$oc = ( JWUser::IsProtected($idUser) && !JWFollower::IsFollower($current_user_id, $userRow['id']) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
 	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
 		echo <<<_HTML_
-	<a href="/wo/friendships/create/$userRow[id]" $oc>成为{$name_screen}的粉丝吧</a>
+	<a href="/wo/followings/follow/$userRow[id]" $oc>关注此人</a>
 _HTML_;
 	}
 }
@@ -641,13 +641,13 @@ _HTML_;
 <?php
 }
 ?>
-    </td>
+	</td>
   </tr>
   <tr>
-    <td colspan="2"><?php echo $status?></td>
+	<td colspan="2"><?php echo $status?></td>
    </tr>
   <tr>
-    <td><span class="meta">
+	<td><span class="meta">
 <?php
 if ( $isOpen && isset($statusRow) ) 
 {
@@ -665,8 +665,8 @@ _HTML_;
 	}
 }
 ?>
-    </span></td>
-    <td align="right">
+	</span></td>
+	<td align="right">
 <?php
 if ( $isOpen && isset($statusRow) && isset($current_user_id) )	
 {
@@ -680,11 +680,11 @@ if ( $isOpen && isset($statusRow) && isset($current_user_id) )
 	}
 }
 ?>
-    </td>
+	</td>
   </tr>
 </table>
 					</div>
-			      </div>
+				  </div>
 		  </div>	
 
 <?php
@@ -730,7 +730,7 @@ _HTML_;
 			$asset_star_alt = '不收藏';
 			//$asset_star_title = '已收藏';
 			$asset_star_url = self::GetAssetUrl("/img/icon_star_full.gif");
-			$ajax_url		= "/wo/favourites/destroy/$idStatus";
+			$ajax_url		= "/wo/favourites/leave/$idStatus";
 		}
 		else
 		{
@@ -740,7 +740,7 @@ _HTML_;
 			$ajax_url		= "/wo/favourites/create/$idStatus";
 		}
 		$html_str = <<<_HTML_
-    	<a href="javascript:void(0);" onclick="JiWai.ToggleStar($idStatus); return false;" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
+		<a href="javascript:void(0);" onclick="JiWai.ToggleStar($idStatus); return false;" title="$asset_star_alt" alt="$asset_star_alt"><img id="status_star_$idStatus" border="0" src="$asset_star_url" /><span id="status_star_text_$idStatus">$asset_star_alt2</span></a>
 _HTML_;
 
 		return $html_str;
@@ -801,13 +801,13 @@ _HTML_;
 					( JWUser::IsProtected($user_id) && 
 					  	(
 							( $idCurrent 
-								&& false == JWFriend::IsFriend($user_id, $idCurrent) 
+								&& false == JWFollower::IsFollower($idCurrent, $user_id) 
 								&& $idCurrent != $user_id 
 							)
 							|| 
 							( !$idCurrent )
-					       	)	
-				       	)
+						   	)	
+					   	)
 			   )
 			continue;
 				
@@ -932,10 +932,10 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 <div class="add">
 <?php
 			if ($options['search']) {
-                global $q;
+				global $q;
 ?>
 <div class="search">
-    <form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '输入关键词';?>" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
+	<form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '输入关键词';?>" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
 </div>
 <?php
 			}
@@ -973,16 +973,16 @@ __HTML__;
 	}
 
 
-    static public function PaginationLimit( $pagination, $page=1, $url=null, $limit = 4 ) {
+	static public function PaginationLimit( $pagination, $page=1, $url=null, $limit = 4 ) {
 
-        $url = ( empty($url) ) ? $_SERVER['REQUEST_URI'] : $url;
+		$url = ( empty($url) ) ? $_SERVER['REQUEST_URI'] : $url;
 
-        $l = $pagination->GetPageNo() - $limit;
-        if ($l<1) $l = 1;
-        $r = $l + $limit*2;
-        if ($r>$pagination->GetOldestPageNo()) $r = $pagination->GetOldestPageNo();
+		$l = $pagination->GetPageNo() - $limit;
+		if ($l<1) $l = 1;
+		$r = $l + $limit*2;
+		if ($r>$pagination->GetOldestPageNo()) $r = $pagination->GetOldestPageNo();
 
-        if( $pagination->IsShowOlder() || $pagination->IsShowNewer() ) {
+		if( $pagination->IsShowOlder() || $pagination->IsShowNewer() ) {
 ?>
 <div class="pages">
 <?php
@@ -1000,8 +1000,8 @@ __HTML__;
 </div>
 <div style="clear:both;"></div>
 <?
-        }
-    }
+		}
+	}
 
 
 	static public function pagination( $pagination, $qarray=array(), $words = array() )
@@ -1075,6 +1075,17 @@ _HTML_;
 		}
 	}
 
+	static function sidebar_listfollowing($nameUrl="wo", $display=true){
+	
+		if( $display ) {
+			echo <<<_HTML_
+<a style="margin:0 10px; text-decoration:none;" href="/$nameUrl/followings/">查看全部</a>
+<div style="clear:both;"></div>
+_HTML_;
+		}
+	}
+
+
 	static function sidebar_block($idUser, $idUserPage){
 		if( $idUser == $idUserPage )
 			return true;
@@ -1104,20 +1115,20 @@ _HTML_;
 		<form action="/wo/login"  method="post" name="f">
 		<table width="100%" border="0" cellspacing="10" cellpadding="0">
   			<tr>
-    				<td width="50" align="center">用户名</td>
+					<td width="50" align="center">用户名</td>
 				<td><input type="text" name="username_or_email" id="email" class="logininput"/></td>
 			</tr>
  			<tr>
-    				<td align="center">密　码</td>
-    				<td><input type="password" name="password" class="logininput"/></td>
+					<td align="center">密　码</td>
+					<td><input type="password" name="password" class="logininput"/></td>
   			</tr>
   			<tr>
-    				<td>&nbsp;</td>
+					<td>&nbsp;</td>
 				<td><input type="checkbox" name="remember_me" value="checkbox" id="remember_me" /> 记住我</td>
   			</tr>
   			<tr>
 				<td>&nbsp;</td>
-                <td><input type="submit" class="submitbutton" value="登录" /></td>
+				<td><input type="submit" class="submitbutton" value="登录" /></td>
 			</tr>
 		</table>
 		</form>
@@ -1199,7 +1210,7 @@ _HTML_;
 		}
 
 		//$user_db_rows 		= JWUser::GetUserDbRowsByIds($user_ids);
-		$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids, $activeOrder, 80);
+		$user_db_rows = JWUser::GetUserDbRowsByIds($user_ids, $activeOrder, 60);
 		$picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
@@ -1309,7 +1320,7 @@ _HTML_;
   		<ul class="featured">
 _HTML_;
 
-        if($isAnnounce)
+		if($isAnnounce)
 		echo <<<_HTML_
 			<li class="FeaturedImage">
 				<a href="http://e.jiwai.de/cbc2007/" target="_blank"><img title="叽歪de× 中文网志年会" alt="叽歪de× 中文网志年会" height="25" src="http://blog.jiwai.de/images/jiwaicbc.gif" /></a>
@@ -1461,70 +1472,76 @@ if ($menuList[0][0] == 'login') {
 
 		$arr_user_info = JWUser::GetUserInfo($idUserDst);
 
+		$flag = false;
+		foreach( $action as $one=>$result ) {
+			$flag |= $result;
+		}
+		if( $flag == false ) return;
+
 		echo <<<_HTML_
 		<ul class="actions">
 _HTML_;
 
 
-		if ( isset($action['nudge']) )
+		if ( true == $action['nudge'] )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/nudge/$arr_user_info[id]">挠挠 $arr_user_info[nameScreen]</a>
+				<a href="/wo/followings/nudge/$arr_user_info[id]">挠挠此人</a>
 			</li>
 _HTML_;
 		}
 
-		if ( isset($action['d']) )
+		if ( true == $action['d'] )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/direct_messages/create/$arr_user_info[id]">向$arr_user_info[nameScreen]发悄悄话</a>
+				<a href="/wo/direct_messages/create/$arr_user_info[id]">发送悄悄话</a>
 			</li>
 _HTML_;
 		}
 
 
-		if ( isset($action['follow']) )
+		if ( true == $action['on'] )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/follow/$arr_user_info[id]">成为 $arr_user_info[nameScreen] 的粉丝</a>
+				<a href="/wo/followings/on/$arr_user_info[id]">接收更新通知</a>
 			</li>
 _HTML_;
 		}
 
-		if ( isset($action['leave']) )
+		if ( true == $action['off'] )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friends/leave/$arr_user_info[id]">退定 $arr_user_info[nameScreen]</a>
+				<a href="/wo/followings/off/$arr_user_info[id]">取消更新通知</a>
 			</li>
 _HTML_;
 		}
 
-		if ( isset($action['cancel']) )
+		if ( true == $action['cancel'] )
 		{
 			echo <<<_HTML_
-			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消请求 $arr_user_info[nameScreen]</a></li>
+			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消向此人的请求</a></li>
 _HTML_;
 		}
 
 
-		if ( isset($action['add']) )
+		if ( true == $action['follow'] )
 		{
-			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
+			//$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
 			echo <<<_HTML_
-			<li><a href="/wo/friendships/create/$arr_user_info[id]" $oc>加$arr_user_info[nameScreen]为好友</a></li>
+			<li><a href="/wo/followings/follow/$arr_user_info[id]">关注此人</a></li>
 _HTML_;
 		}
 
-		if ( isset($action['remove']) )
+		if ( true == $action['leave'] )
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/friendships/destroy/$arr_user_info[id]" 
-						onclick="return confirm('请确认删除好友 $arr_user_info[nameScreen] ')">删除好友 $arr_user_info[nameScreen]</a>
+				<a href="/wo/followings/leave/$arr_user_info[id]" 
+						onclick="return confirm('请确认取消对 $arr_user_info[nameScreen] 的关注')">取消关注此人</a>
 			</li>
 _HTML_;
 		}
@@ -1544,13 +1561,11 @@ _HTML_;
 ?>
 		<ul class="about">
 <?php
-	        echo "<li>名字: " . htmlspecialchars($aUserInfo['nameFull']) . "</li>\n";
-			if ( !empty($aUserInfo['bio']) )
-				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
+			echo "<li>名字: " . htmlspecialchars($aUserInfo['nameFull']) . "</li>\n";
 			if ( !empty($aUserInfo['location']) ) {
 				$location = JWLocation::GetLocationName( $aUserInfo['location'] );
 				echo "<li>位置: $location</li>\n";
-		    }
+			}
 			if ( !empty($aUserInfo['url']) )
 			{
 				$url = $aUserInfo['url'];
@@ -1569,6 +1584,8 @@ _HTML_;
 											. " target='_blank' "
 											. ">" . htmlspecialchars($show_url) . "</a></li>\n";
 			}
+			if ( !empty($aUserInfo['bio']) )
+				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
 ?>
 		</ul>
 <?php
@@ -1580,7 +1597,7 @@ _HTML_;
 	  * 日期：2007-10-16
 	  */
 	static function sidebar_device_info($aUserInfo)
-	{       
+	{	   
 		echo "<ul class=imico><li>";
 
 		$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
@@ -1625,87 +1642,87 @@ _HTML_;
    作者：WqSemc
    日期：2007-10-16
    */
-    static function sidebar_help_info()
-    {       
-        echo <<<_HTML_
-            <div class="sidehelpdiv">是否要问以下的问题呢？</div>
-            <ul class="helpinfo">
-                <li>
-                    <a href=http://help.jiwai.de/Faq target=_blank>常见问题集合(FAQ)</a><br/>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/MobileFAQ target=_blank>手机常见问题</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/IMFAQ target=_blank>QQ、MSN、Gtalk常见问题</a
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/VerifyYourIM target=_blank>如何绑定QQ、MSN、Gtalk？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/VerifyYourPhone target=_blank>如何绑定手机？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/MakeFriend target=_blank>如何添加好友？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/WhatistheRepliestab target=_blank>如何回复别人？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/WhatisaFavorite target=_blank>如何收藏感兴趣的叽歪？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/NotificationsSelection target=_blank>如何用手机和QQ等收到别人的叽歪？</a>
-                </li>
-                <li>
-                    <a href=http://help.jiwai.de/HowToAddWidgetIntoYourBlogs target=_blank>如何在博客上显示我的叽歪？</a>
-                </li>
-            </ul>
-            <div class="sidehelpdiv">没有你要的答案？在左边发给我们吧，我们会尽快回复的。</div>
+	static function sidebar_help_info()
+	{	   
+		echo <<<_HTML_
+			<div class="sidehelpdiv">是否要问以下的问题呢？</div>
+			<ul class="helpinfo">
+				<li>
+					<a href=http://help.jiwai.de/Faq target=_blank>常见问题集合(FAQ)</a><br/>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/MobileFAQ target=_blank>手机常见问题</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/IMFAQ target=_blank>QQ、MSN、Gtalk常见问题</a
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/VerifyYourIM target=_blank>如何绑定QQ、MSN、Gtalk？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/VerifyYourPhone target=_blank>如何绑定手机？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/MakeFriend target=_blank>如何添加好友？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/WhatistheRepliestab target=_blank>如何回复别人？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/WhatisaFavorite target=_blank>如何收藏感兴趣的叽歪？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/NotificationsSelection target=_blank>如何用手机和QQ等收到别人的叽歪？</a>
+				</li>
+				<li>
+					<a href=http://help.jiwai.de/HowToAddWidgetIntoYourBlogs target=_blank>如何在博客上显示我的叽歪？</a>
+				</li>
+			</ul>
+			<div class="sidehelpdiv">没有你要的答案？在左边发给我们吧，我们会尽快回复的。</div>
 _HTML_;
-    }
+	}
 
 /*   
-     功能：返回绑定手机数和绑定IM数。
-     作者：WqSemc
-     日期：2007-10-17
+	 功能：返回绑定手机数和绑定IM数。
+	 作者：WqSemc
+	 日期：2007-10-17
  */
 static function GetSmsAndImValidNums($idUser)
-{            
+{			
 
-    $aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($idUser);
+	$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($idUser);
 
-    $SmsValidNums = 0;
-    $ImValidNums = 0;
-    foreach($aDeviceInfo_rows as $aDeviceInfo_row)
-    {    
-        if (empty($aDeviceInfo_row['secret']))
-        {    
-            switch( $aDeviceInfo_row['type'])
-            {    
-                case 'sms':
-                   ++$SmsValidNums;
-                break;
-                default:
-                   ++$ImValidNums;
-            }
-        }
-    }
-    
-    return array($SmsValidNums, $ImValidNums);
+	$SmsValidNums = 0;
+	$ImValidNums = 0;
+	foreach($aDeviceInfo_rows as $aDeviceInfo_row)
+	{	
+		if (empty($aDeviceInfo_row['secret']))
+		{	
+			switch( $aDeviceInfo_row['type'])
+			{	
+				case 'sms':
+				   ++$SmsValidNums;
+				break;
+				default:
+				   ++$ImValidNums;
+			}
+		}
+	}
+	
+	return array($SmsValidNums, $ImValidNums);
 }
 
 /*   
-     功能：返回用户目前是否使用系统默认头像。
-     作者：WqSemc
-     日期：2007-10-17
+	 功能：返回用户目前是否使用系统默认头像。
+	 作者：WqSemc
+	 日期：2007-10-17
  */
 static function IsUserUploadPic($idUser)
-{            
+{			
 
-    $userInSession = JWUser::GetUserInfo($idUser);
+	$userInSession = JWUser::GetUserInfo($idUser);
 
-    return !empty($userInSession['idPicture']);
+	return !empty($userInSession['idPicture']);
 }
 
 	static function sidebar_user_notice($aUserInfo)
@@ -1748,7 +1765,7 @@ static function IsUserUploadPic($idUser)
 		echo <<<_HTML_
 		<ul class="featured">
 			<li>
-				<a href="/wo/friend_requests/">${num}个好友添加请求！</a>
+				<a href="/wo/friend_requests/">${num}个添加关注请求！</a>
 			</li>
 		</ul>
 
@@ -1772,44 +1789,54 @@ _HTML_;
 		<ul id="update_count">
 _HTML_;
 
-		if ($user != 'wo') echo <<<_HTML_
-			<li style="font-size:12px; text-indent:12px;">$name_screen 目前有：</li>
+ 		if ($user != 'wo') echo <<<_HTML_
+ 		<div class="msg ">
+ 			<div class="line"><div></div></div>
+ 			<h2 class="forul"><?php echo $name_Screen;?>目前</h2>
+ 		</div>
 _HTML_;
+ 
+ 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
+ 		{
+ 		echo <<<_HTML_
+ 			<li id="friend_count"><a href="/wo/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+_HTML_;
+ 		}else{
+ 			echo <<<_HTML_
+ 			<li id="friend_count"><a href="/$user/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+_HTML_;
+ 		}
 
-		echo <<<_HTML_
-			<li id="friend_count"><a href="/$user/friends/">$countInfo[friend] 个好友</a></li>
-_HTML_;
-		
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
-		{
+		{    
 			echo <<<_HTML_
-			<li id="follower_count"><a href="/wo/followers/">$countInfo[follower] 个粉丝</a></li>
+				<li id="follower_count"><a href="/wo/followers/">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
 _HTML_;
 		}else{
 			echo <<<_HTML_
-			<li id="follower_count"><a style="text-decoration:none;" href="javascript:void(0);">$countInfo[follower] 个粉丝</a></li>
+				<li id="follower_count"><a style="text-decoration:none;" href="javascript:void(0);">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
 _HTML_;
-		}
+		}   
 
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] )
 		{
 			$msg_count = JWMessage::GetMessageStatusNum($userInSession['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
-			$msg_string = ( $msg_count == 0 ) ? '' : " ( $msg_count 条新 )";
+			$msg_string = ( $msg_count == 0 ) ? '' : "&nbsp;(&nbsp;${msg_count}&nbsp;条新&nbsp;)";
 			echo <<<_HTML_
-			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm] 条悄悄话${msg_string}</a></li>
+ 			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm]&nbsp;条悄悄话${msg_string}</a></li>
 _HTML_;
 		}
 
 		$archive = ( $user == 'wo' ) ? 'archive/' : null;
 		echo <<<_HTML_
-			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav] 条收藏</a><img border="0" src="$asset_star_url" /></li>
-			<li id="status_count"><a href="/$user/$archive">$countInfo[status] 条叽歪</a></li>
+ 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav]&nbsp;条收藏</a><img border="0" src="$asset_star_url" /></li>
+ 			<li id="status_count"><a href="/$user/">$countInfo[status]&nbsp;条叽歪</a></li>
 _HTML_;
-
-		if ( 'wo'!=$user && @$countInfo['mms'] )
-		{
-			echo <<<_HTML_
-			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms] 条彩信</a></li>
+ 
+ 		if ( 'wo'!=$user && @$countInfo['mms'] )
+ 		{
+ 			echo <<<_HTML_
+ 			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
 _HTML_;
 		}
 
@@ -1839,14 +1866,14 @@ _HTML_;
 ?>
 		<div class="msg ">
 			<a href="/wo/account/profile"><img src="<?php echo $photo_url; ?>" alt="<?php echo $userInfo['nameScreen'];?>" width="48" height="48" align="middle" /></a>欢迎你 <?php echo $userInfo['nameFull'];?>
-            <br />
-            <?php
-            
-                if(false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
-                {
-                    echo '<a class="sendtips" style="margin-left:0" href="/wo/account/profile">上传头像 ↑ </a>';
-                }
-            ?>
+			<br />
+			<?php
+			
+				if(false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
+				{
+					echo '<a class="sendtips" style="margin-left:0" href="/wo/account/profile">上传头像 ↑ </a>';
+				}
+			?>
 		</div>
 
 <?php
@@ -1908,7 +1935,7 @@ __HTML__;
 			return;
 		
 		#$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
-		$title = '最近有谁来过';
+		$title = '最近有谁来过<span style="font-weight:normal;display:none;">(共 88888 人)</span>';
 		self::sidebar_featured(array(
 				'user_ids' => $idVistors,
 				'title' => $title,
@@ -1922,12 +1949,13 @@ __HTML__;
 		if ( empty($friendIds) )
 			return;
 
-		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线好友', 'id'=>'friend'));
+		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线的人', 'id'=>'friend'));
+
 		return;
 		$friend_rows			= JWUser::GetUserDbRowsByIds($friendIds);
 
-        $picture_ids        	= JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
-        $picture_url_rows   	= JWPicture::GetUrlRowByIds($picture_ids);
+		$picture_ids			= JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
+		$picture_url_rows   	= JWPicture::GetUrlRowByIds($picture_ids);
 
 		echo <<<_HTML_
   		<div id="friend">
@@ -1941,8 +1969,8 @@ _HTML_;
 			$picture_url		= JWTemplate::GetConst('UrlStrangerPicture');
 
 			$friend_picture_id	= @$friend_info['idPicture'];
-            if ( $friend_picture_id )
-                $picture_url	= $picture_url_rows[$friend_picture_id];
+			if ( $friend_picture_id )
+				$picture_url	= $picture_url_rows[$friend_picture_id];
 
 			echo <<<_HTML_
 			<a href="/$friend_info[nameScreen]/" rel="contact" title="$friend_info[nameFull]($friend_info[nameScreen])"><img alt="$friend_info[nameFull]" height="24" src="$picture_url" width="24" /></a>
@@ -2316,11 +2344,9 @@ _HTML_;
 	 */
 	static public function ListUser($idUser, $idListUsers, $options=array() )
 	{
-
 		$wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
-
 		if( false == isset( $options['type'] ) ) 
-			$options['type'] = 'friends';
+			$options['type'] = 'following';
 
 		switch( $options['type'] ) {
 			case 'inrequests':
@@ -2334,7 +2360,6 @@ _HTML_;
 		}
 
 		$list_user_rows = JWUser::GetUserDbRowsByIds($idListUsers);
-
 		$picture_ids = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
 		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 
@@ -2352,14 +2377,14 @@ _HTML_;
 			$odd_even = ($n++ % 2) ? 'odd' : 'even';
 			$statusNum = JWStatus::GetStatusNum( $list_user_id );
 			$mmsNum = JWPicture::GetMMSNum( $list_user_id );
-        
+		
 			$timeUpdate = $list_user_row['timeStamp'];
 
 			$action_row = $action = $liNote = null;
 			switch( $options['type'] ) {
-				case 'friends':
+				case 'following':
 					$action_row = $action_rows[$list_user_id];
-					$action = self::FriendsAction($list_user_id, $action_row , $wo);
+					$action = self::FollowingsAction($list_user_id, $action_row , $wo);
 				break;
 				case 'followers':
 					$action_row = $action_rows[$list_user_id];
@@ -2384,8 +2409,8 @@ _HTML_;
 			}
 
 			echo <<<_HTML_
-	<ul class="liketable"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameFull]($list_user_row[nameScreen])" />
-		<li class="name"><a href="/$list_user_row[nameUrl]/" title="$list_user_row[nameScreen]">$list_user_row[nameScreen]</a></li>
+	<ul class="liketable"><a href="/$list_user_row[nameUrl]/"><img src="$list_user_icon_url" width="48" height="48" class="img" title="$list_user_row[nameScreen]($list_user_row[nameFull])" alt="$list_user_row[nameScreen]($list_user_row[nameFull])"/></a>
+		<li class="name"><a href="/$list_user_row[nameUrl]/" >$list_user_row[nameScreen]</a></li>
 		<li class="nob">${statusNum}条</li>
 		<li class="nob">${mmsNum}条</li>
 		<li class="time">$timeUpdate</li>
@@ -2394,58 +2419,72 @@ _HTML_;
 	</ul>
 _HTML_;
 
-            ?>
-             <div class="clear" style="border-bottom:none;"></div>
-            <?php
+			?>
+			 <div class="clear" style="border-bottom:none;"></div>
+			<?php
 		}
 	}
 
-    static public function FriendsAction($idUser, $actionRow , $wo = true, $separator='|') {
-        $idUser = JWDB::CheckInt( $idUser );
-        $action = null;
-        if( isset( $actionRow['follow'] ) )
-            $action .= "<a href='/wo/friends/follow/$idUser'>关注</a>$separator";
-        if( isset( $actionRow['leave'] ) )
-            $action .= "<a href='/wo/friends/leave/$idUser'>取消关注</a>$separator";
+   	static public function FollowingsAction($idUser, $actionRow , $wo = true, $separator='|') {
+		$idUser = JWDB::CheckInt( $idUser );
+		$action = null;
 
-        if( $wo ) $action .= "<a href='/wo/friendships/destroy/$idUser'>删除</a>$separator";
+		if( true == $actionRow['d'] )
+			$action .= "<a href='/wo/direct_messages/create/$idUser'>发送悄悄话</a>$separator";
 
-        if( isset( $actionRow['nudge'] ) )
-            $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";
-        
-        return trim( $action, $separator );
-    }
+		if($wo)
+		{
 
-    static public function InRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
-        $idUser = JWDB::CheckInt( $idUser );
-        $action = null;
+			if( true == $actionRow['nudge'] )
+				$action .= "<a href='/wo/followings/nudge/$idUser'>挠挠此人</a>$separator";
 
-        $action .= "<a href='/wo/friend_requests/accept/$idUser'>接受</a>$separator";
-        $action .= "<a href='/wo/friend_requests/deny/$idUser'>拒绝</a>$separator";
+			if( true == $actionRow['on'] )
+				$action .= "<a href='/wo/followings/on/$idUser'>接收更新通知</a>$separator";
 
-        return trim( $action, $separator );
-    }
+			if( true == $actionRow['off'] )
+				$action .= "<a href='/wo/followings/off/$idUser'>取消更新通知</a>$separator";
 
-    static public function OutRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
-        $idUser = JWDB::CheckInt( $idUser );
-        $action = null;
+			if( true == $actionRow['leave'] ) 
+				$action .= "<a href='/wo/followings/leave/$idUser'>取消关注</a>$separator";
+		}
 
-        $action .= "<a href='/wo/friend_requests/cancel/$idUser'>取消</a>$separator";
+		return trim( $action, $separator );
+	}
 
-        return trim( $action, $separator );
-    }
+	static public function InRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
+		$idUser = JWDB::CheckInt( $idUser );
+		$action = null;
 
-    static public function FollowersAction($idUser, $actionRow , $wo = true, $separator='|') {
-        $idUser = JWDB::CheckInt( $idUser );
-        $action = null;
-        if( isset( $actionRow['add'] ) )
-            $action .= "<a href='/wo/friendships/create/$idUser'>加为好友</a>$separator";
+		$action .= "<a href='/wo/friend_requests/accept/$idUser'>接受请求</a>$separator";
+		$action .= "<a href='/wo/friend_requests/deny/$idUser'>拒绝请求</a>$separator";
 
-        if( isset( $actionRow['nudge'] ) )
-            $action .= "<a href='/wo/direct_messages/create/$idUser'>悄悄话</a>$separator";
-        
-        return trim( $action, $separator );
-    }
+		return trim( $action, $separator );
+	}
+
+	static public function OutRequestsAction($idUser, $actionRow=null , $wo = true, $separator='|') {
+		$idUser = JWDB::CheckInt( $idUser );
+		$action = null;
+
+		$action .= "<a href='/wo/friend_requests/cancel/$idUser'>取消请求</a>$separator";
+
+		return trim( $action, $separator );
+	}
+
+	static public function FollowersAction($idUser, $actionRow , $wo = true, $separator='|') {
+		$idUser = JWDB::CheckInt( $idUser );
+		$action = null;
+
+		if( true == $actionRow['d']  )
+			$action .= "<a href='/wo/direct_messages/create/$idUser'>发送悄悄话</a>$separator";
+
+		if($wo)
+		{
+			if( isset( $actionRow['add'] ) )
+				$action .= "<a href='/wo/followings/follow/$idUser'>关注此人</a>$separator";
+		}
+
+		return trim( $action, $separator );
+	}
 
 	static public function RedirectTo404NotFound()
 	{

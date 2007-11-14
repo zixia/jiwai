@@ -10,11 +10,11 @@ $page = ($page < 1 ) ? 1 : $page;
 
 
 $statusNum= JWStatus::GetStatusNumFromFriends($loginedIdUser);
-$pagination		= new JWPagination($statusNum, $page, 10);
-$statusData 	= JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$pagination = new JWPagination($statusNum, $page, 10);
+$statusData = JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-$statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
-$userRows		= JWUser::GetUserDbRowsByIds	($statusData['user_ids']);
+$statusRows = JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
+$userRows = JWUser::GetUserDbRowsByIds($statusData['user_ids']);
 
 krsort( $statusRows );
 
@@ -22,20 +22,19 @@ $statuses = array();
 foreach( $statusRows as $k=>$s){
     $fs = JWStatus::FormatStatus( $s, false );
     $s['status'] = $fs['status'];
-   // $s['status']  = preg_replace('/^@\s*([\w\._\-]+)/e',"buildReplyUrl('$1')", htmlSpecialChars($s['status']) );
     $statuses[ $k ] = $s;
 }
 
-$friendsNum = JWFriend::GetFriendNum( $loginedUserInfo['id'] );
+$followingsNum = JWFollower::GetFollowingNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'friends', 'index', 'replies' );
+$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'followings', 'index', 'replies' );
 $pageString = paginate( $pagination, '/wo/' );
 JWRender::Display( 'wo/archive', array(
     'loginedUserInfo' => $loginedUserInfo,
     'users' => $userRows,
     'statuses' => $statuses,
-    'friendsNum' => $friendsNum,
+    'followingsNum' => $followingsNum,
     'followersNum' => $followersNum,
     'shortcut' => $shortcut,
     'pageString' => $pageString,

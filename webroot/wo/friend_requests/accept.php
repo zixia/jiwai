@@ -29,7 +29,7 @@ _HTML_;
 	if ( ! $is_succ )
 	{
 		$error_html = <<<_HTML_
-哎呀！由于系统故障，好友添加失败了……
+哎呀！由于系统故障，关注好友失败了……
 请稍后再尝试吧。
 _HTML_;
 		return array('error_html'=>$error_html);
@@ -40,13 +40,13 @@ _HTML_;
 	if ( ! $is_succ )
 	{
 		$error_html = <<<_HTML_
-哎呀！非常抱歉，虽然你已经将${friend_user_name}加为好友，但由于系统临时故障，添加好友的请求仍将被显示，请稍后再试一下吧。
+哎呀！非常抱歉，虽然你已经开始关注${friend_user_name}，但由于系统临时故障，添加关注的请求仍将被显示，请稍后再试一下吧。
 _HTML_;
 		return array('error_html'=>$error_html);
 	}
 
 	$notice_html = <<<_HTML_
-你已经成功将${friend_user_name}添加为好友，耶！
+你已经成功关注${friend_user_name}了，耶！
 _HTML_;
 	return array('notice_html'=>$notice_html);
 }

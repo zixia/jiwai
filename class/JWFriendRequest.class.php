@@ -127,6 +127,36 @@ _SQL_;
 		return $arr_friend_id;
 	}
 
+	/**
+	 * 	$idUser发出的 希望他人添加自己为好友的请求
+	 *	@return array	array of friend id list
+	 */
+	static function GetFollowingIds($idUser, $numMax=9999, $start=0)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
+
+
+		$sql = <<<_SQL_
+SELECT	idFriend,note,timeCreate
+FROM	FriendRequest
+WHERE	idUser=$idUser
+		AND idFriend IS NOT NULL
+LIMIT	$start,$numMax
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$arr_friend_id = array();
+		foreach ( $arr_result as $row )
+            $arr_friend_id[$row['idFriend']] = $row ;
+
+		return $arr_friend_id;
+	}
+
 
 
 	/**

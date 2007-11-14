@@ -12,7 +12,13 @@ $page = ($page < 1 ) ? 1 : $page;
  */
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
-$page_user_info		= $logined_user_info;
+if ( isset($g_user_friends) && $g_user_friends ) {
+	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
+	$page_user_info		= $rows[$g_page_user_id];
+	$head_options['ui_user_id']		= $g_page_user_id;
+} else {
+	$page_user_info		= $logined_user_info;
+}
 
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 $pagination         = new JWPagination($follower_num, $page, 15);
@@ -34,7 +40,7 @@ $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);
 <body class="account" id="friends">
 
 <?php JWTemplate::header("/wo/account/settings") ?>
-<?php JWTemplate::ShowActionResultTips(); ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
 <?php JWTemplate::FriendsTab($page_user_info['id'], 'followers' ); ?>

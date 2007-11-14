@@ -24,8 +24,8 @@ if( empty( $userInfo ) ){
 
 $statusTab = null;
 switch ( $func ) {
-	case 'friends':
-		require_once(dirname(__FILE__) . "/friends.inc.php");
+	case 'followings':
+		require_once(dirname(__FILE__) . "/followings.inc.php");
 		break;
     case 'followers':
 		require_once(dirname(__FILE__) . "/followers.inc.php");

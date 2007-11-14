@@ -29,12 +29,12 @@ _HTML_;
 		return array('error_html'=>$error_html);
 	}
 	// 如果页面用户设置了保护，并且页面用户没有添加当前登录用户位好友，则需要发送验证请求
-	if ( JWUser::IsProtected($idPageUser) && !JWFriend::IsFriend($idPageUser, $idLoginedUser) )
+	if ( JWUser::IsProtected($idPageUser) && !JWFollower::IsFollowing($idPageUser, $idLoginedUser) )
 	{
 		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
 			$notice_html =<<<_HTML_
-你向${page_user_name}发送的添加好友请求，他还没有回应，再等等吧。
+你向${page_user_name}发送的关注请求，他还没有回应，再等等吧。
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
@@ -44,14 +44,14 @@ _HTML_;
 		if ($is_succ )
 		{
 			$notice_html =<<<_HTML_
-已经向${page_user_name}发送了添加好友请求，希望能很快得到回应。
+已经向${page_user_name}发送了关注请求，希望能很快得到回应。
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 		else
 		{
 			$error_html=<<<_HTML_
-哎呀！由于系统故障，发送好友请求失败了……
+哎呀！由于系统故障，发送关注请求失败了……
 请稍后再尝试吧。
 _HTML_;
 			return array('error_html'=>$error_html);
@@ -59,19 +59,21 @@ _HTML_;
 	}
 	else
 	{
+var_dump(111);
 		$is_succ = JWSns::CreateFriends($idLoginedUser, array($idPageUser));
+var_dump(222);
 
 		if ($is_succ )
 		{
 			$notice_html = <<<_HTML_
-已经将${page_user_name}添加为好友，耶！
+已经关注${page_user_name}，耶！
 _HTML_;
 			return array('notice_html'=>$notice_html);
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！由于系统故障，好友添加失败了……
+哎呀！由于系统故障，关注此人失败了……
 请稍后再尝试吧。
 _HTML_;
 			return array('error_html'=>$error_html);

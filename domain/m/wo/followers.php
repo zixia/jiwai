@@ -6,7 +6,7 @@ extract( $_REQUEST, EXTR_IF_EXISTS );
 
 JWLogin::MustLogined();
 
-$pageTitle = "我的粉丝们";
+$pageTitle = "关注你的人";
 
 $loginedUserInfo = JWUser::GetCurrentUserInfo();
 
@@ -15,7 +15,7 @@ $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds = JWFollower::GetFollowerIds($loginedUserInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
 $followerRows = JWUser::GetUserDbRowsByIds($followerIds);
 
-$followerOps = friendsop( $loginedUserInfo['id'], $followerIds , $forFollow = true);
+$followerOps = actionop( $loginedUserInfo['id'], $followerIds , $forFollow = true);
 
 $pageString = paginate( $pagination, '/wo/followers/' );
 

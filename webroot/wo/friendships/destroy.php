@@ -23,13 +23,13 @@ if ( is_int($idLoginedUser) )
 		if ( JWSns::DestroyFriends($idLoginedUser, array($idPageUser), $bidirection) )
 		{
 			$notice_html = <<<_HTML_
-${page_user_name}已经不再是你的好友了。
+${page_user_name}已经不再关注你了。
 _HTML_;
 		}
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！由于系统故障，好友删除失败了……
+哎呀！由于系统故障，取消关注失败了……
 请稍后再试。
 _HTML_;
 		}

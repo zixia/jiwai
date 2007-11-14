@@ -34,7 +34,7 @@ _HTML_;
 		else
 		{
 			$error_html = <<<_HTML_
-哎呀！由于系统临时故障，你未能成为${friend_name}的粉丝，订阅失败了……
+哎呀！由于系统临时故障，你未能成功打开${friend_name}的通知……
 请稍后再试吧。
 _HTML_;
 		} 

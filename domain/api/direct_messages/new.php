@@ -32,7 +32,7 @@ if( !$userReceiver ){
 $idUserReceiver = $userReceiver['id'];
 
 // Check Friend Relation, idUserSender must be idUserSender's friend;
-if( false == JWFriend::IsFriend($idUserReceiver, $idUserSender) ){
+if( false == JWFollower::IsFollower($idUserSender, $idUserReceiver) ){
 	JWApi::OutHeader(403, true);
 }
 

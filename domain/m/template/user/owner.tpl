@@ -1,12 +1,12 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2>${htmlSpecialChars($userInfo['nameFull'])}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">${htmlSpecialChars($userInfo['nameFull'])}和好友</a></h2>
+<h2>${htmlSpecialChars($userInfo['nameScreen'])}的消息｜<a href="/{$userInfo['nameScreen']}/with_friends/">${htmlSpecialChars($userInfo['nameScreen'])}和别人</a></h2>
 <ul>
 <!--{if $showProtected}-->
 <!--{foreach $statuses as $status}-->
 <li>
-	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
+	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
 	<span class="stamp">
 	${JWStatus::GetTimeDesc($status['timeCreate'])}
 	通过
@@ -17,7 +17,7 @@
 <!--{/foreach}-->
 <!--{else}-->
 <li>
-{$userInfo['nameScreen']}只和好友分享叽歪。
+{$userInfo['nameScreen']}只和我关注的人分享叽歪。
 </li>
 <!--{/if}-->
 </ul>

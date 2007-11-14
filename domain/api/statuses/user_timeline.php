@@ -42,7 +42,7 @@ if( $idUser != ($idUserAuthed = JWApi::GetAuthedUserId()) && $user['protected']=
 	if( !$idUserAuthed ){
 		JWApi::RenderAuth( JWApi::AUTH_HTTP );
 	}
-	if( false == JWFriend::IsFriend($idUser, $idUserAuthed) ){
+	if( false == JWFollower::IsFollowing($idUser, $idUserAuthed) ){
 		JWApi::OutHeader(403, true);
 	}
 }

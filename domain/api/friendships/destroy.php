@@ -26,7 +26,7 @@ if( ! $unFriendUser ){
 $unFriendId = $unFriendUser['id'];
 
 //FriendShip Check, If no friend relation, return 403
-if( false === JWFriend::IsFriend($idUser, $unFriendId) ){
+if( false === JWFollower::IsFollower($unFriendId, $idUser) ){
 	JWApi::OutHeader(403, true);
 }
 

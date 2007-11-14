@@ -28,7 +28,7 @@ function user_status($idPageUser, $idStatus)
 		$protected = true;
 		if ( ! empty($logined_user_info) )
 		{
-			if ( JWFriend::IsFriend($idPageUser, $logined_user_info['idUser']) || $logined_user_info['idUser']==$idPageUser )
+			if ( JWFollower::IsFollower($logined_user_info['idUser'], $idPageUser) || $logined_user_info['idUser']==$idPageUser )
 				$protected = false;
 		}
 	}
@@ -77,11 +77,11 @@ JWTemplate::html_head($head_options) ;
                     <td align="right">
                         <?php 
                         if ( ! empty($logined_user_info) && $logined_user_info['idUser'] != $idPageUser ) {
-                            if ( JWFriend::IsFriend($logined_user_info['idUser'], $idPageUser) ) {
-                                echo "$page_user_info[nameScreen]是你的好友";
+                            if ( JWFollower::IsFollower($idPageUser, $logined_user_info['idUser']) ) {
+                                echo "已关注";
                             }else{
 				if( false == JWBlock::IsBlocked( $idPageUser, $logined_user_info['id'] ) )
-				echo "<a href='/wo/friendships/create/$idPageUser'>加$page_user_info[nameScreen]为好友</a>";
+				echo "<a href='/wo/friendships/create/$idPageUser'>关注此人</a>";
                             }
                         } 
                         ?>
@@ -89,7 +89,7 @@ JWTemplate::html_head($head_options) ;
                 </tr>
 <?php if ( $protected ) { ?>
     				<tr>
-    		  			<td colspan="2">我只和我的好友分享我的叽歪de。</td>
+    		  			<td colspan="2">我只和我关注的人分享我的叽歪de。</td>
     				</tr>
 <?php }else{ 
     

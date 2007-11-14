@@ -64,17 +64,18 @@ function redirect($url = null){
 	exit;
 }
 
-function friendsop($idUser, $idFriends, $forFollow=false){
+function actionop($idUser, $idOthers, $forFollow=false){
 
-	$isArray = is_array( $idFriends ) ;
+	$isArray = is_array( $idOthers ) ;
 
-	settype( $idFriends, 'array' );
-	$actions = JWSns::GetUserActions( $idUser, $idFriends );
+	settype( $idOthers, 'array' );
+	$actions = JWSns::GetUserActions( $idUser, $idOthers );
 	$ops = array();
 
-	foreach( $actions as $idFriend=>$one ){
+	foreach( $actions as $idOther=>$one ){
 		$actionString = null;
 		foreach( $one as $action=>$v ){ 
+			if( $v == false ) continue;
 		
 			/*
 			 * for /wo/followers/
@@ -85,31 +86,31 @@ function friendsop($idUser, $idFriends, $forFollow=false){
 			}
 
 			switch( $action ) {
-				case 'remove':
-					$actionString .= "<a href=\"/wo/friendship/destroy/$idFriend\">删除</a> | ";
-					break;
 				case 'nudge':
-					$actionString .= "<a href=\"/wo/friends/nudge/$idFriend\">挠挠</a> | ";
-					break;
-				case 'leave':
-					$actionString .= "<a href=\"/wo/friends/leave/$idFriend\">退订</a> | ";
+					$actionString .= "<a href=\"/wo/followings/nudge/$idOther\">挠挠</a> | ";
 					break;
 				case 'd':
-					$actionString .= "<a href=\"/wo/message/create/$idFriend\">悄悄话</a> | ";
+					$actionString .= "<a href=\"/wo/message/create/$idOther\">悄悄话</a> | ";
 					break;
-				case 'add':
-					$actionString .= "<a href=\"/wo/friendship/create/$idFriend\">添加</a> | ";
+				case 'on':
+					$actionString .= "<a href=\"/wo/followings/on/$idOther\">接收通知</a> | ";
+					break;
+				case 'off':
+					$actionString .= "<a href=\"/wo/followings/off/$idOther\">取消通知</a> | ";
 					break;
 				case 'follow':
-					$actionString .= "<a href=\"/wo/friends/follow/$idFriend\">订阅</a> | ";
+					$actionString .= "<a href=\"/wo/followings/follow/$idOther\">打开关注</a> | ";
+					break;
+				case 'leave':
+					$actionString .= "<a href=\"/wo/followings/leave/$idOther\">取消关注</a> | ";
 					break;
 			}
 		}
 		$actionString = trim( $actionString, ' | ');
-		$ops[ $idFriend ] = $actionString;
+		$ops[ $idOther ] = $actionString;
 	}
 
-	return ( $isArray === false ) ? ( isset($ops[ $idFriends[0] ]) ? $ops[ $idFriends[0] ] : array() ) : $ops;
+	return ( $isArray === false ) ? ( isset($ops[ $idOthers[0] ]) ? $ops[ $idOthers[0] ] : array() ) : $ops;
 }
 
 function pageTitle(){

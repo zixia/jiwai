@@ -131,7 +131,7 @@ _HTML_;
         <input name="protected" type="radio" value="N" <?php if(!$protected) echo "checked"; ?> /> 允许所有人查看并显示在叽歪广场
     </li>
     <li>
-        <input name="protected" type="radio" value="Y" <?php if($protected) echo "checked"; ?>/> 只允许我的好友查看
+        <input name="protected" type="radio" value="Y" <?php if($protected) echo "checked"; ?>/> 只允许我关注的人查看
     </li>
 </ul>
 

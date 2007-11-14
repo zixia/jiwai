@@ -52,36 +52,19 @@ if ( isset($_REQUEST['jw_status']) )
 
 	$message = trim($message);
 
-	if ( empty($message) )
+	if ( !empty($message) )
 	{
-		$error_html = <<<_HTML_
-哎呀！请不要发送空悄悄话！
-_HTML_;
-	}else if ( JWSns::CreateMessage(	 $logined_user_id
-										,$receiver_user_id
-										,$message
-									)
-			)
-	{
-		$notice_html = <<<_HTML_
-你的悄悄话已经发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>了，耶！
-_HTML_;
+		JWSns::ExecWeb($logined_user_id, "d $receiver_user_row[nameScreen]", '发送悄悄话');
 	}
 	else
 	{
-		$error_html = <<<_HTML_
-哎呀！由于系统临时故障，你的悄悄话未能成功的发送给<a href="/$receiver_user_row[nameScreen]/">$receiver_user_row[nameFull]</a>，请稍后再试吧。
-_HTML_;
+		JWSession::SetInfo('哎呀！请不要发送空悄悄话！');
 	}
 
-    if ( !empty($error_html) )
-		JWSession::SetInfo('error',$error_html);
-
-   	if ( !empty($notice_html) )
-   		JWSession::SetInfo('notice',$notice_html);
-
-	header("Location: /wo/direct_messages/");
-	exit(0);
+	JWTemplate::RedirectBackToLastUrl('/');
+	exit;
+	/*header("Location: /wo/direct_messages/");
+	exit(0);*/
 }
 
 
@@ -117,7 +100,7 @@ JWTemplate::updater(array(
 <?php
 $arr_count_param	= JWSns::GetUserState($logined_user_id);
 
-$arr_friend_list	= JWFriend::GetFriendIds($logined_user_id);
+$arr_friend_list	= JWFollower::GetFollowingIds($logined_user_id);
 
 $arr_menu 			= array(	array ('status'			, array($logined_user_info))
 								, array ('count'		, array($arr_count_param))

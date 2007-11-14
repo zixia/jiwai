@@ -21,13 +21,13 @@ if ( is_int($logined_user_id) )
 			if ($is_succ )
 			{
 				$notice_html = <<<_HTML_
-你已经成为了你的粉丝的好友（或者已经发送了好友请求）
+你关注那些关注你的人了（或者已经发送了关注请求）
 _HTML_;
 			}
 			else
 			{
 				$error_html = <<<_HTML_
-哎呀！由于系统故障，好友添加失败了……
+哎呀！由于系统故障，添加关注失败了……
 请稍后再尝试吧。
 _HTML_;
 			} 

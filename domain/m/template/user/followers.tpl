@@ -1,11 +1,11 @@
 <!--{include header}-->
 
-<h2><a href="/{$userInfo['nameScreen']}/friends/">${htmlSpecialChars($userInfo['nameFull'])}的${JWFriend::GetFriendNum($userInfo['id'])}位好友</a>｜${htmlSpecialChars($userInfo['nameFull'])}的${JWFollower::GetFollowerNum($userInfo['id'])}位粉丝</h2>
+<h2><a href="/{$userInfo['nameUrl']}/followings/">${htmlSpecialChars($userInfo['nameScreen'])}关注${JWFollower::GetFollowingNum($userInfo['id'])}人</a>｜${htmlSpecialChars($userInfo['nameScreen'])}被${JWFollower::GetFollowerNum($userInfo['id'])}人关注</h2>
 <ul>
 <!--{foreach $followers as $follower}-->
 <li>
-    <img width="48" height="48" src="${JWPicture::GetUserIconUrl($follower['id'],'thumb48')}" alt="{$follower['nameScreen']}" alt="{$follower['nameScreen']}" />
-    <a href="/{$follower['nameScreen']}/">${htmlSpecialChars($follower['nameFull'])}</a>
+    <a href="/{$follower['nameUrl']}/"><img width="48" height="48" src="${JWPicture::GetUserIconUrl($follower['id'],'thumb48')}" title="{$follower['nameScreen']}" alt="{$follower['nameScreen']}" />
+    ${htmlSpecialChars($follower['nameScreen'])}</a>
 </li>
 <!--{/foreach}-->
 </ul>

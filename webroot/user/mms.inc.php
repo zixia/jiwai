@@ -32,7 +32,7 @@ if ( !JWUser::IsAdmin($logined_user_info['idUser'])
 {
 	if ( empty($logined_user_info) )
 		$show_protected_content= false;
-	else if ( ! JWFriend::IsFriend($page_user_id, $logined_user_info['idUser']) )
+	else if ( ! JWFollower::IsFollowing($page_user_id, $logined_user_info['idUser']) )
 		$show_protected_content= false;
 }
 
@@ -265,7 +265,7 @@ else
 	$user_action_row	= $user_action_rows[$page_user_info['id']];
 
 
-$arr_friend_list	= JWFriend::GetFriendIds($page_user_info['id']);
+$arr_friend_list	= JWFollower::GetFollowingIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
 $arr_menu = array(

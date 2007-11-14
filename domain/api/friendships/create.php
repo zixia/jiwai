@@ -26,12 +26,12 @@ if( ! $unFriendUser ){
 $unFriendId = $unFriendUser['id'];
 
 //FriendShip Check, If no friend relation, return 403
-if( true === JWFriend::IsFriend($idUser, $unFriendId) ){
+if( true === JWFollower::IsFollower($unFriendId, $idUser) ){
 	exit;
 }
 
 //Destroy the friendship of idUser & unFriendId
-JWFriend::Create($idUser, $unFriendId);
+JWFollower::Create($idUser, $unFriendId);
 
 switch( $type ){
 	case 'json':

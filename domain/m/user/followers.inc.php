@@ -4,14 +4,14 @@ $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds  = JWFollower::GetFollowerIds( $userInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $followerRows = JWUser::GetUserDbRowsByIds($followerIds);
 
-$pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followers/' );
+$pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followings/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){
-    array_push( $shortcut, 'logout','my','friends','message','replies');
+    array_push( $shortcut, 'logout','my','followings','message','replies');
 }
 
-$pageTitle = htmlSpecialChars($userInfo['nameFull'])."的粉丝们";
+$pageTitle = "关注此人的人";
 
 JWRender::Display( 'user/followers', array(
                 'followers' => $followerRows,

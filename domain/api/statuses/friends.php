@@ -54,7 +54,7 @@ function renderXmlStatuses($idUser){
 }
 
 function getFriendsWithStatus($idUser){
-	$friendIds = JWFriend::GetFriendIds($idUser);
+	$friendIds = JWFollower::GetFollowingIds($idUser);
 	$friends = JWUser::GetUserDbRowsByIds( $friendIds );
 	$statusIds = array();
 	foreach( $friendIds as $f ){

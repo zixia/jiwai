@@ -24,9 +24,9 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$friend_num			= JWFriend::GetFriendNum	($page_user_info['id']);
+$friend_num			= JWFollower::GetFollowingNum	($page_user_info['id']);
 $pagination         = new JWPagination($friend_num, $page, 15);
-$friend_ids         = JWFriend::GetFriendIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $friend_user_rows	= JWUser::GetUserDbRowsByIds	($friend_ids);
 
 /*

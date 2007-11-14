@@ -1,11 +1,11 @@
 <!--{include header}-->
 
-<h2><a href="/wo/friends/">我的${JWFriend::GetFriendNum($loginedUserInfo['id'])}位好友</a>｜我的${JWFollower::GetFollowerNum($loginedUserInfo['id'])}位粉丝</h2>
+<h2><a href="/wo/followings/">我关注的人(${JWFollower::GetFollowingNum($loginedUserInfo['id'])})</a>｜关注我的人(${JWFollower::GetFollowerNum($loginedUserInfo['id'])})</h2>
 <ul>
 <!--{foreach $followers as $follower}-->
 <li>
-    <img width="48" height="48" src="${JWPicture::GetUserIconUrl($follower['id'],'thumb48')}" alt="{$follower['nameScreen']}" alt="{$follower['nameScreen']}" />
-    <a href="/{$follower['nameScreen']}/">${htmlSpecialChars($follower['nameFull'])}</a>
+    <a href="/{$follower['nameUrl']}/"><img width="48" height="48" src="${JWPicture::GetUserIconUrl($follower['id'],'thumb48')}" alt="{$follower['nameScreen']}" alt="{$follower['nameScreen']}" />
+    ${htmlSpecialChars($follower['nameScreen'])}</a>
     <!--{if ($followerOps[ $follower['id'] ]) }-->
         <span class="a">（{$followerOps[ $follower['id'] ]}）</span>
     <!--{/if}-->

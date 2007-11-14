@@ -82,7 +82,7 @@ class JWRobotLingo_Add {
 
 		$userSender = JWUser::GetUserInfo( $mmsRow['idUser'] );
 
-		if( $mmsRow['isProtected']=='Y' && false == JWFriend::IsFriend( $userSender['id'], $userReceiver['id'] ) ){
+		if( $mmsRow['isProtected']=='Y' && false == JWFollower::IsFollowing( $userSender['id'], $userReceiver['id'] ) ){
 			$reply = JWRobotLingo_AddReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOPERM', array($userReceiver['nameFull'], $userSender['nameFull'] ) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}	

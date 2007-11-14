@@ -34,7 +34,7 @@ _HTML_;
 	}
 
 	$notice_html = <<<_HTML_
-你拒绝了添加${friend_user_name}为好友请求。
+你拒绝了${friend_user_name}的关注请求。
 _HTML_;
 	return array('notice_html'=>$notice_html);
 }

@@ -248,7 +248,7 @@ if ( $has_photo ){
     <tr><td colspan="3">&nbsp;</td></tr>
     <tr>
         <th>隐私设置：</th>
-        <td><input type="checkbox" id="protected" name="user[protected]" style="width:14px;border:none;display:inline;" value="Y" <?php if($outInfo['protected']=='Y') echo "checked";?>/> <label for="protect">只对好友开放我的叽歪更新</label></td>
+        <td><input type="checkbox" id="protected" name="user[protected]" style="width:14px;border:none;display:inline;" value="Y" <?php if($outInfo['protected']=='Y') echo "checked";?>/> <label for="protect">只对我关注的人开放我的叽歪更新</label></td>
         <td class="note">选择这项设置，更新不会出现在<a href="/public_timeline/">叽歪广场</a>中</td>
     </tr>
     </table>

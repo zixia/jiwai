@@ -1,19 +1,19 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2><a href="/{$userInfo['nameScreen']}/">${htmlSpecialChars($userInfo['nameFull'])}的消息</a>｜${htmlSpecialChars($userInfo['nameFull'])}和好友</h2>
+<h2><a href="/{$userInfo['nameScreen']}/">${htmlSpecialChars($userInfo['nameScreen'])}的消息</a>｜${htmlSpecialChars($userInfo['nameScreen'])}和别人</h2>
 <ul>
 <!--{if $showProtected}-->
 	<!--{foreach $statuses as $status}-->
 	<!--${
 		$protected = ( $users[$status['idUser']]['protected'] == 'Y' 
 						&& $status['idUser'] != $loginedUserInfo['id']
-						&& false == JWFriend::IsFriend($status['idUser'], $loginedUserInfo['id'])
+						&& false == JWFollowing::IsFollower($loginedUserInfo['id'], $status['idUser'])
 					 );
 	}-->
 	<!--{if (false == $protected)}-->
 		<li>
-			<a href="${buildUrl('/'.$users[$status['idUser']]['nameScreen'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+			<a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
 			<span class="stamp">
 			${JWStatus::GetTimeDesc($status['timeCreate'])}
 			通过
@@ -24,7 +24,7 @@
 	<!--{/foreach}-->
 <!--{else}-->
 	<li>
-	{$userInfo['nameScreen']}只和好友分享叽歪。
+	{$userInfo['nameScreen']}只和我关注的人分享叽歪。
 	</li>
 <!--{/if}-->
 </ul>

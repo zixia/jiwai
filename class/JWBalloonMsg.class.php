@@ -59,12 +59,12 @@ _HTML_;
 		$user_row = JWUser::GetUserInfo($idUser);
 
 		$html = <<<_HTML_
-你被 $user_row[nameFull]($user_row[nameScreen]) 加为好友了。
-<a href="BALLOON_URL:/wo/friendships/create/$user_row[idUser]">将 $user_row[nameFull]($user_row[nameScreen]) 添加为好友</a>
+你被 $user_row[nameFull]($user_row[nameScreen]) 关注了。
+<a href="BALLOON_URL:/wo/friendships/create/$user_row[idUser]">关注 $user_row[nameFull]($user_row[nameScreen]) </a>
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
-        if( false == JWFriend::IsFriend($idUser, $idFriend ) )
+        if( false == JWFollower::IsFollowing($idUser, $idFriend ) )
             self::Create($idFriend,$html);
 	}
 
@@ -94,7 +94,7 @@ _HTML_;
 
 		$html = <<<_HTML_
 $follower_row[nameFull]($follower_row[nameScreen]) 订阅了你的叽歪。
-<a href="BALLOON_URL:/wo/friends/follow/$idFollower">订阅 $follower_row[nameFull]</a>
+<a href="BALLOON_URL:/wo/followings/follow/$idFollower">订阅 $follower_row[nameFull]</a>
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 

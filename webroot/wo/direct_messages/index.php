@@ -61,7 +61,7 @@ if ( $message_box_type == JWMessage::INBOX ) {
 <?php JWTemplate::ShowActionResultTips() ?>
 
 <?php
-$be_friend_ids = JWFriend::GetBeFriendIds($logined_user_id);
+$be_friend_ids = JWFollower::GetBioFollowingIds($logined_user_id);
 
 $friend_rows	= JWUser::GetUserDbRowsByIds($be_friend_ids);
 
@@ -180,13 +180,15 @@ _HTML_;
 
 		</div><!-- wrapper -->
 	</div><!-- content -->
+
 <?php
 include_once ( dirname(dirname(__FILE__)). '/sidebar.php') ;
-JWTemplate::container_ending();
+JWTemplate::container_ending(); 
 ?>
-	
+
 </div><!-- #container -->
 
+	
 <?php JWTemplate::footer() ?>
 
 </body>
