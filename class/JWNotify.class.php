@@ -233,7 +233,7 @@ class JWNotify{
 
 		/* friend private */
 		if( $userInfo['protected'] == 'Y' ) {
-			$friendIds = JWFollower::GetFolllowingIds( $idUser );
+			$friendIds = JWFollower::GetFollowingIds( $idUser );
 			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
 		}
 		/* (who)s block idUser */

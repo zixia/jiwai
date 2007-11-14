@@ -54,7 +54,7 @@ if ( isset($_REQUEST['jw_status']) )
 
 	if ( !empty($message) )
 	{
-		JWSns::ExecWeb($logined_user_id, "d $receiver_user_row[nameScreen]", '发送悄悄话');
+		JWSns::ExecWeb($logined_user_id, "d $receiver_user_row[nameScreen] $message", '发送悄悄话');
 	}
 	else
 	{
