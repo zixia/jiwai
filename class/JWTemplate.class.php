@@ -2402,8 +2402,7 @@ _HTML_;
 				break;
 				case 'search':
 					$action_row = $action_rows[$list_user_id];
-					$action = self::FollowersAction($list_user_id, $action_row , false);
-					$action .= '|'. self::FriendsAction($list_user_id, $action_row , false);
+					$action = self::FollowingsAction($list_user_id, $action_row , $wo);
 					$action = trim( $action, '|' );
 				break;
 			}
@@ -2446,6 +2445,9 @@ _HTML_;
 
 			if( true == $actionRow['leave'] ) 
 				$action .= "<a href='/wo/followings/leave/$idUser'>取消关注</a>$separator";
+
+			if( true == $actionRow['follow'] ) 
+				$action .= "<a href='/wo/followings/follow/$idUser'>关注此人</a>$separator";
 		}
 
 		return trim( $action, $separator );

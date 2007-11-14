@@ -85,8 +85,8 @@ if ( isset($_REQUEST['jw_status']) )
 <div id="container">
 	<div id="content">
 		<div id="wrapper">
-
 <?php
+JWTemplate::ShowActionResultTips();
 JWTemplate::updater(array(
 	'title' 	=> '发送悄悄话',
 	'mode'		=> 1,

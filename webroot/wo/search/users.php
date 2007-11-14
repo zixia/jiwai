@@ -44,7 +44,7 @@ $picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
 
 <body class="account" id="friends">
 <?php JWTemplate::header("/wo/account/settings") ?>
-<?php JWTemplate::ShowActionResultTips(); ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
 <h2 style="margin-bottom:10px;">找用户 - <form style="display:inline;margin:0px;padding:0;" action="/wo/search/users" method="GET" id="search_user"><input type="text" style="height:18px;padding-left:5px;" name="q" value="<?php echo (isset($q)) ? $q : '用户名、Email';?>" onclick='this.value=""' /><input type="button" style="height:24px; padding:2px 5px;" onClick='$("search_user").submit();' value="找"/></form></h2>

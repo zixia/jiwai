@@ -34,7 +34,6 @@ class JWRobotLingoBase {
 		 'LEAVE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave', 'param'=>10),
 		 
 		 'NOTICE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_NOTICE', 'param'=>1),
-		 'DELETE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Delete', 'param'=>1),
 		 
 		 'GET' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get', 'param'=>1),
 		 'NUDGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge', 'param'=>1),
@@ -86,7 +85,8 @@ class JWRobotLingoBase {
 		'NAONAO' => 'NUDGE',
 		'NN' => 'NUDGE',
 
-		'REMOVE' => 'DELETE',
+		'REMOVE' => 'LEAVE',
+		'DELETE' => 'LEAVE',
 		
 		'ZHUCE' => 'REG',
 		'ZC' => 'REG',

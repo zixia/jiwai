@@ -178,6 +178,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_id = $device_db_row['idUser'];
+		$address_user_row = JWUser::GetUserInfo($address_user_id);
 
 		/*
 	 	 *	解析命令参数
@@ -217,6 +218,11 @@ class JWRobotLingo {
 			}else{
 				if( $on ) {
 					JWSns::CreateFollower( $userInfoFollower['idUser'], $address_user_id, 'Y' );
+					$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
+						$address_user_row['nameScreen'],
+						urlEncode($address_user_row['nameUrl']),		
+					));
+					JWNudge::NudgeToUsers( $userInfoFollower['idUser'], $outMessage, 'nudge', $type);
 				}
 			}
 				
@@ -513,6 +519,11 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', array(
 				$follower['nameScreen'],
 			));
+
+			$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
+				$address_user_row['nameScreen'], urlEncode($address_user_row['nameUrl']),		
+			));
+			JWNudge::NudgeToUsers($follower['id'], $outMessage, 'nudge', $type);
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
