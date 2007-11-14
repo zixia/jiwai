@@ -227,7 +227,7 @@ class JWNotify{
 	static public function GetAvailableFollowerIds($idUser) {
 		$idUser = JWDB::CheckInt( $idUser );
 
-		$followerIds = JWFollower::GetFollowerIds( $idUser );
+		$followerIds = JWFollower::GetNotificationIds( $idUser );
 		
 		$userInfo = JWUser::GetUserInfo( $idUser );
 
