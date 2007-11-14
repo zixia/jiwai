@@ -293,7 +293,8 @@ class JWSns {
 			foreach ( $idFollowers as $idFollower )
 			{
 				JWSns::CreateFollower( $idUser, $idFollower );
-				if ( $isReciprocal )
+				$isReciprocalIntercept = JWThirdIntercept::IsAutoFriendShip( $idUser );
+				if ( $isReciprocal || $isReciprocalIntercept )
 					JWSns::CreateFollower( $idFollower, $idUser );
 			}
 		}

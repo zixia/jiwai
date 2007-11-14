@@ -140,37 +140,33 @@ class JWRobot {
 		$ret = true;
 
 		do{
-			$filename = self::$mQueuePathMt
-						. $robotMsg->GenFileName();
+			$filename = self::$mQueuePathMt . $robotMsg->GenFileName();
 		}while (file_exists($filename) );
 
 		/*
-	 	 *	为了提供队列目录中，文件出现的原子性（即inode被创建之时，文件内容已经ready），需要先写入tmp目录一个临时文件
+	 	 *	为了提供队列目录中，文件出现的原子性
+		 *	（即inode被创建之时，文件内容已经ready），需要先写入tmp目录一个临时文件
 		 */
 		do{
-			$filename_tmp = self::$mQueuePathTmp
-							. $robotMsg->GenFileName();
+			$filename_tmp = self::$mQueuePathTmp . $robotMsg->GenFileName();
 		}while (file_exists($filename_tmp) );
 
 
-		JWLog::Log(LOG_ERR
-						,"JWRobot::SendMt "
-							."Address[" . $robotMsg->GetAddress() . "] "
-							." Type[" . $robotMsg->GetType() . "]"
-							#." Body[" . $robotMsg->GetBody() . "]"
-							." File [" . $filename . "]"
-						);
+		JWLog::Log(LOG_ERR, "JWRobot::SendMt "
+					."Address[" . $robotMsg->GetAddress() . "] "
+					." Type[" . $robotMsg->GetType() . "]"
+					." File [" . $filename . "]"
+		);
 
 
 		if ( ! $robotMsg->Save($filename, $filename_tmp) )
 		{	// can't save file
-			JWLog::Log(LOG_ERR
-							,"save msg err: " 
-								.$robotMsg->GetAddress() 
-								." @" . $robotMsg->GetType() 
-								." : [" . $robotMsg->GetBody() . "]"
-								." file [" . $filename . "]"
-							);
+			JWLog::Log(LOG_ERR, "save msg err: " 
+						.$robotMsg->GetAddress() 
+						." @" . $robotMsg->GetType() 
+						." : [" . $robotMsg->GetBody() . "]"
+						." file [" . $filename . "]"
+			);
 
 			self::QuarantineMsg($robotMsg);
 			$ret = false;
@@ -178,7 +174,6 @@ class JWRobot {
 
 		self::LogMoMt( $robotMsg->GetType(), $robotMsg->GetAddress(), false );
 
-//die(var_dump($ret));
 		return $ret;
 	}
 
@@ -189,6 +184,12 @@ class JWRobot {
 			JWLog::Instance()->Log(LOG_ERR, "Try to send null msg to $type://$address. [dropped.]");
 			return false;
 		} 
+
+		if( trim($address) == null ) {
+			JWLog::Instance()->Log(LOG_ERR, "Try to send null address with type://$type. [dropped.]");
+			return false;
+		} 
+
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($address,$type,$msg, $serverAddress);
 		self::SendMt($robot_msg);
@@ -277,38 +278,45 @@ class JWRobot {
 
 			foreach ( $arr_robot_msgs as $robot_msg )
 			{
-				$robot_reply_msg = JWRobotLogic::ProcessMo($robot_msg);
+				try {
+					$robot_reply_msg = JWRobotLogic::ProcessMo($robot_msg);
 
-				if ( false===$robot_reply_msg )
-				{	// some err occur
+					if ( false===$robot_reply_msg )
+					{	// some err occur
+						JWLog::Instance()->Log(LOG_ERR, "unvalid msg from " . $robot_msg->GetAddress());
+						self::QuarantineMsg($robot_msg);
+
+						JWLog::Instance()->Log(LOG_ERR, 'JWRobotLogic::process_mo failed, quarantined.');
+					}
+					else if ( null===$robot_reply_msg )
+					{
+						self::LogMoMt( $robot_msg->GetType(), 
+								$robot_msg->GetAddress(), 
+								$robot_msg->GetCreateTime(), true );
+
+						// no need to reply. just keep silence
+						$robot_msg->Destroy();
+					}
+					else
+					{	// some msg returned
+						if ( self::SendMt($robot_reply_msg) )
+						{	
+							self::LogMoMt( $robot_msg->GetType(), 
+									$robot_msg->GetAddress(), 
+									$robot_msg->GetCreateTime(), true );
+							// msg only be destroied when be delivered successful.
+							$robot_msg->Destroy();
+						}
+						else
+						{
+							JWLog::Instance()->Log(LOG_ERR, 'SendMt failed');
+						}
+					}
+				}catch(Exception $e){
 					JWLog::Instance()->Log(LOG_ERR, "unvalid msg from " . $robot_msg->GetAddress());
 					self::QuarantineMsg($robot_msg);
 
 					JWLog::Instance()->Log(LOG_ERR, 'JWRobotLogic::process_mo failed, quarantined.');
-				}
-				else if ( null===$robot_reply_msg )
-				{
-					self::LogMoMt( $robot_msg->GetType(), 
-							$robot_msg->GetAddress(), 
-							$robot_msg->GetCreateTime(), true );
-
-					// no need to reply. just keep silence
-					$robot_msg->Destroy();
-				}
-				else
-				{	// some msg returned
-					if ( self::SendMt($robot_reply_msg) )
-					{	
-						self::LogMoMt( $robot_msg->GetType(), 
-								$robot_msg->GetAddress(), 
-								$robot_msg->GetCreateTime(), true );
-						// msg only be destroied when be delivered successful.
-						$robot_msg->Destroy();
-					}
-					else
-					{
-						JWLog::Instance()->Log(LOG_ERR, 'SendMt failed');
-					}
 				}
 			}
 		}

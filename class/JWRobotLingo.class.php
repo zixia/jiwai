@@ -155,14 +155,6 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Notice($robotMsg, $on=true)
 	{
-		/**
-		 * 拦截指令
-		 */
-		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
-
-		/*
-		 *	获取发送者的 idUser
-		 */
 		$address 	= $robotMsg->GetAddress();	
 		$serverAddress  = $robotMsg->GetServerAddress();
 		$type 		= $robotMsg->GetType();	
@@ -258,12 +250,6 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Leave($robotMsg)
 	{
-		/** 拦截指令 */
-		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
-
-		/*
-		 *	获取发送者的 idUser
-		 */
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
@@ -464,6 +450,7 @@ class JWRobotLingo {
 	{
 		$type = $robotMsg->GetType();
 		$address = $robotMsg->GetAddress();
+
 
 		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress( $address, $type );
 

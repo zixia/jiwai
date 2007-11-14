@@ -20,7 +20,8 @@ class JWRobotLingoIntercept {
 		$body = $robotMsg->GetBody();
 		$mobileNo = $robotMsg->GetAddress();
 
-		$robotMsg->SetBody( self::BodyForStock($body) );
+		if( false == preg_match('/^(F|FOLLOW|L|LEAVE|DELETE)\b$/i', $body ) )
+			return;
 
 		if( $type != 'sms' )
 			return;
@@ -39,7 +40,7 @@ class JWRobotLingoIntercept {
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( self::BodyForStock($body) );
+				$robotMsg->SetBody( self::BodyForStockAndFollow($body) );
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
@@ -52,12 +53,13 @@ class JWRobotLingoIntercept {
 				if( empty($userInfo) )
 					return;
 				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( self::BodyForStock($body) );
+				$robotMsg->SetBody( self::BodyForStockAndFollow($body) );
 			break;
 		}
 	}
 
-	static private function BodyForStock($body){
+	static private function BodyForStockAndFollow($body){
+		$body = preg_replace( '/^(F|FOLLOW)\b/i', "Notice", $body );
 		return preg_replace( '/\b(\d{6})\b/', "gp\\1", $body );
 	}
 }

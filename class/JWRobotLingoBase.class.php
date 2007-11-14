@@ -22,30 +22,30 @@ class JWRobotLingoBase {
 	 *	（如用户输入"on the way home"）
 	 */
 	static private $msRobotLingo = array (
-		 'HELP' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help', 'param'=>1 ),
-		 'TIPS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips', 'param'=>0 ),
+		'HELP' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Help', 'param'=>1 ),
+		'TIPS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Tips', 'param'=>0 ),
 
-		 'ADD' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add', 'param'=>1 ),
+		'ADD' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Add', 'param'=>1 ),
 		 
-		 'ON' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_On', 'param'=>1),
-		 'OFF' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off', 'param'=>1),
+		'ON' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_On', 'param'=>1),
+		'OFF' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Off', 'param'=>1),
 		 
-		 'FOLLOW' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow', 'param'=>10),
-		 'LEAVE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave', 'param'=>10),
+		'FOLLOW' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Follow', 'param'=>10),
+		'LEAVE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Leave', 'param'=>10),
 		 
-		 'NOTICE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_NOTICE', 'param'=>1),
+		'NOTICE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_NOTICE', 'param'=>1),
 		 
-		 'GET' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get', 'param'=>1),
-		 'NUDGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge', 'param'=>1),
-		 'WHOIS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whois', 'param'=>1),
+		'GET' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Get', 'param'=>1),
+		'NUDGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Nudge', 'param'=>1),
+		'WHOIS' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whois', 'param'=>1),
 		 
-		 'ACCEPT' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept', 'param'=>1),
-		 'DENY' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny', 'param'=>1),
+		'ACCEPT' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept', 'param'=>1),
+		'DENY' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny', 'param'=>1),
 		 
-		 'D' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_D', 'param'=>999), 
+		'D' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_D', 'param'=>999), 
 		 
-		 'REG' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg', 'param'=>2),
-		 'WHOAMI' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami', 'param'=>0),
+		'REG' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Reg', 'param'=>2),
+		'WHOAMI' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Whoami', 'param'=>0),
 		 
 		 //Track
 		'TRACK' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Track', 'param'=>6),
@@ -152,6 +152,9 @@ class JWRobotLingoBase {
 	{
 		if ( empty($robotMsg) )
 			throw new JWException('null param?');
+		
+		/** 拦击 FOLLOW | F | LEAVE | L | DELETE **/
+		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
 
 		$body = $robotMsg->GetBody();
 		$serverAddress = $robotMsg->GetServerAddress();
