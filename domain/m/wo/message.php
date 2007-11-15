@@ -68,11 +68,11 @@ function send($idUser, $idReceiver){
     $message = trim( $content );
     $userInfo = JWUser::GetUserInfo( $idReceiver );
 
-    if ( empty($userInfo) || !JWFollower::IsFollower($idUser, $idReceiver) ) {
+    if ( empty($userInfo) || JWBlock::IsBlocked($idUser, $idReceiver, false) ) {
         JWSession::SetInfo('error', "用户不存在，或你没有关注此用户。");
         redirect();
     }
-    JWSns::ExecWeb($idUser, 'd '.$userInfo[nameScreen], '发送悄悄话');
+    JWSns::ExecWeb($idUser, "D $userInfo[nameScreen] $message", '发送悄悄话');
 
 /*    if( $message ){
         if ( JWSns::CreateMessage($idUser, $idReceiver, $message ) ){
