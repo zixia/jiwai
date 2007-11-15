@@ -9,6 +9,12 @@ JWLogin::MustLogined();
 $user	= JWUser::GetCurrentUserInfo();
 $idUser	= $user['id'];
 
+if( $user['protected'] == 'Y' ) {
+	$subMenu = 'javascript';
+	require_once( './noperm.php' );
+	exit;
+}
+
 
 $div_id = "JiWai_de__gadget_timeline_user_3_iChat_UTF-8_$idUser";
 $gadget_script_html = <<<_HTML_
@@ -74,6 +80,7 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
 						,'Windows9x'		=> false
 						,'WindowsXP'		=> false
 					);
+
 ?>
 <html>
 <head>

@@ -4,8 +4,13 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 $user_id	= JWLogin::GetCurrentUserId();
-$user_info	= JWUser::GetUserInfo($user_id);
+$user = JWUser::GetUserInfo($user_id);
 
+if( $user['protected'] == 'Y'){
+	$subMenu = 'flash';
+	require_once( './noperm.php' );
+	exit;
+}
 
 ?>
 <html>
@@ -57,4 +62,3 @@ $user_info	= JWUser::GetUserInfo($user_id);
 
 </body>
 </html>
-

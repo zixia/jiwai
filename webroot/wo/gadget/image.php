@@ -10,6 +10,12 @@ $idUser	= $user['id'];
 $nameScreen = $user['nameScreen'];
 $nameUrl = $user['nameUrl'];
 
+if( $user['protected'] == 'Y'){
+	$subMenu = 'image';
+	require_once( './noperm.php' );
+	exit(0);
+}
+
 ?>
 <html>
 <head>
@@ -112,4 +118,3 @@ function draw()
 
 </body>
 </html>
-

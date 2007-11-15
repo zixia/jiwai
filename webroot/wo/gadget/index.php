@@ -7,12 +7,6 @@ JWTemplate::html_doctype();
 @header("Pragma: no-cache");
 */
 
-
-//JWLogin::MustLogined();
-
-//$user_info		= JWUser::GetCurrentUserInfo();
-
-//var_dump($user_info);
 ?>
 <html>
 
