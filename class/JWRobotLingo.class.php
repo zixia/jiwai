@@ -82,6 +82,7 @@ class JWRobotLingo {
 		$user_id	= $device_db_row['idUser'];
 		$device_id	= $device_db_row['idDevice'];
 
+		$ret = true;
 		if( $type != 'web' )
 			$ret = JWUser::SetSendViaDevice($user_id, $type);
 			
@@ -131,10 +132,11 @@ class JWRobotLingo {
 		$user_id = $device_db_row['idUser'];
 		$device_for_user = JWDevice::GetDeviceRowByUserId($user_id);
 
-		if( $type != 'web' )
+		$ret = true;
+		if( $type != 'web' ) 
 			$ret = JWUser::SetSendViaDevice($user_id, 'web');
-			
-		if ( false == $ret )
+
+		if( false == $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
 
 		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
@@ -142,9 +144,9 @@ class JWRobotLingo {
 		}
 
 		if ( false == $ret ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_SUC' );
-		}else{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_ERR' );
+		}else{
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_SUC' );
 		}
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}

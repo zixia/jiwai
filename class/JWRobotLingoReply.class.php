@@ -57,6 +57,7 @@ class JWRobotLingoReply {
 			'REPLY_ON_ERR_USER' => '哎呀！抱歉，设置接收 {0} 的更新通知失败，我们会尽快解决。',
 
 			'REPLY_OFF_SUC' => '通知消息已关闭。发送 ON 可开启。',
+			'REPLY_OFF_ERR' => '哎呀！抱歉，关闭通知失败，我们会尽快解决。',
 			'REPLY_OFF_SUC_USER' => '搞定了！设置不接受 {0} 的更新通知成功，发送 ON {0} 可启更新通知。',
 
 			'REPLY_ON_SUC_MUL' => '搞定了！设置接受 {0} 的更新通知成功。',
