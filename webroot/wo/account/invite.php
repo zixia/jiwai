@@ -17,59 +17,62 @@ $has_photo = !empty($user_info['idPicture']);
 $protected = $user_info['protected'] == 'Y';
 $idInvited = JWUser::GetIdEncodedFromIdUser( $user_info['id'] );
 
- if ( $has_photo ){
-    // we have photo
-    $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb48');
+if ( $has_photo ){
+	// we have photo
+	$photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb48');
 }else{
-    // we have no photo
-    $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
+	// we have no photo
+	$photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
 }
-
 //echo "<pre>"; die(var_dump($user_info));
 //var_dump($file_info);
 if ( isset($_POST['invite_email_x'] ) ) {
-    $emails = $_POST['email_addresses'];
-    $subject = $_POST['subject'];
-    $emails = preg_replace('/[，,；;\r\n\t]/', ' ', $emails);
-    $emails = preg_split('/\s+/', trim($emails) );
-    $count = 0;
-    foreach( $emails as $email ) {
-        if( JWMail::SendMailInvitation( $user_info, $email, $subject, $idInvited ) )
-            $count ++;
-    }
+	$emails = $_POST['email_addresses'];
+	$subject = $_POST['subject'];
+	$emails = preg_replace('/[，,；;\r\n\t]/', ' ', $emails);
+	$emails = preg_split('/\s+/', trim($emails) );
+	$count = 0;
+	foreach( $emails as $email ) {
+		if( false == JWDevice::IsValid( $email, 'email' ) )
+			continue;
+		if( JWMail::SendMailInvitation( $user_info, $email, $subject, $idInvited ) )
+			$count ++;
+	}
 
-    if( $count ) {
-        JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你关注的人！');
-    }else{
-        JWSession::SetInfo('notice', '对不起，你所填写的朋友的Email地址不合法，我们无法帮你邀请你的的朋友！');
-    }
+	if( $count ) {
+		JWSession::SetInfo('notice', '你的邀请，我们已经通过Email发给你的朋友们了，他们注册后会自动成为你关注的人！');
+	}else{
+		JWSession::SetInfo('notice', '对不起，你所填写的朋友的Email地址不合法，我们无法帮你邀请你的的朋友！');
+	}
 
-    Header("Location: /wo/");
-    exit;
+	Header("Location: /wo/");
+	exit;
 }
 
 if ( isset($_POST['invite_sms_x'] ) ) {
-    JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
+	JWSession::SetInfo('notice', '你的邀请，我们已经通过手机短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
 
-    $smss = $_POST['sms_addresses'];
-    $smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
-    $smss = preg_split('/\s+/', trim($smss) ); 
-    $body = '你好，我是'.JWNotify::GetPrettySender($user_info).'！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。';
+	$smss = $_POST['sms_addresses'];
+	$smss = preg_replace('/[，,；;\r\n\t]/', ' ', $smss);
+	$smss = preg_split('/\s+/', trim($smss) ); 
+	$body = '你好，我是'.JWNotify::GetPrettySender($user_info).'！我在叽歪de建立了自己的一句话博客，发布自己的动向，你回复 F 就可以关注我的动向。';
 
-    $count=0;
-    foreach( $smss as $sms ) {
-        if( JWSns::SmsInvite( $user_info['id'], $sms, $body ) )
-            $count++;
-    }
+	$count=0;
+	foreach( $smss as $sms ) {
+		if( false == JWDevice::IsValid( $sms, 'sms' ) )
+			continue;
+		if( JWSns::SmsInvite( $user_info['id'], $sms, $body ) )
+			$count++;
+	}
 
-    if( $count ) {
-        JWSession::SetInfo('notice', '你的邀请，我们已经通过短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
-    }else{
-        JWSession::SetInfo('notice', '对不起，你所填写的朋友的手机号码不合法，我们无法帮你邀请你的的朋友！');
-    }
+	if( $count ) {
+		JWSession::SetInfo('notice', '你的邀请，我们已经通过短信发给你的朋友们了，他们注册后会自动成为你关注的人！');
+	}else{
+		JWSession::SetInfo('notice', '对不起，你所填写的朋友的手机号码不合法，我们无法帮你邀请你的的朋友！');
+	}
 
-    Header("Location: /wo/");
-    exit;
+	Header("Location: /wo/");
+	exit;
 }
 ?>
 
@@ -160,7 +163,7 @@ function shifttab(id){
     </fieldset>
     </div>
     <div class="but">
-        <input name="invite_sms" type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-sure.gif'); ?>" alt="确定" width="112" height="33" border="0" />　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-skip.gif'); ?>" alt="跳过" width="112" height="33" border="0" /></a>
+        <input name="invite_sms_x" type="submit" class="submitbutton" value="邀请" />　　<input type="button" class="submitbutton" value="跳过" onclick="javascritp:location.href=/wo/"/>
     </div>
     </form>
 </div>
@@ -213,7 +216,7 @@ function shifttab(id){
     </fieldset>
     </div>
     <div class="but">
-        <input name="invite_email" type="image" src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-sure.gif'); ?>" alt="确定" width="112" height="33" border="0" />　　<a href="/wo/"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-but-skip.gif'); ?>" alt="跳过" width="112" height="33" border="0" /></a>
+        <input name="invite_email_x" type="submit" class="submitbutton" value="邀请"/>　　<input type="button" class="submitbutton" value="跳过" onclick="javascritp:location.href=/wo/" />
     </div>
     </form>
 </div>
