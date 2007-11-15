@@ -82,8 +82,8 @@ class JWRobotLingo {
 		$user_id	= $device_db_row['idUser'];
 		$device_id	= $device_db_row['idDevice'];
 
-		
-		$ret = JWUser::SetSendViaDevice($user_id, $type);
+		if( $type != 'web' )
+			$ret = JWUser::SetSendViaDevice($user_id, $type);
 			
 		if ( false == $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_On JWUser::SetSendViaDevice($user_id,$type ...) failed");
