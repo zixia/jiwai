@@ -10,16 +10,12 @@ $idUser	= $user['id'];
 $nameScreen = $user['nameScreen'];
 $nameUrl = $user['nameUrl'];
 
-$un = $_POST['un'];
-$currentUser = JWUser::GetCurrentUserInfo();
-$array_info = array();
-if( isset($un) && $un )
-{
-$array_info['protected'] = 'N';
-    JWUser::Modify($currentUser['id'],$array_info);
-    Header('Location:/wo/gadget/image');
+if( $user['protected'] == 'Y'){
+	$subMenu = 'image';
+	require_once( './noperm.php' );
+	exit(0);
 }
-if( $currentUser['protected'] == 'N'){
+
 ?>
 <html>
 <head>
@@ -122,35 +118,3 @@ function draw()
 
 </body>
 </html>
-<?php
-}else{
-?>
-<html>
-<head>
-<?php JWTemplate::html_head() ?>
-</head>
-<body class="account" id="settings">
-<?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header() ?>
-<div id="container">
-<?php JWTemplate::UserGadgetNav('image'); ?>
-<div class="tabbody">
-<h2 align="center">非常抱歉，你不能使用窗可贴。因为你的消息是受到保护的。如果想启用，请关闭隐私设置。</h2>
-<p align = "center">
-<form name="protect" method="post" action="image">
-<input type='hidden' name='un' id='un' value='true' />
-<div style=" padding:20px 0 0 160px; height:50px;">
-<input type="submit" onclick="if (confirm('你确定关闭吗?这样你的消息会被所有人看到!')) submit(); return false; "  type="butt
-    on" class="submitbutton" value="关闭隐私设置"/> &nbsp&nbsp 你的信息会被所有人看到，并且会被搜索引擎搜索到
-</div>
-</form>
-</p>
-</div>
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
-</div><!-- #container -->
-<?php JWTemplate::footer() ?>
-</body>
-</html>
-<?php
-}
-?>
