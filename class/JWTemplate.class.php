@@ -782,6 +782,8 @@ _HTML_;
 		if ( !isset($options['isMms']) )
 			$options['isMms']	= false;
 
+		if( $options['protected'] ) return;
+
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 		if (!$options['strip']) {
 ?>

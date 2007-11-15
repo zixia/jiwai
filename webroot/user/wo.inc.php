@@ -22,14 +22,17 @@ $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
 $show_protected_content = true;
 
-if ( !JWUser::IsAdmin($logined_user_info['idUser'])
-		&& $logined_user_info['idUser']!=$page_user_id 
-		&& JWUser::IsProtected($page_user_id) )
+if ( false == JWUser::IsAdmin($logined_user_info['idUser'])
+	&& JWUser::IsProtected($page_user_id) )
 {
-	if ( empty($logined_user_info) )
+	if ( empty($logined_user_info) 
+		|| ( 
+			false == JWFollower::IsFollower($logined_user_info['idUser'], $page_user_id)
+			&& $logined_user_info['idUser'] != $page_user_id 
+		)
+	){
 		$show_protected_content= false;
-	else if ( ! JWFollower::IsFollower($page_user_id, $logined_user_info['idUser']) )
-		$show_protected_content= false;
+	}
 }
 
 
@@ -222,8 +225,8 @@ JWTemplate::StatusHead($page_user_id, $status_user_info, @$head_status_rows[$hea
 $menu_list = array (
 	'friends' => array(
 		'active' => false,
-		'name' => "和朋友们",
-		'url' => "/$page_user_info[nameUrl]/with_friends",
+		'name' => "和别人的",
+		'url' => "/$page_user_info[nameUrl]/with_friends/",
 	),
 	'archive' => array(
 		'active' => false,
@@ -257,16 +260,11 @@ if ( $show_protected_content )
 if ( !isset($g_user_with_friends) )
 	$g_user_with_friends = false;
 
-
-// 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
-if ( $show_protected_content )
-	JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, array(
-		'icon'	=> $g_user_with_friends,
-		//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
-		'protected'=> !( $show_protected_content || $logined_user_info['idUser']==$page_user_id ),
-		//,'protected'=> $logined_user_info['idUser']!=$page_user_id
-		'pagination' => $pagination, 
-	) ) ;
+JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, array(
+	'icon'	=> $g_user_with_friends,
+	'protected'=> ( false == $show_protected_content ),
+	'pagination' => $pagination, 
+)) ;
 
 ?>
 			</div><!-- tab -->
