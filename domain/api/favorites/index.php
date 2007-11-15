@@ -10,6 +10,10 @@ $page = ( $page < 1 ) ? 1 : intval($page);
 $start = JWFavourite::DEFAULT_FAVORITE_MAX * ( $page - 1 );
 
 $type = strtolower( $pathParam );
+$params = explode('.', $pathParam);
+if( count($params) == 2 ) {
+	list($idUserObject, $type) = $params;
+}
 
 $idUser = JWApi::getAuthedUserId();
 if( !$idUser ){
@@ -31,8 +35,6 @@ if( $idUserObject ) {
 	$idUserObject = $idUser;
 }
 
-$statusIds = JWFavourite::GetFavourite($idUserObject, JWFavourite::DEFAULT_FAVORITE_MAX, $start);
-$statuses = JWStatus::GetStatusDbRowsByIds($statusIds);
 
 if( !in_array( $type, array('json','xml','atom','rss') )){
 	JWApi::OutHeader(406, true);
@@ -126,12 +128,23 @@ function getFavouriteStatuses($options, $needReBuild=false){
 	$start = $count * ( $page - 1 );
 
 
-	$status_ids = JWFavourite::GetFavourite($idUserObject, JWFavourite::DEFAULT_FAVORITE_MAX, $start);
-	$status_rows = JWStatus::GetStatusDbRowsByIds($status_ids);
+	$favouriteData = JWFavourite::GetFavouriteData($idUserObject, JWFavourite::DEFAULT_FAVORITE_MAX, $start);
+	$statusIds = empty($favouriteData) ? array() : $favouriteData['status_ids'] ;
+	$favouriteIds = empty($favouriteData) ? array() : $favouriteData['favourite_ids'] ; 
+	$statusRows = JWStatus::GetStatusDbRowsByIds($statusIds);
+
+	$status_rows = array();
+	foreach( $statusIds as $status_id ) {
+		$favourite_id = array_shift( $favouriteIds );
+		if( isset( $statusRows[ $status_id ] ) ){
+			$status = $statusRows[ $status_id ];
+			$status[ 'favourite_id'] = $favourite_id;
+			array_push( $status_rows, $status);
+		}
+	}
 
 	$user_rows = array();
 	$statuses = array();
-
 	foreach ( $status_rows as $status ){
 		$user_id = intval($status['idUser']);
 		

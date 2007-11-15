@@ -571,12 +571,20 @@ _TAB_;
 			$options['trash'] = true;
 
 
+		$current_user_id	= JWLogin::GetCurrentUserId();
 		$device		= 'WEB';
+		$hasFollowed = $current_user_id ? JWFollower::IsFollower($userRow['id'], $current_user_id) : false;
+
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和关注我人分享我的叽歪de。<br /><a href="/wo/followings/follow/$idUser" onclick="return JiWai.requestFriend($idUser, this);">开始关注我。</a>
+我只和关注我人分享我的叽歪de。<br />
 _HTML_;
+			if( $current_user_id && false==$hasFollowed ) {
+				$status .= <<<_HTML_
+<a href="/wo/followings/follow/$idUser">开始关注我。</a>
+_HTML_;
+			}
 
 		}
 		else if ( empty($statusRow) )
@@ -604,9 +612,6 @@ _HTML_;
 
 		}
 
-
-		$current_user_id	= JWLogin::GetCurrentUserId();
-
 ?>
 			<div id="permalink">
 				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0; background: none;">
@@ -622,16 +627,15 @@ _HTML_;
 	<td><h3><?php echo $name_screen; ?></h3></td>
 	<td align="right">
 <?php
-if ($current_user_id!=$idUser) {
+if ($current_user_id!=$idUser && $current_user_id ) {
 if ( isset($current_user_id) && JWFollower::IsFollower($userRow['id'], $current_user_id) ) {
 ?>
 	  <small> 已关注 </small>
 <?php
 } else {
-	$oc = ( JWUser::IsProtected($idUser) && !JWFollower::IsFollower($current_user_id, $userRow['id']) ) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
-	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
+	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) && false == $hasFollowed) {
 		echo <<<_HTML_
-	<a href="/wo/followings/follow/$userRow[id]" $oc>关注此人</a>
+	<a href="/wo/followings/follow/$userRow[id]">关注此人</a>
 _HTML_;
 	}
 }

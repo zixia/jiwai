@@ -57,22 +57,21 @@ class JWFavourite {
 		return JWDB::ExistTableRow('Favourite', array('idUser'=>$idUser,'idStatus'=>$idStatus));
 	}
 
-
 	/**
 	 * 	Get favourite list
 	 *	@return array	array of favourite idStatus list
 	 */
-	static function GetFavourite($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX, $start=0)
+	static function GetFavouriteData($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX, $start=0)
 	{
-		$idUser = intval($idUser);
-		$numMax = intval($numMax);
+		$idUser = JWDB::CheckInt($idUser);
+		$numMax = JWDB::CheckInt($numMax);
 		$start = intval($start);
 
 		if ( 0>=$idUser || 0>=$numMax || 0>$start )
 			throw new JWException('not int');
 
 		$sql = <<<_SQL_
-SELECT	idStatus
+SELECT	id, idStatus
 FROM	Favourite
 WHERE	idUser=$idUser
 ORDER BY id DESC
@@ -83,16 +82,36 @@ _SQL_;
 
 		if ( empty($arr_result) )
 		{
-			return null;
+			return array();
 		}
 
 		$arr_status_id = array();
-		foreach ( $arr_result as $row )
+		$arr_favourite_id = array();
+		foreach ( $arr_result as $row ) {
 			array_push($arr_status_id, $row['idStatus']);
+			array_push($arr_favourite_id, $row['id']);
+		}
+
+		return array(
+			'status_ids' => $arr_status_id,
+			'favourite_ids' => $arr_favourite_id,
+		);
 
 		return $arr_status_id;
 	}
 
+	/**
+	 * 	Get favourite list
+	 *	@return array	array of favourite idStatus list
+	 */
+	static function GetFavourite($idUser, $numMax=JWFavourite::DEFAULT_FAVORITE_MAX, $start=0)
+	{
+		$arr_favourite_data = self::GetFavouriteData($idUser, $numMax, $start);
+		if( empty( $arr_favourite_data ) )
+			return array();
+
+		return $arr_favourite_data['status_ids'];
+	}
 
 	/*
 	 *	取消 idUser 的 favourite idStatus

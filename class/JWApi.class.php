@@ -122,6 +122,9 @@ class JWApi{
 		$outInfo['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
 		$outInfo['text'] = $status['status'];
 		$outInfo['id'] = $status['idStatus'];
+		if( isset( $status['favourite_id'] ) ){
+			$outInfo['favourite_id'] = $status['favourite_id'];
+		}
 		return $outInfo;
 	}
 
