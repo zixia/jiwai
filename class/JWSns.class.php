@@ -497,7 +497,7 @@ class JWSns {
 	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $isSignature='N', $serverAddress=null, $options=array() )
 	{
 		//滤除换行 并 检查签名改变
-		if( null == ( $status = self::StripStatus($idUser, $status, $device, $isSignature ) ) )
+		if( null == ( $status = self::StripStatusAndCheckSignature($idUser, $status, $device, $isSignature ) ) )
 			return true;
 
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
@@ -870,11 +870,10 @@ class JWSns {
 		return $idVistors;
 	}
 
-	static public function StripStatus( $idUser, $status=null, $device='msn', $isSignature='N' ) 
+	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature='N' ) 
 	{
-		$status = preg_replace('/[\n\r]/' ,' ', $status);
+		$status = JWTextFormat::PreFormatWebMsg( $status );
 		if( 'Y' == $isSignature ) {
-			$status = JWStatus::HtmlEntityDecode( $status );
 			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
 				return null;
 			}

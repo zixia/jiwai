@@ -815,8 +815,6 @@ _SQL_;
 			if ( $device_data['isSignatureRecord'] != 'Y' )
 				return false;
 
-			$status = JWStatus::HtmlEntityDecode( $status );
-
 			if( false == empty( $device_data ) 
 					&& strncasecmp($device_data['signature'],$status,140)
 					&& false == self::IsHistorySignature( $idUser, $status )
