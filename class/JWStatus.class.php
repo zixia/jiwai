@@ -133,7 +133,7 @@ class JWStatus {
 		return JWDB_Cache::SaveTableRow('Status', 
 						array( 
 							'idUser' => $idUser,
-							'status' => preg_replace('/\xE2\x80\xAE/U', '', $status),
+							'status' => $status,
 							'device' => $device,
 							'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
 							'idUserReplyTo'	=> $idUserReplyTo, 
@@ -1008,17 +1008,6 @@ _SQL_;
 			return 0;
 
 		return $row['idMax'];
-	}
-
-	static public function HtmlEntityDecode( $status ) {
-		$quots = array(
-				'&apos;' => "'",
-			);
-
-		$status = str_replace( array_keys( $quots ), array_values( $quots ), $status );
-		$status = html_entity_decode( $status, ENT_QUOTES );
-
-		return $status;
 	}
 
 	static public function SetIdConference($idStatus, $idConference=null) {

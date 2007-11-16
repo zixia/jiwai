@@ -215,6 +215,9 @@ class JWSns {
 	{
 		if ( JWFollower::IsFollower($idUser, $idFollower) )
 			return true;
+
+ 		self::UnBlock( $idFollower, $idUser );
+
 		if ( false == JWFollower::Create($idUser, $idFollower, $notification) )
 		{
 			JWLog::Log(LOG_CRIT, "JWSns::CreateFollower($user_id, $follower_id) failed.");
@@ -290,7 +293,8 @@ class JWSns {
 			foreach ( $idFollowers as $idFollower )
 			{
 				JWSns::CreateFollower( $idUser, $idFollower );
-				if ( $isReciprocal )
+				$isReciprocalIntercept = JWThirdIntercept::IsAutoFriendShip( $idUser );
+				if ( $isReciprocal || $isReciprocalIntercept )
 					JWSns::CreateFollower( $idFollower, $idUser );
 			}
 		}
@@ -435,6 +439,9 @@ class JWSns {
 				}
 			}else{
 				$action = $init_action;
+				if( false == JWBlock::IsBlocked( $other_id, $idUser ) ) {
+					$action['follow'] = true;
+				}
 			}
 		
 			$action_rows[ $other_id ] = $action;
@@ -490,7 +497,7 @@ class JWSns {
 	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $isSignature='N', $serverAddress=null, $options=array() )
 	{
 		//滤除换行 并 检查签名改变
-		if( null == ( $status = self::StripStatus($idUser, $status, $device, $isSignature ) ) )
+		if( null == ( $status = self::StripStatusAndCheckSignature($idUser, $status, $device, $isSignature ) ) )
 			return true;
 
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
@@ -627,14 +634,16 @@ class JWSns {
 				$idFacebook = JWFacebook::GetFBbyUser( $idUser );
 				if ( $idFacebook ) {
 					JWFacebook::RefreshRef($idUser);
-					if (empty($picUrl)) {
-						$picUrl = null;
-						$pic = null;
-						$userInfo = JWUser::GetUserInfo( $idUser );
-					} else {
-						$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
+					if ( !$idUserReplyTo ) {
+						if (empty($picUrl)) {
+							$picUrl = null;
+							$pic = null;
+							$userInfo = JWUser::GetUserInfo( $idUser );
+						} else {
+							$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
+						}
+						JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
 					}
-					JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
 				}
 			}
 
@@ -804,9 +813,6 @@ class JWSns {
 		$flag = JWBlock::Create( $idUser, $idUserBlock );
 		if( $flag ) {
 			JWFollower::Destroy( $idUser, $idUserBlock );
-			JWFollower::Destroy( $idUser, $idUserBlock );
-
-			JWFollower::Destroy( $idUserBlock, $idUser );
 			JWFollower::Destroy( $idUserBlock, $idUser );
 		}
 	}
@@ -864,11 +870,10 @@ class JWSns {
 		return $idVistors;
 	}
 
-	static public function StripStatus( $idUser, $status=null, $device='msn', $isSignature='N' ) 
+	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature='N' ) 
 	{
-		$status = preg_replace('/[\n\r]/' ,' ', $status);
+		$status = JWTextFormat::PreFormatWebMsg( $status );
 		if( 'Y' == $isSignature ) {
-			$status = JWStatus::HtmlEntityDecode( $status );
 			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
 				return null;
 			}
