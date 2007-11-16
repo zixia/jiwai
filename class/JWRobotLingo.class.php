@@ -132,16 +132,16 @@ class JWRobotLingo {
 		$user_id = $device_db_row['idUser'];
 		$device_for_user = JWDevice::GetDeviceRowByUserId($user_id);
 
+		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			return self::Lingo_Notice( $robotMsg, false );
+		}
+
 		$ret = true;
 		if( $type != 'web' ) 
 			$ret = JWUser::SetSendViaDevice($user_id, 'web');
 
 		if( false == $ret )
 			JWLog::Log(LOG_ERR, "JWRobotLingo::Lingo_Off JWUser::SetSendViaDevice($user_id,'web'...) failed");
-
-		if ( preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
-			return self::Lingo_Notice( $robotMsg, false );
-		}
 
 		if ( false == $ret ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_OFF_ERR' );
