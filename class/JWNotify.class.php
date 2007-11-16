@@ -111,10 +111,13 @@ class JWNotify{
 		 * Sync To Twitter, need transfer to other pool service
 		 */
 		$bindOther = JWBindOther::GetBindOther( $idUserFrom );
-		if( isset($bindOther['twitter']) ) {
+		if( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) {
 			$messageObject = is_array($message) ? (isset($message['im']) ? $message['im'] : null ) : $message;
 			if( $messageObject ) {
-				JWBindOther::PostStatus( $bindOther['twitter'], $message );
+				if( isset($bindOther['twitter']) )
+					JWBindOther::PostStatus( $bindOther['twitter'], $message );
+				if( isset($bindOther['fanfou']) )
+					JWBindOther::PostStatus( $bindOther['fanfou'], $message );
 			}
 		}
 

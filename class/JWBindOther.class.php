@@ -12,8 +12,10 @@
 class JWBindOther {
 
 	const AUTH_TWITTER = 'http://twitter.com/account/verify_credentials.xml';
+	const AUTH_FANFOU = 'http://api.fanfou.com/private_messages/inbox.xml';
 
 	const POST_TWITTER = 'http://twitter.com/statuses/update.json';
+	const POST_FANFOU = 'http://api.fanfou.com/statuses/update.xml';
 
 	static public function Create( $idUser, $loginName='name', $loginPass='123456', $service='twitter' ) {
 
@@ -23,6 +25,9 @@ class JWBindOther {
 		switch( $service ) {
 			case 'twitter':
 				$flag = self::CheckTwitter( $loginName, $loginPass );
+			break;
+			case 'fanfou':
+				$flag = self::CheckFanfou( $loginName, $loginPass );
 			break;
 			default:
 				$flag = false;
@@ -89,10 +94,20 @@ class JWBindOther {
 
 	static public function CheckTwitter( $loginName='name', $loginPass='123456' ) 
 	{
+		return self::CheckAccount( $loginName, $loginPass, self::AUTH_TWITTER );
+	}
+
+	static public function CheckFanfou( $loginName='name', $loginPass='123456' ) 
+	{
+		return self::CheckAccount( $loginName, $loginPass, self::AUTH_FANFOU );
+	}
+
+	static public function CheckAccount( $loginName='name', $loginPass='123456', $checkUrl=self::AUTH_TWITTER ) 
+	{
 		$authCode = Base64_Encode( "$loginName:$loginPass" );
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, self::AUTH_TWITTER);  
+		curl_setopt($ch, CURLOPT_URL, $checkUrl);  
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Basic $authCode" ) );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 0.010); 
@@ -119,17 +134,28 @@ class JWBindOther {
 			case 'twitter':
 				self::PostTwitter( $loginName, $loginPass, $message );
 			break;
+			case 'fanfou':
+				self::PostFanfou( $loginName, $loginPass, $message );
+			break;
 		}
 		return true;
 	}
 
-	static public function PostTwitter( $loginName='name', $loginPass='123456', $message=null ) 
+	static public function PostTwitter( $loginName='name', $loginPass='123456', $message=null ){
+		return self::RealPostStatus( $loginName, $loginPass, $message, self::POST_TWITTER );
+	}
+
+	static public function PostFanfou( $loginName='name', $loginPass='123456', $message=null ){
+		return self::RealPostStatus( $loginName, $loginPass, $message, self::POST_FANFOU );
+	}
+
+	static public function RealPostStatus( $loginName='name', $loginPass='123456', $message=null, $postUrl=null ) 
 	{
 		$authCode = Base64_Encode( "$loginName:$loginPass" );
 		$postData = 'status='.urlEncode( $message );
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, self::POST_TWITTER);  
+		curl_setopt($ch, CURLOPT_URL, $postUrl);  
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array( "Authorization: Basic $authCode" ) );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POST, true);
