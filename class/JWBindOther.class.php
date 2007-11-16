@@ -142,17 +142,18 @@ class JWBindOther {
 	}
 
 	static public function PostTwitter( $loginName='name', $loginPass='123456', $message=null ){
-		return self::RealPostStatus( $loginName, $loginPass, $message, self::POST_TWITTER );
+		$postData = 'source=jiwai&status='.urlEncode( $message );
+		return self::RealPostStatus( $loginName, $loginPass, $postData, self::POST_TWITTER );
 	}
 
 	static public function PostFanfou( $loginName='name', $loginPass='123456', $message=null ){
-		return self::RealPostStatus( $loginName, $loginPass, $message, self::POST_FANFOU );
+		$postData = 'status='.urlEncode( $message );
+		return self::RealPostStatus( $loginName, $loginPass, $postData, self::POST_FANFOU );
 	}
 
-	static public function RealPostStatus( $loginName='name', $loginPass='123456', $message=null, $postUrl=null ) 
+	static public function RealPostStatus( $loginName='name', $loginPass='123456', $postData=null, $postUrl=null ) 
 	{
 		$authCode = Base64_Encode( "$loginName:$loginPass" );
-		$postData = 'status='.urlEncode( $message );
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $postUrl);  
