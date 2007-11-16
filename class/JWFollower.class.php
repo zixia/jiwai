@@ -47,6 +47,9 @@ class JWFollower {
 	 */
 	static function IsFollower($idUser, $idFollower)
 	{
+		if( false == $idFollower || false == $idUser )
+			return false;
+
 		$idUser = JWDB::CheckInt( $idUser );
 		$idFollower = JWDB::CheckInt( $idFollower );
 

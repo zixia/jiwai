@@ -120,7 +120,7 @@ class JWSns {
 			return true;
 		}
 
-		if ( JWFollower::IsFollowing($userRow['id'], $friendRow['id']) )
+		if ( JWFollower::IsFollower($friendRow['id'], $userRow['id']) )
 		{
 			JWLog::Instance()->Log(LOG_INFO, "JWSns::CreateFriend($userRow[id],$friendRow[id]) already friends");
 			return true;
@@ -771,7 +771,7 @@ class JWSns {
 
 		foreach ( $idFriends as $friend_id )
 		{
-			if ( JWFollower::IsFollowing($idUser, $friend_id) )
+			if ( JWFollower::IsFollower($friend_id, $idUser) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($idUser,$friend_id).");
 				if ( ! JWFollower::Destroy($idUser, $friend_id) ) {
@@ -783,7 +783,7 @@ class JWSns {
 
 			}
 
-			if ( $biDirection && JWFollower::IsFollowing($friend_id,$idUser) )
+			if ( $biDirection && JWFollower::IsFollower($idUser, $friend_id) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFriends JWFollower::Destroy($friend_id, $idUser).");
 

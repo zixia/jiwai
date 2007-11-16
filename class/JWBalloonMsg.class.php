@@ -64,7 +64,7 @@ _HTML_;
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
-        if( false == JWFollower::IsFollowing($idUser, $idFriend ) )
+        if( false == JWFollower::IsFollower($idFriend, $idUser) )
             self::Create($idFriend,$html);
 	}
 

@@ -1,14 +1,14 @@
 <!--{include header}-->
 <!--{include user/shortcut}-->
 
-<h2><a href="/{$userInfo['nameScreen']}/">${htmlSpecialChars($userInfo['nameScreen'])}的消息</a>｜${htmlSpecialChars($userInfo['nameScreen'])}和别人</h2>
+<h2><a href="/{$userInfo['nameUrl']}/">${htmlSpecialChars($userInfo['nameUrl'])}的消息</a>｜${htmlSpecialChars($userInfo['nameScreen'])}和别人</h2>
 <ul>
 <!--{if $showProtected}-->
 	<!--{foreach $statuses as $status}-->
 	<!--${
 		$protected = ( $users[$status['idUser']]['protected'] == 'Y' 
 						&& $status['idUser'] != $loginedUserInfo['id']
-						&& false == JWFollowing::IsFollower($loginedUserInfo['id'], $status['idUser'])
+						&& false == JWFollower::IsFollower($loginedUserInfo['id'], $status['idUser'])
 					 );
 	}-->
 	<!--{if (false == $protected)}-->
@@ -21,6 +21,7 @@
 			${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''}
 			</span>
 		</li>
+	<!--{/if}-->
 	<!--{/foreach}-->
 <!--{else}-->
 	<li>

@@ -1526,14 +1526,6 @@ _HTML_;
 _HTML_;
 		}
 
-		if ( true == $action['cancel'] )
-		{
-			echo <<<_HTML_
-			<li><a href="/wo/friend_requests/cancel/$arr_user_info[id]">取消向此人的请求</a></li>
-_HTML_;
-		}
-
-
 		if ( true == $action['follow'] )
 		{
 			//$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
@@ -1551,8 +1543,6 @@ _HTML_;
 			</li>
 _HTML_;
 		}
-
-
 
 		echo <<<_HTML_
 		</ul>
@@ -1798,7 +1788,7 @@ _HTML_;
  		if ($user != 'wo') echo <<<_HTML_
  		<div class="msg ">
  			<div class="line"><div></div></div>
- 			<h2 class="forul"><?php echo $name_Screen;?>目前</h2>
+ 			<h2 class="forul"><?php //echo $name_screen;?>目前</h2>
  		</div>
 _HTML_;
  

@@ -36,7 +36,7 @@ _HTML_;
 		else
 		{
 			if ( $nudged_user_id != $logined_user_id 
-				&& JWFollower::IsFollowing($nudged_user_id, $logined_user_id) )
+				&& JWFollower::IsFollower($logined_user_id, $nudged_user_id) )
 			{
 				$nudge_message = <<<_NUDGE_
 $logined_user_row[nameScreen]挠挠了你一下，提醒你更新JiWai！回复本消息既可更新你的JiWai。

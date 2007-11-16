@@ -32,7 +32,7 @@ if ( !JWUser::IsAdmin($logined_user_info['idUser'])
 {
 	if ( empty($logined_user_info) )
 		$show_protected_content= false;
-	else if ( ! JWFollower::IsFollowing($page_user_id, $logined_user_info['idUser']) )
+	else if ( ! JWFollower::IsFollower($logined_user_info['idUser'], $page_user_id) )
 		$show_protected_content= false;
 }
 

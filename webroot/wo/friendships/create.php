@@ -29,7 +29,7 @@ _HTML_;
 		return array('error_html'=>$error_html);
 	}
 	// 如果页面用户设置了保护，并且页面用户没有添加当前登录用户位好友，则需要发送验证请求
-	if ( JWUser::IsProtected($idPageUser) && !JWFollower::IsFollowing($idPageUser, $idLoginedUser) )
+	if ( JWUser::IsProtected($idPageUser) && !JWFollower::IsFollower($idLoginedUser, $idPageUser) )
 	{
 		if ( JWFriendRequest::IsExist($idLoginedUser, $idPageUser) )
 		{
