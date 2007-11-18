@@ -838,6 +838,7 @@ class JWRobotLingo {
 		$device_user_id = $device_db_row['idUser'];
 		$inviter_name 		= $matches[1];
 		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
+		$device_user_row = JWUser::GetUserInfo( $device_user_id );
 
 		if ( empty($inviter_user_row) )
 		{
@@ -853,7 +854,7 @@ class JWRobotLingo {
 
 			//nudge follower
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOWREQUEST_ACCEPT', array(
-				$address, $nameScreen,
+				$device_user_row['nameScreen'],
 			));
 			JWNudge::NudgeToUsers( $inviter_user_row['id'], $reply, 'nudge', $type );
 
