@@ -112,12 +112,17 @@ class JWNotify{
 		 */
 		$bindOther = JWBindOther::GetBindOther( $idUserFrom );
 		if( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) {
-			$messageObject = is_array($message) ? (isset($message['im']) ? $message['im'] : null ) : $message;
-			if( $messageObject ) {
-				if( isset($bindOther['twitter']) )
-					JWBindOther::PostStatus( $bindOther['twitter'], $message );
-				if( isset($bindOther['fanfou']) )
-					JWBindOther::PostStatus( $bindOther['fanfou'], $message );
+			
+			$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
+			if ( false == empty( $status_row ) && $status_row['device'] != 'api' ) {
+				$messageObject = is_array($message) ? 
+					( isset($message['im']) ? $message['im'] : null ) : $message;
+				if( $messageObject ) {
+					if( isset($bindOther['twitter']) )
+						JWBindOther::PostStatus( $bindOther['twitter'], $message );
+					if( isset($bindOther['fanfou']) )
+						JWBindOther::PostStatus( $bindOther['fanfou'], $message );
+				}
 			}
 		}
 
