@@ -26,7 +26,7 @@ $arr_friend_list = JWFollower::GetFollowingIds($logined_user_id);
 
 $via_device = JWUser::GetSendViaDevice($logined_user_id);
 
-$friend_request_num = JWFriendRequest::GetUserNum($logined_user_id);
+$friend_request_num = JWFollowerRequest::GetInRequestNum($logined_user_id);
 
 $idUserVistors = JWSns::GetIdUserVistors( $logined_user_id );
 

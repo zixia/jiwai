@@ -41,6 +41,7 @@ class JWRobotLingoBase {
 		 
 		'ACCEPT' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Accept', 'param'=>1),
 		'DENY' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Deny', 'param'=>1),
+		'CANCEL' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Cancel', 'param'=>1),
 		 
 		'D' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_D', 'param'=>999), 
 		 

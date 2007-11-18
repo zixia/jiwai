@@ -11,17 +11,17 @@ $requestType = 'inrequests';
 if( isset( $_REQUEST['out'] ) )
     $requestType = 'outrequests';
 
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
-$logined_user_id 	= $logined_user_info['id'];
+$logined_user_info = JWUser::GetCurrentUserInfo();
+$logined_user_id = $logined_user_info['id'];
 
 if( $requestType == 'inrequests' ) {
-    $request_num			= JWFriendRequest::GetUserNum	($logined_user_info['id']);
-    $pagination         = new JWPagination($request_num, $page, 15);
-    $friend_ids			= JWFriendRequest::GetUserIds($logined_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+    $request_num = JWFollowerRequest::GetInRequestNum($logined_user_info['id']);
+    $pagination = new JWPagination($request_num, $page, 15);
+    $friend_ids = JWFollowerRequest::GetInRequestIds($logined_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 }else {
-    $request_num			= JWFriendRequest::GetFriendNum	($logined_user_info['id']);
-    $pagination         = new JWPagination($request_num, $page, 15);
-    $friend_ids			= JWFriendRequest::GetFriendIds($logined_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+    $request_num = JWFollowerRequest::GetOutRequestNum($logined_user_info['id']);
+    $pagination = new JWPagination($request_num, $page, 15);
+    $friend_ids = JWFollowerRequest::GetOutRequestIds($logined_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 }
 
 ?>
@@ -35,7 +35,7 @@ if( $requestType == 'inrequests' ) {
 
 <body class="account" id="friends">
 <?php JWTemplate::header("/wo/account/settings") ?>
-<?php JWTemplate::ShowActionResultTips(); ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
 <?php JWTemplate::FriendsTab( $logined_user_info['id'], $requestType ); ?>

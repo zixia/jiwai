@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JiWai.de
+ * @package	JiWai.de
  * @copyright	AKA Inc.
- * @author	  	zixia@zixia.net
+ * @author  	zixia@zixia.net
  */
 
 /**
@@ -504,15 +504,26 @@ class JWRobotLingo {
 			));
 		} else
 	       	{
-			JWSns::CreateFollower( $friend_user_id, $address_user_id );
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', array(
-				$follower['nameScreen'],
-			));
+			if( $follower['protected'] == 'Y' ) {
+				if( false == JWFollowerRequest::IsExist( $friend_user_id, $address_user_id )) {
+					JWSns::CreateFollowerRequest( $friend_user_id, $address_user_id );
+				}
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOWREQUEST', array(
+					$follower['nameScreen'],
+				));
 
-			$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
-				$address_user_row['nameScreen'], urlEncode($address_user_row['nameUrl']),		
-			));
-			JWNudge::NudgeToUsers($follower['id'], $outMessage, 'nudge', $type);
+			}else{
+				JWSns::CreateFollower( $friend_user_id, $address_user_id );
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', array(
+					$follower['nameScreen'],
+				));
+
+				$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
+					$address_user_row['nameScreen'], 
+					urlEncode($address_user_row['nameUrl']),		
+				));
+				JWNudge::NudgeToUsers($follower['id'], $outMessage, 'nudge', $type);
+			}
 		}
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -804,76 +815,104 @@ class JWRobotLingo {
 	 */
 	static function	Lingo_Accept($robotMsg)
 	{
-		/*
-	 	 *	解析命令参数
-	 	 */
 		$body = $robotMsg->GetBody();
 		$body = JWRobotLingoBase::ConvertCorner( $body );
+
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
+		$device_user_id = $device_db_row['idUser'];
 		$inviter_name 		= $matches[1];
 		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
-		/*
-		 *	检查发送者是否已经注册 
-		 */
+
+		if ( empty($inviter_user_row) )
+		{
+			return self::Lingo_Add( $robotMsg );
+		}
+
+		if( JWFollowerRequest::IsExist( $device_user_id, $inviter_user_row['id'] ) ) {
+			
+			JWSns::CreateFollower( $device_user_id, $inviter_user_row['id'] );
+			JWSns::CreateFollower( $inviter_user_row['id'], $device_user_id );
+
+			JWFollowerRequest::Destroy( $device_user_id, $inviter_user_row['id'] );
+
+			//nudge follower
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOWREQUEST_ACCEPT', array(
+				$address, $nameScreen,
+			));
+			JWNudge::NudgeToUsers( $inviter_user_row['id'], $reply, 'nudge', $type );
+
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOWREQUEST_ACCEPT', array(
+				$inviter_user_row['nameScreen'],
+			));
+
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
+		}
+
+		return self::Lingo_Follow( $robotMsg );
+	}
+
+	/**
+	 *
+	 */
+	static function	Lingo_Cancel($robotMsg)
+	{
+		$body = $robotMsg->GetBody();
+		$body = JWRobotLingoBase::ConvertCorner( $body );
+
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		/*
-		 *	分为三种情况处理：
-				1、用户已经注册
-				2、用户没有注册，但是有邀请
-				3、用户没有注册，没有邀请
-		 */
-		if ( ! empty($device_db_row) && !empty($inviter_user_row) )
-		{
-			/*
-			 *	 1、用户已经注册
-			 */
-			$address_user_id = $device_db_row['idUser'];
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
 
-			if( JWFriendRequest::IsExist($inviter_user_row['id'], $address_user_id) ) {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_REQUEST', array($inviter_user_row['nameScreen'],) );
-			}else{
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_SUC_NOREQUEST', array($inviter_user_row['nameScreen'],) );
-			}
-			if( false == JWSns::CreateFriends($inviter_user_row['id'], array($address_user_id), false) ){
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_500', array($inviter_user_row['nameScreen'],) );
-			}
+		if ( empty($device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ACCEPT_HELP');
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
-		else if ( !empty($inviter_user_row) )
+
+		$device_user_id = $device_db_row['idUser'];
+		$inviter_name 		= $matches[1];
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
+
+		if ( empty($inviter_user_row) )
 		{
-			/*
-			 *	2、 被邀请用户没有完成注册 
-			 * 		这时用户回复的字符串，只要不是命令，即会被系统当作用户选择的用户名。
-			 *		回复提示信息
-			 */
-
-			$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
-
-
-			if ( empty($invitation_id) ) {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_INVITE', array($inviter_name,));
-			}else{
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_INVITE_SUC', array($inviter_name,));
-			}
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array(
+				$inviter_user_row['nameScreen'],
+			));
+			return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 		}
-		else
-		{
-			/*
-				3、无效邀请 *		邀请者(Accept的用户)不存在？
-			 */
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ACCEPT_INVITE_NOUSER', array($inviter_name,));
+
+		if( JWFollowerRequest::IsExist( $inviter_user_row['id'], $device_user_id ) ) {
+			JWFollowerRequest::Destroy( $inviter_user_row['id'], $device_user_id );
 		}
-		return JWRobotLogic::ReplyMsg($robotMsg, $reply );
+
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOWREQUEST_CANCEL', array(
+			$inviter_user_row['nameScreen'],
+		));
+		return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 	}
-
 
 	/*
 	 *
@@ -883,52 +922,42 @@ class JWRobotLingo {
 		$body = $robotMsg->GetBody();
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return JWRobotLogic::CreateAccount($robotMsg);
+
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_HELP' );
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DENY_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
+		$device_user_id = $device_db_row['idUser'];
+		$inviter_name 		= $matches[1];
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
 
-		$friend_name 	= $matches[1];
-
-		$address 	= $robotMsg->GetAddress();
-		$type 		= $robotMsg->GetType() ;
-		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array(
-							'address' => $address,
-							'type'	  => $type,
-							)); 
-
-		if ( empty($invitation_id) )
+		if ( empty($inviter_user_row) )
 		{
-			/*
-			 * 没有邀请过这个设备
-			 * 检查是否设备已经注册过，如果没有注册过则引导注册
-			 */
-			if ( JWDevice::IsExist($address,$type) ) {
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_NOINVITE', array($friend_name,) );
-				return JWRobotLogic::ReplyMsg($robotMsg, $reply );
-			} else {
-				return JWRobotLogic::CreateAccount($robotMsg);
-			}
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array(
+				$inviter_user_row['nameScreen'],
+			));
+			return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 		}
 
-		/*
-		 *	删除邀请记录
-		 *	FIXME: 如果一个 address 被多人邀请多次，这里可能删除的是别人的邀请……
-					这样需要多 deny 几次，就全部删除了……
-		 */
-		JWInvitation::Destroy($invitation_id);
-
-		$friend_db_row = JWUser::GetUserInfo($friend_name);
-
-		if ( empty($friend_db_row) )
-		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_NOUSER', array($friend_name,) );
+		if( JWFollowerRequest::IsExist( $device_user_id, $inviter_user_row['id'] ) ) {
+			JWFollowerRequest::Destroy( $device_user_id, $inviter_user_row['id'] );
 		}
-		else
-		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DENY_SUC', array( $friend_db_row['nameScreen'], ) );
-		}
+
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOWREQUEST_DENY', array(
+			$inviter_user_row['nameScreen'],
+		));
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
@@ -973,22 +1002,6 @@ class JWRobotLingo {
 		}
 
 		$friend_id = $friend_row['idUser'];
-
-		/*
-		if ( !JWFriend::IsFriend($friend_id, $address_user_id) )
-		{
-			if ( JWFriend::IsFriend($address_user_id, $friend_id) )
-			{
-				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_NOPERM', array($friend_name,) );
-				return JWRobotLogic::ReplyMsg($robotMsg, $reply );
-			}
-			else
-			{
-				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_D_NOPERM_BIO',array($friend_name,));
-				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-			}
-		}
-		*/	
 
 		if ( JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type) ) {
 			if( false == in_array( $type, array('sms', 'api') ) ) {
@@ -1510,24 +1523,62 @@ class JWRobotLingo {
 			'pass' => JWDevice::GenSecret(16),
 			'isWebUser' => 'N', 
 			'noticeAutoNudge' => 'Y',   //Not nudge
+			'deviceSendVia' => $type,
 			'ip' => JWRequest::GetIpRegister($type),
 		);
 
 		$idUser =  JWSns::CreateUser($uArray);
 		if( $idUser ) {
-			if( JWSns::CreateDevice($idUser, $address, $type, true, array(
-					'isSignatureRecord' => 'Y', ) )
-			){
-				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_CREATE_USER_FIRST', array(
-					$nameScreen,
-				));
-				$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
-				JWRobot::SendMt( $replyRobotMsg );
-				return JWDevice::GetDeviceDbRowByAddress( $address, $type );
+
+			if( false == JWSns::CreateDevice($idUser, $address, $type, true, array(
+				'isSignatureRecord' => 'Y',
+			)) ){
+				return array();
 			}
-		}else{
-			return array();
+
+			/** Invitation **/
+			$invitation_id = JWInvitation::GetInvitationIdFromAddress( array(
+				'address' => $address,
+				'type' => $type,
+			)); 
+
+			if ( $invitation_id ) {
+				$invitation_row =JWInvitation::GetInvitationDbRowById($invitation_id);
+				$invite_user_id = $invitation_row['idUser'];
+
+				if ( $invite_user_id ) {
+					$invite_user = JWUser::GetUserInfo( $invite_user_id );
+
+					JWSns::CreateFollower( $invite_user_id, $idUser, 'Y' );
+					JWSns::CreateFollower( $idUser, $invite_user_id, 'Y' );
+
+					JWInvitation::Destroy( $invitation_id );
+
+					//nudge inviter
+					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADDACCEPT_YES_INVITER',
+						array( $address, $nameScreen,)
+					);
+					JWNudge::NudgeToUsers( $invite_user_id, $reply, 'nudge', $type);
+
+					//nudge invitee --- SendMt Directly
+					$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_ADDACCEPT_YES_INVITEE',
+						array( $nameScreen, $invite_user['nameScreen'], )
+					);
+					$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+					JWRobot::SendMt( $replyRobotMsg );
+				}
+			}
+			
+			//SendMt Directly To new User
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_CREATE_USER_FIRST', array(
+						$nameScreen,
+						));
+			$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+			JWRobot::SendMt( $replyRobotMsg );
+			return JWDevice::GetDeviceDbRowByAddress( $address, $type );
 		}
+
+		return array();
 	}
 }
 ?>

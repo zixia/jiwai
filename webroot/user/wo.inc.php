@@ -211,7 +211,7 @@ JWTemplate::ShowActionResultTips();
 
 //die(var_dump($page_user_id));
 $status_user_info = $page_user_info;
-if( @$head_status_rows[$head_status_id] ) {
+if( @$head_status_rows[$head_status_id] && $show_protected_content ) {
 	$status_user_info = JWUser::GetUserInfo( $head_status_rows[$head_status_id]['idUser'] );
 }
 JWTemplate::StatusHead($page_user_id, $status_user_info, @$head_status_rows[$head_status_id]

@@ -310,8 +310,8 @@ _HTML_;
 
 		$followingsNum = JWFollower::GetFollowingNum( $idUser );
 		$followersNum = JWFollower::GetFollowerNum( $idUser );
-		$inRequestsNum = JWFriendRequest::GetUserNum( $idUser );
-		$outRequestsNum = JWFriendRequest::GetFriendNum( $idUser );
+		$inRequestsNum = JWFollowerRequest::GetInRequestNum( $idUser );
+		$outRequestsNum = JWFollowerRequest::GetOutRequestNum( $idUser );
 
 		if( $highlight == 'search' ) {
 			global $q , $searched_num;
@@ -578,11 +578,12 @@ _TAB_;
 		if ( ! $isOpen )
 		{
 			$status		= <<<_HTML_
-我只和关注我人分享我的叽歪de。<br />
+我只和我关注的人分享我的叽歪。<br />
 _HTML_;
 			if( $current_user_id && false==$hasFollowed ) {
+				$oc = JWUser::IsProtected($userRow['id']) ? 'onclick="return JiWai.requestFriend('.$userRow['id'].', this);"' : '';
 				$status .= <<<_HTML_
-<a href="/wo/followings/follow/$idUser">开始关注我。</a>
+<a href="/wo/followings/follow/$idUser" $oc>开始关注我。</a>
 _HTML_;
 			}
 
@@ -634,8 +635,9 @@ if ( isset($current_user_id) && JWFollower::IsFollower($userRow['id'], $current_
 <?php
 } else {
 	if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) && false == $hasFollowed) {
+		$oc = JWUser::IsProtected($userRow['id']) ? 'onclick="return JiWai.requestFriend('.$userRow['id'].', this);"' : '';
 		echo <<<_HTML_
-	<a href="/wo/followings/follow/$userRow[id]">关注此人</a>
+	<a href="/wo/followings/follow/$userRow[id]" $oc>关注此人</a>
 _HTML_;
 	}
 }
@@ -1528,9 +1530,9 @@ _HTML_;
 
 		if ( true == $action['follow'] )
 		{
-			//$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
+			$oc = (JWUser::IsProtected($arr_user_info['id'])) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
 			echo <<<_HTML_
-			<li><a href="/wo/followings/follow/$arr_user_info[id]">关注此人</a></li>
+			<li><a href="/wo/followings/follow/$arr_user_info[id]" $oc>关注此人</a></li>
 _HTML_;
 		}
 
@@ -1538,8 +1540,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/followings/leave/$arr_user_info[id]" 
-						onclick="return confirm('请确认取消对 $arr_user_info[nameScreen] 的关注')">取消关注此人</a>
+				<a href="/wo/followings/leave/$arr_user_info[id]" onclick="return confirm('请确认取消对 $arr_user_info[nameScreen] 的关注')">取消关注此人</a>
 			</li>
 _HTML_;
 		}

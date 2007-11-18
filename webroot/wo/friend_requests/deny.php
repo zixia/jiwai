@@ -6,48 +6,26 @@ JWLogin::MustLogined();
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));
 
-function do_friend_request_deny()
+$idLoginedUser=JWLogin::GetCurrentUserId();
+
+if ( $idLoginedUser )
 {
-	$logined_user_id =JWLogin::GetCurrentUserId();
-
 	$param = $_REQUEST['pathParam'];
-	if ( ! preg_match('/^\/(\d+)$/',$param,$match) )
-	{
-		$error_html =<<<_HTML_
-哎呀！系统路径好像不太正确……
-_HTML_;
-		return array('error_html'=>$error_html);
+	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
+		$idPageUser = intval($match[1]);
+
+		$friendRow = JWUser::GetUserInfo( $idPageUser );
+		$userRow = JWUser::GetUserInfo( $idLoginedUser );
+
+                JWSns::ExecWeb($idLoginedUser, "deny $friendRow[nameScreen]", '拒绝关注请求');
+
 	}
-
-	$friend_id = JWDB::CheckInt($match[1]);
-
-	$friend_user_name = JWUser::GetUserInfo($friend_id, 'nameScreen');
-
-	$is_succ = JWFriendRequest::Destroy($friend_id, $logined_user_id);
-
-	if ( ! $is_succ )
+	else // no pathParam?
 	{
-		$error_html = <<<_HTML_
-哎呀！由于系统故障，邀请仍然继续保留，请稍候再试。
-_HTML_;
-		return array('error_html'=>$error_html);
+		JWSession::SetInfo('error','哎呀！系统路径好像不太正确');
 	}
-
-	$notice_html = <<<_HTML_
-你拒绝了${friend_user_name}的关注请求。
-_HTML_;
-	return array('notice_html'=>$notice_html);
 }
 
-$info = do_friend_request_deny();
-
-if ( !empty($info['error_html']) )
-	JWSession::SetInfo('error',$info['error_html']);
-
-if ( !empty($info['notice_html']) )
-	JWSession::SetInfo('notice',$info['notice_html']);
-
-
 JWTemplate::RedirectBackToLastUrl('/');
-exit(0);
+exit;
 ?>

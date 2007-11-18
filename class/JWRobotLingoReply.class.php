@@ -27,14 +27,15 @@ class JWRobotLingoReply {
 			'REPLY_ADD_NOUSER' => '哎呀！抱歉，你添加的 {0} 我不认识，请你输入帐号或手机号、邮件地址。了解更多？发送 HELP。',
 			'REPLY_ADD_500' => '哎呀！由于系统故障，发送关注请求失败了……请稍后再试吧。',
 			'REPLY_ADD_NOADDRESS' => '哎呀！抱歉，我太笨了。你添加的 {0} 我不认识，请你输入手机号码或邮件地址。了解更多？发送 HELP。',
-			'REPLY_ADD_REQUEST' => '{0} 已经注册！我们已经帮你发送了关注请求。',
 			'REPLY_ADD_REQUEST_INVITE' => '搞定了！我们已经帮你发出了邀请！期待很快能得到你朋友的回应。',
 			'REPLY_ADD_SELF' => '{0}，你好，{1} 是你自己的地址，邀请自己没有意义，邀请别人才有意义，活着就要做有意义的事。',
+			
+			//Follow Request
+			'REPLY_FOLLOWREQUEST' => '你好，{0} 设置了隐私保护，为你向 {0} 发送了关注请求，请耐心等待好消息吧。',
 
-			'REPLY_DENY_SUCC' => '搞定了！你没有接受 {0} 的邀请。发送GET {0} 获取 {0} 的最新更新。',
-			'REPLY_DENY_NOINVITE' => '哎呀！{0} 并没有邀请你。发送HELP了解更多。',
-			'REPLY_DENY_HELP' => 'DENY命令帮助：DENY 帐号。',
-			'REPLY_DENY_NOUSER' => '哎呀！没有找到邀请你的朋友 {0}。',
+			'REPLY_FOLLOWREQUEST_DENY' => '搞定了！你拒绝了 {0} 的关注申请。发送 GET {0} 获取 {0} 的最新更新。',
+			'REPLY_FOLLOWREQUEST_ACCEPT' => '搞定了！你已经接受了 {0} ，并成功建立了互相关注关系。',
+			'REPLY_FOLLOWREQUEST_CANCEL' => '搞定了！你取消了向 {0} 发出的关注请求。',
 
 			'REPLY_DELETE_SUC' => '搞定了！你已经不再关注 {0} 了。',
 			'REPLY_DELETE_HELP' => 'DELETE命令帮助：DELETE 帐号。',
@@ -102,15 +103,7 @@ class JWRobotLingoReply {
 			'REPLY_WHOAMI_WEB' => '你是 {0}，你的叽歪档案位于：http://JiWai.de/{0}',
 			'REPLY_WHOAMI_IM' => '你是 {0}，设置密码请来这里：http://JiWai.de/wo/account/complete',
 
-			'REPLY_ACCEPT_SUC' => '搞定了！你已经开始关注 {0} ！回复 GET {0} 查看最新更新。',
 			'REPLY_ACCEPT_HELP' => 'ACCEPT命令帮助：ACCEPT 帐号。',
-			'REPLY_ACCEPT_NOUSER' => '哎呀！没有找到 {0} 这个用户。',
-			'REPLY_ACCEPT_INVITE' => '哎呀！{0} 没有邀请过你。请回复你希望使用的用户名。',
-			'REPLY_ACCEPT_INVITE_SUC' => '搞定了！你已经接受了 {0} 的邀请。请回复你希望使用的用户名。',
-			'REPLY_ACCEPT_INVITE_NOUSER' => '哎呀！没有找到这个用户 {0}，是不是改名了？。发送HELP了解更多。',
-			'REPLY_ACCEPT_SUC_REQUEST' => '搞定了！你已经接受了 {0} 关注你。',
-			'REPLY_ACCEPT_SUC_NOREQUEST' => '哎呀！虽然 {0} 并没有邀请过你，但你还是关注 {0} 了。',
-			'REPLY_ACCEPT_500' => '哎呀！由于系统故障，你的接受操作失败了…… 请稍后再试吧。',
 
 			'REPLY_VERIFY_SUC' => '搞定了！你已经通过了验证。回复本消息即可进行更新，耶！',
 			'REPLY_VERIFY_FAIL' => '哎呀！由于你输入的验证码 "{0}" 不正确，本次验证未能成功，请你查证后再重试一下吧。',
@@ -125,11 +118,18 @@ class JWRobotLingoReply {
 			'OUT_NUDGE' => '{0} 挠挠了你一下，提醒你更新！回复本消息既可更新。',
 
 			'OUT_ADD_EMAIL' => '{0}({1}) 邀请你来使用我们的服务！',
-			'OUT_ADD_IM' => '{0}({1}) 邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。',
-			'OUT_ADD_SMS' => '{0}({1}) 邀请你来使用我们的服务！请回复你的英文名字或拼音，这样我们可以帮助你完成注册。(本短信服务免费)',
-
+			'OUT_ADD_IM' => '{0}({1}) 邀请你来使用我们的服务！想对你的朋友说些什么呢？',
+			'OUT_ADD_SMS' => '{0}({1}) 邀请你来使用我们的服务！想对你的朋友说些什么呢？(本短信服务免费)',
 			'OUT_FOLLOW' => '好消息！{0}( http://JiWai.de/{1}/ ) 关注了你。',
 
+			'OUT_ADDACCEPT_YES_INVITER' => '{0} 已经接受你的邀请，并完成了注册，用户名为：{1}',
+			'OUT_ADDACCEPT_YES_INVITEE' => '{0} 你好，你已经成功接受了 {1} 的邀请；回复 HELP 了解更多。',
+
+			'OUT_FOLLOWREQUEST_ACCEPT' => '{0} 已经接受你的关注，并成功与你建立互相关注关系。',
+			'OUT_FOLLOWREQUEST_MESSAGE' => '{0} ( http://JiWai.de/{1}/ ) 想和你建立互相关注关系。同意请回复 ACCEPT {0} | 拒绝请回复 DENY {0}',
+
+
+			//
 			'REPLY_MMS_NOPERM' => '{0}，你好。由于{1}设置了私密，而你还没关注 {1}，不能下载彩信。',
 			'REPLY_MMS_NOMMS' => '哇，没搞错吧？没有找到你要的彩信信息。',
 			'REPLY_MMS_NOSMS' => '{0}，你没有绑定手机或没有通过手机验证，不能下载彩信。',
@@ -194,12 +194,15 @@ class JWRobotLingoReply {
 
 	static function GetReplyString( $robotMsg, $shortcut, $value=array() )
 	{
+		if( $robotMsg ) {
+			$serverAddress = $robotMsg->GetServerAddress();
+			$type = $robotMsg->GetType();
+			$address = $robotMsg->GetAddress();
 
-		$serverAddress = $robotMsg->GetServerAddress();
-		$type = $robotMsg->GetType();
-		$address = $robotMsg->GetAddress();
-
-		$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $address, $type );
+			$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $address, $type );
+		}else{
+			$idUserConference = null;
+		}
 
 		$replyMap = self::GetReplyMap( $idUserConference );
 		$shortcut = strtoupper( $shortcut );

@@ -359,7 +359,8 @@ echo "dbRow End. \n";
 	 	 *	fixme: 翻到最后一页，会导致这里的逻辑认为数据量不足而失效
 		 */
 
-		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		if ( false == empty( $status_info )
+			&& false == JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
 		{
 			$status_info	= JWDB_Cache::GetCachedValueByKey(
 										 $mc_key

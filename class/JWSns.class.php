@@ -190,20 +190,27 @@ class JWSns {
 	}
 
 	/*
-	 *	@param	array or int	$idFriends	好友 id(s)
-	 *	申请将 idFriends 添加为 idUser 的好友
+	 *	@param	int $idFollower)
+	 *	申请将 idFollower 互相关注 idUser
 	 */
-	static public function CreateFriendRequest($idUser, $idFriend, $note='')
+	static public function CreateFollowerRequest($idUser, $idFollower, $note='')
 	{
-		$friend_request_id = JWFollowerRequest::Create($idUser, $idFriend, $note);
-		if( $friend_request_id ) {
-			$userInfo = JWUser::GetUserInfo( $idUser );
-			$message = "$userInfo[nameScreen] ( http://JiWai.de/".UrlEncode($userInfo['nameUrl'])."/ ) 想和你建立好友关系，同意的话请回复(ACCEPT $userInfo[nameScreen])。";
-			JWNudge::NudgeToUsers( array($idFriend), $message, 'nudge', 'web' );
-		}
-		JWBalloonMsg::CreateFriendRequest($idUser,$idFriend, $friend_request_id, $note);
+		$idUser = JWDB::CheckInt( $idUser );
+		$idFollower = JWDB::CheckInt( $idFollower );
 
-		return $friend_request_id;
+		$follower_request_id = JWFollowerRequest::Create($idUser, $idFollower, $note);
+
+		if( $follower_request_id ) {
+			$userInfo = JWUser::GetUserInfo( $idFollower );
+			$message = JWRobotLingoReply::GetReplyString( null, 'OUT_FOLLOWREQUEST_MESSAGE', array(
+				$userInfo['nameScreen'],
+				UrlEncode($userInfo['nameUrl']),
+			));
+			JWNudge::NudgeToUsers( $idUser, $message, 'nudge', 'web' );
+		}
+		JWBalloonMsg::CreateFollowerRequest($idUser, $idFollower, $note);
+
+		return $follower_request_id;
 	}
 
 
@@ -237,6 +244,7 @@ class JWSns {
 	 */
 	static public function DestroyFollowers($idUser, $idFollowers, $biDirection=false)
 	{
+		$idUser = JWDB::CheckInt( $idUser );
 
 		if( $biDirection ) {
 			$userInfo = JWUser::GetUserInfo( $idUser );
@@ -244,6 +252,13 @@ class JWSns {
 
 		foreach ( $idFollowers as $follower_id )
 		{
+			$userFollower = JWUser::GetUserInfo( $follower_id );
+			if( empty( $userFollower ) )
+				continue;
+
+			$nowBioDirection = ( $userFollower['protected'] == 'Y' );
+
+			//destroy one;
 			if ( JWFollower::IsFollower($idUser, $follower_id) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JW::DestroyFollower JWFollower::Destroy($idUser,$follower_id).");
@@ -256,7 +271,10 @@ class JWSns {
 					$message = "$userFollower[nameScreen] 取消订阅你的更新了。";
 					//JWNudge::NudgeToUsers(array($idUser), $message, 'nudge', 'web');
 				}
-			}else if ( $biDirection && JWFollower::IsFollower($follower_id,$idUser) )
+			}
+			
+			//destroy another
+			if ( ( $biDirection || $nowBioDirection ) && JWFollower::IsFollower($follower_id,$idUser) )
 			{
 				JWLog::Instance()->Log(LOG_INFO, "JWSns::DestroyFollower JWFollower::Destroy($follower_id, $idUser).");
 				if ( ! JWFollower::Destroy($follower_id, $idUser) )
@@ -401,7 +419,7 @@ class JWSns {
 
 		$followingInfos = JWFollower::GetFollowingInfos($idUser);
 
-		$request_friend_ids = JWFriendRequest::GetFriendIds($idUser);
+		$request_follower_ids = JWFollowerRequest::GetInRequestIds($idUser);
 
 		$send_via_device_rows = JWUser::GetSendViaDeviceRowsByUserIds($idOthers);
 
