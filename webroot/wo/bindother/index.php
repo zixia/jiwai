@@ -65,9 +65,9 @@ _HTML_;
 	<form id="f" method="post">
 <?php
     $bind = JWBindOther::GetBindOther($user_info['id']);
-    $bind = $bind['twitter'];
+    $bind = isset($bind['twitter']) ? $bind['twitter'] : array();
 
-    if (!empty($bind))
+    if ( false == empty($bind) )
 	echo <<<_HTML_
     <div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 Twitter (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 Twitter 绑定吗？'))$('f').submit();return false;">删除</a>)</div>
 	<input type="hidden" name="idDelete" value="$bind[id]"/>

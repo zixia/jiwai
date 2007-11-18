@@ -65,9 +65,9 @@ _HTML_;
 	<form id="f" method="post">
 <?php
     $bind = JWBindOther::GetBindOther($user_info['id']);
-    $bind = $bind['fanfou'];
+    $bind = isset($bind['fanfou']) ? $bind['fanfou'] : array();
 
-    if (!empty($bind))
+    if ( false == empty($bind) )
 	echo <<<_HTML_
     <div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 Fanfou (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 Fanfou 绑定吗？'))$('f').submit();return false;">删除</a>)</div>
 	<input type="hidden" name="idDelete" value="$bind[id]"/>
