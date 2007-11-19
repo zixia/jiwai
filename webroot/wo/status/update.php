@@ -8,7 +8,7 @@ if( null == $idUser ) {
 }
 
 if ( array_key_exists('jw_status', $_REQUEST) ){
-	if ( $status = $_REQUEST['jw_status'] )
+	if ( $status = trim($_REQUEST['jw_status']) )
 	{
 		/*
 		 *	为了 /help/ 留言板的更新都自动加上 @help
@@ -41,5 +41,5 @@ if ( array_key_exists('jw_status', $_REQUEST) ){
 	}
 }
 
-JWTemplate::RedirectBackToLastUrl("Location: /wo/");
+JWTemplate::RedirectBackToLastUrl('/');
 ?>

@@ -77,8 +77,8 @@ _HTML_;
 		$n = $note ? '(<a class="tipped" href="#" onclick="return false;" title="'.htmlspecialchars($note).'">附言</a>)' : '';
 		$html = <<<_HTML_
 $user_row[nameScreen] 希望和你成为好朋友{$n}。
-<a href="BALLOON_URL:/wo/friend_requests/accept/$idUser">同意</a>
-<a href="BALLOON_URL:/wo/friend_requests/deny/$idUser">不要</a>
+<a href="BALLOON_URL:/wo/friend_requests/accept/$idFollower">同意</a>
+<a href="BALLOON_URL:/wo/friend_requests/deny/$idFollower">不要</a>
 或者<a href="BALLOON_URL:">以后再说</a>。
 _HTML_;
 
