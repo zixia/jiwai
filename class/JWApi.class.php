@@ -109,7 +109,7 @@ class JWApi{
 		$uInfo['location'] = JWLocation::GetLocationName( $user['location'] );
 		$uInfo['url'] = $user['url'];
 		$uInfo['protected'] = $user['protected']=='Y' ? true : false;
-		$uInfo['profile_image_url'] = JWPicture::GetUserIconUrl( $user['id'],'thumb48');
+		$uInfo['profile_image_url'] = JWPicture::GetUserIconUrl( $user['id'],'thumb48s');
 		return $uInfo;
 	}
 
@@ -124,6 +124,9 @@ class JWApi{
 		$outInfo['id'] = $status['idStatus'];
 		if( isset( $status['favourite_id'] ) ){
 			$outInfo['favourite_id'] = $status['favourite_id'];
+		}
+		if( isset( $status['device'] ) ){
+			$outInfo['device'] = $status['device'];
 		}
 		return $outInfo;
 	}
