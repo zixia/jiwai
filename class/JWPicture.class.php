@@ -428,6 +428,28 @@ _CMD_;
 		return 0===$ret;
 	}
 
+	static public function ConvertThumbnail96Lite($srcFile, $dstFile)
+	{
+		$srcFile = escapeshellarg($srcFile);
+		$dstFile = escapeshellarg($dstFile);
+
+		$cmd = <<<_CMD_
+convert $srcFile	 \\
+  -flatten           \\
+  -resize x192		 \\
+  -resize '192x<'	 \\
+  -resize 50%		 \\
+  -gravity center	 \\
+  -crop 96x96+0+0	 \\
+  +repage			 \\
+  $dstFile
+_CMD_;
+
+		if ( false===system($cmd,$ret) )
+			return false;
+
+		return 0===$ret;
+	}
 
 	static public function ConvertThumbnail48($srcFile, $dstFile)
 	{
@@ -436,6 +458,29 @@ _CMD_;
 
 		$cmd = <<<_CMD_
 convert $srcFile	 \\
+  -resize x96		 \\
+  -resize '96x<'	 \\
+  -resize 50%		 \\
+  -gravity center	 \\
+  -crop 48x48+0+0	 \\
+  +repage			 \\
+  $dstFile
+_CMD_;
+
+		if ( false===system($cmd,$ret) )
+			return false;
+
+		return 0===$ret;
+	}
+
+	static public function ConvertThumbnail48Lite($srcFile, $dstFile)
+	{
+		$srcFile = escapeshellarg($srcFile);
+		$dstFile = escapeshellarg($dstFile);
+
+		$cmd = <<<_CMD_
+convert $srcFile	 \\
+  -flatten           \\
   -resize x96		 \\
   -resize '96x<'	 \\
   -resize 50%		 \\
@@ -514,6 +559,30 @@ _CMD_;
 
 				break;
 
+			case 'thumb96s':// Lite version, without animation
+			case 'thumb48s':
+				$filename = self::GetFullPathNameById($idPicture, $picSize);
+                $picType = 'jpg';
+
+				if ( !file_exists($filename) )
+				{
+					header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
+					exit(0);
+				}
+
+				header('Content-Type: image/'.$picType);
+				header('Content-Length: '.filesize($filename));
+
+				header('Last-Modified: '.date(DATE_RFC822, filemtime($filename)));
+				header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
+				header('Pragma: public');
+				//header('X-Sendfile: '.$filename);
+				header("cache-control: max-age=259200");
+
+				$fp = fopen($filename, 'rb');
+				fpassthru($fp);
+
+				break;
 		}
 
 		exit(0);
