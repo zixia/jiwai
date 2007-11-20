@@ -104,7 +104,12 @@ class JWPicture {
 			$abs_path			= 	 JWFile::GetStorageAbsRoot() 
 									.JWPicture::GetPathRel($picture_id);
 
-			$abs_pathname		= $abs_path . $picSize . '.' . $picture_row['fileExt'];
+            /* jpg for thumbNNs */
+            if (in_array($picSize, array('thumb48s', 'thumb96s'))) {
+                $abs_pathname		= $abs_path . $picSize . '.jpg';
+            } else {
+                $abs_pathname		= $abs_path . $picSize . '.' . $picture_row['fileExt'];
+            }
 
 
 			$path_map[$picture_id] = $abs_pathname;
@@ -190,13 +195,16 @@ _SQL_;
 			}
 			else
 			{
+                $fileExt = (in_array($picSize, array('thumb48s', 'thumb96s')))
+                    ? 'jpg'
+                    : $picture_rows[$picture_id]['fileExt'];
 				$asset_url_path = "/system/user/profile_image/"
 								. $picture_rows[$picture_id]['idUser']
 								. '/' . $picture_id
 								. '/' . $picSize
 								. '/' . $picture_rows[$picture_id]['fileName']
 								. '.'
-								. $picture_rows[$picture_id]['fileExt']
+								. $fileExt
 								;
 				$url_row[$picture_id] = JWTemplate::GetAssetUrl($asset_url_path, false);
 			}
