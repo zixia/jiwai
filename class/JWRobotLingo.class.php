@@ -582,8 +582,7 @@ class JWRobotLingo {
 		
 		$bio = $address_user_row['protected'] == 'Y' || $friend_user_row['protected'] == 'Y';
 
-		JWSns::DestroyFriends($address_user_id, array($friend_user_row['idUser']), $bio );
-		//JWSns::DestroyFollowers ($friend_user_row['idUser'], array($address_user_id), $bid );
+		JWSns::DestroyFollowers( $friend_user_row['idUser'], array($address_user_id), $bio );
 
 		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_SUC', array( $friend_user_row['nameScreen'],) );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -638,7 +637,7 @@ class JWRobotLingo {
 		 * 检查好友关系
 		 */
 		if( $friend_user_db_row['protected'] == 'Y' 
-				&& false == JWFriend::IsFriend( $friend_user_db_row['idUser'], $address_user_id )
+				&& false == JWFollower::IsFollower($address_user_id, $friend_user_db_row['idUser'] )
 		  ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_NOPERM', array(
 				$friend_user_db_row['nameScreen'],
