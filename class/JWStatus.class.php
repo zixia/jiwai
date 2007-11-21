@@ -782,7 +782,7 @@ _HTML_;
 		}
 
 		// Add @ Link For other User
-		$status = preg_replace('/(\s+|[^\w]+)@\s*([^\s<>]{3,20})(\s+|$)/',"\\1@<a href='/\\2/'>\\2</a>\\3", $status);
+		$status = preg_replace(	 "/@\s*([^\s<>@]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
 
 		return array ( 
 			'status' => $status, 

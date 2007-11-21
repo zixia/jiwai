@@ -228,7 +228,7 @@ class JWRobotMsg {
 
 		$this->mAddress	= $address;
 		$this->mType	= $type;
-		$this->mBody	= $body;
+		$this->mBody	= self::_StripBody( $body );
 		$this->mServerAddress	= $serverAddress;
 		$this->mLinkId	= $linkId;
 		$this->mFile	= $file;

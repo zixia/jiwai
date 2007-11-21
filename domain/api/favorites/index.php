@@ -5,6 +5,7 @@ $pathParam = null;
 $page = 1;
 $idUserObject = null;
 $callback = null;
+$count = 20;
 extract($_REQUEST, EXTR_IF_EXISTS);
 $page = ( $page < 1 ) ? 1 : intval($page);
 $start = JWFavourite::DEFAULT_FAVORITE_MAX * ( $page - 1 );
@@ -43,7 +44,7 @@ if( !in_array( $type, array('json','xml','atom','rss') )){
 $options = array(
 	'idUserObject' => $idUserObject,
 	'page' => $page,
-	'count' => JWFavourite::DEFAULT_FAVORITE_MAX,
+	'count' => $count,
 	'callback' => $callback,
 );
 
@@ -127,8 +128,7 @@ function getFavouriteStatuses($options, $needReBuild=false){
 	if( 1>=$page ) $page = 1;
 	$start = $count * ( $page - 1 );
 
-
-	$favouriteData = JWFavourite::GetFavouriteData($idUserObject, JWFavourite::DEFAULT_FAVORITE_MAX, $start);
+	$favouriteData = JWFavourite::GetFavouriteData($idUserObject, $count, $start);
 	$statusIds = empty($favouriteData) ? array() : $favouriteData['status_ids'] ;
 	$favouriteIds = empty($favouriteData) ? array() : $favouriteData['favourite_ids'] ; 
 	$statusRows = JWStatus::GetStatusDbRowsByIds($statusIds);

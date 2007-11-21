@@ -59,7 +59,7 @@ JWTemplate::html_head($head_options) ;
 <?php //JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header() ?>
-
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 
 <div id="container">
@@ -81,7 +81,7 @@ JWTemplate::html_head($head_options) ;
                                 echo "已关注";
                             }else{
 				if( false == JWBlock::IsBlocked( $idPageUser, $logined_user_info['id'] ) )
-				echo "<a href='/wo/friendships/create/$idPageUser'>关注此人</a>";
+				echo "<a href='/wo/followings/follow/$idPageUser'>关注此人</a>";
                             }
                         } 
                         ?>

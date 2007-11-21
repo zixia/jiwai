@@ -29,12 +29,11 @@ if ( isset($_REQUEST['_shortcut']) )
 <?php JWTemplate::accessibility() ?>
 
 <?php JWTemplate::header('/wo/account/settings') ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container" class="subpage">
 
 <?php JWTemplate::SettingTab(); ?>
-
-<?php JWTemplate::ShowActionResultTips(); ?>
 
 <div class="tabbody">
 
@@ -74,7 +73,7 @@ if ( isset($_REQUEST['_shortcut']) )
                     <div class="popbg">
                         <div class="popleft"></div>
                 你好，请验证你的<?php echo JWDevice::GetNameFromType($type); ?>账户：<br/>
-                1、关注 <?php echo JWDevice::GetNameFromType($type); ?>：<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong> ；<br/>
+                1、加 <?php echo JWDevice::GetNameFromType($type); ?>：&nbsp;<strong><?php echo JWDevice::GetRobotFromType($type, $address);?></strong>&nbsp;为好友 ；<br/>
                 2、发送以下验证码进行验证：<br/>
                 <strong><?php echo $secret;?></strong>
                     </div>
