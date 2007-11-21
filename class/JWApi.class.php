@@ -124,9 +124,9 @@ class JWApi{
 		$outInfo['id'] = $status['idStatus'];
 		if( isset( $status['favourite_id'] ) ){
 			$outInfo['favourite_id'] = $status['favourite_id'];
-		}
-		if( isset( $status['device'] ) ){
-			$outInfo['device'] = $status['device'];
+            if( isset( $status['device'] ) ){
+                $outInfo['device'] = $status['device'];
+            }
 		}
 		return $outInfo;
 	}

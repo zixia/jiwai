@@ -32,12 +32,18 @@ function list_file($dir)
 			{
 				//echo "$dir/ /$file\n";
 				$src_file = "$dir/$file";
-				$dst_file = "$dir/thumb96.$matches[1]";
+				$dst_file1 = "$dir/thumb96s.jpg";
+				$dst_file2 = "$dir/thumb48s.jpg";
 
-				if ( ! file_exists($dst_file) )
+				if ( ! file_exists($dst_file1) )
 				{
-					echo "ConvertThumbnail96($src_file, $dst_file)\n";
-					JWPicture::ConvertThumbnail96($src_file, $dst_file);
+					echo "ConvertThumbnail96($src_file, $dst_file1)\n";
+					JWPicture::ConvertThumbnail96Lite($src_file, $dst_file1);
+				}
+				if ( ! file_exists($dst_file2) )
+				{
+					echo "ConvertThumbnail96($src_file, $dst_file2)\n";
+					JWPicture::ConvertThumbnail48Lite($src_file, $dst_file2);
 				}
 			}
 		}

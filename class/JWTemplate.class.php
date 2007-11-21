@@ -388,7 +388,7 @@ _HTML_;
 		<li><a href="http://blog.jiwai.de/" target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api" target="_blank">API</a></li>
 		<li><a href="/help/" target="_blank">帮助留言板</a></li>
-		<!--li><a href="http://help.jiwai.de/TOS" target="_blank">使用协议</a></li-->
+		<li><a href="http://help.jiwai.de/Links" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
 		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
