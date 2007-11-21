@@ -16,12 +16,19 @@ class JWRobotLingoIntercept {
 	static public function Intercept_FollowOrLeave($robotMsg){
 		
 		$serverAddress = $robotMsg->GetServerAddress();
-		$type = $robotMsg->GetType();
-		$body = $robotMsg->GetBody();
+		$type = JWDevice::GetDeviceCategory( $robotMsg->GetType() );
 		$mobileNo = $robotMsg->GetAddress();
 
-		if( false == preg_match('/^(F|FOLLOW|L|LEAVE|DELETE)\b$/i', $body ) )
+		if( false == preg_match('/^(F|FOLLOW|L|LEAVE|DELETE|ON|OFF)\b/i', $robotMsg->GetBody() ) )
 			return;
+
+		if( $type == 'im' && preg_match('/^(F|FOLLOW|L|LEAVE|DELETE|ON|OFF)\b$/i', $robotMsg->GetBody() ) )
+			return;
+
+		$robotMsg->SetBody( self::BodyForStock( $robotMsg->GetBody() ) );
+
+		if( in_array( $type, array('im', 'sms') ) )
+			$robotMsg->SetBody( self::BodyForSmsFollow( $robotMsg->GetBody() ) );
 
 		if( $type != 'sms' )
 			return;
@@ -29,7 +36,8 @@ class JWRobotLingoIntercept {
 		$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $mobileNo );
 		if( empty( $preAndId ) )
 			return;
-
+		
+		$userInfo = null;
 		switch( $preAndId['pre'] ){
 			case JWFuncCode::PRE_STOCK_CATE: // Must > 100 < 999
 			case JWFuncCode::PRE_CONF_CUSTOM: // Must be 0 - 99
@@ -39,8 +47,6 @@ class JWRobotLingoIntercept {
 				$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
 				if( empty($userInfo) )
 					return;
-				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( self::BodyForStockAndFollow($body) );
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
@@ -52,15 +58,22 @@ class JWRobotLingoIntercept {
 				}
 				if( empty($userInfo) )
 					return;
-				$body = trim( $body ) . ' ' . $userInfo['nameScreen'];
-				$robotMsg->SetBody( self::BodyForStockAndFollow($body) );
 			break;
 		}
+		
+		/*
+		 * Intecept for sms follow
+		 */
+		$body = trim( $robotMsg->GetBody() ) . ' ' . $userInfo['nameScreen'];
+		$robotMsg->SetBody( self::BodyForSmsFollow($body) );
 	}
 
-	static private function BodyForStockAndFollow($body){
-		$body = preg_replace( '/^(F|FOLLOW)\b/i', "Notice", $body );
+	static private function BodyForStock($body){
 		return preg_replace( '/\b(\d{6})\b/', "gp\\1", $body );
+	}
+
+	static private function BodyForSmsFollow( $body ){
+		return preg_replace( '/^(F|FOLLOW)\b/i', "Notice", $body );
 	}
 }
 ?>
