@@ -13,10 +13,14 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 	if ( 'newsmth'==$aDeviceInfo['type'] &&  ! preg_match('/@/',$aDeviceInfo['address']) )
 		$aDeviceInfo['address'] .= '@newsmth.net';
 
+	$type_category = JWDevice::GetDeviceCategory( $aDeviceInfo['type'] ) ;
+	$options = array();
+	if( $type_category == 'im' ) {
+		$options = array( 'isSignatureRecord' => 'Y' );
+	}
 
-	$is_succ = JWDevice::Create($idUser
-							, $aDeviceInfo['address']
-							, $aDeviceInfo['type'] );
+	$is_succ = JWDevice::Create($idUser , $aDeviceInfo['address'] , $aDeviceInfo['type'], false, $options );
+
 
 	$address	= $aDeviceInfo['address'];
 	$type		= strtoupper($aDeviceInfo['type']);

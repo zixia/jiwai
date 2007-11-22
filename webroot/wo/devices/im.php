@@ -38,7 +38,7 @@ if ( isset($_REQUEST['_shortcut']) )
 <div class="tabbody">
 
 <h2>绑定聊天工具</h2> 
-<p>通过MSN、QQ、GTalk、Skype等聊天软件就可以接收和更新你的叽歪，现在就来绑定吧。</p>
+<p>通过MSN、QQ、GTalk、Yahoo!、Skype等聊天软件就可以接收和更新你的叽歪，现在就来绑定吧。</p>
 
 <fieldset>
 <table width="100%" cellspacing="8" class="chat">
