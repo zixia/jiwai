@@ -989,6 +989,11 @@ __HTML__;
 					{
 						$reply_name_screen = $thread_user['nameScreen'];
 					}
+					// For Conference | In Conference wont reply to conference User;
+					if( $reply_user == null ) {
+						$reply_user = $thread_user;
+						$reply_status_id = $thread_id;
+					}
 				}
 			}
 		}
@@ -1017,7 +1022,7 @@ __HTML__;
 		{
 			$replyLink = "/$reply_name_url/thread/$reply_status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
-			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$status_row[idStatusReplyTo]";
+			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$reply_status_id";
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
