@@ -135,20 +135,12 @@ if ( isset($current_user_id) && is_numeric($status_id) )
 
 if (empty($g_with_friends)) {
 	$status_data    = JWStatus::GetStatusIdsFromUser($idUser, 10);
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 } else {
 	$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 20);
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-	if(!empty($status_rows)) {
-		$mergedStatusResult = JWStatusQuarantine::GetMergedQuarantineStatusFromUser(
-			$idUser, $status_data['status_ids'], $status_rows);
-		if( !empty( $mergedStatusResult ) ) {
-			$status_data['status_ids'] = $mergedStatusResult['status_ids'];
-			$status_rows = $mergedStatusResult['status_rows'];
-		}
-	}
+	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 }
-$user_rows = JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$user_rows = JWUser::GetDbRowsByIds	($status_data['user_ids']);
 Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>!empty($g_with_friends)));
 //FIXME friends' status not refresh on f8 profile
 

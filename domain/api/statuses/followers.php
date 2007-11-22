@@ -48,13 +48,13 @@ function renderXmlStatuses($idUser){
 
 function getFollowersWithStatus($idUser){
 	$followerIds = JWFollower::GetFollowerIds($idUser);
-	$followers = JWUser::GetUserDbRowsByIds( $followerIds );
+	$followers = JWUser::GetDbRowsByIds( $followerIds );
 	$statusIds = array();
 	foreach( $followerIds as $f ){
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
 		$statusIds[$f] = $_rs['status_ids'][0];
 	}
-	$statuses = JWStatus::GetStatusDbRowsByIds( array_values($statusIds) );
+	$statuses = JWStatus::GetDbRowsByIds( array_values($statusIds) );
 	
 	$followersWithStatuses = array();
 	foreach($followerIds as $f ){

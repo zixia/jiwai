@@ -21,8 +21,8 @@ $pagination		= new JWPagination($user_status_num, @$_REQUEST['page']);
 $status_data 	= JWStatus::GetStatusIdsFromSelfNReplies($help_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 
-$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 
 /*

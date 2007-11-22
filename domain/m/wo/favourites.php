@@ -16,7 +16,7 @@ $statusIds = JWFavourite::GetFavourite($loginedUserInfo['id'],$pagination->GetNu
 
 $statusRows = JWDB_Cache_Status::GetDbRowsByIds($statusIds);
 $userIds = array_map( create_function('$row','return $row["idUser"];'), $statusRows );
-$userRows = JWUser::GetUserDbRowsByIds( $userIds );
+$userRows = JWUser::GetDbRowsByIds( $userIds );
 
 krsort( $statusRows );
 

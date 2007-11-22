@@ -143,7 +143,7 @@ switch ( $active_tab )
 
 //die(var_dump($status_data['status_ids']));
 
-//$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
+//$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 
 
@@ -158,7 +158,7 @@ if( ( $active_tab == 'friends' || $active_tab == 'archive' )
 	}
 }
 
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array(
 	'search' => true,

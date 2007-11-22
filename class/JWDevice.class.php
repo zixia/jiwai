@@ -762,7 +762,7 @@ _SQL_;
 		if( intval( $idPartner ) ){
 			if( $partner = JWPartner::GetDbRowById( intval($idPartner) ) ) {
 				if( $partner['link'] ) {
-					return "<a href='$partner[link]' target='_blank'>$partner[nameDevice]</a>";
+					return "<a href='$partner[link]' class='darkLink' target='_blank'>$partner[nameDevice]</a>";
 				}else{
 					return $partner['nameDevice']; 
 				}

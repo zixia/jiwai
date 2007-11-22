@@ -23,7 +23,7 @@ if( !in_array( $type, array('json','xml') )){
 if( !$idStatus || !is_numeric($idStatus) ) {
 	JWApi::OutHeader(400, true);
 }
-$unStatus = JWStatus::GetStatusDbRowById( $idStatus );
+$unStatus = JWStatus::GetDbRowById( $idStatus );
 if( !$unStatus ) {
 	JWApi::OutHeader(404, true);
 }

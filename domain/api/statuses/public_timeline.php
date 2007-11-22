@@ -101,8 +101,8 @@ function getPublicTimelineStatuses($options, $needReBuild=false){
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
 
 	$status_data    = JWStatus::GetStatusIdsFromPublic($count, 0, $options['since_id'], $timeSince);
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
+	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
+	$user_rows	= JWUser::GetDbRowsByIds($status_data['user_ids']);
 
 	$statuses = array();
 

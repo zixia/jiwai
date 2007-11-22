@@ -642,5 +642,43 @@ class JWDB implements JWDB_Interface
 	{
 		return sprintf('%u', ip2long($dottedIp));
 	}
+
+	/*
+	 * @return bool
+			succ / fail
+	 */
+	static public function UpdateTableRowNumber( $table, $idPK, $column, $value=1, $reset=false)
+	{
+		$idPK = JWDB::CheckInt( $idPK );
+		$value = intval( $value );
+        if (false==$reset)
+        {
+            $sql=<<<_SQL_
+UPDATE $table 
+    SET $column = $column + $value
+    WHERE id = $idPK;
+_SQL_;
+        }
+        else
+        {
+            $sql=<<<_SQL_
+UPDATE $table 
+    SET $column = $value
+    WHERE id = $idPK;
+_SQL_;
+        }
+
+        $db = self ::GetDb();
+		$result = $db->query ($sql);
+
+		if ( !$result ){
+			JWDB::Close();
+			throw new JWException ("DB Error: " . $db->error);
+			return false;
+		}
+
+		return $result;
+    }
+
 }
 ?>

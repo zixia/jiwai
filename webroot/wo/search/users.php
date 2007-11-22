@@ -15,7 +15,7 @@ $logined_user_info = JWUser::GetCurrentUserInfo();
 $head_options = array();
 
 if ( isset($g_user_friends) && $g_user_friends ) {
-	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
+	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
@@ -27,7 +27,7 @@ $searched_num		= count( $searched_ids );
 $pagination         = new JWPagination($searched_num, $page, 15);
 
 $searched_ids       = @array_slice( $searched_ids, ($page-1)*15, 15 );
-$searched_user_rows	= JWUser::GetUserDbRowsByIds($searched_ids);
+$searched_user_rows	= JWUser::GetDbRowsByIds($searched_ids);
 
 /*
 $picture_ids        = JWFunction::GetColArrayFromRows($searched_user_rows, 'idPicture');

@@ -327,7 +327,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
+		$address_user_row = JWUser::GetDbRowById($address_user_id);
 
 		/*
 	 	 *	解析命令参数
@@ -464,7 +464,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
+		$address_user_row = JWUser::GetDbRowById($address_user_id);
 
 		/** Parse Param  **/
 		$body = $robotMsg->GetBody();
@@ -504,7 +504,9 @@ class JWRobotLingo {
 			));
 		} else
 	       	{
-			if( $follower['protected'] == 'Y' ) {
+			if( $follower['protected'] == 'Y' 
+				&& false == JWFollower::IsFollower($address_user_id, $friend_user_id) ) 
+			{
 				if( false == JWFollowerRequest::IsExist( $friend_user_id, $address_user_id )) {
 					JWSns::CreateFollowerRequest( $friend_user_id, $address_user_id );
 				}
@@ -554,7 +556,7 @@ class JWRobotLingo {
 		$address_user_id = $device_db_row['idUser'];
 
 
-		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
+		$address_user_row = JWUser::GetDbRowById($address_user_id);
 
 
 		/*
@@ -614,7 +616,7 @@ class JWRobotLingo {
 			return JWRobotLogic::CreateAccount($robotMsg);
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetUserDbRowById($address_user_id);
+		$address_user_row = JWUser::GetDbRowById($address_user_id);
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_HELP' );
@@ -661,7 +663,7 @@ class JWRobotLingo {
 		{
 			$status_id = $status_ids['status_ids'][0];
 
-			$status_rows = JWStatus::GetStatusDbRowsByIds ( array($status_id) );
+			$status_rows = JWStatus::GetDbRowsByIds ( array($status_id) );
 			$status_row = $status_rows[$status_id];
 			$status	= $status_row['status'];
 
@@ -711,7 +713,7 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$address_user_db_row = JWUser::GetUserDbRowById($address_user_id);
+		$address_user_db_row = JWUser::GetDbRowById($address_user_id);
 		$friend_name = $matches[1];
 
 		if( strtolower( trim($friend_name) ) == 'all' ) {

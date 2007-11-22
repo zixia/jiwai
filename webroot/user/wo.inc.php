@@ -79,14 +79,17 @@ switch ( $active_tab )
 
 	case 'friends':
 		// 显示用户和好友的
-
-		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
-
-		$pagination		= new JWPagination($user_status_num, $page);
-
-		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		if ( null == $page_user_info['idConference'])
+		{
+			$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
+			$pagination = new JWPagination($user_status_num, $page);
+			$status_data = JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		} else
+		{
+			$user_status_num = JWStatus::GetStatusNumFromFriendsConference( $page_user_id );
+			$pagination = new JWPagination($user_status_num, $page);
+			$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $page_user_id , $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		}
 
 		break;
 	case 'search':
@@ -107,14 +110,14 @@ switch ( $active_tab )
 		break;
 }
 
-// use cache $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
+// use cache $status_rows	= JWStatus::GetDbRowsByIds( $status_data['status_ids']);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
 
 //die(var_dump($status_rows));
 
 $status_data['user_ids'][] = $page_user_id;
 
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 if( $page_user_info['idConference'] ) {
 	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );

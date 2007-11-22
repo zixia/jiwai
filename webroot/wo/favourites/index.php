@@ -19,7 +19,7 @@ $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $head_options = array();
 
 if ( isset($g_user_favourites) && $g_user_favourites ) {
-	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
+	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
@@ -30,10 +30,10 @@ $status_num		= JWFavourite::GetFavouriteNum($page_user_info['id']);
 $pagination		= new JWPagination($status_num, $page);
 $status_ids		= JWFavourite::GetFavourite($page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-$status_rows	= JWStatus::GetStatusDbRowsByIds($status_ids);
+$status_rows	= JWStatus::GetDbRowsByIds($status_ids);
 
 $user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
-$user_rows		= JWUser::GetUserDbRowsByIds($user_ids);
+$user_rows		= JWUser::GetDbRowsByIds($user_ids);
 
 
 ?>

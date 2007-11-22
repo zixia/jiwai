@@ -131,7 +131,7 @@ function getFavouriteStatuses($options, $needReBuild=false){
 	$favouriteData = JWFavourite::GetFavouriteData($idUserObject, $count, $start);
 	$statusIds = empty($favouriteData) ? array() : $favouriteData['status_ids'] ;
 	$favouriteIds = empty($favouriteData) ? array() : $favouriteData['favourite_ids'] ; 
-	$statusRows = JWStatus::GetStatusDbRowsByIds($statusIds);
+	$statusRows = JWStatus::GetDbRowsByIds($statusIds);
 
 	$status_rows = array();
 	foreach( $statusIds as $status_id ) {

@@ -123,9 +123,17 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 	//TODO: since_id / since
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
 
-	$status_data    = JWStatus::GetStatusIdsFromFriends($options['idUser'],$count, $start, $options['since_id'], $timeSince);
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
+	$user_info = JWUser::GetUserInfo($options['idUser']);//$status_data2=array();
+	if ( null == $user_info['idConference'])
+	{
+		$status_data = JWStatus::GetStatusIdsFromFriends( $options['idUser'], $count, $start, $options['since_id'], $timeSince);
+	} else
+	{
+		$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $options['idUser'] , $count, $start);
+	}
+ 
+	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
+	$user_rows	= JWUser::GetDbRowsByIds($status_data['user_ids']);
 
 	$statuses = array();
 

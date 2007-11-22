@@ -25,7 +25,7 @@ if ( $im ) {
 		foreach($imResult as $o){
 			$userIds[] = $o['idUser'];
 		}
-		$unResult = JWUser::GetUserDbRowsByIds( $userIds );
+		$unResult = JWUser::GetDbRowsByIds( $userIds );
 	}
 }
 

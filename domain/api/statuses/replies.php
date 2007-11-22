@@ -91,7 +91,7 @@ function getStatusesWithUser($idUser, $needReBuild=true){
 	$start = 20 * ( $page - 1 );
 
 	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20, $start);
-	$statuses = JWStatus::GetStatusDbRowsByIds( $statusIds['status_ids'] );
+	$statuses = JWStatus::GetDbRowsByIds( $statusIds['status_ids'] );
 	$statusesWithUser = array();
 	$userTemp = array();
 	foreach( $statusIds['status_ids'] as $sid ){

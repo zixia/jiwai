@@ -13,7 +13,7 @@ if( $statusTab == 'with_friends' ) {
 	$statusData = JWDB_Cache_Status::GetStatusIdsFromFriends( $userInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 	$statusRows = JWDB_Cache_Status::GetDbRowsByIds( $statusData['status_ids']);
-	$userRows = JWUser::GetUserDbRowsByIds( $statusData['user_ids']);
+	$userRows = JWUser::GetDbRowsByIds( $statusData['user_ids']);
 	$tpl = 'user/with_friends';
 }else{
 
@@ -23,7 +23,7 @@ if( $statusTab == 'with_friends' ) {
 		$statusNum = JWStatus::GetStatusNumFromConference( $userInfo['idConference'] );
 		$pagination = new JWPagination( $statusNum, $page, 10);
 		$statusData = JWStatus::GetStatusIdsFromConferenceUser( $userInfo['id'],  $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$userRows = JWUser::GetUserDbRowsByIds( $statusData['user_ids']);
+		$userRows = JWUser::GetDbRowsByIds( $statusData['user_ids']);
 	}else{
 		$statusNum = JWDB_Cache_Status::GetStatusNum( $userInfo['id'] );
 		$pagination = new JWPagination( $statusNum, $page , 10);

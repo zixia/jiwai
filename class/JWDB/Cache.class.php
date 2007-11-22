@@ -683,6 +683,25 @@ die(var_dump($db_result));
 
 	}
 
+	/*
+	 * @return bool
+			succ / fail
+	 */
+	static public function UpdateTableRowNumber( $table, $idPk, $column, $value=1, $reset=false)
+	{
+		self::Instance();
 
+		$db_row	= self::GetTableRow( $table, array('id'=>$idPk) );
+		$ret 	= JWDB::UpdateTableRowNumber($table, $idPk, $column, $value, $reset);
+
+		// 更新老数据
+		self::OnDirty($db_row, $table);
+
+		// 更新新数据
+		$db_row 	=  JWDB::GetTableRow($table, array('id'=>$idPk));
+		self::OnDirty($db_row, $table);
+
+		return $ret;
+	}
 }
 ?>

@@ -6,8 +6,8 @@ JWTemplate::html_doctype();
 <?php 
 
 $status_data 	= JWStatus::GetStatusIdsFromPublic(100);
-$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
+$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 $keywords 		= '叽歪de广场 ';
 $user_showed 	= array();
@@ -47,7 +47,7 @@ $options = array(	 'title'		=> '叽歪广场'
 <?php JWTemplate::html_head($options) ?>
 </head>
 
-<body class="front" id="front">
+<body class="normal" id="front">
 
 <?php JWTemplate::accessibility() ?>
 

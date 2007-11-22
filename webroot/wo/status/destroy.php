@@ -19,26 +19,24 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 
 		if ( $method==='delete' )
 		{
-			if ( JWUser::IsAdmin($idUser) || JWStatus::IsUserOwnStatus($idUser, $idStatus))
+			if ( JWStatus::IsUserCanDelStatus($idUser, $idStatus))
 			{
+				$statusRow = JWStatus::GetDbRowById($idStatus);
 				JWStatus::Destroy($idStatus);
 				if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
+				if (false == empty($statusRow) && $statusRow['idThread'] )
+				{
+					echo JWDB_Cache_Status::GetCountReply( $statusRow['idThread'] );
+				}
+				return true;
 			}
 			else
 			{
-				$error_html = <<<_HTML_
-<li>你无权删除这条更新（编号 $idStatus ）</li>
-_HTML_;
-				JWSession::SetInfo('error',$error_html);
+				JWSession::SetInfo( 'error',"你无权删除这条更新（编号 $idStatus ）" );
 			}
 		}
 	}
 }
 
-if ( array_key_exists('HTTP_REFERER',$_SERVER) )
-	header ('Location: ' . $_SERVER['HTTP_REFERER']);
-else
-	header ('Location: /');
-
-exit(0);
+JWTemplate::RedirectBackToLastUrl('/');
 ?>

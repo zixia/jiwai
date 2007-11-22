@@ -94,7 +94,7 @@ function getUserExtendWithStatus($user){
 	//Get Current Stuats,
 	$statusIds = JWStatus::GetStatusIdsFromUser( $idUser, 1 );
 	$statusId = $statusIds['status_ids'][0];
-	$status = JWStatus::GetStatusDbRowById( $statusId );	
+	$status = JWStatus::GetDbRowById( $statusId );	
 	$statusInfo = JWApi::ReBuildStatus( $status );
 	
 	$userInfo['status'] = $statusInfo;

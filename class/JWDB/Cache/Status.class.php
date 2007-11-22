@@ -65,17 +65,34 @@ echo "dbRow End. \n";
 		$reply_to_user_id	= $dbRow['idUserReplyTo'];
 
 		$dirty_keys = array (	 
-							 JWDB_Cache::GetCacheKeyById		('Status'	, $pk_id)
-
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusIdsFromUser')			,array($user_id) )
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusIdsFromFriends')		,array($user_id) )
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusIdsFromSelfNReplies')	,array($user_id) )
-
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNum')					,array($user_id) )
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromReplies')		,array($user_id) )
-							,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromSelfNReplies')	,array($user_id) )
-
-					);
+			JWDB_Cache::GetCacheKeyById('Status', $pk_id),
+			JWDB_Cache::GetCacheKeyByFunction( 
+				array('JWStatus','GetStatusIdsFromUser'), array($user_id) 
+			),
+			JWDB_Cache::GetCacheKeyByFunction( 
+				array('JWStatus','GetStatusIdsFromFriends'), array($user_id) 
+			) ,
+			JWDB_Cache::GetCacheKeyByFunction( 
+				array('JWStatus','GetStatusIdsFromSelfNReplies'),
+				array($user_id) 
+			),
+			JWDB_Cache::GetCacheKeyByFunction(
+				array('JWStatus','GetStatusNum'),
+				array($user_id)
+			),
+			JWDB_Cache::GetCacheKeyByFunction(
+				array('JWStatus','GetStatusNumFromReplies'),
+				array($user_id)
+			),
+			JWDB_Cache::GetCacheKeyByFunction(
+				array('JWStatus','GetStatusNumFromSelfNReplies'),
+				array($user_id)
+			),
+			JWDB_Cache::GetCacheKeyByFunction(
+				array('JWStatus','GetStatusNumFromSelfNReplies'),
+				array($user_id)
+			),
+		);
 
 		if ( !empty($reply_to_user_id) )
 		{
@@ -85,6 +102,7 @@ echo "dbRow End. \n";
 
 						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromSelfNReplies')	,array($reply_to_user_id) )
 						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromReplies')	,array($reply_to_user_id) )
+						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusReplyFromStatus')	,array($reply_to_user_id) )
 					);
 		}
 /*
@@ -439,6 +457,26 @@ echo "dbRow End. \n";
 								);
 	}
 
+	static public function GetCountReply( $idStatus, $forceReload=false ) 
+	{
+		$idStatus = JWDB::CheckInt( $idStatus );
+		$ds_function = array('JWStatus', 'GetCountReply');
+		$ds_param = array( $idStatus );
+
+		$mc_param = $ds_param;
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( $ds_function, $mc_param );
+
+		$expire_time	= JWDB_Cache::PERMANENT_EXPIRE_SECENDS;
+
+		return JWDB_Cache::GetCachedValueByKey(
+									 $mc_key
+									,$ds_function
+									,$ds_param
+									,$expire_time
+									,$forceReload 
+								);
+	}
+
 
 	static public function GetStatusNumFromSelfNReplies($idUser)
 	{
@@ -458,6 +496,85 @@ echo "dbRow End. \n";
 									,$ds_param
 									,$expire_time
 								);
+	}
+
+	/**
+	 *	FIXME: not support idSince & $timeScince param.
+	 */
+	static public function GetStatusReplyFromStatus($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 , $idSince=null, $timeSince=null)
+	{var_dump(222);
+		self::Instance();
+
+		$db_row	= JWStatus::GetStatusReplyFromStatus($idUser, $num, $start, $idSince, $timeSince);
+
+		// 更新老数据
+		//self::OnDirty($db_row, 'Status');
+		//:$db_row	= JWDB::GetStatusReplyFromStatus($idUser, $num, $start, $idSince, $timeSince);
+
+		if (empty($db_row))
+			return array();
+
+		return $db_row;
+
+		if(true==false){
+		var_dump(888888);//exit;
+		$max_num		= $start + $num;
+		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
+
+		// call back function & param
+		$ds_function 	= array('JWStatus','GetStatusReplyFromStatus');
+		$ds_param		= array($idUser,$mc_max_num);
+		// param to make memcache key
+		$mc_param		= array($idUser);
+
+
+		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction	($ds_function,$mc_param);
+
+		/*
+		 *	对于过多的结果集，只保留一段时间
+		 */
+		if ( $mc_max_num > JWDB_Cache::NUM_LARGE_DATASET )
+			$expire_time = JWDB_Cache::PERMANENT_EXPIRE_SECENDS_LARGE_DATA;
+		else
+			$expire_time = JWDB_Cache::PERMANENT_EXPIRE_SECENDS;
+
+		$status_info	= JWDB_Cache::GetCachedValueByKey(
+									 $mc_key
+									,$ds_function
+									,$ds_param
+									,$expire_time
+								);
+
+		/**
+		 *	存在可能：由于以前 cache 了 $num 较小数字时候的返回结果，导致直接取回了数量不足的结果集
+		 *	所以对结果集的总数进行比对，如果数据不足，则删除数据，重新进行数据库查询
+		 *
+		 *	比如：1分钟前，有一次 GetStatusIdsFromReplies($num=100,$start=0)，则会 cache 住前 100 条数据
+					现在，我们调用 GetStatusIdsFromReplies($num=20,$start=100)，则会获取到刚刚 cache 的 100 条数据，不足
+					所以需要重新进行数据库查询，获取足够的数据：增加 $forceReload=true 的参数
+		 *
+		 */
+
+		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		{
+			$status_info	= JWDB_Cache::GetCachedValueByKey(
+										 $mc_key
+										,$ds_function
+										,$ds_param
+										,$expire_time
+										,true
+									);
+		}
+
+		if ( !empty($status_info['status_ids']) )
+		{
+			$status_info['status_ids'] = array_slice(	 $status_info['status_ids']
+														,$start,$num
+													);
+		}
+
+		return $status_info;
+	}
 	}
 }
 ?>

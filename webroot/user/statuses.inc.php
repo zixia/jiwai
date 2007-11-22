@@ -3,7 +3,7 @@ function user_status($idPageUser, $idStatus)
 {
 	JWTemplate::html_doctype();
 
-	$status_rows	= JWStatus::GetStatusDbRowsByIds(array($idStatus));
+	$status_rows	= JWStatus::GetDbRowsByIds(array($idStatus));
 	$status_info	= @$status_rows[$idStatus];
 
 	$page_user_info	= JWUser::GetUserInfo($idPageUser);
@@ -12,7 +12,7 @@ function user_status($idPageUser, $idStatus)
 					) 
 		)
 	{
-		JWTemplate::RedirectTo404NotFound();
+		JWTemplate::RedirectToUserPage( $page_user_info['nameUrl'] );
 		exit(0);
 	}
 

@@ -13,7 +13,7 @@ $page = ($page < 1 ) ? 1 : $page;
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
 if ( isset($g_user_friends) && $g_user_friends ) {
-	$rows				= JWUser::GetUserDbRowsByIds(array($g_page_user_id));
+	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
@@ -23,7 +23,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 $follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
 $pagination         = new JWPagination($follower_num, $page, 15);
 $follower_ids         = JWFollower::GetFollowerIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-$follower_user_rows		= JWUser::GetUserDbRowsByIds	($follower_ids);
+$follower_user_rows		= JWUser::GetDbRowsByIds	($follower_ids);
 
 $picture_ids        = JWFunction::GetColArrayFromRows($follower_user_rows, 'idPicture');
 $picture_url_row   	= JWPicture::GetUrlRowByIds($picture_ids);

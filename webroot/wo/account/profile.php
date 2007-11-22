@@ -43,28 +43,16 @@ if ( $new_user_info )
 			if ( $idPicture )
 			{
 				preg_match('/([^\/]+)$/',$user_named_file,$matches);
-
 				JWUser::SetIcon($user_info['id'],$idPicture);
-
 				$pic_changed = true;
-
-				$notice_html = <<<_HTML_
-<li>头像修改成功！</li>
-_HTML_;
-
-				JWSession::SetInfo('notice',$notice_html);
+				JWSession::SetInfo('notice','头像修改成功。');
 			}
 			else
 			{
 				$contact_url = JWTemplate::GetConst('UrlContactUs');
-
 				$pic_changed = false;
-
-				$error_html = <<<_HTML_
-<li>上传头像失败，请检查头像图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="$contact_url">联系我们</a></li>
-_HTML_;
+				$error_html = '上传头像失败，请检查头像图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="'.$contact_url.'">联系我们</a>';
 				JWSession::SetInfo('error',$error_html);
-
 			}
 
 			@unlink ( $user_named_file );

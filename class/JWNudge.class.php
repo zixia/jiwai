@@ -112,7 +112,7 @@ class JWNudge {
 		if( empty($idUsers) )
 			return true;
 
-		$user_rows	= JWUser::GetUserDbRowsByIds			($idUsers);
+		$user_rows	= JWUser::GetDbRowsByIds			($idUsers);
 		$device_rows	= JWDevice::GetDeviceRowsByUserIds	($idUsers);
 
 		if( empty( $user_rows ) ) 

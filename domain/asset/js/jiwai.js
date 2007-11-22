@@ -115,11 +115,9 @@ alert('ok');
 			headers: {'AJAX':true},
 			onSuccess: function() {
 				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
-				el.alt = action=='create' ? '不收藏' : '收藏它';
-				el.title = el.alt;
+				el.title = action=='create' ? '不收藏' : '收藏它';
  /*               el_text.innerText = el.alt;
                 el_text.textContent = el.alt;
-				el_text.alt = el.alt; 
 				el_text.title = el.alt; */
 			}
 		}).request();
@@ -133,8 +131,11 @@ alert('ok');
 				method: 'post',
 				data: '_method=delete',
 				headers: {'AJAX':true},
-				onSuccess: function() {
+				onSuccess: function(e, x) {
 					if (refresh) location.reload();
+					var countReply = $('countReply');
+					if (countReply)
+						countReply.innerHTML = e;
 				}
 			}).request();
 			setTimeout(function() {

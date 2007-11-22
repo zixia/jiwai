@@ -28,8 +28,8 @@ function getOwnTimeline($count=10) {
 	}else{
 		$status_data    = JWStatus::GetStatusIdsFromUser($page_user_id, $count);
 	}
-	$status_rows	= JWStatus::GetStatusDbRowsByIds($status_data['status_ids']);
-	$user_rows	= JWUser::GetUserDbRowsByIds($status_data['user_ids']);
+	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
+	$user_rows	= JWUser::GetDbRowsByIds($status_data['user_ids']);
 	$a = array();
 	foreach ($status_rows as $r) {
 		$a[] = array(

@@ -48,7 +48,7 @@ switch( $type ){
 
 function getUserLastStatus($user){
 	$head_status_data = JWStatus::GetStatusIdsFromUser( $user['id'], 1 );
-	$head_status_row = JWStatus::GetStatusDbRowById($head_status_data['status_ids'][0]);
+	$head_status_row = JWStatus::GetDbRowById($head_status_data['status_ids'][0]);
 	return $head_status_row;
 }
 

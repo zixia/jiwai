@@ -71,6 +71,21 @@ switch ( $func )
 		user_picture($page_user_id, $pict_size);
 		break;
 
+	case 'reply':
+		require_once(dirname(__FILE__) . "/reply.inc.php");
+
+		if ( preg_match('/^(\d+)$/',$param,$matches) )
+		{
+			$status_id = intval($matches[1]);
+			user_status($page_user_id, $status_id);
+		}
+		else
+		{
+			JWTemplate::RedirectTo404NotFound();
+			exit(0);
+		}
+		break;
+
 	case 'statuses':
 		require_once(dirname(__FILE__) . "/statuses.inc.php");
 

@@ -37,7 +37,7 @@ if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $is
 	if( $insertedId === true ) {
 		$insertedId = JWDB::GetInsertedId();
 	}
-	$status = JWStatus::GetStatusDbRowById( $insertedId );
+	$status = JWStatus::GetDbRowById( $insertedId );
 	switch($type){
 		case 'xml':
 			renderXmlReturn($status);

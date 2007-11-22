@@ -32,7 +32,7 @@ fieldset th, fieldset td,  {
 	word-break:break-all;
 }
 /* new update start */
-input, button, select { font-size:12px; vertical-align:middle; }
+input, button, select { font-size:12px; vertical-align:middle; padding:0 5px 0 0}
 input.submitbutton  { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 button.submitbutton { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 .submitbutton:focus { border-color:#000;}
@@ -76,6 +76,7 @@ a:hover {color:#F87A01;}
   #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
 
   #header .tip { width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
+
   html>body #header .tip {margin-left:170px;}
   *+html #header .tip {margin-left:0!important}
   #header .tip a {font-weight:bold; margin-left:5px;}
@@ -84,7 +85,7 @@ a:hover {color:#F87A01;}
   #header .navtip a { text-decoration:none; padding:5px; padding:5px; margin:0px;}
   #header .navtip form { margin:0; display:inline; }
   #header .navtip input{ height:20px; font-size:12px; padding:0; margin:0; line-height:20px;border:1px solid #B5B5B5;}
-  #header .navtip input.input{ height:20px; width:150px; border:1px solid #B5B5B5;}
+  #header .navtip input.input{ height:20px; width:150px; padding-left: 5px; border:1px solid #B5B5B5;}
   #header .navtip input.submit{ height:22px; width:60px; border:1px solid #B5B5B5;}
 #navigation ul { float:right; margin-top:-34px!important; margin-bottom:0;}
 	html>body #navigation ul  {margin-top:45px;}
@@ -92,7 +93,7 @@ a:hover {color:#F87A01;}
 #navigation li { float:left; width:78px; margin:2px 0 0 3px;}
 #navigation .line1 {background-color:#BDBDBD; width:78px; /*border-left:1px solid #ffffff; border-right:1px solid #ffffff;*/ line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
-/*tab menus "æˆ‘çš„é¦–é¡µ"ä¸Šé¢çš„tabé¡µ*/
+/*tab menus "ÎÒµÄÊ×Ò³"ÉÏÃæµÄtabÒ³*/
 #navigation .nav a {border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; text-decoration:none; overflow:hidden;color: #242424;background-color: #F7F7F7;}
 #navigation .nav a.active, #navigation .nav a:hover {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
 
@@ -107,6 +108,20 @@ a:hover {color:#F87A01;}
   #content #permalink h2 { background:transparent url(http://asset.jiwai.de/img/arr.gif) no-repeat scroll 335px 0pt; font-size:2em; padding:16px 0pt 5px 321px; }
   #content h2.thumb img { border:1px solid #999999; vertical-align:middle; }
 
+.floatright {float:right;}
+#permalink .odd .head {float:left; width:110px; overflow:hidden; height:104px;}
+#permalink .t-text { padding:5px 5px 0 5px;}
+#permalink .odd .head img {border:1px solid #FF9936; padding:2px; background-color:#ffffff;}
+#permalink .odd .cont .bg { background: url(../images/org-con-bg-big.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
+#permalink .odd .cont { border:2px solid #FFCFA8; padding:6px;}
+#permalink .odd .cont a { font-size:12px;}
+#permalink .odd .cont h3 { font-weight:bold;padding:5px 0 0 5px;}
+#permalink .meta {color:#929292; font-size:12px;padding:5px 0 8px 5px;}
+#permalink .meta a:link,#permalink .meta a:visited {color:#D05D02;text-decoration:none;}
+#permalink .meta a:hover,#wtTimeline .meta a:active {color:#009BC7;text-decoration:underline;}
+#permalink .reply {color:#009BC7; font-size:12px;}
+#permalink .reply a:link,#permalink .reply a:visited {color:#009BC7;text-decoration:underline;}
+#permalink .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
 
 
 #sidebar { width:229px; float:right; overflow:hidden;}
@@ -116,7 +131,7 @@ a:hover {color:#F87A01;}
   .sidediv {border:1px solid #D3D3D5; background-color:#F2F2F2; padding:3px; margin-top:11px;}
   #login form { background-color:#F2F2F2;}
   #login h2 {font-size:14px; font-weight:bold; background:url(../images/org-icon-man.gif) #f2f2f2 no-repeat 10px 12px ; text-indent:27px; line-height:40px; }
-  .logininput {border:1px solid #B5B5B5; height:20px;width:152px;}
+  .logininput {border:1px solid #B5B5B5; height:20px;width:147px;}
 
   #login #remember_me {border:none; width:16px; height:16px;}
 
@@ -192,7 +207,7 @@ a:hover {color:#F87A01;}
 html>body #content .tabMenu {margin-top:19px;}
 *+html #content .tabMenu {margin-top:7px!important}
 #content .tabMenu li { float:left; margin-left:4px;}
-/*tab menu "åŽ†å²"ä¸Šé¢çš„tabé¡µ*/
+/*tab menu "ÀúÊ·"ÉÏÃæµÄtabÒ³*/
 #content .tabMenu li a {display: block; background:url(../images/org-tab-on.gif) no-repeat; width:73px; height:30px; text-align:center; line-height:34px; overflow:hidden; font-weight:bold; font-size:14px; text-decoration:none; color:#ffffff;}
 #content .tabMenu li a.active , #content .tabMenu li a:hover{background:url(../images/org-tab-off.gif) no-repeat; color:#000000;}
 #content .tab {background: transparent; padding: 0;}
@@ -236,9 +251,9 @@ html>body #content .tabMenu {margin-top:19px;}
 .normal .wapnew .name a {float:left;}
 .normal .wapnew .cont .edit { line-height:90px;}
 .normal .wapnew .cont textarea {border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:100%; height:49px; }
-.odd .name {color:#D05D00; padding-right:10px;}
+.odd .name {color:#009BC7; padding:0 0 0 0; font-size:12px;}
 .odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden;}
-.normal .odd .cont { border:1px solid #FFCFA8; padding:6px 6px 22px 6px; background-color:#ffffff;}
+.normal .odd .cont { border:1px solid #FFCFA8; padding:5px 6px 6px 6px; background-color:#ffffff;}
 .odd .cont .bg { background: url(../images/org-con-bg.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
 html>body .odd .cont .bg {margin-top:4px;}
 *+html .odd .cont .bg {margin-top:0!important}
@@ -247,7 +262,9 @@ html>body .odd .cont .bg {margin-top:4px;}
 .normal #content .line {background-color:#ffffff;}
 .odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color: white;}
 .odd a:hover {color:#FF830B; text-decoration:underline;}
-.odd .meta ,.odd .meta a{color:#929292; padding:0 3px; font-size:12px;}
+.odd .meta a:link {color:#666666; text-decoration:underline;}
+.odd .meta a:hover {color:#009BC7; text-decoration:underline;}
+.odd .meta ,.odd .meta a{color:#929292; padding:0 3px 0 0; font-size:12px;}
 .undo {font-size:12px; padding:0 5px; color:#FF830B;}
 .direct_messages .odd .cont {font-size:14px; line-height:22px; height:100%; width:264px; float:left;}
 .direct_messages .odd .write {font-size:14px;float:left; width:64px; line-height:22px; text-align:center; margin:0 12px;}
@@ -256,16 +273,6 @@ html>body .odd .cont .bg {margin-top:4px;}
 
 .direct_messages #tips {border:1px solid #D3D3D5; border-bottom:none; background-color:#FFF996; line-height:22px; text-indent:12px; text-align:left;}
 .direct_messages #tips a {float:right; padding-right:12px; color: #000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-decoration:none;}
-
-
-#permalink .odd .head {float:left; width:110px; overflow:hidden; height:110px;}
-#permalink .odd .head img {border:1px solid #FF9936; padding:2px; background-color:#ffffff;}
-#permalink .odd .cont .bg { background: url(../images/org-con-bg-big.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
-#permalink .odd .cont { border:2px solid #FFCFA8; padding:6px;}
-#permalink .odd .cont a { font-size:12px;}
-#permalink .odd .cont h3 { font-weight:bold;}
-
-
 #show #content {border:1px solid #CECECE; background-color:#ffffff; width:774px; padding:0; margin:8px 0 0 0;}
 #show #content #permalink {margin:20px 40px;}
 #show .odd .cont .bg {margin-left:-16px;}
@@ -585,6 +592,24 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 .featured li.FeaturedImage a {border-style:none; vertical-align:middle;}
 .featured li.FeaturedImage a:hover {border-style:none; vertical-align:middle;}
 
+/*wtTimeline*/
+#wtTimeline { border:1px solid #D3D3D5; margin:8px 0 2px 0;height:100%; background-color:#FFFFFF;}
+#wtTimeline .spacing { margin-bottom:5px}
+#wtTimeline .top {padding:8px 0 0 10px; border-bottom:1px solid #DDDDDD; background-color:#F2F2F2; height:20px; font-size:14px; font-weight:bold;}
+#wtTimeline .entry { padding:8px 10px 0px 10px; clear:both;}
+#wtTimeline .head {float:left; width:64px; overflow:hidden; height:55px;}
+#wtTimeline .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
+#wtTimeline .content {font-size:14px; line-height:20px; height:100%; overflow:hidden; border:1px solid #FFCFA8; padding:5px 20px 6px 6px; background-color:#ffffff;}
+#wtTimeline .content .bg { background: url(../images/org-con-bg.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
+#wtTimeline .content {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color: white;}
+#wtTimeline a:hover {color:#FF830B; text-decoration:underline;}
+#wtTimeline .meta {color:#929292; font-size:12px; display:block; margin-top:5px;}
+#wtTimeline .meta a:link,#wtTimeline .meta a:visited{color:#D05D02;text-decoration:none;}
+#wtTimeline .meta a:hover,#wtTimeline .meta a:active{color:#009BC7;text-decoration:underline;}
+#wtTimeline .reply {color:#009BC7; font-size:12px;}
+#wtTimeline .reply a:link,#wtTimeline .reply a:visited {color:#009BC7;text-decoration:underline;}
+#wtTimeline .reply a:hover,#wtTimeline .reply a:active{color:#009BC7;text-decoration:none;}
+
 /*Table Menu*/
 #wtTableMenu {width: 534px;height: 46px;border:0px;text-align: center;background-color: #FFF;margin: 0; clear:both;}
 #wtTableMenu h2{font-size:15px; color:#FFEFC8; font-weight:bold; text-indent:15px; line-height:18px; padding: 12px 0 0 0px;margin-top:0px; margin:0px; } 
@@ -605,10 +630,41 @@ i{color:red;font-size:12px;display:block;margin:0px;font-style:normal;}
 #wtCollectionMain a.pad1:hover { text-decoration: none;}
 #wtCollectionMain .pad2 { padding-left:53px;font-size:12px;display: block;}
 #wtCollectionMain .po { padding: 0 0 0 105px;}
-#wtCollectionMain .po2 { padding: 0 0 0 105px; margin: 8px 0 15px 0;}
+#wtCollectionMain .po2 { padding: 0 0 0 105px; margin: 10px 0 15px 0;}
 #wtCollectionMain .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 198px;height:18px;}
 #wtCollectionMain .inputStyle2 {  padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 300px; height:18px;}
 #wtCollectionMain div#tips { width: 156px;height: 53px;float: right;background: url(../images/bg.gif) no-repeat 0 0;padding: 15px 50px 0 0;text-align: center;font-size: 12px;font-weight: bold;color: #515151;}
 #wtCollectionMain div#tips p { padding: 0;margin: 0 0 9px 0;}
 #wtCollectionMain .textarea {padding:5px 5px 0;font-size:12px;color:#666;width:350px;height:86px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
 #wtCollectionMain .left {float: left;}
+
+/* wtRepeat */
+#wtRepeat { margin:0 0 10px 0; border:1px solid #D3D3D5; background:#fff;}
+#wtRepeat h2 {font-size:15px;font-weight:bold;margin: 0.5em 0 0 0;width: 510px; line-height:24px;}
+#wtRepeat h2 select { font-weight:normal;}
+#wtRepeat form { position:relative; padding:0 10px;}
+#wtRepeat p { margin:.6em 0;}
+#wtRepeat textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:496px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
+#wtRepeat .act {text-align:center;width: 510px;}
+#wtRepeat .tip {margin:0;text-align: right;font-size:12px;color:#999;float: right;font-weight: 100;padding: 0 0 0 0;}
+#wtRepeat .tip .counter { color:#000; font-weight:bold;}
+#wtRepeat .caution, #wtRepeat .caution .counter { color:#c00;}
+
+/* wtsidebar */
+#wtsidebar { width:229px; float:right; overflow:hidden;}
+#wtsidebar h2{font-size:14px;font-weight:bold;line-height:20px;text-indent:15px; padding:10px 0 0 0;}
+#wtsidebar .sidediv {border:1px solid #D3D3D5; background-color:#F2F2F2; padding:8px 5px;margin-top:11px;}
+#wtsidebar .sidediv2 {border:1px solid #D3D3D5; background-color:#F2F2F2; width:196px; margin-left:5px;font-weight:bold;padding:5px;}
+.actions {background-color:#f2f2f2; padding:10px;}
+#wtsidebar ul {}
+#wtsidebar li {margin:0 5px 0 5px;font-size:12px; color:#000000; line-height:22px;}
+#wtsidebar .pad { font-size:12px; color:#000000;}
+#wtsidebar .pad2 { font-size:12px; color:#555555; font-weight:bold;}
+
+/* CSS Document */
+
+/* A.darkLink */
+a.darkLink { color:#999999!important; text-decoration:none!important; padding:0!important; }
+a.darkLink:hover { color:#999999!important; text-decoration:underline!important; padding:0!important; }
+a.normLink { color:#D05D02!important; text-decoration:none!important; }
+a.normLink:hover { color:#FF830B!important; text-decoration:underline!important; }

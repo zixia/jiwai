@@ -60,10 +60,11 @@ class JWTextFormat {
 	 * Strip tags | comment | js | style propertye
 	 */
 	static public function _StripTags( $text ) {
-		$search = array('@<script[^>]*?>.*?</script>@si',	// Strip out javascript
-				'@<style[^>]*?>.*?</style>@siU',	// Strip style tags properly
-				'@<[\/\!]*?[^<>]*?>@si',		// Strip out HTML tags
-				'@<![\s\S]*?--[ \t\n\r]*>@'		// Strip multi-line comments including CDATA
+		$search = array(
+			'@<script[^>]*?>.*?</script>@si',	// Strip out javascript
+			'@<style[^>]*?>.*?</style>@siU',	// Strip style tags properly
+			'@<[\/\!]*?[^<>]*?>@si',		// Strip out HTML tags
+			'@<![\s\S]*?--[ \t\n\r]*>@'		// Strip multi-line comments including CDATA
 		);
 
 		return preg_replace( $search, '', $text );

@@ -225,20 +225,6 @@ _SQL_;
 
 
 	/*
-	 *	@deprecated 请使用 GetDbRowsByIds
-	 *	兼容老的函数调用
-	 */
-	static public function GetUserDbRowsByIds( $idUsers, $activeOrder=false, $limit=60)
-	{
-		return self::GetDbRowsByIds($idUsers, $activeOrder, $limit);
-	}
-
-	static public function GetUserDbRowById( $idUser)
-	{
-		return self::GetDbRowById( $idUser);
-	}
-
-	/*
 	 *	根据用户 nameScreen/email/idUser 返回用户信息
 	 * @param	string			value		condition val, could be array in the furture
 	 * @param	string			one_item 	column name, if set, only return this column.
@@ -613,7 +599,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDeviceRowsByUserIds($idUsers)
 	{
-		$user_rows	= JWUser::GetUserDbRowsByIds($idUsers);
+		$user_rows	= JWUser::GetDbRowsByIds($idUsers);
 
 		$send_via_device_rows = array();
 
@@ -645,7 +631,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDevice($idUser)
 	{
-		$user_rows	= JWUser::GetUserDbRowsByIds(array($idUser));
+		$user_rows	= JWUser::GetDbRowsByIds(array($idUser));
 
 		if ( isset($user_rows[$idUser]['deviceSendVia']) )
 			return $user_rows[$idUser]['deviceSendVia'];
@@ -674,7 +660,7 @@ _SQL_;
 
 	static public function IsProtected($idUser)
 	{
-		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		$user_db_row = JWUser::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['protected']);
 	}
 
@@ -684,14 +670,14 @@ _SQL_;
 		// now we assume all user cis sub sms. (it's free)
 		return true;
 
-		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		$user_db_row = JWUser::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['isSubSms']);
 	}
 
 
 	static public function IsWebUser($idUser)
 	{
-		$user_db_row = JWUser::GetUserDbRowById($idUser);
+		$user_db_row = JWUser::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['isWebUser']);
 	}
 
@@ -715,7 +701,7 @@ _SQL_;
 		if ( empty($status_row['status_ids']) )
 			return;
 
-		$status_db_row		= JWStatus::GetStatusDbRowsByIds($status_row['status_ids']);
+		$status_db_row		= JWStatus::GetDbRowsByIds($status_row['status_ids']);
 
 		$user_ids 			= array();
 

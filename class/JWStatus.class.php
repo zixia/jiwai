@@ -45,7 +45,7 @@ class JWStatus {
 	/*
 	 *	根据 status 的 @zixia 打头内容，获取 zixia 最新的一条 status 的 id，
 	 */
-	static public function GetReplyInfo($status)
+	static public function GetReplyInfo( $status, $options=array() )
 	{
 		if ( empty($status) )
 			return null;
@@ -62,24 +62,25 @@ class JWStatus {
 		if ( empty($user_db_row) )
 			return null;
 
-		$reply_to_status_id = JWStatus::GetMaxIdStatusByUserId($user_db_row['idUser']);
+		$reply_to_status_id = JWStatus::GetMaxIdStatusByUserId( $user_db_row['idUser'], $options );
+		$reply_to_status = $reply_to_status_id ? self::GetDbRowById( $reply_to_status_id ) : null;
+		$thread_id = empty( $reply_to_status ) ? null : ( 
+			$reply_to_status['idThread'] ? $reply_to_status['idThread'] : $reply_to_status_id
+		);
 
 		return array ( 	 
-				'user_id' 	=> $user_db_row['idUser'], 
-				'status_id'	=> $reply_to_status_id,
-			);
+			'user_id' => $user_db_row['idUser'], 
+			'status_id' => $reply_to_status_id,
+			'thread_id' => $thread_id,
+		);
 	}
 
 
 	/*
 	 *	@param	int	$time	unixtime
-	 *	//fix me, the first parameter $idUser, may be an array which comes from table StatusQuarantine. We can use this array to create a new status directly.
 	 */
 	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $isSignature='N', $options=array() )
 	{
-		//strip status
-		$status = preg_replace('[\r\n]',' ',$status);
-
 		if( $isSignature == 'Y' ) {
 			$status = htmlSpecialChars_Decode( $status );
 		}
@@ -94,6 +95,10 @@ class JWStatus {
 		$userInfo  = JWUser::GetUserInfo( $idUser );
 		$idPicture = $userInfo['idPicture'];
 		$isProtected = $userInfo['protected'];
+
+
+		//options about thread tag
+		$idThread = isset( $options['idThread'] ) ? $options['idThread'] : null;
 
 		$idUserReplyTo = $idStatusReplyTo = null;
 		$idConference = null;
@@ -130,21 +135,41 @@ class JWStatus {
 
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
-		return JWDB_Cache::SaveTableRow('Status', 
-						array( 
-							'idUser' => $idUser,
-							'status' => $status,
-							'device' => $device,
-							'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
-							'idUserReplyTo'	=> $idUserReplyTo, 
-							'idStatusReplyTo' => $idStatusReplyTo,
-							'idPicture' => $idPicture,
-							'idConference' => $idConference,
-							'isProtected' => $isProtected,
-							'idPartner' => $idPartner,
-							'isSignature' => $isSignature,
-							'isMms' => $isMms,
-					));
+		if( false == empty( $idUserReplyTo ))
+		{
+			$FilterMode = 0;
+			if ( preg_match('/^@\s*([\w\.\-\_]+)/', $status, $matches) )
+			{
+				$UserInfo = JWUser::GetUserInfo( $options['idUserReplyTo'] );
+				if (false == empty($UserInfo))
+					if ($matches[1] == $UserInfo['nameScreen'] )
+						$FilterMode = 1;
+			}
+			if (0 < $FilterMode )
+				$status = preg_replace( '/(\s*@\s*'.$matches[1].'\s+)/i', '', $status );
+		}
+
+		$is_succ= JWDB_Cache::SaveTableRow('Status', array( 
+			'idUser' => $idUser,
+			'status' => $status,
+			'device' => $device,
+			'timeCreate' => Date('Y-m-d H:i:s', $timeCreate),
+			'idUserReplyTo'	=> $idUserReplyTo, 
+			'idStatusReplyTo' => $idStatusReplyTo,
+			'idPicture' => $idPicture,
+			'idConference' => $idConference,
+			'isProtected' => $isProtected,
+			'idPartner' => $idPartner,
+			'isSignature' => $isSignature,
+			'isMms' => $isMms,
+			'idThread' => $idThread,
+		));
+
+		if( $is_succ && $idThread )
+		{
+			JWDB_Cache_Status::GetCountReply( $idThread, true );
+		}
+		return $is_succ;
 	}
 
 
@@ -199,6 +224,22 @@ _SQL_;
 		return array (	'status_ids'	=> $status_ids
 						,'user_ids'		=> array($idUser)
 					);
+	}
+	
+	static public function SetIdThread( $idStatus, $idThread = null ) 
+	{
+		$idStatus = JWDB::CheckInt( $idStatus );
+
+		$is_succ = JWDB_Cache::UpdateTableRow( 'Status', $idStatus, array(
+			'idThread' => $idThread,
+		));
+
+		if( $is_succ && $idThread ) 
+		{
+			JWDB_Cache_Status::GetCountReply($idThread, true);
+		}
+
+		return $is_succ;
 	}
 
 	static public function GetStatusIdsFromUserMms($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
@@ -541,19 +582,10 @@ _SQL_;
 		);
 	}
 
-
-	/*
-	 *	规范命名方式，以后都应该是 GetDbRowsByIds 或者 GetDbRowById，不用在函数名称中加数据库表名
-	 */
-	static public function GetDbRowsByIds ($idStatuses)
-	{
-		return self::GetStatusDbRowsByIds($idStatuses);
-	}
-
 	static public function GetDbRowById ($idStatus)
 	{
-		$db_rows = self::GetDbRowsByIds(array($idStatus));
-		return empty($db_rows) ? array() : $db_rows[$idStatus];
+		$rows = self::GetDbRowsByIds( array( $idStatus ) );
+		return empty( $rows ) ? array() : $rows[ $idStatus ];
 	}
 
 	/*
@@ -562,7 +594,7 @@ _SQL_;
 	 * 	@return	array	以 idStatus 为 key 的 status row
 	 * 
 	 */
-	static public function GetStatusDbRowsByIds ($idStatuses)
+	static public function GetDbRowsByIds ($idStatuses)
 	{
 		if ( empty($idStatuses) )
 			return array();
@@ -584,28 +616,22 @@ FROM	Status
 WHERE	id IN ($condition_in)
 _SQL_;
 
-		$rows = JWDB_Cache::GetQueryResult($sql,true);
-
+		if( count( $idStatuses ) > 1 ) {
+			$rows = JWDB_Cache::GetQueryResult($sql,true);
+		}else{
+			$rows = JWDB::GetQueryResult($sql,true);
+		}
 
 		if ( empty($rows) ){
 			$status_map = array();
 		} else {
 			foreach ( $rows as $row ) {
+				$row['status'] = self::SimpleFormat( $row );	
 				$status_map[$row['idStatus']] = $row;
 			}
 		}
 
 		return $status_map;
-	}
-
-	static public function GetStatusDbRowById ($idStatus)
-	{
-		$status_db_rows = JWStatus::GetStatusDbRowsByIds(array($idStatus));
-
-		if ( empty($status_db_rows) )
-			return array();
-
-		return $status_db_rows[$idStatus];
 	}
 
 	/*
@@ -632,7 +658,8 @@ _SQL_;
 			$duration = intval($duration/60);
 			return "$duration 分钟前";
 		}else{ // < 1 min
-			if ( $duration > 30 ){
+			return "$duration 秒前";
+/*			if ( $duration > 30 ){
 				return "半分钟前";
 			}else if ( $duration > 20 ){
 				return "20 秒前";
@@ -643,7 +670,7 @@ _SQL_;
 			}else{
 				return "就在刚才";
 			}
-		}
+*/		}
 	}
 
 
@@ -654,8 +681,21 @@ _SQL_;
 	static public function Destroy ($idStatus)
 	{
 		$idStatus = JWDB_Cache::CheckInt($idStatus);
+		$statusRow = JWDB_Cache::GetTableRow('Status', array('id'=>$idStatus), 1);
 
-		return JWDB_Cache::DelTableRow('Status', array (	'id'	=> $idStatus ));
+		$is_succ = JWDB_Cache::DelTableRow('Status', array (	'id'	=> $idStatus ));
+
+		if( $is_succ ) 
+		{
+			if( $statusRow['idThread'] )
+			{
+				JWDB_Cache_Status::GetCountReply($statusRow['idThread'], true);
+			}else{
+				JWDB_Cache_Status::GetCountReply($statusRow['id'], true);
+			}
+		}
+
+		return $is_succ;
 	}
 
 
@@ -670,14 +710,51 @@ _SQL_;
 		$idUser 	= JWDB_Cache::CheckInt($idUser);
 		$idStatus	= JWDB_Cache::CheckInt($idStatus);
 
-		$db_row = self::GetStatusDbRowById($idStatus);
+		$db_row = self::GetDbRowById($idStatus);
 
 		if ( empty($db_row) )
 			return false;
 
 		return $db_row['idUser']==$idUser;
 	}
+		
+	
+	/**
+		这个方法必须给出说明，
+			status_row 可以是String，这时 id_user_reply_to 是回复用户 id 
+			status_row 本应为 一条记录;
+	*/
+	static public function SimpleFormat( $status_row, $id_user_reply_to=null ) 
+	{
 
+		if( is_string( $status_row ) ){
+			$status_row = array(
+				'status' => $status_row,
+				'idUserReplyTo' => $id_user_reply_to,
+			);
+		}
+
+		$idUserReplyTo = $status_row['idUserReplyTo'];
+		$status = $status_row['status'];
+
+		if( $idUserReplyTo ) 
+		{
+			$user = JWUser::GetUserInfo( $idUserReplyTo ) ;
+
+			if ( preg_match('/^@\s*([\w\._\-]+)/',$status,$matches) ) 
+			{
+				$reply_to = $matches[1];
+				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
+
+				if( $reply_user['id'] == $user['id'] ) 
+					$status = preg_replace( '/^@\s*([\w\._\-]+)/', '', $status );
+			}
+
+			$status = "@$user[nameScreen] $status";
+		}
+
+		return $status;
+	}
 
 	/*
 	 *	@param	string	status
@@ -733,7 +810,7 @@ _SQL_;
 
 			/*
 			 *	检查 url path 是否为真正的 url path
-	 	 	 */
+			 */
 			if (!empty($url_path) && preg_match('#[^/:]#', $url_path[0]) )
 			{
 				$tail_str = $url_path . $tail_str;
@@ -770,16 +847,21 @@ _HTML_;
 
 		if( $idUserReplyTo ) {
 			$userReply = JWUser::GetUserInfo( $idUserReplyTo );
-			if ( false == empty($replyto) ) {
-				$replyto = $userReply['nameUrl'];
-				$status = preg_replace('/^@\s*([\w\._\-]+|[^\s]+)/',"@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a> ", $status);
-			}else{
-				$replyto = $userReply['nameUrl'];
-				$status = "@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a>  $status";
+			if( preg_match('/^@\s*([\w\._\-]+|[^\s]+)/', $status, $matches) )
+			{    
+				$u = JWUser::GetUserInfo( $matches[1] );
+				if( $u['id'] == $idUserReplyTo ) {
+					$status = preg_replace( '/@\s*('.$matches[1].')/i', '', $status );
+				}
 			}
+
+			$replyto = $userReply['nameUrl'];
+			$replytoname = $userReply['nameScreen'];
+			$status = "@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a>  $status";
 		}else{
 			$replyto = null;
-		}
+			$replytoname = null;
+		} 
 
 		// Add @ Link For other User
 		$status = preg_replace(	 "/@\s*([^\s<>@]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
@@ -787,6 +869,7 @@ _HTML_;
 		return array ( 
 			'status' => $status, 
 			'replyto' => $replyto,
+			'replytoname' => $replytoname,
 		);
 	}
 	
@@ -984,14 +1067,22 @@ _SQL_;
 	/*
 	 *	获取用户的最大 idStatus
 	 */
-	static public function GetMaxIdStatusByUserId($idUser)
+	static public function GetMaxIdStatusByUserId( $idUser, $options=array() )
 	{
 		$idUser = JWDB_Cache::CheckInt($idUser);
+
+		$threadCond = null;
+		if( isset( $options['idThread'] ) )
+		{
+			$threadCond = " AND idThread=$options[idThread]";
+		}
+
 
 		$sql = <<<_SQL_
 SELECT	MAX(id) as idMax
 FROM	Status
 WHERE	idUser=$idUser
+	$threadCond
 _SQL_;
 		$row = JWDB_Cache::GetQueryResult($sql);
 
@@ -1014,6 +1105,255 @@ _SQL_;
 		}
 
 		return false;
+	}
+
+	static public function GetCountReply( $idStatus ) {
+
+			$idStatus = JWDB::CheckInt( $idStatus );
+
+			$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+		FROM 
+				Status
+		WHERE 
+				idThread = $idStatus
+_SQL_;
+
+				$row = JWDB::GetQueryResult( $sql );
+
+				return $row['num'];
+	}
+
+	/*
+	 *	获取 指定idStatus 的所有回复用户
+	 *	@return	rows	
+	 */
+	static public function GetStatusReplyFromStatus($idStatusReplyTo, $num=self::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$idStatusReplyTo = JWDB::CheckInt( $idStatusReplyTo );
+		$num	= intval($num);
+		$start	= intval($start);
+
+		if ( !is_int($num) || !is_int($start) )
+			throw new JWException('must int');
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND Status.id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND Status.timeCreate > '$timeSince'";
+		}
+
+		$sql = <<<_SQL_
+SELECT		
+			* 
+FROM		
+			Status
+WHERE		
+			Status.idStatusReplyTo = $idStatusReplyTo 
+			$condition_other
+ORDER BY 	
+			Status.timeCreate asc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if (empty($rows))
+			return array();
+
+		return $rows;
+	}
+    
+	/*
+	 *	获取 指定idStatus 的所有回复用户
+	 *	@return rows	
+	 */
+	static public function GetStatusReplyAllFromStatus($idStatusReplyTo, $start=0, $idSince=null, $timeSince=null)
+	{
+		$statusRow = self::GetDbRowById($idStatusReplyTo);
+		$countReply=$statusRow['countReply'];
+
+		if(0==$countReply)
+			return array();
+
+		return self::GetStatusReplyFromStatus($idStatusReplyTo, $countReply, $start, $idSince, $timeSince); 
+	}
+
+	/*
+	 *	获取 指定idStatus 的所有回复用户
+	 *	@return	rows	
+	 */
+	static public function GetDbRowsByThread($idThread, $num=self::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$idThread = JWDB::CheckInt( $idThread );
+		$num	= intval($num);
+		$start	= intval($start);
+
+		if ( !is_int($num) || !is_int($start) )
+			throw new JWException('must int');
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND Status.id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND Status.timeCreate > '$timeSince'";
+		}
+
+		$sql = <<<_SQL_
+SELECT		
+			* 
+FROM		
+			Status
+WHERE		
+			Status.idThread = $idThread
+			$condition_other
+ORDER BY 	
+			Status.timeCreate asc
+LIMIT 		$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if (empty($rows))
+			return array();
+
+		return $rows;
+	}
+
+	/*
+	 *	获取 指定idStatus 的所有回复
+	 *	@return rows	
+	 */
+	static public function GetAllDbRowsByThread($idThread, $start=0, $idSince=null, $timeSince=null)
+	{
+		$countReply = JWDB_Cache_Status::GetCountReply( $idThread );
+		if(0==$countReply)
+			return array();
+
+		return self::GetDbRowsByThread($idThread, $countReply, $start, $idSince, $timeSince); 
+	}
+
+	/*
+	 * @param	int		status pk
+	 * @param	int		user pk
+	 * @return	bool	if user own status
+	 */
+	static public function IsUserCanDelStatus ($idUser, $idStatus)
+	{
+		if ( JWUser::IsAdmin($idUser) )
+			return true;
+
+		$idUser 	= JWDB_Cache::CheckInt($idUser);
+		$idStatus	= JWDB_Cache::CheckInt($idStatus);
+
+		$db_row = self::GetDbRowById($idStatus);
+
+		if ( empty($db_row) )
+			return false;
+
+		return ($db_row['idUser']==$idUser) ;//|| ($db_row['idUserReplyTo']==$idUser);//楼主可删除本楼的任何帖子
+	}
+
+	/*
+	 *	获取用户和好友的 idStatus，并返回相关的 idUser 以供后期组合
+	 *	@param	int		$idUser	用户的id
+	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
+	 */
+	static public function GetStatusIdsFromFriendsConfrence($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$idUser	= intval($idUser);
+		$num	= intval($num);
+		$start	= intval($start);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
+
+		if ( 0>=$idUser || 0>=$num )
+			throw new JWException('must int');
+
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
+
+		array_push($friend_ids, $idUser);
+		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
+
+		$friend_confrence_rows = JWUser::GetDbRowsByIds($friend_ids);
+		$friend_confrence_ids = JWFunction::GetColArrayFromRows($friend_confrence_rows, 'idConference');
+		$friend_confrence_ids = array_unique($friend_confrence_ids);
+		$friend_confrence_in = JWDB::GetInConditionFromArray($friend_confrence_ids);
+
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
+		$sql = <<<_SQL_
+SELECT
+	 id
+	,id	as idStatus
+	,idUser as idUser
+FROM	
+	Status
+WHERE	
+	idUser IN ($condition_in)
+        OR ( 
+       		idConference IS NOT NULL
+        	AND idConference IN ($friend_confrence_in)
+        )
+	AND timeCreate > (NOW()-INTERVAL 1 WEEK)
+	$condition_other
+ORDER BY
+	timeCreate desc
+LIMIT 
+	$start,$num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		if ( empty($rows) )
+			return array();
+
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		array_push($user_ids, $idUser);
+
+		return array (
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+	}
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum
+	 */
+	static public function GetStatusNumFromFriendsConference($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+		$user_info = JWUser::GetUserInfo($idUser);
+
+		$nums = self::GetStatusNumFromFriends($idUser); 
+
+		$friend_ids = JWFollower::GetFollowingIds($idUser);
+		array_push($friend_ids, $idUser);
+
+		foreach($friend_ids as $friend_id)
+		{
+			$user_info = JWUser::GetUserInfo($friend_id);
+			if($user_info['idConference'])
+			{
+				$nums += self::GetStatusNumFromConference($user_info['idConference']);
+			}
+		}
+
+		return $nums;
 	}
 }
 ?>

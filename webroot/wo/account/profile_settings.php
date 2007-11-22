@@ -45,9 +45,7 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 			{
 				$contact_url = JWTemplate::GetConst('UrlContactUs');
 
-				$error_html = <<<_HTML_
-<li>上传图片失败，请检查图片图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="$contact_url">联系我们</a></li>
-_HTML_;
+				$error_html = '上传图片失败，请检查图片图件是否损坏，或可尝试另选文件进行上载。如有疑问，请<a href="'.$contact_url.'">联系我们</a>';
 				JWSession::SetInfo('error',$error_html);
 			}
 
@@ -63,10 +61,7 @@ _HTML_;
 		switch ( $file_info['error'] )
 		{
 			case UPLOAD_ERR_INI_SIZE:
-				$error_html = <<<_HTML_
-<li>头像文件尺寸太大了，请将图片缩小分辨率后重新上载。<li>
-_HTML_;
-				JWSession::SetInfo('notice',$error_html);
+				JWSession::SetInfo('notice','头像文件尺寸太大了，请将图片缩小分辨率后重新上载。');
 				break;
 			default:
 				throw new JWException("upload error $file_info[error]");

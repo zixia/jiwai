@@ -126,7 +126,6 @@ class JWSns {
 			return true;
 		}
 
-//var_dump(888888);	
 		// TODO check idUser permission
 		if ( ! JWFollower::Create( $friendRow['id'], $userRow['id']) ) {
 			throw new JWException('JWFollower::Create failed');
@@ -168,7 +167,7 @@ class JWSns {
 		if ( !is_array($idFriends) )
 			throw new JWException('must array');
 		
-		$friend_user_rows	= JWUser::GetUserDbRowsByIds($idFriends);
+		$friend_user_rows	= JWUser::GetDbRowsByIds($idFriends);
 		$user_info			= JWUser::GetUserInfo($idUser);
 
 		$user_notice_settings 	= JWUser::GetNotification($idUser);
@@ -364,7 +363,7 @@ class JWSns {
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite	= JWInvitation::Create($idUser,$address,$type,$email_message, $code_invite);
 
-		$user_rows 	= JWUser::GetUserDbRowsByIds(array($idUser));
+		$user_rows 	= JWUser::GetDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
 		switch ( $type )
@@ -521,6 +520,18 @@ class JWSns {
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
 		list( $status, $idUserReplyTo, $idStatusReplyTo ) = self::FetchStatusReplyInfo( $status, $options );
 
+		if( isset( $options['idThread'] ) ) 
+		{
+			$idThread = $options['idThread'];
+		}else{
+			$idThread = null;
+			if( $idStatusReplyTo ) 
+			{
+				$status_reply = JWStatus::GetDbRowById( $idStatusReplyTo );
+				$idThread = $status_reply['idThread'] ? $status_reply['idThread'] : $idStatusReplyTo;
+			}
+		}
+
 		$idConference = null;
 		$conference = null;
 		if( false == isset( $options['idConference'] ) || null==$options['idConference'] ){
@@ -553,6 +564,7 @@ class JWSns {
 				'idStatusReplyTo' => $idStatusReplyTo,
 				'idConference' => $idConference,
 				'timeCreate' => $timeCreate,
+				'idThread' => $idThread,
 			);
 
 		$acceptKeys = array( 'idPicture', 'isMms', 'idPartner' );
@@ -571,6 +583,7 @@ class JWSns {
 			$options['notify'] = false;
 		}
 
+
 		/*
 		 * 决定通知方式
 		 *
@@ -586,14 +599,16 @@ class JWSns {
 			}
 		}
 
-
 		//Real Create Status
 		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
 		if( $idStatus ) {
 
+			$status = JWStatus::SimpleFormat( $status, $idUserReplyTo );	
+
 			$metaOptions = array(
 				'idStatus' => $idStatus,
 				'idConference' => $createOptions['idConference'],
+				'idThread' => $idThread,
 				'idUserConference' => ( $createOptions['idConference'] ) ? $conference['idUser'] : null,
 				'notify' => $options['notify'],
 				'isMms' => isset( $createOptions['isMms'] ) ? $createOptions['isMms'] : false,
@@ -611,6 +626,7 @@ class JWSns {
 				$metaInfo = array(
 					'idStatus' => $idStatus,
 					'idUserReplyTo' => $idUserReplyTo,
+					'idThread' => $idThread,
 					'device' => $device,
 					'status' => $status,
 					'options' => $metaOptions,
@@ -909,7 +925,7 @@ class JWSns {
 		else
 		{
 			$statusPost = JWRobotLingoBase::ConvertCorner( $status );
-			$reply_info = JWStatus::GetReplyInfo($statusPost);	
+			$reply_info = JWStatus::GetReplyInfo($statusPost, $options);	
 
 			$status = empty( $reply_info ) ? $status : $statusPost;
 			$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];

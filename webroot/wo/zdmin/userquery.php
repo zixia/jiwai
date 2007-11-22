@@ -23,7 +23,7 @@ if( $un ) {
 $stResult = array();
 if( !empty($unResult) ){
 	$statusIds = JWStatus::GetStatusIdsFromUser($unResult[0]['id'],10);
-	$stResult = JWStatus::GetStatusDbRowsByIds( $statusIds['status_ids'] );
+	$stResult = JWStatus::GetDbRowsByIds( $statusIds['status_ids'] );
 	krsort( $stResult );
 }
 

@@ -13,7 +13,7 @@ $loginedUserInfo = JWUser::GetCurrentUserInfo();
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds = JWFollower::GetFollowerIds($loginedUserInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
-$followerRows = JWUser::GetUserDbRowsByIds($followerIds);
+$followerRows = JWUser::GetDbRowsByIds($followerIds);
 
 $followerOps = actionop( $loginedUserInfo['id'], $followerIds , $forFollow = true);
 

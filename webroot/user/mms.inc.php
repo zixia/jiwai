@@ -82,14 +82,14 @@ switch ( $active_tab )
 		break;
 }
 
-// use cache $status_rows	= JWStatus::GetStatusDbRowsByIds( $status_data['status_ids']);
+// use cache $status_rows	= JWStatus::GetDbRowsByIds( $status_data['status_ids']);
 $status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
 
 //die(var_dump($status_rows));
 
 $status_data['user_ids'][] = $page_user_id;
 
-$user_rows		= JWUser::GetUserDbRowsByIds	($status_data['user_ids']);
+$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 if( $page_user_info['idConference'] ) {
 	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
