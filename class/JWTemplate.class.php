@@ -245,7 +245,7 @@ _HTML_;
 			$msgString = '';
 		}else{
 			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
-			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">'.$msgCount.'</a>&nbsp;条&nbsp;';
+			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">[&nbsp;'.$msgCount.'&nbsp;]</a>&nbsp;条&nbsp;';
 		}
 
 ?>
@@ -1032,6 +1032,8 @@ __HTML__;
 		}
 		$pre_reply_link_string = $replyLinkString;
 		$replyLinkString = '回复';
+		if( $reply_count )
+			$replyLinkString = $reply_count.'条回复';
 
 		$replyLinkClickString = null;
 		if( $replyLinkClick ) {
