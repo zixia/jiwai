@@ -1015,18 +1015,18 @@ __HTML__;
 		$preg_reply_link = null;	
 		if( $reply_name_screen ) 
 		{
-			$replyLink = "/$reply_name_url/reply/$reply_status_id";
+			$replyLink = "/$reply_name_url/thread/$reply_status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
 			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$status_row[idStatusReplyTo]";
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
 			{
-				$replyLink = "/$owner_user_url/reply/$status_id";
+				$replyLink = "/$owner_user_url/thread/$status_id";
 				$replyLinkString = "${reply_count}条回复";
 			}else
 			{
-				$replyLink = "/$owner_user_url/reply/$status_id";
+				$replyLink = "/$owner_user_url/thread/$status_id";
 				$replyLinkString = "回复";
 			}
 		}
