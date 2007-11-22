@@ -195,17 +195,17 @@ _SQL_;
 			}
 			else
 			{
-                $fileExt = (in_array($picSize, array('thumb48s', 'thumb96s')))
-                    ? 'jpg'
-                    : $picture_rows[$picture_id]['fileExt'];
+				$fileExt = (in_array($picSize, array('thumb48s', 'thumb96s')))
+					? 'jpg'
+					: $picture_rows[$picture_id]['fileExt'];
 				$asset_url_path = "/system/user/profile_image/"
-								. $picture_rows[$picture_id]['idUser']
-								. '/' . $picture_id
-								. '/' . $picSize
-								. '/' . $picture_rows[$picture_id]['fileName']
-								. '.'
-								. $fileExt
-								;
+					. $picture_rows[$picture_id]['idUser']
+					. '/' . $picture_id
+					. '/' . $picSize
+					. '/' . $picture_rows[$picture_id]['fileName']
+					. '.'
+					. $fileExt
+					;
 				$url_row[$picture_id] = JWTemplate::GetAssetUrl($asset_url_path, false);
 			}
 		}
@@ -279,7 +279,7 @@ _SQL_;
 	{
 
 		if( empty( $options ) || empty($options['thumbs']) ) {
-			$thumbs = array( 'thumb48', 'thumb96', 'origin', 'picture') ;
+			$thumbs = array( 'thumb48', 'thumb96', 'origin', 'picture', 'thumb48s', 'thumb96s' ) ;
 		}else
 			$thumbs = $options['thumbs'];
 
@@ -346,7 +346,13 @@ _SQL_;
 
 		foreach( $thumbs as $op ) {
 
-			$rel_file_path = $picture_path . $op . '.' . $dst_file_type;
+			//for thumb-static
+			if( in_array( $op, array('thumb48s', 'thumb96s') ) ) {
+				$rel_file_path = $picture_path . $op . '.jpg';
+			}else{
+				$rel_file_path = $picture_path . $op . '.' . $dst_file_type;
+			}
+
 			$convert_path_name = $abs_storage_root . $rel_file_path;
 			array_push( $rel_save_files, $rel_file_path );
 
@@ -364,6 +370,16 @@ _SQL_;
 				case 'thumb96':
 					{
 						$ret = self::ConvertThumbnail96( $absFilePathName, $convert_path_name );
+						break;
+					}
+				case 'thumb48s':
+					{
+						$ret = self::ConvertThumbnail48Lite( $absFilePathName, $convert_path_name );
+						break;
+					}
+				case 'thumb96s':
+					{
+						$ret = self::ConvertThumbnail96Lite( $absFilePathName, $convert_path_name );
 						break;
 					}
 				case 'origin':
@@ -570,7 +586,7 @@ _CMD_;
 			case 'thumb96s':// Lite version, without animation
 			case 'thumb48s':
 				$filename = self::GetFullPathNameById($idPicture, $picSize);
-                $picType = 'jpg';
+				$picType = 'jpg';
 
 				if ( !file_exists($filename) )
 				{
