@@ -74,10 +74,11 @@ switch ( $func )
 	case 'thread':
 		require_once(dirname(__FILE__) . "/thread.inc.php");
 
-		if ( preg_match('/^(\d+)$/',$param,$matches) )
+		if ( preg_match('/^(\d+)\/?(\d*)$/',$param,$matches) )
 		{
 			$status_id = intval($matches[1]);
-			user_status($page_user_id, $status_id);
+			$reply_status_id = intval(@$matches[2]);
+			user_status($page_user_id, $status_id, $reply_status_id);
 		}
 		else
 		{

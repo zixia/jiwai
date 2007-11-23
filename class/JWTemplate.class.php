@@ -465,6 +465,8 @@ _HTML_;
 					<?php } ?>
 				</h2>
 				<p>
+                    <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
+                    <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
 					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" ></textarea>
 				</p>
 				<p class="act">
@@ -663,7 +665,11 @@ _HTML_;
 <?php if( $isOpen ) { 
 	$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 		JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
-	$replyLinkClick = ( $options['isMyPages'] ? '' : 'javascript:scroll(0, screen.height);$("jw_status").focus();return false;' );
+    if ($userRow['id'] != $current_user_id)
+        $reply_user_nameScreen_txt = '@' .$userRow['nameScreen']. ' ';
+    else
+        $reply_user_nameScreen_txt = '';
+	$replyLinkClick = ( $options['isMyPages'] ? '' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;' );
 	self::ShowStatusMetaInfo($statusRow, array(
 		'showPublisher' => false,
 		'replyLinkClick' => $replyLinkClick,
@@ -1018,21 +1024,21 @@ __HTML__;
 		$deviceName = JWDevice::GetNameFromType($status_row['device'], @$status_row['idPartner'] );
 		$sign = $status_row['isSignature'] == 'Y' ? '签名' : '';
 
-		$preg_reply_link = null;	
+		$preg_reply_link = null;
 		if( $reply_name_screen ) 
 		{
-			$replyLink = "/$reply_name_url/thread/$reply_status_id";
+			$replyLink = "/$reply_name_url/thread/$reply_status_id/$status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
 			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$pre_reply_status_id";
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
 			{
-				$replyLink = "/$owner_user_url/thread/$status_id";
+				$replyLink = "/$owner_user_url/thread/$status_id/$status_id";
 				$replyLinkString = "${reply_count}条回复";
 			}else
 			{
-				$replyLink = "/$owner_user_url/thread/$status_id";
+				$replyLink = "/$owner_user_url/thread/$status_id/$status_id";
 				$replyLinkString = "回复";
 			}
 		}
@@ -2646,6 +2652,17 @@ _HEAD_;
 			echo "</div>\n";
 		}
 	}
+
+	static public function RedirectToUrl( $url )
+	{
+        if ( !empty($url) )
+        {
+            header("Location: $url"); 
+            exit( 0 );
+        }
+        else
+            self::RedirectBackToLastUrl( '/' );
+    }
 
 }
 ?>
