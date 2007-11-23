@@ -245,7 +245,7 @@ _HTML_;
 			$msgString = '';
 		}else{
 			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
-			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">'.$msgCount.'</a>&nbsp;条&nbsp;';
+			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">[&nbsp;'.$msgCount.'&nbsp;]</a>&nbsp;条&nbsp;';
 		}
 
 ?>
@@ -465,6 +465,8 @@ _HTML_;
 					<?php } ?>
 				</h2>
 				<p>
+                    <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
+                    <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
 					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" ></textarea>
 				</p>
 				<p class="act">
@@ -663,7 +665,11 @@ _HTML_;
 <?php if( $isOpen ) { 
 	$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 		JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
-	$replyLinkClick = ( $options['isMyPages'] ? '' : 'javascript:scroll(0, screen.height);$("jw_status").focus();return false;' );
+    if ($userRow['id'] != $current_user_id)
+        $reply_user_nameScreen_txt = '@' .$userRow['nameScreen']. ' ';
+    else
+        $reply_user_nameScreen_txt = '';
+	$replyLinkClick = ( $options['isMyPages'] ? '' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;' );
 	self::ShowStatusMetaInfo($statusRow, array(
 		'showPublisher' => false,
 		'replyLinkClick' => $replyLinkClick,
@@ -955,9 +961,11 @@ __HTML__;
 		$owner_user = JWUser::GetDbRowById( $status_row['idUser'] );
 		$owner_user_url = UrlEncode($owner_user['nameUrl']);
 		$owner_user_screen = $owner_user['nameScreen'];
+		$owner_user_id = $owner_user['id'];
 
 		$status_id = $status_row['id'];
 		$reply_status_id = $status_row['idStatusReplyTo'];
+		$pre_reply_status_id = $reply_status_id;
 		$reply_user_id = $status_row['idUserReplyTo'];
 		$thread_id = $status_row['idThread'];
 
@@ -989,6 +997,11 @@ __HTML__;
 					{
 						$reply_name_screen = $thread_user['nameScreen'];
 					}
+					// For Conference | In Conference wont reply to conference User;
+					if( $reply_user == null ) {
+						$reply_user = $thread_user;
+						$pre_reply_status_id = $thread_id;
+					}
 				}
 			}
 		}
@@ -1012,21 +1025,21 @@ __HTML__;
 		$deviceName = JWDevice::GetNameFromType($status_row['device'], @$status_row['idPartner'] );
 		$sign = $status_row['isSignature'] == 'Y' ? '签名' : '';
 
-		$preg_reply_link = null;	
+		$preg_reply_link = null;
 		if( $reply_name_screen ) 
 		{
-			$replyLink = "/$reply_name_url/reply/$reply_status_id";
+			$replyLink = "/$reply_name_url/reply/$reply_status_id/$status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
 			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$status_row[idStatusReplyTo]";
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
 			{
-				$replyLink = "/$owner_user_url/reply/$status_id";
+				$replyLink = "/$owner_user_url/reply/$status_id/$status_id";
 				$replyLinkString = "${reply_count}条回复";
 			}else
 			{
-				$replyLink = "/$owner_user_url/reply/$status_id";
+				$replyLink = "/$owner_user_url/reply/$status_id/$status_id";
 				$replyLinkString = "回复";
 			}
 		}
@@ -2638,6 +2651,17 @@ _HEAD_;
 			echo "</div>\n";
 		}
 	}
+
+	static public function RedirectToUrl( $url )
+	{
+        if ( !empty($url) )
+        {
+            header("Location: $url"); 
+            exit( 0 );
+        }
+        else
+            self::RedirectBackToLastUrl( '/' );
+    }
 
 }
 ?>

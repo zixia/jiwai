@@ -2,14 +2,16 @@
 require_once("../../../jiwai.inc.php");
 
 define ('SP_IP', '211.157.106.111');
+define ('ZX_IP', '211.99.222.55');
 
 $debug = false;
-if (!$debug)
+if ( false == $debug )
 {
 	$proxy_ip 	= JWRequest::GetProxyIp();
 	$client_ip 	= JWRequest::GetClientIp();
 
-	if (false && SP_IP!=$proxy_ip && SP_IP!=$client_ip )
+	$over_ip = $proxy_ip .','. $client_ip;
+	if (false === strpos($over_ip, SP_IP) && false === strpos($over_ip, ZX_IP) )
 	{
 		header('HTTP/1.0 401 Unauthorized');
 		die ("You must use registered IP address.");

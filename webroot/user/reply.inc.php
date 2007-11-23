@@ -19,23 +19,32 @@ function reply_status($idStatus)
 			'idConference' => $status_row['idConference'],
 		);
 
-		if ( false == preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) ) {
-		    if ( false == preg_match('/^@\s*(\S+)\s+(.+)$/',$status, $matches) )
-		    {
-			$options_info['idUserReplyTo'] = $status_row['idUser'];
-			$options_info['idStatusReplyTo'] = $status_row['id'];
-		    }
-		}
+        if ( false == empty($_REQUEST['idUserReplyTo']) && false==empty($_REQUEST['idStatusReplyTo']) )
+        {
+            $options_info['idUserReplyTo'] = $_REQUEST['idUserReplyTo'];
+            $options_info['idStatusReplyTo'] = $_REQUEST['idStatusReplyTo'];
+        }
+        else
+        {
+            if ( ( false == preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) ) &&
+                    ( false == preg_match('/^@\s*(\S+)\s+(.+)$/',$status, $matches) ) )
+            {
+                $options_info['idUserReplyTo'] = $status_row['idUser'];
+                $options_info['idStatusReplyTo'] = $status_row['id'];
+            }
+        }
 
 		$is_succ = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'N', 'web@jiwai.de', $options_info);
 		if( false == $is_succ )
 			JWSession::SetInfo('error', '对不起，回复失败。');
 
-		JWTemplate::RedirectBackToLastUrl('/');
+        $matches = split('/', $_SERVER['HTTP_REFERER'], 7) ;
+        $url = 'http://' . $matches[2] .'/' . $matches[3] .'/' . $matches[4] .'/' . $matches[5];
+        JWTemplate::RedirectToUrl( $url ); 
 	}
 }
 
-function user_status($idPageUser,$idStatus)
+function user_status($idPageUser, $idStatus, $idStatusReply = null)
 {
 	//Do reply
 	reply_status( $idStatus );
@@ -118,8 +127,13 @@ $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
 		{
 			$formated_status = JWStatus::FormatStatus( $reply_info, false);
 			echo $formated_status['status'];
+            $reply_user_row = JWUser::GetUserInfo( $reply_info['idUser'] );
+            if ($reply_info['idUser'] != $logined_user_info['id'])
+                $reply_user_nameScreen_txt = '@' .$reply_user_row['nameScreen']. ' ';
+            else
+                $reply_user_nameScreen_txt = '';
 			JWTemplate::ShowStatusMetaInfo($reply_info, array(
-				'replyLinkClick' => 'javascript:scroll(0, screen.height);$("jw_status").focus();return false;',
+				'replyLinkClick' => 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$reply_info['idUser']. ';$("idStatusReplyTo").value=' .$reply_info['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;',
 			));
 		}else{
 			echo "我只和我的好友分享叽歪";
@@ -141,6 +155,20 @@ $options = array(
 	'mode' => 2,
 );
 JWTemplate::updater( $options );
+
+if( !empty($idStatusReply) )
+{
+    $reply_status_info = JWStatus::GetDbRowById( $idStatusReply );
+    if ( !empty($reply_status_info ) )
+    {
+        $reply_user_info = JWUser::GetUserInfo( $reply_status_info['idUser'] );
+        if ( $logined_user_info['id'] != $reply_status_info['idUser'] )
+            $reply_user_nameScreen_txt = '@' .$reply_user_info['nameScreen']. ' ';
+        else
+            $reply_user_nameScreen_txt = '';
+        echo '<script>scroll(0, screen.height);$("idUserReplyTo").value=' .$reply_status_info['idUser']. ';$("idStatusReplyTo").value=' .$reply_status_info['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";</script>';
+    }
+}
 ?>
 
 </div><!-- content -->

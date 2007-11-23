@@ -50,10 +50,8 @@ class JWStatus {
 		if ( empty($status) )
 			return null;
 
-		if ( ! preg_match('/^@\s*([\w\.\-\_]+)/',$status, $matches) ) {
-		    if ( ! preg_match('/^@\s*(\S+)\s+(.+)$/',$status, $matches) ) 
+		if ( false == preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			return null;
-		}
 
 		$reply_to_user = $matches[1];
 
@@ -135,18 +133,14 @@ class JWStatus {
 
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
-		if( false == empty( $idUserReplyTo ))
+		if( $idUserReplyTo )
 		{
-			$FilterMode = 0;
-			if ( preg_match('/^@\s*([\w\.\-\_]+)/', $status, $matches) )
+			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{
-				$UserInfo = JWUser::GetUserInfo( $options['idUserReplyTo'] );
-				if (false == empty($UserInfo))
-					if ($matches[1] == $UserInfo['nameScreen'] )
-						$FilterMode = 1;
+				$UserInfo = JWUser::GetUserInfo( $matches[1] );
+				if ( false == empty($UserInfo) && $UserInfo['id'] == $idUserReplyTo )
+					$status = $matches[3];
 			}
-			if (0 < $FilterMode )
-				$status = preg_replace( '/(\s*@\s*'.$matches[1].'\s+)/i', '', $status );
 		}
 
 		$is_succ= JWDB_Cache::SaveTableRow('Status', array( 
@@ -741,13 +735,13 @@ _SQL_;
 		{
 			$user = JWUser::GetUserInfo( $idUserReplyTo ) ;
 
-			if ( preg_match('/^@\s*([\w\._\-]+)/',$status,$matches) ) 
+			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{
 				$reply_to = $matches[1];
 				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
 
 				if( $reply_user['id'] == $user['id'] ) 
-					$status = preg_replace( '/^@\s*([\w\._\-]+)/', '', $status );
+					$status = preg_replace( "/^@\s*(".$user['nameScreen'].")/i", '', $status );
 			}
 
 			$status = "@$user[nameScreen] $status";
@@ -775,9 +769,7 @@ _SQL_;
 
 		$replyto = null;
 
-		if ( preg_match('/^@\s*([\w\._\-]+)/',$status,$matches) )
-			$replyto = $matches[1];
-		else if ( preg_match('/^@\s*([^\s]+)\s+(.+)/',$status,$matches) )
+		if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)/", $status, $matches ) ) 
 			$replyto = $matches[1];
 
 		$skip_url_regex = '#'.'(komoo.cn)'
@@ -847,7 +839,7 @@ _HTML_;
 
 		if( $idUserReplyTo ) {
 			$userReply = JWUser::GetUserInfo( $idUserReplyTo );
-			if( preg_match('/^@\s*([\w\._\-]+|[^\s]+)/', $status, $matches) )
+			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{    
 				$u = JWUser::GetUserInfo( $matches[1] );
 				if( $u['id'] == $idUserReplyTo ) {

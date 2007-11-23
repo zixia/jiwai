@@ -9,7 +9,7 @@ $pathParam 	= @$_REQUEST['pathParam'];
 //die(var_dump($_GET));
 
 // $pathParam is like: "/statuses/123"
-@list ($dummy,$func,$param) = split('/', $pathParam, 3);
+@list ($dummy,$func,$param,$param2) = split('/', $pathParam, 4);
 
 if ( preg_match('/^\d+$/',$nameOrId) )
 {
@@ -71,13 +71,17 @@ switch ( $func )
 		user_picture($page_user_id, $pict_size);
 		break;
 
-	case 'reply':
-		require_once(dirname(__FILE__) . "/reply.inc.php");
+	case 'thread':
+		require_once(dirname(__FILE__) . "/thread.inc.php");
 
 		if ( preg_match('/^(\d+)$/',$param,$matches) )
 		{
 			$status_id = intval($matches[1]);
-			user_status($page_user_id, $status_id);
+
+			$reply_user_id = null;
+			if ( preg_match('/^(\d+)$/',$param2,$matches) )
+				$reply_status_id = intval($matches[1]);
+			user_status($page_user_id, $status_id, $reply_status_id);
 		}
 		else
 		{

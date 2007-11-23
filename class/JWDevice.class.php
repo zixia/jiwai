@@ -403,7 +403,7 @@ _SQL_;
 		{
 			case self::SP_CHINAMOBILE: 	
 			{
-				$code = JWMobile::GetSpCode( $mobileNo, null );
+				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
 				if( false == empty( $code ) ){
 					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
@@ -411,7 +411,7 @@ _SQL_;
 			}
 			case self::SP_UNICOM:
 			{
-				$code = JWMobile::GetSpCode( $mobileNo, null );
+				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
 				if( false == empty( $code ) ){
 					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
@@ -419,7 +419,7 @@ _SQL_;
 			}
 			case self::SP_PAS:
 			{
-				$code = JWMobile::GetSpCode( $mobileNo, null );
+				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
 				if( false == empty( $code ) ){
 					return $code['code'] . $code['func'] . $code['funcPlus'];
 				}
@@ -706,7 +706,7 @@ _SQL_;
 		{
 			case 'sms':
 				if( $address ) {
-					$code = JWMobile::GetSpCode( $address, null );
+					$code = JWSPCode::GetCodeByMobileNo( $address );
 					if( false == empty( $code ) ){
 						$name = $code['code'] . $code['func'];
 					}
