@@ -157,12 +157,12 @@ class JWSms {
 					. " from mobile [$mobileNo] to service [$serviceNo]"
 					. " by link [$linkId] through [$gateId]" );
 
-        $code = JWSPCode::GetCodeByGid( $gateId );
-        if( empty( $code ) ) {
-            $gateNo = 9911;
-        }else{
-            $gateNo = $code['code'];
-        }
+		$code = JWSPCode::GetCodeByGidAndMobileNo( $gateId, $mobileNo );
+		if( empty( $code ) ) {
+			$gateNo = 9911;
+		}else{
+			$gateNo = $code['code'];
+		}
 
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($mobileNo, 'sms', $smsMsg, $gateNo.$serviceNo, $linkId);
@@ -212,16 +212,16 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		$code = JWMobile::GetSpCode( $mobileNo, $serverAddress , true);
+		$code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo );
 		if( empty( $code ) ) {
 			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt Get Invalid SpCode with ($mobileNo, $serverAddress) .");
 			return true;
 		}
 
-		$func 	= ( null == $serverAddress || 0 == $serverAddress ) ? 
-				$code['func'] . $code['funcPlus'] : substr( $serverAddress, strlen($code['code']) );
-		$gid 	= $code['gid'];
-		$appid	= 93;	// 数字，应用编号，需分配
+		$func = ( null == $serverAddress || 0 == $serverAddress ) ? 
+			$code['func'] . $code['funcPlus'] : substr( $serverAddress, strlen( $code['code']) );
+		$gid = $code['gid'];
+		$appid = 93; // 数字，应用编号，需分配
 
 		/* 	
 		 *	如果有 linkId，则使用 linkid 参数（移动、联通通用）；
@@ -233,21 +233,23 @@ class JWSms {
 			$MT_HTTP_URL = $MT_HTTP_URL_LINKID;
 
 
-		$mt_type = array('MT_TYPE_MO_FIRST' 	=> 0, // MO点播引起的第一条MT消息
-				 'MT_TYPE_MO_NOT_FIRST'	=> 1, // MO点播引起的非第一条MT消息
-				 'MT_TYPE_NO_MO'	=> 2, // 非MO点播引起的MT消息
-				 'MT_TYPE_SYSTEM'	=> 3, // 系统反馈引起的MT消息
-				);
+		$mt_type = array(
+			'MT_TYPE_MO_FIRST' => 0, // MO点播引起的第一条MT消息
+			'MT_TYPE_MO_NOT_FIRST' => 1, // MO点播引起的非第一条MT消息
+			'MT_TYPE_NO_MO' => 2, // 非MO点播引起的MT消息
+			'MT_TYPE_SYSTEM' => 3, // 系统反馈引起的MT消息
+		);
 
-		$mt_fee	= array('FEE_FREE'		 =>	0, // 免费消息
-				'FEE_NORMAL'		 =>	1, // 正常收费
-				'FEE_MONTHLY_LIST'	 =>	2, // 包月话单
-				'FEE_MONTHLY_DOWNLOAD'	 =>	3, // 包月下发
-				);
+		$mt_fee	= array(
+			'FEE_FREE' => 0, // 免费消息
+			'FEE_NORMAL' => 1, // 正常收费
+			'FEE_MONTHLY_LIST' => 2, // 包月话单
+			'FEE_MONTHLY_DOWNLOAD' => 3, // 包月下发
+		);
 
 
-		$dst	= $mobileNo;	// 数字,目的手机号 
-		$msgfmt		= 0;	// 英文，如果是中文，就去掉这个参数
+		$dst = $mobileNo;	// 数字,目的手机号 
+		$msgfmt = 0;	// 英文，如果是中文，就去掉这个参数
 
 		list($msg,$msgfmt) = self::FormatSms($smsMsg, $dst);
 
@@ -259,10 +261,10 @@ class JWSms {
 				$pid = 47;
 		}
 		
-		$moflag		= $mt_type['MT_TYPE_NO_MO'];
-		$msgtype	= $mt_fee['FEE_FREE'];
+		$moflag = $mt_type['MT_TYPE_NO_MO'];
+		$msgtype = $mt_fee['FEE_FREE'];
 		
-		$param		= 'nofilter';
+		$param = 'nofilter';
 
 		// appid=XX&gid=X&dst=1331234567&pid=XX&msg=XXX&linkid=XXX&func=XXX&moflag=X&msgtype=X 
 		$ret = true;
@@ -270,16 +272,16 @@ class JWSms {
 
 			$m = urlEncode( mb_convert_encoding($m, 'GB2312', 'UTF-8, GB2312') );
 			$rpc_url = $MT_HTTP_URL . "?appid=$appid"
-							. "&gid=$gid"
-							. "&dst=$dst"
-							. "&pid=$pid"
-							. "&msg=$m"
-							. "&linkid=$linkId"
-							. "&func=$func"
-							. "&moflag=$moflag"
-							. "&msgtype=$msgtype"
-							. "&param=$param"
-						;
+				. "&gid=$gid"
+				. "&dst=$dst"
+				. "&pid=$pid"
+				. "&msg=$m"
+				. "&linkid=$linkId"
+				. "&func=$func"
+				. "&moflag=$moflag"
+				. "&msgtype=$msgtype"
+				. "&param=$param"
+				;
 
 			if ( isset($msgfmt) )
 				$rpc_url .= "&msgfmt=$msgfmt";

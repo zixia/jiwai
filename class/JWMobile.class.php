@@ -44,7 +44,9 @@ class JWMobile {
 	/**
 	 * Get Mobile Db from mobileNo
 	 */
-	static public function GetDbRowByMobileNo( $mobileNo ) {
+	static public function GetDbRowByMobileNo( $mobileNo ) 
+	{
+		$mobileNo = strval( $mobileNo );
 
 		if( strlen( $mobileNo ) <= 10 ) 
 			return array();
@@ -63,7 +65,8 @@ class JWMobile {
 	/**
 	 * @param prenum of mobile maybe 7 or 4 len
 	 */
-	static public function GetDbRowByPreNum( $prenum ) {
+	static public function GetDbRowByPreNum( $prenum ) 
+	{
 		$sql = "SELECT * FROM Mobile WHERE prenum = '$prenum'";
 
 		$row = JWDB::GetQueryResult( $sql, false );
@@ -75,9 +78,10 @@ class JWMobile {
 	 * @param $idLocations 位置 id 数组
 	 * @param $supplier 分 MOBILE | UNICOME | PAS
 	 */
-	static public function GetDbRowsByIdLocationProvince( $idLocationProvince , $supplier = 'MOBILE' ) {
+	static public function GetDbRowsByIdLocationProvince( $idLocationProvince , $supplier = 'MOBILE' ) 
+	{
 
-        $idLocationProvince = JWDB::CheckInt( $idLocationProvince );
+		$idLocationProvince = JWDB::CheckInt( $idLocationProvince );
 
 		$sql = "SELECT * FROM Mobile WHERE idLocationProvince = $idLocationProvince AND supplier='$supplier'";
 
@@ -97,8 +101,9 @@ class JWMobile {
 	/**
 	  * 改变相应（位置，供应商）条件的改变特服号
 	  */
-	static public function UpdateCodeFunc( $idLocationProvince, $supplier='MOBILE', $forceCode = null, $forceFunc=null) {
-        $idLocationProvince = JWDB::CheckInt( $idLocationProvince );
+	static public function UpdateCodeFunc( $idLocationProvince, $supplier='MOBILE', $forceCode = null, $forceFunc=null) 
+	{
+		$idLocationProvince = JWDB::CheckInt( $idLocationProvince );
 
 		if( $forceCode == null )
 			$forceCode = 'NULL';
@@ -116,20 +121,22 @@ class JWMobile {
 	/**
 	 * Get One by id
 	 */
-	static public function GetDbRowById( $idMobile ) {
-        $idMobile = JWDB::CheckInt( $idMobile );
-        $result = self::GetDbRowsByIds( array( $idMobile ) );
+	static public function GetDbRowById( $idMobile ) 
+	{
+		$idMobile = JWDB::CheckInt( $idMobile );
+		$result = self::GetDbRowsByIds( array( $idMobile ) );
 
-        if( empty( $result ) )
-            return array();
+		if( empty( $result ) )
+			return array();
 
-        return $return[ $idMobile ];
+		return $return[ $idMobile ];
 	}
 
 	/**
 	 * Get rows by ids 
 	 */
-	static public function GetDbRowsByIds( $idMobiles ) {
+	static public function GetDbRowsByIds( $idMobiles ) 
+	{
 
 		settype( $idMobiles, 'array' ) ;
 
@@ -152,23 +159,9 @@ class JWMobile {
 		return $rtn;
 	}
 
-    static public function Create( $mobileArray = array() ) {
-        return JWDB::SaveTableRow( 'Mobile', $mobileArray );
-    }
-
-    static public function GetSpCode( $mobileNo, $serverAddress = null ) {
-        
-        $code = array();
-        if( null == $serverAddress || 0 == $serverAddress ) 
-        {
-	    $code = JWSPCode::GetCodeByMobileNo( $mobileNo, true );
-        }
-        else
-        {
-            $code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo, false );
-        }
-
-        return $code;
-    }
+	static public function Create( $mobileArray = array() ) 
+	{
+		return JWDB::SaveTableRow( 'Mobile', $mobileArray );
+	}
 }
 ?>
