@@ -958,6 +958,7 @@ __HTML__;
 
 		$status_id = $status_row['id'];
 		$reply_status_id = $status_row['idStatusReplyTo'];
+		$pre_reply_status_id = $reply_status_id;
 		$reply_user_id = $status_row['idUserReplyTo'];
 		$thread_id = $status_row['idThread'];
 
@@ -992,7 +993,7 @@ __HTML__;
 					// For Conference | In Conference wont reply to conference User;
 					if( $reply_user == null ) {
 						$reply_user = $thread_user;
-						$reply_status_id = $thread_id;
+						$pre_reply_status_id = $thread_id;
 					}
 				}
 			}
@@ -1022,7 +1023,7 @@ __HTML__;
 		{
 			$replyLink = "/$reply_name_url/thread/$reply_status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
-			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$reply_status_id";
+			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$pre_reply_status_id";
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
