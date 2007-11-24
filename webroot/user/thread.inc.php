@@ -96,8 +96,8 @@ JWTemplate::html_head($head_options);
 <?php
 JWTemplate::ShowActionResultTips();
 JWTemplate::StatusHead($idPageUser, $user_row, $status_info, $options = array('isMyPages' => false), false==$protected );
-$replies_info = JWStatus::GetDbRowsByThread($status_info['id']);
 $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
+$replies_info = JWStatus::GetDbRowsByThread($status_info['id'], $countReply);
 ?>
 
  <!-- wtTimeline start -->
