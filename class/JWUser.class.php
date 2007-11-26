@@ -832,7 +832,9 @@ _SQL_;
 	{
 		$admin_user_db_row = JWUser::GetUserInfo('adm');
 
-		if ( $admin_user_db_row['idUser']==$idUser )
+		if ( 		1==$idUser	// zixia
+				|| 89==$idUser	// seek
+				|| $admin_user_db_row['idUser']==$idUser )
 			return true;
 
 		return false;
