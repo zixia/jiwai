@@ -95,7 +95,7 @@ class JWRobotLingoReply {
 			'REPLY_GM_HOT' => '哇，你要修改的账户名 {0} 太热，请重新选择一个吧。',
 			'REPLY_REG_500'  => '哎呀！由于系统故障，你的请求失败了…… 请稍后再试吧。',
 			'REPLY_REG_REPLY_SUC' => '你好，你已经完成了注册，你的用户名是 {0}',
-			'REPLY_CREATE_USER_FIRST' => '恭喜您成功获得用户名 {0} ！改名请回复 GM+空格+新用户名',
+			'REPLY_CREATE_USER_FIRST' => '恭喜你成功获得用户名 {0} ！改名请回复 GM+空格+新用户名，设置密码请回复 PASS+空格+密码',
 
 			'REPLY_NOREG_TIPS' => '你还没有注册，请回复你想要的账户名。',
 
@@ -154,7 +154,7 @@ class JWRobotLingoReply {
 			'REPLY_UNBLOCK_SUC' => '你取消了阻止用户 {0}',
 
 			//PASS
-			'REPLY_PASS_SUC' => '你好，{0} 你的新密码是：{1} 到 http://JiWai.de/wo/login 上登录去吧',
+			'REPLY_PASS_SUC' => '你好，{0} 你设置的密码是：{1} ，网页登录请到 http://JiWai.de/wo/login',
 			'REPLY_PASS_HELP' => '设定新密码 请使用 PASS+空格+新密码',
 
 			//Merge
