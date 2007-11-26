@@ -55,9 +55,6 @@ class JWTemplate {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 _HTML_;
-		if( substr(@$_SERVER['SERVER_NAME'],0,5) == 'jiwai' && JWRequest::IsWapBrowser() ) {
-			JWSession::SetInfo( 'notice', '手机WAP浏览器，请访问：http://m.JiWai.de/' );
-		}
 	}
 
 	static public function html_head( $options=null )
