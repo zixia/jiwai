@@ -101,7 +101,7 @@ class JWPlugins_Yupoo{
 	static public function BuildPhotoUrl( $photoInfo ) 
 	{
 		if ( false == empty($photoInfo) )
-			$photoUrl = 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.'.$photoInfo['originalformat'];
+			$photoUrl = 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.jpg';
 		else
 			return null;
 
