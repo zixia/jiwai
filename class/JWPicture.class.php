@@ -292,6 +292,9 @@ _SQL_;
 		if( false == in_array( $type, array('ICON', 'MMS' ) ))
 			return false;
 
+		if( $type == 'MMS' && false == isset( $thumbs['middle'] ) )
+			array_push( $thumbs, 'middle' );
+
 		if ( ! preg_match('#(?P<file_name>[^/]+)\.(?P<file_ext>[^.]+)$#', $absFilePathName, $matches) )
 		{
 			unlink ( $absFilePathName );
@@ -362,6 +365,11 @@ _SQL_;
 						$ret = self::ConvertPictureBig( $absFilePathName, $convert_path_name );
 						break;
 					}
+				case 'middle':
+					{
+						$ret = self::ConvertPictureMiddle( $absFilePathName, $convert_path_name );
+						break;
+					}
 				case 'thumb48':
 					{
 						$ret = self::ConvertThumbnail48( $absFilePathName, $convert_path_name );
@@ -422,6 +430,27 @@ convert $srcFile \\
   -coalesce \\
   -auto-orient \\
   -thumbnail '500x>' \\
+  $dstFile
+_CMD_;
+		if ( false===system($cmd,$ret) )
+			return false;
+
+		return 0===$ret;
+	}
+
+	static public function ConvertPictureMiddle($srcFile, $dstFile)
+	{
+		$srcFile = escapeshellarg($srcFile);
+		$dstFile = escapeshellarg($dstFile);
+
+		/*
+		 *	-coalesce 方式gif缩小的时候出现问题。http://wiki.flux-cms.org/display/BLOG/Resizing+animated+GIFs+with+ImageMagick
+		 */
+		$cmd = <<<_CMD_
+convert $srcFile \\
+  -coalesce \\
+  -auto-orient \\
+  -thumbnail '240x>' \\
   $dstFile
 _CMD_;
 		if ( false===system($cmd,$ret) )
@@ -693,17 +722,5 @@ _CMD_;
 
 		return $picture_id;
 	}
-
-	static public function GetMMSNum($idUser)
-	{
-		return JWStatus::GetStatusMmsNum( $idUser );
-		$idUser = JWDB::CheckInt( $idUser );
-		$sql = "SELECT COUNT(1) AS num FROM Picture WHERE idUser=$idUser AND class='MMS'";
-		$row = JWDB::GetQueryResult( $sql );
-		if( empty($row) )
-			return 0;
-		return $row['num'];
-	}
-
 }
 ?>

@@ -2464,7 +2464,7 @@ _HTML_;
 
 			$odd_even = ($n++ % 2) ? 'odd' : 'even';
 			$statusNum = JWStatus::GetStatusNum( $list_user_id );
-			$mmsNum = JWPicture::GetMMSNum( $list_user_id );
+			$mmsNum = JWStatus::GetStatusMmsNum( $list_user_id );
 		
 			$timeUpdate = $list_user_row['timeStamp'];
 
