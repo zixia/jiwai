@@ -63,13 +63,13 @@ switch ( $active_tab )
 		if( $page_user_info['idConference'] ) {
 			//论坛模式用户
 			$user_status_num	= JWStatus::GetStatusNumFromConference($page_user_info['idConference']);
-			$pagination		= new JWPagination($user_status_num-1, $page );
-			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+			$pagination		= new JWPagination($user_status_num, $page );
+			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		}else{
 			// 显示用户自己的
 			$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
-			$pagination		= new JWPagination($user_status_num-1, $page);
-			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+			$pagination		= new JWPagination($user_status_num, $page);
+			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		}
 		break;
 
@@ -120,9 +120,9 @@ $status_data['user_ids'][] = $page_user_id;
 $user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
 
 if( $page_user_info['idConference'] ) {
-	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 0 );
+	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
 }else{
-	$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 0 );
+	$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
 }
 $head_status_rows 	= JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
 $head_status_id 	= @array_shift($head_status_data['status_ids']); 
