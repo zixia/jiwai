@@ -660,8 +660,8 @@ _HTML_;
 
 					   <p class="t-text"><?php echo $status;?></p>
 <?php if( $isOpen ) { 
-	$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
-		JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
+	$reply_user_row = ( $statusRow['idUserReplyTo'] ) ?
+		JWUser::GetUserInfo( $statusRow['idUserReplyTo'] ) : null;
     if ($userRow['id'] != $current_user_id)
         $reply_user_nameScreen_txt = '@' .$userRow['nameScreen']. ' ';
     else

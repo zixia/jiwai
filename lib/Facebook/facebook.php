@@ -3,7 +3,7 @@
 // +---------------------------------------------------------------------------+
 // | Facebook Platform PHP5 client                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2007 Facebook, Inc.                                         | 
+// | Copyright (c) 2007 Facebook, Inc.                                         |
 // | All rights reserved.                                                      |
 // |                                                                           |
 // | Redistribution and use in source and binary forms, with or without        |
@@ -56,8 +56,8 @@ class Facebook {
       $this->api_client->added = $this->fb_params['added'];
     }
   }
-  
-  public function validate_fb_params() {    
+
+  public function validate_fb_params() {
     $this->fb_params = $this->get_valid_fb_params($_POST, 48*3600, 'fb_sig');
     if (!$this->fb_params) {
       $this->fb_params = $this->get_valid_fb_params($_GET, 48*3600, 'fb_sig');

@@ -3,7 +3,7 @@
 // +---------------------------------------------------------------------------+
 // | Facebook Platform PHP5 client                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2007 Facebook, Inc.                                         | 
+// | Copyright (c) 2007 Facebook, Inc.                                         |
 // | All rights reserved.                                                      |
 // |                                                                           |
 // | Redistribution and use in source and binary forms, with or without        |
@@ -40,9 +40,9 @@ class FacebookRestClient {
 
   /**
    * Create the client.
-   * @param string $session_key if you haven't gotten a session key yet, leave 
-   *                            this as null and then set it later by just 
-   *                            directly accessing the $session_key member 
+   * @param string $session_key if you haven't gotten a session key yet, leave
+   *                            this as null and then set it later by just
+   *                            directly accessing the $session_key member
    *                            variable.
    */
   public function __construct($api_key, $secret, $session_key=null) {
@@ -73,7 +73,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Returns the session information available after current user logs in.
-   * @param string $auth_token the token returned by auth_createToken or 
+   * @param string $auth_token the token returned by auth_createToken or
    *  passed back to your callback_url.
    * @return assoc array containing session_key, uid
    */
@@ -89,13 +89,13 @@ function toggleDisplay(id, type) {
 
   /**
    * Returns events according to the filters specified.
-   * @param int $uid Optional: User associated with events.  
+   * @param int $uid Optional: User associated with events.
    *   A null parameter will default to the session user.
    * @param array $eids Optional: Filter by these event ids.
    *   A null parameter will get all events for the user.
-   * @param int $start_time Optional: Filter with this UTC as lower bound.  
+   * @param int $start_time Optional: Filter with this UTC as lower bound.
    *   A null or zero parameter indicates no lower bound.
-   * @param int $end_time Optional: Filter with this UTC as upper bound. 
+   * @param int $end_time Optional: Filter with this UTC as upper bound.
    *   A null or zero parameter indicates no upper bound.
    * @param string $rsvp_status Optional: Only show events where the given uid
    *   has this rsvp status.  This only works if you have specified a value for
@@ -108,7 +108,7 @@ function toggleDisplay(id, type) {
         array(
         'uid' => $uid,
         'eids' => $eids,
-        'start_time' => $start_time, 
+        'start_time' => $start_time,
         'end_time' => $end_time,
         'rsvp_status' => $rsvp_status));
   }
@@ -136,7 +136,7 @@ function toggleDisplay(id, type) {
       array('query' => $query));
   }
 
-  public function feed_publishStoryToUser($title, $body, 
+  public function feed_publishStoryToUser($title, $body,
                                           $image_1=null, $image_1_link=null,
                                           $image_2=null, $image_2_link=null,
                                           $image_3=null, $image_3_link=null,
@@ -153,8 +153,8 @@ function toggleDisplay(id, type) {
             'image_4' => $image_4,
             'image_4_link' => $image_4_link));
   }
-                                          
-  public function feed_publishActionOfUser($title, $body, 
+
+  public function feed_publishActionOfUser($title, $body,
                                            $image_1=null, $image_1_link=null,
                                            $image_2=null, $image_2_link=null,
                                            $image_3=null, $image_3_link=null,
@@ -173,7 +173,7 @@ function toggleDisplay(id, type) {
   }
 
   public function feed_publishTemplatizedAction($actor_id, $title_template, $title_data,
-                                                $body_template, $body_data, $body_general, 
+                                                $body_template, $body_data, $body_general,
                                                 $image_1=null, $image_1_link=null,
                                                 $image_2=null, $image_2_link=null,
                                                 $image_3=null, $image_3_link=null,
@@ -204,14 +204,14 @@ function toggleDisplay(id, type) {
    * @param array $uids2: array of ids (id_A, id_B,...) of SAME length X
    * @return array of uid pairs with bool, true if pair are friends, e.g.
    *   array( 0 => array('uid1' => id_1, 'uid2' => id_A, 'are_friends' => 1),
-   *          1 => array('uid1' => id_2, 'uid2' => id_B, 'are_friends' => 0) 
+   *          1 => array('uid1' => id_2, 'uid2' => id_B, 'are_friends' => 0)
    *         ...)
    */
   public function friends_areFriends($uids1, $uids2) {
     return $this->call_method('facebook.friends.areFriends',
         array('uids1'=>$uids1, 'uids2'=>$uids2));
   }
-  
+
   /**
    * Returns the friends of the current session user.
    * @return array of friends
@@ -222,7 +222,7 @@ function toggleDisplay(id, type) {
     }
     return $this->call_method('facebook.friends.get', array());
   }
-  
+
   /**
    * Returns the friends of the session user, who are also users
    * of the calling application.
@@ -234,7 +234,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Returns groups according to the filters specified.
-   * @param int $uid Optional: User associated with groups.  
+   * @param int $uid Optional: User associated with groups.
    *  A null parameter will default to the session user.
    * @param array $gids Optional: group ids to query.
    *   A null parameter will get all groups for the user.
@@ -250,7 +250,7 @@ function toggleDisplay(id, type) {
   /**
    * Returns the membership list of a group
    * @param int $gid : Group id
-   * @return assoc array of four membership lists, with keys 
+   * @return assoc array of four membership lists, with keys
    *  'members', 'admins', 'officers', and 'not_replied'
    */
   public function groups_getMembers($gid) {
@@ -260,8 +260,8 @@ function toggleDisplay(id, type) {
 
   /**
    * Returns the outstanding notifications for the session user.
-   * @return assoc array of 
-   *  notification count objects for 'messages', 'pokes' and 'shares', 
+   * @return assoc array of
+   *  notification count objects for 'messages', 'pokes' and 'shares',
    *  a uid list of 'friend_requests', a gid list of 'group_invites',
    *  and an eid list of 'event_invites'
    */
@@ -270,43 +270,84 @@ function toggleDisplay(id, type) {
   }
 
   /**
-   * Sends an email notification to the specified user.
-   * @return string url which you should send the logged in user to to finalize the message.
+   * Sends a notification to the specified users.
+   * @return (nothing)
    */
-  public function notifications_send($to_ids, $notification, $email='') {
+  public function notifications_send($to_ids, $notification) {
     return $this->call_method('facebook.notifications.send',
-                              array('to_ids' => $to_ids, 'notification' => $notification, 'email' => $email));
+                              array('to_ids' => $to_ids, 'notification' => $notification));
   }
 
   /**
-   * Sends a request to the specified user (e.g. "you have 1 event invitation")
-   * @param array $to_ids   user ids to receive the request (must be friends with sender, capped at 10)
-   * @param string $type    type of request, e.g. "event" (as in "You have an event invitation.")
-   * @param string $content fbml content of the request.  really stripped down fbml - just
-   *                        text/names/links.  also, use the special tag <fb:req-choice url="" label="" />
-   *                        to specify the buttons to be included.
-   * @param string $image   url of an image to show beside the request
-   * @param bool   $invite  whether to call it an "invitation" or a "request"
-   * @return string url which you should send the logged in user to to finalize the message.
+   * Sends an email to the specified user of the application.
+   * @param array $recipients : id of the recipients
+   * @param string $subject : subject of the email
+   * @param string $text : (plain text) body of the email
+   * @param string $fbml : fbml markup if you want an html version of the email
+   * @return comma separated list of successful recipients
    */
-  public function notifications_sendRequest($to_ids, $type, $content, $image, $invite) {
-    return $this->call_method('facebook.notifications.sendRequest',
-                              array('to_ids' => $to_ids, 'type' => $type, 'content' => $content,
-                                    'image' => $image, 'invite' => $invite));
+  public function notifications_sendEmail($recipients, $subject, $text, $fbml) {
+    return $this->call_method('facebook.notifications.sendEmail',
+                              array('recipients' => $recipients,
+                                    'subject' => $subject,
+                                    'text' => $text,
+                                    'fbml' => $fbml));
+  }
+
+  /**
+   * Returns the requested info fields for the requested set of pages
+   * @param array $page_ids an array of page ids
+   * @param array $fields an array of strings describing the info fields desired
+   * @param int $uid   Optionally, limit results to pages of which this user is a fan.
+   * @param string type  limits results to a particular type of page.
+   * @return array of pages
+   */
+  public function pages_getInfo($page_ids, $fields, $uid, $type) {
+    return $this->call_method('facebook.pages.getInfo', array('page_ids' => $page_ids, 'fields' => $fields, 'uid' => $uid, 'type' => $type));
+  }
+
+  /**
+   * Returns true if logged in user is an admin for the passed page 
+   * @param int $page_id target page id
+   * @return boolean
+   */
+  public function pages_isAdmin($page_id) {
+    return $this->call_method('facebook.pages.isAdmin', array('page_id' => $page_id));
+  }
+
+  /**
+   * Returns whether or not the page corresponding to the current session object has the app installed
+   * @return boolean
+   */
+  public function pages_isAppAdded() {
+    if (isset($this->added)) {
+      return $this->added;
+    }
+    return $this->call_method('facebook.pages.isAppAdded', array());
+  }
+
+  /**
+   * Returns true if logged in user is a fan for the passed page 
+   * @param int $page_id target page id
+   * @param int $uid user to compare.  If empty, the logged in user.
+   * @return bool
+   */
+  public function pages_isFan($page_id, $uid) {
+    return $this->call_method('facebook.pages.isFan', array('page_id' => $page_id, 'uid' => $uid));
   }
 
   /**
    * Returns photos according to the filters specified.
    * @param int $subj_id Optional: Filter by uid of user tagged in the photos.
-   * @param int $aid Optional: Filter by an album, as returned by 
+   * @param int $aid Optional: Filter by an album, as returned by
    *  photos_getAlbums.
-   * @param array $pids Optional: Restrict to a list of pids 
-   * Note that at least one of these parameters needs to be specified, or an 
+   * @param array $pids Optional: Restrict to a list of pids
+   * Note that at least one of these parameters needs to be specified, or an
    * error is returned.
    * @return array of photo objects.
    */
   public function photos_get($subj_id, $aid, $pids) {
-    return $this->call_method('facebook.photos.get', 
+    return $this->call_method('facebook.photos.get',
       array('subj_id' => $subj_id, 'aid' => $aid, 'pids' => $pids));
   }
 
@@ -319,7 +360,7 @@ function toggleDisplay(id, type) {
    * @returns an array of album objects.
    */
   public function photos_getAlbums($uid, $aids) {
-    return $this->call_method('facebook.photos.getAlbums', 
+    return $this->call_method('facebook.photos.getAlbums',
       array('uid' => $uid,
             'aids' => $aids));
   }
@@ -331,13 +372,13 @@ function toggleDisplay(id, type) {
    *  and two floating-point numbers (xcoord, ycoord) for tag pixel location
    */
   public function photos_getTags($pids) {
-    return $this->call_method('facebook.photos.getTags', 
+    return $this->call_method('facebook.photos.getTags',
       array('pids' => $pids));
   }
 
   /**
    * Returns the requested info fields for the requested set of users
-   * @param array $uids an array of user ids 
+   * @param array $uids an array of user ids
    * @param array $fields an array of strings describing the info fields desired
    * @return array of users
    */
@@ -349,14 +390,14 @@ function toggleDisplay(id, type) {
    * Returns the user corresponding to the current session object.
    * @return integer uid
    */
-  public function users_getLoggedInUser(){
+  public function users_getLoggedInUser() {
     return $this->call_method('facebook.users.getLoggedInUser', array());
   }
 
-  
-  /** 
-   * Returns whether or not the user corresponding to the current session object has the app installed 
-   * @return boolean 
+
+  /**
+   * Returns whether or not the user corresponding to the current session object has the app installed
+   * @return boolean
    */
   public function users_isAppAdded() {
     if (isset($this->added)) {
@@ -367,11 +408,19 @@ function toggleDisplay(id, type) {
 
   /**
    * Sets the FBML for the profile of the user attached to this session
-   * @param   string   $markup     The FBML that describes the profile presence of this app for the user 
+   * @param   string   $markup           The FBML that describes the profile presence of this app for the user
+   * @param   int      $uid              The user
+   * @param   string   $profile          Profile FBML
+   * @param   string   $profile_action   Profile action FBML
+   * @param   string   $mobile_profile   Mobile profile FBML
    * @return  array    A list of strings describing any compile errors for the submitted FBML
    */
-  public function profile_setFBML($markup, $uid = null) {
-    return $this->call_method('facebook.profile.setFBML', array('markup' => $markup, 'uid' => $uid));
+  function profile_setFBML($markup, $uid = null, $profile='', $profile_action='', $mobile_profile='') {
+    return $this->call_method('facebook.profile.setFBML', array('markup' => $markup,
+                                                                'uid' => $uid,
+                                                                'profile' => $profile,
+                                                                'profile_action' => $profile_action,
+                                                                'mobile_profile' => $mobile_profile));
   }
 
   public function profile_getFBML($uid) {
@@ -441,30 +490,30 @@ function toggleDisplay(id, type) {
    * @return bool       True on success
    */
   function marketplace_removeListing($listing_id, $status='DEFAULT') {
-    return $this->call_method('facebook.marketplace.removeListing', 
-                              array('listing_id'=>$listing_id, 
+    return $this->call_method('facebook.marketplace.removeListing',
+                              array('listing_id'=>$listing_id,
                                     'status'=>$status));
   }
 
   /**
    * Create/modify a Marketplace listing for the loggedinuser
-   * 
+   *
    * @param int              listing_id   The id of a listing to be modified, 0 for a new listing.
    * @param show_on_profile  bool         Should we show this listing on the user's profile
-   * @param attrs            array        An array of the listing data
+   * @param listing_attrs    array        An array of the listing data
    * @return                 int          The listing_id (unchanged if modifying an existing listing)
    */
   function marketplace_createListing($listing_id, $show_on_profile, $attrs) {
-    return $this->call_method('facebook.marketplace.createListing', 
-                              array('listing_id'=>$listing_id, 
-                                    'show_on_profile'=>$show_on_profile, 
-                                    'attrs'=>json_encode($attrs)));
+    return $this->call_method('facebook.marketplace.createListing',
+                              array('listing_id'=>$listing_id,
+                                    'show_on_profile'=>$show_on_profile,
+                                    'listing_attrs'=>json_encode($attrs)));
   }
 
 
   /////////////////////////////////////////////////////////////////////////////
   // Data Store API
-  
+
   /**
    * Set a user preference.
    *
@@ -487,7 +536,7 @@ function toggleDisplay(id, type) {
    * Set a user's all preferences for this application.
    *
    * @param  values     preferece values in an associative arrays
-   * @param  replace    whether to replace all existing preferences or 
+   * @param  replace    whether to replace all existing preferences or
    *                    merge into them.
    * @error
    *    API_EC_DATA_DATABASE_ERROR
@@ -609,7 +658,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_defineObjectProperty($obj_type, $prop_name, $prop_type){
+  public function data_defineObjectProperty($obj_type, $prop_name, $prop_type) {
     return $this->call_method
       ('facebook.data.defineObjectProperty',
        array('obj_type' => $obj_type,
@@ -619,7 +668,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Remove a previously defined property from an object type.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  prop_name     name of the property to remove
    * @error
@@ -640,7 +689,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Rename a previously defined property of an object type.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  prop_name     name of the property to rename
    * @param  new_name      new name to use
@@ -700,7 +749,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Create a new object.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  properties    (optional) properties to set initially
    * @return               newly created object's id
@@ -871,7 +920,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Read hash value by key.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  key           hash key
    * @param  prop_name     (optional) individual property's name
@@ -894,7 +943,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Write hash value by key.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  key           hash key
    * @param  value         hash value
@@ -918,7 +967,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Increase a hash value by specified increment atomically.
-   * 
+   *
    * @param  obj_type      object type's name
    * @param  key           hash key
    * @param  prop_name     individual property's name
@@ -1009,7 +1058,7 @@ function toggleDisplay(id, type) {
              'assoc_info2' => json_encode($assoc_info2),
              'inverse' => $inverse));
   }
-  
+
   /**
    * Undefine an object association.
    *
@@ -1055,7 +1104,7 @@ function toggleDisplay(id, type) {
              'new_alias1' => $new_alias1,
              'new_alias2' => $new_alias2));
   }
-  
+
   /**
    * Get definition of an object association.
    *
@@ -1074,7 +1123,7 @@ function toggleDisplay(id, type) {
       ('facebook.data.getAssociationDefinition',
        array('name' => $name));
   }
-  
+
   /**
    * Get definition of all associations.
    *
@@ -1093,7 +1142,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Create or modify an association between two objects.
-   * 
+   *
    * @param  name        name of association
    * @param  obj_id1     id of first object
    * @param  obj_id2     id of second object
@@ -1120,7 +1169,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Create or modify associations between objects.
-   * 
+   *
    * @param  assocs      associations to set
    * @param  name        (optional) name of association
    * @error
@@ -1140,7 +1189,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Remove an association between two objects.
-   * 
+   *
    * @param  name        name of association
    * @param  obj_id1     id of first object
    * @param  obj_id2     id of second object
@@ -1155,14 +1204,14 @@ function toggleDisplay(id, type) {
   public function data_removeAssociation($name, $obj_id1, $obj_id2) {
     return $this->call_method
       ('facebook.data.removeAssociation',
-       array('name' => $name, 
+       array('name' => $name,
              'obj_id1' => $obj_id1,
              'obj_id2' => $obj_id2));
   }
 
   /**
    * Remove associations between objects by specifying pairs of object ids.
-   * 
+   *
    * @param  assocs      associations to remove
    * @param  name        (optional) name of association
    * @error
@@ -1182,7 +1231,7 @@ function toggleDisplay(id, type) {
 
   /**
    * Remove associations between objects by specifying one object id.
-   * 
+   *
    * @param  name        name of association
    * @param  obj_id      who's association to remove
    * @error
@@ -1220,7 +1269,7 @@ function toggleDisplay(id, type) {
   public function data_getAssociatedObjects($name, $obj_id, $no_data = true) {
     return $this->call_method
       ('facebook.data.getAssociatedObjects',
-       array('name' => $name, 
+       array('name' => $name,
              'obj_id' => $obj_id,
              'no_data' => $no_data));
   }
@@ -1385,7 +1434,7 @@ function toggleDisplay(id, type) {
       return $arr;
     } else {
       return (string)$sxml;
-    } 
+    }
   }
 }
 
@@ -1446,7 +1495,7 @@ class FacebookAPIErrorCodes {
   const API_EC_DATA_OBJECT_NOT_FOUND = 803;
   const API_EC_DATA_OBJECT_ALREADY_EXISTS = 804;
   const API_EC_DATA_DATABASE_ERROR = 805;
- 
+
   public static $api_error_descriptions = array(
       API_EC_SUCCESS           => 'Success',
       API_EC_UNKNOWN           => 'An unknown error occurred',
@@ -1510,11 +1559,11 @@ $profile_field_array = array(
     "quotes",
     "relationship_status",
     "religion",
-    "sex", 
+    "sex",
     "significant_other_id",
     "status",
     "timezone",
     "tv",
-    "wall_count", 
+    "wall_count",
     "work_history");
 ?>

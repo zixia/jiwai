@@ -56,7 +56,8 @@ function bind() {
 }
 
 function verify() {
-	global $facebook;
+	global $facebook, $idUser;
+	if (!$idUser) {
 ?>
 		<fb:editor action="?bind">
 			<fb:editor-text label="登录名" name="username" value=""/>
@@ -65,8 +66,21 @@ function verify() {
 				<fb:editor-button value="关联叽歪帐号"/>
 			</fb:editor-buttonset>
 		</fb:editor>
+<?php
+	} else {
+?>
 		<fb:editor action="?bind">
-			<a href="<?php echo JWFacebook::GetPermUrl('status_update'); ?>">让叽歪更新我的Facebook状态</a>
+			<div style="text-align:center;">
+				叽歪帐号已经关联，取消关联或绑定其他帐号请访问<a href="http://jiwai.de/wo/devices/im">叽歪设置页</a>。
+			</div>
+		</fb:editor>
+<?php
+	}
+?>
+		<fb:editor action="?bind">
+			<div style="text-align:center;">
+				<a href="<?php echo JWFacebook::GetPermUrl('status_update'); ?>">让叽歪更新我的Facebook状态</a>
+			</div>
 		</fb:editor>
 <?php
 }

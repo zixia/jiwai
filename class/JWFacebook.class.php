@@ -49,7 +49,10 @@ class JWFacebook extends Facebook {
 	}
 	function SetStatus($status) {
 		try {
-			$this->api_client->call_method('facebook.users.setStatus', array('status' => $status));
+			$this->api_client->call_method('facebook.users.setStatus', array(
+				'status' => $status,
+				'clear' => empty($status),
+				'status_includes_verb' => true));
 		} catch (Exception $e) {
 		}
 	}
