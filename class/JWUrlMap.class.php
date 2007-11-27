@@ -33,7 +33,7 @@ class JWUrlMap
 		return self::$msInstance;
 	}
 
-	static public function create( $srcUrl=null, $destUrl=null, $metaInfo=array(), $options=array() )
+	static public function Create( $srcUrl=null, $destUrl=null, $metaInfo=array(), $options=array() )
 	{
 		$type = isset( $options['type'] ) ? $options['type'] : 'photo';
 		$idPartner = isset( $options['idPartner'] ) ? $options['idPartner'] : null;

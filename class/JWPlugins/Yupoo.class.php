@@ -54,7 +54,7 @@ class JWPlugins_Yupoo{
 		if( false==empty($v) ) 
 		{
 			JWUrlMap::Create( null, $url, $v, array( 'type'=>'photo', ) );
-			$mecache->set( $mc_key, $v );
+			$memcache->set( $mc_key, $v );
 		}
 		return $v;
 	}

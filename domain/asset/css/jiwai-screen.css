@@ -119,6 +119,7 @@ a:hover {color:#F87A01;}
 #permalink .meta {color:#929292; font-size:12px;padding:5px 0 8px 5px;}
 #permalink .meta a:link,#permalink .meta a:visited {color:#D05D02;text-decoration:none;}
 #permalink .meta a:hover,#wtTimeline .meta a:active {color:#009BC7;text-decoration:underline;}
+#wtTimeline .pic { border:1px solid #999999; background-color:#000000; padding:4px; width:auto; margin:5px 0 0px 0;}
 #permalink .reply {color:#009BC7; font-size:12px;}
 #permalink .reply a:link,#permalink .reply a:visited {color:#009BC7;text-decoration:underline;}
 #permalink .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
