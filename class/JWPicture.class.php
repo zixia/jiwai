@@ -583,6 +583,7 @@ _CMD_;
 
 			case 'origin': // let JWFile choose 
 			case 'picture': // let JWFile choose 
+			case 'middle':
 			case 'thumb96':// let JWFile choose 
 			case 'thumb48':
 			//case 'thumb24':

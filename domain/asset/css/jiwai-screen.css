@@ -235,22 +235,6 @@ html>body #content .tabMenu {margin-top:19px;}
 #content .line {height:1px; overflow:hidden; background-color:#DDE0E3; margin:0 auto; clear:both; width:500px;}
 .odd .head {float:left; width:64px; overflow:hidden; height:62px;}
 .odd .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
-
-.normal .wapnew .odd {border:1px solid #FFCFA8; margin:11px 17px; padding:8px; min-height:140px;}
-.normal .wapnew .odd .head { width:160px; height:140px; }
-.normal .wapnew .odd .meta { line-height:30px;}
-.normal .wapnew .odd .head img{ width:149px; }
-.normal .wapnew .odd .cont .action {text-align:right;}
-.normal .wapnew .odd .cont .action a {padding-left:18px; font-size:12px; margin-left:5px;}
-.normal .wapnew .odd .cont .action .fav {background:url(../images/org-icon-fav.gif) no-repeat left;}
-.normal .wapnew .odd .cont .action .del {background:url(../images/org-icon-del.gif) no-repeat left;}
-.normal .wapnew .odd .cont .action .mark {background: url(../images/org-icon-mark.gif) no-repeat left;}
-.normal .wapnew .odd .cont {border:none; padding-bottom:0;}
-.normal .wapnew .odd .cont .bg  {display:none;}
-.normal .wapnew .name {text-align:right;}
-.normal .wapnew .name a {float:left;}
-.normal .wapnew .cont .edit { line-height:90px;}
-.normal .wapnew .cont textarea {border-bottom:1px solid #E4E4E4; border-left:1px solid #CFCFCF; border-top:1px solid #929292; border-right:1px solid #CFCFCF; width:100%; height:49px; }
 .odd .name {color:#009BC7; padding:0 0 0 0; font-size:12px;}
 .odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden;}
 .normal .odd .cont { border:1px solid #FFCFA8; padding:5px 6px 6px 6px; background-color:#ffffff;}

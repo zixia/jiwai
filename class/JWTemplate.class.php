@@ -776,7 +776,7 @@ _HTML_;
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 		if (!$options['strip']) {
 ?>
-<div id="wtTimeline" <?php echo ($options['isMms']) ? 'class="wapnew"':'' ?>>
+<div id="wtTimeline">
 <?php
 		}
 		$n=0;
@@ -825,17 +825,20 @@ _HTML_;
 
 			$duration = JWStatus::GetTimeDesc($timeCreate);
 
-			if ( !empty($statusRows[$status_id]['idPicture']) ) {
-				if( $options['isMms'] ) {
-					$photo_row = JWPicture::GetDbRowById( $statusRows[$status_id]['idPicture'] );
-					$photo_subject = $photo_row['fileName'];
-					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture'], 'picture');
-				} else {
-					$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
-				}
-			} else {
+			if ( $statusRows[$status_id]['isMms'] == 'Y' ) 
+			{
+				$photo_url = JWPicture::GetUserIconUrl( $statusRows[$status_id]['idUser'], 'thumb48' );
+			}
+			else if ( !empty($statusRows[$status_id]['idPicture']) ) 
+			{
+				$photo_url = JWPicture::GetUrlById($statusRows[$status_id]['idPicture']);
+			}
+			else 
+			{
 				$photo_url = JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif');
 			}
+
+			$picture_row = JWPlugins::GetInfo( $statusRows[$status_id] );
 	
 			$deviceName = JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
 
@@ -844,6 +847,7 @@ _HTML_;
 			$replyto = $formated_status['replyto'];
 			$replytoname = $formated_status['replytoname'];
 			$status = $formated_status['status'];
+
 			if ($n) { //分割线
 ?>
 <div class="line"></div>
@@ -851,35 +855,6 @@ _HTML_;
 			}
 			$n++;
 
-			if( $options['isMms'] ) {
-?>
-
-<div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head">
-		<a href="/<?php echo $name_url;?>/mms/<?php echo $status_id;?>"><img title="<?php echo $photo_subject;?>" src="<?php echo $photo_url;?>"/></a>
-		<div class="meta"><?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?>来自彩信</div>
-	</div>
-	<div class="cont">
-		<div class="bg"></div>
-		<div class="name"><a href="/<?php echo $name_url;?>/" title="<?php echo $name_full;?>"><?php echo $name_full;?></a><span class="meta">拍摄时间：<?php echo substr($statusRows[$status_id]['timeCreate'],0,16);?><span id="status_actions_6361924"></span></span></div>
-		<?php echo $status; ?>
-		<div class="action">
-<?php
-	if ( ( $current_user_id==$user_id || JWUser::IsAdmin($current_user_id) ) 
-			&& $options['trash'] ) {
-		echo self::TrashAction($status_id);
-	}
-	if( $current_user_id ) {
-		$is_fav	= JWFavourite::IsFavourite($current_user_id,$status_id);
-		echo self::FavouriteAction($status_id,$is_fav);
-	}
-?>
-		</div>
-	</div>
-</div>
-
-<?php
-			}else{
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
 	<div class="head"><a href="/<?php echo $name_url;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
@@ -887,15 +862,16 @@ _HTML_;
 		<div class="bg"></div>
 		<?php echo $status; ?><br />
 		<?php 
+			if( false==empty($picture_row) )
+			{
+				echo '<a href="' .$picture_row['href']. '" target="_blank"><img src="' .$picture_row['src']. '" title="叽歪图片" class="pic"/></a>';
+			}
 			$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 				JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
 			self::ShowStatusMetaInfo( $statusRows[$status_id] );
 		?>
 	</div><!-- cont -->
 </div><!-- odd -->
-<?php
-			}
-?>
 <?php 
 		}
 		if ($options['search'] || ( $options['pagination'] && ( $options['pagination']->IsShowNewer() || $options['pagination']->IsShowOlder() ) ) ) {
