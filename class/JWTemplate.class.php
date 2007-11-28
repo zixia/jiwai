@@ -1354,6 +1354,25 @@ _HTML_;
 	 */
 	static function sidebar_announce($options)
 	{
+		if ( empty($options['title']) )
+			$title = '公告';
+		else
+			$title = $options['title'];
+
+		if( $title == '公告' )
+		{
+?>
+<div class="headtip"><h2 class="forul">公告</h2></div>
+<ul class="featured">
+<?
+			$file_name = JW_ROOT . 'fragment/page/sidebar_announcement.html';
+			echo file_get_contents( $file_name );
+?>
+</ul>
+<?
+			return true;
+		}
+
 		if ( empty($options['user_name']) )
 			return;
 		else
@@ -1363,11 +1382,6 @@ _HTML_;
 			$num = 5;
 		else
 			$num = $options['num'];
-
-		if ( empty($options['title']) )
-			$title = '公告';
-		else
-			$title = $options['title'];
 
 		if ($title =='公告')
 			$isAnnounce = true;

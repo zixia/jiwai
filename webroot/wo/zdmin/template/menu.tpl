@@ -10,12 +10,13 @@
 	<li ${$menu_nav=='statuslist'?'class="selected"':''}><a href="/wo/zdmin/statuslist">叽歪更新列表</a></li>
 	<li ${$menu_nav=='statusdelete'?'class="selected"':''}><a href="/wo/zdmin/statusdelete">删除某条更新 [Y]</a></li>
 </ul>
-<h2>JiWai用户管理</h2>
+<h2>JiWai后台管理</h2>
 <ul>
 	<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/wo/zdmin/userquery">用户信息查询 [Y]</a></li>
 	<li ${$menu_nav=='usershield'?'class="selected"':''}><a href="/wo/zdmin/usershield">屏蔽用户列表</a></li>
 	<li ${$menu_nav=='usersetting'?'class="selected"':''}><a href="/wo/zdmin/usersetting">修改用户设置</a></li>
 	<li ${$menu_nav=='userurl'?'class="selected"':''}><a href="/wo/zdmin/userurl">允许用户修改URL</a></li>
+	<li ${$menu_nav=='sidebar'?'class="selected"':''}><a href="/wo/zdmin/sidebar">修改公告内容</a></li>
 </ul>
 <h2>JiWai运营数据查询</h2>
 <ul>
