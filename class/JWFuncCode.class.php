@@ -59,6 +59,10 @@ class JWFuncCode {
 
 		'10669318921' => '1066931891128006',
 		'106615186921' => '1066151845671128006',
+
+		//WYXY
+		'10669500432' => '106695001199',
+		'10669500431' => '106695001128006',
 	);
 
 	static public function GetCodeFunc($mobileNo, $id, $pre=self::PRE_MMS_NOTIFY) {

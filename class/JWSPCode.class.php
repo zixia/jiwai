@@ -22,6 +22,20 @@ class JWSPCode {
 	static private $codeBase = array(
 		self::SP_MOBILE => array(
 			array( 
+				'code' => '10669318', 
+				'gid' => 85, 
+				'func' => 4,
+				'funcPlus' => '',
+				'default' => false,
+			),
+			array( 
+				'code' => '10669911', 
+				'gid' => 1, 
+				'func' => '8816',
+				'funcPlus' => '',
+				'default' => false,
+			),
+			array( 
 				'code' => '50136', 
 				'gid' => 85, 
 				'func' => '9',
@@ -35,24 +49,29 @@ class JWSPCode {
 				'funcPlus' => '', 
 				'default' => false,
 			),
-			/*
-			array( 
-				'code' => '10669318', 
-				'gid' => 85, 
-				'func' => 4,
-				'funcPlus' => '',
-				'default' => true,
-			),
-			array( 
-				'code' => '10669911', 
-				'gid' => 1, 
-				'func' => '8816',
+			array(
+				'code' => '10669500',
+				'gid' => 111,
+				'func' => '',
 				'funcPlus' => '',
 				'default' => false,
 			),
-			*/
 		),
 		self::SP_UNICOM => array(
+			array( 
+				'code' => '10661518',
+				'gid' => 45, 
+				'func' => '4567',
+				'funcPlus' => '',
+				'default' => false,
+			),
+			array( 
+				'code' => '10669138',
+				'gid' => 3, 
+				'func' => '4',
+				'funcPlus' => '',
+				'default' => true,
+			),
 			array( 
 				'code' => '9501',
 				'gid' => 45, 
@@ -67,22 +86,13 @@ class JWSPCode {
 				'funcPlus' => '',
 				'default' => false,
 			),
-			/*
-			array( 
-				'code' => '10661518',
-				'gid' => 45, 
-				'func' => '4567',
-				'funcPlus' => '',
-				'default' => true,
-			),
-			array( 
-				'code' => '10669138',
-				'gid' => 3, 
-				'func' => '4',
+			array(
+				'code' => '10669500',
+				'gid' => 112,
+				'func' => '',
 				'funcPlus' => '',
 				'default' => false,
 			),
-			*/
 		),
 		self::SP_PAS => array(
 			array( 
@@ -91,6 +101,13 @@ class JWSPCode {
 				'func' => '456',
 				'funcPlus' => '',
 				'default' => true,
+			),
+			array(
+				'code' => '10669500',
+				'gid' => 113,
+				'func' => '',
+				'funcPlus' => '',
+				'default' => false,
 			),
 		),
 	);

@@ -987,15 +987,15 @@ class JWRobotLingo {
 		$body = $robotMsg->GetBody();
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
-		if ( ! preg_match('/^\w+\s+(\S+)\s+(.+)$/i',$body,$matches) ) {
+		if ( false == preg_match('/^\w+\s+(\S+)\s+(.+)$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_HELP');
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$friend_name 	= $matches[1];
-		$message_text	= $matches[2];
+		$friend_name = $matches[1];
+		$message_text = $matches[2];
 
-		$friend_row	= JWUser::GetUserInfo($friend_name);
+		$friend_row = JWUser::GetUserInfo($friend_name);
 
 		if ( empty($friend_row) )
 		{
@@ -1004,6 +1004,18 @@ class JWRobotLingo {
 		}
 
 		$friend_id = $friend_row['idUser'];
+		
+		/**
+		 * Temporary limit to send message
+		 */
+		$address_user = JWUser::GetDbRowById( $address_user_id );
+		if( false == JWFollower::IsFollower( $address_user_id, $friend_id )
+			&& ( time() - strtotime($address_user['timeCreate']) < 30*86400 ) )
+		{
+			return null;
+		}
+		/** End Temporary **/
+
 
 		if ( JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type) ) {
 			if( false == in_array( $type, array('sms', 'api') ) ) {
@@ -1025,7 +1037,7 @@ class JWRobotLingo {
 		
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 		if( false  == empty( $device_db_row ) )
-			$user_info = JWUser::GetUserInfo( $device_db_row['idUser'] );
+			$user_info = JWUser::GetDbRowById( $device_db_row['idUser'] );
 
 		$registered = true;
 		if( empty( $device_db_row ) || empty($user_info) ){
@@ -1034,7 +1046,7 @@ class JWRobotLingo {
 
 		$body = JWRobotLingoBase::ConvertCorner( $body );
 
-		if ( preg_match('/^([[:alpha:]]+)\s+([\S]+)\s*([\S]*)$/',$body, $matches) ) {
+		if ( preg_match('/^([[:alpha:]]+)\s+([\S]+)\s*([\S]*)$/', $body, $matches) ) {
 
 			$nameScreen = $matches[2];
 			
@@ -1093,6 +1105,14 @@ class JWRobotLingo {
 				$uRow = array('nameScreen' => $user_name );
 				if ( null != $nameFull ) 
 					$uRow['nameFull']  = $nameFull;
+
+				if( $user_info['isWebUser'] == 'N'
+					&& $user_info['isUrlFixed'] == 'N'
+					&& false == JWUser::IsExistUrl( $user_name ) )
+				{
+					$uRow['nameUrl'] = $user_name;
+					$uRow['isUrlFixed'] == 'Y';
+				}
 
 				if( JWUser::Modify( $user_info['id'], $uRow ) ){
 					if( $nameFull == null ) {

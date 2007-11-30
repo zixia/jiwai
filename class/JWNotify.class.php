@@ -106,18 +106,20 @@ class JWNotify{
 		}
 
 		$userSender = JWUser::GetUserInfo( $idUserFrom );
+		$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
 
 		/**
 		 * Sync To Twitter, need transfer to other pool service
 		 */
 		$bindOther = JWBindOther::GetBindOther( $idUserFrom );
-		if( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) {
-			
-			$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
-			if ( false == empty( $status_row ) && $status_row['device'] != 'api' ) {
+		if( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) 
+		{
+			if ( false == empty( $status_row ) && $status_row['device'] != 'api' ) 
+			{
 				$messageObject = is_array($message) ? 
 					( isset($message['im']) ? $message['im'] : null ) : $message;
-				if( $messageObject ) {
+				if( $messageObject ) 
+				{
 					if( isset($bindOther['twitter']) )
 						JWBindOther::PostStatus( $bindOther['twitter'], $message );
 					if( isset($bindOther['fanfou']) )
@@ -125,6 +127,19 @@ class JWNotify{
 				}
 			}
 		}
+
+		/** Sny to Facebook **/
+		if ( null==$idUserTo && $idFacebook=JWFacebook::GetFBbyUser($idUserFrom) ) 
+		{
+			JWFacebook::RefreshRef($idUserFrom);
+			$pic = JWPicture::GetUrlById( $status_row['idPicture'] , 'picture' );
+			$picUrl = $status_row['isMms'] == 'Y' ? 
+				'http://JiWai.de/'.$userSender['nameUrl'].'/mms/'.$idStatus : null;
+			$status = $status_row['status'];
+			$device = $status_row['device'];
+			JWFacebook::PublishAction($idFacebook, $userSender['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
+		}
+		/* */
 
 		$to_ids = array();
 		if( $idUserTo && false == JWBlock::IsBlocked($idUserTo, $idUserFrom) )
