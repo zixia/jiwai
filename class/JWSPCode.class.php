@@ -59,7 +59,7 @@ class JWSPCode {
 		),
 		self::SP_UNICOM => array(
 			array( 
-				'code' => '10669138',
+				'code' => '10669318',
 				'gid' => 3, 
 				'func' => '4',
 				'funcPlus' => '',
