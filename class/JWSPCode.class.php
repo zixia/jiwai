@@ -26,7 +26,7 @@ class JWSPCode {
 				'gid' => 85, 
 				'func' => 4,
 				'funcPlus' => '',
-				'default' => false,
+				'default' => true,
 			),
 			array( 
 				'code' => '10669911', 
@@ -59,18 +59,18 @@ class JWSPCode {
 		),
 		self::SP_UNICOM => array(
 			array( 
-				'code' => '10661518',
-				'gid' => 45, 
-				'func' => '4567',
-				'funcPlus' => '',
-				'default' => false,
-			),
-			array( 
 				'code' => '10669138',
 				'gid' => 3, 
 				'func' => '4',
 				'funcPlus' => '',
 				'default' => true,
+			),
+			array( 
+				'code' => '10661518',
+				'gid' => 45, 
+				'func' => '4567',
+				'funcPlus' => '',
+				'default' => false,
 			),
 			array( 
 				'code' => '9501',

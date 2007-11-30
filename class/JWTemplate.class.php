@@ -1002,7 +1002,11 @@ __HTML__;
 		{
 			$replyLink = "/$reply_name_url/thread/$reply_status_id/$status_id";
 			$replyLinkString = "给${reply_name_screen}的回复";
-			$pre_reply_link = "/$reply_user[nameUrl]/statuses/$pre_reply_status_id";
+			if( $pre_reply_status_id ) 
+				$pre_reply_link = "/$reply_user[nameUrl]/statuses/$pre_reply_status_id";
+			else
+				$pre_reply_link = "/$reply_user[nameUrl]/";
+
 		}else if( null == $thread_id ) 
 		{
 			if( $reply_count ) 
