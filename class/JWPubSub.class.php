@@ -1,14 +1,9 @@
 <?php
 class JWPubSub {
 	static function Instance($url) {
-		$c = parse_url($url);
-		$class = 'JWPubSub_'.ucfirst($c['scheme']);
-		if ($class=='JWPubSub_File') {
-			$param = $c['path'];
-		} else {
-			$param = $c['host'];
-		}
-		$obj = new $class($param);
+		$c = parse_url($url, PHP_URL_SCHEME);
+		$class = 'JWPubSub_'.ucfirst($c);
+		$obj = new $class($url);
 		return $obj;
 	}
 	private $listeners = array();

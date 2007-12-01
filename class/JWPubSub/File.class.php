@@ -10,8 +10,8 @@ class JWPubSub_File extends JWPubSub {
 		mkdir($dir, 0777, true);
 	}
 	private $_root;
-	function __construct($path) {
-		$this->_root = $path;
+	function __construct($url) {
+		$this->_root = parse_url($url, PHP_URL_PATH);
 	}
 	function Publish($channel, $data) {
 		self::_check($this->_root.$channel);
