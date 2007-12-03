@@ -53,7 +53,7 @@ class JWPubSub_File extends JWPubSub {
 		foreach ($r as $k=>$v) {
 			$m = new JWPubSub_Message();
 			$m->channel = substr($k, 0, strrpos($k, '/'));
-			$m->data = json_decode($v);
+			$m->data = json_decode($v, true);
 			$r1[] = $m;
 		}
 		return $r1;

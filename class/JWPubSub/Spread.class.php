@@ -29,7 +29,7 @@ class JWPubSub_Spread extends JWPubSub {
 		while ($ev = $this->sp->receive(0.1)) {
 			$m = new JWPubSub_Message();
 			$m->channel = $ev['groups'][0];
-			$m->data = json_decode($ev['message']);
+			$m->data = json_decode($ev['message'], true);
 			$r[] = $m;
 		}
 		return $r;

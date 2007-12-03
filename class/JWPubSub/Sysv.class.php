@@ -43,7 +43,7 @@ class JWPubSub_Sysv extends JWPubSub {
 			while (msg_receive($this->q(), $this->c($c), $t, 1024*1024, $m, false, MSG_IPC_NOWAIT, $err)) {
 				$j = new JWPubSub_Message();
 				$j->channel = $c;
-				$j->data = json_decode($m);
+				$j->data = json_decode($m, true);
 				$r[] = $j;
 			} 
 		}

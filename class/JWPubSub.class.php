@@ -17,7 +17,11 @@ class JWPubSub {
 	}
 	function PeekMessages() {
 	}
-	function AddListener($channel, $obj) {
+	function AddListener($channel, &$obj) {
+		if (is_array($channel)) {
+			foreach($channel as $c) $this->AddListener($c, $obj);
+			return;
+		}
 		if (!isset($this->listeners[$channel])) {
 			$this->listeners[$channel]=array();
 			$this->Subscribe($channel);
