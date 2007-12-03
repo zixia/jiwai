@@ -23,6 +23,11 @@ if ( ($idUser=JWLogin::GetCurrentUserId())
 			{
 				$statusRow = JWStatus::GetDbRowById($idStatus);
 				JWStatus::Destroy($idStatus);
+				
+				if (defined('BETA')) {
+if (!extension_loaded('spread')) dl('spread.so'); //FIXME to be removed
+				JWPubSub::Instance('spread://localhost/')->Publish('/statuses/destroy', array('idUser'=>$idUser, 'idStatus'=>$idStatus)); //FIXME to be moved to core class like JWStatus
+				} else
 				if (JWFacebook::Verified($idUser)) JWFacebook::RefreshRef($idUser);
 				if (false == empty($statusRow) && $statusRow['idThread'] )
 				{
