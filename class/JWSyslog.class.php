@@ -28,7 +28,7 @@ class JWSyslog {
         }
         function Send($msg) {
                 $priority = $this->facility*8 + $this->severity;
-                $timestamp = trim(date("M j H:i:s"));
+                $timestamp = trim(date("M d H:i:s"));
                 $data = "<{$priority}>{$timestamp} {$this->hostname} {$this->process}: {$msg}";
                 $data = substr($data, 0, 1024);
                 fwrite(self::_conn($this->server), $data);
