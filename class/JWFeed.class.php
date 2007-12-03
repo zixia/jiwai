@@ -42,7 +42,7 @@ class JWFeed {
 		else
 		{
         	$img				= new FeedImage();
-        	$img->url			= 'http://JiWai.de/team/picture/thumb48';
+        	$img->url			= 'http://asset.jiwai.de/images/org-logo.gif';
 
         	$img->link			= 'http://JiWai.de/public_timeline/';
         	$img->title			= '叽歪de - 这一刻，你在做什么？';
