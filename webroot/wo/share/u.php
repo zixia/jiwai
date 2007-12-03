@@ -9,10 +9,11 @@ if( false == $idUser ) {
 
 if( $_POST ) {
 
-	$url = $title = $description = null;
+	$idPartner = $url = $title = $description = null;
 	extract( $_POST );
 	$status = "收藏：$title - $description $url";
-	$idPartner = BOOKMARKLET_IDPARTNER;
+	if( $idPartner == null )
+		$idPartner = BOOKMARKLET_IDPARTNER;
 
 	if( strpos( strtolower($url), 'http://jiwai.de/' ) === 0 ) {
 		Header( "Location: /" );
