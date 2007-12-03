@@ -1,4 +1,9 @@
 <?php
+/**
+ * JWPubSub Spread-Toolkit Adaptor Class
+ * 
+ * @author      FreeWizard
+ */
 
 if (!defined('SPREAD_PORT')) 
 define('SPREAD_PORT', 4803);

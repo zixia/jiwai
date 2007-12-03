@@ -1,4 +1,9 @@
 <?php
+/**
+ * JWPubSub local file (inotify) Adaptor Class
+ * 
+ * @author      FreeWizard
+ */
 class JWPubSub_File extends JWPubSub {
 	static private $_initialized = false;
 	static private function _initialize() {

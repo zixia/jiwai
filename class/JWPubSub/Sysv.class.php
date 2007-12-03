@@ -1,4 +1,9 @@
 <?php
+/**
+ * JWPubSub System V IPC Message Queue Adaptor Class
+ * 
+ * @author      FreeWizard
+ */
 
 if (!defined('SYSV_MSG_ID')) 
 define('SYSV_MSG_ID', 0xDEAD0000);
