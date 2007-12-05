@@ -70,9 +70,18 @@ class JWPlugins
 			if( false == empty( $photo_info ) )
 			{
 				return array( 
-						'src' => JWPlugins_Yupoo::BuildPhotoUrl( $photo_info ),
-						'href' => $url,
-					    );
+					'src' => JWPlugins_Yupoo::BuildPhotoUrl( $photo_info ),
+					'href' => $url,
+					'type' => 'pic',
+				);
+			}
+			$box_info = JWPlugins_Box::GetBoxInfo( $status );
+			if( false == empty($box_info) )
+			{
+				return array(
+					'src' => $box_info,
+					'type' => 'box',
+				);
 			}
 		}
 		else if( 'Y'==$status_row['isMms'] ) 
@@ -83,6 +92,7 @@ class JWPlugins
 			return array(
 				'src' => JWPicture::GetUrlById($status_row['idPicture'], 'middle'),
 				'href' => JW_SRVNAME .'/'. $user_row['nameUrl'] .'/mms/'. $status_row['id'],
+				'type' => 'pic',
 			);
 		}
 		return null;

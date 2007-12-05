@@ -864,7 +864,13 @@ _HTML_;
 		<?php 
 			if( false==empty($picture_row) )
 			{
-				echo '<a href="' .$picture_row['href']. '" target="_blank"><img src="' .$picture_row['src']. '" title="叽歪图片" class="pic"/></a>';
+				if( $picture_row['type'] == 'pic' ) 
+				{
+					echo '<a href="' .$picture_row['href']. '" target="_blank"><img src="' .$picture_row['src']. '" title="叽歪图片" class="pic"/></a>';
+				}else if( $picture_row['type'] == 'box' ) 
+				{
+					echo '<embed src="'.$picture_row['src'].'" quality=high width="50" height="18" type="application/x-shockwave-flash" /></embed>';
+				}
 			}
 			$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 				JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
