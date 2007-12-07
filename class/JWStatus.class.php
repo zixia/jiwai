@@ -169,7 +169,6 @@ class JWStatus {
 		/** ReplyInfo */
 		$idUserReplyTo = null;
 		$idStatusReplyTo = null;
-		$idConference = null;
 
 		if( isset( $options['idUserReplyTo'] ) ) {
 			$idUserReplyTo = $options['idUserReplyTo'];
