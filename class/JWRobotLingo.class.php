@@ -512,6 +512,7 @@ class JWRobotLingo {
 		}
 
 		$followe = $matches[1];
+		$invitee_address = $followe;
 
 		//Follow Tag
 		if( substr($followe,0,1) == '#' ) 
