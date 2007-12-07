@@ -213,7 +213,7 @@ class JWRobotLingo {
 					{
 						JWTagFollower::SetNotification( $tag_row['id'], $address_user_id, $notification );
 					}
-					array_push( $follower_name, $tag_row['name'] );
+					array_push( $follower_name, $followe );
 					continue;
 				}
 			}
@@ -511,12 +511,12 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$invitee_address = $matches[1];
+		$followe = $matches[1];
 
 		//Follow Tag
-		if( substr($matches[1],0,1) == '#' ) 
+		if( substr($followe,0,1) == '#' ) 
 		{
-			$tag_name = substr( $matches[1], 1 );
+			$tag_name = substr( $followe, 1 );
 			$tag_row = JWTag::GetDbRowByName( $tag_name );
 			if( false == empty( $tag_row ) )
 			{
@@ -525,21 +525,21 @@ class JWRobotLingo {
 					JWTagFollower::Create( $tag_row['id'], $address_user_id, 'N' );
 				}
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_FOLLOW_SUC', array(
-					"#$tag_name",
+					$followe,
 				));
 				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 			}
 			else
 			{
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOTAG', array(
-					"#$tag_name",
+					$followe,
 				));
 				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 			}
 		}
 
 		//Follow User
-		$follower = JWUser::GetUserInfo( $matches[1] );
+		$follower = JWUser::GetUserInfo( $followe );
 		if( empty( $follower ) ) 
 		{
 			if ( preg_match( '#^([^/]+)://(.+)$#', $invitee_address, $matches )

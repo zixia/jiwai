@@ -56,6 +56,8 @@ class JWSms {
 					58 => 'HE_ERR_ILLEGAL_IP', 
 					59 => 'HE_ERR_ILLEGAL_APPID', 
 					124 => 'HE_ERR_ZIXIA_MOBILE_NO',
+
+					129 => 'HE_ERR_OK_NEW',
 			);
 
 

@@ -281,7 +281,8 @@ class JWSns {
 					JWLog::Log(LOG_CRIT, "JWSns::DestroyFollowers JWFollower::Destroy($follower_id, $idUser) failed.");
 				}else
 				{
-					$message = "$userInfo[nameScreen] 取消订阅你的更新了。";
+					$userFollower = JWUser::GetUserInfo( $follower_id );
+					$message = "$userFollower[nameScreen] 取消订阅你的更新了。";
 					//JWNudge::NudgeToUsers( array($follower_id), $message, 'nudge', 'web' );
 				}
 			}
