@@ -129,7 +129,7 @@ class JWNotify{
 		}
 
 		/** Sync to Facebook **/
-		if ( null==$idUserTo && $idFacebook=JWFacebook::GetFBbyUser($idUserFrom) ) 
+		if ( null==$idUserTo && $idFacebook = JWFacebook::GetFBbyUser($idUserFrom) ) 
 		{
 			JWFacebook::RefreshRef($idUserFrom);
 			$pic = JWPicture::GetUrlById( $status_row['idPicture'] , 'picture' );

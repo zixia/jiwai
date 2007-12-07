@@ -515,13 +515,6 @@ _HTML_;
 	};
 </script>
 <?php
-/*
-		<p class="notice">
-			叽歪de MSN 机器人美眉目前正在偷懒，我们会很快将她找回来的。<br />
-			请你先暂时使用 Web / QQ / GTalk 进行叽歪。
-		</p>
-*/
-
 	}
 
 
