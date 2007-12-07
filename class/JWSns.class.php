@@ -396,7 +396,59 @@ class JWSns {
 
 		return $id_invite;
 	}
+	
+	static public function GetTagAction($user_id, $tag_id)
+	{
+		$init_action = array(
+			'on' => false,
+			'off' => false,
+			'follow' => false,
+			'leave' => false,
+		);
 
+		if ( empty($user_id) || empty($tag_id) )
+			return $init_action;
+
+		$action_rows = self::GetTagActions($user_id, array($tag_id) );
+
+		return $action_rows[ $tag_id ];
+	}
+
+	static public function GetTagActions($user_id, $tag_ids)
+	{
+		if ( empty($user_id) || empty($tag_ids) )
+			return array();
+
+		if ( false == is_array($tag_ids) )
+			throw new JWException('must array');
+
+		$following_infos = JWTagFollower::GetFollowingInfos($user_id);
+
+		$action_rows = array();
+		$init_action = array(
+			'on' => false,
+			'off' => false,
+			'follow' => true,
+			'leave' => false,
+		);
+
+		foreach( $tag_ids as $tag_id )
+		{
+			$action = $init_action;
+			if( isset( $following_infos[ $tag_id ] ) )
+			{
+				$following_info = $following_infos[ $tag_id ];
+				$action['follow'] = false;
+				$action['leave'] = true;
+				$action['on'] = $following_info['notification'] == 'N';
+				$action['off'] = $following_info['notification'] == 'Y';
+			}
+
+			$action_rows[$tag_id] = $action;
+		}
+
+		return $action_rows;
+	}
 
 	/*
 	 *	检查 $idUser 可以对 $idFriends 做哪些 Sns 操作
@@ -518,19 +570,14 @@ class JWSns {
 			return true;
 
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
-		list( $status, $idUserReplyTo, $idStatusReplyTo ) = self::FetchStatusReplyInfo( $status, $options );
 
-		if( isset( $options['idThread'] ) ) 
-		{
-			$idThread = $options['idThread'];
-		}else{
-			$idThread = null;
-			if( $idStatusReplyTo ) 
-			{
-				$status_reply = JWStatus::GetDbRowById( $idStatusReplyTo );
-				$idThread = $status_reply['idThread'] ? $status_reply['idThread'] : $idStatusReplyTo;
-			}
-		}
+		$reply_info = JWStatus::GetReplyInfo( $status, $options );
+		
+		$status = $reply_info['status'];
+		$idThread = $reply_info['thread_id'];
+		$idTag = $reply_info['tag_id'];
+		$idUserReplyTo = $reply_info['user_id'];
+		$idStatusReplyTo = $reply_info['status_id'];
 
 		$idConference = null;
 		$conference = null;
@@ -560,12 +607,13 @@ class JWSns {
 		* 参数用来 JWStatus::Create 方法，新建一条更新
 		*/
 		$createOptions = array(
-				'idUserReplyTo' => $idUserReplyTo,
-				'idStatusReplyTo' => $idStatusReplyTo,
-				'idConference' => $idConference,
-				'timeCreate' => $timeCreate,
-				'idThread' => $idThread,
-			);
+			'idUserReplyTo' => $idUserReplyTo,
+			'idStatusReplyTo' => $idStatusReplyTo,
+			'idConference' => $idConference,
+			'timeCreate' => $timeCreate,
+			'idThread' => $idThread,
+			'idTag' => $idTag,
+		);
 
 		$acceptKeys = array( 'idPicture', 'isMms', 'idPartner' );
 		foreach( $acceptKeys as $key ) {
@@ -664,31 +712,6 @@ class JWSns {
 					$queueType = JWNotifyQueue::T_MMS;
 				}
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
-				if (defined('BETA')) {
-if (!extension_loaded('spread')) dl('spread.so'); //FIXME to be removed
-				$metaInfo['idUser'] = $idUser;
-				$metaInfo['idUserReplyTo'] = $idUserReplyTo;
-				$metaInfo['idPicture'] = empty($picUrl) ? 0 : $createOptions['idPicture'];
-				$metaInfo['idStatus'] = $idStatus;
-				$metaInfo['device'] = $device;
-				JWPubSub::Instance('spread://localhost/')->Publish('/statuses/update', $metaInfo);
-				} else { /* BETA */
-				// Referesh facebook
-				$idFacebook = JWFacebook::GetFBbyUser( $idUser );
-				if ( $idFacebook ) {
-					JWFacebook::RefreshRef($idUser);
-					if ( !$idUserReplyTo ) {
-						if (empty($picUrl)) {
-							$picUrl = null;
-							$pic = null;
-							$userInfo = JWUser::GetUserInfo( $idUser );
-						} else {
-							$pic = JWPicture::GetUrlById( $createOptions['idPicture'] , 'picture' );
-						}
-						JWFacebook::PublishAction($idFacebook, $userInfo['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
-					}
-				}
-				} /* BETA */
 			}
 
 			//Activate User

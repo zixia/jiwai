@@ -113,6 +113,7 @@ class JWRobotLingoReply {
 			 */
 			'REPLY_500'  => '哇，真可怕！由于系统故障，你的请求失败了…… 请稍后再试吧。',
 			'REPLY_NOUSER' => '哎呀！没有找到用户 {0}',
+			'REPLY_NOTAG' => '哎呀！没有找到 {0}',
 
 			//Out
 			'OUT_NUDGE' => '{0} 挠挠了你一下，提醒你更新！回复本消息既可更新。',

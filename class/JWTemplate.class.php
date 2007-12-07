@@ -464,11 +464,11 @@ _HTML_;
 				<p>
                     <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
                     <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
-					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" ></textarea>
+					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value="<?php echo $reply_user_nameScreen_txt;?>"></textarea>
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
-					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value){$('updaterForm').submit();}return false;" value="叽歪一下"/>
+					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if(!$('jw_status').value)return false;$('updaterForm').submit();return false;" value="叽歪一下" title="叽歪一下"/>
 				</p>	
 			<?php
 				if(false == empty($options['sendtips']))
@@ -874,7 +874,7 @@ _HTML_;
 			}
 			$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 				JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
-			self::ShowStatusMetaInfo( $statusRows[$status_id] );
+			self::ShowStatusMetaInfo( $statusRows[$status_id], $options );
 		?>
 	</div><!-- cont -->
 </div><!-- odd -->
@@ -934,6 +934,7 @@ __HTML__;
 
 		$showPublisher = isset( $options['showPublisher'] ) ? $options['showPublisher'] : true;
 		$replyLinkClick = isset( $options['replyLinkClick'] ) ? $options['replyLinkClick'] : null;
+		$isInTag = isset( $options['isInTag'] ) ? $options['isInTag'] : false;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 
@@ -946,6 +947,9 @@ __HTML__;
 		$pre_reply_status_id = $reply_status_id;
 		$reply_user_id = $status_row['idUserReplyTo'];
 		$thread_id = $status_row['idThread'];
+		$tag_id = $status_row['idTag'];
+		$tag_row = empty($tag_id) ? null : JWTag::GetDbRowById( $tag_id );
+		$tag_name = empty($tag_row) ? null : $tag_row['name'];
 
 		$reply_user = null;
 		$thread_user = null;
@@ -1006,7 +1010,11 @@ __HTML__;
 		$preg_reply_link = null;
 		if( $reply_name_screen ) 
 		{
-			$replyLink = "/$reply_name_url/thread/$reply_status_id/$status_id";
+			if ( $isInTag && null != $tag_id )
+				$replyLink = "/t/$tag_name/thread/$reply_status_id/$status_id";
+			else
+				$replyLink = "/$reply_name_url/thread/$reply_status_id/$status_id";
+
 			$replyLinkString = "给${reply_name_screen}的回复";
 			if( $pre_reply_status_id ) 
 				$pre_reply_link = "/$reply_user[nameUrl]/statuses/$pre_reply_status_id";
@@ -1015,13 +1023,14 @@ __HTML__;
 
 		}else if( null == $thread_id ) 
 		{
+			$reply_url_pre = $isInTag ? "t/$tag_name" : $owner_user_url;
 			if( $reply_count ) 
 			{
-				$replyLink = "/$owner_user_url/thread/$status_id/$status_id";
+				$replyLink = "/$reply_url_pre/thread/$status_id/$status_id";
 				$replyLinkString = "${reply_count}条回复";
 			}else
 			{
-				$replyLink = "/$owner_user_url/thread/$status_id/$status_id";
+				$replyLink = "/$reply_url_pre/thread/$status_id/$status_id";
 				$replyLinkString = "回复";
 			}
 		}
@@ -2652,14 +2661,15 @@ _HEAD_;
 
 	static public function RedirectToUrl( $url )
 	{
-        if ( !empty($url) )
-        {
-            header("Location: $url"); 
-            exit( 0 );
-        }
-        else
-            self::RedirectBackToLastUrl( '/' );
-    }
-
+		if ( false == empty($url) )
+		{
+			header("Location: $url"); 
+			exit( 0 );
+		}
+		else
+		{
+			self::RedirectBackToLastUrl( '/' );
+		}
+	}
 }
 ?>

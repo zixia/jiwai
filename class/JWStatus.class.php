@@ -44,33 +44,97 @@ class JWStatus {
 
 	/*
 	 *	根据 status 的 @zixia 打头内容，获取 zixia 最新的一条 status 的 id，
+	 *  	options may contains idTag, idThread
 	 */
-	static public function GetReplyInfo( $status, $options=array() )
+	static public function GetReplyInfo( $status, $options = array() )
 	{
-		if ( empty($status) )
-			return null;
 
-		if ( false == preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
-			return null;
+		$is_extends_tag = true;
 
-		$reply_to_user = $matches[1];
+		$tag_id = isset( $options['idTag'] ) ? $options['idTag'] : null;
+		$thread_id = isset( $options['idThread'] ) ? $options['idThread'] : null;
+		$user_id = isset( $options['idUserReplyTo'] ) ? $options['idUserReplyTo'] : null;
+		$status_id = isset( $options['idStatusReplyTo'] ) ? $options['idStatusReplyTo'] : null;
 
-		$user_db_row	= JWUser::GetUserInfo($reply_to_user);
+		// not extends tag_id || if extends 
+		if( $is_extends_tag == false ) $tag_id = null;
 
-		if ( empty($user_db_row) )
-			return null;
-
-		$reply_to_status_id = JWStatus::GetMaxIdStatusByUserId( $user_db_row['idUser'], $options );
-		$reply_to_status = $reply_to_status_id ? self::GetDbRowById( $reply_to_status_id ) : null;
-		$thread_id = empty( $reply_to_status ) ? null : ( 
-			$reply_to_status['idThread'] ? $reply_to_status['idThread'] : $reply_to_status_id
-		);
-
-		return array ( 	 
-			'user_id' => $user_db_row['idUser'], 
-			'status_id' => $reply_to_status_id,
+		$rtn_array = array(
+			'user_id' => $user_id,
+			'status_id' => $status_id,
+			'tag_id' => $tag_id,
 			'thread_id' => $thread_id,
+			'status' => $status,
 		);
+
+		if( empty( $status ) )
+		{
+			return $rtn_array;
+		}
+
+		if ( preg_match( "/^(\s*#\s*)([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+		{
+			$tag_name = $matches[2];
+			$tag_row = JWTag::GetDbRowByName( $tag_name );
+			$tag_id = empty( $tag_row ) ? JWTag::Create( $tag_name ) : $tag_row['id'];
+
+			$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
+
+			$rtn_array['status'] = $status;
+			$rtn_array['tag_id'] = $tag_id;
+		}
+		
+		/**
+		 * if not set idUserReplyTo in options;
+		 */
+		if ( $user_id == null ) 
+		{
+			if ( false == preg_match( "/^(\s*@\s*)([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			{
+				return $rtn_array;
+			}else
+			{
+				$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
+				$rtn_array['status'] = $status;
+			}
+			$reply_to_user = $matches[2];
+			$user_db_row = JWUser::GetUserInfo($reply_to_user);
+
+			if( empty( $user_db_row ) )
+			{
+				return $rtn_array;
+			}
+
+			$user_id = $user_db_row['id'];
+		}
+
+		/**
+		 * if not set idStatusReplyTo
+		 */
+		if( $status_id == null ) {
+			$status_id = JWStatus::GetMaxIdStatusByUserId( $user_id, $options );
+		}
+
+		if ( $status_id 
+			&& $reply_to_status_row = self::GetDbRowById( $status_id ) ) 
+		{
+			if( $thread_id == null ) 
+			{
+				$thread_id = ( $reply_to_status_row['idThread'] ) ? 
+					$reply_to_status_row['idThread'] : $status_id;
+			}
+			if( $tag_id == null && $is_extends_tag == true ) 
+			{
+				$tag_id = $reply_to_status_row['idTag'] ;
+			}
+		}
+
+		$rtn_array['tag_id'] = $tag_id;
+		$rtn_array['thread_id'] = $thread_id;
+		$rtn_array['user_id'] = $user_id;
+		$rtn_array['status_id'] = $status_id;
+
+		return $rtn_array;
 	}
 
 
@@ -79,67 +143,55 @@ class JWStatus {
 	 */
 	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $isSignature='N', $options=array() )
 	{
+		/** signature html encode filter */
 		if( $isSignature == 'Y' ) {
 			$status = htmlSpecialChars_Decode( $status );
 		}
 		
-		//time set
-		if( isset( $options['timeCreate'] ) ) {
-			$timeCreate = $options['timeCreate'];
-		}else{
-			$timeCreate = ( $timeCreate == null ) ? time() : $timeCreate ;
-		}
+		/** timeCreate **/
+		$timeCreate = isset($options['timeCreate']) ? 
+			$options['timeCreate'] : ($timeCreate ? $timeCreate : time());
+		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
-		$userInfo  = JWUser::GetUserInfo( $idUser );
-		$idPicture = $userInfo['idPicture'];
+		//user info
+		$userInfo  = JWUser::GetDbRowById( $idUser );
 		$isProtected = $userInfo['protected'];
 
+		/** choose idPicture | idConference */
+		$idPicture = isset( $options['idPicture'] ) ? $options['idPicture'] : $userInfo['idPicture'];
+		$idConference = ( isset( $options['idConference'] ) && $options['idConference'] ) ? 
+			$options['idConference'] : $userInfo['idConference'];
 
 		//options about thread tag
 		$idThread = isset( $options['idThread'] ) ? $options['idThread'] : null;
+		$idTag = isset( $options['idTag'] ) ? $options['idTag'] : null;
 
-		$idUserReplyTo = $idStatusReplyTo = null;
+		/** ReplyInfo */
+		$idUserReplyTo = null;
+		$idStatusReplyTo = null;
 		$idConference = null;
-
-		if( isset( $options['idPicture'] ) ) {
-			$idPicture = $options['idPicture'] ;
-		}
 
 		if( isset( $options['idUserReplyTo'] ) ) {
 			$idUserReplyTo = $options['idUserReplyTo'];
 			$idStatusReplyTo = $options['idStatusReplyTo'];
 		}else{
 			$statusPost = JWRobotLingoBase::ConvertCorner($status);
-			$reply_info = JWStatus::GetReplyInfo($statusPost);
+			$reply_info = JWStatus::GetReplyInfo($statusPost, $options);
 			if( false == empty( $reply_info ) ){
 				$idUserReplyTo = $reply_info['user_id'];
 				$idStatusReplyTo = $reply_info['status_id'];
+				$idThread = $reply_info['thread_id'];
+				$idTag = $reply_info['tag_id'];
+				$status = $reply_info['status'];
 			}
 		}
 
-		if( isset( $options['idConference'] ) && $options['idConference'] ) {
-			$idConference = $options['idConference'];
-		}else{
-			$idConference = $userInfo['idConference'];
-		}
-        
+		/** parter */
 		$idPartner = null;
 		if( isset( $options['idPartner'] ) && intval($options['idPartner']) ){
 			$partner = JWPartner::GetDbRowById( intval($options['idPartner']) );
 			if( false == empty( $partner ) ){
 				$idPartner = $partner['id'];
-			}
-		}
-
-		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
-
-		if( $idUserReplyTo )
-		{
-			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
-			{
-				$UserInfo = JWUser::GetUserInfo( $matches[1] );
-				if ( false == empty($UserInfo) && $UserInfo['id'] == $idUserReplyTo )
-					$status = $matches[3];
 			}
 		}
 
@@ -157,12 +209,22 @@ class JWStatus {
 			'isSignature' => $isSignature,
 			'isMms' => $isMms,
 			'idThread' => $idThread,
+			'idTag' => $idTag,
 		));
 
 		if( $is_succ && $idThread )
 		{
 			JWDB_Cache_Status::GetCountReply( $idThread, true );
 		}
+		if( $is_succ && $idTag )
+		{
+			JWDB_Cache_Status::GetCountPostByIdTag( $idTag, true );
+		}
+		if( $is_succ && $idTag && empty( $idThread ) )
+		{
+			JWDB_Cache_Status::GetCountTopicByIdTag( $idTag, true );
+		}
+
 		return $is_succ;
 	}
 
@@ -687,6 +749,12 @@ _SQL_;
 			}else{
 				JWDB_Cache_Status::GetCountReply($statusRow['id'], true);
 			}
+
+			if( $statusRow['idTag'] ) 
+			{
+				JWDB_Cache_Status::GetCountTopicByIdTag($statusRow['idTag'], true);
+				JWDB_Cache_Status::GetCountPostByIdTag($statusRow['idTag'], true);
+			}
 		}
 
 		return $is_succ;
@@ -760,10 +828,13 @@ _SQL_;
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
 	{
 
-		$idUserReplyTo = $idStatusReplyTo = null;
+		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = null;
 		if( is_array( $status ) ){
-			$idUserReplyTo = $status['idUserReplyTo'];
-			$idStatusReplyTo = $status['idStatusReplyTo'];
+			$reply_to_user_id = $status['idUserReplyTo'];
+			$reply_to_status_id = $status['idStatusReplyTo'];
+			$tag_id = $status['idTag'];
+			$device = $status['device'];
+
 			$status = $status['status'];
 		}
 
@@ -812,18 +883,18 @@ _SQL_;
 
 			if ( $jsLink )
 			{
-				$url_str		= <<<_HTML_
+				$url_str = <<<_HTML_
 					<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$url_domain$url_path');return false;">http://$url_domain/...</a>
 _HTML_;
 			}
 			else
 			{
 				if( $urchin ) {
-					$url_str		= <<<_HTML_
+					$url_str = <<<_HTML_
 						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
 _HTML_;
 				}else{
-					$url_str		= <<<_HTML_
+					$url_str = <<<_HTML_
 						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
 _HTML_;
 				}
@@ -837,31 +908,43 @@ _HTML_;
 			$status = htmlspecialchars($status);
 		}
 
-		if( $idUserReplyTo ) {
-			$userReply = JWUser::GetUserInfo( $idUserReplyTo );
+		if( $reply_to_user_id ) 
+		{
+			$reply_to_user = JWUser::GetUserInfo( $reply_to_user_id );
 			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{    
 				$u = JWUser::GetUserInfo( $matches[1] );
-				if( $u['id'] == $idUserReplyTo ) {
+				if( $u['id'] == $reply_to_user_id ) 
+				{
 					$status = preg_replace( '/@\s*('.$matches[1].')/i', '', $status );
 				}
 			}
 
-			$replyto = $userReply['nameUrl'];
-			$replytoname = $userReply['nameScreen'];
-			$status = "@<a href='/$userReply[nameUrl]/'>$userReply[nameScreen]</a>  $status";
-		}else{
-			$replyto = null;
-			$replytoname = null;
+			$reply_to_user_name_url = $reply_to_user['nameUrl'];
+			$reply_to_user_name_screen = $reply_to_user['nameScreen'];
+			$status = "@<a href='/$reply_to_user_name_url/'>$reply_to_user_name_screen</a> $status";
+		}else
+		{
+			$reply_to_user_name_url = null;
+			$reply_to_user_name_screen = null;
 		} 
+
+		if( $tag_id && null == $reply_to_user_id ) 
+		{
+			$tag_row = JWTag::GetDbRowById( $tag_id );
+			if( false == empty( $tag_row ) )
+			{
+				$status = "#<a href='/t/$tag_row[name]/'>$tag_row[name]</a> $status";
+			}
+		}
 
 		// Add @ Link For other User
 		$status = preg_replace(	 "/@\s*([^\s<>@]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
 
 		return array ( 
 			'status' => $status, 
-			'replyto' => $replyto,
-			'replytoname' => $replytoname,
+			'replyto' => $reply_to_user_name_url,
+			'replytoname' => $reply_to_user_name_screen,
 		);
 	}
 	
@@ -1150,7 +1233,7 @@ ORDER BY
 LIMIT 		$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if (empty($rows))
 			return array();
@@ -1207,7 +1290,7 @@ ORDER BY
 LIMIT 		$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if (empty($rows))
 			return array();
@@ -1305,7 +1388,7 @@ LIMIT
 	$start,$num
 _SQL_;
 
-		$rows = JWDB::GetQueryResult($sql,true);
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
 			return array();
@@ -1347,5 +1430,433 @@ _SQL_;
 
 		return $nums;
 	}
+
+	/**
+	 * Get count of idTag and idUser
+	 */
+	static public function GetCountPostByIdTagAndIdUser( $idTag, $idUser )
+	{  
+		$idTag = JWDB::CheckInt( $idTag );
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag=$idTag
+		AND idUser=$idUser
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql );
+
+		return $row['num'];
+	}
+
+	/**
+	 * Get count of idTag and idUser
+	 */
+	static public function GetCountTopicByIdTagAndIdUser( $idTag, $idUser )
+	{  
+		$idTag = JWDB::CheckInt( $idTag );
+		$idUser = JWDB::CheckInt( $idUser );
+
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag=$idTag
+		AND idUser=$idUser
+        AND idUserReplyTo IS NULL
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql );
+
+		return $row['num'];
+	}
+
+	/**
+	 * Get status_ids from idTag
+	 */
+	static public function GetStatusIdsTopicByIdTag($idTag, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$idTag	= JWDB::CheckInt($idTag);
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		//$idSince 	= JWDB::CheckInt($idSince);
+		//$timeSince	= JWDB::CheckInt($timeSince);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
+		
+		$sql = <<<_SQL_
+SELECT
+	id, idUser
+FROM
+	Status
+WHERE 
+	idTag=$idTag
+	AND idUserReplyTo IS NULL
+	$condition_other
+ORDER BY id DESC
+LIMIT $start, $num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+
+		return $rows;
+	}
+
+	/**
+	 * Get status_ids from idTag
+	 */
+	static public function GetStatusIdsPostByIdTag($idTag, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$idTag	= JWDB::CheckInt($idTag);
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		//$idSince 	= JWDB::CheckInt($idSince);
+		//$timeSince	= JWDB::CheckInt($timeSince);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
+		
+		$sql = <<<_SQL_
+SELECT
+	id, idUser
+FROM
+	Status
+WHERE 
+	idTag=$idTag
+	$condition_other
+ORDER BY id DESC
+LIMIT $start, $num
+_SQL_;
+
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+
+		return $rows;
+	}
+
+	/**
+	 * Get status_ids from idTag and idUser
+	 */
+	static public function GetStatusIdsPostByIdTagAndIdUser( $idTag, $idUser, $limit=self::DEFAULT_STATUS_NUM, $offset=0 ) 
+	{
+		$idTag = JWDB::CheckInt( $idTag );
+		$idUser = JWDB::CheckInt( $idUser );
+		
+		$sql = <<<_SQL_
+SELECT
+	id, idUser
+FROM
+	Status
+WHERE 
+	idTag=$idTag
+	AND idUser=$idUser
+ORDER BY id DESC
+LIMIT $offset, $limit
+_SQL_;
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+	}
+
+	/**
+	 * Get status_ids from idTag and idUser
+	 */
+	static public function GetStatusIdsTopicByIdTagAndIdUser( $idTag, $idUser, $limit=self::DEFAULT_STATUS_NUM, $offset=0 ) 
+	{
+		$idTag = JWDB::CheckInt( $idTag );
+		$idUser = JWDB::CheckInt( $idUser );
+		
+		$sql = <<<_SQL_
+SELECT
+	id, idUser
+FROM
+	Status
+WHERE 
+	idTag=$idTag
+	AND idUser=$idUser
+    AND idUserReplyTo IS NULL
+ORDER BY id DESC
+LIMIT $offset, $limit
+_SQL_;
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+	}
+	
+	/**
+	 * Get Last ReplyInfo of a status;
+	 */
+	static public function GetLastReplyInfo( $idStatus ) 
+	{
+		$idStatus = JWDB::CheckInt( $idStatus );
+
+		$sql = <<<_SQL_
+SELECT 
+	id, idUser, timeCreate
+FROM
+	Status
+WHERE
+	idThread = $idStatus
+ORDER BY id DESC
+LIMIT 0,1
+_SQL_;
+		$row = JWDB_Cache::GetQueryResult( $sql );
+		if( empty( $row ) ) 
+			return $row;
+
+		return $row;
+	}
+
+	/**
+	 * Get idTag from Status by IdUser
+	 */
+	static public function GetTagIdsPostByIdUser( $user_id ) 
+	{
+		$user_id = JWDB::CheckInt( $user_id );
+
+		$sql = <<<_SQL_
+SELECT
+	idTag, COUNT(1) AS count
+FROM
+	Status
+WHERE
+	idUser=$user_id
+	AND idTag IS NOT NULL
+GROUP BY idTag
+ORDER BY count DESC
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		if( empty($rows) )
+			return array();
+		
+		$rtn = array();
+		foreach ( $rows as $one ) 
+		{
+			$rtn[ $one['idTag'] ] = $one['count'] ;
+		}
+
+		return $rtn;
+	}
+
+	/**
+	 * Get idTag from Status by IdUser
+	 */
+	static public function GetTagIdsTopicByIdUser( $user_id ) 
+	{
+		$user_id = JWDB::CheckInt( $user_id );
+
+		$sql = <<<_SQL_
+SELECT
+	idTag, COUNT(1) AS count
+FROM
+	Status
+WHERE
+	idUser=$user_id
+	AND idTag IS NOT NULL
+    AND idUserReplyTo IS NULL
+GROUP BY idTag
+ORDER BY count DESC
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		if( empty($rows) )
+			return array();
+		
+		$rtn = array();
+		foreach ( $rows as $one ) 
+		{
+			$rtn[ $one['idTag'] ] = $one['count'] ;
+		}
+
+		return $rtn;
+	}
+
+	/**
+	 * Get Count of idTag [ only post ]
+	 */
+	static public function GetCountPostAll() 
+	{
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag IS NOT NULL
+_SQL_;
+	$row = JWDB::GetQueryResult( $sql );
+
+		return $row['num'];
+	}
+
+	/**
+	 * Get Count of idTag [ only topic ]
+	 */
+	static public function GetCountTopicAll() 
+	{
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag IS NOT NULL
+		AND idUserReplyTo IS NULL
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql );
+		return $row['num'];
+	}
+
+	/**
+	 * Get Count of idTag [ only post ]
+	 */
+	static public function GetCountPostByIdTag( $idTag ) 
+	{
+		$idTag = JWDB::CheckInt( $idTag );
+
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag=$idTag
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql );
+		return $row['num'];
+	}
+
+	/**
+	 * Get Count of idTag [ only topic ]
+	 */
+	static public function GetCountTopicByIdTag( $idTag ) 
+	{
+		$idTag = JWDB::CheckInt( $idTag );
+
+		$sql = <<<_SQL_
+SELECT COUNT(1) AS num
+	FROM
+		Status
+	WHERE
+		idTag=$idTag
+		AND idUserReplyTo IS NULL
+_SQL_;
+		$row = JWDB::GetQueryResult( $sql);
+         
+		return $row['num'];
+	}
+
+	/**
+	 * Get status_ids from idTag
+	 */
+	static public function GetStatusIdsTopic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		//$idSince 	= JWDB::CheckInt($idSince);
+		//$timeSince	= JWDB::CheckInt($timeSince);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
+		
+		$sql = <<<_SQL_
+SELECT
+	id, idUser
+FROM
+	Status
+WHERE 
+	idTag IS NOT NULL
+	AND idUserReplyTo IS NULL
+	$condition_other
+ORDER BY id DESC
+LIMIT $start, $num
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+
+		return $rows;
+	}
+
+    /**
+     *
+     */
+    static public function GetStatusByIdTagAndIdStatus( $idTag, $idStatus, $start=0, $limit=20 )
+    {
+        $idTag = JWDB::CheckInt( $idTag );
+        $idStatus = JWDB::CheckInt( $idStatus );
+
+        $sql="SELECT * FROM Status WHERE idTag='$idTag' AND idUserReplyTo IS NULL AND id!='$idStatus' ORDER BY id DESC LIMIT    $start,$limit";
+        $row = JWDB_Cache::GetQueryResult( $sql, true );
+
+        if( empty($row) )
+            return array();
+        return $row;
+    }
+    
 }
 ?>

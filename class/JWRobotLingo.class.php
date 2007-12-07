@@ -197,7 +197,28 @@ class JWRobotLingo {
 			if( $followe == 28006 ) {
 				$followe = 'qzgwclub';
 			}
-
+		
+			//On Tag
+			if( substr($followe,0,1) == '#' ) 
+			{
+				$tag_name = substr( $followe, 1 );
+				$tag_row = JWTag::GetDbRowByName( $tag_name );
+				if( false == empty( $tag_row ) )
+				{
+					$notification = $on ? 'Y' : 'N';
+					if(false == JWTagFollower::IsFollower( $tag_row['id'], $address_user_id ) )
+					{
+						JWTagFollower::Create( $tag_row['id'], $address_user_id, $notification );
+					}else
+					{
+						JWTagFollower::SetNotification( $tag_row['id'], $address_user_id, $notification );
+					}
+					array_push( $follower_name, $tag_row['name'] );
+					continue;
+				}
+			}
+			
+			//notice User
 			$userInfoFollower= JWUser::GetUserInfo( $followe );
 			if ( empty($userInfoFollower) ) {
 				continue;
@@ -285,7 +306,21 @@ class JWRobotLingo {
 		$count_followe = count( $param_array );
 		$follower_name = array();
 		foreach( $param_array as $followe ) {
-
+			
+			//Leave Tag
+			if( substr($followe,0,1) == '#' ) 
+			{
+				$tag_name = substr( $followe, 1 );
+				$tag_row = JWTag::GetDbRowByName( $tag_name );
+				if( false == empty( $tag_row ) )
+				{
+					JWTagFollower::Destroy( $tag_row['id'], $address_user_id );
+					array_push( $follower_name, "#$tag_name" );
+					continue;
+				}
+			}
+			
+			//Leave user
 			$userInfoFollower= JWUser::GetUserInfo( $followe );
 			if ( empty($userInfoFollower) ) {
 				continue;
@@ -477,8 +512,34 @@ class JWRobotLingo {
 		}
 
 		$invitee_address = $matches[1];
-		$follower = JWUser::GetUserInfo( $matches[1] );
 
+		//Follow Tag
+		if( substr($matches[1],0,1) == '#' ) 
+		{
+			$tag_name = substr( $matches[1], 1 );
+			$tag_row = JWTag::GetDbRowByName( $tag_name );
+			if( false == empty( $tag_row ) )
+			{
+				if(false == JWTagFollower::IsFollower( $tag_row['id'], $address_user_id ) )
+				{
+					JWTagFollower::Create( $tag_row['id'], $address_user_id, 'N' );
+				}
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_FOLLOW_SUC', array(
+					"#$tag_name",
+				));
+				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+			}
+			else
+			{
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOTAG', array(
+					"#$tag_name",
+				));
+				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
+			}
+		}
+
+		//Follow User
+		$follower = JWUser::GetUserInfo( $matches[1] );
 		if( empty( $follower ) ) 
 		{
 			if ( preg_match( '#^([^/]+)://(.+)$#', $invitee_address, $matches )

@@ -128,7 +128,7 @@ class JWNotify{
 			}
 		}
 
-		/** Sny to Facebook **/
+		/** Sync to Facebook **/
 		if ( null==$idUserTo && $idFacebook=JWFacebook::GetFBbyUser($idUserFrom) ) 
 		{
 			JWFacebook::RefreshRef($idUserFrom);

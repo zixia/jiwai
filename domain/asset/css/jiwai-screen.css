@@ -653,3 +653,87 @@ a.darkLink { color:#999999!important; text-decoration:none!important; padding:0!
 a.darkLink:hover { color:#999999!important; text-decoration:underline!important; padding:0!important; }
 a.normLink { color:#D05D02!important; text-decoration:none!important; }
 a.normLink:hover { color:#FF830B!important; text-decoration:underline!important; }
+
+/* wtchannel */
+#wtchannel { margin-bottom:6px;}
+#wtchannel .cha_tit0 {padding:10px 0 0 0px; font-weight:bold;font-size:26px; font-family:sans-serif,mono ;}
+#wtchannel .cha_tit {padding:17px 0 0 12px; border:1px solid #D3D3D5; background-color:#F2F2F2; height:27px;font-weight:bold;font-size:26px; font-family:sans-serif,mono ;}
+#wtchannel .pad { float:right; line-height:22px; font-size:12px; font-weight:normal; color:#F87A01;text-decoration:none; padding-right:10px;}
+#wtchannel a.pad:hover { color:#515151; text-decoration:none;}
+#wtchannel .pad1 { float:right; line-height:22px; font-size:12px; font-weight:normal; color:#F87A01;text-decoration:none;}
+#wtchannel a.pad1:hover { color:#515151; text-decoration:none;}
+
+/* wtchannelsidebar */
+#wtchannelsidebar {width:229px; float:right; overflow:hidden;}
+#wtchannelsidebar .sidediv {border:1px solid #D3D3D5;background-color:#F2F2F2;padding:3px;margin-top:10px;height: 1%;overflow: hidden;}
+#wtchannelsidebar .forul {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat 10px 18px; text-indent:15px; padding:16px 0 0 10px;}
+#wtchannelsidebar .clouddiv { margin:10px 3px 0 8px; clear:both;line-height:22px; font-family:Arial, Helvetica, sans-serif;}
+#wtchannelsidebar .clouddiv a {margin: 0 0.5em 0 0;}
+#wtchannelsidebar .cloud1 { font-size:12px;color:#F87A01;line-height:22px;text-decoration:none;}
+#wtchannelsidebar a.cloud1:hover{ font-size:12px;color:white; line-height:22px; background-color:#FF9900;text-decoration:none;}
+#wtchannelsidebar .cloud2 { font-size:13px;color:#D36700;line-height:22px;text-decoration:none;}
+#wtchannelsidebar a.cloud2:hover{ font-size:13px;color:white; line-height:22px; background-color:#FF9900;text-decoration:none;}
+#wtchannelsidebar .cloud3 { font-size:14px;color:#B15600;line-height:22px;text-decoration:none;}
+#wtchannelsidebar a.cloud3:hover{ font-size:14px;color:white; line-height:22px; background-color:#FF9900;text-decoration:none;}
+#wtchannelsidebar .cloud4 { font-size:15px;color:#9D3A00;line-height:22px;text-decoration:none;}
+#wtchannelsidebar a.cloud4:hover{ font-size:15px;color:white; line-height:22px;background-color:#FF9900;text-decoration:none;}
+#wtchannelsidebar .line {background-color:#f2f2f2; padding:10px;clear: both;}
+#wtchannelsidebar .line div{ width:200px; margin:0 auto; border-bottom:1px solid #ffffff; height:1px; background-color:#C7C7C7; padding:0; overflow:hidden;clear: both;}
+#wtchannelsidebar .line2 {background-color:#f2f2f2; padding:10px 10px 0 10px;clear: both;}
+#wtchannelsidebar .line2 div{ width:200px; margin:0 auto; border-bottom:1px solid #ffffff; height:1px; background-color:#C7C7C7; padding:0; overflow:hidden;clear: both;}
+
+#wtchannelsidebar .com { margin:0 7px 0 9px;padding: 10px 0 0 0;clear: both;}
+#wtchannelsidebar .list { list-style:none; clear: both;text-align:center;}
+#wtchannelsidebar .list li { float:left; margin:0 1px 0 0; line-height:16px;}
+#wtchannelsidebar .list li a {width:50px;overflow:hidden; text-decoration:none;}
+#wtchannelsidebar .list li a img { display:block; border:1px solid #f2f2f2; padding:1px; width:46px; height:46px;}
+#wtchannelsidebar .list li a:hover img {border:1px solid #F97B00; padding:1px; background-color:#ffffff;}
+#wtchannelsidebar .list li a span { text-align:center;}
+#wtchannelsidebar .list li a span:hover  { text-align:center;font-size:12px; color:#F87A01;}
+#wtchannelsidebar .sec { float:right; line-height:22px; font-size:12px; padding:15px 10px 8px 0; clear:both; font-weight:normal; color:#000000;text-decoration:none;}
+#wtchannelsidebar a.sec:hover { color:#000000; text-decoration:none;}
+#wtchannelsidebar .sidediv2 {border:1px solid #D3D3D5;width:196px; margin: 0 0 5px 6px; font-weight:bold;padding:5px;}
+#wtchannelsidebar .pad{font-size:12px; color:#555555;text-decoration:none;}
+#wtchannelsidebar a.pad:hover {font-size:12px; color:#000000;text-decoration:none;}
+#wtchannelsidebar .pad1 { line-height:22px; font-size:15px; font-weight:bold;  color:#F87A01;text-decoration:none;}
+#wtchannelsidebar a.pad1:hover { color:#F87A01; font-weight:bold; text-decoration:underline;}
+#wtchannelsidebar .pad2 { line-height:22px; font-size:15px; font-weight:bold;  color:#F87A01;text-decoration:none;}
+#wtchannelsidebar a.pad2:hover { color:#F87A01; font-weight:bold; text-decoration:underline;}
+#wtchannelsidebar .pad3 { line-height:22px; font-size:14px;color:#F87A01;text-decoration:none;}
+#wtchannelsidebar a.pad3:hover { color:#F87A01;  text-decoration:underline;}
+#wtchannelsidebar .content {line-height:20px; height:100%; overflow:hidden; margin:10px 8px 0 8px;}
+
+#wtchannelsidebar .rsshim { display:block; background:url(../images/channel-rss-bg.gif) #f2f2f2 no-repeat center; height:27px;text-align:left;text-indent:0px;margin:0 auto; padding:10px 0 10px 30px; color:#F87A01; font-weight:bold; font-size:12px; text-decoration:none;}
+
+/** for avatar action */
+#wtAvatar {clear:both; margin:0px; }
+#wtAvatar .up { border:1px solid #B9B9B9; padding:2px!important; padding-bottom:0px; width:65px!important; width:71px; position: relative; background-color:#FFF; margin-bottom:-1px; }
+#wtAvatar .up_down { border-bottom: 0px; }
+#wtAvatar .down { display:none; border-left:1px solid #B9B9B9;border-top:1px solid #B9B9B9; border-bottom: 1px solid #666666; border-right: 1px solid #666666;width:180px; padding:2px; background-color: #FFF;}
+#wtAvatar .avatar{ float:left; margin-right:2px; clear:both; }
+#wtAvatar .nav{ float:left; width:15px; height:48px; position:relative; background-repeat:no-repeat; background-color:#FFF;}
+
+#wtAvatar .nav_down { background-image:url(http://asset5.alpha.jiwai.vm/images/avatar/personmenu_down_default.gif); }
+#wtAvatar .nav_down_hover { background-image:url(http://asset5.alpha.jiwai.vm/images/avatar/personmenu_down_hover.gif); }
+#wtAvatar .nav_up { background-image:url(http://asset5.alpha.jiwai.vm/images/avatar/personmenu_up_default.gif); }
+#wtAvatar .nav_up_hover { background-image:url(http://asset5.alpha.jiwai.vm/images/avatar/personmenu_up_hover.gif); }
+
+/*wtTimelineLaunch*/
+#wtTimelineLaunch { margin:2px; height:100%; background-color:#FFFFFF;}
+#wtTimelineLaunch .spacing { margin-bottom:5px}
+#wtTimelineLaunch .floatright { float:right;}
+#wtTimelineLaunch .entry { margin:10px 6px 0 6px; clear:both;}
+#wtTimelineLaunch .content {font-size:12px; line-height:20px; height:100%; overflow:hidden; border:1px solid #FFCFA8; padding:6px 2px 2px 8px; background-color:#ffffff;}
+#wtTimelineLaunch .content .bg { background: url(../images/org-con-bg-launch.gif) no-repeat top;width:13px; height:10px; position:absolute; margin-top:-15px!important; margin-top:-18px; }
+#wtTimelineLaunch .content {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color: white;}
+#wtTimelineLaunch a:hover {color:#FF830B; text-decoration:underline;}
+#wtTimelineLaunch .meta {color:#929292; font-size:12px; display:block; float:right;padding:0 8px 0 0;}
+#wtTimelineLaunch .meta a:link,#wtTimelineLaunch .meta a:visited {color:#D05D02;text-decoration:none;}
+#wtTimelineLaunch .meta a:hover,#wtTimelineLaunch .meta a:active {color:#009BC7;text-decoration:underline;}
+#wtTimelineLaunch .reply {color:#009BC7; font-size:12px;}
+#wtTimelineLaunch .reply a:link,#wtTimeline .reply a:visited {color:#009BC7;text-decoration:underline;}
+#wtTimelineLaunch .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
+#wtTimelineLaunch .Concerndiv { margin:10px; clear:both;}
+#wtTimelineLaunch .Concern {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none;clear:both;}
+#wtTimelineLaunch .Concern a:link {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none; clear:both;}
+#wtTimelineLaunch .Concern a:hover {font-size:12px;color:white; line-height:22px;background-color:#FF9900;text-decoration:none;clear:both;}

@@ -5,12 +5,10 @@ require_once('../../jiwai.inc.php');
 $nameOrId	= @$_REQUEST['nameOrId'];
 $pathParam 	= @$_REQUEST['pathParam'];
 
-
 //die(var_dump($_GET));
 
 // $pathParam is like: "/statuses/123"
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
-
 if ( preg_match('/^\d+$/',$nameOrId) )
 {
 	if( strlen( $nameOrId ) == 6 ) {
@@ -33,13 +31,28 @@ else
 
 	$nameScreen = $nameOrId; //XXX go on even if name is invalid
 	$nameScreen .= preg_match( '/\d+\.\d+\.\d+\.$/', $nameScreen) ? '*' : '';
-	if( false == ( $page_user_id = JWUser::GetUserInfo($nameScreen,'id', 'nameUrl') ) ) {
-		$page_user_info = JWUser::GetUserInfo($nameScreen, null, 'nameScreen');
-		if( false == empty($page_user_info) ){
-			header( 'Location: /'. urlencode( $page_user_info['nameUrl'] ) . $pathParam );
-			exit;
+	$page_user_info = JWUser::GetUserInfo($nameScreen,null,'nameUrl');
+
+	if( empty($page_user_info) )
+	{
+		$page_user_info = JWUser::GetUserInfo( $nameScreen, null, 'nameScreen' );
+		if( false == empty( $page_user_info ) )
+		{
+			$need_redirect = true;
+			JWTemplate::RedirectToUserPage( $page_user_info['nameUrl'] );
 		}
 	}
+
+	if ( 't'==$func)
+	{
+		if (  preg_match('/^([^\/]+)\/?$/',$param,$matches)  )
+			$func = 'channelpublic';
+		else{
+			JWTemplate::RedirectToUserPage( $page_user_info['nameUrl'] );
+		}
+	}
+
+	$page_user_id = empty( $page_user_info ) ? null : $page_user_info['id'];
 }
 
 
@@ -85,6 +98,14 @@ switch ( $func )
 			JWTemplate::RedirectTo404NotFound();
 			exit(0);
 		}
+		break;
+	case 'channelpublic':
+			$tag_name = $matches[1];
+			$tag_row = JWTag::GetDbRowByName( $tag_name );
+			if ( !empty($tag_row) )
+				require_once(dirname(__FILE__) . "/channelpublic.inc.php");
+			else
+				header( 'Location: /'. urlencode( $nameScreen ) . '/' );
 		break;
 
 	case 'statuses':
