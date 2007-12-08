@@ -128,9 +128,9 @@ class JWNotify{
 				if( $messageObject ) 
 				{
 					if( isset($bindOther['twitter']) )
-						JWBindOther::PostStatus( $bindOther['twitter'], $message );
+						JWBindOther::PostStatus( $bindOther['twitter'], $messageObject );
 					if( isset($bindOther['fanfou']) )
-						JWBindOther::PostStatus( $bindOther['fanfou'], $message );
+						JWBindOther::PostStatus( $bindOther['fanfou'], $messageObject );
 				}
 			}
 		}
