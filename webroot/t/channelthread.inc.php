@@ -109,7 +109,14 @@ JWTemplate::html_head($head_options);
 JWTemplate::ShowActionResultTips();
 JWTemplate::StatusHead($idPageUser, $user_row, $status_info, $options = array('isMyPages' => false), false==$protected );
 $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
-$replies_info = JWStatus::GetDbRowsByThread($status_info['id'], $countReply);
+$replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
+
+$status_rows = $user_rows = array();
+if( false == empty( $replies_data ) ) 
+{
+	$replies_info = JWDB_Cache_Status::GetDbRowsByIds( @$replies_data['status_ids'] );
+	$user_rows = JWUser::GetDbRowsByIds( @$replies_data['user_ids'] );
+}
 ?>
 
  <!-- wtTimeline start -->
@@ -123,7 +130,7 @@ $replies_info = JWStatus::GetDbRowsByThread($status_info['id'], $countReply);
    foreach($replies_info as  $k =>$n)
    {
         $reply_info = $n;
-        $reply_user_info = JWUser::GetUserInfo($reply_info['idUser']);
+        $reply_user_info = @$user_ids[ $reply_info['idUser'] ];
 	$reply_to_user_info = JWUser::GetUserInfo( $reply_info['idUserReplyTo'] );
         $photo_url = JWPicture::GetUrlById($reply_info['idPicture'], 'thumb48');
 ?>

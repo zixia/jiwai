@@ -98,7 +98,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromSelfNReplies')	,array($reply_to_user_id) )
 						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusNumFromReplies')	,array($reply_to_user_id) )
-						,JWDB_Cache::GetCacheKeyByFunction	( array('JWStatus','GetStatusReplyFromStatus')	,array($reply_to_user_id) )
 					);
 		}
 
@@ -109,23 +108,23 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetStatusIdsTopicByIdTag' ), array($tag_id) )
 				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetStatusIdsPostByIdTagAndIdUser' ), array($tag_id, $user_id) )
 				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetStatusIdsTopicByIdTagAndIdUser' ), array($tag_id, $user_id) )
+
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetCountTopicByIdTag' ), array($tag_id) )
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetCountPostByIdTag' ), array($tag_id) )
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetCountTopicByIdTagAndIdUser' ), array($tag_id, $user_id) )
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetCountPostByIdTagAndIdUser' ), array($tag_id, $user_id) )
 				);
 
 		}
 
-/*
-							"Status(id=$pk_id)"
+		if( !empty($thread_id ) )
+		{
+			array_push( $dirty_keys
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetStatusIdsByIdThread' ), array($thread_id) )
+				,JWDB_Cache::GetCacheKeyByFunction( array('JWStatus', 'GetCountReply' ), array($thread_id) )
+			);
 
-								,"Status[GetStatusIdsFromUser($user_id)]"
-
-								,"Status[GetStatusIdsFromSelfNReplies($reply_to_user_id)]"
-								,"Status[GetStatusIdsFromReplies($reply_to_user_id)]"
-								,"Status[GetStatusNumFromReplies($reply_to_user_id)]"
-								,"Status[GetStatusNumFromSelfNReplies($reply_to_user_id)]"
-
-								,"Status[GetStatusNum($user_id,$reply_to_user_id)]" 
-							);
-					*/
+		}
 
 		foreach ( $dirty_keys as $dirty_key )
 		{
@@ -138,7 +137,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsFromConferenceUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
-		$max_num		= $start + $num;
+		$max_num	= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
 		// call back function & param
@@ -705,11 +704,10 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 								);
 	}
 
-	static public function GetCountReply( $idStatus, $forceReload=false ) 
+	static public function GetCountReply( $status_id, $forceReload=false ) 
 	{
-		$idStatus = JWDB::CheckInt( $idStatus );
 		$ds_function = array('JWStatus', 'GetCountReply');
-		$ds_param = array( $idStatus );
+		$ds_param = array( $status_id );
 
 		$mc_param = $ds_param;
 		$mc_key = JWDB_Cache::GetCacheKeyByFunction( $ds_function, $mc_param );
@@ -727,7 +725,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountTopicByIdTag( $idTag, $forceReload=false )
     {
-        $idTag = JWDB::CheckInt( $idTag );
         $ds_function = array('JWStatus', 'GetCountTopicByIdTag');
         $ds_param = array( $idTag );
         
@@ -748,7 +745,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
     }
     static public function GetCountPostByIdTag( $idTag, $forceReload=false )
     {
-        $idTag = JWDB::CheckInt( $idTag );
         $ds_function = array('JWStatus', 'GetCountPostByIdTag');
         $ds_param = array( $idTag );
 
@@ -770,8 +766,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountPostByIdTagAndIdUser( $idTag, $idUser, $forceReload=false )
     {
-        $idTag = JWDB::CheckInt( $idTag );
-        $idUser = JWDB::CheckInt( $idUser );
         $ds_function = array('JWStatus', 'GetCountPostByIdTagAndIdUser');
         $ds_param = array( $idTag, $idUser );
 
@@ -793,8 +787,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountTopicByIdTagAndIdUser( $idTag, $idUser, $forceReload=false )
     {
-        $idTag = JWDB::CheckInt( $idTag );
-        $idUser = JWDB::CheckInt( $idUser );
         $ds_function = array('JWStatus', 'GetCountTopicByIdTagAndIdUser');
         $ds_param = array( $idTag, $idUser );
 
@@ -837,33 +829,19 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	/**
 	 *	FIXME: not support idSince & $timeScince param.
 	 */
-	static public function GetStatusReplyFromStatus($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 , $idSince=null, $timeSince=null)
+	static public function GetStatusIdsByIdThread( $thread_id, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
 	{
-		self::Instance();
-
-		$db_row	= JWStatus::GetStatusReplyFromStatus($idUser, $num, $start, $idSince, $timeSince);
-
-		// 更新老数据
-		//self::OnDirty($db_row, 'Status');
-		//:$db_row	= JWDB::GetStatusReplyFromStatus($idUser, $num, $start, $idSince, $timeSince);
-
-		if (empty($db_row))
-			return array();
-
-		return $db_row;
-
-		if(true==false){
-		$max_num		= $start + $num;
-		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
+		$max_num = $start + $num;
+		$mc_max_num = JWDB_Cache::GetMaxCacheNum($max_num);
 
 		// call back function & param
-		$ds_function 	= array('JWStatus','GetStatusReplyFromStatus');
-		$ds_param		= array($idUser,$mc_max_num);
+		$ds_function = array('JWStatus','GetStatusIdsByIdThread');
+		$ds_param = array($thread_id,$mc_max_num);
+
 		// param to make memcache key
-		$mc_param		= array($idUser);
+		$mc_param = array($thread_id);
 
-
-		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction	($ds_function,$mc_param);
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction($ds_function,$mc_param);
 
 		/*
 		 *	对于过多的结果集，只保留一段时间
@@ -909,7 +887,6 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		}
 
 		return $status_info;
-	}
 	}
 }
 ?>

@@ -194,7 +194,7 @@ class JWStatus {
 			}
 		}
 
-		$is_succ= JWDB_Cache::SaveTableRow('Status', array( 
+		return JWDB_Cache::SaveTableRow('Status', array( 
 			'idUser' => $idUser,
 			'status' => $status,
 			'device' => $device,
@@ -210,21 +210,6 @@ class JWStatus {
 			'idThread' => $idThread,
 			'idTag' => $idTag,
 		));
-
-		if( $is_succ && $idThread )
-		{
-			JWDB_Cache_Status::GetCountReply( $idThread, true );
-		}
-		if( $is_succ && $idTag )
-		{
-			JWDB_Cache_Status::GetCountPostByIdTag( $idTag, true );
-		}
-		if( $is_succ && $idTag && empty( $idThread ) )
-		{
-			JWDB_Cache_Status::GetCountTopicByIdTag( $idTag, true );
-		}
-
-		return $is_succ;
 	}
 
 
@@ -736,27 +721,7 @@ _SQL_;
 	static public function Destroy ($idStatus)
 	{
 		$idStatus = JWDB_Cache::CheckInt($idStatus);
-		$statusRow = JWDB_Cache::GetTableRow('Status', array('id'=>$idStatus), 1);
-
-		$is_succ = JWDB_Cache::DelTableRow('Status', array (	'id'	=> $idStatus ));
-
-		if( $is_succ ) 
-		{
-			if( $statusRow['idThread'] )
-			{
-				JWDB_Cache_Status::GetCountReply($statusRow['idThread'], true);
-			}else{
-				JWDB_Cache_Status::GetCountReply($statusRow['id'], true);
-			}
-
-			if( $statusRow['idTag'] ) 
-			{
-				JWDB_Cache_Status::GetCountTopicByIdTag($statusRow['idTag'], true);
-				JWDB_Cache_Status::GetCountPostByIdTag($statusRow['idTag'], true);
-			}
-		}
-
-		return $is_succ;
+		return JWDB_Cache::DelTableRow('Status', array ('id' => $idStatus ));
 	}
 
 
@@ -1202,64 +1167,7 @@ _SQL_;
 	 *	获取 指定idStatus 的所有回复用户
 	 *	@return	rows	
 	 */
-	static public function GetStatusReplyFromStatus($idStatusReplyTo, $num=self::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
-	{
-		$idStatusReplyTo = JWDB::CheckInt( $idStatusReplyTo );
-		$num	= intval($num);
-		$start	= intval($start);
-
-		if ( !is_int($num) || !is_int($start) )
-			throw new JWException('must int');
-
-		$condition_other = null;
-		if( $idSince > 0 ){
-			$condition_other .= " AND Status.id > $idSince";
-		}
-		if( $timeSince ) {
-			$condition_other .= " AND Status.timeCreate > '$timeSince'";
-		}
-
-		$sql = <<<_SQL_
-SELECT		
-			* 
-FROM		
-			Status
-WHERE		
-			Status.idStatusReplyTo = $idStatusReplyTo 
-			$condition_other
-ORDER BY 	
-			Status.timeCreate asc
-LIMIT 		$start,$num
-_SQL_;
-
-		$rows = JWDB_Cache::GetQueryResult($sql,true);
-
-		if (empty($rows))
-			return array();
-
-		return $rows;
-	}
-    
-	/*
-	 *	获取 指定idStatus 的所有回复用户
-	 *	@return rows	
-	 */
-	static public function GetStatusReplyAllFromStatus($idStatusReplyTo, $start=0, $idSince=null, $timeSince=null)
-	{
-		$statusRow = self::GetDbRowById($idStatusReplyTo);
-		$countReply=$statusRow['countReply'];
-
-		if(0==$countReply)
-			return array();
-
-		return self::GetStatusReplyFromStatus($idStatusReplyTo, $countReply, $start, $idSince, $timeSince); 
-	}
-
-	/*
-	 *	获取 指定idStatus 的所有回复用户
-	 *	@return	rows	
-	 */
-	static public function GetDbRowsByThread($idThread, $num=self::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	static public function GetStatusIdsByIdThread($idThread, $num=self::DEFAULT_STATUS_NUM, $start=0 )
 	{
 		$idThread = JWDB::CheckInt( $idThread );
 		$num	= intval($num);
@@ -1268,22 +1176,13 @@ _SQL_;
 		if ( !is_int($num) || !is_int($start) )
 			throw new JWException('must int');
 
-		$condition_other = null;
-		if( $idSince > 0 ){
-			$condition_other .= " AND Status.id > $idSince";
-		}
-		if( $timeSince ) {
-			$condition_other .= " AND Status.timeCreate > '$timeSince'";
-		}
-
 		$sql = <<<_SQL_
 SELECT		
-			* 
+			id, id as idStatus, idUser
 FROM		
 			Status
 WHERE		
 			Status.idThread = $idThread
-			$condition_other
 ORDER BY 	
 			Status.timeCreate asc
 LIMIT 		$start,$num
@@ -1294,7 +1193,15 @@ _SQL_;
 		if (empty($rows))
 			return array();
 
-		return $rows;
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		array_push($user_ids, $idUser);
+
+		return array (
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
 	}
 
 	/*

@@ -949,26 +949,6 @@ class JWSns {
 		return $status;
 	}
 
-	static private function FetchStatusReplyInfo( $status, $options=array() )
-	{
-		if( isset( $options['idUserReplyTo'] ) )
-		{
-			$idUserReplyTo = $options['idUserReplyTo'];
-			$idStatusReplyTo = $options['idStatusReplyTo'];
-		}
-		else
-		{
-			$statusPost = JWRobotLingoBase::ConvertCorner( $status );
-			$reply_info = JWStatus::GetReplyInfo($statusPost, $options);	
-
-			$status = empty( $reply_info ) ? $status : $statusPost;
-			$idUserReplyTo = empty( $reply_info ) ? null : $reply_info['user_id'];
-			$idStatusReplyTo = empty( $reply_info ) ? null : $reply_info['status_id'];
-		}
-
-		return array( $status, $idUserReplyTo, $idStatusReplyTo );
-	}
-
 	static public function ExecWeb($idUser, $status, $operateName='操作')
 	{
 		$robotMsg = new JWRobotMsg();
