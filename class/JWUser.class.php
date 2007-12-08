@@ -353,6 +353,10 @@ _SQL_;
 			$userInfo['nameUrl'] = $userInfo['nameScreen'];
 		}
 
+		if( empty($userInfo['srcRegister']) ) {
+			$userInfo['srcRegister'] = null;
+		}
+
 		while( self::IsExistUrl( $userInfo['nameUrl'] ) ) {
 			$userInfo['nameUrl'] = JWDevice::GenSecret(8);
 		}
@@ -368,6 +372,7 @@ _SQL_;
 			'protected' => $userInfo['protected'],
 			'isWebUser' => $userInfo['isWebUser'],
 			'ipRegister' => @ip2long($userInfo['ip']),
+			'srcRegister' => @$userInfo['srcRegister'],
 		));
 	}
 
@@ -975,6 +980,54 @@ _SQL_;
 			return null;
 
 		return $user_name;
+	}
+	
+	/**
+	 * 获取注册来源
+	 */
+	static public function FetchSrcRegisterFromRobotMsg($robotMsg)
+	{	
+		if( empty( $robotMsg ) )
+			return null;
+
+		$body = $robotMsg->GetBody();
+		$address = $robotMsg->GetAddress();
+		$serverAddress = $robotMsg->GetServerAddress();
+		$type = $robotMsg->GetType();
+
+		if( $type == 'sms' ) 
+		{
+			$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $address );
+			if( false == empty( $preAndId ) )
+			{
+				switch( $preAndId[0] )
+				{
+					case JWFuncCode::PRE_CONF_CUSTOM:
+						$conference = JWConference::GetDbRowFromNumber( $preAndId[1] );
+						if( false == empty($conference) )
+							return 'CO-' . $conference['id'];
+					break;
+					case JWFuncCode::PRE_CONF_IDUSER:
+						if( $preAndId[1] )
+						{
+							$user = JWUser::GetDbRowById( $preAndId[0] );
+							if( false == $user )
+								return 'CO-' . $user['idConference'];
+						}
+					break;
+					case JWFuncCode::PRE_REG_INVITE:
+						if( $preAndId[1] )
+						{
+							$user = JWUser::GetDbRowById( $preAndId[0] );
+							if( false == $user )
+								return 'IN-' . $user['idConference'];
+						}
+					break;
+				}
+			}
+		}
+
+		return null;
 	}
 }
 ?>

@@ -1600,6 +1600,7 @@ class JWRobotLingo {
 
 		$nameFull = $nameScreen;
 		$nameScreen = JWUser::GetPossibleName( $nameScreen );
+		$srcRegister = JWUser::FetchSrcRegisterFromRobotMsg( $robotMsg );
 
 		$uArray = array(
 			'nameScreen' => $nameScreen,
@@ -1609,6 +1610,7 @@ class JWRobotLingo {
 			'noticeAutoNudge' => 'Y',   //Not nudge
 			'deviceSendVia' => $type,
 			'ip' => JWRequest::GetIpRegister($type),
+			'srcRegister' => $srcRegister,
 		);
 
 		$idUser =  JWSns::CreateUser($uArray);
