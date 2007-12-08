@@ -385,7 +385,7 @@ _SQL_;
 		if (preg_match('/^[\x{0000}-\x{0FFF}]+$/u', $name)) {
 			if (mb_strlen($name)<4) return false; //纯西文字符不能短于3
 		} else {
-			if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; //如果包含非西文字符，则其个数不能少于2
+			// if (!preg_match('/[\x{1000}-\x{FFFF}].*[\x{1000}-\x{FFFF}]/u', $name)) return false; //如果包含非西文字符，则其个数不能少于2
 		}
 		$n = $name;
 		JWUnicode::unifyName($n); //检查所属Unicode区块，具体规则见JWUnicode类

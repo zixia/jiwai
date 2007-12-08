@@ -807,7 +807,7 @@ _SQL_;
 				$reply_to = $matches[1];
 				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
 
-				if( $reply_user['id'] == $user['id'] ) 
+				if( false == empty($reply_user) && $reply_user['id'] == $user['id'] ) 
 					$status = preg_replace( "/^@\s*(".$user['nameScreen'].")/i", '', $status );
 			}
 
