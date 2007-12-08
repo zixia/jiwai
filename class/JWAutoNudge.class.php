@@ -168,7 +168,7 @@ _SQL_;
 		JWLog::Instance()->Log(LOG_INFO,"JWAutoNudge::GetIdUserNudgeDay found " . count($id_users_need_nudge) . " user(s) no update in near 24H");
 
 		/*
-		 *	查看用户设置是否 AutoNudge
+		 *	查看用户设置是否 AutoNudge, 只挠Web用户；
 		 */
 		$condition_in = JWDB::GetInConditionFromArray($id_users_need_nudge);
 		$sql = <<<_SQL_
@@ -176,6 +176,7 @@ SELECT	id as idUser
 FROM	User
 WHERE	id IN ( $condition_in )
 		AND noticeAutoNudge='Y'
+		AND isWebUser='Y'
 _SQL_;
 
 		$result_array = JWDB::GetQueryResult($sql, true);
