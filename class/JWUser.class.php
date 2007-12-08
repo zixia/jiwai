@@ -1000,25 +1000,25 @@ _SQL_;
 			$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $address );
 			if( false == empty( $preAndId ) )
 			{
-				switch( $preAndId[0] )
+				switch( $preAndId['pre'] )
 				{
 					case JWFuncCode::PRE_CONF_CUSTOM:
-						$conference = JWConference::GetDbRowFromNumber( $preAndId[1] );
+						$conference = JWConference::GetDbRowFromNumber( $preAndId['id'] );
 						if( false == empty($conference) )
 							return 'CO-' . $conference['id'];
 					break;
 					case JWFuncCode::PRE_CONF_IDUSER:
-						if( $preAndId[1] )
+						if( $preAndId['id'] )
 						{
-							$user = JWUser::GetDbRowById( $preAndId[0] );
+							$user = JWUser::GetDbRowById( $preAndId['id'] );
 							if( false == $user )
 								return 'CO-' . $user['idConference'];
 						}
 					break;
 					case JWFuncCode::PRE_REG_INVITE:
-						if( $preAndId[1] )
+						if( $preAndId['id'] )
 						{
-							$user = JWUser::GetDbRowById( $preAndId[0] );
+							$user = JWUser::GetDbRowById( $preAndId['id'] );
 							if( false == $user )
 								return 'IN-' . $user['idConference'];
 						}

@@ -1173,7 +1173,7 @@ class JWRobotLingo {
 					&& false == JWUser::IsExistUrl( $user_name ) )
 				{
 					$uRow['nameUrl'] = $user_name;
-					$uRow['isUrlFixed'] == 'Y';
+					$uRow['isUrlFixed'] = 'Y';
 				}
 
 				if( JWUser::Modify( $user_info['id'], $uRow ) ){
