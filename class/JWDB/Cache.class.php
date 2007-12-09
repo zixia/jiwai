@@ -164,7 +164,7 @@ die(var_dump($hit_ids));
 		 */
 		if ( count($hit_ids)==count($ids) )
 		{
-			return $hit_db_rows;
+			return self::SortArrayByKeyOrder( $hit_db_rows, $ids );
 		}
 
 		/*
@@ -200,7 +200,7 @@ die(var_dump($hit_ids));
 				$hit_db_rows[ $key_map_mc2db[$unhit_mc_key] ] = $retry_hit_mc_rows[$unhit_mc_key];
 			}
 
-			return $hit_db_rows;
+			return self::SortArrayByKeyOrder( $hit_db_rows, $ids );
 		}
 
 		/*
@@ -223,7 +223,7 @@ die(var_dump($hit_ids));
 		/*
 	 	 *	Stage 3. 返回完整数据
 		 */
-		return $hit_db_rows;
+		return self::SortArrayByKeyOrder( $hit_db_rows, $ids );
 	}
 
 	/**
@@ -702,6 +702,21 @@ die(var_dump($db_result));
 		self::OnDirty($db_row, $table);
 
 		return $ret;
+	}
+
+	/**
+	 * @return new array
+	 * return order array by key order array
+	 */
+	static function SortArrayByKeyOrder( $unsorted = array(), $keys = array() )
+	{
+		$rtn_array = array();
+		foreach( $keys as $key )
+		{
+			if( isset($unsorted[ $key ] ) )
+				$rtn_array[ $key ] = $unsorted[ $key ];
+		}
+		return $rtn_array;
 	}
 }
 ?>
