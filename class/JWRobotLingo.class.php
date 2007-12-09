@@ -1545,7 +1545,19 @@ class JWRobotLingo {
 			$upArray = array( 'idUser' => $mergeToUserInfo['id'] );
 			JWDB::UpdateTableRow( 'Device', $device_db_row['id'], $upArray );
 			
-			//merge status;
+			/**
+			 * merge status; 
+			 * fix me only support 9999
+			 */
+			$status_data = JWStatus::GetStatusIdsFromUser( $device_db_row['idUser'], 9999);
+			$status_ids = $status_data['status_ids'];
+			foreach( $status_ids as $one_status_id)
+			{
+				JWDB_Cache::UpdateTableRow( 'Status', $one_status_id, array(
+					'idUser' => $mergeToUserInfo['id'],
+				));
+			}
+
 			$sql = "UPDATE Status SET idUser=$mergeToUserInfo[id] WHERE idUser=$device_db_row[idUser]";
 			JWDB::Execute( $sql );
 
