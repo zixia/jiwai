@@ -95,17 +95,18 @@ class JWStatus {
 			}else
 			{
 				$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
+
+				$reply_to_user = $matches[2];
+				$user_db_row = JWUser::GetUserInfo($reply_to_user);
+
+				if( empty( $user_db_row ) )
+				{
+					return $rtn_array;
+				}
+
 				$rtn_array['status'] = $status;
+				$user_id = $user_db_row['id'];
 			}
-			$reply_to_user = $matches[2];
-			$user_db_row = JWUser::GetUserInfo($reply_to_user);
-
-			if( empty( $user_db_row ) )
-			{
-				return $rtn_array;
-			}
-
-			$user_id = $user_db_row['id'];
 		}
 
 		/**
