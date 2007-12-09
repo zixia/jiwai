@@ -2590,10 +2590,10 @@ _HTML_;
 	{
 		if( null == $nameUrl ) 
 		{
-			header( "Location: /" );
+			header( 'Location: /' );
 		}else
 		{
-			header( "Location: /$nameUrl/" );
+			header( 'Location: /' . urlEncode($nameUrl) . '/' );
 		}
 		exit(0);
 	}
