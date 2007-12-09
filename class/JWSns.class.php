@@ -963,5 +963,21 @@ class JWSns {
 			JWSession::SetInfo('notice', $replyMsg->GetBody() );
 		}	
 	}
+
+	static public function IsProtected( $user_row, $action_user_id )
+	{
+		if( empty( $user_row ) )
+			return false;
+		
+		if( $user_row['protected'] == 'Y' 
+			&& $action_user_id != $user_row['id'] 
+			&& false == JWFollower::IsFollower( $action_user_id, $user_row['id'] )
+		)
+		{
+			return true;
+		}
+		
+		return false;
+	}
 }
 ?>

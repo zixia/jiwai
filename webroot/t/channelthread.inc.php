@@ -12,14 +12,12 @@ function reply_status($idStatus)
 
 		$status_row = JWStatus::GetDbRowById( $idStatus );
 		
-		$logined_user_info  = JWUser::GetCurrentUserInfo();
+		$current_user_id  = JWLogin::GetCurrentUserId();
 		$status = $_REQUEST['jw_status'] ;
-		$current_user_id = $logined_user_info['id'];
 		$options_info = array(
 			'idThread' => $status_row['id'],
 			'idConference' => $status_row['idConference'],
 			'idTag' => $status_row['idTag'],
-
 		);
 
 		if ( false == empty($_REQUEST['idUserReplyTo']) && false==empty($_REQUEST['idStatusReplyTo']) )
@@ -43,10 +41,11 @@ function reply_status($idStatus)
 
 		return $is_succ;
 	}
+
 	return false;
 }
 
-function user_status($idPageUser, $idStatus, $idStatusReply = null, $idTag = null)
+function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = null)
 {
 	$tag_row = JWTag::GetDbRowById( $idTag );
 
@@ -65,41 +64,33 @@ function user_status($idPageUser, $idStatus, $idStatusReply = null, $idTag = nul
 	}
 
 	JWTemplate::html_doctype();
-	if( empty( $status_info) || $status_info['idUser'] != $idPageUser ) {
+	if( empty( $status_info) || $status_info['idUser'] != $page_user_id ) {
 		JWTemplate::RedirectTo404NotFound();
 	}
 
 	$user_row = JWUser::GetDbRowById( $status_info['idUser'] );
 	$page_user_info = $user_row;
 
-	$logined_user_info = JWUser::GetCurrentUserInfo();
+	$current_user_id = JWLogin::GetCurrentUserId();
 	$formated_status = JWStatus::FormatStatus($status_info,false);
 
 	$pettyDevice = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
 
-	$protected = false;
-	if ( JWUser::IsProtected($idPageUser) )
-	{
-		$protected = true;
-		if ( ! empty($logined_user_info) )
-		{
-			if ( JWFollower::IsFollower( $logined_user_info['idUser'], $idPageUser) || $logined_user_info['idUser']==$idPageUser )
-				$protected = false;
-		}
-	}
+	$protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 
 ?>
 
 <html>
 <head>
 <?php
-$head_options = array('ui_user_id' => $idPageUser);
+$head_options = array('ui_user_id' => $page_user_id);
 JWTemplate::html_head($head_options);
 ?>
 </head>
 <body class="normal">
 <?php //JWTemplate::accessibility() ?>
 <?php JWTemplate::header() ?>
+
  <div id="container">
    <div id="content">
        <div id="wrapper">
@@ -107,7 +98,7 @@ JWTemplate::html_head($head_options);
 
 <?php
 JWTemplate::ShowActionResultTips();
-JWTemplate::StatusHead($idPageUser, $user_row, $status_info, $options = array('isMyPages' => false), false==$protected );
+JWTemplate::StatusHead($page_user_id, $user_row, $status_info, $options = array('isMyPages' => false), false==$protected );
 $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
 $replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
 
@@ -125,7 +116,7 @@ if( false == empty( $replies_data ) )
     echo '<div class="top">目前有&nbsp;<span id="countReply" name="countReply">'.$countReply.'</span>&nbsp;条回复</div>';
 ?>
 
-<?php 
+<?php
 
    foreach($replies_info as  $k =>$n)
    {
@@ -133,11 +124,12 @@ if( false == empty( $replies_data ) )
         $reply_user_info = @$user_rows[ $reply_info['idUser'] ];
 	$reply_to_user_info = JWUser::GetUserInfo( $reply_info['idUserReplyTo'] );
         $photo_url = JWPicture::GetUrlById($reply_info['idPicture'], 'thumb48');
+	$protected = JWSns::IsProtected( $reply_user_info, $current_user_id );
 ?>
 
 	<div class="odd" id="status_<?php echo $reply_info['id']; ?>">
 		<div class="head">
-			<a href="/<?php echo $reply_user_info['nameUrl'] ?>/"><img width="48" height="48" title="<?php echo $reply_user_info['nameScreen']; ?>" src="<?php echo $photo_url  ?> "/></a>
+			<a href="/<?php echo $reply_user_info['nameUrl'] ?>/"><img icon="<?php echo $reply_info['idUser'];?>" class="buddy_icon" width="48" height="48" title="<?php echo $reply_user_info['nameScreen']; ?>" src="<?php echo $photo_url  ?> "/></a>
 		</div>
 		<div class="cont"><div class="bg"></div>
 
@@ -146,11 +138,12 @@ if( false == empty( $replies_data ) )
 		{
 			$formated_status = JWStatus::FormatStatus( $reply_info, false);
 			echo $formated_status['status'];
-            $reply_user_row = JWUser::GetUserInfo( $reply_info['idUser'] );
-            if ($reply_info['idUser'] != $logined_user_info['id'])
-                $reply_user_nameScreen_txt = '@' .$reply_user_row['nameScreen']. ' ';
-            else
-                $reply_user_nameScreen_txt = '';
+			$reply_user_row = JWUser::GetUserInfo( $reply_info['idUser'] );
+			if ( $reply_info['idUser'] != $current_user_id )
+				$reply_user_nameScreen_txt = '@' .$reply_user_row['nameScreen']. ' ';
+			else
+				$reply_user_nameScreen_txt = '';
+
 			JWTemplate::ShowStatusMetaInfo($reply_info, array(
 				'replyLinkClick' => 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$reply_info['idUser']. ';$("idStatusReplyTo").value=' .$reply_info['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;',
 			));
@@ -181,7 +174,7 @@ if( !empty($idStatusReply) )
 	if ( !empty($reply_status_info ) )
 	{
 		$reply_user_info = JWUser::GetUserInfo( $reply_status_info['idUser'] );
-		if ( $logined_user_info['id'] != $reply_status_info['idUser'] )
+		if ( $current_user_id = $reply_status_info['idUser'] )
 			$reply_user_nameScreen_txt = '@' .$reply_user_info['nameScreen']. ' ';
 		else
 			$reply_user_nameScreen_txt = '';
@@ -209,17 +202,16 @@ if( !empty($idStatusReply) )
     }
 ?>
 
-<div style="overflow: hidden; clear: both; height: 8px; line-height: 1px; font-size: 1px;"></div>
 </div></div>
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 </div><!-- sidediv -->
 </div><!-- wtsidebar -->
+
 <div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 </div>
 <!-- #container -->
+
 <?php JWTemplate::footer(); ?>
+
 </body>
 </html>
-<?php
-}
-?>
+<?php } ?>
