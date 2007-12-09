@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- $Id: widget.xml 9 2007-12-05 02:38:11Z linus $ -->
+
+<widget spec_version="2.0">
+  <info>
+    <name>JiWai.de</name>
+    <version>1.0</version>
+    <author>JiWai.de</author>
+    <clientversion>1.0</clientversion>
+    <shortdescription>JiWai.de - MicroBlogging</shortdescription>
+    <longdescription>Twitter like MicroBlogging</longdescription>
+    <tags>JiWai Micro Blog Twitter</tags>
+  </info>
+
+  <parameters>
+    <parameter name="widgetname">JiWai.de</parameter>
+    <parameter name="username" visible="false" editable="false" protected="true"/>
+    <parameter name="password" visible="false" editable="false" protected="true"/>
+
+    <parameter name="language" description="Language" editable="true" visible="true">
+      <option selected="true" value="zh">Simplified Chinese</option>
+      <option value="en">English</option>
+      <option value="zh_TW">Taiwan Chinese</option>
+    </parameter>
+
+    <parameter type="url" visible="false" name="update" method="post">
+      <value>http://${username}:${password}@api.jiwai.de/statuses/update.xml</value>
+    </parameter>
+    <parameter type="url" visible="false" name="jiwaide_blog" editable="false">
+      <value>http://feeds.feedburner.com/jiwai</value>
+    </parameter>
+    <parameter type="url" visible="false" name="public_timeline" editable="false">
+      <value>http://api.jiwai.de/statuses/public_timeline.rss</value>
+    </parameter>
+    <parameter type="url" visible="false" name="user_timeline" editable="false">
+      <value>http://${username}:${password}@api.jiwai.de/statuses/user_timeline.rss</value>
+    </parameter>
+    <parameter type="url" visible="false" name="friends_timeline" editable="false">
+      <value>http://${username}:${password}@api.jiwai.de/statuses/friends_timeline.rss</value>
+    </parameter>
+    <parameter type="url" visible="false" name="direct_messages" editable="false">
+      <value>http://${username}:${password}@api.jiwai.de/direct_messages.rss</value>
+    </parameter>
+  </parameters>
+
+  <services>
+    <service type="http" id="login" />
+    <service type="http" id="logout" />
+    <service type="http" id="update" />
+    <service type="syndication" id="jiwaide_blog">
+      <reference from="jiwaide_blog" to="feedurl"/>
+    </service>
+    <service type="syndication" id="public_timeline">
+      <reference from="public_timeline" to="feedurl"/>
+    </service>
+    <service type="syndication" id="user_timeline">
+      <reference from="user_timeline" to="feedurl"/>
+    </service>
+    <service type="syndication" id="friends_timeline">
+      <reference from="friends_timeline" to="feedurl"/>
+    </service>
+    <service type="syndication" id="direct_messages">
+      <reference from="direct_messages" to="feedurl"/>
+    </service>
+  </services>
+
+  <resources>
+    <code src="jiwaide.he"/>
+
+    <lang id="en" src="en.properties"/>
+    <lang id="zh" src="zh_CN.properties"/>
+    <lang id="zh_TW" src="zh_TW.properties"/>
+
+    <img src="head0.png"/>
+    <img src="butt_bg.png"/>
+    <img src="butt_hover_bg.png"/>
+    <img scale="true" src="minimized.png"/>
+
+    <stylesheet>
+      mini {
+      background: solid white;
+      align: hcenter top;
+      }
+
+      maxi {
+      border-type: rectangle #fd8600;
+      background: solid white;
+      align: hcenter vcenter;
+      }
+
+      popup {
+      border-type: none;
+      background: none;
+      align: hcenter vcenter;
+      }
+
+      header {
+      background: image "head0.png" #fd8600;
+      font-1: medium bold;
+      align: hcenter vcenter;
+      color-1: #ffffff;
+      padding: 3sp 6sp 3sp 6sp;
+      height: 46px;
+      focused {
+      color: white;
+      }
+      }
+
+      <!-- Login Form -->
+      form.base {
+      margin: 0 10 0 10;
+      border: 1 1 1 1;
+      border-type: rectangle #a4a4a4;
+      padding: 2 4 2 2;
+      font: proportional medium plain;
+      focused {
+      border-type: rectangle red;
+      }
+      }
+
+      form.link : form.base {
+      color: #000000;
+      font: medium underlined;
+      border-type: none;
+      padding: 10 0 10 10;
+      focused {
+      color: #d05d02;
+      font: medium plain;
+      }
+      }
+
+      form.input : form.base {
+      margin: 5 10 0 10;
+      border: 1 1 1 1;
+      border-type: rectangle #a4a4a4;
+      background: vgradient #f1f1f1 #ffffff;
+      color: #000000;
+      focused {
+      border-type: rectangle #d05d02;
+      }
+      }
+
+      form.static : form.base {
+      margin: 0 10 0 10;
+      color: #000000;
+      }
+
+      form.label : form.base {
+      color: #d05d02;
+      margin: 5 10 0 10;
+      padding-left: 10px;
+      border: 1 1 1 1;
+      border-type: none;
+      align: left vcenter;
+      }
+
+      <!-- Text -->
+      text.subheader {
+      color: #d05d02;
+      padding: 5 10 5 10;
+      font: proportional medium plain;
+      }
+
+      text.body {
+      color: #d05d02;
+      padding: 0 10 5 10;
+      font: proportional small plain;
+      line-spacing: 2;
+      }
+
+      text.label {
+      color: #000000;
+      padding: 0 10 5 10;
+      font: proportional small plain;
+      line-spacing: 2;
+      }
+
+      <!-- List -->
+      list.bg {
+      padding: 1 5 1 5;
+      border: 1 0 1 0;
+      vspacing: 5;
+      hspacing: 5;
+      background: solid white;
+      color: #000000;
+      font: medium plain;
+
+      focused
+      {
+      background: solid #9ec500;
+      color: #ffffff;
+      }
+      }
+
+      list.unread {
+      color: black;
+      font: small bold underlined;
+      margin: 0 5 1 5;
+      focused {
+      color: white;
+      }
+      }
+
+      list.read {
+      color: black;
+      font: small plain;
+      margin: 0 5 1 5;
+      focused {
+      color: white;
+      }
+      }
+
+      list.name {
+      color: black;
+      font: small bold;
+      }
+
+      <!-- Timeline List -->
+      timeline.list {
+      padding: 1 5 2 5;
+      border: 1 0 1 0;
+      vspacing: 5;
+      hspacing: 5;
+      background: solid white;
+      color: #000000;
+      font: medium plain;
+      focused
+      {
+      background: solid #9ec500;
+      color: #ffffff;
+      }
+      }
+
+      timeline.update {
+      padding: 2 10 2 10;
+      margin: 4 5 3 5;
+      align: hcenter vcenter;
+      font: small plain;
+      background: grid9 "butt_bg.png" 8 8 8 8;
+      color: #000000;
+      focused {
+      background: grid9 "butt_hover_bg.png" 8 8 8 8;
+      color: #ffffff;
+      }
+      }
+
+      timeline.unread {
+      color: black;
+      font: medium bold underlined;
+      focused {
+      color: white;
+      }
+      }
+
+      timeline.read {
+      color: black;
+      font: medium plain;
+      focused {
+      color: white;
+      }
+      }
+
+      minimizedPng
+      {
+        align: hcenter vcenter;
+      }
+    </stylesheet>
+  </resources>
+
+  <layout minimizedheight="45sp">
+    <view id="viewMini">
+      <img class="minimizedPng" src="minimized.png"/>
+    </view>
+  </layout>
+
+</widget>

@@ -1,0 +1,1046 @@
+// $Id: jiwaide.he 9 2007-12-05 02:38:11Z linus $
+
+//FIXME XML-based rather than "programmatic" UI Layout
+
+class
+{
+
+// BEGIN consts
+
+  const String storeUsername     = "login.username";
+  const String storePassword     = "login.password";
+
+  const int    CMD_OPEN     = 1;
+  const int    CMD_BACK     = 2;
+  const int    CMD_CANCEL   = 3;
+  const int    CMD_SHOW     = 4;
+  const int    CMD_ABOUT    = 5;
+  const int    CMD_RELOAD   = 6;
+  const int    CMD_LOGOUT   = 7;
+  const int    CMD_UPDATE   = 8;
+  const int    CMD_LOGIN    = 9;
+  const int    CMD_REPLY    = 10;
+  const int    CMD_DRMSG    = 11;
+  const int    CMD_READALL  = 12;
+  const int    CMD_WANDER   = 13;
+
+  const int    MAX_CMD_ID   = 24;
+
+  const String STATUS_UNVIEWED= "N";
+  const String STATUS_VIEWED  = "Y";
+
+  const int    STATUS_COUNTS  = 20;
+
+// END consts
+
+// BEGIN const strings
+
+  const String CmdAbout   = "关于";
+  const String CmdReload  = "重新获取";
+  const String CmdLogout  = "登出";
+  const String CmdLogin   = "登陆";
+  const String CmdBack    = "返回";
+  const String CmdCancel  = "取消";
+  const String CmdUpdate  = "发送更新";
+  const String CmdReply   = "发送回复";
+  const String CmdDrmsg   = "回复悄悄话";
+  const String CmdMenu    = "选项";
+  const String CmdReadall = "全部已读";
+
+  const String HintUpdate = "我在做什么";
+  const String HintReply  = "@用户名+空格+回复";
+  const String HintDrmsg  = "输入悄悄话";
+
+  const String InfoUpdateSuc  = "发送成功";
+  const String InfoUpdateFail = "发送失败";  
+  const String InfoUsername   = "用户名";
+  const String InfoPassword   = "密   码";
+  const String InfoLogoutSuc  = "请重新登录";
+  const String InfoLogoutFail = "登录失败";
+  const String InfoSyndFail   = "数据抓取失败";
+  const String InfoAuthFail   = "用户认证失败";
+  const String InfoWander     = "随便看看";
+  const String InfoJiWai      = "叽歪是一句话博客";
+  const String InfoJiWai1     = "用只言片语串成生活轨迹";
+  const String InfoJiWai2     = "关心朋友的一举一动";
+  const String InfoJiWai3     = "手机/QQ/MSN/GTalk/Skype/Yahoo";
+  const String InfoJiWai4     = "© 2007 JiWai.de";
+  const String InfoInUpdating = "正在载入数据";
+  const String InfoInLogin    = "正在登录中";
+  const String InfoAbout      = "叽歪是一个通过发送生活中点滴消息，和朋友以及陌生人相互联系的社区";
+  const String InfoAbout1     = "你有N多种方式更新你的叽歪：手机，聊天软件，网页，还有那些通过API来更新的第三方插件。在发送你的叽歪的同时，你可以选择性的接受来自朋友们的消息，无时不刻，无论在何地";
+  const String InfoAbout2     = "欢迎使用手机访问 http://m.jiwai.de";
+
+  const String TimelinePub  = "叽歪广场";
+  const String TimelineUser = "我的叽歪";
+  const String TimelineFri  = "和朋友们";
+  const String TimelineDr   = "悄悄话";
+  const String TimelineBlog = "叽歪de日志";
+
+  const String TitleTimelineList  = "叽歪de我";
+  const String TitleAbout = "关于叽歪de";
+  const String TitleLogin = "叽歪de - 微博客";
+
+  const String FacilityPub  = "public_timeline";
+  const String FacilityUser = "user_timeline";
+  const String FacilityFri  = "friends_timeline";
+  const String FacilityDr   = "direct_messages";
+  const String FacilityBlog = "jiwaide_blog";
+
+  const String loginUrl = "api.jiwai.de/account/verify_credentials.xml";
+  const String logoutUrl= "api.jiwai.de/account/end_session.xml";
+  const String updateUrl= "api.jiwai.de/statuses/update.xml";
+  const String drmsgUrl = "api.jiwai.de/direct_messages/new.xml";
+
+// END const strings
+  
+// BEGIN menu
+
+  MenuItem  MenuAbout   = new MenuItem(CMD_ABOUT,   CmdAbout);
+  MenuItem  MenuReload  = new MenuItem(CMD_RELOAD,  CmdReload);
+  MenuItem  MenuLogout  = new MenuItem(CMD_LOGOUT,  CmdLogout);
+  MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   CmdLogin);
+  MenuItem  MenuBack    = new MenuItem(CMD_BACK,    CmdBack);
+  MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  CmdCancel);
+  MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  CmdUpdate);
+  MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   CmdReply);
+  MenuItem  MenuDrmsg   = new MenuItem(CMD_DRMSG,   CmdDrmsg);
+  MenuItem  MenuOptions = new MenuItem(OPEN_MENU,   CmdMenu);
+  MenuItem  MenuReadall = new MenuItem(CMD_READALL, CmdReadall);
+
+  Menu MENU = new Menu().add(OPEN_MENU, CmdMenu);
+
+// END menu
+
+// BEGIN Variables
+
+  String username;
+  String password;
+
+  int progressTotal;
+  int progressCurrent;
+
+  boolean anonymousMode = true;
+
+  Component tobeFocused;
+
+  Shell timelineListShell;
+  Shell tempShell;
+  Shell exclusiveShell;
+
+  Value lastFocused = [
+    "timeline"  => FacilityPub,
+    "status"    => ""
+  ];
+
+// facility => Value
+  Value timelineList  = [
+    FacilityPub   => [],
+    FacilityUser  => [],
+    FacilityFri   => [],
+    FacilityDr    => [],
+    FacilityBlog  => []
+  ];
+
+  Value timelineViewed= [
+    FacilityPub   => STATUS_UNVIEWED,
+    FacilityUser  => STATUS_UNVIEWED,
+    FacilityFri   => STATUS_UNVIEWED,
+    FacilityDr    => STATUS_UNVIEWED,
+    FacilityBlog  => STATUS_UNVIEWED
+  ];
+
+// END Variables
+
+// Create Menus
+
+  void createPreLoginMenu() {
+    MENU = new Menu().add(CMD_LOGIN, CmdLogin);
+  }
+
+  void createUpdateMenu() {
+    MENU = new Menu().add(CMD_UPDATE, CmdUpdate);
+  }
+
+  void createTimelineListMenu() {
+    MENU = new Menu()
+      .add(CMD_ABOUT,  CmdAbout)
+      .add(CMD_READALL,CmdReadall)
+      .add(CMD_RELOAD, CmdReload)
+      .add(CMD_LOGOUT, CmdLogout);
+  }
+
+  void createTimelineViewMenu () {
+    MENU = new Menu()
+      .add(CMD_ABOUT,  CmdAbout)
+      .add(CMD_READALL,CmdReadall)
+      .add(CMD_RELOAD, CmdReload);
+  }
+
+// END createMenus
+
+// BEGIN createViews
+
+  // Long Long ago, there's a king ...
+  // After all, he's so dead
+  Shell createTimelineList() {
+    createTimelineListMenu();
+    Text updateText = createUpdateText(CmdUpdate);
+    updateText.setAction(CMD_UPDATE);
+    final Flow flow = getTimelineListFlow();
+    final Input updateInput = new Input(getStyle("default"), HintUpdate, "", ANY);
+    flow.add(updateInput);
+    final Shell shell = new Shell(flow);
+    shell.setFocused(tobeFocused);
+    shell.setStyle(getStyle("maxi"));
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    Flow getTimelineListFlow () {
+      Value data = [
+        ["name"    => TimelinePub,
+        "fname"    => FacilityPub,
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => TimelineUser,
+        "fname"    => FacilityUser, 
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => TimelineFri,
+        "fname"    => FacilityFri, 
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => TimelineDr,
+        "fname"    => FacilityDr,
+        "viewed"   => STATUS_UNVIEWED
+          ]
+      ];
+
+      Flow content = new Flow(getStyle("default"));
+      content.setPreferredSize(-100, -100);
+      content.add(createHeaderText(TitleTimelineList));
+
+      content.add(updateText);
+
+      tobeFocused = null;
+      foreach (Value timeline : data)
+      {
+        Flow itemFlow = new Flow(getStyle("timeline.list"));
+        itemFlow.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+        itemFlow.setPreferredWidth(-100);
+        itemFlow.setData(timeline);
+        itemFlow.setAction(CMD_SHOW);
+
+        {
+          Flow textFlow = new Flow(getStyle("timeline.list"));
+          textFlow.setPreferredWidth(-100);
+          textFlow.setFlags(VISIBLE);
+
+          final Style labelStyle = (String(timelineViewed[timeline.fname]).equals(STATUS_UNVIEWED))
+            ? getStyle("timeline.unread")
+            : getStyle("timeline.read");
+          Label name = new Label(labelStyle, timeline.name
+              + "("
+              + getUnviewedSize(timeline.fname)
+              + "/"
+              + timelineList[timeline.fname].size()
+              + ")"
+              );
+          name.setPreferredWidth(-75);
+          name.setFlags(VISIBLE|LINEFEED);
+          textFlow.add(name);
+          itemFlow.add(textFlow);
+          if (String(timeline.fname).equals(String(lastFocused.timeline))) {
+            tobeFocused = itemFlow;
+          }
+        }
+
+        content.add(itemFlow);
+      }
+
+      return content;
+    }
+
+    MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
+    {
+      if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      } else if (key == SOFTKEY_OK) {
+        return MenuOptions;
+      }
+      return null;
+    }
+
+    void myActionHandler(final Shell shell, final Component source, final int action) 
+    {
+      if (action == CMD_BACK) {
+        animatePopShell(shell);
+      } else if (action == CMD_SHOW) {
+        animatePopShell(shell); // force reload while return from child
+        Value sTimeline = Value(source.getData());
+        lastFocused.timeline = sTimeline.fname;
+        timelineViewed[sTimeline.fname] = [];
+        animatePushShell(createTimelineView(sTimeline.fname, sTimeline.name));
+      } else if (action == CMD_RELOAD) {
+        tempShell = shell;
+        bulkFetch();
+      } else if (action == CMD_ABOUT) {
+        animatePushShell(createAboutView());
+      } else if (action == CMD_LOGOUT) {
+        Value arg = [
+          "url"   => createAuthedUrl(logoutUrl)
+        ];
+        call(shell, "logout", "get", arg, logoutok, logoutnok);
+      } else if (action == CMD_UPDATE) {
+        updateInput.edit(doUpdateStatus);
+      } else if (action == CMD_READALL) {
+        bulkReadall();
+        animatePopShell(shell);
+        animatePushShell(createTimelineList());
+      }
+    }
+
+    return shell;
+  }
+
+  void pushExclusiveView(String info) {
+    Flow view = new Flow(getStyle("default"));
+    view.setPreferredSize(-100, 30);
+    view.add(createUpdateText(info));
+    exclusiveShell = new Popup(view);
+    exclusiveShell.setStyle(getStyle("popup"));
+    exclusiveShell.setSoftKeyHandler(nilSoftKeyHandler);
+    animatePushShell(exclusiveShell);
+    MENU.reset();
+    flushScreen(false);
+  }
+
+  Shell createAboutView() {
+    Flow view = new Flow(getStyle("default"));
+    view.setPreferredSize(-100, -100);
+    view.add(createHeaderText(TitleAbout));
+
+    view.add(createSubHeaderText (InfoAbout));
+    view.add(createBodyText(InfoAbout1));
+    view.add(createBodyText(InfoAbout2));
+
+    return getViewShell(view);
+  }
+
+  Shell createTimelineView(String facility, String title) {
+    createTimelineViewMenu();
+    Flow content = new Flow(getStyle("default"));
+    content.setPreferredSize(-100, -100);
+    
+    final Input updateInput = new Input(getStyle("default"), HintUpdate, "", ANY);
+    content.add(updateInput);
+    content.add(createHeaderText(title));
+
+    Flow lowerFlow = new Flow(getStyle("default"));
+    lowerFlow.setPreferredSize(-100, 0);
+
+    Text updateText = null;
+    if (anonymousMode) {
+      updateText = createUpdateText(CmdLogin);
+      updateText.setAction(CMD_LOGIN);
+    } else {
+      updateText = createUpdateText(CmdUpdate);
+      updateText.setAction(CMD_UPDATE);
+    }
+    lowerFlow.add(updateText);
+    
+    tobeFocused = null;
+    foreach (Value status : timelineList[facility])
+    {
+      Flow itemFlow = new Flow(getStyle("list.bg"));
+      itemFlow.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+      itemFlow.setPreferredWidth(-100);
+      itemFlow.setData(status);
+      itemFlow.setAction(CMD_SHOW);
+
+      {
+        Flow textFlow = new Flow(getStyle("default"));
+        textFlow.setPreferredWidth(-100);
+        textFlow.setFlags(VISIBLE);
+
+        final Style labelStyle = (String(status.viewed).equals(STATUS_UNVIEWED))
+          ? getStyle("list.unread")
+          : getStyle("list.read");
+        Label name = new Label(labelStyle, status.title);
+        name.setPreferredWidth(-100);
+        name.setFlags(VISIBLE|LINEFEED);
+
+        textFlow.add(name);
+        itemFlow.add(textFlow);
+
+        if (status.iid.equals(lastFocused.status)) {
+          tobeFocused = itemFlow;
+        }
+      }
+      
+      lowerFlow.add(itemFlow);
+    }
+    content.add(lowerFlow);
+
+    final Shell shell = new Shell(content);
+    shell.setStyle(getStyle("maxi"));
+    shell.setFocused(tobeFocused);
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
+    {
+      if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      } else if (key == SOFTKEY_OK) {
+        return MenuOptions;
+      }
+      return null;
+    }
+    
+    void myActionHandler(final Shell shell, final Component source, final int action) 
+    {
+      if (action == CMD_BACK) {
+        animatePopShell(shell);
+        if (!anonymousMode) {
+          animatePushShell(createTimelineList());
+        }
+      } else if (action == CMD_SHOW) {
+        animatePopShell(shell);
+        Value status = Value(source.getData());
+        status.viewed = [];
+        lastFocused.status = status.iid;
+        animatePushShell(createTimelineView(facility, title));
+        animatePushShell(createStatusView(status, facility));
+      } else if (action == CMD_RELOAD) {
+        tempShell = shell;
+        if (anonymousMode) {
+          Value arg = [
+            "ts"  => 0,
+            "max" => STATUS_COUNTS,
+            "refresh" => true
+          ];
+          call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
+        } else {
+          fetchAndRefresh(new List().add(facility));
+        }
+      } else if (action == CMD_ABOUT) {
+        animatePushShell(createAboutView());
+      } else if (action == CMD_UPDATE) {
+        updateInput.edit(doUpdateStatus);
+      } else if (action == CMD_READALL) {
+        doReadall(facility);
+        animatePopShell(shell);
+        animatePushShell(createTimelineView(facility, title));
+      } else if (action == CMD_LOGIN) {
+        animatePopShell(shell);
+      }
+    }
+
+    return shell;
+  }
+
+  Shell createStatusView(Value status, String facility)
+  {
+    Flow view = new Flow(getStyle("default"));
+    view.setPreferredSize(-100, -100);
+
+    final Calendar cal = new Calendar();
+    cal.setMillis(status.created);
+    final String created = cal.format(FORMAT_DATETIME);
+
+    String inputTitle = (String(status.author).equals(username))
+      ? HintUpdate 
+      : (facility.equals(FacilityUser) || facility.equals(FacilityBlog))
+        ? HintUpdate
+        : (facility.equals(FacilityDr))
+          ? HintDrmsg
+          : HintReply;
+    final Input replyInput = new Input(getStyle("default"), inputTitle, "", ANY);
+    view.add(replyInput);
+    
+    view.add(createHeaderText(""));
+    view.add(createSubHeaderText(created));
+    if (facility.equals(FacilityDr)) {
+      view.add(createBodyText(status.title));
+      view.add(createBodyText(status.content.val));
+    } else if (facility.equals(FacilityBlog)) {
+      view.add(createBodyText(status.title));
+      view.add(createBodyText(status.content.val));
+      alertError(status);
+    } else {
+      view.add(createBodyText(status.title));
+    }
+
+    final Shell shell = new Shell(view);
+    shell.setStyle(getStyle("maxi"));
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
+    {
+      if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      } else if (anonymousMode) {
+        return null;
+      } else if (key == SOFTKEY_OK) {
+        if (String(status.author).equals(username)) {
+          return MenuUpdate;
+        } else if (facility.equals(FacilityPub)) {
+          return MenuReply;
+        } else if (facility.equals(FacilityUser)) {
+          return MenuUpdate;
+        } else if (facility.equals(FacilityFri)) {
+          return MenuReply;
+        } else if (facility.equals(FacilityDr)) {
+          return MenuDrmsg;
+        } else if (facility.equals(FacilityBlog)) {
+          return MenuUpdate;
+        }
+      }
+      return null;
+    }
+  
+    void myActionHandler(final Shell shell, final Component source, final int action) 
+    {
+      if (action == CMD_BACK) {
+        animatePopShell(shell);
+      } else if (action == CMD_REPLY) {
+        replyInput.setText("@" + status.author + " ");
+        replyInput.edit(doReplyStatus);
+      } else if (action == CMD_UPDATE) {
+        replyInput.edit(doUpdateStatus);
+      } else if (action == CMD_DRMSG) {
+        replyInput.setData(status.author);
+        replyInput.edit(doDrStatus);
+      }
+    }
+    return shell;
+  }
+    
+  Shell createLoginForm() {
+    createPreLoginMenu();
+    Flow loginForm = new Flow(getStyle("default"));
+    loginForm.setPreferredSize(-100, -100);
+    
+    loginForm.add(createHeaderText(TitleLogin));
+
+    Label labelUsername = createFormLabel(InfoUsername);
+    loginForm.add(labelUsername);
+    
+    Input inputUsername = new Input(getStyle("form.input"), InfoUsername,  username, ANY);
+    inputUsername.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+    inputUsername.setPreferredWidth(-100);
+    loginForm.add(inputUsername);
+
+    Label labelPassword = createFormLabel(InfoPassword);
+    loginForm.add(labelPassword);
+
+    Input inputPassword = new Input(getStyle("form.input"), InfoPassword, password, ANY|PASSWORD);
+    inputPassword.setFlags(VISIBLE|FOCUSABLE|LINEFEED|PASSWORD|ANY);
+    inputPassword.setPreferredWidth(-100);
+    loginForm.add(inputPassword);
+  
+    Label labelWander = new Label(getStyle("form.link"), InfoWander);
+    labelWander.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+    labelWander.setPreferredWidth(-100);
+    labelWander.setAction(CMD_WANDER);
+    loginForm.add(labelWander);
+
+    loginForm.add(createFormStatic(InfoJiWai));
+    loginForm.add(createFormStatic(InfoJiWai1));
+    loginForm.add(createFormStatic(InfoJiWai2));
+    loginForm.add(createFormStatic(InfoJiWai3));
+    loginForm.add(createFormStatic(InfoJiWai4));
+    
+    final Shell shell = new Shell(loginForm);
+    shell.setStyle(getStyle("maxi"));
+
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key) 
+    {
+      if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      } if (key == SOFTKEY_OK) {
+        return MenuLogin;
+      }
+      return null;
+    }
+
+    void myActionHandler(final Shell shell, final Component source, final int action) 
+    {
+      if (action == CMD_BACK) {
+        animatePopShell(shell);
+      } else if (action == CMD_LOGIN) {
+        anonymousMode = false;
+        username = inputUsername.getText();
+        password = inputPassword.getText();
+        Value arg = [ "url"   => createAuthedUrl(loginUrl) ];
+        call(null, "login", "get", arg, authok, authnok);
+        tempShell = shell;
+      } else if (action == CMD_WANDER) {
+        Value arg = [
+          "ts"  => 0,
+          "max" => STATUS_COUNTS,
+          "refresh" => true
+        ];
+        call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
+      }
+    }
+
+    return shell;
+  }
+
+// END createViews
+
+// BEGIN fetchMethods
+
+  void fetchTimeline(String facility)
+  {
+    Value arg = [
+      "ts"  => 0,
+      "max" => STATUS_COUNTS,
+      "refresh" => true
+    ];
+    call(facility, facility, "getItems", arg, fetchok, fetchnok);
+  }
+
+  void rawFetchTimeline(String facility)
+  {
+    Value arg = [
+      "ts"  => 0,
+      "max" => STATUS_COUNTS,
+      "refresh" => true
+    ];
+    call(facility, facility, "getItems", arg, rawfetchok, fetchnok);
+  }
+
+  void doReadall(String facility)
+  {
+    timelineViewed[facility].viewed = []; 
+    foreach (Value item: timelineList[facility]) {
+      item.viewed = [];
+    }
+  }
+
+  void doUpdateStatus(final Shell shell, final Component source, final int action) 
+  {
+    if (action == ITEM_CANCEL) { return; }
+    Input updateInput = Input(source);
+    final Value params = [
+      "status"=> updateInput.getText(),
+      "idPartner"=> "10038"
+    ];
+    Value arg = [
+      "url"   => createAuthedUrl(updateUrl),
+      "params"=> params
+    ];
+    call(shell, "update", "post", arg, updateok, updatenok);
+  }
+
+  void doReplyStatus(final Shell shell, final Component source, final int action) 
+  {
+    String replyTo = String(source.getData());
+    if (action == ITEM_CANCEL) { return; }
+    Input replyInput = Input(source);
+    final Value params = [
+      "status"=> replyInput.getText(),
+      "idPartner"=> "10038"
+    ];
+    Value arg = [
+      "url"   => createAuthedUrl(updateUrl),
+      "params"=> params
+    ];
+    call(shell, "update", "post", arg, updateok, updatenok);
+  }
+
+  void doDrStatus(final Shell shell, final Component source, final int action) 
+  {
+    String replyTo = String(source.getData());
+    if (action == ITEM_CANCEL) { return; }
+    Input updateInput = Input(source);
+    final Value params = [
+      "user"  => replyTo,
+      "text"  => updateInput.getText(),
+      "idPartner"=> "10038"
+    ];
+    Value arg = [
+      "url"   => createAuthedUrl(drmsgUrl),
+      "params"=> params
+    ];
+    call(shell, "update", "post", arg, drok, drnok);
+  }
+
+// END fetchMethods
+
+// BEGIN callBacks
+
+  void fetchok(Object state, Value ret)
+  {
+    createValueFromTimeline(state, ret);
+    timelineViewed[state] = STATUS_UNVIEWED;
+
+    if (++progressCurrent == progressTotal) {
+      popShell(exclusiveShell);
+      popShell(tempShell);
+      timelineListShell = createTimelineList();
+      pushShell(timelineListShell);
+      tempShell = timelineListShell;
+    }
+  }
+
+  void rawfetchok(Object state, Value ret)
+  {
+    createValueFromTimeline(state, ret);
+    timelineViewed[state] = STATUS_UNVIEWED;
+
+    if (++progressCurrent == progressTotal) {
+      popShell(exclusiveShell);
+    }
+  }
+
+  void fetchnok(Object state, String error)
+  {
+    alertError(InfoSyndFail + ": "+error);
+  }
+
+  void wanderok(Object state, Value ret)
+  {
+    createValueFromTimeline(state, ret);
+    timelineViewed[state] = STATUS_UNVIEWED;
+    popShell(tempShell);
+    pushShell(createTimelineView(FacilityPub, FacilityPub));
+  }
+
+  void wandernok(Object state, String error)
+  {
+    alertError(InfoSyndFail + ": "+error);
+  }
+
+  void logoutok(Object state, Value ret)
+  {
+    animatePopShell(tempShell);
+    animatePopShell(Shell(state));
+    Store store = getStore();
+    store.remove(storeUsername);
+    store.remove(storePassword);
+    anonymousMode = true;
+    animatePushShell(createLoginForm());
+  }
+
+  void logoutnok(Object state, String error)
+  {
+    alertError(InfoLogoutFail + ": "+error);
+  }
+
+  void initok(Object state, Value ret)
+  {
+    animatePushShell(createTimelineList());
+  }
+
+  void initnok(Object state, String error)
+  {
+    animatePushShell(createLoginForm());
+  }
+
+  void authok(Object state, Value ret)
+  {
+    anonymousMode = false;
+    Store store = getStore();
+    store.put(storeUsername, Value(username));
+    store.put(storePassword, Value(password));
+    setAuthedParameters();
+    bulkFetch();
+  }
+
+  void authnok(Object state, String error)
+  {
+    anonymousMode = true;
+    Store store = getStore();
+    store.remove(storeUsername);
+    store.remove(storePassword);
+    alertError(InfoAuthFail + ": " +error);
+  }
+
+  void updateok(Object state, Value ret)
+  {
+    alertError(InfoUpdateSuc);
+    animatePopShell(Shell(state));
+    rawFetchAndRefresh(new List().add(FacilityUser).add(FacilityFri));
+  }
+
+  void updatenok(Object state, String error)
+  {
+    alertError(InfoUpdateFail +error);
+  }
+
+  void drok(Object state, Value ret)
+  {
+    alertError(InfoUpdateSuc);
+    animatePopShell(Shell(state));
+  }
+
+  void drnok(Object state, String error)
+  {
+    alertError(InfoUpdateFail +error);
+  }
+
+// END callBacks
+
+// BEGIN handies
+
+  void animatePushShell(Shell foo)
+  {
+    //int w, int h = getScreenSize();
+    //slideIn(w, 0, w, h, foo);
+    pushShell(foo);
+  }
+
+  void animatePopShell(Shell foo)
+  {
+    //int w, int h = getScreenSize();
+    //slideOut(-w, 0, w, h, foo);
+    //slideOut(-w, 0, w, h, foo);
+    popShell(foo);
+  }
+
+  void bulkFetch() {
+    progressTotal = 4;
+    progressCurrent = 0;
+    pushExclusiveView(InfoInUpdating);
+    fetchTimeline(FacilityPub);
+    fetchTimeline(FacilityUser);
+    fetchTimeline(FacilityFri);
+    fetchTimeline(FacilityDr);
+  }
+
+  void fetchOnce(String facility) {
+    progressTotal = 1;
+    progressCurrent = 0;
+    pushExclusiveView(InfoInUpdating);
+    fetchTimeline(facility);
+  }
+
+  void fetchAndRefresh(List facilities) {
+    progressTotal = facilities.size();
+    progressCurrent = 0;
+    pushExclusiveView(InfoInUpdating);
+    foreach (String facility : facilities) {
+      fetchTimeline(facility);
+    }
+  }
+
+  void rawFetchAndRefresh(List facilities) {
+    progressTotal = facilities.size();
+    progressCurrent = 0;
+    pushExclusiveView(InfoInUpdating);
+    foreach (String facility : facilities) {
+      rawFetchTimeline(facility);
+    }
+  }
+
+  void bulkReadall() {
+    doReadall(FacilityPub);
+    doReadall(FacilityUser);
+    doReadall(FacilityFri);
+    doReadall(FacilityDr);
+  }
+
+  Label createFormStatic(String name)
+  {
+    Label retLabel = new Label(getStyle("text.label"), name);
+    retLabel.setFlags(VISIBLE|LINEFEED);
+    retLabel.setPreferredWidth(-100);
+    return retLabel;
+  }
+
+  Label createFormLabel(String name)
+  {
+    Label retLabel = new Label(getStyle("form.label"), name);
+    retLabel.setFlags(VISIBLE|LINEFEED);
+    retLabel.setPreferredWidth(-100);
+    return retLabel;
+  }
+
+  Text createHeaderText(String name)
+  {
+    Text text = new Text(getStyle("header"), "");
+    text.setPreferredWidth(-100);
+    text.setFlags(VISIBLE|LINEFEED);
+    return text;
+  }
+
+  Text createSubHeaderText(String st)
+  {
+    Text text = new Text(getStyle("text.subheader"), st);
+    text.setPreferredWidth(-100);
+    text.setFlags(VISIBLE|LINEFEED);
+    return text;
+  }
+
+  Text createUpdateText(String name)
+  {
+    Text text = new Text(getStyle("timeline.update"), name);
+    text.setPreferredWidth(-100);
+    text.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
+    return text;
+  }
+
+  Text createBodyText(String st)
+  {
+      Text text = new Text(getStyle("text.body"), st);
+      text.setPreferredWidth(-100);
+      text.setFlags(VISIBLE|LINEFEED);
+      return text;
+  }
+
+  void createValueFromTimeline(String facility, Value ret)
+  {
+    Value tempList = timelineList[facility].copy();
+    Value tobeInsert = [];
+    timelineList[facility] = [];
+    boolean fFresh = true;
+
+    foreach (Value item : ret) {
+    //FIXME O(N) -> O(1)
+      foreach (Value temp : tempList) {
+        if (temp.iid.equals(item.iid)) {
+          fFresh = String(temp.viewed).equals(STATUS_UNVIEWED);
+        }
+      }
+      tobeInsert = [
+        "iid"     => item.iid,
+        "title"   => item.title,
+        "link"    => item.link,
+        "created" => item.created,
+        "author"  => item.author,
+        "content" => item.content,
+        "viewed"  => (fFresh) ? STATUS_UNVIEWED : STATUS_VIEWED
+      ];
+      timelineList[facility].add(tobeInsert);
+    }
+  }
+
+  int getUnviewedSize(String facility)
+  {
+    int unviewed = 0;
+    foreach (Value item: timelineList[facility]) {
+      if (String(item.viewed).equals(STATUS_UNVIEWED)) {
+        ++unviewed;
+      }
+    }
+    return unviewed;
+  }
+
+  Shell getViewShell(Component content)
+  {
+    final Shell shell = new Shell(content);
+    shell.setStyle(getStyle("maxi"));
+    shell.setSoftKeyHandler(defaultSoftKeyHandler);
+    shell.setActionHandler(defaultActionHandler);
+
+    return shell;
+  }
+  
+  MenuItem defaultSoftKeyHandler(final Shell shell, final Component focused, final int key) 
+  {
+    if (key == SOFTKEY_BACK) {
+      return MenuBack;
+    }
+    return null;
+  }
+
+  MenuItem nilSoftKeyHandler(final Shell shell, final Component focused, final int key) 
+  {
+    if (key == SOFTKEY_BACK) {
+      return MenuBack;
+    }
+    return null;
+  }
+
+  void defaultActionHandler(final Shell shell, final Component source, final int action) 
+  {
+    if (action == CMD_BACK) {
+      animatePopShell(shell);
+    }
+  }
+    
+  void alertError(String error)
+  {
+    setBubble(null, error);
+  }
+
+  String createAuthedUrl(String raw) {
+    if (anonymousMode) {
+      return "http://" + raw;
+    }
+    return "http://"
+      + username
+      + ":"
+      + password
+      + "@"
+      + raw;
+  }
+
+  void setAuthedParameters() {
+    setParameters( [ 
+      "username"    => username,
+      "password"    => password
+    ] );
+  }
+  
+// END handies
+  
+// BEGIN WidSets Interface
+
+  MenuItem getSoftKey(Shell shell, Component focused, int key)
+  {
+    if (key == SOFTKEY_OK) {
+      return MenuOptions;
+    } else if (key == SOFTKEY_BACK) {
+      return MenuBack;
+    }
+    return null;
+  }
+  
+  Menu getMenu(Shell shell, Component source)
+  {
+      return MENU;
+  }
+
+  void startWidget()
+  {
+    setMinimizedView(createMinimizedView("viewMini", getStyle("default")));
+  }
+
+  Shell openWidget()
+  {
+    createPreLoginMenu();
+    Store store = getStore();
+    username = store.has(storeUsername)? String(store.getValue(storeUsername)) : "";
+    password = store.has(storePassword)? String(store.getValue(storePassword)) : "";
+
+    Value arg = [ "url"   => createAuthedUrl(loginUrl) ];
+    call(null, "login", "get", arg, initok, initnok);
+
+    return null;
+  }
+
+  void closeWidget()
+  {
+    if (!anonymousMode) {
+      Store store = getStore();
+      store.put(FacilityPub,  timelineList[FacilityPub]);
+      store.put(FacilityUser, timelineList[FacilityUser]);
+      store.put(FacilityFri,  timelineList[FacilityFri]);
+      store.put(FacilityDr,   timelineList[FacilityDr]);
+    }
+  }
+
+// END WidSets Interface
+
+} //class
+
+// vim:tabstop=2:shiftwidth=2:expandtab
