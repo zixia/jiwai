@@ -850,7 +850,7 @@ _HTML_;
 
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_url;?>/<?php echo (@$statusRows[$status_id]['isMms']=='Y')? 'mms/'.$status_id : '' ?>"><img width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $name_url;?>/"><img width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont">
 		<div class="bg"></div>
 		<?php echo $status; ?><br />

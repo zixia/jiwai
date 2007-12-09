@@ -130,7 +130,7 @@ if( false == empty( $replies_data ) )
    foreach($replies_info as  $k =>$n)
    {
         $reply_info = $n;
-        $reply_user_info = @$user_ids[ $reply_info['idUser'] ];
+        $reply_user_info = @$user_rows[ $reply_info['idUser'] ];
 	$reply_to_user_info = JWUser::GetUserInfo( $reply_info['idUserReplyTo'] );
         $photo_url = JWPicture::GetUrlById($reply_info['idPicture'], 'thumb48');
 ?>
