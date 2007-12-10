@@ -27,50 +27,51 @@ if (!$request){
 }
 
 
-if (in_array($request->mode,
-             array('checkid_immediate', 'checkid_setup'))) 
+if (in_array($request->mode, array('checkid_immediate', 'checkid_setup'))) 
 {
 	if ( !preg_match('#jiwai.de/([^/]+)#i',$request->identity,$matches) ){
 		return JWOpenid_Server::AuthCancel($request);
 	}
 
-	$user_name 		= $matches[1];
+	$user_name = $matches[1];
 	$user_db_row	= JWUser::GetUserInfo($user_name);
 
 	if ( empty($user_db_row) )
 		return JWOpenid_Server::AuthCancel($request);
 
-    if (JWOpenid_TrustSite::IsTrusted($user_db_row['idUser'], $request->trust_root)) 
+	if (JWOpenid_TrustSite::IsTrusted($user_db_row['idUser'], $request->trust_root)) 
 	{
-        $response =& $request->answer(true);
+		$response =& $request->answer(true);
 /*
 	protected user info now.
-        $sreg = JWOpenid_Server::GetSregByUserId($user_db_row['idUser']);
-        if (is_array($sreg)) 
+		$sreg = JWOpenid_Server::GetSregByUserId($user_db_row['idUser']);
+		if (is_array($sreg)) 
 		{
-            foreach ($sreg as $k => $v) {
-                $response->addField('sreg', $k, $v);
-            }
-        }
+			foreach ($sreg as $k => $v) {
+				$response->addField('sreg', $k, $v);
+			}
+		}
 */
-    } else if ($request->immediate) {
-        $response =& $request->answer(false, JWOpenid_Server::GetServerURL());
-    } else {
-        if (!JWLogin::IsLogined()) {
+	} else if ($request->immediate) {
+		$response =& $request->answer(false, JWOpenid_Server::GetServerURL());
+	} else {
+		if ( false == JWLogin::IsLogined() ) {
 			JWLogin::RedirectToLogin('/wo/openid/server');
 			exit(0);
-        }
+		}else if ( JWLogin::GetCurrentUserId() !=  $user_db_row['id'] ) {
+			return JWOpenid_Server::AuthCancel($request);
+		}
 		header("Location: /wo/trustsite/confirm/" . $request->trust_root);
 		exit(0);
-    }
+	}
 } else {
-    $response =& $server->handleRequest($request);
+	$response =& $server->handleRequest($request);
 }
 
 $webresponse =& $server->encodeResponse($response);
 
 foreach ($webresponse->headers as $k => $v) {
-    header("$k: $v");
+	header("$k: $v");
 }
 
 header("Connection: close");
