@@ -193,12 +193,14 @@ class JWSPCode {
 	static public function GetSupplierByMobileNo( $mobileNo ) 
 	{
 		if ( preg_match('/^13[4-9]\d{8}$/',$mobileNo ) 
-				|| preg_match('/^15[0-9]\d{8}$/',$mobileNo)
+			|| preg_match('/^15(0|8|9)\d{8}$/',$mobileNo)
 		){
 			return self::SP_MOBILE;
 		}
 
-		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) ) {
+		if ( preg_match('/^13[0-3]\d+$/',$mobileNo ) 
+			|| preg_match('/^15(3|6)\d{8}$/',$mobileNo)
+		) {
 			return self::SP_UNICOM;
 		}
 
