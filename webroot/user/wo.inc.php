@@ -16,25 +16,10 @@ $page = ( $page < 1 ) ? 1 : $page;
 
 $page_user_id		= $g_page_user_id;
 
-$logined_user_info	= JWUser::GetCurrentUserInfo();
+$current_user_id	= JWLogin::GetCurrentUserId();
 $page_user_info 	= JWUser::GetUserInfo($page_user_id);
 
-
-$show_protected_content = true;
-
-if ( false == JWUser::IsAdmin($logined_user_info['idUser'])
-	&& JWUser::IsProtected($page_user_id) )
-{
-	if ( empty($logined_user_info) 
-		|| ( 
-			false == JWFollower::IsFollower($logined_user_info['idUser'], $page_user_id)
-			&& $logined_user_info['idUser'] != $page_user_id 
-		)
-	){
-		$show_protected_content= false;
-	}
-}
-
+$protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 
 //die(var_dump($_REQUEST));
 //die( var_dump($page_user_id));
@@ -136,7 +121,7 @@ $page_user_info[nameUrl]($page_user_info[nameFull]) - $page_user_info[bio] $page
 _STR_;
 
 $description = "叽歪de $page_user_info[nameFull] ";
-if ($show_protected_content) {
+if ( false == $protected ) {
 
 $description .= @$head_status_rows[$head_status_id]['status'];
 
@@ -214,13 +199,10 @@ JWTemplate::ShowActionResultTips();
 
 //die(var_dump($page_user_id));
 $status_user_info = $page_user_info;
-if( @$head_status_rows[$head_status_id] && $show_protected_content ) {
-	$status_user_info = JWUser::GetUserInfo( $head_status_rows[$head_status_id]['idUser'] );
+if( @$head_status_rows[$head_status_id] && false == $protected ) {
+	$status_user_info = JWUser::GetDbRowById( $head_status_rows[$head_status_id]['idUser'] );
 }
-JWTemplate::StatusHead($page_user_id, $status_user_info, @$head_status_rows[$head_status_id]
-						, null // options
-						, $show_protected_content 
-					);
+JWTemplate::StatusHead($page_user_id, $status_user_info, @$head_status_rows[$head_status_id] , null );
 
 ?>
 
@@ -253,8 +235,9 @@ $menu_list[$active_tab]['active'] = true;
 //die(var_dump($menu_list));
 
 
-if ( $show_protected_content )
+if ( false == $protected ) {
 	JWTemplate::tab_menu($menu_list); 
+}
 ?>
 
 			<div class="tab">
@@ -265,10 +248,9 @@ if ( !isset($g_user_with_friends) )
 
 JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, array(
 	'icon'	=> $g_user_with_friends,
-	'protected'=> ( false == $show_protected_content ),
+	'protected'=> $protected,
 	'pagination' => $pagination, 
 )) ;
-
 ?>
 			</div><!-- tab -->
 
@@ -276,7 +258,7 @@ JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, arra
 	</div><!-- content -->
 
 <?php 
-$user_action_rows	= JWSns::GetUserActions($logined_user_info['id'] , array($page_user_info['id']) );
+$user_action_rows	= JWSns::GetUserActions($current_user_id , array($page_user_info['id']) );
 
 if ( empty($user_action_rows) )
 	$user_action_row	= array();
@@ -287,7 +269,7 @@ else
 $arr_friend_list	= JWFollower::GetFollowingIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 
-$idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], @$logined_user_info['id'] );
+$idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], $current_user_id );
 
 $arr_menu = array(
 	array ('user_notice', array($page_user_info)),
@@ -306,7 +288,7 @@ $arr_menu = array(
 if ( false == JWLogin::IsLogined() ) {
 	array_push ( $arr_menu, array('register', array(true)) );
 } else {
-	array_push ( $arr_menu, array('block', array($logined_user_info['id'], $page_user_id)) );
+	array_push ( $arr_menu, array('block', array($current_user_id, $page_user_id)) );
 }
 
 JWTemplate::sidebar( $arr_menu, $page_user_id);

@@ -559,7 +559,7 @@ _TAB_;
 	}
 
 
-	static public function StatusHead($idUser, $userRow, $statusRow, $options=null, $isOpen=true)
+	static public function StatusHead( $page_user_id, $userRow, $statusRow, $options=null )
 	{
 		$name_screen = $userRow['nameScreen'];
 		$name_url = $userRow['nameUrl'];
@@ -581,7 +581,9 @@ _TAB_;
 		$device = 'WEB';
 		$hasFollowed = $current_user_id ? JWFollower::IsFollower($userRow['id'], $current_user_id) : false;
 
-		if ( false == $isOpen )
+		$protected = JWSns::IsProtected( $userRow, $current_user_id );
+
+		if ( $protected )
 		{
 			$status		= <<<_HTML_
 我只和我关注的人分享我的叽歪。<br />
@@ -652,7 +654,7 @@ _HTML_;
 <h3><?php echo $name_screen;?></h3>
 
 					   <p class="t-text"><?php echo $status;?></p>
-<?php if( $isOpen ) { 
+<?php if( false == $protected ) { 
 	$reply_user_row = ( $statusRow['idUserReplyTo'] ) ?
 		JWUser::GetUserInfo( $statusRow['idUserReplyTo'] ) : null;
     if ($userRow['id'] != $current_user_id)
