@@ -558,52 +558,41 @@ _TAB_;
 	{
 	}
 
-
-	static public function StatusHead( $page_user_id, $userRow, $statusRow, $options=null )
+	static public function StatusHead( $userRow, $statusRow, $options=null )
 	{
 		$name_screen = $userRow['nameScreen'];
 		$name_url = $userRow['nameUrl'];
 		$name_full = $userRow['nameFull'];
 
-		if ( !empty($statusRow['idPicture']) )
-			$photo_url	= JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
-		else
-			$photo_url	= JWPicture::GetUserIconUrl($idUser, 'thumb96');
-	
+		$noneStatus = empty( $statusRow );
 
-		if ( !isset($options['trash']) )
+		if ( false == empty($statusRow['idPicture']) )
+			$photo_url = JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
+		else
+			$photo_url = JWPicture::GetUserIconUrl($userRow['id'], 'thumb96');
+	
+		if ( false == isset($options['trash']) )
 			$options['trash'] = true;
 
-		if ( !isset($options['isMyPages']) )
+		if ( false == isset($options['isMyPages']) )
 			$options['isMyPages'] = true;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 		$device = 'WEB';
-		$hasFollowed = $current_user_id ? JWFollower::IsFollower($userRow['id'], $current_user_id) : false;
 
+		$followed = JWFollower::IsFollower($userRow['id'], $current_user_id);
 		$protected = JWSns::IsProtected( $userRow, $current_user_id );
 
-		if ( $protected )
-		{
-			$status		= <<<_HTML_
-我只和我关注的人分享我的叽歪。<br />
-_HTML_;
-			if( $current_user_id && false==$hasFollowed ) {
-				$oc = ( 
-					JWUser::IsProtected( $userRow['id'] )
-					&& false == JWFollower::IsFollower( $current_user_id, $userRow['id'] )
-				) ? 'onclick="return JiWai.requestFriend('.$userRow['id'].', this);"' : '';
-				$status .= <<<_HTML_
-<a href="/wo/followings/follow/$idUser" $oc>开始关注我。</a>
-_HTML_;
-			}
+		/** initial **/
+		$status = null;
+		$isMms = false;
 
-		}
-		else if ( empty($statusRow) )
-		{
+		if ( $noneStatus )
 			$status = "迄今为止还没有叽歪过！";
-		}
-		else	
+		else if ( $protected ) 
+			$status = '我只和我关注的人分享我的叽歪。';
+
+		if ( null == $status )
 		{
 			$status_id = $statusRow['idStatus'];
 			$status = $statusRow['status'];
@@ -620,7 +609,6 @@ _HTML_;
 			$replytoname = $status_result['replytoname'];
 
 			$isMms = ( @$statusRow['isMms'] == 'Y') ;
-
 		}
 
 ?>
@@ -635,45 +623,50 @@ _HTML_;
 					<div class="cont">
 						<div class="bg"></div>
 <?php
-	if ($current_user_id != $idUser) {
-		if ( $current_user_id && JWFollower::IsFollower( $userRow['id'], $current_user_id ) ) {
-			$follow_string = "已关注";
-		} else {
-			$oc = ( JWUser::IsProtected($idUser) 
-				&& false == JWFollower::IsFollower( $current_user_id, $userRow['id'] ) 
-			) ? 'onclick="return JiWai.requestFriend('.$idUser.', this);"' : '';
+	if ( $followed ) 
+	{
+		$follow_string = "已关注";
+	} else 
+	{
+		$oc = ( $current_user_id && JWSns::IsProtected( $userRow, $current_user_id ) ) ? 
+			'onclick="return JiWai.requestFriend('.$userRow['id'].', this);"' : '';
 
-			if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
-				$follow_string = "<a href=\"/wo/followings/follow/$userRow[id]\" $oc>关注此人</a>";
-			}
+		if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
+			$follow_string = "<a href=\"/wo/followings/follow/$userRow[id]\" $oc>关注此人</a>";
 		}
 	}
 ?>
 
 <span class="floatright" style="font-size:12px;color:#999;"><?php echo $follow_string;?></span>
 <h3><?php echo $name_screen;?></h3>
+	<p class="t-text"><?php echo $status;?></p>
+<?php 
+if( false == $protected && false == $noneStatus )
+{ 
 
-					   <p class="t-text"><?php echo $status;?></p>
-<?php if( false == $protected ) { 
 	$reply_user_row = ( $statusRow['idUserReplyTo'] ) ?
 		JWUser::GetUserInfo( $statusRow['idUserReplyTo'] ) : null;
-    if ($userRow['id'] != $current_user_id)
-        $reply_user_nameScreen_txt = '@' .$userRow['nameScreen']. ' ';
-    else
-        $reply_user_nameScreen_txt = '';
-	$replyLinkClick = ( $options['isMyPages'] ? '' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;' );
+
+	if ($userRow['id'] != $current_user_id)
+		$reply_user_nameScreen_txt = '@' .$userRow['nameScreen']. ' ';
+	else
+		$reply_user_nameScreen_txt = '';
+
+	$replyLinkClick = ( $options['isMyPages'] ? 
+		'' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;' );
+
 	self::ShowStatusMetaInfo($statusRow, array(
 		'showPublisher' => false,
 		'replyLinkClick' => $replyLinkClick,
 	));
-} ?>
+}
+?>
 			</div><!-- cont -->
 		   </div><!-- odd -->
 		 </div><!-- permalink -->	
 
 <?php
 	}
-
 
 	/*
 	 * 	显示删除的图标和操作

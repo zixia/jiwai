@@ -98,7 +98,8 @@ JWTemplate::html_head($head_options);
 
 <?php
 JWTemplate::ShowActionResultTips();
-JWTemplate::StatusHead($page_user_id, $user_row, $status_info, $options = array('isMyPages' => false), false==$protected );
+JWTemplate::StatusHead( $user_row, $status_info, $options = array('isMyPages' => false) );
+
 $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
 $replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
 
@@ -202,7 +203,6 @@ if( !empty($idStatusReply) )
     }
 ?>
 
-</div></div>
 </div><!-- sidediv -->
 </div><!-- wtsidebar -->
 

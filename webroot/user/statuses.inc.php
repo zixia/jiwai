@@ -1,13 +1,13 @@
 <?php
-function user_status($idPageUser, $idStatus)
+function user_status($page_user_id, $status_id)
 {
 	JWTemplate::html_doctype();
 
-	$status_rows	= JWStatus::GetDbRowsByIds(array($idStatus));
-	$status_info	= @$status_rows[$idStatus];
+	$status_rows	= JWStatus::GetDbRowsByIds(array($status_id));
+	$status_info	= @$status_rows[$status_id];
 
-	$page_user_info	= JWUser::GetUserInfo($idPageUser);
-	if ( $status_info['idUser']!==$idPageUser && false == ( @$status_info['idConference']!=null 
+	$page_user_info	= JWUser::GetUserInfo($page_user_id);
+	if ( $status_info['idUser']!==$page_user_id && false == ( @$status_info['idConference']!=null 
 						&& $status_info['idConference'] == $page_user_info['idConference'] 
 					) 
 		)
@@ -16,22 +16,13 @@ function user_status($idPageUser, $idStatus)
 		exit(0);
 	}
 
-	$logined_user_info	= JWUser::GetCurrentUserInfo();
+	$current_user_id = JWLogin::GetCurrentUserId();
 
-	$formated_status 	= JWStatus::FormatStatus($status_info,false);
+	$formated_status = JWStatus::FormatStatus($status_info,false);
 
-	$pettyDevice = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
+	$petty_device = JWDevice::GetNameFromType( $status_info['device'], $status_info['idPartner'] );
 
-	$protected = false;
-	if ( JWUser::IsProtected($idPageUser) )
-	{
-		$protected = true;
-		if ( ! empty($logined_user_info) )
-		{
-			if ( JWFollower::IsFollower($logined_user_info['idUser'], $idPageUser) || $logined_user_info['idUser']==$idPageUser )
-				$protected = false;
-		}
-	}
+	$protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 
 ?>
 <html>
@@ -49,7 +40,7 @@ background: transparent url()
 
 
 <?php 
-$head_options = array ( 'ui_user_id'=>$idPageUser );
+$head_options = array ( 'ui_user_id'=>$page_user_id );
 JWTemplate::html_head($head_options) ;
 ?>
 </head>
@@ -65,10 +56,9 @@ JWTemplate::html_head($head_options) ;
 <div id="container">
 <div id="content">
 <div id="wrapper">
-<?php 
 
-	JWTemplate::StatusHead($page_user_info['id'], $page_user_info, $status_info, $options=null, false==$protected);
-?>	
+<?php JWTemplate::StatusHead( $page_user_info, $status_info, $options=null ); ?>	
+
 </div><!-- wrapper -->
 </div><!-- content -->
 

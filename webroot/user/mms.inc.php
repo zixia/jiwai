@@ -19,27 +19,13 @@ $active = 'mms'; $mmsId = 0 ;
 $mmsId = intval( $mmsId );
 
 
-$page_user_id		= $g_page_user_id;
+$page_user_id = $g_page_user_id;
 
-$logined_user_info	= JWUser::GetCurrentUserInfo();
-$page_user_info 	= JWUser::GetUserInfo($page_user_id);
+$current_user_id = JWLogin::GetCurrentUserId();
+$page_user_info = JWUser::GetDbRowById($page_user_id);
 
-$show_protected_content = true;
+$protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 
-if ( !JWUser::IsAdmin($logined_user_info['idUser'])
-		&& $logined_user_info['idUser']!=$page_user_id 
-		&& JWUser::IsProtected($page_user_id) )
-{
-	if ( empty($logined_user_info) )
-		$show_protected_content= false;
-	else if ( ! JWFollower::IsFollower($logined_user_info['idUser'], $page_user_id) )
-		$show_protected_content= false;
-}
-
-
-//die(var_dump($_REQUEST));
-//die( var_dump($page_user_id));
-//die( var_dump($logined_user_info));
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -50,8 +36,8 @@ $active_tab = 'archive';
 if ( $active == 'mms_friends' )
 	$active_tab = 'friends';
 /*
- *	使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
- *
+ * 使用 JWPagination 时，要注意用户在最上面已经显示了一条了，所以总数应该减一
+ *  not minus - 1
  */
 switch ( $active_tab )
 {
@@ -60,7 +46,7 @@ switch ( $active_tab )
 		// 显示用户自己的
 		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id);
 
-		$pagination	= new JWPagination($user_status_num-1, $page);
+		$pagination	= new JWPagination($user_status_num, $page);
 		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 		break;
 
@@ -108,19 +94,19 @@ $page_user_info[nameScreen]($page_user_info[nameFull]) - $page_user_info[bio] $p
 _STR_;
 
 $description = "叽歪de $page_user_info[nameFull] ";
-if ($show_protected_content) {
-
-$description .= @$head_status_rows[$head_status_id]['status'];
-
-foreach ( $status_data['status_ids'] as $status_id )
+if ( false == $protected ) 
 {
-	$description .= ' '.$status_rows[$status_id]['status'];
-	if ( mb_strlen($description,'UTF-8') > 140 )
+	$description .= @$head_status_rows[$head_status_id]['status'];
+
+	foreach ( $status_data['status_ids'] as $status_id )
 	{
-			$description = mb_substr($description,0,140,'UTF-8');
-			break;
+		$description .= ' '.$status_rows[$status_id]['status'];
+		if ( mb_strlen($description,'UTF-8') > 140 )
+		{
+				$description = mb_substr($description,0,140,'UTF-8');
+				break;
+		}
 	}
-}
 }
 
 $rss = array ( 	
@@ -184,12 +170,8 @@ JWTemplate::html_head($options);
 <?php
 JWTemplate::ShowActionResultTips();
 
-
 //die(var_dump($page_user_id));
-JWTemplate::StatusHead($page_user_id, $user_rows[$page_user_id], @$head_status_rows[$head_status_id]
-						, null // options
-						, $show_protected_content 
-					);
+JWTemplate::StatusHead( $page_user_info, @$head_status_rows[$head_status_id] );
 
 ?>
 
@@ -211,7 +193,7 @@ $menu_list[$active_tab]['active'] = true;
 //die(var_dump($menu_list));
 
 
-if ( $show_protected_content )
+if ( false == $protected )
 	JWTemplate::tab_menu($menu_list); 
 ?>
 
@@ -223,14 +205,11 @@ if ( !isset($g_user_with_friends) )
 
 
 // 只有用户不设置保护，或者设置了保护是好友来看的时候，才显示内容
-if ( $show_protected_content ) {
+if ( false == $protected ) {
 	JWTemplate::Timeline( $status_data['status_ids'] ,$user_rows ,$status_rows,
 				array(
 					'icon'	=> $g_user_with_friends,
-					//如果当前用户就是保护的，则不显示；如果当前登录用户不是当前页面用户，也要保护。
-					'protected'=> false == ( $show_protected_content 
-								|| $logined_user_info['idUser']==$page_user_id 
-							),
+					'protected'=> $protected, 
                                     	'pagination' => $pagination,
 					'isMms' => true, 
 				 )
@@ -257,7 +236,7 @@ if ( $show_protected_content )
 
 //$arr_action_param	= JWSns::GetUserAction($logined_user_info['id'],$page_user_info['id']);
 
-$user_action_rows	= JWSns::GetUserActions($logined_user_info['id'] , array($page_user_info['id']) );
+$user_action_rows	= JWSns::GetUserActions($current_user_id , array($page_user_info['id']) );
 
 if ( empty($user_action_rows) )
 	$user_action_row	= array();
