@@ -13,8 +13,10 @@
 <h2>JiWai用户管理</h2>
 <ul>
 	<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/wo/zdmin/userquery">用户信息查询 [Y]</a></li>
-	<li ${$menu_nav=='usershield'?'class="selected"':''}><a href="/wo/zdmin/usershield">屏蔽用户列表</a></li>
 	<li ${$menu_nav=='usersetting'?'class="selected"':''}><a href="/wo/zdmin/usersetting">修改用户设置</a></li>
+	<li ${$menu_nav=='conflist'?'class="selected"':''}><a href="/wo/zdmin/conflist">会议用户列表</a></li>
+	<li ${$menu_nav=='confsetting'?'class="selected"':''}><a href="/wo/zdmin/confsetting">修改会议用户设置</a></li>
+	<li ${$menu_nav=='usershield'?'class="selected"':''}><a href="/wo/zdmin/usershield">屏蔽用户列表</a></li>
 	<li ${$menu_nav=='userurl'?'class="selected"':''}><a href="/wo/zdmin/userurl">允许用户修改URL</a></li>
 </ul>
 <h2>JiWai运营数据查询</h2>

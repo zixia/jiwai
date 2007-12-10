@@ -1,0 +1,83 @@
+<?php
+if(!defined('TPL_COMPILED_DIR')) define('TPL_COMPILED_DIR',dirname(__FILE__).'/compiled');
+if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/template');
+require_once('../../../jiwai.inc.php');
+require_once('./function.php');
+
+$un = null;
+extract($_GET, EXTR_IF_EXISTS);
+
+$unResult = array();
+if( $un ) {
+	$user_info = JWUser::GetUserInfo( $un );
+	$idUser = $user_info['id'];
+}
+else
+{
+	$user_info = JWUser::GetCurrentUserInfo();
+	$idUser = $user_info['id'];
+	$un = $user_info['nameScreen'];
+}
+
+if( $_POST ){
+	$enableConference = 'N';
+	$conf = null;
+	extract($_POST, EXTR_IF_EXISTS);
+	if( 'Y' == $enableConference ) {
+		if( isset( $conf['deviceAllow'] ) ) {
+			$friendOnly = isset( $conf['friendOnly'] ) ? 'Y' : 'N';
+			$deviceAllow = implode(',', $conf['deviceAllow'] );
+
+			$conference = JWConference::GetDbRowFromUser( $idUser );
+			if( empty( $conference ) ){
+				$idConference = JWConference::Create($idUser, array(
+					'friendOnly' => $friendOnly, 
+					'deviceAllow' => $deviceAllow,
+				));
+				JWUser::SetConference($idUser, $idConference);
+			}else{
+				$idConferenceNow = $conference['id'];
+				if( empty($conf['number']) ) $conf['number'] = null;
+				JWConference::Update($idConferenceNow, $friendOnly, $deviceAllow, $conf['number'] );
+				if( null == $idConference ) {
+					JWUser::SetConference($idUser, $idConferenceNow );
+				}
+			}
+		}
+	}else{
+		if( $user_info['idConference'] ) {
+			JWUser::SetConference($idUser);
+		}
+	}
+
+	header("Location: confsetting?un=$un");
+}
+
+/* Confrence Information */
+$conferenceSetting = array(
+		'sms' => '',
+		'im' => '',
+		'web' => '',
+		'friendOnly' => '',
+		'enable_conference' => '',
+		'number' => '',
+		);
+
+$conference = JWConference::GetDbRowFromUser( $idUser );
+if( !empty( $conference ) ){
+	$conferenceSetting['friendOnly'] = ('Y'==$conference['friendOnly']) ? 'checked="true"' : '';
+	$deviceAllow = explode(',', $conference['deviceAllow']);
+	$conferenceSetting['sms'] = in_array('sms', $deviceAllow) ? 'checked="true"' : '';
+	$conferenceSetting['im'] = in_array('im', $deviceAllow) ? 'checked="true"' : '';
+	$conferenceSetting['web'] = in_array('web', $deviceAllow) ? 'checked="true"' : '';
+	$conferenceSetting['enable_conference'] = (null!=$user_info['idConference']) ? 'checked="true"' : '';
+	$conferenceSetting['number'] = $conference['number'];
+}
+
+$render = new JWHtmlRender();
+$render->display("confsetting", array(
+			'menu_nav' => 'confsetting',
+			'un' => $un,
+			'confSetting' => $conferenceSetting,
+			));
+?>
