@@ -12,11 +12,12 @@ if( $un ) {
 	$user_info = JWUser::GetUserInfo( $un );
 	$idUser = $user_info['id'];
 }
-else
+if (empty($user_info))
 {
 	$user_info = JWUser::GetCurrentUserInfo();
 	$idUser = $user_info['id'];
 	$un = $user_info['nameScreen'];
+	header("Location: confsetting?un=$un");
 }
 
 if( $_POST ){
@@ -37,9 +38,17 @@ if( $_POST ){
 				JWUser::SetConference($idUser, $idConference);
 			}else{
 				$idConferenceNow = $conference['id'];
-				if( empty($conf['number']) ) $conf['number'] = null;
-				JWConference::Update($idConferenceNow, $friendOnly, $deviceAllow, $conf['number'] );
 				if( null == $idConference ) {
+					if( !empty($conf['number']) )
+					{
+						$sql = "select * from Conference where number='$conf[number]'";
+						$row = JWDB::GetQueryResult($sql);
+					}
+					else
+						$conf['number'] = null;
+					if( !empty($row) )			
+						header("Location: confsetting?un=$un");
+					JWConference::Update($idConferenceNow, $friendOnly, $deviceAllow, $conf['number'] );
 					JWUser::SetConference($idUser, $idConferenceNow );
 				}
 			}
