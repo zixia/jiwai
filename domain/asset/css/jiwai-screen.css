@@ -33,9 +33,11 @@ fieldset th, fieldset td,  {
 }
 /* new update start */
 input, button, select { font-size:12px; vertical-align:middle; padding:0 5px 0 0}
-input.submitbutton  { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
-button.submitbutton { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
-.submitbutton:focus { border-color:#000;}
+input.submitbutton, button.submitbutton  { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+button.submitbutton:focus, input.submitbutton:focus { border-color:#000;}
+input.closebutton, button.closebutton { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#F9F8F9 #828183 #828183 #F9F8F9; background:#DDDDDD;color:#000;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+input.closebutton:focus, button.closebutton:focus { border-color:#000;}
+
 .jwselect { padding:0; font-size:12px; width:138px; height:18px;}
 .ctrlenter {margin:0;font-size:12px;color:#999;text-align: right;float: right;font-weight: 100;padding: 9px 0 0 0;}
 
@@ -710,11 +712,11 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 
 /** for avatar action */
 #wtAvatar {clear:both; margin:0px; }
-#wtAvatar .up { border:1px solid #B9B9B9; padding:2px!important; padding-bottom:0px; width:65px!important; width:71px; position: relative; background-color:#FFF; margin-bottom:-1px; }
+#wtAvatar .up { border:1px solid #B9B9B9; padding:2px 0!important; padding-bottom:0px; width:69px!important; position: relative; background-color:#FFF; margin-bottom:-1px;}
 #wtAvatar .up_down { border-bottom: 0px; }
-#wtAvatar .down { display:none; border-left:1px solid #B9B9B9;border-top:1px solid #B9B9B9; border-bottom: 1px solid #666666; border-right: 1px solid #666666;width:180px; padding:2px; background-color: #FFF;}
-#wtAvatar .avatar{ float:left; margin-right:2px; clear:both; }
-#wtAvatar .nav{ float:left; width:15px; height:48px; position:relative; background-repeat:no-repeat; background-color:#FFF;}
+#wtAvatar .down { display:none; border-left:1px solid #B9B9B9;border-top:1px solid #B9B9B9; border-bottom: 1px solid #666666; border-right: 1px solid #666666;width:180px; background-color: #FFF;}
+#wtAvatar .avatar{ float:left; margin:0px 2px; clear:both; display:inline; }
+#wtAvatar .nav{ float:left; width:15px; height:48px; position:relative; background-repeat:no-repeat; background-color:#FFF; display:inline;}
 
 #wtAvatar .nav_down { background-image:url(../images/avatar/personmenu_down_default.gif); }
 #wtAvatar .nav_down_hover { background-image:url(../images/avatar/personmenu_down_hover.gif); }
@@ -740,3 +742,23 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtTimelineLaunch .Concern {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none;clear:both;}
 #wtTimelineLaunch .Concern a:link {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none; clear:both;}
 #wtTimelineLaunch .Concern a:hover {font-size:12px;color:white; line-height:22px;background-color:#FF9900;text-decoration:none;clear:both;}
+
+/*wtLightbox*/
+#wtLightbox {background-color:#FFFFFF;}
+#wtLightbox .head {float:left; width:56px; overflow:hidden; height:55px;}
+#wtLightbox .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
+#wtLightbox h1 {border-top: #C2C2C2 1px solid;}
+#wtLightbox h2 {margin: 13px 6px 8px 13px;}
+#wtLightbox textarea.requestFriend { border:1px solid #C3C3C3; width:280px; height:70px; overflow:hidden; padding:5px; font-size:12px;}
+#wtLightbox .red {font-size: 12px; color:#FF0000; font-weight:bold; padding:0 6px 0 6px;}
+#wtLightbox .entry { padding:5px 0 0 5px; clear:both; background-color:#F5F5F5;}
+#wtLightbox .pad { font-size:15px; color:#333333; font-weight:bold;padding:20px 0 22px 0;}
+#wtLightbox .pad1 { font-size:14px; color:#000000;line-height:20px;padding:10px 10px 5px 10px;}
+#wtLightbox .pad2 { font-size:12px; color:#555555;line-height:20px;padding:10px 10px 5px 7px;}
+#wtLightbox .pad3 { font-size:12px; color:#D05D02;line-height:20px;padding:5px 10px 5px 10px;}
+#wtLightbox .butt { padding:0 5px 10px 80px;}
+#wtLightbox .lightbox_login { margin: 0 0 10px 0;padding: 0 0px;}
+#wtLightbox .po { padding: 0 5px 15px 67px;}
+#wtLightbox .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 215px;height:18px;}
+#wtLightbox .mar { margin: 0 0 0 1em;}
+#wtLightbox .pic {float:right;}

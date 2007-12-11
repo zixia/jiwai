@@ -713,6 +713,16 @@ class JWSns {
 					$queueType = JWNotifyQueue::T_MMS;
 				}
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
+				if (defined('BETA')) {
+					if (!extension_loaded('spread')) 
+						dl('spread.so'); //FIXME to be removed
+					$metaInfo['idUser'] = $idUser;
+					$metaInfo['idUserReplyTo'] = $idUserReplyTo;
+					$metaInfo['idPicture'] = empty($picUrl) ? 0 : $createOptions['idPicture'];
+					$metaInfo['idStatus'] = $idStatus;
+					$metaInfo['device'] = $device;
+					JWPubSub::Instance('spread://localhost/')->Publish('/statuses/update',$metaInfo);
+				} /* BETA */
 			}
 
 			//Activate User
