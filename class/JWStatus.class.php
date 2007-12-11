@@ -87,26 +87,31 @@ class JWStatus {
 		/**
 		 * if not set idUserReplyTo in options;
 		 */
-		if ( $user_id == null ) 
+		if ( false == preg_match( "/^(\s*@\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 		{
-			if ( false == preg_match( "/^(\s*@\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
-			{
-				return $rtn_array;
-			}else
-			{
-				$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
+			return $rtn_array;
+		}else
+		{
+			$reply_to_user = $matches[2];
+			$user_db_row = JWUser::GetUserInfo($reply_to_user);
 
-				$reply_to_user = $matches[2];
-				$user_db_row = JWUser::GetUserInfo($reply_to_user);
+			if ( $user_id == null && false==empty($user_db_row) )
+				$user_id = $user_db_row['id'];
 
-				if( empty( $user_db_row ) )
-				{
-					return $rtn_array;
-				}
+			if ( $user_id ) 
+			{
+				if ( false==empty($reply_to_user) && $user_db_row['id'] == $user_id )
+					$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
 
 				$rtn_array['status'] = $status;
-				$user_id = $user_db_row['id'];
 			}
+
+			if( empty( $user_db_row ) && null==$user_id )
+			{
+				return $rtn_array;
+			}
+
+			$rtn_array['status'] = $status;
 		}
 
 		/**
@@ -775,7 +780,7 @@ _SQL_;
 				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
 
 				if( false == empty($reply_user) && $reply_user['id'] == $user['id'] ) 
-					$status = preg_replace( "/^@\s*(".$user['nameScreen'].")/i", '', $status );
+					$status = preg_replace( "/^@\s*(".$user['nameScreen'].")\s*/i", '', $status );
 			}
 
 			$status = "@$user[nameScreen] $status";
@@ -791,7 +796,7 @@ _SQL_;
 				$tag_row = JWUser::GetUserInfo( $tag_name ) ;
 
 				if( false == empty($tag_row) && $tag_row['id'] == $tag_id ) 
-					$status = preg_replace( "/^@\s*(".$tag['name'].")/i", '', $status );
+					$status = preg_replace( "/^@\s*(".$tag['name'].")\s*/i", '', $status );
 			}
 
 			$status = "#$tag[name] $status";
@@ -898,7 +903,7 @@ _HTML_;
 				$u = JWUser::GetUserInfo( $matches[1] );
 				if( false==empty($u) && $u['id'] == $reply_to_user_id ) 
 				{
-					$status = preg_replace( '/@\s*('.$matches[1].')\b/i', '', $status );
+					$status = preg_replace( '/@\s*'.$matches[1].'\s*/i', '', $status );
 				}
 			}
 
@@ -920,7 +925,7 @@ _HTML_;
 				$t = JWTag::GetDbRowByName( $matches[1] );
 				if( false==empty($t) && $t['id'] == $tag_id ) 
 				{
-					$status = preg_replace( '/#\s*('.$matches[1].')\b/i', '', $status );
+					$status = preg_replace( '/#\s*('.$matches[1].')\s*/i', '', $status );
 				}
 			}
 
