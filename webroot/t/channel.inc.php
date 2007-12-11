@@ -4,8 +4,8 @@ JWTemplate::html_doctype();
 //page and pagination
 $page = null;
 extract($_GET, EXTR_IF_EXISTS);
-$logined_user_info  = JWUser::GetCurrentUserInfo();
-$logined_user_id    = $logined_user_info['id'];
+$current_user_info  = JWUser::GetCurrentUserInfo();
+$current_user_id    = $current_user_info['id'];
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
@@ -19,9 +19,6 @@ if( isset($_REQUEST['jw_status']))
 
 	$message = $_REQUEST['jw_status'];
 	$message = trim($message);
-
-	$logined_user_info  = JWUser::GetCurrentUserInfo();
-	$current_user_id = $logined_user_info['id'];
 
 	$options_info = array(
 		'idTag' => $tag_row['id'],
@@ -45,7 +42,7 @@ $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
 
  <head>
  <?php 
- $options = array ('ui_user_id' => $logined_user_id );
+ $options = array ('ui_user_id' => $current_user_id );
  JWTemplate::html_head($options);
  ?>
 </head>
@@ -54,7 +51,7 @@ $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
 <?php JWTemplate::accessibility() ?>
 <?php JWTemplate::header() ?> 
 <?php
-$has_following = JWTagFollower::IsFollower( $tag_row['id'], $logined_user_id );
+$has_following = JWTagFollower::IsFollower( $tag_row['id'], $current_user_id );
 $follow_string = $has_following ? '已关注' : '关注此#';
 ?>
 
@@ -121,7 +118,7 @@ JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
     <div class="sec" style="display:none;"><a href="#">浏览全部关注者(<?php echo $follower_num?>)</a></div>
 		<div style="overflow: hidden; clear: both; height:16px; line-height: 1px; font-size: 1px;"></div>
 <?php
-		$action_row = JWSns::GetTagAction( $logined_user_id, $tag_row['id'] );
+		$action_row = JWSns::GetTagAction( $current_user_id, $tag_row['id'] );
 		if( $action_row['follow'] )
 		{
 			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/followchannel/' . $tag_row['id'].'" class="pad">关注此#</a></div>';
@@ -142,7 +139,11 @@ JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
 		
         <div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 		<div class="line"><div></div></div>
-        <a href="<?php echo JW_SRVNAME .'/' .$logined_user_info['nameScreen'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在此#中的叽歪</a>
+
+<?php if ( $current_user_id ) { ?>
+        <a href="<?php echo JW_SRVNAME .'/' .$current_user_info['nameScreen'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在此#中的叽歪</a>
+<?php } ?>
+
 <a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅#<?php echo $tag_row['name'];  ?>的消息</a>
 		<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
   </div><!-- wtsidebar -->

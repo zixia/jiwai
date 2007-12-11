@@ -72,7 +72,7 @@ class JWStatus {
 			return $rtn_array;
 		}
 
-		if ( preg_match( "/^(\s*#\s*)([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+		if ( preg_match( "/^(\s*#\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 		{
 			$tag_name = $matches[2];
 			$tag_row = JWTag::GetDbRowByName( $tag_name );
@@ -89,7 +89,7 @@ class JWStatus {
 		 */
 		if ( $user_id == null ) 
 		{
-			if ( false == preg_match( "/^(\s*@\s*)([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( false == preg_match( "/^(\s*@\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{
 				return $rtn_array;
 			}else
@@ -170,8 +170,8 @@ class JWStatus {
 		/** ReplyInfo */
 		$idUserReplyTo = null;
 		$idStatusReplyTo = null;
-
-		if( isset( $options['idUserReplyTo'] ) ) {
+	
+		if( array_key_exists( 'idUserReplyTo', $options ) ) {
 			$idUserReplyTo = $options['idUserReplyTo'];
 			$idStatusReplyTo = $options['idStatusReplyTo'];
 		}else{
@@ -761,14 +761,15 @@ _SQL_;
 			);
 		}
 
-		$idUserReplyTo = $status_row['idUserReplyTo'];
+		$reply_to_id = $status_row['idUserReplyTo'];
+		$tag_id = $status_row['idTag'];
 		$status = $status_row['status'];
 
-		if( $idUserReplyTo ) 
+		if( $reply_to_id ) 
 		{
-			$user = JWUser::GetUserInfo( $idUserReplyTo ) ;
+			$user = JWUser::GetUserInfo( $reply_to_id ) ;
 
-			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{
 				$reply_to = $matches[1];
 				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
@@ -778,6 +779,22 @@ _SQL_;
 			}
 
 			$status = "@$user[nameScreen] $status";
+		}
+
+		if( $tag_id && null==$reply_to_id ) 
+		{
+			$tag = JWTag::GetDbRowById( $tag_id ) ;
+
+			if ( preg_match( "/^#\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			{
+				$tag_name = $matches[1];
+				$tag_row = JWUser::GetUserInfo( $tag_name ) ;
+
+				if( false == empty($tag_row) && $tag_row['id'] == $tag_id ) 
+					$status = preg_replace( "/^@\s*(".$tag['name'].")/i", '', $status );
+			}
+
+			$status = "#$tag[name] $status";
 		}
 
 		return $status;
@@ -805,7 +822,7 @@ _SQL_;
 
 		$replyto = null;
 
-		if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)/", $status, $matches ) ) 
+		if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)/", $status, $matches ) ) 
 			$replyto = $matches[1];
 
 		$skip_url_regex = '#'.'(komoo.cn)'
@@ -876,12 +893,12 @@ _HTML_;
 		if( $reply_to_user_id ) 
 		{
 			$reply_to_user = JWUser::GetUserInfo( $reply_to_user_id );
-			if ( preg_match( "/^@\s*([^\s<>@]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
 			{    
 				$u = JWUser::GetUserInfo( $matches[1] );
-				if( $u['id'] == $reply_to_user_id ) 
+				if( false==empty($u) && $u['id'] == $reply_to_user_id ) 
 				{
-					$status = preg_replace( '/@\s*('.$matches[1].')/i', '', $status );
+					$status = preg_replace( '/@\s*('.$matches[1].')\b/i', '', $status );
 				}
 			}
 
@@ -897,6 +914,16 @@ _HTML_;
 		if( $tag_id && null == $reply_to_user_id ) 
 		{
 			$tag_row = JWTag::GetDbRowById( $tag_id );
+
+			if ( preg_match( "/^#\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			{    
+				$t = JWTag::GetDbRowByName( $matches[1] );
+				if( false==empty($t) && $t['id'] == $tag_id ) 
+				{
+					$status = preg_replace( '/#\s*('.$matches[1].')\b/i', '', $status );
+				}
+			}
+
 			if( false == empty( $tag_row ) )
 			{
 				$status = "#<a href='/t/$tag_row[name]/'>$tag_row[name]</a> $status";
@@ -904,7 +931,7 @@ _HTML_;
 		}
 
 		// Add @ Link For other User
-		$status = preg_replace(	 "/@\s*([^\s<>@]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
+		$status = preg_replace(	 "/@\s*([^\s<>@#]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
 
 		return array ( 
 			'status' => $status, 
@@ -1178,15 +1205,15 @@ _SQL_;
 			throw new JWException('must int');
 
 		$sql = <<<_SQL_
-SELECT		
-			id, id as idStatus, idUser
-FROM		
-			Status
-WHERE		
-			Status.idThread = $idThread
-ORDER BY 	
-			Status.timeCreate asc
-LIMIT 		$start,$num
+SELECT
+	id, id as idStatus, idUser
+FROM
+	Status
+WHERE
+	Status.idThread = $idThread
+ORDER BY
+	timeCreate ASC 
+LIMIT	$start, $num
 _SQL_;
 
 		$rows = JWDB_Cache::GetQueryResult($sql,true);

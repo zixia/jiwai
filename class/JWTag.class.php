@@ -27,7 +27,7 @@ class JWTag {
     static public function Create( $tag_name=null ) 
     {
         if( false === self::IsValidTagName( $tag_name ) )
-            return false;
+            return null;
 
         return JWDB::SaveTableRow( 'Tag', array(
             'name' => $tag_name,
