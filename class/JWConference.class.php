@@ -98,6 +98,51 @@ _SQL_;
 	}
 
 	/**
+	 * Get Conference All 
+	 */
+	static public function GetDbRowAll()
+	{
+		$sql = <<<_SQL_
+SELECT * FROM Conference
+_SQL_;
+
+		$row = JWDB::GetQueryResult( $sql, true );
+
+		return $row;
+	}
+
+	/**
+	 * Get Conference Enable All 
+	 */
+	static public function GetDbRowEnableAll()
+	{
+		$rows_all = JWConference::GetDbRowAll();
+		$rows = array();
+		if (!empty($rows_all))
+		{
+			foreach( $rows_all as $row )
+			{
+				$user_info = JWUser::GetUserInfo( $row['idUser'] );
+				if (!empty($user_info) && $row['id']==$user_info['idConference'] )
+				{
+					$rows[$row['id']]= array(
+						'id' => $row['id'],
+						'idUser' => $row['idUser'],
+						'number' => $row['number'],
+						'deviceAllow' => $row['deviceAllow'],
+						'friendOnly' => $row['friendOnly'],
+						'nameScreen' => $user_info['nameScreen'],
+						'nameUrl' => $user_info['nameUrl'],
+						'nameFull' => $user_info['nameFull'],
+					);
+				}
+			}
+		}
+
+		return $rows;
+	}
+
+	/**
 	 * Get User Conference Setting
 	 */
 	static public function GetDbRowFromUser($idUser){

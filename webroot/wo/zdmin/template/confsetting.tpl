@@ -22,7 +22,7 @@
 					会议号码<input id="conf_number" name="conf[number]" type="text" value="{$confSetting[number]}"/>
 					<p>
 						使用方法：<br/>
-						1、手机发送短信给 106693184{$confSetting[number]}<br/>
+						1、手机发送短信给 10669318410{$confSetting[number]}<br/>
 						2、发消息时增加头 "@{$un}"
 					</p>
 				</td>
