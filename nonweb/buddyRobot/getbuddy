@@ -1,0 +1,56 @@
+#!/usr/bin/python
+import sys
+import os
+import commands
+
+class GetBuddy:
+
+	cmd = '/usr/java/jdk/bin/java -cp .';
+	configure = {
+		'gtalk':{
+			'cp':('../../javaLib/smack.jar', '../../javaLib/smackx.jar'),
+			'name':'GTalkBuddyRobot',
+		},
+		'msn':{
+			'cp':('../../javaLib/cindy.jar', '../../javaLib/commons-logging.jar', '../../javaLib/jml-1.0b1.jar'),
+			'name':'MsnBuddyRobot',
+		},
+	}
+
+	def getCommand(self, device, username, password) :
+		device = device.lower()
+		item = self.configure[ device ]
+
+		if None == item :
+			return None
+		classpath = ':'.join(item['cp'])
+		classname = item['name']
+		
+		command = "%s:%s -Dusername='%s' -Dpassword='%s' %s" % (self.cmd, classpath, username, password, classname )
+		return command
+
+			
+
+	def execute(self, device, username, password) :
+		command = self.getCommand( device, username, password )
+		print command
+		result = commands.getstatusoutput( command )
+		print >>sys.stderr, result[0]
+		print >>sys.stdout, result[1];
+
+# main function
+if __name__ == '__main__' :
+	argc = len(sys.argv)
+	if argc < 4 :
+		sys.exit(-1)
+
+	#set path
+	filepath = os.path.split( sys.argv[0] )[0]
+	os.chdir( filepath )
+	
+	#set arg	
+	device = sys.argv[1]
+	username = sys.argv[2]
+	password = sys.argv[3]
+
+	GetBuddy().execute( device, username, password)
