@@ -58,9 +58,9 @@ function renderXmlStatuses($id){
 }
 
 function getMessage($id, &$status, &$user){
-	$status = JWStatus::getStatusDbRowById($id);
+	$status = JWDB_Cache_Status::GetDbRowById($id);
 	if( $status ){
-		$user = JWUser::getUserDbRowById($status['idUser']);
+		$user = JWUser::GetDbRowById($status['idUser']);
 		return true;
 	}
 	return false;
