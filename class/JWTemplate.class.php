@@ -838,7 +838,7 @@ _HTML_;
 				$photo_url = JWTemplate::GetAssetUrl('/images/org-nobody-48-48.gif');
 			}
 
-			$picture_row = JWPlugins::GetInfo( $statusRows[$status_id] );
+			$plugin_result = JWPlugins::GetPluginResult( $statusRows[$status_id] );
 	
 			$deviceName = JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
 
@@ -859,19 +859,18 @@ _HTML_;
 <div class="odd" id="status_<?php echo $status_id;?>">
 	<div class="head"><a href="/<?php echo $name_url;?>/"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont">
-		<div class="bg"></div>
-		<?php echo $status; ?><br />
-		<?php 
-			if( false==empty($picture_row) )
+		<div class="bg"></div><?php echo $status; ?><br/>
+		<?php
+
+			//plugins
+			switch( $plugin_result['type'] )
 			{
-				if( $picture_row['type'] == 'pic' ) 
-				{
-					echo '<a href="' .$picture_row['href']. '" target="_blank"><img src="' .$picture_row['src']. '" title="叽歪图片" class="pic"/></a>';
-				}else if( $picture_row['type'] == 'box' ) 
-				{
-					echo '<embed src="'.$picture_row['src'].'" quality=high width="50" height="18" type="application/x-shockwave-flash" /></embed>';
-				}
+				case 'html':
+					echo $plugin_result['html'];
+				break;
 			}
+
+			//meta_info
 			$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 				JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
 			self::ShowStatusMetaInfo( $statusRows[$status_id], $options );

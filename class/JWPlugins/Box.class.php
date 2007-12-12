@@ -2,6 +2,20 @@
 class JWPlugins_Box
 {
 
+	static public function GetPluginResult( $string )
+	{
+		$info = self::GetPluginInfo( $string );
+		if ( $info )
+		{
+				return array(
+					'type' => 'html',
+                    'html' => '<div style="margin:5px 0 5px 0;"><embed src="'.$info.'" quality=high width="50" height="18" type="application/x-shockwave-flash" /></embed></div>',
+				);
+		}
+
+		return null;
+	}
+
     static public function GetBoxId( $string )
     {
         if( preg_match('#http://www\.8box\.c[n|om]([\/a-z\/]+)+([0-9]+)#i', $string, $matches))
@@ -15,7 +29,7 @@ class JWPlugins_Box
 
     }
     
-    static public function GetBoxInfo( $string )
+    static public function GetPluginInfo( $string )
     {
 	    if( $box_id = self::GetBoxId( $string ) )
 	    {

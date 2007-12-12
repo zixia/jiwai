@@ -10,6 +10,27 @@ class JWPlugins_Yupoo{
 	static private $apiUrl = "http://www.yupoo.com/api/rest/";
 	static private $apiKey = "7faa1a2a800f340d3da47912e13a1fa6";
 
+	/**
+	 * @author seek
+	 */
+	static public function GetPluginResult( $string )
+	{
+		$info = self::GetPluginInfo( $string );
+		if ( $info )
+		{
+			$src = self::BuildPhotoUrl( $info );
+			$href = $string;
+			return array(
+				'type' => 'html',
+				'html' => '<a href="' .$href. '" target="_blank"><img src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
+			);
+		}
+		return null;
+	}
+	
+	/** 
+	 * Intecept 
+	**/
 	static public function Intercept( $string, &$objectId="" ) 
 	{
 		if(preg_match('#http://www\.yupoo\.com/photos/view\?id=([0-9a-f]+)#i', $string, $matches))
@@ -21,11 +42,12 @@ class JWPlugins_Yupoo{
 			return false;
 		}
 	}
+	
 
 	/**
 	 * @author wqsemc@jiwai.com 
 	 */
-	static public function GetPhotoInfo( $string ) 
+	static public function GetPluginInfo( $string ) 
 	{
 		if( false == preg_match('#http://www\.yupoo\.com/photos/view\?id=([0-9a-f]+)#i', $string, $matches))
 			return false;
@@ -101,11 +123,9 @@ class JWPlugins_Yupoo{
 	static public function BuildPhotoUrl( $photoInfo ) 
 	{
 		if ( false == empty($photoInfo) )
-			$photoUrl = 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.jpg';
+			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.jpg';
 		else
 			return null;
-
-		return $photoUrl;
 	}
 }
 ?>
