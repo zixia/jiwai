@@ -1,4 +1,4 @@
-// $Id: jiwaide.he 9 2007-12-05 02:38:11Z linus $
+// $Id$
 
 //FIXME XML-based rather than "programmatic" UI Layout
 
@@ -35,52 +35,6 @@ class
 
 // BEGIN const strings
 
-  const String CmdAbout   = "关于";
-  const String CmdReload  = "重新获取";
-  const String CmdLogout  = "登出";
-  const String CmdLogin   = "登陆";
-  const String CmdBack    = "返回";
-  const String CmdCancel  = "取消";
-  const String CmdUpdate  = "发送更新";
-  const String CmdReply   = "发送回复";
-  const String CmdDrmsg   = "回复悄悄话";
-  const String CmdMenu    = "选项";
-  const String CmdReadall = "全部已读";
-
-  const String HintUpdate = "我在做什么";
-  const String HintReply  = "@用户名+空格+回复";
-  const String HintDrmsg  = "输入悄悄话";
-
-  const String InfoUpdateSuc  = "发送成功";
-  const String InfoUpdateFail = "发送失败";  
-  const String InfoUsername   = "用户名";
-  const String InfoPassword   = "密   码";
-  const String InfoLogoutSuc  = "请重新登录";
-  const String InfoLogoutFail = "登录失败";
-  const String InfoSyndFail   = "数据抓取失败";
-  const String InfoAuthFail   = "用户认证失败";
-  const String InfoWander     = "随便看看";
-  const String InfoJiWai      = "叽歪是一句话博客";
-  const String InfoJiWai1     = "用只言片语串成生活轨迹";
-  const String InfoJiWai2     = "关心朋友的一举一动";
-  const String InfoJiWai3     = "手机/QQ/MSN/GTalk/Skype/Yahoo";
-  const String InfoJiWai4     = "© 2007 JiWai.de";
-  const String InfoInUpdating = "正在载入数据";
-  const String InfoInLogin    = "正在登录中";
-  const String InfoAbout      = "叽歪是一个通过发送生活中点滴消息，和朋友以及陌生人相互联系的社区";
-  const String InfoAbout1     = "你有N多种方式更新你的叽歪：手机，聊天软件，网页，还有那些通过API来更新的第三方插件。在发送你的叽歪的同时，你可以选择性的接受来自朋友们的消息，无时不刻，无论在何地";
-  const String InfoAbout2     = "欢迎使用手机访问 http://m.jiwai.de";
-
-  const String TimelinePub  = "叽歪广场";
-  const String TimelineUser = "我的叽歪";
-  const String TimelineFri  = "和朋友们";
-  const String TimelineDr   = "悄悄话";
-  const String TimelineBlog = "叽歪de日志";
-
-  const String TitleTimelineList  = "叽歪de我";
-  const String TitleAbout = "关于叽歪de";
-  const String TitleLogin = "叽歪de - 微博客";
-
   const String FacilityPub  = "public_timeline";
   const String FacilityUser = "user_timeline";
   const String FacilityFri  = "friends_timeline";
@@ -96,19 +50,19 @@ class
   
 // BEGIN menu
 
-  MenuItem  MenuAbout   = new MenuItem(CMD_ABOUT,   CmdAbout);
-  MenuItem  MenuReload  = new MenuItem(CMD_RELOAD,  CmdReload);
-  MenuItem  MenuLogout  = new MenuItem(CMD_LOGOUT,  CmdLogout);
-  MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   CmdLogin);
-  MenuItem  MenuBack    = new MenuItem(CMD_BACK,    CmdBack);
-  MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  CmdCancel);
-  MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  CmdUpdate);
-  MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   CmdReply);
-  MenuItem  MenuDrmsg   = new MenuItem(CMD_DRMSG,   CmdDrmsg);
-  MenuItem  MenuOptions = new MenuItem(OPEN_MENU,   CmdMenu);
-  MenuItem  MenuReadall = new MenuItem(CMD_READALL, CmdReadall);
+  MenuItem  MenuAbout   = new MenuItem(CMD_ABOUT,   @CmdAbout);
+  MenuItem  MenuReload  = new MenuItem(CMD_RELOAD,  @CmdReload);
+  MenuItem  MenuLogout  = new MenuItem(CMD_LOGOUT,  @CmdLogout);
+  MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   @CmdLogin);
+  MenuItem  MenuBack    = new MenuItem(CMD_BACK,    @CmdBack);
+  MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  @CmdCancel);
+  MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  @CmdUpdate);
+  MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   @CmdReply);
+  MenuItem  MenuDrmsg   = new MenuItem(CMD_DRMSG,   @CmdDrmsg);
+  MenuItem  MenuOptions = new MenuItem(OPEN_MENU,   @CmdMenu);
+  MenuItem  MenuReadall = new MenuItem(CMD_READALL, @CmdReadall);
 
-  Menu MENU = new Menu().add(OPEN_MENU, CmdMenu);
+  Menu MENU = new Menu().add(OPEN_MENU, @CmdMenu);
 
 // END menu
 
@@ -155,26 +109,26 @@ class
 // Create Menus
 
   void createPreLoginMenu() {
-    MENU = new Menu().add(CMD_LOGIN, CmdLogin);
+    MENU = new Menu().add(CMD_LOGIN, @CmdLogin);
   }
 
   void createUpdateMenu() {
-    MENU = new Menu().add(CMD_UPDATE, CmdUpdate);
+    MENU = new Menu().add(CMD_UPDATE, @CmdUpdate);
   }
 
   void createTimelineListMenu() {
     MENU = new Menu()
-      .add(CMD_ABOUT,  CmdAbout)
-      .add(CMD_READALL,CmdReadall)
-      .add(CMD_RELOAD, CmdReload)
-      .add(CMD_LOGOUT, CmdLogout);
+      .add(CMD_ABOUT,  @CmdAbout)
+      .add(CMD_READALL,@CmdReadall)
+      .add(CMD_RELOAD, @CmdReload)
+      .add(CMD_LOGOUT, @CmdLogout);
   }
 
   void createTimelineViewMenu () {
     MENU = new Menu()
-      .add(CMD_ABOUT,  CmdAbout)
-      .add(CMD_READALL,CmdReadall)
-      .add(CMD_RELOAD, CmdReload);
+      .add(CMD_ABOUT,  @CmdAbout)
+      .add(CMD_READALL,@CmdReadall)
+      .add(CMD_RELOAD, @CmdReload);
   }
 
 // END createMenus
@@ -185,10 +139,10 @@ class
   // After all, he's so dead
   Shell createTimelineList() {
     createTimelineListMenu();
-    Text updateText = createUpdateText(CmdUpdate);
+    Text updateText = createUpdateText(@CmdUpdate);
     updateText.setAction(CMD_UPDATE);
     final Flow flow = getTimelineListFlow();
-    final Input updateInput = new Input(getStyle("default"), HintUpdate, "", ANY);
+    final Input updateInput = new Input(getStyle("default"), @HintUpdate, "", ANY);
     flow.add(updateInput);
     final Shell shell = new Shell(flow);
     shell.setFocused(tobeFocused);
@@ -198,19 +152,19 @@ class
 
     Flow getTimelineListFlow () {
       Value data = [
-        ["name"    => TimelinePub,
+        ["name"    => @TimelinePub,
         "fname"    => FacilityPub,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => TimelineUser,
+        ["name"    => @TimelineUser,
         "fname"    => FacilityUser, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => TimelineFri,
+        ["name"    => @TimelineFri,
         "fname"    => FacilityFri, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => TimelineDr,
+        ["name"    => @TimelineDr,
         "fname"    => FacilityDr,
         "viewed"   => STATUS_UNVIEWED
           ]
@@ -218,7 +172,7 @@ class
 
       Flow content = new Flow(getStyle("default"));
       content.setPreferredSize(-100, -100);
-      content.add(createHeaderText(TitleTimelineList));
+      content.add(createHeaderText(@TitleTimelineList));
 
       content.add(updateText);
 
@@ -318,11 +272,11 @@ class
   Shell createAboutView() {
     Flow view = new Flow(getStyle("default"));
     view.setPreferredSize(-100, -100);
-    view.add(createHeaderText(TitleAbout));
+    view.add(createHeaderText(@TitleAbout));
 
-    view.add(createSubHeaderText (InfoAbout));
-    view.add(createBodyText(InfoAbout1));
-    view.add(createBodyText(InfoAbout2));
+    view.add(createSubHeaderText (@InfoAbout));
+    view.add(createBodyText(@InfoAbout1));
+    view.add(createBodyText(@InfoAbout2));
 
     return getViewShell(view);
   }
@@ -332,7 +286,7 @@ class
     Flow content = new Flow(getStyle("default"));
     content.setPreferredSize(-100, -100);
     
-    final Input updateInput = new Input(getStyle("default"), HintUpdate, "", ANY);
+    final Input updateInput = new Input(getStyle("default"), @HintUpdate, "", ANY);
     content.add(updateInput);
     content.add(createHeaderText(title));
 
@@ -341,10 +295,10 @@ class
 
     Text updateText = null;
     if (anonymousMode) {
-      updateText = createUpdateText(CmdLogin);
+      updateText = createUpdateText(@CmdLogin);
       updateText.setAction(CMD_LOGIN);
     } else {
-      updateText = createUpdateText(CmdUpdate);
+      updateText = createUpdateText(@CmdUpdate);
       updateText.setAction(CMD_UPDATE);
     }
     lowerFlow.add(updateText);
@@ -450,12 +404,12 @@ class
     final String created = cal.format(FORMAT_DATETIME);
 
     String inputTitle = (String(status.author).equals(username))
-      ? HintUpdate 
+      ? @HintUpdate 
       : (facility.equals(FacilityUser) || facility.equals(FacilityBlog))
-        ? HintUpdate
+        ? @HintUpdate
         : (facility.equals(FacilityDr))
-          ? HintDrmsg
-          : HintReply;
+          ? @HintDrmsg
+          : @HintReply;
     final Input replyInput = new Input(getStyle("default"), inputTitle, "", ANY);
     view.add(replyInput);
     
@@ -523,35 +477,35 @@ class
     Flow loginForm = new Flow(getStyle("default"));
     loginForm.setPreferredSize(-100, -100);
     
-    loginForm.add(createHeaderText(TitleLogin));
+    loginForm.add(createHeaderText(@TitleLogin));
 
-    Label labelUsername = createFormLabel(InfoUsername);
+    Label labelUsername = createFormLabel(@InfoUsername);
     loginForm.add(labelUsername);
     
-    Input inputUsername = new Input(getStyle("form.input"), InfoUsername,  username, ANY);
+    Input inputUsername = new Input(getStyle("form.input"), @InfoUsername,  username, ANY);
     inputUsername.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     inputUsername.setPreferredWidth(-100);
     loginForm.add(inputUsername);
 
-    Label labelPassword = createFormLabel(InfoPassword);
+    Label labelPassword = createFormLabel(@InfoPassword);
     loginForm.add(labelPassword);
 
-    Input inputPassword = new Input(getStyle("form.input"), InfoPassword, password, ANY|PASSWORD);
+    Input inputPassword = new Input(getStyle("form.input"), @InfoPassword, password, ANY|PASSWORD);
     inputPassword.setFlags(VISIBLE|FOCUSABLE|LINEFEED|PASSWORD|ANY);
     inputPassword.setPreferredWidth(-100);
     loginForm.add(inputPassword);
   
-    Label labelWander = new Label(getStyle("form.link"), InfoWander);
+    Label labelWander = new Label(getStyle("form.link"), @InfoWander);
     labelWander.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     labelWander.setPreferredWidth(-100);
     labelWander.setAction(CMD_WANDER);
     loginForm.add(labelWander);
 
-    loginForm.add(createFormStatic(InfoJiWai));
-    loginForm.add(createFormStatic(InfoJiWai1));
-    loginForm.add(createFormStatic(InfoJiWai2));
-    loginForm.add(createFormStatic(InfoJiWai3));
-    loginForm.add(createFormStatic(InfoJiWai4));
+    loginForm.add(createFormStatic(@InfoJiWai));
+    loginForm.add(createFormStatic(@InfoJiWai1));
+    loginForm.add(createFormStatic(@InfoJiWai2));
+    loginForm.add(createFormStatic(@InfoJiWai3));
+    loginForm.add(createFormStatic(@InfoJiWai4));
     
     final Shell shell = new Shell(loginForm);
     shell.setStyle(getStyle("maxi"));
@@ -703,7 +657,7 @@ class
 
   void fetchnok(Object state, String error)
   {
-    alertError(InfoSyndFail + ": "+error);
+    alertError(@InfoSyndFail + ": "+error);
   }
 
   void wanderok(Object state, Value ret)
@@ -716,7 +670,7 @@ class
 
   void wandernok(Object state, String error)
   {
-    alertError(InfoSyndFail + ": "+error);
+    alertError(@InfoSyndFail + ": "+error);
   }
 
   void logoutok(Object state, Value ret)
@@ -732,7 +686,7 @@ class
 
   void logoutnok(Object state, String error)
   {
-    alertError(InfoLogoutFail + ": "+error);
+    alertError(@InfoLogoutFail + ": "+error);
   }
 
   void initok(Object state, Value ret)
@@ -761,30 +715,30 @@ class
     Store store = getStore();
     store.remove(storeUsername);
     store.remove(storePassword);
-    alertError(InfoAuthFail + ": " +error);
+    alertError(@InfoAuthFail + ": " +error);
   }
 
   void updateok(Object state, Value ret)
   {
-    alertError(InfoUpdateSuc);
+    alertError(@InfoUpdateSuc);
     animatePopShell(Shell(state));
     rawFetchAndRefresh(new List().add(FacilityUser).add(FacilityFri));
   }
 
   void updatenok(Object state, String error)
   {
-    alertError(InfoUpdateFail +error);
+    alertError(@InfoUpdateFail +error);
   }
 
   void drok(Object state, Value ret)
   {
-    alertError(InfoUpdateSuc);
+    alertError(@InfoUpdateSuc);
     animatePopShell(Shell(state));
   }
 
   void drnok(Object state, String error)
   {
-    alertError(InfoUpdateFail +error);
+    alertError(@InfoUpdateFail +error);
   }
 
 // END callBacks
@@ -809,7 +763,7 @@ class
   void bulkFetch() {
     progressTotal = 4;
     progressCurrent = 0;
-    pushExclusiveView(InfoInUpdating);
+    pushExclusiveView(@InfoInUpdating);
     fetchTimeline(FacilityPub);
     fetchTimeline(FacilityUser);
     fetchTimeline(FacilityFri);
@@ -819,14 +773,14 @@ class
   void fetchOnce(String facility) {
     progressTotal = 1;
     progressCurrent = 0;
-    pushExclusiveView(InfoInUpdating);
+    pushExclusiveView(@InfoInUpdating);
     fetchTimeline(facility);
   }
 
   void fetchAndRefresh(List facilities) {
     progressTotal = facilities.size();
     progressCurrent = 0;
-    pushExclusiveView(InfoInUpdating);
+    pushExclusiveView(@InfoInUpdating);
     foreach (String facility : facilities) {
       fetchTimeline(facility);
     }
@@ -835,7 +789,7 @@ class
   void rawFetchAndRefresh(List facilities) {
     progressTotal = facilities.size();
     progressCurrent = 0;
-    pushExclusiveView(InfoInUpdating);
+    pushExclusiveView(@InfoInUpdating);
     foreach (String facility : facilities) {
       rawFetchTimeline(facility);
     }
