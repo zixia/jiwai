@@ -763,6 +763,7 @@ _SQL_;
 			$status_row = array(
 				'status' => $status_row,
 				'idUserReplyTo' => $id_user_reply_to,
+				'idTag' => null,
 			);
 		}
 
