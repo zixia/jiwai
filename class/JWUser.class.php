@@ -223,6 +223,18 @@ _SQL_;
 		return $user_db_rows[$idUser];
 	}
 
+	static public function GetDbRowByIdConference( $conference_id )
+	{
+		$conference_id = JWDB::CheckInt( $conference_id );
+
+		$conference = JWConference::GetDbRowById( $conference_id );
+
+		if ( empty( $conference ) || $conference['idUser'] )
+			return array();
+		
+		return self::GetDbRowById( $conference['idUser'] );
+	}
+
 
 	/*
 	 *	根据用户 nameScreen/email/idUser 返回用户信息

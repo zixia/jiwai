@@ -380,6 +380,8 @@ class JWSns {
 
 			case 'newsmth':
 			case 'skype':
+			case 'aol':
+			case 'yahoo':
 			case 'qq':
 				// 机器人给设备发送消息
 				JWRobot::SendMtRaw($address, $type, $sms_message);
@@ -579,27 +581,10 @@ class JWSns {
 		$idTag = $reply_info['tag_id'];
 		$idUserReplyTo = $reply_info['user_id'];
 		$idStatusReplyTo = $reply_info['status_id'];
-
-		$idConference = null;
-		$conference = null;
-		if( false == isset( $options['idConference'] ) || null==$options['idConference'] ){
-			$conference = JWConference::FetchConference( $idUser, $idUserReplyTo , $device);
-			$conference = empty( $conference ) ? null : $conference;
-			$idConference = empty( $conference ) ? null : $conference['id'];
-		}else{
-			$idConference = $options['idConference'];
-			$conference = JWConference::GetDbRowById( $idConference );
-		}
-		
-		//滤除回复字段
-		if( false == empty( $conference ) ){
-			$idUserReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? null : $idUserReplyTo;
-			$idStatusReplyTo = ( $idUserReplyTo == $conference['idUser'] ) ? null : $idStatusReplyTo;
-			$userConference = JWUser::GetUserInfo( $conference['idUser'] );
-			$status = preg_replace( '/(\s*@\s*'.$userConference['nameScreen'].'\s+)/i', '', $status );
-		}
+		$idConference = $reply_info['conference_id'];
 
 		//过滤处理
+		$conference = ( $idConference ) ? JWConference::GetDbRowById( $idConference ) : null;
 		if( false == isset( $options['filterConference'] ) ){
 			$options['filterConference'] = ( $conference ) ? ( $conference['filter'] == 'Y' ) : false;
 		}

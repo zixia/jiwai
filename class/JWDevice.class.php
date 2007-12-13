@@ -80,6 +80,9 @@ class JWDevice {
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
+            case 'aol':
+                if (JWUser::IsValidEmail($address, true)) return true;
+				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
 				// im check email address
 			case 'gtalk':	
@@ -108,6 +111,10 @@ class JWDevice {
 					return true;
 				}
 				else if(false != self::IsValid($address, 'skype'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'aol'))
 				{
 					return true;
 				}
@@ -725,6 +732,9 @@ _SQL_;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
+			case 'aol':
+				$name='jiwai001';
+				break;
 			case 'facebook':
 				$name='<a href="http://apps.facebook.com/jiwaide/" target="_blank">叽歪de Application</a>';
 				break;
@@ -791,6 +801,9 @@ _SQL_;
 			case 'skype':
 				$name='Skype';
 				break;
+			case 'aol':
+				$name='AOL';
+				break;
 			case 'yahoo':
 				$name='Yahoo!';
 				break;
@@ -854,7 +867,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'newsmth', 'facebook', 'yahoo', /*'jabber',*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'newsmth', 'facebook', 'yahoo', /*'jabber',*/ );
 	}
 
 	static public function IsHistorySignature($idUser, $signature){
@@ -894,6 +907,7 @@ _SQL_;
 			case 'gtalk':
 			case 'qq':
 			case 'skype':
+            case 'aol':
 			case 'yahoo':
 				return 'im';
 			case 'sms':

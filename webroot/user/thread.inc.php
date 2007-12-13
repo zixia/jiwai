@@ -45,7 +45,12 @@ function reply_status($idStatus)
 function user_status($page_user_id, $idStatus, $idStatusReply = null)
 {
 	//Do reply
-	reply_status( $idStatus );
+	$page_user_info = JWUser::GetDbRowById( $page_user_id );
+	if ( reply_status( $idStatus ) )
+	{
+		$redirect_to = "/".urlEncode($page_user_info['nameUrl'])."/thread/$idStatus";
+		JWTemplate::RedirectToUrl( $redirect_to );
+	}
 
 	JWTemplate::html_doctype();
 

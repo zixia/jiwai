@@ -60,11 +60,17 @@ _HTML_;
 	static public function html_head( $options=null )
 	{
 		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
-		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico'	   );
-		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js'		   );
+		$asset_url_css_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.css');
+
+		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico');
+
+		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js');
+		$asset_url_js_buddy	= self::GetAssetUrl('/js/buddyIcon.js');
 		$asset_url_js_moo	= self::GetAssetUrl('/lib/mootools/mootools.v1.11.js' );
 		$asset_url_js_location	= self::GetAssetUrl('/js/location.js' );
 		$asset_url_js_validator	= self::GetAssetUrl('/js/validator.js' );
+		$asset_url_js_action 	= self::GetAssetUrl('/js/action.js' );
+		$asset_url_js_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.js' );
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -120,6 +126,8 @@ _HTML_;
 		if ( !isset($options['ui_user_id']) )
 			$options['ui_user_id'] = JWLogin::GetCurrentUserId();
 
+		$current_user_id = JWLogin::GetCurrentUserId();
+
 		/*
 		 *	强制不使用自定义界面，设置为 false 即可
 		 */
@@ -132,7 +140,7 @@ _HTML_;
 
 		if ( empty($options['openid_server']) )
 		{
-			$options['openid_server'] = 'http://jiwai.de/wo/openid/server';
+			$options['openid_server'] = JW_SRVNAME. '/wo/openid/server';
 		}
 
 		$openid_html = '';
@@ -156,12 +164,17 @@ $rss_html
 $refresh_html
 $openid_html
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript">window.ServerTime=$time;</script>
 	<script type="text/javascript" src="$asset_url_js_moo"></script>
 	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+	<script type="text/javascript" src="$asset_url_js_buddy"></script>
 	<script type="text/javascript" src="$asset_url_js_location"></script>
 	<script type="text/javascript" src="$asset_url_js_validator"></script>
+	<script type="text/javascript" src="$asset_url_js_box"></script>
+	<script type="text/javascript" src="$asset_url_js_action"></script>
+	<script>var current_user_id = '$current_user_id';</script>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
@@ -468,7 +481,7 @@ _HTML_;
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
-					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if(!$('jw_status').value)return false;$('updaterForm').submit();return false;" value="叽歪一下" title="叽歪一下"/>
+					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="return JWAction.updateStatus();" value="叽歪一下" title="叽歪一下"/>
 				</p>	
 			<?php
 				if(false == empty($options['sendtips']))
@@ -628,8 +641,7 @@ _TAB_;
 		$follow_string = "已关注";
 	} else 
 	{
-		$oc = ( $current_user_id && JWSns::IsProtected( $userRow, $current_user_id ) ) ? 
-			'onclick="return JiWai.requestFriend('.$userRow['id'].', this);"' : '';
+		$oc = 'onclick="return JWAction.follow('.$userRow['id'].', this);"';
 
 		if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
 			$follow_string = "<a href=\"/wo/followings/follow/$userRow[id]\" $oc>关注此人</a>";
@@ -775,21 +787,16 @@ _HTML_;
 				continue;
 
 			$user_id 	= $statusRows[$status_id]['idUser'];
+			$conference_id = $statusRows[$status_id]['idConference'];
 
-			if ( $options['protected'] || 
-					( JWUser::IsProtected($user_id) && 
-					  	(
-							( $idCurrent 
-								&& false == JWFollower::IsFollower($idCurrent, $user_id) 
-								&& $idCurrent != $user_id 
-							)
-							|| 
-							( !$idCurrent )
-						   	)	
-					   	)
-			   )
-			continue;
-				
+			$conference_user = ( $conference_id == null )
+				? null : JWUser::GetDbRowByIdConference( $conference_id ) ;
+
+			if ( JWSns::IsProtected( @$userRows[ $user_id ], $current_user_id ) 
+				|| JWSns::IsProtected( $conference_user, $conference_user )
+			)
+				continue;
+
 			// 最多显示的条数已经达到
 			if ( $options['nummax'] && $n >= $options['nummax'] )
 				break;
@@ -845,7 +852,7 @@ _HTML_;
 
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_url;?>/"><img width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $name_url;?>/"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont">
 		<div class="bg"></div><?php echo $status; ?><br/>
 		<?php
@@ -1320,7 +1327,7 @@ _HTML_;
 					$name = $user_db_row['nameScreen'];
 					//if (mb_strwidth($name)>8) $name = mb_strimwidth($name, 6, '...');
 					echo <<<_HTML_
-				<td><div><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameScreen]" rel="contact"><img src="$user_icon_url" title="$user_db_row[nameFull]" border="0" />$name</a></div></td>
+				<td><div><a href="/$user_db_row[nameUrl]/" title="$user_db_row[nameScreen]" rel="contact"><img icon="$user_id" class="buddy_icon" src="$user_icon_url" title="$user_db_row[nameFull]" border="0" />$name</a></div></td>
 
 _HTML_;
 					if ($n % 4 == 3) echo "			</tr>\n";
@@ -1616,7 +1623,7 @@ _HTML_;
 			$oc = ( 
 				JWUser::IsProtected($arr_user_info['id'] )
 				&& false == JWFollower::IsFollower( $current_user_id, $arr_user_info['id'] )
-			) ? 'onclick="return JiWai.requestFriend('.$arr_user_info['id'].', this);"' : '';
+			) ? 'onclick="return JWAction.follow('.$arr_user_info['id'].', this);"' : 'onClick="return JWAction.follow('.$arr_user_info['id'].');"' ;
 
 			echo <<<_HTML_
 			<li><a href="/wo/followings/follow/$arr_user_info[id]" $oc>关注此人</a></li>
@@ -1702,6 +1709,7 @@ _HTML_;
 				'msn' => '已绑定 MSN',
 				'qq' => '已绑定 QQ',
 				'skype' => '已绑定 Skype',
+				'aol' => '已绑定 AOL',
 				'yahoo' => '已绑定 Yahoo!',
 				'newsmth' => '已绑定 水木社区',
 				'facebook' => '已绑定 Facebook',

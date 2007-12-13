@@ -170,8 +170,8 @@ $options = array(
 	'refresh_time' => '600',
 	'refresh_url' => '',
 	'ui_user_id' => $page_user_id,
-	'openid_server'	=> "http://jiwai.de/wo/openid/server",
-	'openid_delegate' => "http://jiwai.de/$page_user_info[nameUrl]/",
+	'openid_server'	=> JW_SRVNAME. "/wo/openid/server",
+	'openid_delegate' => JW_SRVNAME. "/$page_user_info[nameUrl]/",
 );
 
 ?>

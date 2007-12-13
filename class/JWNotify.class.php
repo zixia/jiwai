@@ -338,7 +338,7 @@ class JWNotify{
 
 		switch( $type ){
 			case 'IM':
-				$condition = "deviceSendVia IN ('msn','gtalk','skype','qq','yahoo')";
+				$condition = "deviceSendVia IN ('msn','gtalk','skype','aol','qq','yahoo')";
 			break;
 			case 'Y':
 			case 'ALL':

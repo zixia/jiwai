@@ -13,8 +13,6 @@ ob_end_clean();
 // Complete the authentication process using the server's response.
 
 $server = JWOpenid_Server::GetServer();
-
-$request = Auth_OpenID::fixArgs($_REQUEST);
 $request = $server->decodeRequest($request);
 
 if ($request) 

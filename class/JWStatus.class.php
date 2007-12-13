@@ -55,6 +55,7 @@ class JWStatus {
 		$thread_id = isset( $options['idThread'] ) ? $options['idThread'] : null;
 		$user_id = isset( $options['idUserReplyTo'] ) ? $options['idUserReplyTo'] : null;
 		$status_id = isset( $options['idStatusReplyTo'] ) ? $options['idStatusReplyTo'] : null;
+		$conference_id = isset( $options['idConference'] ) ? $options['idConference'] : null;
 
 		// not extends tag_id || if extends 
 		if( $is_extends_tag == false ) $tag_id = null;
@@ -65,6 +66,7 @@ class JWStatus {
 			'tag_id' => $tag_id,
 			'thread_id' => $thread_id,
 			'status' => $status,
+			'conference_id' => $conference_id,
 		);
 
 		if( empty( $status ) )
@@ -72,52 +74,116 @@ class JWStatus {
 			return $rtn_array;
 		}
 
-		if ( preg_match( "/^(\s*#\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
-		{
-			$tag_name = $matches[2];
-			$tag_row = JWTag::GetDbRowByName( $tag_name );
-			$tag_id = empty( $tag_row ) ? JWTag::Create( $tag_name ) : $tag_row['id'];
-
-			$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
-
-			$rtn_array['status'] = $status;
-			$rtn_array['tag_id'] = $tag_id;
-		}
+		$has_conference = ( $conference_id == null ) ? false : true;
+		$has_tag = ( $tag_id == null ) ? false : true;
+		// $has_reply = ( $status_id == null ) ? false : true; //for thread tag;
+		$has_reply = false;
 		
-		/**
-		 * if not set idUserReplyTo in options;
-		 */
-		if ( false == preg_match( "/^(\s*@\s*)([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+		while ( $symbol_info = self::GetSymbolInfo( $status ) )
 		{
-			return $rtn_array;
-		}else
-		{
-			$reply_to_user = $matches[2];
-			$user_db_row = JWUser::GetUserInfo($reply_to_user);
+			$symbol = $symbol_info['symbol'];
+			$value = $symbol_info['value'];
 
-			if ( $user_id == null && false==empty($user_db_row) )
-				$user_id = $user_db_row['id'];
-
-			if ( $user_id ) 
+			if ( '$' == $symbol )
 			{
-				if ( false==empty($reply_to_user) && $user_db_row['id'] == $user_id )
-					$status = preg_replace( '/^'.$matches[1].$matches[2].'/', '', $status );
+				$conference_user = JWUser::GetUserInfo( $value );
+				if ( false == empty($conference_user) ) 
+				{
+					if ( $has_conference ) 
+					{
+						if ( $conference_user['idConference'] == $conference_id )
+						{
+							$status = $symbol_info['status'];
+							$rtn_array['status'] = $status;
+						}else
+						{
+							break;
+						}
+					}else
+					{
+						$conference_id = $conference_user['idConference'];
+						$status = $symbol_info['status'];
 
-				$rtn_array['status'] = $status;
+						$rtn_array['conference_id'] = $conference_id;
+						$rtn_array['status'] = $status;
+
+						$has_conference = true;
+					}
+				}
+				else 
+				{
+					break;
+				}
 			}
-
-			if( empty( $user_db_row ) && null==$user_id )
+			else if ( '#' == $symbol )
 			{
-				return $rtn_array;
-			}
+				$tag_row = JWTag::GetDbRowByName( $value );
+				if ( false == empty($tag_row) ) 
+				{
+					if ( $has_tag ) 
+					{
+						if ( $tag_row['id'] == $tag_id )
+						{
+							$status = $symbol_info['status'];
+							$rtn_array['status'] = $status;
+						}else
+						{
+							break;
+						}
+					}else
+					{
+						$tag_id = $tag_row['id'];
+						$status = $symbol_info['status'];
 
-			$rtn_array['status'] = $status;
+						$rtn_array['tag_id'] = $tag_id;
+						$rtn_array['status'] = $status;
+
+						$has_tag = true;
+					}
+				}
+				else 
+				{
+					break;
+				}
+			}
+			else if ( '@' == $symbol )
+			{
+				$reply_user = JWUser::GetUserInfo( $value );
+				if ( false == empty($reply_user) ) 
+				{
+					if ( $has_reply || $user_id ) 
+					{
+						if ( $reply_user['id'] == $user_id )
+						{
+							$status = $symbol_info['status'];
+							$rtn_array['status'] = $status;
+							$has_reply = true;
+						}else
+						{
+							break;
+						}
+					}else
+					{
+						$user_id = $reply_user['id'];
+						$status = $symbol_info['status'];
+
+						$rtn_array['reply_id'] = $reply_id;
+						$rtn_array['status'] = $status;
+
+						$has_reply = true;
+					}
+				}
+				else 
+				{
+					break;
+				}
+			}
 		}
 
 		/**
 		 * if not set idStatusReplyTo
 		 */
-		if( $status_id == null ) {
+		if( $status_id == null && $user_id ) {
 			$status_id = JWStatus::GetMaxIdStatusByUserId( $user_id, $options );
 		}
 
@@ -139,8 +205,30 @@ class JWStatus {
 		$rtn_array['thread_id'] = $thread_id;
 		$rtn_array['user_id'] = $user_id;
 		$rtn_array['status_id'] = $status_id;
+		$rtn_array['conference_id'] = $conference_id;
 
 		return $rtn_array;
+	}
+
+	/** 
+	 * GetSymbolInfo
+	 */
+	static public function GetSymbolInfo( $status ) 
+	{
+		if ( preg_match( '/^(\s*[@\$#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
+		{
+			$symbol = trim( $matches[1] );
+			$value = $matches[2];
+			$status = preg_replace( '/^(\s*[@\$#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', '', $status );
+
+			return array(
+				'symbol' => $symbol,
+				'value' => $value,
+				'status' => $status,
+			);
+		}
+
+		return false;
 	}
 
 
@@ -217,7 +305,6 @@ class JWStatus {
 			'idTag' => $idTag,
 		));
 	}
-
 
 	/*
 	 *	获取用户的 idStatus 
@@ -775,13 +862,13 @@ _SQL_;
 		{
 			$user = JWUser::GetUserInfo( $reply_to_id ) ;
 
-			if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
 			{
 				$reply_to = $matches[1];
 				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
 
 				if( false == empty($reply_user) && $reply_user['id'] == $user['id'] ) 
-					$status = preg_replace( "/^@\s*(".$user['nameScreen'].")\s*/i", '', $status );
+					$status = preg_replace( '/^@\s*('.$user['nameScreen'].')\s*/i', '', $status );
 			}
 
 			$status = "@$user[nameScreen] $status";
@@ -791,13 +878,13 @@ _SQL_;
 		{
 			$tag = JWTag::GetDbRowById( $tag_id ) ;
 
-			if ( preg_match( "/^#\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( '/^#\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
 			{
 				$tag_name = $matches[1];
 				$tag_row = JWUser::GetUserInfo( $tag_name ) ;
 
 				if( false == empty($tag_row) && $tag_row['id'] == $tag_id ) 
-					$status = preg_replace( "/^@\s*(".$tag['name'].")\s*/i", '', $status );
+					$status = preg_replace( '/^@\s*('.$tag['name'].')\s*/i', '', $status );
 			}
 
 			$status = "#$tag[name] $status";
@@ -828,7 +915,7 @@ _SQL_;
 
 		$replyto = null;
 
-		if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)/", $status, $matches ) ) 
+		if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)/', $status, $matches ) ) 
 			$replyto = $matches[1];
 
 		$skip_url_regex = '#'.'(komoo.cn)'
@@ -899,7 +986,7 @@ _HTML_;
 		if( $reply_to_user_id ) 
 		{
 			$reply_to_user = JWUser::GetUserInfo( $reply_to_user_id );
-			if ( preg_match( "/^@\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
 			{    
 				$u = JWUser::GetUserInfo( $matches[1] );
 				if( false==empty($u) && $u['id'] == $reply_to_user_id ) 
@@ -921,7 +1008,7 @@ _HTML_;
 		{
 			$tag_row = JWTag::GetDbRowById( $tag_id );
 
-			if ( preg_match( "/^#\s*([^\s<>@#]{3,20})(\b|\s)(.+)/", $status, $matches ) ) 
+			if ( preg_match( '/^#\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
 			{    
 				$t = JWTag::GetDbRowByName( $matches[1] );
 				if( false==empty($t) && $t['id'] == $tag_id ) 

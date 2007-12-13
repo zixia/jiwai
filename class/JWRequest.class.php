@@ -66,6 +66,10 @@ class JWRequest {
 				return 4;
 			case 'sms':
 				return 5;
+			case 'yahoo':
+				return 6;
+			case 'aol':
+				return 7;
 			default:
 				return self::GetClientIp();
 		}

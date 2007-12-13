@@ -1,0 +1,31 @@
+/*
+ * Smoothbox v20070814 by Boris Popoff (http://gueschla.com)
+ *
+ * Based on Cody Lindley's Thickbox, MIT License
+ *
+ * Licensed under the MIT License:
+ *   http://www.opensource.org/licenses/mit-license.php
+ */
+
+
+/* html, body { min-height: 100%; height: auto !important; height: 100% } */
+
+#TB_overlay { position: absolute; z-index:100; top: 0px; left: 0px; background-color:#999; }
+
+#TB_window { position: absolute; background: #ffffff; z-index: 102; color:#000; text-align:left; border:3px solid #000;}
+#TB_window img { display:block; margin: 0px 0 0 0px; border-right: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top: 1px solid #666; border-left: 1px solid #666; }
+
+#TB_caption{ height:25px; padding:7px 30px 10px 25px; float:left; }
+#TB_closeWindow{ height:25px; padding:11px 25px 10px 0; float:right; }
+#TB_closeAjaxWindow{ padding:5px 10px 7px 0; margin-bottom:1px; text-align:right; float:right; }
+#TB_ajaxWindowTitle{ float:left; padding:7px 0 5px 10px; margin-bottom:1px; }
+
+#TB_title{ background-color:#F2F2F2; height:27px; }
+
+#TB_ajaxContent{ overflow: hidden; }
+#TB_load{ position: absolute; display:none; height:100px; width:100px; z-index:101; }
+#TB_HideSelect{ z-index:99; position:absolute; top: 0; left: 0; background-color:#fff; border:none; }
+#TB_iframeContent{ clear:both; border:none; margin-bottom:-1px; margin-top:1px; }
+
+/* IE6 */
+* html #TB_iframeContent{ margin-bottom:1px; }

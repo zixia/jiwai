@@ -16,13 +16,13 @@ class JWPlugins_Video
 			switch( $source )
 			{
 				case 'tudou':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"> <object width="300" height="225"><param name="movie" value="'.$id.'"></param><param name="allowScriptAccess" value="always"></param><param name="wmode" value="transparent"></param><embed src="http://www.tudou.com/v/'.$id.'" type="application/x-shockwave-flash" width="300" height="225" allowFullScreen="true" wmode="transparent" allowScriptAccess="always"></embed></object></div>';
+					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"> <object width="300" height="225"><param name="movie" value="'.$id.'"></param><param name="allowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><embed src="http://www.tudou.com/v/'.$id.'" type="application/x-shockwave-flash" width="300" height="225" allowFullScreen="true" wmode="opaque" allowScriptAccess="always"></embed></object></div>';
 				break;
 				case 'youku':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://player.youku.com/player.php/sid/'.$id.'" quality="high" width="300" height="248" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed></div>';
+					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://player.youku.com/player.php/sid/'.$id.'" quality="high" width="300" height="248" align="middle" allowScriptAccess="sameDomain" wmode="opaque" type="application/x-shockwave-flash"></embed></div>';
 				break;
 				case 'youtube':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/'.$id.'"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/'.$id.'&rel=1" type="application/x-shockwave-flash" wmode="transparent" width="300" height="251"></embed></object></div>';
+					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/'.$id.'"></param><param name="wmode" value="opaque"></param><embed src="http://www.youtube.com/v/'.$id.'&rel=1" type="application/x-shockwave-flash" wmode="opaque" width="300" height="251"></embed></object></div>';
 				break;
 			}
 

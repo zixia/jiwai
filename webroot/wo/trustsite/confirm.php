@@ -5,15 +5,13 @@ JWTemplate::html_doctype();
 JWLogin::MustLogined();
 
 
-$user_info		= JWUser::GetCurrentUserInfo();
-
+$user_info = JWUser::GetCurrentUserInfo();
 
 $param = $_REQUEST['pathParam'];
 if ( ! preg_match('#^/(.+)$#',$param,$match) )
 {
-	$error_html =<<<_HTML_
-哎呀！系统路径好像不太正确……
-_HTML_;
+	$error_html = '哎呀！系统路径好像不太正确……';
+
 	die($error_html);
 }
 
@@ -24,24 +22,22 @@ if ( isset($_REQUEST['action']) )
 	$action = array_keys($_REQUEST['action']);
 	$action = $action[0];
 
-    $info = JWOpenid_Server::GetRequestInfo();
+	$info = JWOpenid_Server::GetRequestInfo();
+
 	switch ( $action )
 	{
 		case 'accept_always':
 			JWOpenid_TrustSite::Create($user_info['idUser'], $confirm_url);
 			//fall to accept once after save.
 		case 'accept_once':
-
 			// DoAuth should not return
-    		JWOpenid_Server::DoAuth($info);
+			JWOpenid_Server::DoAuth($info);
+		break;
 
-			break;
-
-		default:
-			// fall to deny
+		default: // fall to deny
 		case 'deny':
-    		JWOpenid_Server::AuthCancel($info);
-			break;
+			JWOpenid_Server::AuthCancel($info);
+		break;
 	}
 }
 ?>
@@ -62,12 +58,9 @@ if ( isset($_REQUEST['action']) )
 <div id="container" class="subpage">
 <?php JWTemplate::SettingTab('/wo/openid/'); ?>
 <div class="tabbody">
-			<h2> <?php echo $user_info['nameScreen']?> </h2>
+	<h2> <?php echo $user_info['nameScreen']?> </h2>
 
-
-<?php
-$request = JWOpenid_Server::GetRequestInfo();
-?>
+<?php $request = JWOpenid_Server::GetRequestInfo(); ?>
 
 <div>
 
