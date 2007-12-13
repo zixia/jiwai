@@ -22,7 +22,7 @@ class JWPlugins_Video
 					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://player.youku.com/player.php/sid/'.$id.'" quality="high" width="300" height="248" align="middle" allowScriptAccess="sameDomain" type="application/x-shockwave-flash"></embed></div>';
 				break;
 				case 'youtube':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/'.$id.'"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/TqTHmzMk0Cw&rel=1" type="application/x-shockwave-flash" wmode="transparent" width="300" height="251"></embed></object></div>';
+					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/'.$id.'"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/'.$id.'&rel=1" type="application/x-shockwave-flash" wmode="transparent" width="300" height="251"></embed></object></div>';
 				break;
 			}
 
