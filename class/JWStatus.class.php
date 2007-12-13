@@ -167,7 +167,7 @@ class JWStatus {
 						$user_id = $reply_user['id'];
 						$status = $symbol_info['status'];
 
-						$rtn_array['reply_id'] = $reply_id;
+						$rtn_array['user_id'] = $user_id;
 						$rtn_array['status'] = $status;
 
 						$has_reply = true;
