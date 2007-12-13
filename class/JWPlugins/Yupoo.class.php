@@ -49,11 +49,11 @@ class JWPlugins_Yupoo{
 	 */
 	static public function GetPluginInfo( $string ) 
 	{
-		if( false == preg_match('#http://www\.yupoo\.com/photos/view\?id=([0-9a-f]+)#i', $string, $matches))
+		if( false == preg_match('#\.?yupoo\.com/(.*)[\?|&]id=([0-9a-f]{32})#i', $string, $matches))
 			return false;
 
 		$url = $matches[0];
-		$id = $matches[1];
+		$id = $matches[2];
 
 		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWPluglins_Yupoo', 'GetPhotoInfo' ), array($id));
 		$memcache = JWMemcache::Instance();
