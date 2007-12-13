@@ -12,31 +12,36 @@
 
 class JWPlugins 
 {
-	/**
-	 * Instance of this singleton
-	 *
-	 * @var 
-	 */
-	static private $msInstance;
 
-	/**
-	 * Instance of this singleton class
-	 *
-	 * @return 
-	 */
-	static public function &Instance()
-	{
-		if (!isset(self::$msInstance)) {
-			$class = __CLASS__;
-			self::$msInstance = new $class;
-		}
-		return self::$msInstance;
-	}
+	static private $plugin_names = array(
+		'Yupoo',
+		'Box',
+		'Yobo',
+		'Video',
+	);
 
-	static public function GetInfo( $status_row )
+	static public function GetPluginResult( $status_row )
 	{
 		$status = $status_row['status'];
-		if ( preg_match(	'#'
+
+		if( 'Y' == $status_row['isMms'] ) 
+		{
+
+
+			$photo_row = JWPicture::GetDbRowById( $status_row['idPicture'] );
+			$user_row = JWUser::GetDbRowById( $status_row['idUser'] );
+
+			$photo_title = $photo_row['fileName'];
+			$photo_src = JWPicture::GetUrlById($status_row['idPicture'], 'middle');
+			$photo_href = JW_SRVNAME .'/'. $user_row['nameUrl'] .'/mms/'. $status_row['id'];
+
+			return array(
+				'type' => 'html',
+				'html' => '<a href="' .$photo_href. '" target="_blank"><img src="' .$photo_src. '" title="'.$photo_title.'" class="pic"/></a>',
+			);
+
+		}
+		else if ( preg_match(	'#'
 					// head_str
 					. '^(.*?)'
 					. 'http://'
@@ -48,9 +53,8 @@ class JWPlugins
 					. '(.*)$#is'
 					, $status
 					, $matches 
-			       ) )
+		) )
 		{
-			//die(var_dump($matches));
 			$head_str = htmlspecialchars($matches[1]);
 			$url_domain = htmlspecialchars($matches[2]);
 			$url_path = htmlspecialchars($matches[3]);
@@ -64,37 +68,23 @@ class JWPlugins
 				$tail_str = $url_path . $tail_str;
 				$url_path = '';
 			}
+
 			$url = 'http://' .$url_domain . $url_path;
 
-			$photo_info = JWPlugins_Yupoo::GetPhotoInfo( $url );
-			if( false == empty( $photo_info ) )
+			foreach( self::$plugin_names as $plugin_name ) 
 			{
-				return array( 
-					'src' => JWPlugins_Yupoo::BuildPhotoUrl( $photo_info ),
-					'href' => $url,
-					'type' => 'pic',
-				);
-			}
-			$box_info = JWPlugins_Box::GetBoxInfo( $status );
-			if( false == empty($box_info) )
-			{
-				return array(
-					'src' => $box_info,
-					'type' => 'box',
-				);
+				$callback = array('JWPlugins_' . $plugin_name , 'GetPluginResult');
+				if ( is_callable( $callback ) ) 
+				{
+					$result = call_user_func( $callback, $url );
+					if ( $result ) 
+					{
+						return $result;
+					}
+				}
 			}
 		}
-		else if( 'Y'==$status_row['isMms'] ) 
-		{
-			$photo_row = JWPicture::GetDbRowById( $status_row['idPicture'] );
-			$photo_subject = $photo_row['fileName'];
-			$user_row = JWUser::GetDbRowById( $status_row['idUser'] );
-			return array(
-				'src' => JWPicture::GetUrlById($status_row['idPicture'], 'middle'),
-				'href' => JW_SRVNAME .'/'. $user_row['nameUrl'] .'/mms/'. $status_row['id'],
-				'type' => 'pic',
-			);
-		}
-		return null;
+
+		return array( 'type' => 'none' );
 	}
 }
