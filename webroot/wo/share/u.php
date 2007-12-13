@@ -11,7 +11,7 @@ if( $_POST ) {
 
 	$idPartner = $url = $title = $description = null;
 	extract( $_POST );
-	$status = "收藏：$title - $description $url";
+	$status = "$title - $description $url";
 	if( $idPartner == null )
 		$idPartner = BOOKMARKLET_IDPARTNER;
 
