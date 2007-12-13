@@ -100,12 +100,19 @@ switch ( $func )
 		}
 		break;
 	case 'channelpublic':
+		{
 			$tag_name = $matches[1];
+			if ( false == JWUnicode::unifyName( $tag_name ) )
+			{
+				JWTemplate::RedirectToUrl( '/'.urlEncode( $nameScreen ).'/t/'.urlEncode($tag_name).'/' );
+			}
+			
 			$tag_row = JWTag::GetDbRowByName( $tag_name );
-			if ( !empty($tag_row) )
+			if ( false == empty($tag_row) )
 				require_once(dirname(__FILE__) . "/channelpublic.inc.php");
 			else
 				header( 'Location: /'. urlencode( $nameScreen ) . '/' );
+		}
 		break;
 
 	case 'statuses':

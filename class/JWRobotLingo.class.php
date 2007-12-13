@@ -177,7 +177,7 @@ class JWRobotLingo {
 		/*
 	 	 *	解析命令参数
 	 	 */
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$param_array = preg_split('/\s+/', $body );
 		$cmd = array_shift( $param_array );
@@ -292,7 +292,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$param_array = preg_split('/\s+/', $body );
 		$cmd = array_shift( $param_array );
@@ -368,7 +368,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_ADD_HELP');
@@ -503,7 +503,7 @@ class JWRobotLingo {
 
 		/** Parse Param  **/
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		/** parameter not enough **/
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
@@ -625,7 +625,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_HELP' );
@@ -662,7 +662,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$address = $robotMsg->GetAddress();	
 		$type = $robotMsg->GetType();	
@@ -768,7 +768,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_HELP' );
@@ -840,7 +840,7 @@ class JWRobotLingo {
 	 	 *	解析命令参数
 	 	 */
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOIS_HELP' );
@@ -879,7 +879,7 @@ class JWRobotLingo {
 	static function	Lingo_Accept($robotMsg)
 	{
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
@@ -937,7 +937,7 @@ class JWRobotLingo {
 	static function	Lingo_Cancel($robotMsg)
 	{
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
@@ -984,7 +984,7 @@ class JWRobotLingo {
 	static function	Lingo_Deny($robotMsg)
 	{
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$address 	= $robotMsg->GetAddress();	
 		$type 		= $robotMsg->GetType();	
@@ -1047,7 +1047,7 @@ class JWRobotLingo {
 		$address_user_id = $device_db_row['idUser'];
 
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( false == preg_match('/^\w+\s+(\S+)\s+(.+)$/i',$body,$matches) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_HELP');
@@ -1106,7 +1106,7 @@ class JWRobotLingo {
 			$registered = false;
 		}
 
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		if ( preg_match('/^([[:alpha:]]+)\s+([\S]+)\s*([\S]*)$/', $body, $matches) ) {
 
@@ -1336,7 +1336,7 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1391,7 +1391,7 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1433,7 +1433,7 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1472,7 +1472,7 @@ class JWRobotLingo {
 		$type 		= $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
 		$body = $robotMsg->GetBody();
-		$body = JWRobotLingoBase::ConvertCorner( $body );
+		$body = JWTextFormat::ConvertCorner( $body );
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 

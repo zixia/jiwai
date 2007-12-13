@@ -117,12 +117,12 @@ class JWStatus {
 			}
 			else if ( '#' == $symbol )
 			{
-				$tag_row = JWTag::GetDbRowByName( $value );
-				if ( false == empty($tag_row) ) 
+				$tag_row_id = JWTag::GetIdByNameOrCreate( $value );
+				if ( false == empty($tag_row_id) ) 
 				{
 					if ( $has_tag ) 
 					{
-						if ( $tag_row['id'] == $tag_id )
+						if ( $tag_row_id == $tag_id )
 						{
 							$status = $symbol_info['status'];
 							$rtn_array['status'] = $status;
@@ -132,7 +132,7 @@ class JWStatus {
 						}
 					}else
 					{
-						$tag_id = $tag_row['id'];
+						$tag_id = $tag_row_id;
 						$status = $symbol_info['status'];
 
 						$rtn_array['tag_id'] = $tag_id;
@@ -213,19 +213,27 @@ class JWStatus {
 	/** 
 	 * GetSymbolInfo
 	 */
-	static public function GetSymbolInfo( $status ) 
+	static public function GetSymbolInfo( $status, $symbol_need=null ) 
 	{
-		if ( preg_match( '/^(\s*[@\$#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
+		/**
+		 * Convert to semi corner
+		 */
+		$status = JWTextFormat::ConvertCorner( $status );
+
+		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
 		{
 			$symbol = trim( $matches[1] );
 			$value = $matches[2];
-			$status = preg_replace( '/^(\s*[@\$#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', '', $status );
+			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', '', $status );
 
-			return array(
-				'symbol' => $symbol,
-				'value' => $value,
-				'status' => $status,
-			);
+			if ( $symbol_need==null || $symbol == $symbol_need ) 
+			{
+				return array(
+					'symbol' => $symbol,
+					'value' => $value,
+					'status' => $status,
+				);
+			}
 		}
 
 		return false;
@@ -268,7 +276,6 @@ class JWStatus {
 			$idUserReplyTo = $options['idUserReplyTo'];
 			$idStatusReplyTo = $options['idStatusReplyTo'];
 		}else{
-			$statusPost = JWRobotLingoBase::ConvertCorner($status);
 			$reply_info = JWStatus::GetReplyInfo($statusPost, $options);
 			if( false == empty( $reply_info ) ){
 				$idUserReplyTo = $reply_info['user_id'];
@@ -881,10 +888,10 @@ _SQL_;
 			if ( preg_match( '/^#\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
 			{
 				$tag_name = $matches[1];
-				$tag_row = JWUser::GetUserInfo( $tag_name ) ;
+				$tag_row = JWTag::GetDbRowByName( $tag_name ) ;
 
 				if( false == empty($tag_row) && $tag_row['id'] == $tag_id ) 
-					$status = preg_replace( '/^@\s*('.$tag['name'].')\s*/i', '', $status );
+					$status = preg_replace( '/^#\s*('.$tag['name'].')\s*/i', '', $status );
 			}
 
 			$status = "#$tag[name] $status";

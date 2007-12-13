@@ -10,18 +10,21 @@ $pathParam 	= @$_REQUEST['pathParam'];
 
 if( $tag_name ) 
 {
-	$tag_row = JWTag::GetDbRowByName( $tag_name );
-	if( false == empty( $tag_row ) ) {
-		$tag_id = $tag_row['id'];
-	}else{
-		$tag_id = JWTag::Create( $tag_name );
-		if( ! $tag_id ) 
-		{
-			JWTemplate::RedirectTo404NotFound();
-		}
-		$tag_row = JWTag::GetDbRowById( $tag_id );
+	if ( false ==JWUnicode::unifyName( $tag_name ) )
+	{ 
+		JWTemplate::RedirectToUrl( '/t/' . urlEncode($tag_name) .'/' );
 	}
-}else
+
+	$tag_id = JWTag::GetIdByNameOrCreate( $tag_name );
+
+	if( null == $tag_id ) 
+	{
+		JWTemplate::RedirectTo404NotFound();
+	}
+
+	$tag_row = JWTag::GetDbRowById( $tag_id );
+}
+else
 {
 	JWTemplate::RedirectBackToLastUrl('/');
 }

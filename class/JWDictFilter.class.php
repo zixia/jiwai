@@ -112,7 +112,7 @@ class JWDictFilter {
 
 	function GetFilterWords($string, $out="UTF-8"){
 		//全角到半角
-		$string = JWRobotLingoBase::ConvertCorner( $string );
+		$string = JWTextFormat::ConvertCorner( $string );
 	
 		//Get english word, number
 		$filterWords = array();
