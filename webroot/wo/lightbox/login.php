@@ -35,10 +35,10 @@ if ( array_key_exists('username_or_email',$_POST) )
 		}
 		else
 		{
-			echo "用户名 或 号码 含有不合法字符。";
+			echo '-用户名与密码不匹配 -- 请重试';
 			exit(0);
 		}
-//var_dump($idUser);
+
 	if ( $idUser )
 	{
 		echo '+'.$idUser;
@@ -50,7 +50,7 @@ if ( array_key_exists('username_or_email',$_POST) )
 	}
 	else
 	{
-		echo '-用户名与密码不匹配 -- 请重试';//var_dump($_REQUEST);exit;
+		echo '-用户名与密码不匹配 -- 请重试';
 	}
 	exit(0);
 }
@@ -69,7 +69,7 @@ if ( array_key_exists('username_or_email',$_POST) )
 		<li class="box4"><label for="remember_none">每次都重新登录</label></li>
 	</ul>
 	<ul>
-		<li class="box3"><input id="remember_month" type="radio" name="radiobutton" value="radiobutton" /></li>
+		<li class="box3"><input id="remember_month" type="radio" name="radiobutton" checked value="radiobutton" /></li>
 		<li class="box4"><label for="remember_month">一个月内自动登录</label></li>
 	</ul>
 

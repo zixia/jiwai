@@ -74,7 +74,7 @@ $need_request = ( $follower_user_row['protected'] == 'Y'
 	<p class="pad1">是否同时打开通知呢？</p>
 	<ul>
 		<li class="box1"><input type="radio" id="followoption1" name="notification" value="Y" checked="true"/></li>
-		<li class="box2"><label for="followoption1">是，在手机或者QQ等聊天软件上接收此人的消息</label></li>
+		<li class="box2"><label for="followoption1">是，在手机或者QQ、MSN、Skype等聊天软件上接收此人的消息</label></li>
 	</ul>
 	<ul>
 		<li class="box1"><input type="radio" id="followoption2" name="notification" value="N"/></li>

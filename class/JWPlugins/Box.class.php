@@ -9,7 +9,7 @@ class JWPlugins_Box
 		{
 				return array(
 					'type' => 'html',
-                    'html' => '<div style="margin:5px 0 5px 0;"><embed src="'.$info.'" quality=high width="50" height="18" type="application/x-shockwave-flash" /></embed></div>',
+                    'html' => '<div style="margin:5px 0 5px 0;"><embed src="'.$info.'" quality="high" wmode="opaque" width="50" height="18" type="application/x-shockwave-flash" /></embed></div>',
 				);
 		}
 
