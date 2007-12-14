@@ -79,7 +79,8 @@ public class GTalkBuddyRobot {
 		roster = con.getRoster();
 		Collection<RosterEntry> list = roster.getEntries();
 		for ( RosterEntry entry : list ) {
-			System.out.println( entry.getUser() );
+			String name = entry.getName();
+			System.out.println( entry.getUser() + "," + ( (name==null) ? "" : name ) );
 		}
 	}
 

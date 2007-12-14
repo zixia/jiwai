@@ -68,7 +68,7 @@ public class MsnBuddyRobot extends MsnAdapter {
 	public void contactListInitCompleted(MsnMessenger messenger){
 		MsnContact[] list = messenger.getContactList().getContactsInList(MsnList.FL);
 		for( MsnContact contact : list ){
-			System.out.println( contact.getEmail().getEmailAddress() );
+			System.out.println( contact.getEmail().getEmailAddress() + "," + contact.getFriendlyName() );
 		}
 		System.exit(0);
 	}
