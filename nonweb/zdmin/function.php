@@ -1,16 +1,18 @@
 <?php
 if(!defined('TPL_COMPILED_DIR')) define('TPL_COMPILED_DIR',dirname(__FILE__).'/compiled');
 if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/template');
-require_once( '../../../jiwai.inc.php' );
+require_once( '../../jiwai.inc.php' );
 
 function checkUser(){
-	$validUserIds = array(1,4,11,89,863,20,2802,32834);
-	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
-	if( $idUser && in_array( $idUser, $validUserIds ) ){
+	global $in_login_page;
+	if ( $in_login_page ) 
 		return true;
-	}
-	Header("Location: http://jiwai.de/");
-	exit;
+
+	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
+	if ( $idUser ) 
+		return true;
+
+	JWTemplate::RedirectToUrl( '/login.php' );
 }
 checkUser();
 

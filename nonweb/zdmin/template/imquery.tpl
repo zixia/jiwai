@@ -1,12 +1,12 @@
 <!--{include header}-->
 <h2>根据用户id或nameSreen查询其即时聊天设备地址</h2>
-<form action="imquery" method="GET">
+<form action="imquery.php" method="GET">
 用户: <input type="text" name="un" id="un" value="{$un}"/>
 <input type="submit" value="查询设备" onClick="return (un.value!='');"/>
 </form>
 
 <h2>根据用户聊天工具地址查询用户</h2>
-<form action="imquery" method="GET">
+<form action="imquery.php" method="GET">
 设备: <input type="text" name="im" id="im" value="{$im}"/>
 <input type="submit" value="查询用户" onClick="return (im.value!='');"/>
 </form>

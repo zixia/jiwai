@@ -18,7 +18,7 @@ function ons(){
 <!--{include tips}-->
 <!--{if $statusQuarantine}-->
 	<h3>未审核更新信息(每页20条 - 审核完一页再进行下一页)</h3>
-	<form name="exam" action="statusexam" method="POST" onSubmit="return ons();">
+	<form name="exam" action="statusexam.php" method="POST" onSubmit="return ons();">
 	<input type="submit" name="delete" value="删除">
 	<input type="submit" name="allow" value="审核通过">
 	<table class="result" width="740">

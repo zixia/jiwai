@@ -175,5 +175,47 @@ _SQL_;
 		$idConference = JWDB::CheckInt( $idConference );
 		return JWDB::UpdateTableRow( 'Conference' , $idConference, $updatedRow );
 	}
+
+	/**
+	 * Get Conference All 
+	 */
+	static public function GetDbRowAll()
+	{
+		$sql = 'SELECT * FROM Conference';
+		$row = JWDB::GetQueryResult( $sql, true );
+
+		return $row;
+	}
+
+	/**
+	 * Get Conference Enable All 
+	 */
+	static public function GetDbRowEnableAll()
+	{   
+		$rows_all = JWConference::GetDbRowAll();
+		$rows = array();
+		if (false == empty($rows_all))
+		{   
+			foreach( $rows_all as $row )
+			{   
+				$user_info = JWUser::GetUserInfo( $row['idUser'] );
+				if ( false == empty($user_info) && $row['id']==$user_info['idConference'] )
+				{   
+					$rows[$row['id']]= array(
+						'id' => $row['id'],
+						'idUser' => $row['idUser'],
+						'number' => $row['number'],
+						'deviceAllow' => $row['deviceAllow'],
+						'friendOnly' => $row['friendOnly'],
+						'nameScreen' => $user_info['nameScreen'],
+						'nameUrl' => $user_info['nameUrl'],
+						'nameFull' => $user_info['nameFull'],
+					);  
+				}   
+			}   
+		}   
+
+		return $rows;
+	} 
 }
 ?>

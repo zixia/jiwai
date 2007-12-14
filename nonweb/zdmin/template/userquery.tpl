@@ -1,6 +1,6 @@
 <!--{include header}-->
 <h2>JiWai用户综合信息查询</h2>
-<form action="userquery" method="GET">
+<form action="userquery.php" method="GET">
 用户: <input type="text" name="un" id="un" value="{$un}"/>
 <input type="submit" value="提交查询" onClick="return (un.value!='');"/>
 </form>

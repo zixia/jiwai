@@ -1,5 +1,5 @@
 <!--{include header}-->
-<form action="sidebar" method="POST">
+<form action="sidebar.php" method="POST">
 <table >
 <tr>
 <td>

@@ -19,7 +19,7 @@ switch($type)
         break;
     case 'prev':
         $_SESSION['sidebarprev'] = $_POST['content'];
-        echo "<script>location.href='sidebarprev';</script>";
+        echo "<script>location.href='sidebarprev.php';</script>";
         break;
     case 'save':
     default:
