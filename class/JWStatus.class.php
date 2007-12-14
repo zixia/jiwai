@@ -151,6 +151,13 @@ class JWStatus {
 				$reply_user = JWUser::GetUserInfo( $value );
 				if ( false == empty($reply_user) ) 
 				{
+					if ( $has_conference == false && $reply_user['idConference'] )
+					{
+						$has_conference = true;
+						$conference_id = $reply_user['idConference'];
+						$rtn_array['conference_id'] = $conference_id;
+					}
+
 					if ( $has_reply || $user_id ) 
 					{
 						if ( $reply_user['id'] == $user_id )
@@ -218,7 +225,7 @@ class JWStatus {
 		/**
 		 * Convert to semi corner
 		 */
-		$status = JWTextFormat::ConvertCorner( $status );
+		$status = JWTextFormat::ConvertCorner( $status, array('＃', '＄', '＠') );
 
 		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
 		{

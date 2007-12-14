@@ -42,7 +42,7 @@ class JWTextFormat {
 	 * @param string $string , 
 	 * @return string
 	 */
-	static function ConvertCorner($text)
+	static function ConvertCorner($text, $keys=array())
 	{
 		$corner = array(
 			'１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
@@ -60,6 +60,18 @@ class JWTextFormat {
 			'Ｙ' => 'Y', 'Ｚ' => 'Z', '＠' => '@', '＃' => '#', '＄' => '$',
 			'！' => '!', '％' => '%', '　' => ' ',
 	    	);
+
+		$convert_keys = array_keys( $corner );
+		$cornert_values = array_values( $corner );
+		if ( false == empty( $keys ) ) 
+		{
+			$convert_keys = array_diff( $convert_keys, array_diff( $convert_keys, $keys ) );
+			$convert_values = array();
+			foreach( $convert_keys AS $k )
+			{
+				array_push( $convert_values, $corner[ $k ] );
+			}
+		}
 		return str_replace( array_keys($corner), array_values($corner), $text );
 	}
 
