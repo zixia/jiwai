@@ -11,6 +11,9 @@
  */
 class JWBuddy_Robot {
 
+	static public $buddy_robot_host = '10.1.40.10';
+	static public $buddy_robot_port = 55501;
+
 	static public $cmd = '/usr/java/jdk/bin/java';
 
 	static public $msn_setting = array(
@@ -33,6 +36,17 @@ class JWBuddy_Robot {
 	);
 
 	static public function GetBuddyList( $type='msn', $username=null, $password=null )
+	{
+		$mc_key = JWBuddy_Import::GetCacheKeyByTypeAndUsernameAndPassword( $type, $username, $password );
+		$memcache = JWMemcache::Instance();
+		$memcache->Del( $mc_key, false );
+
+		$result = self::GetBuddyListFromRobot( $type, $username, $password );
+	
+		$memcache->Set( $mc_key, $result, 0, 0 );
+	}
+
+	static public function GetBuddyListFromRobot( $type='msn', $username=null, $password=null )
 	{
 		$type = strtolower( $type );
 
@@ -95,6 +109,32 @@ class JWBuddy_Robot {
 		;
 		
 		return $cmd;
+	}
+
+	static public function SendImportRequest( $type, $username, $password )
+	{
+		$info = Base64_Encode( serialize( array( $type, $username, $password ) ) ) . "\r\n";
+
+		/* create socket */
+		$sock = @socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+		if( $sock == false )
+			return false;
+
+		/* connect to buddy robot */
+		$flag = @socket_connect( $sock, self::$buddy_robot_host , self::$buddy_robot_port );
+		if( $flag == false )
+			return false;
+		
+		/* write to socket */
+		$flag = @socket_write( $sock, $info, strlen($info) );
+		if ( $flag == false ) 
+			return false;
+
+		/* close socket */
+		if ( is_resource( $sock ) )
+			@socket_close( $sock );
+
+		return true;
 	}
 
 }
