@@ -46,9 +46,9 @@ define('LIB_ROOT',	JW_ROOT . 'lib/');
 define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
 
 /**
- * Filter Dict File
+ * Path of Fragment
  */
-define('FILTER_DICT',  CONFIG_ROOT . 'dictionary/filterdict.txt');
+define('FRAGMENT_ROOT',	'/opt/fragment/');
 
 /**
  * Mms Storage
