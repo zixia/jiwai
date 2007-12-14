@@ -59,7 +59,7 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = n
 
 	if ( reply_status( $idStatus ) )
 	{
-		$redirect_to = "/t/$tag_row[name]/thread/$idStatus";
+		$redirect_to = "/t/".urlEncode($tag_row['name']). "/thread/$idStatus";
 		JWTemplate::RedirectToUrl( $redirect_to );
 	}
 
