@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(__FILE__) . '/function.php');
 
-$file = './dictionary/filterdict.txt';
+$file = JWFilterConfig::GetDictFilename();
 
 $fr = file_get_contents( $file );
 

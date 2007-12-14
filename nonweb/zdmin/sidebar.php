@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(__FILE__) . '/function.php');
 
-$filename =  JW_ROOT . "fragment/page/sidebar_announcement.html";
+$filename =  FRAGMENT_ROOT . "page/sidebar_announcement.html";
 
 extract($_POST, EXTR_IF_EXISTS);
 $type = isset($_POST['type']) ? $_POST['type'] : 'reload';

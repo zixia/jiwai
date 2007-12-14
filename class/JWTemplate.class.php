@@ -1378,7 +1378,7 @@ _HTML_;
 <div class="headtip"><h2 class="forul">公告</h2></div>
 <ul class="featured">
 <?
-			$file_name = JW_ROOT . 'fragment/page/sidebar_announcement.html';
+			$file_name = FRAGMENT_ROOT . 'page/sidebar_announcement.html';
 			echo file_get_contents( $file_name );
 ?>
 </ul>
