@@ -35,7 +35,13 @@ function reply_status($idStatus)
 
 		$is_succ = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'N', 'web@jiwai.de', $options_info);
 		if( false == $is_succ )
+		{
 			JWSession::SetInfo('error', '对不起，回复失败。');
+		}
+		else
+		{
+			JWSession::SetInfo('notice', '你的回复发送成功。');
+		}
 
 		return $is_succ;
 	}
@@ -83,6 +89,7 @@ JWTemplate::html_head($head_options);
 
  <div id="container">
    <div id="content">
+	<?php echo JWTemplate::ShowActionResultTips(); ?>
        <div id="wrapper">
 
 

@@ -220,7 +220,7 @@ _HTML_;
 				'/' => '首页',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
-				'/help/' => '留言板'
+				'/help/' => '帮助'
 			);
 			$nameScreen = '游客';
 			$nameUrl = 'public_timeline';
@@ -229,7 +229,7 @@ _HTML_;
 				'/wo/' => '首页',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
-				'http://help.jiwai.de/' => '帮助',
+				'/t/叽歪留言板/' => '留言板',
 			);
 		}
 
@@ -397,7 +397,8 @@ _HTML_;
 		<li><a href="http://help.jiwai.de/MediaComments" target="_blank">媒体和掌声</a></li>
 		<li><a href="http://blog.jiwai.de/" target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api" target="_blank">API</a></li>
-		<li><a href="/help/" target="_blank">帮助留言板</a></li>
+		<li><a href="http://help.jiwai.de/" target="_blank">帮助</a></li>
+		<li><a href="/wo/feedback/" onClick="return JWAction.redirect(this);" target="_blank">反馈</a></li>
 		<li><a href="http://help.jiwai.de/Links" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
