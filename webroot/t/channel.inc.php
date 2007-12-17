@@ -94,7 +94,7 @@ JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
 	</div><!-- content end -->
 
 <?php 
-if ( $tag_row['name'] != '叽歪留言板' )
+if ( $tag_row['name'] != '帮助留言板' )
 {
 	require_once(dirname(__FILE__).'/channel_sidebar.php');
 }

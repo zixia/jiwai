@@ -220,7 +220,7 @@ _HTML_;
 				'/' => '首页',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
-				'/help/' => '帮助'
+				'http://help.jiwai.de/' => '帮助'
 			);
 			$nameScreen = '游客';
 			$nameUrl = 'public_timeline';
@@ -229,7 +229,7 @@ _HTML_;
 				'/wo/' => '首页',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
-				'/t/叽歪留言板/' => '留言板',
+				'/t/帮助留言板/' => '留言板',
 			);
 		}
 
