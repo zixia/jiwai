@@ -18,7 +18,7 @@ class JWPlugins_Box
 
     static public function GetBoxId( $string )
     {
-        if( preg_match('#http://www\.8box\.c[n|om]([\/a-z\/]+)+([0-9]+)#i', $string, $matches))
+        if( preg_match('#http://(?:www\.|)8box\.c[n|om]([\/a-z\/]+)+([0-9]+)#i', $string, $matches))
         {
             return $matches[2];
         }
