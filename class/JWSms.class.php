@@ -206,7 +206,7 @@ class JWSms {
 	 * 9911(chn) & 9318(uni) mt
 	 *
 	 */
-	static public function SendMt ($mobileNo, $smsMsg, $serverAddress='99118816', $linkId=null)
+	static public function SendMt ($mobileNo, $smsMsg, $serverAddress=null, $linkId=null)
 	{
 		// 第三方下行接口，只对移动有效
 		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
@@ -214,9 +214,16 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		$code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo );
+		if ( null === $serverAddress )
+		{
+			$code = JWSPCode::GetCodeByMobileNo( $serverAddress, $mobileNo );
+		}
+		else
+		{
+			$code = JWSPCode::GetCodeByServerAddressAndMobileNo( $serverAddress, $mobileNo );
+		}
 		if( empty( $code ) ) {
-			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt Get Invalid SpCode with ($mobileNo, $serverAddress) .");
+			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt Get Invalid SpCode with $mobileNo,$serverAddress.");
 			return true;
 		}
 
