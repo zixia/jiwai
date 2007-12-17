@@ -216,7 +216,7 @@ class JWSms {
 
 		if ( null === $serverAddress )
 		{
-			$code = JWSPCode::GetCodeByMobileNo( $serverAddress, $mobileNo );
+			$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
 		}
 		else
 		{
