@@ -54,7 +54,7 @@ $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
 <body class="normal"> 
 
 <?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header() ?> 
+<?php JWTemplate::header('/t/'.$tag_row['name'].'/') ?> 
 <?php
 $has_following = JWTagFollower::IsFollower( $tag_row['id'], $current_user_id );
 $follow_string = $has_following ? '已关注' : '关注此#';
