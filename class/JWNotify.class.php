@@ -108,7 +108,7 @@ class JWNotify{
 		$userSender = JWUser::GetUserInfo( $idUserFrom );
 		$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
 		$idTag = $status_row['idTag'];
-		$idThread = $status_row['idThread'];
+		$idThread = isset($status_row['idThread']) ? $status_row['idThread'] : null;
 
 		//重新生成prettyName
 		$prettyOptions = array();
