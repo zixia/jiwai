@@ -328,7 +328,7 @@ alert('ok');
 
 	onLoad: function() {
 		JiWai.AutoEmote();
-		if ( JWBuddyIcon ) JWBuddyIcon.init();
+		if ( window.JWBuddyIcon ) JWBuddyIcon.init();
 		if (window.RefreshInterval && location.search && location.search.length>1) 
 			setTimeout(JiWai.Refresh, RefreshInterval*1000);
 	},
