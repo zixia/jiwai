@@ -369,6 +369,10 @@ _SQL_;
 			$userInfo['srcRegister'] = null;
 		}
 
+		if( empty($userInfo['location']) ) {
+			$userInfo['location'] = null;
+		}
+
 		while( self::IsExistUrl( $userInfo['nameUrl'] ) ) {
 			$userInfo['nameUrl'] = JWDevice::GenSecret(8);
 		}

@@ -135,13 +135,10 @@ class JWMutex {
     */
     function __destruct()
     {
-		//$this->mSyslog->LogMsg('Removing key ' . $this->mMutexKey);	
-//		有了 MAX_SEM_NUM ，我们就不 remove 了
-	if ( !empty($this->mMutexHandle) ) {
+	if ( false == empty($this->mMutexHandle) && is_resource($this->mMutexHandle) ) {
         	@sem_remove($this->mMutexHandle);
 		@unlink( $this->mMutexFile );
 	}
-
     }
 
 	public function Acquire()

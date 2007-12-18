@@ -210,8 +210,11 @@ die(var_dump($hit_ids));
 
 		foreach ( $unhit_mc_keys as $unhit_mc_key )
 		{
-			self::$msMemcache->Set($unhit_mc_key, $db_rows[ $key_map_mc2db[$unhit_mc_key] ]);
+			/* for unhit_mc_key, maybe deleted in physics db; */
+			if ( false == isset( $key_map_mc2db[ $unhit_mc_key ] ) )
+				continue;
 
+			self::$msMemcache->Set($unhit_mc_key, $db_rows[ $key_map_mc2db[$unhit_mc_key] ]);
 			$hit_db_rows[ $key_map_mc2db[$unhit_mc_key] ] 	= $db_rows[ $key_map_mc2db[$unhit_mc_key] ];
 		}
 
