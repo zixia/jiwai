@@ -4,43 +4,45 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-$user_info		= JWUser::GetCurrentUserInfo();
-$nameScreen=$_POST['user']['nameScreen'];
-$password=$_POST['user']['password'];
+$service = 'fanfou';
+$service_name = 'FanFou';
 
-if (isset($_POST['user']) && trim ($nameScreen) && trim ($password))
+$user_info = JWUser::GetCurrentUserInfo();
+
+$bindother_id = $login_name = $login_pass = null;
+$sync_reply = $sync_conference = 'N';
+
+extract($_POST, EXTR_IF_EXISTS);
+
+if ( $login_name && $login_pass )
 {
-    if (JWBindOther::Create($user_info['id'], $nameScreen, $password, 'fanfou'))
-    {
-        $notice_html = <<<_HTML_
-        绑定 Fanfou 成功。
-_HTML_;
-        JWSession::SetInfo('notice', $notice_html);
-    }
-    else
-    {
-        $error_html = <<<_HTML_
-        Fanfou 用户名 或 密码 错误。
-_HTML_;
-        JWSession::SetInfo('error', $error_html);
-    }
+	$options = array(
+		'sync_reply' => $sync_reply,
+		'sync_conference' => $sync_conference,
+	);
+	if (JWBindOther::Create($user_info['id'], $login_name, $login_pass, $service, $options ))
+	{
+		$notice_html = '绑定 '.$service_name.' 成功。';
+		JWSession::SetInfo('notice', $notice_html);
+	}
+	else
+	{
+		$error_html = $service_name.' 用户名 或 密码 错误。';
+		JWSession::SetInfo('error', $error_html);
+	}
 
-	header ( "Location: /wo/bindother/fanfou" );
-    exit();
-
+	JWTemplate::RedirectToUrl( '/wo/bindother/fanfou' );
 }
 
-if (isset($_POST['idDelete']) && ($idDelete=intval($_POST['idDelete'])))
+if ( $bindother_id )
 {
-    JWBindOther::Destroy($user_info['id'], $idDelete);
-    $notice_html = <<<_HTML_
-    解除绑定 Fanfou 成功。
-_HTML_;
-    JWSession::SetInfo('notice', $notice_html);
+	JWBindOther::Destroy($user_info['id'], $bindother_id);
+	$notice_html = '解除绑定 '.$service_name.' 成功。';
+	JWSession::SetInfo('notice', $notice_html);
 
-	header ( "Location: /wo/bindother/fanfou" );
-    exit();
+	JWTemplate::RedirectToUrl( '/wo/bindother/fanfou' );
 }
+
 ?>
 <html>
 
@@ -60,33 +62,46 @@ _HTML_;
 <?php JWTemplate::SettingTab(); ?>
 
 <div class="tabbody">
-<h2>绑定Fanfou&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<span style="font-size:14px;">将你的叽歪自动同步到Fanfou，而不是从Fanfou更新到叽歪</span></h2>
+<h2>绑定<?php echo $service_name;?>&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<span style="font-size:14px;">将你的叽歪自动同步到<?php echo $service_name;?>，而不是从<?php echo $service_name;?>更新到叽歪</span></h2>
 
-	<form id="f" method="post">
 <?php
-    $bind = JWBindOther::GetBindOther($user_info['id']);
-    $bind = isset($bind['fanfou']) ? $bind['fanfou'] : array();
+	$bind = JWBindOther::GetBindOther($user_info['id']);
+	$bind = isset($bind[$service]) ? $bind[$service] : array();
 
-    if ( false == empty($bind) )
-	echo <<<_HTML_
-    <div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 Fanfou (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 Fanfou 绑定吗？'))$('f').submit();return false;">删除</a>)</div>
-	<input type="hidden" name="idDelete" value="$bind[id]"/>
+	if ( false == empty($bind) ) {
+		$sync_reply = $bind['syncReply'];
+		$sync_conference = $bind['syncConference'];
+		echo <<<_HTML_
+			<form id="f1" method="post">
+				<div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 <?php echo $service_name;?> (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 $service_name 绑定吗？'))$('f1').submit();return false;">删除</a>)</div>
+				<input type="hidden" name="bindother_id" value="$bind[id]"/>
+			</form>
 _HTML_;
+	}
 ?>
+	<form id="f" method="post">
 	<fieldset>
 	<table width="100%" cellspacing="3">
 		<tr>
 			<th valign="top">用户名：</th>
 			<td width="260">
-				<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $bind['loginName'];?>" alt="用户名" title="用户名" check="null"/><i></i>
+				<input name="login_name" type="text" id="login_name" value="<?php echo $bind['loginName'];?>" alt="用户名" title="用户名" check="null"/><i></i>
 			</td>
-			<td class="note">用来登陆 Fanfou 的用户名</td>
+			<td class="note">用来登陆 <?php echo $service_name;?> 的用户名</td>
 		</tr>
 		<tr>
 			<th>密码：</th>
-			<td><input id="user[password]" name="user[password]" type="password" value="" alt="密码" title="密码" check="null"/><i></i></td>
-			<td class="note">用来登陆 Fanfou 的密码</td>
+			<td><input id="login_pass" name="login_pass" type="password" value="" alt="密码" title="密码" check="null"/><i></i></td>
+			<td class="note">用来登陆 <?php echo $service_name;?> 的密码</td>
 		</tr>
+		<tr><td height="10" colspan="3"></td></tr>
+		<tr>
+			<th valign="top">选项：</th>
+			<td>
+				<input style="display:inline; width:16px; border:0px; height:16px;margin-right:10px;" id="sync_reply" name="sync_reply" type="checkbox" value="Y" <?php echo $sync_reply=='Y'?'checked' : '';?>/>同步回复到<?php echo $service_name;?><br/>
+				<input style="display:inline; width:16px; border:0px; height:16px;margin-right:10px;" id="sync_conference" name="sync_conference" type="checkbox" value="Y" <?php echo $sync_conference=='Y'?'checked':'';?>/>同步会议发言到<?php echo $service_name;?>
+			</td>
+			<td class="note"></td>
 	</table>
 	</fieldset>
 

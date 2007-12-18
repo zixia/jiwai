@@ -127,9 +127,19 @@ class JWNotify{
 					( isset($message['im']) ? $message['im'] : null ) : $message;
 				if( $messageObject ) 
 				{
-					if( isset($bindOther['twitter']) )
+					if (isset($bindOther['twitter']) 
+						&& ('Y'==$bindOther['twitter']['syncReply']
+							|| null==$idUserTo)
+						&& ('Y'==$bindOther['twitter']['syncConference'] 
+							|| null==$idUserConference )
+					)
 						JWBindOther::PostStatus( $bindOther['twitter'], $messageObject );
-					if( isset($bindOther['fanfou']) )
+					if( isset($bindOther['fanfou']) 
+						&& ('Y'==$bindOther['fanfou']['syncReply']
+							|| null==$idUserTo)
+						&& ('Y'==$bindOther['fanfou']['syncConference'] 
+							|| null==$idUserConference )
+					)
 						JWBindOther::PostStatus( $bindOther['fanfou'], $messageObject );
 				}
 			}
