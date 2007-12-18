@@ -10,10 +10,11 @@
 	<li ${$menu_nav=='conflist'?'class="selected"':''}><a href="/conflist.php">会议列表</a></li>
 	<li ${$menu_nav=='confsetting'?'class="selected"':''}><a href="/confsetting.php">修改会议设置</a></li>
 </ul>
+
 <h2>更新管理</h2>
 <ul>
 	<li ${$menu_nav=='statusdelete'?'class="selected"':''}><a href="/statusdelete.php">删除某条更新</a></li>
-<ul>
+</ul>
 
 <h2>区块管理</h2>
 <ul>
@@ -26,6 +27,13 @@
 	<li ${$menu_nav=='feed_message'?'class="selected"':''}><a href="/feed_message.php">消息不通畅</a></li>
 </ul>
 
+<h2>人工审核</h2>
+<ul>
+	<li ${$menu_nav=='filterwords'?'class="selected"':''}><a href="/filterwords.php">禁忌词设置</a></li>
+	<li ${$menu_nav=='statusexam'?'class="selected"':''}><a href="/statusexam.php">待审核JiWai更新</a></li>
+	<li ${$menu_nav=='statusexamed'?'class="selected"':''}><a href="/statusexamed.php">已审核JiWai更新</a></li>
+</ul>
+
 <h2>运营数据</h2>
 <ul>
 	<li ${$menu_nav=='statuscreate'?'class="selected"':''}><a href="/statuscreate.php">用户更新量汇总</a></li>
@@ -33,11 +41,5 @@
 	<li ${$menu_nav=='imquery'?'class="selected"':''}><a href="/imquery.php">IM设备查询</a></li>
 </ul>
 
-<h2>人工审核</h2>
-<ul>
-	<li ${$menu_nav=='filterwords'?'class="selected"':''}><a href="/filterwords.php">禁忌词设置</a></li>
-	<li ${$menu_nav=='statusexam'?'class="selected"':''}><a href="/statusexam.php">待审核JiWai更新</a></li>
-	<li ${$menu_nav=='statusexamed'?'class="selected"':''}><a href="/statusexamed.php">已审核JiWai更新</a></li>
-</ul>
 <hr style="height:1px;"/>
 <ul><li><a href="/logout.php">退出</a></li></ul>

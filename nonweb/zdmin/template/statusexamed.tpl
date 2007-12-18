@@ -4,9 +4,9 @@
 
 <h3>
 <!--{if strtoupper($dealStatus)=='DELETED'}-->
-	<a href="statusexamed?d=allowed">通过的JiWai更新</a>
+	<a href="statusexamed.php?d=allowed">通过的JiWai更新</a>
 <!--{else if strtoupper($dealStatus)=='ALLOWED'}-->
-	<a href="statusexamed?d=deleted">删除的JiWai更新</a>
+	<a href="statusexamed.php?d=deleted">删除的JiWai更新</a>
 <!--{/if}-->
 </h3>
 

@@ -10,7 +10,7 @@ if( $_POST ) {
 		JWStatus::Destroy( $id );
 		setTips("删除ID号 : $id 的更新成功!");
 	}
-	Header("Location: statusdelete");
+	Header("Location: statusdelete.php");
 	exit;
 }
 

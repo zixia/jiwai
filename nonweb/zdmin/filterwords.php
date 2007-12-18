@@ -4,12 +4,13 @@ require_once( dirname(__FILE__) . '/function.php');
 $w = null;
 extract($_POST, EXTR_IF_EXISTS);
 
-$dictFileName = './dictionary/filterdict.txt';
+$dictFileName = JWFilterConfig::GetDictFilename();
+
 if( $w ) {
 	$w = mb_convert_encoding($w, "GB2312", "UTF-8");
 	file_put_contents($dictFileName, $w );
 	setTips("新的辞典文件已经成功保存！");
-	Header("Location: filterwords");
+	Header("Location: filterwords.php");
 	exit;
 }
 

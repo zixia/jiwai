@@ -1,6 +1,7 @@
 <?php
 if(!defined('TPL_COMPILED_DIR')) define('TPL_COMPILED_DIR',dirname(__FILE__).'/compiled');
 if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR',dirname(__FILE__).'/template');
+header('Content-Type: text/html;charset=UTF-8');
 require_once( '../../jiwai.inc.php' );
 
 function checkUser(){

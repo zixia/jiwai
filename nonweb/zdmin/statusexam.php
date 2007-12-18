@@ -3,7 +3,7 @@ require_once( dirname(__FILE__) . '/function.php');
 
 function backToGet($string=null){
 	setTips( $string );
-	Header('Location: statusexam');
+	Header('Location: statusexam.php');
 	exit;
 }
 

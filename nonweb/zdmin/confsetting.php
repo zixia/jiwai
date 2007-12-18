@@ -84,6 +84,7 @@ $render = new JWHtmlRender();
 $render->display("confsetting", array(
 			'menu_nav' => 'confsetting',
 			'un' => $un,
+			'uid' => $idUser,
 			'confSetting' => $conferenceSetting,
 			));
 ?>
