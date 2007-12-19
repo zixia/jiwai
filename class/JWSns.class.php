@@ -589,6 +589,17 @@ class JWSns {
 			$options['filterConference'] = ( $conference ) ? ( $conference['filter'] == 'Y' ) : false;
 		}
 
+		/* For conference Protected setting */
+		if ( $conference )
+		{
+			$conference_user = JWUser::GetDbRowById( $conference['idUser'] );
+			if ( $conference['friendOnly'] == 'Y' )
+			{
+				if ( false == JWFollower::IsFollower( $idUser, $conference_user['id'] ) )
+					$idConference = null;
+			}
+		}
+
 		/**
 		* 参数用来 JWStatus::Create 方法，新建一条更新
 		*/
@@ -949,12 +960,41 @@ class JWSns {
 		}	
 	}
 
+	static public function IsProtectedStatus( $status_row, $action_user_id )
+	{
+		if ( empty( $status_row ) )
+			return false;
+
+		/* own status */
+		if ( $status_row['idUser'] == $action_user_id ) 
+		{
+			return false;
+		}
+
+		/* protected user */
+		if ( $status_row['idUser'] && $user_row = JWUser::GetDbRowById( $status_row['idUser'] ) )
+		{
+			if ( self::IsProtected( $user_row, $action_user_id ) )
+				return true;
+		}
+
+		/* protected conference */
+		if ( $status_row['idConference'] )
+		{
+			$conference = JWConference::GetDbRowById( $status_row['idConference'] );
+			if ( $conference && $conference_user = JWUser::GetDbRowById( $conference['idUser'] ) )
+				return self::IsProtected( $conference_user, $action_user_id );
+		}
+
+		return false;
+	}
+
 	static public function IsProtected( $user_row, $action_user_id )
 	{
-		if( empty( $user_row ) )
+		if ( empty( $user_row ) )
 			return false;
 		
-		if( $user_row['protected'] == 'Y' 
+		if ( $user_row['protected'] == 'Y' 
 			&& $action_user_id != $user_row['id'] 
 			&& false == JWFollower::IsFollower( $action_user_id, $user_row['id'] )
 		)

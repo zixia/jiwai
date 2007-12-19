@@ -595,7 +595,8 @@ _TAB_;
 		$device = 'WEB';
 
 		$followed = JWFollower::IsFollower($userRow['id'], $current_user_id);
-		$protected = JWSns::IsProtected( $userRow, $current_user_id );
+		$protected = JWSns::IsProtected( $userRow, $current_user_id ) 
+				|| JWSns::IsProtectedStatus( $statusRow, $current_user_id );
 
 		/** initial **/
 		$status = null;
@@ -790,12 +791,7 @@ _HTML_;
 			$user_id 	= $statusRows[$status_id]['idUser'];
 			$conference_id = $statusRows[$status_id]['idConference'];
 
-			$conference_user = ( $conference_id == null )
-				? null : JWUser::GetDbRowByIdConference( $conference_id ) ;
-
-			if ( JWSns::IsProtected( @$userRows[ $user_id ], $current_user_id ) 
-				|| JWSns::IsProtected( $conference_user, $conference_user )
-			)
+			if ( JWSns::IsProtectedStatus( $statusRows[$status_id], $current_user_id ) )
 				continue;
 
 			// 最多显示的条数已经达到
