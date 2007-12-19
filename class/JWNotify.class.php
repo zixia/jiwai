@@ -13,8 +13,9 @@ class JWNotify{
 	/**
 	 * 来自Web的Nudge消息，仅中转
 	 */
-	static public function NotifyWebNudge( &$queue ) {
-		if( empty( $queue ) )
+	static public function NotifyWebNudge( &$queue ) 
+	{
+		if ( empty( $queue ) )
 			return ;
 
 		$metaInfo = $queue['metaInfo'];
@@ -27,14 +28,15 @@ class JWNotify{
 
 		echo "[$queue[type]] idUsers: array(" . implode( ',', $idUsers ) . ")\n"; 
 
-		if( empty( $idUsers ) || $source != 'bot' )
+		if ( empty( $idUsers ) || $source != 'bot' )
 			break;
 
 		JWNudge::NudgeToUsers( $idUsers, $message, $messageType, $source, $options );
 	}
 
-	static public function NotifySmsInvite( &$queue ) {
-		if( empty( $queue ) )
+	static public function NotifySmsInvite( &$queue ) 
+	{
+		if ( empty( $queue ) )
 			return ;
 
 		$metaInfo = $queue['metaInfo'];
@@ -46,7 +48,8 @@ class JWNotify{
 		
 		$deviceRow = JWDevice::GetDeviceDbRowByAddress( $addressTo, $type );
 
-		if( empty( $deviceRow ) ) {
+		if ( empty( $deviceRow ) ) 
+		{
 			$inviteCode = JWDevice::GenSecret( 8 );
 			JWInvitation::Create($idUserFrom, $addressTo, $type, $message, $inviteCode);
 		}
@@ -55,9 +58,12 @@ class JWNotify{
 		$user = JWUser::GetUserInfo( $idUserFrom );
 		$conference = JWConference::GetDbRowFromUser( $idUserFrom );
 
-		if( empty( $conference ) ) {
+		if ( empty( $conference ) ) 
+		{
 			$serverAddress = JWFuncCode::GetCodeFunc( $addressTo, $idUserFrom, JWFuncCode::PRE_REG_INVITE );
-		}else{
+		}
+		else
+		{
 			$serverAddress = self::GetServerAddress( $addressTo, $conference, $user );
 		}
 
@@ -67,8 +73,9 @@ class JWNotify{
 	/**
 	 * 手机邀请
 	 */
-	static public function NotifyInvite( &$queue ) {
-		if( empty( $queue ) )
+	static public function NotifyInvite( &$queue ) 
+	{
+		if ( empty( $queue ) )
 			return ;
 
 		$metaInfo = $queue['metaInfo'];
@@ -87,199 +94,273 @@ class JWNotify{
 	/**
 	 * 一般更新的处理，含 MMS/STATUS/CONFERENCE
 	 */
-	static public function NotifyStatus( &$queue ) {
-		if( empty( $queue ) )
+	static public function NotifyStatus( &$queue ) 
+	{
+		if ( empty( $queue ) )
 			return ;
 
-		$idUserFrom = $queue['idUserFrom'];
-		$idUserTo = $queue['idUserTo'];
 		$metaInfo = $queue['metaInfo'];
+		$options = $metaInfo['options'];
 
-		$message = @$metaInfo['message'];
-		$options = @$metaInfo['options'];
+		$idStatus = @$metaInfo['idStatus'];
+		if ( $idStatus == null )
+			return ;
 
-		$idStatus = @$options['idStatus'];
-		$idUserConference = @$options['idUserConference'];
+		$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
+		if ( empty( $status_row ) )
+			return ;
 
-		if( false == isset( $options['notify'] ) ){
+		$conference = $mms = $sender_user = $receiver_user = $conference_user = null;
+		$tag = $thread_status = null;
+		$is_protected_conference = false;
+
+		/* sender_user */
+		$sender_user = JWUser::GetDbRowById( $status_row['idUser'] );
+
+		/* receiver_user */
+		if ( $status_row['idUserReplyTo'] )
+		{
+			$receiver_user = JWUser::GetDbRowById( $status_row['idUserReplyTo'] );
+		}
+		
+		/* conference_user and conference */
+		if ( $status_row['idConference'] )
+		{
+			$conference = JWConference::GetDbRowById( $status_row['idConference'] );
+			if ( false == empty( $conference ) && $conference['idUser'] )
+			{
+				$conference_user = JWUser::GetDbRowById( $conference['idUser'] );
+				$options['idConference'] = $status_row['idConference'];
+				$is_protected_conference = $conference['friendOnly'] == 'Y' 
+						|| $conference_user['protected'] == 'Y';
+			}
+		}
+		
+		/* mms */
+		if ( $status_row['isMms'] == 'Y' && $status_row['idPicture'] )
+		{
+			$mms = JWDB_Cache_Picture::GetDbRowById( $status_row['idPicture'] );
+			$options['isMms'] = true;
+		}
+
+		/* tag */
+		if ( $status_row['idTag'] )
+		{
+			$tag = JWTag::GetDbRowById( $tag );
+		}
+
+		/* thread */
+		if ( $status_row['idThread'] )
+		{
+			$thread_status = JWDB_Cache_Status::GetDbRowById( $status_row['idThread'] );
+		}
+
+		if ( false == isset( $options['notify'] ) )
+		{
 			$options['notify'] = 'ALL';
 		}
 
-		$userSender = JWUser::GetUserInfo( $idUserFrom );
-		$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
-		$idTag = $status_row['idTag'];
-		$idThread = isset($status_row['idThread']) ? $status_row['idThread'] : null;
+		$pretty_options = array();
+		if ( $tag ) 
+		{
+			$pretty_options = array( 'tag' => $tag['name'], );
+		}
+		
+		/**
+		 * build message
+		 */
+		$message = array(
+			'im' => $status_row['raw_status'],
+			'sms' => $status_row['raw_status'],
+		);
 
-		//重新生成prettyName
-		$prettyOptions = array();
-		if( $idTag && $tag_row = JWTag::GetDbRowById($idTag) ) 
-			$prettyOptions = array( 'tag' => $tag_row['name'], );
+		if ( $mms ) 
+		{
+			$mms_url = 'http://JiWai.de/'.$sender_user['nameUrl'].'/mms/'.$idStatus;
+			$mms_plus_im = " 彩信<$mms[fileName]>地址：$mms_url";
+			$mms_plus_sms = " 彩信<$mms[fileName]>地址：$mms_url";
+
+			$message['im'] .= $mms_plus_im;
+			$message['sms'] .= $mms_plus_sms;
+		}
+
+		if ( $receiver_user )
+		{
+			$message['im'] = "@$receiver_user[nameScreen] $message[im]";
+			$message['sms'] = "@$receiver_user[nameScreen] $message[sms]";
+		}
+
 
 		/**
 		 * Sync To Twitter, need transfer to other pool service
 		 */
-		$bindOther = JWBindOther::GetBindOther( $idUserFrom );
-		if( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) 
+		$bindOther = JWBindOther::GetBindOther( $sender_user['id'] );
+		if ( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) 
 		{
 			if ( false == empty( $status_row ) && $status_row['device'] != 'api' ) 
 			{
-				$messageObject = is_array($message) ? 
-					( isset($message['im']) ? $message['im'] : null ) : $message;
-				if( $messageObject ) 
-				{
-					if (isset($bindOther['twitter']) 
+				$message_send = $message['im'];
+
+				if (isset($bindOther['twitter']) 
 						&& ('Y'==$bindOther['twitter']['syncReply']
-							|| null==$idUserTo)
+							|| null==$receiver_user)
 						&& ('Y'==$bindOther['twitter']['syncConference'] 
-							|| null==$idUserConference )
-					)
-						JWBindOther::PostStatus( $bindOther['twitter'], $messageObject );
-					if( isset($bindOther['fanfou']) 
+							|| null==$conference )
+				)
+				{
+					JWBindOther::PostStatus( $bindOther['twitter'], $message_send );
+				}
+
+				if ( isset($bindOther['fanfou']) 
 						&& ('Y'==$bindOther['fanfou']['syncReply']
-							|| null==$idUserTo)
+							|| null==$receiver_user)
 						&& ('Y'==$bindOther['fanfou']['syncConference'] 
-							|| null==$idUserConference )
-					)
-						JWBindOther::PostStatus( $bindOther['fanfou'], $messageObject );
+							|| null==$conference )
+				) 
+				{
+					JWBindOther::PostStatus( $bindOther['fanfou'], $message_send );
 				}
 			}
 		}
 
 		/** Sync to Facebook **/
-		if ( null==$idUserTo && $idFacebook = JWFacebook::GetFBbyUser($idUserFrom) ) 
+		if ( null==$receiver_user && $idFacebook = JWFacebook::GetFBbyUser($sender_user['id']) ) 
 		{
-			JWFacebook::RefreshRef($idUserFrom);
+			JWFacebook::RefreshRef($sender_user['id']);
 			$pic = JWPicture::GetUrlById( $status_row['idPicture'] , 'picture' );
-			$picUrl = $status_row['isMms'] == 'Y' ? 
-				'http://JiWai.de/'.$userSender['nameUrl'].'/mms/'.$idStatus : null;
+			$picUrl = $mms ? $mms_url : null;
 			$status = $status_row['status'];
 			$device = $status_row['device'];
-			JWFacebook::PublishAction($idFacebook, $userSender['nameUrl'], $idStatus, $status, JWDevice::GetNameFromType($device), $pic, $picUrl);
+			JWFacebook::PublishAction($idFacebook, $sender_user['nameUrl'], $idStatus
+					, $status_row['raw_status'], JWDevice::GetNameFromType($device), $pic, $picUrl );
 		}
 		/* */
 		
 		/** have_send_ids */
-		$have_send_ids = array($idUserFrom);
+		$have_send_ids = array($sender_user['id']);
 
 		$to_ids = array();
-		if( $idUserTo && false == JWBlock::IsBlocked($idUserTo, $idUserFrom) )
+		if ( $receiver_user 
+				&& false == JWBlock::IsBlocked($receiver_user['id'], $sender_user['id'] ) )
 		{
-			$to_ids = array( $idUserTo );	
+			$to_ids = array( $receiver_user['id'] );	
+			$message_send = array(
+				'im' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['im'],
+				'sms' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['sms'],
+			);
 
-			$messageObject = is_array( $message ) ? 
-					$message : self::GetPrettySender($userSender, $prettyOptions).': '.$message;
+			echo "[$queue[type]] idUserFrom: $sender_user[id], " . "idUserReplyTo: $receiver_user[id]\n"; 
 
-			echo "[$queue[type]] idUserFrom: $idUserFrom, " . "idUserReplyTo: $idUserTo\n"; 
-
-			JWNudge::NudgeToUsers( $to_ids, $messageObject, 'nudge', 'bot', $options );
+			JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
 			$have_send_ids = array_merge( $have_send_ids, $to_ids );
 		}
 
 
-		$follower_ids = array();
-		if( $idUserConference ) 
+		if ( $conference && $conference_user ) 
 		{
-			$follower_ids = self::GetAvailableFollowerIds( $idUserConference );
-			$follower_ids = self::GetFollowerIds( $follower_ids, $options['notify'] );
-			$follower_ids = array_diff( $follower_ids, array($idUserFrom) );
-			$follower_ids = array_diff( $follower_ids, $to_ids );
+			$to_ids = array();
+			$to_ids = self::GetAvailableConferenceFollowerIds( $conference, $conference_user );
+			$to_ids = self::GetFollowerIds( $to_ids, $options['notify'] );
+			$to_ids = array_diff( $to_ids, $have_send_ids );
+
+			$message_send = array(
+				'im' => self::GetPrettySender($conference_user, $pretty_options)
+					. "[$sender_user[nameScreen]]: $message[im]",
+				'sms' => self::GetPrettySender($conference_user, $pretty_options)
+					. "[$sender_user[nameScreen]]: $message[sms]",
+			);
 			
-			$userConference = JWUser::GetUserInfo( $idUserConference );
-			$messageObject = is_array( $message ) ? 
-				$message : self::GetPrettySender($userConference, $prettyOptions) 
-						.  ( $idUserConference == $idUserFrom ? '' : "[$userSender[nameScreen]]" ) 
-						.  ": $message";
-
-
-			echo "[$queue[type]] idUserFrom: $idUserFrom, idUserConference: $idUserConference, "
+			echo "[$queue[type]] idUserFrom: $sender_user[id], idConference: $conference[id], "
 				. "Followers: array("
-				. Implode( ',', $follower_ids ) . ")\n"; 
+				. Implode( ',', $to_ids ) . ")\n"; 
 
-			JWNudge::NudgeToUsers( $follower_ids, $messageObject, 'nudge', 'bot', $options );
-			$have_send_ids = array_merge( $have_send_ids, $follower_ids );
+			JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
+			$have_send_ids = array_merge( $have_send_ids, $to_ids );
 		}
 		
 		/**
-		 * 只有 没有 idUserTo 才通知 idUserFrom 的 Follower
 		 * 通知发送者的其他 Follower，需要考虑的是，发送者是会议用户本身，则不通知
 		 */
-		$sender_follower_ids = array();
-		//if( false == ( $idUserTo || $idUserFrom == $idUserConference ) ) 
-		if( false == ( $idUserFrom == $idUserConference ) ) 
+		if ( false==$is_protected_conference
+			&& ( null==$conference || false==($sender_user['id']==$conference_user['id']) ) )
 		{
-			$userSender = JWUser::GetUserInfo( $idUserFrom );
-			$messageObject = is_array( $message ) ? 
-				$message : self::GetPrettySender($userSender, $prettyOptions).': '.$message;
-
-			$sender_follower_ids = self::GetAvailableFollowerIds( $idUserFrom );
-			$sender_follower_ids = array_diff( $sender_follower_ids, $follower_ids );
-			$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserTo) );
-
-			if( $idUserTo && $idUserTo != $idUserFrom ) {
-				$to_user_follower_ids = self::GetAvailableFollowerIds( $idUserTo );
-				$sender_follower_ids = array_diff( $sender_follower_ids, 
-						array_diff( $sender_follower_ids, $to_user_follower_ids ) );
+			$to_ids = array();
+			$to_ids = self::GetAvailableFollowerIds( $sender_user['id'] );
+			
+			/* only follow both sender and receiver can got message */
+			if ( $receiver_user && false==($receiver_user['id']==$sender_user['id']) )
+			{
+				$receiver_user_follower_ids = self::GetAvailableFollowerIds( $receiver_user['id'] );
+				$to_ids = array_diff( $to_ids, array_diff($to_ids, $receiver_user_follower_ids) );
 			}
+			$to_ids = array_diff( $to_ids, $have_send_ids );
 
-			if( $idUserTo == $idUserFrom ) {
-				$sender_follower_ids = array_diff( $sender_follower_ids, array($idUserFrom) );
-			}
+			$message_send = array(
+				'im' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['im'],
+				'sms' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['sms'],
+			);
 
-			echo "[$queue[type]] idUserFrom: $idUserFrom, idStatus: $idStatus, "
+			echo "[$queue[type]] idUserFrom: $sender_user[id], idStatus: $idStatus, "
 				. "Followers: array("
-				. Implode( ',', $sender_follower_ids ) . ")\n"; 
+				. Implode( ',', $to_ids ) . ")\n"; 
 
 			/**
 			 * 注释下面这行，那么给好友的通知，如果是通过 SMS，将会带上会议特服号；
 			 */
 			$options['idConference'] = null;
 
-			JWNudge::NudgeToUsers( $sender_follower_ids, $messageObject, 'nudge', 'bot', $options );
-			$have_send_ids = array_merge( $have_send_ids, $sender_follower_ids );
+			JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
+			$have_send_ids = array_merge( $have_send_ids, $to_ids );
 		}
 		
-		/** tag follower **/		
-		$sender_tag_follower_ids = array();
-		if( $idTag && null==$idThread )
+		/* tag follower */		
+		if (false==$is_protected_conference && $tag && null==$thread_status)
 		{
-			$sender_tag_follower_ids = self::GetAvailableTagFollowerIds( $idTag, $idUserFrom );
-			$sender_tag_follower_ids = array_diff( $sender_tag_follower_ids, $have_send_ids );
+			$to_ids = array();
+			$to_ids = self::GetAvailableTagFollowerIds( $tag['id'], $sender_user['id'] );
+			$to_ids = array_diff( $to_ids, $have_send_ids );
 
-			$messageObject = is_array( $message ) ? 
-				$message : self::GetPrettySender($userSender, $prettyOptions).': '.$message;
+			$message_send = array(
+				'im' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['im'],
+				'sms' => self::GetPrettySender($sender_user, $pretty_options).': '.$message['sms'],
+			);
 
-			echo "[TAG] idUserFrom: $idUserFrom, idStatus: $idStatus, idTag: $idTag, "
+			echo "[TAG] idUserFrom: $sender_user[id], idStatus: $idStatus, idTag: $tag[id], "
 				. "Followers: array("
-				. Implode( ',', $sender_tag_follower_ids ) . ")\n"; 
+				. Implode( ',', $to_ids ) . ")\n"; 
 
-			JWNudge::NudgeToUsers( $sender_tag_follower_ids, $messageObject, 'nudge', 'bot', $options );
-			$have_send_ids = array_merge( $have_send_ids, $sender_follower_ids );
+			JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
+			$have_send_ids = array_merge( $have_send_ids, $to_ids );
 		}
 
 		/** 
 		 * Track Notify [TEST ONLE]
 		 * 仅当用户的更新为公开时，才转发给其他同学
 		 **/
-		if( is_string($message) && $userSender['protected'] == 'N' ) {
+		if ( $sender['protected']=='N' && false==$is_protected_conference )
+		{
 
-			$messageCut = mb_substr( $message, 0, 420, 'UTF-8' );  //maybe block .....
+			$to_ids = array();
+			$message_be_cutted = $status_row['status'];
+			$message_cutted = mb_substr( $message_be_cutted, 0, 420, 'UTF-8' );  //maybe block .....
 
-			$idTrackWordSequence = JWTrackWord::GetStatusTrackOrder( $messageCut );
-			$tracker_ids = JWTrackUser::GetIdUsersBySequence( $idTrackWordSequence );
+			$trackword_sequence_id = JWTrackWord::GetStatusTrackOrder( $message_cutted );
+			$to_ids = JWTrackUser::GetIdUsersBySequence( $trackword_sequence_id );
 
-			$tracker_ids = array_diff( $tracker_ids, $have_send_ids );
+			$to_ids = array_diff( $to_ids, $have_send_ids );
 
-			if( false == empty( $tracker_ids ) ){
-				echo "[TRACK] idUserFrom: $idUserFrom, idStatus: $idStatus, "
+			if ( false == empty( $to_ids ) )
+			{
+				echo "[TRACK] idUserFrom: $sender_user[id], idStatus: $idStatus, "
 					. "Followers: array("
-					. Implode( ',', $tracker_ids ) . ")\n"; 
+					. Implode( ',', $to_ids ) . ")\n"; 
 
-				$messageObject = '('
-					.self::GetPrettySender($userSender, $prettyOptions)
-					.'): '
-					.$message;
+				$message_send = '('
+						. self::GetPrettySender($sender_user, $pretty_options)
+						. '): '
+						. $message_be_cutted;
 
-				JWNudge::NudgeToUsers( $tracker_ids, $messageObject, 'nudge', 'bot', $options );
+				JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
 				$have_send_ids = array_merge( $have_send_ids, $tracker_ids );
 			}
 		}
@@ -289,7 +370,8 @@ class JWNotify{
 	 * 考虑 Friend 关系 2007-09-20
 	 * 考虑 Block 关系 2007-10-15
 	 */
-	static public function GetAvailableFollowerIds($idUser) {
+	static public function GetAvailableFollowerIds($idUser) 
+	{
 		$idUser = JWDB::CheckInt( $idUser );
 
 		$followerIds = JWFollower::GetNotificationIds( $idUser );
@@ -297,13 +379,15 @@ class JWNotify{
 		$userInfo = JWUser::GetUserInfo( $idUser );
 
 		/* friend private */
-		if( $userInfo['protected'] == 'Y' ) {
+		if ( $userInfo['protected'] == 'Y' ) 
+		{
 			$friendIds = JWFollower::GetFollowingIds( $idUser );
 			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
 		}
 		/* (who)s block idUser */
 		$blockedIds  = JWBlock::GetIdUsersByIdUserBlock( $idUser );
-		if( false == empty( $blockUserIds ) ) {
+		if ( false == empty( $blockUserIds ) ) 
+		{
 			$followerIds = array_diff( $followerIds, $blockedIds );
 		}
 
@@ -314,7 +398,32 @@ class JWNotify{
 	 * 考虑 Friend 关系 2007-09-20
 	 * 考虑 Block 关系 2007-10-15
 	 */
-	static public function GetAvailableTagFollowerIds($idTag, $idUser) {
+	static public function GetAvailableConferenceFollowerIds($conference, $conference_user) 
+	{
+		$follower_ids = JWFollower::GetNotificationIds( $conference_user['id'] );
+		
+		/* friend private */
+		if ( $conference_user['protected']=='Y' || $conference['friendOnly']=='Y' ) 
+		{
+			$friend_ids = JWFollower::GetFollowingIds( $conference_user['id'] );
+			$follower_ids = array_diff( $friend_ids, array_diff( $friend_ids, $follower_ids ) );
+		}
+		/* (who)s block idUser */
+		$blocked_ids  = JWBlock::GetIdUsersByIdUserBlock( $conference_user['id'] );
+		if ( false == empty( $blocked_ids ) ) 
+		{
+			$follower_ids = array_diff( $follower_ids, $blocked_ids );
+		}
+
+		return $follower_ids;
+	}
+
+	/**
+	 * 考虑 Friend 关系 2007-09-20
+	 * 考虑 Block 关系 2007-10-15
+	 */
+	static public function GetAvailableTagFollowerIds($idTag, $idUser) 
+	{
 		$idTag = JWDB::CheckInt( $idTag );
 		$idUser = JWDB::CheckInt( $idUser );
 
@@ -323,13 +432,15 @@ class JWNotify{
 		$userInfo = JWUser::GetUserInfo( $idUser );
 
 		/* friend private */
-		if( $userInfo['protected'] == 'Y' ) {
+		if ( $userInfo['protected'] == 'Y' ) 
+		{
 			$friendIds = JWFollower::GetFollowingIds( $idUser );
 			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
 		}
 		/* (who)s block idUser */
 		$blockedIds  = JWBlock::GetIdUsersByIdUserBlock( $idUser );
-		if( false == empty( $blockUserIds ) ) {
+		if ( false == empty( $blockUserIds ) ) 
+		{
 			$followerIds = array_diff( $followerIds, $blockedIds );
 		}
 
@@ -339,14 +450,16 @@ class JWNotify{
 	/**
 	 * 按条件重新筛选Follower_Ids
 	 */
-	static public function GetFollowerIds($follower_ids, $type='IM'){
+	static public function GetFollowerIds($follower_ids, $type='IM')
+	{
 
-		if( empty( $follower_ids ) )
+		if ( empty( $follower_ids ) )
 			return array();
 
 		$type = strtoupper( $type );
 
-		switch( $type ){
+		switch( $type )
+		{
 			case 'IM':
 				$condition = "deviceSendVia IN ('msn','gtalk','skype','aol','qq','yahoo')";
 			break;
@@ -361,11 +474,12 @@ class JWNotify{
 		$sql = "SELECT id FROM User WHERE $condition AND id IN ($idCondition)";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
-		if( empty($rows) )
+		if ( empty($rows) )
 			return array();
 		
 		$rtn = array();
-		foreach( $rows as $r ) {
+		foreach ( $rows as $r ) 
+		{
 			array_push( $rtn, $r['id'] );
 		}
 
@@ -375,24 +489,27 @@ class JWNotify{
 	/**
 	 * 获取会议号；
 	 */
-	static public function GetServerAddress( $mobileNo, $conference, $user ) {
+	static public function GetServerAddress( $mobileNo, $conference, $user ) 
+	{
 
 		$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-		if( empty( $code ) )
+		if ( empty( $code ) )
 			return null;
 
-		if( empty( $conference ) || empty($user) )
+		if ( empty( $conference ) || empty($user) )
 			return $code['code'] . $code['func'] . $code['funcPlus'];
 
-		if( preg_match( '/^gp(\d{6})$/i', $user['nameScreen'], $matches ) ) {
+		if ( preg_match( '/^gp(\d{6})$/i', $user['nameScreen'], $matches ) ) 
+		{
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CODE . $matches[1];
 		}
 
-		if( preg_match( '/^gp(\d{3})$/i', $user['nameScreen'], $matches ) ) {
+		if ( preg_match( '/^gp(\d{3})$/i', $user['nameScreen'], $matches ) ) 
+		{
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CATE . $matches[1];
 		}
 
-		if( $conference['number'] !== null )
+		if ( $conference['number'] !== null )
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_CUSTOM . $conference['number'];
 
 		return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_IDUSER . $conference['idUser'];
@@ -401,8 +518,10 @@ class JWNotify{
 	/**
 	 * Get Pretty Sender
 	 */
-	static public function GetPrettySender( &$userSender, $options=array() ) {
-		if( isset( $options['tag'] ) ) {
+	static public function GetPrettySender( &$userSender, $options=array() ) 
+	{
+		if ( isset( $options['tag'] ) ) 
+		{
 			return $userSender['nameScreen'].'[#'.$options['tag'].']';
 		}
 		return $userSender['nameScreen'];

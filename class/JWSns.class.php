@@ -659,7 +659,8 @@ class JWSns {
 				'isMms' => isset( $createOptions['isMms'] ) ? $createOptions['isMms'] : false,
 			);
 
-			if( $options['notify'] === false ) {
+			if( $options['notify'] === false ) 
+			{
 
 				/**
 				 * 通知论坛模式管理后台时，我们要告知，某条更新是属于某个会议的；
@@ -681,33 +682,17 @@ class JWSns {
 				JWQuarantineQueue::Create( $idUser, $metaOptions['idUserConference'], $queueType, $metaInfo);
 				return true;
 
-			}else{
+			}
+			else
+			{
 				/**
 				 * 更新被正常发布了，那么我们就应该去通知用户；
 				 */
 				$metaInfo = array();
 				$queueType = JWNotifyQueue::T_STATUS;
 				$metaInfo = array(
-					'message' => $status,
-					'options' => $metaOptions,
+					'idStatus' => $idStatus,
 				);
-
-				if( isset($createOptions['isMms']) && $createOptions['isMms'] == 'Y' ) 
-				{
-					$userInfo = JWUser::GetUserInfo( $idUser );
-					$mmsRow = JWPicture::GetDbRowById( $createOptions['idPicture'] );
-					$picUrl = 'http://JiWai.de/' . UrlEncode($userInfo['nameUrl']) . '/mms/' . $idStatus;
-					$nameScreen = $userInfo['nameScreen'];
-					$message = array(
-						'sms' => JWNotify::GetPrettySender($userInfo). ": 我上传了彩信<$mmsRow[fileName]>，回复 DM 免费下载。",
-						//'sms' => JWNotify::GetPrettySender($userInfo). ": $status 彩信<$mmsRow[fileName]>",
-						'im' => JWNotify::GetPrettySender($userInfo). ": $status 彩信<$mmsRow[fileName]>地址：$picUrl",
-					);
-
-					$metaInfo['message'] = $message;
-
-					$queueType = JWNotifyQueue::T_MMS;
-				}
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
 			}
 

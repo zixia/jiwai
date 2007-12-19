@@ -772,6 +772,7 @@ _SQL_;
 			$status_map = array();
 		} else {
 			foreach ( $rows as $row ) {
+				$row['raw_status'] = $row['status'];
 				$row['status'] = self::SimpleFormat( $row );	
 				$status_map[$row['idStatus']] = $row;
 			}
