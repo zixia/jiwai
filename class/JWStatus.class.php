@@ -709,8 +709,7 @@ SELECT
 FROM		
 			Status force index(IDX__Status__timeCreate)
 WHERE		
-			Status.idUserReplyTo IS NULL
-			AND Status.idPicture IS NOT NULL
+			Status.idPicture IS NOT NULL
 			AND Status.isProtected = 'N'
 			$condition_other
 ORDER BY 	
