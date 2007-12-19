@@ -692,6 +692,7 @@ class JWSns {
 				$queueType = JWNotifyQueue::T_STATUS;
 				$metaInfo = array(
 					'idStatus' => $idStatus,
+					'options' => $metaOptions,
 				);
 				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
 			}

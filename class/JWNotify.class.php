@@ -146,7 +146,7 @@ class JWNotify{
 		/* tag */
 		if ( $status_row['idTag'] )
 		{
-			$tag = JWTag::GetDbRowById( $tag );
+			$tag = JWTag::GetDbRowById( $status_row['idTag'] );
 		}
 
 		/* thread */
@@ -182,6 +182,23 @@ class JWNotify{
 
 			$message['im'] .= $mms_plus_im;
 			$message['sms'] .= $mms_plus_sms;
+		}
+
+		if ( null==$conference )
+		{
+			if ( $thread_status )
+			{
+				$thread_user = JWUser::GetDbRowById( $thread_status['idUser'] );
+				$reply_plus_url = ' 回复：http://JiWai.de/' . $thread_user['nameUrl']
+						. '/thread/' . $thread_status['id'] . '/' . $idStatus;
+			}
+			else
+			{
+
+				$reply_plus_url = ' 回复：http://JiWai.de/' . $sender_user['nameUrl']
+						. '/thread/' . $idStatus;
+			}
+			$message['im'] .= $reply_plus_url;
 		}
 
 		if ( $receiver_user )
@@ -264,10 +281,10 @@ class JWNotify{
 			$to_ids = array_diff( $to_ids, $have_send_ids );
 
 			$message_send = array(
-				'im' => self::GetPrettySender($conference_user, $pretty_options)
-					. "[$sender_user[nameScreen]]: $message[im]",
+				'im' => self::GetPrettySender($sender_user, $pretty_options)
+					. "[$$conference_user[nameScreen]]: $message[im]",
 				'sms' => self::GetPrettySender($conference_user, $pretty_options)
-					. "[$sender_user[nameScreen]]: $message[sms]",
+					. "[$$conference_user[nameScreen]]: $message[sms]",
 			);
 			
 			echo "[$queue[type]] idUserFrom: $sender_user[id], idConference: $conference[id], "
@@ -337,7 +354,7 @@ class JWNotify{
 		 * Track Notify [TEST ONLE]
 		 * 仅当用户的更新为公开时，才转发给其他同学
 		 **/
-		if ( $sender['protected']=='N' && false==$is_protected_conference )
+		if ( $sender_user['protected']=='N' && false==$is_protected_conference )
 		{
 
 			$to_ids = array();
@@ -361,7 +378,7 @@ class JWNotify{
 						. $message_be_cutted;
 
 				JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
-				$have_send_ids = array_merge( $have_send_ids, $tracker_ids );
+				$have_send_ids = array_merge( $have_send_ids, $to_ids );
 			}
 		}
 	}
@@ -370,28 +387,28 @@ class JWNotify{
 	 * 考虑 Friend 关系 2007-09-20
 	 * 考虑 Block 关系 2007-10-15
 	 */
-	static public function GetAvailableFollowerIds($idUser) 
+	static public function GetAvailableFollowerIds($user_id) 
 	{
-		$idUser = JWDB::CheckInt( $idUser );
+		$user_id = JWDB::CheckInt( $user_id );
 
-		$followerIds = JWFollower::GetNotificationIds( $idUser );
+		$follower_ids = JWFollower::GetNotificationIds( $user_id );
 		
-		$userInfo = JWUser::GetUserInfo( $idUser );
+		$user_info = JWUser::GetUserInfo( $user_id );
 
 		/* friend private */
-		if ( $userInfo['protected'] == 'Y' ) 
+		if ( $user_info['protected'] == 'Y' ) 
 		{
-			$friendIds = JWFollower::GetFollowingIds( $idUser );
-			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
+			$friend_ids = JWFollower::GetFollowingIds( $user_id );
+			$follower_ids = array_diff( $friend_ids, array_diff( $friend_ids, $follower_ids ) );
 		}
 		/* (who)s block idUser */
-		$blockedIds  = JWBlock::GetIdUsersByIdUserBlock( $idUser );
-		if ( false == empty( $blockUserIds ) ) 
+		$blocked_ids  = JWBlock::GetIdUsersByIdUserBlock( $user_id );
+		if ( false == empty( $blocked_ids ) ) 
 		{
-			$followerIds = array_diff( $followerIds, $blockedIds );
+			$follower_ids = array_diff( $follower_ids, $blocked_ids );
 		}
 
-		return $followerIds;
+		return $follower_ids;
 	}
 
 	/**
@@ -422,29 +439,29 @@ class JWNotify{
 	 * 考虑 Friend 关系 2007-09-20
 	 * 考虑 Block 关系 2007-10-15
 	 */
-	static public function GetAvailableTagFollowerIds($idTag, $idUser) 
+	static public function GetAvailableTagFollowerIds($tag_id, $user_id) 
 	{
-		$idTag = JWDB::CheckInt( $idTag );
-		$idUser = JWDB::CheckInt( $idUser );
+		$tag_id = JWDB::CheckInt( $tag_id );
+		$user_id = JWDB::CheckInt( $user_id );
 
-		$followerIds = JWTagFollower::GetNotificationIds( $idTag );
+		$follower_ids = JWTagFollower::GetNotificationIds( $tag_id );
 		
-		$userInfo = JWUser::GetUserInfo( $idUser );
+		$user_info = JWUser::GetUserInfo( $user_id );
 
 		/* friend private */
-		if ( $userInfo['protected'] == 'Y' ) 
+		if ( $user_info['protected'] == 'Y' ) 
 		{
-			$friendIds = JWFollower::GetFollowingIds( $idUser );
-			$followerIds = array_diff( $friendIds, array_diff( $friendIds, $followerIds ) );
+			$friend_ids = JWFollower::GetFollowingIds( $user_id );
+			$follower_ids = array_diff( $friend_ids, array_diff( $friend_ids, $follower_ids ) );
 		}
 		/* (who)s block idUser */
-		$blockedIds  = JWBlock::GetIdUsersByIdUserBlock( $idUser );
-		if ( false == empty( $blockUserIds ) ) 
+		$blocked_ids  = JWBlock::GetIdUsersByIdUserBlock( $user_id );
+		if ( false == empty( $blocked_ids ) ) 
 		{
-			$followerIds = array_diff( $followerIds, $blockedIds );
+			$follower_ids = array_diff( $follower_ids, $blocked_ids );
 		}
 
-		return $followerIds;
+		return $follower_ids;
 	}
 
 	/**
@@ -470,8 +487,8 @@ class JWNotify{
 				return array();
 		}
 		
-		$idCondition = implode(',', $follower_ids);
-		$sql = "SELECT id FROM User WHERE $condition AND id IN ($idCondition)";
+		$condition_string = implode(',', $follower_ids);
+		$sql = "SELECT id FROM User WHERE $condition AND id IN ($condition_string)";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if ( empty($rows) )
