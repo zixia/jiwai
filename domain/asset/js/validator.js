@@ -10,24 +10,34 @@ var JWValidator = {
 
 	ajax_url : '/wo/validator/ajax/',
 	
-	init: function(){
-		for (var index=0; index<arguments.length; index++) {
-			var f = arguments[ index ];
-			if( !$(f) ) continue;
-
-			var c = $(f).elements;
-			for(var i=0;i<c.length;i++){
-				m=c[i];
-				var p = this.attr(m,'type');
-				var a = this.attr(m,'ajax');
-				if( p=='text' && a!=null){
-					m.onblur = function(){
-						JWValidator.ajax( this );
-					}
+	init : function()
+	{
+		for (var index=0; index<arguments.length; index++) 
+		{
+			var el = $(arguments[ index ]);
+			if( el ) 
+			{
+				JWValidator.initForm(el);
+			}
+		}
+		$$('form.validator').each( function(el) { JWValidator.initForm(el); } );
+	},
+	
+	initForm: function(el)
+	{
+		var c = el.elements;
+		for(var i=0;i<c.length;i++)
+		{
+			m=c[i];
+			var p = this.attr(m,'type');
+			var a = this.attr(m,'ajax');
+			if( p=='text' && a!=null){
+				m.onblur = function(){
+					JWValidator.ajax( this );
 				}
 			}
-			//$(f).addEvent('submit', function(){return JWValidator.validate(this)});
 		}
+		el.onsubmit = function() { return JWValidator.validate(el); };
 	},
 
 	geni: function(n,p,v){

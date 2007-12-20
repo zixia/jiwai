@@ -59,7 +59,11 @@ _HTML_;
 
 	static public function html_head( $options=null )
 	{
-		$asset_url_css		= self::GetAssetUrl('/css/jiwai-screen.css');
+		if ( empty($options['version_css_jiwai_screen']) )
+			$asset_url_css = self::GetAssetUrl("/css/jiwai-screen.css");
+		else
+			$asset_url_css = self::GetAssetUrl("/css/$options[version_css_jiwai_screen]-jiwai-screen.css");
+
 		$asset_url_css_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.css');
 
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico');
@@ -380,7 +384,7 @@ _HTML_;
 
 	static public function container_ending()
 	{
-		echo '<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>';
+		echo '<div style="overflow:hidden; clear:both; height:7px; line-height:1px; font-size:1px;"></div>';
 	}
 
 	static public function footer()

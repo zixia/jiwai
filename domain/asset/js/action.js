@@ -138,6 +138,34 @@ var JWAction =
 		return this.isLogined( callback ) ? callback() : false;
 	},
 
+	importFriends : function(type, username, password)
+	{   
+		type = ( type == null ) ? 'msn' : type ;
+		username = ( username == null ) ? $(type+'username').value : username ;
+		password = ( password == null ) ? $(type+'password').value : password ;
+
+		var callback = function()
+		{   
+			new Ajax( '/wo/invitations/get_friends', {
+				method: 'POST',
+				headers: { 'AJAX' : true },
+				data: 'type='+type+'&username='+username+'&password='+password,
+				onSuccess: function(responseText, x)  
+				{   
+					if( 'true'==responseText )
+					{   
+						location.href = '/wo/invitations/invite_not_follow';
+						return false;
+					}   
+				}   
+			}).request();
+
+			return false;
+		};  
+
+		return this.isLogined( callback ) ? callback() : false;
+	},  
+
 	follow : function( id_or_name, element )
 	{
 		var callback = function()
