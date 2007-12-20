@@ -1893,18 +1893,18 @@ _HTML_;
  		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
  		{
  		echo <<<_HTML_
- 			<li id="friend_count"><a href="/wo/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+ 			<li id="friend_count"><a href="/wo/followings/" onClick="return JWAction.redirect(this);">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
 _HTML_;
  		}else{
  			echo <<<_HTML_
- 			<li id="friend_count"><a href="/$user/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+ 			<li id="friend_count"><a href="/$user/followings/" onClick="return JWAction.redirect(this);">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
 _HTML_;
  		}
 
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
 		{    
 			echo <<<_HTML_
-				<li id="follower_count"><a href="/wo/followers/">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
+				<li id="follower_count"><a href="/wo/followers/" onClick="return JWAction.redirect(this);">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
 _HTML_;
 		}else{
 			echo <<<_HTML_
@@ -1917,20 +1917,20 @@ _HTML_;
 			$msg_count = JWMessage::GetMessageStatusNum($userInSession['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
 			$msg_string = ( $msg_count == 0 ) ? '' : "&nbsp;(&nbsp;${msg_count}&nbsp;条新&nbsp;)";
 			echo <<<_HTML_
- 			<li id="message_count"><a href="/wo/direct_messages/">$countInfo[pm]&nbsp;条悄悄话${msg_string}</a></li>
+ 			<li id="message_count"><a href="/wo/direct_messages/" onClick="return JWAction.redirect(this);">$countInfo[pm]&nbsp;条悄悄话${msg_string}</a></li>
 _HTML_;
 		}
 
 		$archive = ( $user == 'wo' ) ? 'archive/' : null;
 		echo <<<_HTML_
- 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav]&nbsp;条收藏</a><img border="0" src="$asset_star_url" /></li>
+ 			<li id="favourite_count"><a href="/$user/favourites/" onClick="return JWAction.redirect(this);">$countInfo[fav]&nbsp;条收藏</a><img border="0" src="$asset_star_url" /></li>
  			<li id="status_count"><a href="/$user/">$countInfo[status]&nbsp;条叽歪</a></li>
 _HTML_;
  
  		if ( 'wo'!=$user && @$countInfo['mms'] )
  		{
  			echo <<<_HTML_
- 			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
+ 			<li id="mms_count"><a href="/$user/mms/" onClick="return JWAction.redirect(this);">$countInfo[mms]&nbsp;条彩信</a></li>
 _HTML_;
 		}
 
