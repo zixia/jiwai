@@ -425,7 +425,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .leftdiv { float:left;background-color:#fff; width:130px;font-size:12px; line-height:22px;height: 1%;overflow: hidden;padding:15px 0 15px 15px;}
 #wtMainBlock a { color:#FF6000;text-decoration:none;}
 #wtMainBlock a:hover { color:#FF6000;text-decoration:underline;}
-#wtMainBlock .blue16 { color:#0078FF; font-size:16px;}
+#wtMainBlock .bluebold16 { color:#0078FF; font-size:16px;}
 #wtMainBlock .orange12 { color:#FF6000; font-size:12px;}
 #wtMainBlock .black14 { color:#000; font-size:14px;}
 #wtMainBlock .black15bold { color:#000; font-size:15px; font-weight:bold; }
@@ -433,8 +433,8 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .title{ padding:5px 15px 5px 0;text-align: right; clear:both;}
 #wtMainBlock .leftmenu li { padding:5px 15px 5px 0;text-align: right;clear:both;}
 #wtMainBlock .leftmenu a{ font-size:14px; color:#FF6000;text-decoration:none;}
-#wtMainBlock .leftmenu a:hover{ font-size:16px; color:#fff; font-weight:bold; background-color:#FF6000;text-decoration:none;}
-#wtMainBlock .leftmenu a.now,#wtMainBlock .leftmenu a.now:hover{ text-align: right; color:#0078FF; background-color:#FFF;font-size:16px; font-weight:bold; clear:both;text-decoration:none;}
+#wtMainBlock .leftmenu a:hover {font-size:16px; color:#fff; font-weight:bold; background-color:#FF6000;text-decoration:none;}
+#wtMainBlock .leftmenu a.now,#wtMainBlock .leftmenu a.now:hover { text-align: right; color:#0078FF; background-color:#FFF;font-size:16px; font-weight:bold; clear:both;text-decoration:none;}
 #wtMainBlock .orange14 {color:#FF6000; font-size:14px;}
 #wtMainBlock .rightdiv { float:left;font-size:14px; color:#555555;margin:0 0 10px 15px;border-left: #DEDEDE 1px solid;}
 #wtMainBlock textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:470px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}

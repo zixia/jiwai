@@ -89,8 +89,8 @@ JWTemplate::html_head(array(
 <div class="leftdiv">
 <p class="bluebold16">是否已经用手机、MSN、QQ或Gtalk叽歪过了呢？</p>
 
-<p>如果是，请发送<span class="orange12">gm+空格+新用户名</span>，到相应的短信号码或者机器人上来重新设置用户名<br />例如：gm 阿朱</p>
-<p>再发送<span class="orange12">mima+空格+新密码</span>，来重新设置密码<br />例如：mima abc123 </p>
+<p>如果是，请发送<span class="orange12">gm+空格+新用户名</span>，到相应的短信号码或者机器人上来设置用户名<br />例如：gm 阿朱</p>
+<p>再发送<span class="orange12">mima+空格+新密码</span>，来设置密码<br />例如：mima abc123 </p>
 </div><!-- leftdiv -->
 <div class="rightdiv">
 <fieldset>
