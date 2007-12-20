@@ -425,9 +425,10 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .leftdiv { float:left;background-color:#fff; width:130px;font-size:12px; line-height:22px;height: 1%;overflow: hidden;padding:15px 0 15px 15px;}
 #wtMainBlock a { color:#FF6000;text-decoration:none;}
 #wtMainBlock a:hover { color:#FF6000;text-decoration:underline;}
-#wtMainBlock .bluebold16 { color:#0078FF; font-size:16px;}
+#wtMainBlock .bluebold16 { color:#0078FF; font-size:16px;font-weight:bold; font-family:Arial;}
 #wtMainBlock .orange12 { color:#FF6000; font-size:12px;}
 #wtMainBlock .black14 { color:#000; font-size:14px;}
+#wtMainBlock .orange14 {color:#FF6000; font-size:14px;}
 #wtMainBlock .black15bold { color:#000; font-size:15px; font-weight:bold; }
 #wtMainBlock .black12 { color:#000; font-size:12px;text-align: right;}
 #wtMainBlock .title{ padding:5px 15px 5px 0;text-align: right; clear:both;}
