@@ -381,6 +381,7 @@ class JWSns {
 			case 'newsmth':
 			case 'skype':
 			case 'aol':
+			case 'fetion':
 			case 'yahoo':
 			case 'qq':
 				// 机器人给设备发送消息

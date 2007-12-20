@@ -70,6 +70,8 @@ class JWRequest {
 				return 6;
 			case 'aol':
 				return 7;
+			case 'fetion':
+				return 8;
 			default:
 				return self::GetClientIp();
 		}

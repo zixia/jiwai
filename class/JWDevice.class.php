@@ -67,6 +67,7 @@ class JWDevice {
 		switch ( $type ){
 			case 'sms':
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
+            case 'fetion':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -115,6 +116,10 @@ class JWDevice {
 					return true;
 				}
 				else if(false != self::IsValid($address, 'aol'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'fetion'))
 				{
 					return true;
 				}
@@ -735,6 +740,9 @@ _SQL_;
 			case 'aol':
 				$name='jiwai001';
 				break;
+			case 'fetion':
+				$name='663665310(飞信号)';
+				break;
 			case 'facebook':
 				$name='<a href="http://apps.facebook.com/jiwaide/" target="_blank">叽歪de Application</a>';
 				break;
@@ -804,6 +812,9 @@ _SQL_;
 			case 'aol':
 				$name='AOL';
 				break;
+			case 'fetion':
+				$name='飞信';
+				break;
 			case 'yahoo':
 				$name='Yahoo!';
 				break;
@@ -867,7 +878,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'newsmth', 'facebook', 'yahoo', /*'jabber',*/ );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'fetion', 'newsmth', 'facebook', 'yahoo' );
 	}
 
 	static public function IsHistorySignature($idUser, $signature){
@@ -908,6 +919,7 @@ _SQL_;
 			case 'qq':
 			case 'skype':
             case 'aol':
+            case 'fetion' :
 			case 'yahoo':
 				return 'im';
 			case 'sms':

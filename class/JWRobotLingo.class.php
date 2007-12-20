@@ -1485,7 +1485,7 @@ class JWRobotLingo {
 		if ( empty($device_db_row) ) 
 			return JWRobotLogic::CreateAccount($robotMsg);
 
-		if( false == in_array( $type, array('qq','msn','gtalk','skype','aol','yahoo','sms') ) ){
+		if( false == in_array( $type, array('qq','msn','gtalk','skype','aol','yahoo','sms','fetion') ) ){
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MSG_WEBREQ' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
@@ -1592,6 +1592,9 @@ class JWRobotLingo {
 			case 'qq':
 				$nameScreen = 'QQ'.$address;
 			break;
+            case 'fetion':
+				$nameScreen = 'F'.$address;
+                break;
 			case 'sms':
 				$nameScreen = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
 			break;

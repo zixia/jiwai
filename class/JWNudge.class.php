@@ -46,7 +46,7 @@ class JWNudge {
 		settype( $idUsers, 'array' );
 		$idUsers = array_unique( $idUsers );
 
-		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype','aol','yahoo') ) ) {
+		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype','aol','yahoo','fetion') ) ) {
 			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
 				$metaInfo = array(
 					'idUsers' => $idUsers,
@@ -307,7 +307,7 @@ class JWNudge {
 		
 		$originOrder = $deviceSendVia;
 		//$nudgeOrder = explode( ',' , $deviceSendVia );
-		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'yahoo','aol', 'sms' );
+		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'yahoo','aol', 'sms', 'fetion' );
 
 		$shortcutArray = array();	
 		foreach( $deviceRow as $type=>$row ){

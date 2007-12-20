@@ -43,7 +43,6 @@ public class HelloClient extends SocketClient {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
         return uri;
