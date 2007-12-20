@@ -2,24 +2,23 @@
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
+$logined_user_info = JWUser::GetCurrentUserInfo();
 
-if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
+if ( preg_match('#^/([\w\d=]+)$#',@$_REQUEST['pathParam'],$matches) )
 {
 	$invite_code	= $matches[1];
-
-    $inviter_id = JWUser::GetIdUserFromIdEncoded( $invite_code ) ;
-    if( !$inviter_id ){
-        $invitation_info	= JWInvitation::GetInvitationInfoByCode($invite_code);
-        $inviter_id = empty($invitation_info) ? null : $invitation_info['idUser'];
-    }
+	$inviter_id = JWUser::GetIdUserFromIdEncoded( $invite_code ) ;
+		
+	if( null==$inviter_id ){
+		$invitation_info = JWInvitation::GetInvitationInfoByCode($invite_code);
+		$inviter_id = empty($invitation_info) ? null : $invitation_info['idUser'];
+	}
 
 	if ( empty($inviter_id) )
 	{
 		header('Location: /wo/account/create');
 		exit(0);
 	}
-
 
 	$inviter_user_info	= JWUser::GetUserInfo($inviter_id);
 }
@@ -34,8 +33,6 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 
 <body class="invitations" id="show">
 
-<?php JWTemplate::accessibility() ?>
-
 <?php JWTemplate::header() ?>
 
 <div id="container" class="subpage">
@@ -46,17 +43,15 @@ if ( preg_match('#^/([\w\d]+)$#',@$_REQUEST['pathParam'],$matches) )
 <?php
 if ( ! isset($inviter_user_info) )
 {
-		header('Location: /wo/account/create');
-		exit(0);
+	JWTemplate::RedirectToUrl( '/wo/account/create' );
 }
 
 	// 有效邀请代码
-	$inviter_name_full 	= $inviter_user_info['nameFull'];
-	$inviter_icon_url 	= JWPicture::GetUserIconUrl($inviter_user_info['id']);
-	echo <<<_HTML_
-<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望在叽歪上关注你</h2>
+$inviter_name_full 	= $inviter_user_info['nameFull'];
+$inviter_icon_url 	= JWPicture::GetUserIconUrl($inviter_user_info['id']);
+echo <<<_HTML_
+	<h2><img alt="$inviter_name_full" src="$inviter_icon_url" /> ${inviter_name_full}希望在叽歪上关注你</h2>
 _HTML_;
-
 ?>
 
 <!--p>

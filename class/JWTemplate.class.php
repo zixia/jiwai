@@ -1472,7 +1472,7 @@ _HTML_;
 	function sidebar_invite() {
 ?>
 		<div class="featured" id="invite" style="line-height:30px;">
-			<p><a href="/wo/account/invite">邀请好友加入JiWai</a></p>
+			<p><a href="/wo/invitations/invite">邀请好友加入JiWai</a></p>
 		</div>
 
 <?php
@@ -1711,6 +1711,7 @@ _HTML_;
 				'qq' => '已绑定 QQ',
 				'skype' => '已绑定 Skype',
 				'aol' => '已绑定 AOL',
+				'fetion' => '已绑定 飞信',
 				'yahoo' => '已绑定 Yahoo!',
 				'newsmth' => '已绑定 水木社区',
 				'facebook' => '已绑定 Facebook',

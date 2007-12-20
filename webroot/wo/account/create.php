@@ -45,6 +45,16 @@ if ( $_POST )
 		{
 			JWBalloonMsg::CreateUser( $user_id );
 			JWLogin::Login( $user_id );
+			
+			/* for invitation */
+			$invitation_id	= JWSession::GetInfo('invitation_id');
+			if ( isset($invitation_id) )
+				JWSns::FinishInvitation($user_id, $invitation_id);
+
+			$inviter_id = JWSession::GetInfo('inviter_id');
+			if ( isset($inviter_id) )
+				JWSns::FinishInvite($user_id, $inviter_id);
+			/* end invitation */
 
 			if ( isset($_SESSION['login_redirect_url']) )
 			{

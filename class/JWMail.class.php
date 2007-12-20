@@ -60,7 +60,7 @@ class JWMail {
 		$config 	= JWConfig::Instance();
 		$directory 	= $config->directory;
 
-        self::$msMailObject     =   & Mail::factory('smtp');
+		self::$msMailObject     =   & Mail::factory('smtp');
 		self::$msTemplateRoot	= 	$directory->mail->template ;
 
 		if ( ! file_exists(self::$msTemplateRoot) ){
@@ -80,18 +80,17 @@ class JWMail {
 		if ( 'UTF-8'!=$encoding )
 			$string	= mb_convert_encoding($string, $encoding, "UTF-8");
 
-        if( $force ) 
-            return '=?' . $encoding . '?B?'. base64_Encode($string) .'?=';
+		if( $force ) 
+			return '=?' . $encoding . '?B?'. base64_Encode($string) .'?=';
 
-		return preg_replace_callback
-			(
-					 '/([\x80-\xFF]+.*[\x80-\xFF]+)/'
-					,create_function
-					(
-						 '$matches'
-						,"return \"=?$encoding?B?\".base64_encode(\$matches[1]).\"?=\";"
-					)
-					,$string
+		return preg_replace_callback(
+			 '/([\x80-\xFF]+.*[\x80-\xFF]+)/'
+			 ,create_function
+			 (
+			  '$matches'
+			  ,"return \"=?$encoding?B?\".base64_encode(\$matches[1]).\"?=\";"
+			 )
+			 ,$string
 			);
 	}
 
@@ -110,7 +109,7 @@ class JWMail {
 	static function SendMail($from, $to, $subject, $message, $options=null)
 	{
 
-        self::Instance();
+		self::Instance();
 
 		if ( !isset($options['subjectenc']) )
 			$options['subjectenc'] 	= 'GBK';
@@ -130,26 +129,26 @@ class JWMail {
 		if ( 'UTF-8'!=$options['encoding'] )
 			$message = mb_convert_encoding($message, $options['encoding'], 'UTF-8');
 
-		$message	= chunk_split(base64_encode($message));
+		$message = chunk_split(base64_encode($message));
 
-		$subject 	= self::EscapeHeadString($subject	,$options['subjectenc'], true);
-		$from		= self::EscapeHeadString($from		,$options['subjectenc']);
-		$to			= self::EscapeHeadString($to		,$options['subjectenc']);
+		$subject = self::EscapeHeadString($subject, $options['subjectenc'], true);
+		$from = self::EscapeHeadString($from, $options['subjectenc']);
+		$to = self::EscapeHeadString($to, $options['subjectenc']);
 
-        $headers = array(
-            'Mime-Version'  => '1.0',
-            'Content-Type'  => "$options[contentType]; charset=$options[encoding]",
-            'Content-Transfer-Encoding' => 'base64',
-            'X-Mailer'      => 'JMWailer/1.0',
-            'From'          => $from,
-            'To'            => $to,
-            'Subject'       => $subject,
-        );
+		$headers = array(
+			'Mime-Version' => '1.0',
+			'Content-Type' => "$options[contentType]; charset=$options[encoding]",
+			'Content-Transfer-Encoding' => 'base64',
+			'X-Mailer' => 'JMWailer/1.0',
+			'From' => $from,
+			'To' => $to,
+			'Subject' => $subject,
+		);
 
 		if ( isset($options['messageId']) )
 			$headers["Message-Id"] = "<$options[messageId]>";
 
-        return self::$msMailObject->send($to, $headers, $message);
+		return self::$msMailObject->send($to, $headers, $message);
 	}
 
 	/*
@@ -164,19 +163,17 @@ class JWMail {
 	static private function RenderTemplate($template, $user, $friend)
 	{
 		$replace_array	= array (
-					 '/%User.nameScreen%/i'	=> $user['nameScreen'],
-					 '/%EUser.nameScreen%/i' => UrlEncode($user['nameScreen']),
-					 '/%User.nameFull%/i' => $user['nameFull'],
+			 '/%User.nameUrl%/i' => $user['nameUrl'],
+			 '/%User.nameScreen%/i' => $user['nameScreen'],
+			 '/%EUser.nameScreen%/i' => UrlEncode($user['nameScreen']),
+			 '/%User.nameFull%/i' => $user['nameFull'],
 
-					 '/%Friend.nameScreen%/i' => @$friend['nameScreen'],
-					 '/%EFriend.nameScreen%/i' => UrlEncode($friend['nameScreen']),
-					 '/%Friend.nameFull%/i'	=> @$friend['nameFull'],
-				);
+			 '/%Friend.nameScreen%/i' => @$friend['nameScreen'],
+			 '/%EFriend.nameScreen%/i' => UrlEncode($friend['nameScreen']),
+			 '/%Friend.nameFull%/i' => @$friend['nameFull'],
+		);
 
-		return preg_replace(	 array_keys		($replace_array)
-								,array_values	($replace_array)
-								,$template
-							);
+		return preg_replace( array_keys($replace_array), array_values($replace_array), $template );
 	}
 
 	
@@ -189,7 +186,7 @@ class JWMail {
 	{
 		self::Instance();
 
-		$template_abs_path	= self::$msTemplateRoot . $relTemplateFile;
+		$template_abs_path = self::$msTemplateRoot . $relTemplateFile;
 
 		$file_content = file_get_contents($template_abs_path);
 
@@ -213,7 +210,7 @@ class JWMail {
 			throw new JWException("template split meta & body error for [$templateData]");
 
 		$template_info['html']	= $matches[2];
-		$meta_lines		= split("\n", $matches[1]);
+		$meta_lines = split("\n", $matches[1]);
 
 		foreach ( $meta_lines as $meta_line )
 		{
@@ -247,13 +244,11 @@ class JWMail {
 
 		$template_info = self::ParseTemplate($template_data);
 
-//die(var_dump($template_info));
-		
-		return self::SendMail(	 $template_info['from']
-						,$friend['email']
-						,$template_info['subject']
-						,$template_info['html']
-					);
+		return self::SendMail( $template_info['from']
+			,$friend['email']
+			,$template_info['subject']
+			,$template_info['html']
+		);
 	}
 
 
@@ -262,32 +257,54 @@ class JWMail {
  	 *	@param	array	user	user_info的结构
  	 *	@param	string	email	邮件接收者
  	 */
-	static public function SendMailInvitation($user, $email, $message, $code)
+	static public function SendMailInvitation($user, $email, $message, $options=array())
 	{
-		if ( !JWUser::IsValidEmail($email) )
+		if ( false == JWUser::IsValidEmail($email) )
 			return false;
 
-		$friend['nameFull'] = '敬启者';
+		$template_file = isset( $options['template_file'] ) 
+			? $options['template_file'] : 'Invitation.tpl';
 
-		$template_file	= 'Invitation.tpl';
+		$send_options = array(
+			'contentType' => isset($options['content_type']) ? $options['content_type'] : null,
+		);
+
+		$has_photo = !empty($user['idPicture']);
+		if ( $has_photo ){
+			$photo_url = JWPicture::GetUserIconUrl($user['id'],'thumb96');
+		}else{
+			$photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
+		}
+
+		$num_status = JWStatus::GetStatusNum( $user['id'] );
+		$num_following = JWFollower::GetFollowingNum( $user['id'] );
+		$num_follower = JWFollower::GetFollowerNum( $user['id'] );
+
+		$invitation_code = JWUser::GetIdEncodedFromIdUser( $user['id'] );
+	
+		$friend['nameFull'] = '敬启者';
 
 		$template_data = self::LoadTemplate($template_file);
 		$template_data = self::RenderTemplate($template_data,$user, $friend);
 	
-		$template_data = preg_replace('/%INVITATION_ID%/i'	,$code		,$template_data);
-		$template_data = preg_replace('/%MESSAGE%/i'		,$message	,$template_data);
-		$template_data = preg_replace('/%SUBJECT%/i'		,$message	,$template_data);
-		$template_data = preg_replace('/%DATE%/i'		    ,date('m/d/Y'), $template_data);
+		$template_data = preg_replace('/%INVITATION_ID%/i', $code, $template_data);
+		$template_data = preg_replace('/%SUBJECT%/i', $message, $template_data);
+		$template_data = preg_replace('/%Photo.Url%/i', $photo_url, $template_data);
+
+		$template_data = preg_replace('/%Num.Status%/i', $num_status, $template_data);
+		$template_data = preg_replace('/%Num.Following%/i', $num_following, $template_data);
+		$template_data = preg_replace('/%Num.Follower%/i', $num_follower, $template_data);
+
+		$template_data = preg_replace('/%Invitation.Code%/i', $invitation_code, $template_data);
 
 		$template_info = self::ParseTemplate($template_data);
 
-//die(var_dump($template_info));
-		
-		return self::SendMail(	 $template_info['from']
-						,$email
-						,$template_info['subject']
-						,$template_info['html']
-					);
+		return self::SendMail( $template_info['from']
+			,$email
+			,$template_info['subject']
+			,$template_info['html']
+			,$send_options
+		);
 	}
 
 
@@ -312,12 +329,11 @@ class JWMail {
 
 		$template_info = self::ParseTemplate($template_data);
 
-//die(var_dump($template_info));
-		return self::SendMail(	 $template_info['from']
-						,$receiver['email']
-						,$template_info['subject']
-						,$template_info['html']
-					);
+		return self::SendMail( $template_info['from']
+			,$receiver['email']
+			,$template_info['subject']
+			,$template_info['html']
+		);
 	}
 
 
@@ -340,15 +356,11 @@ class JWMail {
 
 		$template_info = self::ParseTemplate($template_data);
 
-//die(var_dump($template_info));
-//		die( " from - " . $template_info['from'] );
-		return self::SendMail(	 $template_info['from']
-						,$user['email']
-						,$template_info['subject']
-						,$template_info['html']
-					);
+		return self::SendMail( $template_info['from']
+			,$user['email']
+			,$template_info['subject']
+			,$template_info['html']
+		);
 	}
-
-
 }
 ?>

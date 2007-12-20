@@ -1,27 +1,38 @@
-SUBJECT: %Friend.nameScreen%希望您加入叽歪de！
-FROM: %Friend.nameFull% <wo@jiwai.de>
+SUBJECT: %SUBJECT%
+FROM: %User.nameScreen%（%User.nameFull%） <noreply@jiwai.de>
 
-<html>
-<p>
-%User.nameFull%您好！
-</p>
+<style>
+a { color:#FF6000;text-decoration:none;}
+a:hover { color:#FF6000;text-decoration:underline;}
+</style>
+<div style="margin:0 auto;font-family:verdana, Arial, Helvetica, simsun,sans-serif;">
+<div style="width: 485px;border:1px solid #CECECE; background-color:#FFF;color:#333333;overflow:hidden;height:1%;padding:10px;font-size:12px; margin:10px 0 0 0; ">
+<!--left-->
+<div style="width: 485px;color:#333333;font-size:12px;">
+<div style="float:left; width:96px; overflow:hidden; height:96px; border:1px solid #D3D3D5; padding:1px;">
+	<a href="http://jiwai.de/%User.nameUrl%/"><img width="96" height="96" border="0" title="%User.nameFull%" src="%Photo.Url%"/></a>
+</div>
+<div style="line-height:36px;overflow:hidden;height:1%;padding:2px 0 5px 10px;">
+	<p class="black15bold" style="color:#000; font-size:15px; font-weight:bold;margin:15px 0 0 0;">你的朋友&nbsp;%User.nameScreen%(%User.nameFull%)&nbsp;邀请你加入叽歪</p>
+	<p class="meta" style="color:#333333; font-size:12px; display:block;margin:5px 0 0 0;">叽歪de能让你用一句话建立自己的博客，用只言片语记录生活轨迹</p>
+</div>
+</div>
+<!--left end-->
 
-
-<p>%Friend.nameFull% (%Friend.nameScreen%) 希望您加入叽歪de！</p>
-
-<p>点击这里开始：
-	<br /><br />
-	<a href="http://JiWai.de/wo/invitation/%INVITATION_ID%" target="_blank">http://JiWai.de/wo/invitation/%INVITATION_ID%</a>
-</p>
-
-<p>或者您也可以来这里看看%Friend.nameFull%的最新动态：
-	<br /><br />
-	<a href="http://JiWai.de/%Friend.nameScreen%/" target="_blank">http://JiWai.de/%Friend.nameScreen%/</a>
-</p>
-
-<p>
-耶！
-<br /><br />
-叽歪de
-</p>
-</html>
+<!--right-->
+<div style="width: 485px;color:#333333;font-size:12px;">
+<div style="float:right;width:371px;width:375px;!important;text-align: left;line-height:23px;padding:0 0 0 12px; padding:0 0 0 10px;!important;font-size:12px;margin-top:10px;">
+	<p style="margin:0;">请点击这里接受邀请，注册后直接开始关注&nbsp;%User.nameScreen%&nbsp;</p>
+	<p style="margin:0;"><a href="http://jiwai.de/wo/invitations/i/%Invitation.Code%">http://jiwai.de/wo/invitations/i/%Invitation.Code%</a></p>
+	<p style="margin:0;">你也可以在这里关注&nbsp;%User.nameScreen%(%User.nameFull%)&nbsp;的最新动态</p>
+	<p style="margin:0;"><a href="http://jiwai.de/%User.nameUrl%/">http://jiwai.de/%User.nameUrl%/</a></p>
+</div>
+<div style="float:right;width:102px;width:100px;!important;text-align: center;line-height:22px; margin-top:10px;">
+	<p style="color:#FF6000; font-size:14px; font-weight:bold; padding:0 0 5px 0;margin:0;">%User.nameScreen%</p>
+	<p style="margin:0;">%Num.Status%&nbsp;条叽歪</p>
+	<p style="margin:0;">关注&nbsp;%Num.Following%&nbsp;人</p>
+	<p style="margin:0;">被&nbsp;%Num.Follower%&nbsp;人关注</p>
+</div>
+</div>
+<!--right end-->
+</div></div>

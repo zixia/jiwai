@@ -138,30 +138,66 @@ var JWAction =
 		return this.isLogined( callback ) ? callback() : false;
 	},
 
-	importFriends : function(type, username, password)
+	importFriend : function(type)
 	{   
-		type = ( type == null ) ? 'msn' : type ;
-		username = ( username == null ) ? $(type+'username').value : username ;
-		password = ( password == null ) ? $(type+'password').value : password ;
+		var type = ( type == null ) ? 'msn' : type ;
+		var username = $(type+'username').value;
+		var password = $(type+'password').value;
 
 		var callback = function()
 		{   
-			new Ajax( '/wo/invitations/get_friends', {
+			var caption = '导入用户';
+			var url ='/wo/lightbox/lightbox_import_friend';
+			var rel='';
+
+			var options = {
+				height : 112,
+				 width : 310
+			};
+
+			new Ajax( '/wo/ajax/send_request_import_friend', {
 				method: 'POST',
 				headers: { 'AJAX' : true },
 				data: 'type='+type+'&username='+username+'&password='+password,
-				onSuccess: function(responseText, x)  
-				{   
-					if( 'true'==responseText )
-					{   
-						location.href = '/wo/invitations/invite_not_follow';
-						return false;
-					}   
-				}   
+				onSuccess: function(responseText, x) { }
 			}).request();
 
+			TB_show(caption, url, rel, options);
+
+			var loop_call = function(count) 
+			{
+				var max_count = 15;
+				new Ajax( '/wo/ajax/has_finished_import_friend', {
+					method: 'POST',
+					headers: { 'AJAX' : true },
+					data: 'type='+type+'&username='+username+'&password='+password,
+					onSuccess: function(responseText, x)  
+					{   
+						if( 'true'==responseText )
+						{   
+							location.href = '/wo/invitations/invite_not_follow';
+							return false;
+						}   
+					}   
+				}).request();
+
+				if ( count<max_count )
+				{
+					count++;
+					window.setTimeout( function(){loop_call(count);}, 1000);
+				}
+				else
+				{
+					$('importTips').innerHTML = '<span style="color:#FF0000;">导入操作已经超时。'
+							+ '<br/></span>你可以<a href="javascript:void(0);"'
+							+ ' onclick="TB_remove();">关闭</a>后重新试试。';
+				}
+			}
+
+			loop_call(0);
+
 			return false;
-		};  
+		}; 
 
 		return this.isLogined( callback ) ? callback() : false;
 	},  

@@ -53,7 +53,7 @@ class JWNotify{
 			$inviteCode = JWDevice::GenSecret( 8 );
 			JWInvitation::Create($idUserFrom, $addressTo, $type, $message, $inviteCode);
 		}
-		$message .= empty( $deviceRow ) ? ' 请回复你想要的用户名' : ' 请回复 F 确定';
+		$message .= (false===strpos($message, ' F ')) ? ' 请回复 F 确定' : '';
 
 		$user = JWUser::GetUserInfo( $idUserFrom );
 		$conference = JWConference::GetDbRowFromUser( $idUserFrom );
@@ -478,7 +478,7 @@ class JWNotify{
 		switch( $type )
 		{
 			case 'IM':
-				$condition = "deviceSendVia IN ('msn','gtalk','skype','aol','qq','yahoo')";
+				$condition = "deviceSendVia IN ('msn','gtalk','skype','aol','qq','yahoo','fetion')";
 			break;
 			case 'Y':
 			case 'ALL':
