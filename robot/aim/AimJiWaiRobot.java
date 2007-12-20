@@ -29,7 +29,7 @@ public class AimJiWaiRobot implements MoMtProcessor {
 
     public static AimJiWaiRobot mRobot = null;
 
-	public static final String DEVICE = "aim";
+	public static final String DEVICE = "aol";
 	
 	public static int onlinePort = 55060;
 
