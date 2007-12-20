@@ -25,7 +25,27 @@ JWLog::Log(LOG_CRIT, "404URL: $url");
 
 JWTemplate::html_doctype();
 
+/* Return the Time Diff */
+define ('MINUTE_SECS', 60);
+define ('HOUR_SECS', MINUTE_SECS * 60);
+define ('DAY_SECS', HOUR_SECS * 24);
 
+function getTimeDiff($now, $future) {
+    $diff = $future - $now;
+
+    if ($diff <= 0) {
+        return '0天0小时0分钟';
+    }
+
+    $ret = array();
+
+    $ret['day'] = (int)($diff / DAY_SECS); $diff -= DAY_SECS * $ret['day'];
+    $ret['hour'] = (int)($diff / HOUR_SECS); $diff -= HOUR_SECS * $ret['hour'];
+    $ret['minute'] = (int)($diff / MINUTE_SECS); $diff -= MINUTE_SECS * $ret['minute'];
+    $ret['second'] = (int)$diff;
+
+    return $ret['day'] . "天" . $ret['hour'] . "小时" . $ret['minute'] . "分钟";
+}
 
 ?>
 <head>
@@ -60,27 +80,34 @@ margin: 10px;
 }
 
 </style>
-	<table>
-	<tr>
-	<td class="left">
-    <a href="/"><img src="<?php echo JWTemplate::GetAssetUrl('/img/system/-_-b.jpg')?>"/></a>
-	</td>
-	<td class="right">
+<STYLE type=text/css>BODY {
+	BACKGROUND:  #ffffff fixed left top
+}
+#err404{
+	margin: 20px auto;width:776px;font-family:Verdana, Arial, Helvetica, sans-serif; font-size:32px; color:#ff6600; line-height:32px; font-weight:bold; 
+}
+#err404 .countDown{
+	padding-bottom:50px; padding-left:30px;
+}
+#err404 a:link{color:#ff6600; text-decoration:none; line-height:50px; font-size:28px;}
+#err404 a:visited{color:#ff6600; text-decoration:none; line-height:50px; font-size:28px;}
+#err404 a:hover{color:#ffffff; text-decoration:none; line-height:50px; background-color:#ff6600; font-size:28px;}
+#err404 a:active{color:#ffffff; text-decoration:none; line-height:50px; background-color:#ff6600; font-size:28px;}
+</STYLE>
 
-    <h2>哎呀！<a href="/">叽歪de</a> 没能找到<a href="<?php echo $url?>">这个页面</a>。</h2>
-    <br />
-    <br />
-
-    <h3>你可以：</h3>
-    <ul>
-      <li><a href="/">返回首页</a></li>
-
-      <li><a href="<?php echo JWTemplate::GetConst('UrlHelp')?>">查看帮助</a></li>
-      <li><a href="<?php echo JWTemplate::GetConst('UrlHelpComments')?>">向我们提问</a></li>
-    </ul>
-	</td>
-	</tr>
- 	</table>
+<table border="0" cellpadding="0" cellspacing="0" id="err404">
+  <tr>
+    <td width="381" rowspan="2"><img src="http://asset.jiwai.de/images/org-404-left.jpg" width="381" height="484"></td>
+    <td><img src="http://asset.jiwai.de/images/org-404-right.jpg" width="381" height="399"></td>
+  </tr>
+  <tr>
+    <td class="countDown"><?php echo getTimeDiff(time(), strtotime('2008/8/8 20:00:00')); ?></td>
+  </tr>
+    <tr align="center" >
+    <td style="text-align:right; padding-right:25px; "><a href="<?php echo $url;?>">&lt;&lt; 从东土大唐来</a></td>
+    <td style="text-align:left; padding-left:25px; "><a href="http://jiwai.de/">到西天取经去 &gt;&gt; </a></td>
+  </tr>
+</table>
 
 
 </div><!-- #container -->
