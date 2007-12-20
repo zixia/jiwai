@@ -48,13 +48,13 @@ switch ( $active_tab )
 		if( $page_user_info['idConference'] ) {
 			//论坛模式用户
 			$user_status_num	= JWStatus::GetStatusNumFromConference($page_user_info['idConference']);
-			$pagination		= new JWPagination($user_status_num, $page );
-			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+			$pagination		= new JWPagination($user_status_num-1, $page );
+			$status_data 		= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		}else{
 			// 显示用户自己的
 			$user_status_num= JWDB_Cache_Status::GetStatusNum($page_user_id);
-			$pagination		= new JWPagination($user_status_num, $page);
-			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+			$pagination		= new JWPagination($user_status_num-1, $page);
+			$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		}
 		break;
 
@@ -67,13 +67,13 @@ switch ( $active_tab )
 		if ( null == $page_user_info['idConference'])
 		{
 			$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($page_user_id);
-			$pagination = new JWPagination($user_status_num, $page);
-			$status_data = JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+			$pagination = new JWPagination($user_status_num-1, $page);
+			$status_data = JWDB_Cache_Status::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		} else
 		{
 			$user_status_num = JWStatus::GetStatusNumFromFriendsConference( $page_user_id );
-			$pagination = new JWPagination($user_status_num, $page);
-			$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $page_user_id , $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+			$pagination = new JWPagination($user_status_num-1, $page);
+			$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $page_user_id , $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		}
 
 		break;

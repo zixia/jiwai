@@ -658,7 +658,16 @@ _TAB_;
 <span class="floatright" style="font-size:12px;color:#999;"><?php echo $follow_string;?></span>
 <h3><?php echo $name_screen;?></h3>
 	<p class="t-text"><?php echo $status;?></p>
-<?php 
+<?php
+$plugin_result = JWPlugins::GetPluginResult( $statusRow );
+//plugins
+switch( $plugin_result['type'] )
+{
+	case 'html':
+		echo $plugin_result['html'];
+		break;
+}
+
 if( false == $protected && false == $noneStatus )
 { 
 
