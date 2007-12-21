@@ -111,9 +111,10 @@ a:hover {color:#F87A01;}
 #permalink .odd .cont {border:2px solid #FFCFA8; padding:6px;}
 #permalink .odd .cont a {font-size:12px;}
 #permalink .odd .cont h3 {font-weight:bold; padding:5px 0 0 5px;}
-#permalink .meta {color:#929292; font-size:12px; padding:5px 0 8px 5px;}
+#permalink .meta {color:#929292; font-size:12px; padding:5px 0 8px 5px; display: block;}
 #permalink .meta a:link, #permalink .meta a:visited {color:#D05D02; text-decoration:none;}
 #permalink .meta a:hover, #wtTimeline .meta a:active {color:#009BC7; text-decoration:underline;}
+#permalink .pic {border:1px solid #999999; background-color:#000000; padding:4px; width:auto; margin:5px 0 0px 4px;}
 #permalink .reply {color:#009BC7; font-size:12px;}
 #permalink .reply a:link, #permalink .reply a:visited {color:#009BC7; text-decoration:underline;}
 #permalink .reply a:hover, #wtTimeline .reply a:active {color:#009BC7; text-decoration:none;}
