@@ -71,7 +71,7 @@ foreach($friends_rows  as $idFriend => $friends_row)
 	<div class="floatleft"><input onclick="selectOne(this);" type="checkbox" name="friends_emails[]" checked="true" value="<?php echo $idFriend; ?>" /></div>
 	  <div class="content">
 		<div class="meta">
-		<span class="floatright" title="<?php echo $friends_array[1];?>"><?php echo substr($friends_array[1], 0, 30);?></span>< <?php echo $friends_array[0];?> >
+		<span class="floatright" title="<?php echo $friends_array[1];?>"><?php echo mb_substr($friends_array[1], 0, 20,'UTF-8');?></span>< <?php echo $friends_array[0];?> >
 		</div><!-- meta -->
 		</div><!-- content -->
 	</div><!-- entry -->
@@ -86,6 +86,7 @@ foreach($friends_rows  as $idFriend => $friends_row)
 </div><!-- lookfriend -->
 </form>
 	<div style="clear: both;"></div>
+</div>
 </div>
 <!-- rightdiv -->
 </div><!-- #wtMainBlock -->
