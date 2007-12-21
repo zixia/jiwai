@@ -584,10 +584,14 @@ _TAB_;
 
 		$noneStatus = empty( $statusRow );
 
-		if ( false == empty($statusRow['idPicture']) )
-			$photo_url = JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
-		else
+		if ( $noneStatus || null==$statusRow['idPicture'] || 'Y'==$statusRow['isMms'] )
+		{
 			$photo_url = JWPicture::GetUserIconUrl($userRow['id'], 'thumb96');
+		}
+		else
+		{
+			$photo_url = JWPicture::GetUrlById($statusRow['idPicture'], 'thumb96');
+		}
 	
 		if ( false == isset($options['trash']) )
 			$options['trash'] = true;
@@ -633,12 +637,8 @@ _TAB_;
 ?>
 			<div id="permalink" style="margin-bottom:8px!important;margin-bottom:0px;">
 				<div class="odd" style="padding-top:0; padding-left:0; padding-right:0; background: none;">
-				<?php if( @$isMms ) { ?>
-					<div class="head"><a href="/<?php echo $name_url; ?>/mms/<?php echo $statusRow['id']; ?>"><img title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
-				<?php } else { ?>
 					<div class="head"><a href="
 					<?php echo true == $options['isMyPages'] ? '/wo/account/profile_image/' . $name_screen : '/' . $name_url ?>/"><img title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>" width="96" height="96" style="padding: 1px;" /></a></div>
-				<?php } ?>
 					<div class="cont">
 						<div class="bg"></div>
 <?php
