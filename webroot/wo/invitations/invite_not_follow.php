@@ -32,11 +32,10 @@ echo "<script>var count_select_now=$friends_rows_count;</script>";
 
 <body class="account" id="friends">
 
-<?php JWTemplate::accessibility() ?>
 <?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTipsMain() ?>
 
 <div id="container">
-<?php JWTemplate::ShowActionResultTips() ?>
 <p class="top">寻找与邀请好友</p>
 <div id="wtMainBlock">
 
@@ -92,6 +91,7 @@ foreach($friends_rows  as $idFriend => $friends_row)
 </div><!-- lookfriend -->
 </form>
 	<div style="clear: both;"></div>
+</div>
 </div>
 <!-- rightdiv end -->
 
