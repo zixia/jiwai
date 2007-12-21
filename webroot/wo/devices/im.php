@@ -60,7 +60,14 @@ if ( isset($_REQUEST['_shortcut']) )
 		if ($address) echo '<input value="'.JWFacebook::GetName($address).'" />';
 ?><input name="device[<?php echo $type;?>][address]" type="hidden" style="display:none;" id="device_<?php echo $type;?>" value="<?php echo $address; ?>" <?php echo $readonly ?>/>
 <?php
-	} else {
+	} elseif ($type === 'fetion' && !$address) {
+?><input name="device[<?php echo $type;?>][address]" type="text" id="device_<?php echo $type;?>" value="请输入你的飞信号" onclick="if(this.value=='请输入你的飞信号')this.value=''" onblur="if(this.value=='')this.value='请输入你的飞信号';" />
+<div class="pop">
+    <div class="poptop"></div>
+    <div class="popbg">
+    <div class="popleft"></div>飞信号不同于手机号，已经开通中国移动飞信的用户可以在飞信客户端中查询到自己的飞信号</div></div>
+<?php
+    }else {
 ?><input name="device[<?php echo $type;?>][address]" type="text" id="device_<?php echo $type;?>" value="<?php echo $address; ?>" <?php echo $readonly ?>/>
 <?php
 	}
