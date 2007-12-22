@@ -1,10 +1,13 @@
 <?php
 class JWPubSub {
+	static private $m_instance_pool = array();
 	static function Instance($url) {
+		if (isset(self::$m_instance_pool[$url]))
+			return self::$m_instance_pool[$url];
 		$c = parse_url($url, PHP_URL_SCHEME);
 		$class = 'JWPubSub_'.ucfirst($c);
 		$obj = new $class($url);
-		return $obj;
+		return self::$m_instance_pool[$url]=$obj;
 	}
 	private $listeners = array();
 	function __construct() {
