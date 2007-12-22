@@ -184,22 +184,6 @@ class JWNotify{
 			$message['sms'] .= $mms_plus_sms;
 		}
 
-		if ( null==$conference )
-		{
-			if ( $thread_status )
-			{
-				$thread_user = JWUser::GetDbRowById( $thread_status['idUser'] );
-				$reply_plus_url = ' 回复：http://JiWai.de/' . $thread_user['nameUrl']
-						. '/thread/' . $thread_status['id'] . '/' . $idStatus;
-			}
-			else
-			{
-
-				$reply_plus_url = ' 回复：http://JiWai.de/' . $sender_user['nameUrl']
-						. '/thread/' . $idStatus;
-			}
-			$message['im'] .= $reply_plus_url;
-		}
 
 		if ( $receiver_user )
 		{
@@ -207,38 +191,43 @@ class JWNotify{
 			$message['sms'] = "@$receiver_user[nameScreen] $message[sms]";
 		}
 
-
 		/**
 		 * Sync To Twitter, need transfer to other pool service
 		 */
 		$bindOther = JWBindOther::GetBindOther( $sender_user['id'] );
 		if ( isset($bindOther['twitter']) || isset($bindOther['fanfou']) ) 
 		{
-			if ( false == empty( $status_row ) && $status_row['device'] != 'api' ) 
-			{
-				$message_send = $message['im'];
+			$queue_data = array(
+				'device' => $status_row['device'],
+				'message' => $message['im'],
+				'not_reply' => null==$receiver_user,
+				'not_conference' => null==$conference,
+				'bind' => $bindOther,
+			);
 
-				if (isset($bindOther['twitter']) 
-						&& ('Y'==$bindOther['twitter']['syncReply']
-							|| null==$receiver_user)
-						&& ('Y'==$bindOther['twitter']['syncConference'] 
-							|| null==$conference )
-				)
-				{
-					JWBindOther::PostStatus( $bindOther['twitter'], $message_send );
-				}
-
-				if ( isset($bindOther['fanfou']) 
-						&& ('Y'==$bindOther['fanfou']['syncReply']
-							|| null==$receiver_user)
-						&& ('Y'==$bindOther['fanfou']['syncConference'] 
-							|| null==$conference )
-				) 
-				{
-					JWBindOther::PostStatus( $bindOther['fanfou'], $message_send );
-				}
-			}
+			$queue_instance = JWPubSub::Instance('spread://localhost/');
+			$queue_instance->Publish('/statuses/bindother', $queue_data);
 		}
+
+		/* Add reply Link */
+		/**
+		if ( null==$conference )
+		{
+			if ( $thread_status )
+			{
+				$thread_user = JWUser::GetDbRowById( $thread_status['idUser'] );
+				$reply_plus_url = ' 回复请到：http://JiWai.de/' . $thread_user['nameUrl']
+						. '/thread/' . $thread_status['id'] . '/' . $idStatus;
+			}
+			else
+			{
+
+				$reply_plus_url = ' 回复请到：http://JiWai.de/' . $sender_user['nameUrl']
+						. '/thread/' . $idStatus;
+			}
+			$message['im'] .= $reply_plus_url;
+		}
+		*/
 
 		/** Sync to Facebook **/
 		if ( null==$receiver_user && $idFacebook = JWFacebook::GetFBbyUser($sender_user['id']) ) 

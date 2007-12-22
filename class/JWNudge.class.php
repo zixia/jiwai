@@ -46,6 +46,11 @@ class JWNudge {
 		settype( $idUsers, 'array' );
 		$idUsers = array_unique( $idUsers );
 
+		/** 
+		 * we use spread, and no need this mechanism
+		 * by seek@jiwai.com 2007-12-22
+		 */
+		/**
 		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype','aol','yahoo','fetion') ) ) {
 			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
 				$metaInfo = array(
@@ -59,6 +64,7 @@ class JWNudge {
 			}
 			return true;
 		}
+		*/
 
 		$idConference = isset( $options['idConference'] ) ? intval( $options['idConference'] ) : null;
 		$idStatus = isset( $options['idStatus'] ) ? intval( $options['idStatus'] ) : null;
@@ -100,47 +106,9 @@ class JWNudge {
 		}
 	}
 
-	/*
-	 *	向 $idUsers 的设备上发送消息
-	 *	@param	array of int	$idUsers
-	 *	@param	string			$message
-	 *	@type	string			$messageType	{'nudge'|'direct_messages'}
-	 *	@return	
+	/**
+	 *  send message to user with custom device
 	 */
-	static public function NudgeUserIds($idUsers, $message, $messageType='nudge', $source='bot')
-	{
-		if( empty($idUsers) )
-			return true;
-
-		$user_rows	= JWUser::GetDbRowsByIds			($idUsers);
-		$device_rows	= JWDevice::GetDeviceRowsByUserIds	($idUsers);
-
-		if( empty( $user_rows ) ) 
-			return true;
-
-		foreach ( $idUsers as $user_id )
-		{
-			$user_row	= @$user_rows	[$user_id];
-			$device_row	= @$device_rows	[$user_id];
-
-			if ( empty($device_row) )
-				continue;
-			
-			$deviceSendVia = $user_row['deviceSendVia'];
-			$availableSendVia = self::GetAvailableSendVia_Temp( $device_row, $deviceSendVia );
-
-			if ( $availableSendVia && isset( $device_row[$availableSendVia] ) )
-				JWNudge::NudgeDevice( $device_row, $availableSendVia, $message, $messageType, $source );
-			else
-				JWLog::Log(LOG_INFO, "JWNudge::NudgeUserIds User.deviceSendVia"
-					. "[$user_row[deviceSendVia]]"
- 					. "not exist in the device for user id[$user_id], skiped."
-				);
-		}
-		return true;
-	}
-
-
 	static public function NudgeToUserDevice( $deviceRow, $message, $messageType, &$options=array() ) {
 		
 		switch( $deviceRow['enabledFor'] ){
@@ -186,90 +154,18 @@ class JWNudge {
 					$serverAddress = JWNotify::GetServerAddress( $address, $conference, $user );
 				}
 
-				if( $serverAddress == null ) {
-					JWRobot::SendMtRaw($address, $type, $message);
-				}else{
-					JWRobot::SendMtRaw($address, $type, $message, $serverAddress);
-				}
+				$channel = '/robot/mt/' . $type;
+				JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
+					'type' => $type,
+					'address' => $address,
+					'message' => $message,
+					'server_address' => $serverAddress,
+				));
 			break;
 			case 'nothing':
 			break;
 		}
 		return true;	
-	}
-	/*
-	 *	向一个 device 上发送消息
-	 *	@param	array	$deviceRow	JWDevice::GetDeviceRowsByUserIds 的返回结构
-	 *	@param	string	$type	{'sms'|'msn',...}
-	 *	@param	string	$message
-	 *	@param	string	$messageType	{'nudge'|'direct_messages'}
-	 */
-	static public function NudgeDevice( $deviceRow, $type, $message, $messageType , $source='bot' )
-	{
-		// 对特定的 device ( sms / im） - 查看 Device.enabledFor:
-		// enabledFor 可能有三个值: everything / nothing / direct_messages
-		switch ( $deviceRow[$type]['enabledFor'] )
-		{
-			case 'direct_messages':
-				if ( 'direct_messages'!=$messageType )
-					break;
-				// if equal, fall to everything: send it.
-
-			case 'everything':
-
-				// 检查设备是否已经验证通过
-				$is_verified= $deviceRow[$type]['verified'];
-				if ( !$is_verified )
-				{
-					JWLog::Log(LOG_INFO, "JWNudge::Nudge skip unverfied device for idUser"
-										. '[' . $deviceRow[$type]['idUser'] . ']'
-										. ' of device [' . $type
-											. ':' .  $deviceRow[$type]['address']
-								);
-					break;
-				}
-
-				$address 	= $deviceRow[$type]['address'];
-				if( JWDevice::IsAllowedNonRobotDevice($source) ) { // nudge,dm from wap|web
-					$info = array(
-						'message' => $message,
-					);
-					$queueType = JWNotifyQueue::T_NUDGE;
-					$idUserTo = $deviceRow[$type]['idUser'];
-					$ret = JWNotifyQueue::Create( null, $idUserTo, $queueType, $info );
-				}else{
-					if( is_array( $message ) ) {
-						if( isset($message['type']) ){
-							if( $message['type'] == 'MMS' ) {
-								if($type=='sms') {
-									$idStatus = $message['idStatus'];
-									$message = $message['sms'];
-									$serverAddress = 
-										JWFuncCode::GetMmsNotifyFunc($address,$idStatus );
-									JWRobot::SendMtRaw($address,$type,$message,$serverAddress);
-								}else{
-									$message = $message['im'];
-									JWRobot::SendMtRaw($address, $type, $message);
-								}
-							}else if( $message['type'] == 'CONFERENCE' ) {
-							}
-						}
-					}else{	
-						JWRobot::SendMtRaw($address, $type, $message);
-					}
-				}
-				break;
-
-			case 'nothing':
-				// fall to default
-			default:
-				JWLog::Log(LOG_INFO, "JWNudge::Nudge skip Device.enabledFor nothing for idUser"
-									. '[' . $deviceRow[$type]['idUser'] . ']'
-									. ' of device [' . $type
-									. ':' .  $deviceRow[$type]['address']
-							);
-				break;
-		}
 	}
 	
 	/**

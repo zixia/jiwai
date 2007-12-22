@@ -358,7 +358,7 @@ class JWSns {
 		else
 		{
 			$sms_message 	= $message['im'];
-			$im_message 	= $message['im'];
+			$im_message 	= $message['sms'];
 			$email_message 	= $message['email'];
 		}
 

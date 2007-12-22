@@ -214,7 +214,7 @@ class JWSms {
 		// 普通下行接口，移动联通小灵通都可以使用。不过要提供 linkId
 		$MT_HTTP_URL_LINKID	= 'http://211.157.106.111:8092/sms/submit';
 
-		if ( null === $serverAddress )
+		if ( null == $serverAddress )
 		{
 			$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
 		}

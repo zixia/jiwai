@@ -96,7 +96,8 @@ class JWMutex {
 
 				$this->mMutexFile = $mutex_file_root . $this->mMutexKey;
 
-				$fp = @fopen( $this->mMutexFile, "r");
+				$fp = file_exists($this->mMutexFile) 
+					? @fopen( $this->mMutexFile, "r") : null;
 			
 				if ( empty($fp) )
 				{
