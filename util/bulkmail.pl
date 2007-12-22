@@ -46,7 +46,7 @@ sub _buildMail {
     ) or die Mail::Bulkmail->error();
 
     $bulk->header("MIME-Version", "1.0");
-    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_002E_01C81D68.794EA2A0"');
+    $bulk->header("Content-Type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_000E_01C836A5.7F4E22B0"');
 =pod
     $bulk->header("Content-Transfer-Encoding", "quoted-printable");
 =cut

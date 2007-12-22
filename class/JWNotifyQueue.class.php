@@ -75,6 +75,9 @@ class JWNotifyQueue {
 
 		$metaInfo = self::EncodeBase64Serialize( $extraInfo );
 
+		if ( $type == self::T_STATUS )
+			return true;
+
 		return JWDB::SaveTableRow( 'NotifyQueue' , array(
 					'idUserFrom' => $idUserFrom,
 					'idUserTo' => $idUserTo,

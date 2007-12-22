@@ -323,17 +323,18 @@ class JWSns {
 	/**
 	 * Conference/User Sms Invite
 	 */
-	static public function SmsInvite($idUserFrom, $address, $message ) {
-		$idUserFrom = JWDB::CheckInt( $idUserFrom );
-		$user = JWUser::GetUserInfo( $idUserFrom );	
-		
-		$metaInfo = array(
+	static public function SmsInvite($user_id, $address, $message) 
+	{
+		$user_id = JWDB::CheckInt( $user_id );
+
+		JWPubSub::Instance('spread://localhost/')->Publish('/invite/sms', array(
 			'type' => 'sms',
+			'user_id' => $user_id,
 			'address' => $address,
 			'message' => $message,
-		);
-
-		return JWNotifyQueue::Create($idUserFrom, null, JWNotifyQueue::T_SMSINVITE, $metaInfo );
+		));
+		
+		return true;
 	}
 
 
@@ -357,7 +358,7 @@ class JWSns {
 		else
 		{
 			$sms_message 	= $message['im'];
-			$im_message 	= $message['im'];
+			$im_message 	= $message['sms'];
 			$email_message 	= $message['email'];
 		}
 
@@ -372,7 +373,12 @@ class JWSns {
 			case 'msn':
 			case 'gtalk':
 			case 'jabber':
-				JWRobot::SendMtRaw($address, $type, $im_message);
+				JWPubSub::Instance('spread://localhost/')->Publish("/robot/mt/$type", array(
+					'address' => $address,
+					'type' => $type,
+					'message' => $im_message,
+					'server_address' => null,
+				));
 				// 发完消息，再发邮件 :-D
 			case 'email':
 				JWMail::SendMailInvitation($user_row, $address, $email_message, $code_invite);
@@ -383,14 +389,15 @@ class JWSns {
 			case 'aol':
 			case 'yahoo':
 			case 'qq':
-				// 机器人给设备发送消息
-				JWRobot::SendMtRaw($address, $type, $sms_message);
+				JWPubSub::Instance('spread://localhost/')->Publish("/robot/mt/$type", array(
+					'address' => $address,
+					'type' => $type,
+					'message' => $im_message,
+					'server_address' => null,
+				));
 				break;
 			case 'sms':
-				$serverAddress = ( $webInvite == true ) ?
-					JWFuncCode::GetCodeFunc($address, $idUser, JWFuncCode::PRE_REG_INVITE) : null;
-
-				JWRobot::SendMtRaw($address, $type, $sms_message, $serverAddress);
+				JWSns::SmsInvite( $idUser, $address, $sms_message );
 				break;
 			default:
 				JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
@@ -688,13 +695,18 @@ class JWSns {
 				/**
 				 * 更新被正常发布了，那么我们就应该去通知用户；
 				 */
-				$metaInfo = array();
-				$queueType = JWNotifyQueue::T_STATUS;
 				$metaInfo = array(
 					'idStatus' => $idStatus,
 					'options' => $metaOptions,
+					'type' => JWNotifyQueue::T_STATUS,
 				);
-				JWNotifyQueue::Create( $idUser, $idUserReplyTo, $queueType, $metaInfo );
+
+				JWPubSub::Instance('spread://localhost/')->Publish('/statuses/update', array(
+					'idUser' => $idUser,
+					'idUserReplyTo' => $idUserReplyTo,
+					'queueType' => $queueType,
+					'metaInfo' => $metaInfo,
+				));
 			}
 
 			//Activate User
@@ -779,7 +791,6 @@ class JWSns {
 	 *	@param	int	$idUser			接受邀请的用户注册后的 idUser
 	 *	@param	int	$idInvitation	邀请 id
 	 */
-//FIXME	名字不对
 	static public function FinishInvitation($idUser, $idInvitation)
 	{
 		JWInvitation::LogRegister($idInvitation, $idUser);
@@ -798,18 +809,18 @@ class JWSns {
 		return true;
 	}
 
-    /*
-     * 完成邀请用户注册 
-     */
-    static public function FinishInvite($idUser, $idInviter)
-    {
-        $idUser = JWDB::CheckInt( $idUser );
-        $idInviter = JWDB::CheckInt( $idInviter );
-        JWSns::CreateFriends    ( $idUser, array($idInviter), true );
-        JWSns::CreateFollowers  ( $idUser, array($idInviter), true );
+	/*
+	 * 完成邀请用户注册 
+	 */
+	static public function FinishInvite($idUser, $idInviter)
+	{
+		$idUser = JWDB::CheckInt( $idUser );
+		$idInviter = JWDB::CheckInt( $idInviter );
+		JWSns::CreateFriends    ( $idUser, array($idInviter), true );
+		JWSns::CreateFollowers  ( $idUser, array($idInviter), true );
 
-        return true;
-    }
+		return true;
+	}
 
         /*
 	 *	将 idFriend 不做为 idUser 的好友了，并负责处理相关逻辑（是否双向决裂等）

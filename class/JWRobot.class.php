@@ -192,7 +192,8 @@ class JWRobot {
 
 		$robot_msg = new JWRobotMsg();
 		$robot_msg->Set($address,$type,$msg, $serverAddress);
-		self::SendMt($robot_msg);
+
+		return self::SendMt($robot_msg);
 	}
 
 
