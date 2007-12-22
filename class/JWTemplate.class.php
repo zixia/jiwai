@@ -402,7 +402,7 @@ _HTML_;
 		<li><a href="http://blog.jiwai.de/" target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api" target="_blank">API</a></li>
 		<li><a href="http://help.jiwai.de/" target="_blank">帮助</a></li>
-		<li><a href="/wo/feedback/" onClick="return JWAction.redirect(this);" target="_blank">反馈</a></li>
+		<li><a href="http://jiwai.de/wo/feedback/" onClick="return JWAction.redirect(this);" target="_blank">反馈</a></li>
 		<li><a href="http://help.jiwai.de/Links" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
