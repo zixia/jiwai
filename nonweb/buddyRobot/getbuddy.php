@@ -11,6 +11,7 @@ if( $line = trim(JWConsole::getline()) )
 	if ( false == empty( $info ) && is_array( $info ))
 	{
 		list( $type, $username, $password ) = $info ;
+		echo "[".date('Y-m-d H:i:s')."] REQUEST: $type://$username\n";
 		JWBuddy_Robot::GetBuddyList( $type, $username, $password );	
 	}
 }

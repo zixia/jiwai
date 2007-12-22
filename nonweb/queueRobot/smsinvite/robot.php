@@ -27,6 +27,8 @@ class JWPubSub_Listener_SmsInvite implements JWPubSub_Listener
 			'message' => $message,
 			'server_address' => $server_address,
 		));
+
+		echo "[SMSINVITE]: user://$user_id => sms://$address\n";
 	}
 }
 

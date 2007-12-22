@@ -30,7 +30,7 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 				&& ('Y'==$bindother['fanfou']['syncConference'] || $not_conference) )
 			{
 				JWBindOther::PostStatus($bindother['fanfou'], $message);
-				echo "[SYNC] twitter://".$bindother['fanfou']['loginName']."\n";
+				echo "[SYNC] fanfou://".$bindother['fanfou']['loginName']."\n";
 			} 	
 		}
 	}
