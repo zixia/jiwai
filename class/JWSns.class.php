@@ -705,7 +705,6 @@ class JWSns {
 				JWPubSub::Instance('spread://localhost/')->Publish('/statuses/update', array(
 					'idUser' => $idUser,
 					'idUserReplyTo' => $idUserReplyTo,
-					'queueType' => $queueType,
 					'metaInfo' => $metaInfo,
 				));
 			}
