@@ -337,7 +337,7 @@ class JWRobot {
 					}
 					else
 					{	// some msg returned
-						if ( self::SendMt($robot_reply_msg) )
+						if ( self::SendMtQueue($robot_reply_msg) )
 						{	
 							self::LogMoMt( $robot_msg->GetType(), 
 									$robot_msg->GetAddress(), 
