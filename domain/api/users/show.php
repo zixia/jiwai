@@ -34,7 +34,7 @@ switch( $type ){
 		renderXmlReturn($user);
 	break;
 	case 'json':
-		renderJsonRentru($user);
+		renderJsonReturn($user);
 	break;
 	default:
 		JWApi::OutHeader(406, true);
