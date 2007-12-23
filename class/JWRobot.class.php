@@ -126,6 +126,43 @@ class JWRobot {
 	}
 
 	/**
+	 * send robot msg to message queue, then mt robot will got it;
+	 */
+	static public function SendMtQueue($robot_msg)
+	{
+		if ( empty($robot_msg) || false==is_object($robot_msg) )
+			return true;
+
+		$type = $robot_msg->GetType();
+		$server_address = $robot_msg->GetServerAddress();
+		$address = $robot_msg->GetAddress();
+		$message = $robot_msg->GetBody();
+		$link_id = $robot_msg->GetLinkId();
+
+		return self::SendMtRawQueue($address, $type, $message, $server_address, $link_id);
+	}
+
+	/**
+	 * send robot msg to message queue, then mt robot will got it;
+	 */
+	static public function SendMtRawQueue($address, $type, $message, $server_address=null, $link_id=null)
+	{
+		$channel = "/robot/mt/$type";
+
+		JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
+			'type' => $type,
+			'address' => $address,
+			'server_address' => $server_address,
+			'message' => $message,
+			'link_id' => $link_id,
+		));
+
+		return true;
+	}
+
+
+
+	/**
 	 *	@param	robotMsgs	array of RobotMsg / one RobotMsg
 	 *	@return	true/false
 	 */
@@ -178,7 +215,7 @@ class JWRobot {
 	}
 
 
-	static function SendMtRaw ($address, $type, $msg, $serverAddress=null)
+	static function SendMtRaw ($address, $type, $msg, $serverAddress=null, $linkId=null)
 	{
 		if( trim($msg) == null ) {
 			JWLog::Instance()->Log(LOG_ERR, "Try to send null msg to $type://$address. [dropped.]");
@@ -191,7 +228,7 @@ class JWRobot {
 		} 
 
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($address,$type,$msg, $serverAddress);
+		$robot_msg->Set($address,$type,$msg, $serverAddress, $linkId);
 
 		return self::SendMt($robot_msg);
 	}

@@ -154,13 +154,7 @@ class JWNudge {
 					$serverAddress = JWNotify::GetServerAddress( $address, $conference, $user );
 				}
 
-				$channel = '/robot/mt/' . $type;
-				JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
-					'type' => $type,
-					'address' => $address,
-					'message' => $message,
-					'server_address' => $serverAddress,
-				));
+				JWRobot::SendMtRawQueue($address, $type, $message, $serverAddress, null);
 			break;
 			case 'nothing':
 			break;

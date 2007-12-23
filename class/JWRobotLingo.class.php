@@ -1667,7 +1667,7 @@ class JWRobotLingo {
 						array( $nameScreen, $invite_user['nameScreen'], )
 					);
 					$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
-					JWRobot::SendMt( $replyRobotMsg );
+					JWRobot::SendMtQueue( $replyRobotMsg );
 				}
 			}
 			
@@ -1676,7 +1676,7 @@ class JWRobotLingo {
 						$nameScreen,
 						));
 			$replyRobotMsg = JWRobotLogic::ReplyMsg( $robotMsg, $reply );
-			JWRobot::SendMt( $replyRobotMsg );
+			JWRobot::SendMtQueue( $replyRobotMsg );
 			return JWDevice::GetDeviceDbRowByAddress( $address, $type );
 		}
 
