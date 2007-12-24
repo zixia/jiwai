@@ -79,7 +79,46 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null)
 <html>
 <head>
 <?php
-$head_options = array('ui_user_id' => $page_user_id);
+/* move to top for meta-seo */
+$countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
+$replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
+
+$status_rows = $user_rows = array();
+if( false == empty( $replies_data ) ) 
+{
+	$replies_info = JWDB_Cache_Status::GetDbRowsByIds( @$replies_data['status_ids'] );
+	$user_rows = JWUser::GetDbRowsByIds( @$replies_data['user_ids'] );
+}
+
+/* meta-seo content */
+$keywords = '叽歪de回复 '.$user_row['nameScreen'];
+$user_showed = array();
+foreach ( $user_rows  as $user_id=>$one )
+{
+	if ( isset($user_showed[$user_id]) )
+		continue;
+	else
+		$user_showed[$user_id] = true;
+
+	$keywords .= " $one[nameScreen]($one[nameFull])";
+}
+
+$description = '叽歪de回复'. $status_info['status'];
+foreach ( $replies_info as $one )
+{
+	$description .= $one['status'];
+	if ( mb_strlen($description,'UTF-8') > 140 )
+	{
+			$description = mb_substr($description,0,140,'UTF-8');
+			break;
+	}
+}
+
+$head_options = array(
+	'ui_user_id' => $page_user_id,
+	'keywords' => $keywords,
+	'description' => $description,
+);
 JWTemplate::html_head($head_options);
 ?>
 </head>
@@ -96,16 +135,6 @@ JWTemplate::html_head($head_options);
 <?php
 JWTemplate::ShowActionResultTips();
 JWTemplate::StatusHead( $user_row, $status_info, $options = array('isMyPages' => false) );
-
-$countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
-$replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
-
-$status_rows = $user_rows = array();
-if( false == empty( $replies_data ) ) 
-{
-	$replies_info = JWDB_Cache_Status::GetDbRowsByIds( @$replies_data['status_ids'] );
-	$user_rows = JWUser::GetDbRowsByIds( @$replies_data['user_ids'] );
-}
 ?>
 
  <!-- wtTimeline start -->

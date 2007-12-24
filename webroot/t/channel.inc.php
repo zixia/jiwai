@@ -43,13 +43,49 @@ $picture_url_rows = JWPicture::GetUrlRowByIds($picture_ids);
 $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
 ?>
 
- <html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
- <head>
- <?php 
- $options = array ('ui_user_id' => $current_user_id );
- JWTemplate::html_head($options);
- ?>
+<head>
+<?php 
+$tag_status_num = JWDB_Cache_Status::GetCountTopicByIdTag( $tag_row['id'] );
+
+$pagination = new JWPagination($tag_status_num, $page);
+$status_data = JWDB_Cache_Status::GetStatusIdsTopicByIdTag( $tag_row['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
+$status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
+
+//get user info
+$user_rows = JWUser::GetDbRowsByIds( $status_data['user_ids'] );
+
+$keywords = $tag_row['name'];
+$user_showed = array();
+foreach ( $user_rows  as $user_id=>$one )
+{
+	if ( isset($user_showed[$user_id]) )
+		continue;
+	else
+		$user_showed[$user_id] = true;
+
+	$keywords .= "$one[nameScreen]($one[nameFull]) ";
+}
+
+$description = $tag_row['name'];
+foreach ( $status_data['status_ids'] as $status_id )
+{
+	$description .= $status_rows[$status_id]['status'];
+	if ( mb_strlen($description,'UTF-8') > 140 )
+	{
+			$description = mb_substr($description,0,140,'UTF-8');
+			break;
+	}
+}
+
+$options = array (
+	'ui_user_id' => $current_user_id,
+	'keywords' => $keywords,
+	'description' => $description,
+);
+JWTemplate::html_head($options);
+?>
 </head>
 <body class="normal"> 
 
@@ -76,14 +112,6 @@ $options=array(
 );
 JWTemplate::updater( $options );
 
-$user_status_num = JWDB_Cache_Status::GetCountTopicByIdTag( $tag_row['id'] );
-
-$pagination = new JWPagination($user_status_num, $page);
-$status_data = JWDB_Cache_Status::GetStatusIdsTopicByIdTag( $tag_row['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
-$status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
-
-//get user info
-$user_rows = JWUser::GetDbRowsByIds( $status_data['user_ids'] );
 JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
 'pagination' => $pagination,
 'isInTag' => true,
