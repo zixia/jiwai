@@ -8,7 +8,7 @@ $current_user_id = JWLogin::GetCurrentUserId();
 
 $protected = $current_user_info['protected'] == 'Y';
 $idInvited = JWUser::GetIdEncodedFromIdUser( $current_user_id );
-$num_pm = JWMessage::GetMessageNum($current_user_id);
+$num_status = JWStatus::GetStatusNum($current_user_id);
 $num_following = JWFollower::GetFollowingNum($current_user_id);
 $num_follower = JWFollower::GetFollowerNum($current_user_id);
 
@@ -86,7 +86,7 @@ JWTemplate::html_head(array(
 		<div class="boxleft">
 		<ul>
 			<li class="Emailorange14"><?php echo $current_user_info['nameScreen']; ?></li>
-			<li><?php echo $num_pm; ?>&nbsp;条叽歪</li><li>关注&nbsp;<?php echo $num_following; ?>&nbsp;人</li><li>被&nbsp;<?php echo $num_follower; ?>&nbsp;人关注</li></ul>
+			<li><?php echo $num_status; ?>&nbsp;条叽歪</li><li>关注&nbsp;<?php echo $num_following; ?>&nbsp;人</li><li>被&nbsp;<?php echo $num_follower; ?>&nbsp;人关注</li></ul>
 		</div>
 		<!-- boxleft -->
 	</div><!-- Emailcontentbox -->
