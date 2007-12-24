@@ -401,6 +401,11 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtAvatar .down { display:none; border-left:1px solid #B9B9B9;border-top:1px solid #B9B9B9; border-bottom: 1px solid #666666;border-right: 1px solid #666666;width:180px; background-color: #FFF;}
 #wtAvatar .avatar{ float:left; margin:0px 2px; clear:both; display:inline; }
 #wtAvatar .nav{ float:left; width:15px; height:48px; position:relative; background-repeat:no-repeat; background-color:#FFF; display:inline;}
+
+#wtAvatar .nav_down {background-image:url(../images/avatar/personmenu_down_default.gif);}
+#wtAvatar .nav_down_hover {background-image:url(../images/avatar/personmenu_down_hover.gif);}
+#wtAvatar .nav_up {background-image:url(../images/avatar/personmenu_up_default.gif);}
+#wtAvatar .nav_up_hover {background-image:url(../images/avatar/personmenu_up_hover.gif);}
 /* The wtAvatar end */
 
 /* The wtTimelineLaunch start */

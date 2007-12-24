@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /* 
  * site_stats.php
  * ----------------------------------------------------------------------
@@ -238,7 +238,7 @@ foreach ($templateReplace as $k=>$v) {
 /* Phase of Sendmail */
 $contact = array (
     'Wang Hongwei'  => 'glinus@jiwai.com',
-    'Gao QiangQiang'=> 'amy@jiwai.com',
+    'Tao Mengling'  => 'rannie@jiwai.com',
 );
 
 foreach ($contact as $name=>$mail) {

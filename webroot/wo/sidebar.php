@@ -35,7 +35,7 @@ $arr_menu = array(
 	array ('friend_req', array($friend_request_num)) , 
 	array ('count', array($arr_count_param)) , 
 	array ('jwvia', array($active_options, $via_device)) ,
-	array ('invite'	, array()) ,
+	//array ('invite'	, array()) ,
 	array ('bookmarklet', array()),
 	array ('separator', array()) ,
 	array ('vistors', array($idUserVistors)) , 
