@@ -373,14 +373,9 @@ class JWSns {
 			case 'msn':
 			case 'gtalk':
 			case 'jabber':
-				JWPubSub::Instance('spread://localhost/')->Publish("/robot/mt/$type", array(
-					'address' => $address,
-					'type' => $type,
-					'message' => $im_message,
-					'server_address' => null,
-				));
-				// 发完消息，再发邮件 :-D
+				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
 			case 'email':
+				/* 发完消息，再发邮件 :-D */
 				JWMail::SendMailInvitation($user_row, $address, $email_message, $code_invite);
 				break;
 
@@ -390,13 +385,9 @@ class JWSns {
 			case 'fetion':
 			case 'yahoo':
 			case 'qq':
-				JWPubSub::Instance('spread://localhost/')->Publish("/robot/mt/$type", array(
-					'address' => $address,
-					'type' => $type,
-					'message' => $im_message,
-					'server_address' => null,
-				));
+				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
 				break;
+
 			case 'sms':
 				JWSns::SmsInvite( $idUser, $address, $sms_message );
 				break;
