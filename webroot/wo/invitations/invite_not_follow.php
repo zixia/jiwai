@@ -75,7 +75,7 @@ foreach($friends_rows  as $idFriend => $friends_row)
      <div class="head"><a href="<?php echo JW_SRVNAME; ?>/<?php echo $friends_info['nameUrl'];?>/"><img width="48" height="48" title="<?php echo $friends_info['nameFull'];?>" src="<?php echo JWPicture::GetUrlById($friends_info['idPicture']); ?>"/></a></div>
 	  <div class="content"><span class="black15bold"><?php echo $friends_info['nameScreen']; ?></span>
 		<div class="meta">
-		<span class="floatright" title="<?php echo $friends_array[1];?>"><?php echo substr($friends_array[1], 0, 30);?></span>< <?php echo $friends_array[0];?> >
+		<span class="floatright" title="<?php echo $friends_array[1];?>"><?php echo mb_substr($friends_array[1], 0, 20,'UTF-8');?></span>< <?php echo $friends_array[0];?> >
 		</div><!-- meta -->
 		</div><!-- content -->
 	</div><!-- entry -->
