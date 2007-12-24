@@ -1566,7 +1566,7 @@ class JWRobotLingo {
 		}
 	}
 
-	static public function CreateAccount($robotMsg, $pre_name_screen, $pre_name_full) {
+	static public function CreateAccount($robotMsg, $pre_name_screen=null, $pre_name_full=null) {
 		
 		$address = $robotMsg->GetAddress();
 		$type = $robotMsg->GetType();
