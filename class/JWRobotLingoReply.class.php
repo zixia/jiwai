@@ -193,54 +193,62 @@ class JWRobotLingoReply {
 	
 	}
 
-	static function GetReplyString( $robotMsg, $shortcut, $value=array() )
+	static function GetReplyString( $robot_msg, $shortcut, $value=array(), $options=array() )
 	{
-		if( $robotMsg ) {
-			$serverAddress = $robotMsg->GetServerAddress();
-			$type = $robotMsg->GetType();
-			$address = $robotMsg->GetAddress();
+		if( $robot_msg ) 
+		{
+			$server_address = $robot_msg->GetServerAddress();
+			$type = $robot_msg->GetType();
+			$address = $robot_msg->GetAddress();
 
-			$idUserConference = JWRobotLingoBase::GetLingoUser( $serverAddress, $address, $type );
-		}else{
-			$idUserConference = null;
+			$conference_id = JWRobotLingoBase::GetLingoConferenceId( $server_address, $address, $type );
+		}
+		else
+		{
+			$conference_id = isset($options['conference_id']) ?
+				$options['conference_id'] : null;
 		}
 
-		$replyMap = self::GetReplyMap( $idUserConference );
-		$shortcut = strtoupper( $shortcut );
+		$reply_map = self::GetReplyMap($conference_id);
+		$shortcut = strtoupper($shortcut);
 
-		return self::FetchReplyString($replyMap, $shortcut, $value );
+		return self::FetchReplyString($reply_map, $shortcut, $value);
 	}
 
-	static function FetchReplyString($replyMap, $shortcut, $value=array())
+	static function FetchReplyString($reply_map, $shortcut, $value=array())
 	{
 		$shortcut = strtoupper( $shortcut );
-		if( isset( $replyMap[ $shortcut ] ) ){
-			$replyString = $replyMap[ $shortcut ];
+		if ( isset( $reply_map[ $shortcut ] ) )
+		{
+			$reply_string = $reply_map[ $shortcut ];
 
 			$va = array_values( $value );
-			foreach( $va as $k=>$v ) {
-				$replyString = str_replace( '{'.$k.'}', $v, $replyString ); 
+			foreach ($va as $k=>$v) 
+			{
+				$reply_string = str_replace( '{'.$k.'}', $v, $reply_string ); 
 			}
-			return $replyString;
+			return $reply_string;
 		}
 		return null;
 	}
 
-	static function GetReplyMap( $idUserConference ) {
+	static function GetReplyMap( $conference_id ) {
 
 		$map = self::$msReplyMap;
 
-		switch( $idUserConference ) {
-			case 99:
+		switch ($conference_id)
+		{
+			case 5: // Wu Ye Xin Yu
 			{
 				$map['REPLY_WHOAMI_IM'] = '您的昵称是{0}，更改昵称请回复：GM + 空格 + 昵称。';
 				$map['REPLY_REG_MSG'] = '欢迎您参与《午夜心语》节目，本短信服务不收任何信息费，正常通信费除外，请把你的昵称作为短信内容直接回复。';
 				$map['REPLY_REG_SUC'] = '{0}，《午夜心语》谢谢您的参与！您发送的短信即将播出，请密切关注。您可回复"GM + 空格 + 昵称"获得个性昵称。';
 				$map['REPLY_UPDATESTATUS'] = '{0}, 《午夜心语》谢谢您的参与！您发送的短信即将播出，请密切关注。';
+				$map['REPLY_UPDATESTATUS_IM'] = '{0}, 《午夜心语》谢谢您的参与！您发送的短信即将播出，请密切关注。';
 				$map['REPLY_NAMEFULL'] = '午夜过客';
 			}
 			break;
-			case 28006:
+			case 9: //Qin Zi Gang Wan
 			{
 				$map['REPLY_WHOAMI_IM'] = '您的昵称是{0}，更改昵称请回复：GM + 空格 + 昵称。';
 				$map['REPLY_REG_MSG'] = '欢迎您参与《亲子港湾》节目，本短信服务不收任何信息费，正常通信费除外，请把你的昵称作为短信内容直接回复。';
@@ -248,6 +256,13 @@ class JWRobotLingoReply {
 				$map['REPLY_FOLLOW_SUC'] = '恭喜您已成为《亲子港湾》家长俱乐部的会员，您在家庭教育中的难题或困惑，我们有专家为您解答，您有成功的成长成才经验，我们期望与您分享。';
 				$map['REPLY_UPDATESTATUS'] = '感谢您对吉林教育电视台《亲子港湾》栏目的支持，您发送的短信即将播出，敬请关注。输入 A 回复此短信即可免费成为本栏目家长俱乐部的会员。';
 				$map['REPLY_UPDATESTATUS'] = '感谢您对《亲子港湾》栏目的支持，我们在每周六、日晚8：10分邀请专家现场解答您的问题。同时，欢迎您对栏目或您感兴趣的家教话题发表您的见解。';
+				$map['REPLY_UPDATESTATUS_IM'] = '感谢您对《亲子港湾》栏目的支持，我们在每周六、日晚8：10分邀请专家现场解答您的问题。同时，欢迎您对栏目或您感兴趣的家教话题发表您的见解。';
+			}
+			break;
+			case 76: //Bao Bao Shu
+			{
+				$map['REPLY_UPDATESTATUS'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/wishtree={1}，快来给我的愿望加油吧。';
+				$map['REPLY_UPDATESTATUS_IM'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/wishtree={1}，快来给我的愿望加油吧，把链接挂在{2}状态上，让你的朋友给你加油吧。';
 			}
 			break;
 			default:

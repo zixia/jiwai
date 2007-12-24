@@ -149,22 +149,21 @@ class JWRobotLingoBase {
 	 *	@return	array		Lingo Msg 的对应处理函数（通过call_user_func调用）
 				false		不是 lingo Msg
 	 */
-	static public function GetLingoFunctionFromMsg($robotMsg)
+	static public function GetLingoFunctionFromMsg($robot_msg)
 	{
-		if ( empty($robotMsg) )
+		if ( empty($robot_msg) )
 			throw new JWException('null param?');
 		
 		/** 拦击 FOLLOW | F | LEAVE | L | DELETE **/
-		JWRobotLingoIntercept::Intercept_FollowOrLeave($robotMsg);
+		JWRobotLingoIntercept::Intercept_FollowOrLeave($robot_msg);
 
-		$body = $robotMsg->GetBody();
-		$serverAddress = $robotMsg->GetServerAddress();
-		$type = $robotMsg->GetType();
-		$address = $robotMsg->GetAddress();
+		$body = $robot_msg->GetBody();
+		$server_address = $robot_msg->GetServerAddress();
+		$type = $robot_msg->GetType();
+		$address = $robot_msg->GetAddress();
 
 		//get and set idUserConference [ only for SMS ]
-		$idUserConference = self::GetLingoUser( $serverAddress, $address, $type );
-		$robotMsg->SetIdUserConference( $idUserConference );
+		$conference_id = self::GetLingoConferenceId( $server_address, $address, $type );
 
 		if( ($body == '00000' || $body == '0000') && $type=='sms' ) 
 		{
@@ -187,22 +186,22 @@ class JWRobotLingoBase {
 		/**
 		 * Get Lingo Pair [lingo and alias] From FuncCode
 		 */
-		$lingoPair = self::GetLingoPairFromFuncCode( $serverAddress, $address, $type );
+		$lingo_pair = self::GetLingoPairFromFuncCode( $server_address, $address, $type );
 
 		/**
 		 * Get Lingo Pair [lingo and alias] From IdConference
 		 */
-		$lingoPair = empty($lingoPair) ? self::GetLingoPair( $idUserConference ) : $lingoPair;
+		$lingo_pair = empty($lingoPair) ? self::GetLingoPair( $conference_id ) : $lingo_pair;
 		
 		//##################################################
 		//########### End Lingo Pair Fetch Logic ###########
 		//##################################################
 
-		if ( isset( $lingoPair['alias'][$lingo] ) ) 
+		if ( isset( $lingo_pair['alias'][$lingo] ) ) 
 		{
-			$lingo = $lingoPair['alias'][$lingo];
+			$lingo = $lingo_pair['alias'][$lingo];
 		} 
-		else if ( isset($lingoPair['lingo'][$lingo]) ) 
+		else if ( isset($lingo_pair['lingo'][$lingo]) ) 
 		{
 			;
 		}
@@ -211,7 +210,7 @@ class JWRobotLingoBase {
 			return false;
 		}
 
-		$lingo_info = $lingoPair['lingo'][$lingo] ;
+		$lingo_info = $lingo_pair['lingo'][$lingo] ;
 		$param_count = empty($param) ? 0 : count( preg_split('/\s+/',$param) );
 
 	 	/**
@@ -237,52 +236,61 @@ class JWRobotLingoBase {
 	/**
 	 * GetLingo from funcode
 	 */
-	static function GetLingoPairFromFuncCode($serverAddress, $mobileNo, $type='sms'){
+	static function GetLingoPairFromFuncCode($server_address, $mobile_no, $type='sms')
+	{
 
 		if( $type != 'sms' )
 			return array();
 
-		$preAndId = JWFuncCode::FetchPreAndId( $serverAddress, $mobileNo );
-		if( empty($preAndId) )
+		$pre_and_id = JWFuncCode::FetchPreAndId( $server_address, $mobile_no );
+		if( empty($pre_and_id) )
 			return array();
 
 		$lingo = self::$msRobotLingo;
 		$alias = self::$msRobotLingoAlias;
-		switch( $preAndId['pre'] ) {
+		switch ($pre_and_id['pre'])
+		{
 			case JWFuncCode::PRE_REG_INVITE:
 			{
-				$lingo['F'] =  array( 'class'=>'JWRobotLingo_Add', 'func'=>'Lingo_F', 'param'=>1,);
-				return array( 'alias' => $alias, 'lingo' => $lingo,);
+				$lingo['F'] =  array( 
+					'class'=>'JWRobotLingo_Add', 
+					'func'=>'Lingo_F', 
+					'param'=>1,
+				);
+				return array( 
+					'alias' => $alias, 
+					'lingo' => $lingo,
+				);
 			}
 			break;
 			case JWFuncCode::PRE_MMS_NOTIFY:
 			{
 				$lingo['DM'] = array(
-						'class'=>'JWRobotLingo_Add',
-						'func'=>'Lingo_DM',
-						'param'=>0,
-					);
+					'class'=>'JWRobotLingo_Add',
+					'func'=>'Lingo_DM',
+					'param'=>0,
+				);
 				return array(
-						'alias' => $alias,
-						'lingo' => $lingo,
-					);
+					'alias' => $alias,
+					'lingo' => $lingo,
+				);
 			}
 			break;
 			case JWFuncCode::PRE_STOCK_CATE:
 			case JWFuncCode::PRE_STOCK_CODE:
 			{
 				$lingo['ZX'] = array(
-						'class'=>'JWRobotLingo_Stock',
-						'func'=>'Lingo_ZX',
-						'param'=>2,
-					);
+					'class'=>'JWRobotLingo_Stock',
+					'func'=>'Lingo_ZX',
+					'param'=>2,
+				);
 				$alias['ZC'] = 'ZX';
 				$alias['F'] = 'FOLLOW';
 				$alias['L'] = 'LEAVE';
 				return array(
-						'alias' => $alias,
-						'lingo' => $lingo,
-					);
+					'alias' => $alias,
+					'lingo' => $lingo,
+				);
 			}
 			break;
 		}
@@ -292,13 +300,15 @@ class JWRobotLingoBase {
 	/**
 	 * GetLingo from idConference;
 	 */
-	static function GetLingoPair( $idUserConference ) {
+	static function GetLingoPair( $conference_id ) 
+	{
 
 		$lingo = self::$msRobotLingo;
 		$alias = self::$msRobotLingoAlias;
 
-		switch( $idUserConference ) {
-			case 99:
+		switch ($conference_id)
+		{
+			case 5: //Wu Ye Xin Yu
 			{
 				$lingo = array(
 					'GM' => array(
@@ -315,7 +325,7 @@ class JWRobotLingoBase {
 				$alias = array();
 			}
 			break;
-			case 28006:
+			case 9:  //Qin Zi Gang Wan
 			{
 				$lingo = array(
 					'A' => array(
@@ -339,17 +349,18 @@ class JWRobotLingoBase {
 			    );
 	}
 
-	static function GetLingoUser( $serverAddress, $address, $type = 'sms' ){
+	static function GetLingoConferenceId( $server_address, $address, $type = 'sms' )
+	{
 
 		if( $type != 'sms' )
 			return 0;
 
 		$f = func_get_args();
-		$parseInfo = JWFuncCode::FetchConference( $serverAddress, $address );
-		if( empty( $parseInfo ) )
+		$parse_info = JWFuncCode::FetchConference( $server_address, $address );
+		if( empty( $parse_info ) )
 			return 0;
 
-		return $parseInfo['user']['id'];
+		return $parseInfo['conference']['id'];
 	}
 
 }

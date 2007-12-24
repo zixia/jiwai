@@ -113,7 +113,7 @@ class JWRobotLogic {
 		{
 			// 非注册用户（在Device表中没有的设备）
 			if( $robotMsgtype == null || $robotMsgtype == 'NORMAL' )
-				$reply_robot_msg = self::CreateAccount($robotMsg, true);
+				$reply_robot_msg = JWRobotLingo::CreateAccount($robotMsg, true);
 			else
 				$reply_robot_msg = null; 
 		}
@@ -160,7 +160,8 @@ class JWRobotLogic {
 		if ( empty($device_row) )
 		{	
 			JWLog::Instance()->Log(LOG_NOTICE,"JWRobotLogic::ProcessMoStatus UNKNOWN IM: $type://$address");
-			return JWRobotLogic::CreateAccount($robotMsg);
+			JWRobotLingo::CreateAccount($robotMsg);
+			return null;
 		}
 		else if ( false == empty($device_row['secret']) )
 		{	
@@ -198,9 +199,23 @@ class JWRobotLogic {
 			}
 
 			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );
-			if( $ret ) {
-				$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
-				$reply = JWRobotLingoReply::GetReplyString($robotMsg,'REPLY_UPDATESTATUS',array($nameFull,));
+			if( $ret ) 
+			{
+				$name_screen = JWUser::GetUserInfo( $device_row['idUser'], 'nameScreen' );
+
+				$status_row = JWDB_Cache_Status::GetDbRowById( $ret );
+				if ( empty($status_row) || null==$status_row['idConference'] )
+					return null;
+
+				$conference_id = $status_row['idConference'];
+				$device_type = JWDevice::GetDeviceCategory( $type );
+				$reply_status_constant = 'REPLY_UPDATESTATUS';
+				if ('im'==$device_type)
+					$reply_status_constant = 'REPLY_UPDATESTATUS_IM';
+
+				$reply = JWRobotLingoReply::GetReplyString(null, $reply_status_constant, 
+					array( $name_screen, $ret, $type), array('conference_id'=>$conference_id) );
+
 				if( $reply ) {
 					return self::ReplyMsg( $robotMsg, $reply );
 				}else {
@@ -242,231 +257,6 @@ class JWRobotLogic {
 
 		return self::ReplyMsg($robotMsg, $reply);
 	}
-
-	/**
-	 * 一些会议系统需要强制注册；
-	 */
-	static public function ForceCreateAccount($robotMsg ) {
-
-		$idUserConference = $robotMsg->GetIdUserConference();	
-		$address = $robotMsg->GetAddress();
-		$type = $robotMsg->GetType();
-
-		switch( $idUserConference ) {
-			case 99:
-			{
-				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
-				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
-				$nameFull = '午夜过客';
-				$bio = $address;
-				$bio = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
-
-				if( !$nameScreen ){
-					return false;
-				}
-				$new_user_row = array(
-						'nameScreen'	=> $nameScreen,
-						'nameFull'	=> $nameFull,
-						'bio'		=> $bio,
-						'pass'		=> JWDevice::GenSecret(16),
-						'isWebUser'	=> 'N', 
-						'noticeAutoNudge' => 'N', // not nudge
-						'ip' => JWRequest::GetIpRegister($type),
-				);
-
-				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
-					$new_user_row['email'] = $address;
-				}
-		
-				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-				$new_user_id =  JWSns::CreateUser($new_user_row);
-				if( $new_user_id ) {
-					JWSns::CreateDevice($new_user_id, $address, $type, true);
-				}else{
-					return false;
-				}
-				return true;
-			}
-			break;
-			case 28006:
-			{
-				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $address);
-				$nameScreen = JWUser::GetPossibleName( $uaddress, $address, $type );
-				$nameFull = '午夜过客';
-				$bio = $address;
-				$bio = preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]****$m[3]";'), $address);
-
-				if( !$nameScreen ){
-					return false;
-				}
-				$new_user_row = array(
-						'nameScreen'	=> $nameScreen,
-						'nameFull'	=> $nameFull,
-						'bio'		=> $bio,
-						'pass'		=> JWDevice::GenSecret(16),
-						'isWebUser'	=> 'N', 
-						'noticeAutoNudge' => 'N',   //Not nudge
-						'ip' => JWRequest::GetIpRegister($type),
-				);
-
-				if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) ){
-					$new_user_row['email'] = $address;
-				}
-		
-				// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-				$new_user_id =  JWSns::CreateUser($new_user_row);
-				if( $new_user_id ) {
-					JWSns::CreateDevice($new_user_id, $address, $type, true);
-				}else{
-					return false;
-				}
-				return true;
-				return true;
-			}
-			break;
-		}
-		return null;
-	}
-
-	/*
-	 *	如果在 Device 表中找不到这个设备，并且发送的也不是机器人命令的话，到这里来注册
-	 */
-	static public function CreateAccount($robotMsg, $toRegister=false, $nameScreen= null, $nameFull=null )
-	{
-		$address = $robotMsg->GetAddress();
-		$type	 = $robotMsg->GetType();
-		$body	 = $robotMsg->GetBody();
-		$serverAddress = $robotMsg->GetServerAddress();
-		$linkId = $robotMsg->GetLinkId();
-		$idUserConference = $robotMsg->GetIdUserConference();
-
-		$forceCreate = self::ForceCreateAccount( $robotMsg );
-
-		if( false === $forceCreate ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_MSG' );
-			return self::ReplyMsg( $robotMsg, $reply );
-		}else if( true === $forceCreate ){
-			self::ProcessMo( $robotMsg );
-			$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
-			$nameFull = JWUser::GetUserInfo( $device_row['idUser'], 'nameFull' );
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_REG_SUC', array($nameFull,) );
-			return self::ReplyMsg( $robotMsg, $reply );
-		}
-
-		$invitation_id	= JWInvitation::GetInvitationIdFromAddress( array('address'=>$address,'type'=>$type) ); 
-
-		$last_robot_msg_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWRobotLogic', 'CreateAccount'), $address );
-		$memcache = JWMemcache::Instance();
-		$beforeRegister = $memcache->Get( $last_robot_msg_key );
-
-		// Not be invited and not register by lingo REG and is the first message
-		/**
-		 * Remember the last message before register
-		 */
-		if ( empty($invitation_id) && null == $nameScreen && empty($beforeRegister) )
-		{
-			$memcache = JWMemcache::Instance();
-			$memcache->Set( $last_robot_msg_key, array(
-						'body' => $body,
-						'address' => $address,
-						'type' => $type,
-						'serverAddress' => $serverAddress,
-						'linkId' => $linkId,
-						), 0, 3600 );
-			/*
-			 * register msg
-			 */
-			$msgRegister = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOREG_TIPS');
-			$parseInfo = JWFuncCode::FetchConference( $robotMsg->GetServerAddress(), $address );
-			if( false == empty( $parseInfo ) && $parseInfo['conference']['msgRegister'] ) {
-				$msgRegister = $parseInfo['conference']['msgRegister'];
-			}
-
-			return JWRobotLogic::ReplyMsg($robotMsg, $msgRegister);
-		}
-
-		/**
-		 * 用户被邀请过（通过设备查找到邀请） || 主动注册 
-		 */
-		$param_body = $robotMsg->GetBody();
-
-		if ( $nameScreen == null ) {
-			$user_name	= JWUser::GetPossibleName($param_body, $robotMsg->GetAddress(), $robotMsg->GetType());
-			$user_nameFull 	= $user_name;
-		}else{
-			$user_name	= $nameScreen;
-			$user_nameFull 	= $nameFull;
-		}
-
-//die("[$user_name]");
-		if ( empty($user_name) ) {
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_HOT', array($param_body) );
-			return self::ReplyMsg($robotMsg, $reply);
-		}
-
-	
-		$new_user_row = array( 	'nameScreen'	=> $user_name,
-					'nameFull'	=> $user_nameFull,
-					'pass'		=> JWDevice::GenSecret(16),
-					'isWebUser'	=> 'N', // 很重要：设备注册，要设置标志，方便未来Web上设置密码
-					'ip' => JWRequest::GetIpRegister($type),
-				);
-
-		if ( in_array( $type, array('msn','gtalk','newsmth', 'jabbar') ) )
-			$new_user_row['email'] = $address;
-		
-	
-		// 增加了 isWebUser 标志，允许用户去 Web 上注册用户
-		$new_user_id =  JWSns::CreateUser($new_user_row);
-
-		if ( $new_user_id )
-		{
-			//Create User Success
-			if ( ! JWSns::CreateDevice($new_user_id, $address, $type, true) )
-				JWLog::LogFuncName(LOG_CRIT, "JWDevice::Create($new_user_id,$address,$type,true) failed.");
-
-			// 互相加为好友，标识邀请状态
-			if( $invitation_id ) {
-				JWSns::FinishInvitation($new_user_id, $invitation_id);
-			}
-
-			/*
-			 * 检查用户注册前的更新，将其发出
-			 */
-			$memcache = JWMemcache::Instance();
-			$beforeRegister = $memcache->Get( $last_robot_msg_key );
-
-			if( !empty( $beforeRegister ) && is_array($beforeRegister) )
-			{
-				$memcache->Del( $last_robot_msg_key );
-
-				// 7/24/07 zixia: 如果之前的消息有回复，则返回给用户命令操作的返回，而不是注册成功提示。
-				$beforeRegisterMsg = new JWRobotMsg();
-				$beforeRegisterMsg->Set( $beforeRegister['address']
-						, $beforeRegister['type']
-						, $beforeRegister['body']
-						, $beforeRegister['serverAddress']
-						, $beforeRegister['linkId']
-						);
-				$reply_msg = self::ProcessMo($beforeRegisterMsg);
-
-				if ( ! empty($reply_msg) )
-				{
-					$reply_msg->SetBody( $reply_msg->GetBody() );
-					return $reply_msg;
-				}
-			}
-			
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_REPLY_SUC', array($new_user_row['nameScreen']) );
-	       	}
-		else
-		{
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_REG_500' );
-		}
-
-		return self::ReplyMsg($robotMsg, $reply);
-	}
-
 
 	static public function ReplyMsg($robotMsg, $message)
 	{
