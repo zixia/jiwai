@@ -52,12 +52,15 @@ class JWRobotLingo_Conference {
 		$serverAddress  = $robotMsg->GetServerAddress();
 		$type 		= $robotMsg->GetType();	
 
-		$address_device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if ( empty($address_device_db_row['idUser']) )
-			return JWRobotLogic::CreateAccount($robotMsg);
+		if ( empty($device_db_row) )
+			$device_db_row = JWRobotLingo::CreateAccount($robotMsg);
 
-		$address_user_id	= $address_device_db_row['idUser'];
+		if ( empty($device_db_row) )
+			return null;
+
+		$address_user_id = $device_db_row['idUser'];
 
 		/**
 	 	 * 解析命令参数
@@ -126,7 +129,8 @@ class JWRobotLingo_Conference {
 			}
 
 			if( $registered == false ) {
-				return JWRobotLogic::CreateAccount( $robotMsg, true, $nameScreen, $nameFull );
+				JWRobotLingo::CreateAccount( $robotMsg, $nameScreen, $nameFull );
+				return null;
 			}
 
 			//only change nameFull

@@ -54,10 +54,10 @@ class JWRobotLingo_Add {
 
 		/** Create Account For IM/SMS User **/
 		if ( empty($device_db_row) ) 
-			$device_db_row = self::CreateAccount($robotMsg);
+			$device_db_row = JWRobotLingo::CreateAccount($robotMsg);
 
 		if ( empty($device_db_row) )
-			return JWRobotLogic::CreateAccount($robotMsg);
+			return null;
 
 		if( $type != 'sms' ) {
 			$reply = JWRobotLingo_AddReply::GetReplyString( $robotMsg, 'REPLY_MMS_HELP' );
@@ -110,33 +110,20 @@ class JWRobotLingo_Add {
 		$mobileNo = $robotMsg->GetAddress();
 		$type = $robotMsg->GetType();
 
-		$idUser = JWFuncCode::FetchRegIdUser($serverAddress, $mobileNo);
-		$userInfo = JWUser::GetUserInfo( $idUser );
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($mobileNo, $type);
 
-		if ( false == JWDevice::IsExist( $mobileNo, $type ) ){
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = JWRobotLingo::CreateAccount($robotMsg);
 
-			$body = $robotMsg->GetBody();
-			$body = JWRobotLingoBase::ConvertCorner( $body );
-
-			if ( preg_match('/^F\s+(\S+)\s*(\S*)\s*$/i',$body,$matches) ) {
-				$uaddress = $matches[1];
-				$nameFull = @$matches[2];
-			}else{
-				$uaddress = 'u'.preg_replace_callback('/([0]?\d{3})([\d]{4})(\d+)/', create_function('$m','return "$m[1]XXXX$m[3]";'), $mobileNo);
-				$nameFull = $uaddress;
-			}
-
-			$nameScreen = JWUser::GetPossibleName( $uaddress, $mobileNo, $type );
-
-			JWRobotLogic::CreateAccount($robotMsg, true, $nameScreen, $nameScreen, $nameFull);
-		}
-
-		$device_db_row = JWDevice::GetDeviceDbRowByAddress( $mobileNo, $type );
-
-		if( empty( $device_db_row ) ){
+		if ( empty($device_db_row) )
+		{
 			$reply = JWRobotLingo_AddReply::GetReplyString($robotMsg, 'REPLY_F_HOT', array($mobileNo) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
+
+		$idUser = JWFuncCode::FetchRegIdUser($serverAddress, $mobileNo);
+		$userInfo = JWUser::GetUserInfo( $idUser );
 
 		//邀请自己，无意义
 		if( $idUser == $device_db_row['idUser'] ) {

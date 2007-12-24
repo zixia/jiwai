@@ -52,8 +52,7 @@ class JWRobotLingo_Stock {
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 			}
 
-			JWRobotLogic::CreateAccount( $robotMsg, true, $nameScreen, $nameFull );
-			$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+			$device_db_row = JWRobotLingo::CreateAccount( $robotMsg, $nameScreen, $nameFull );
 
 			if ( empty( $device_db_row ) ){
 				$reply = JWRobotLingo_StockReply::GetReplyString( $robotMsg, 'REPLY_ZX_HOT' );
@@ -64,9 +63,6 @@ class JWRobotLingo_Stock {
 			$parseInfo = JWFuncCode::FetchConference( $serverAddress, $address );
 			if( false == empty( $parseInfo ) ){
 				$follower_ids = JWFollowRecursion::GetSuperior( $parseInfo['user']['id'] , 3 );
-
-				var_dump( $follower_ids );
-				var_dump( $userInfo );
 
 				foreach( $follower_ids as $id ) {
 					JWSns::CreateFollowers($id, array($userInfo['id']), false);
