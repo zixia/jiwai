@@ -214,7 +214,8 @@ class JWRobotLogic {
 					$reply_status_constant = 'REPLY_UPDATESTATUS_IM';
 
 				$reply = JWRobotLingoReply::GetReplyString(null, $reply_status_constant, 
-					array( $name_screen, $ret, $type), array('conference_id'=>$conference_id) );
+					array( $name_screen, $ret, strtoupper($type)),
+					array('conference_id'=>$conference_id) );
 
 				if( $reply ) {
 					return self::ReplyMsg( $robotMsg, $reply );
