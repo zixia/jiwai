@@ -360,7 +360,7 @@ class JWRobotLingoBase {
 		if( empty( $parse_info ) )
 			return 0;
 
-		return $parseInfo['conference']['id'];
+		return $parse_info['conference']['id'];
 	}
 
 }
