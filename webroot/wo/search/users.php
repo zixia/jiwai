@@ -3,73 +3,80 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
-
 $q = null;
 extract($_GET, EXTR_IF_EXISTS);
 
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-$page = ($page < 1 ) ? 1 : $page;
+$current_user_info = JWUser::GetCurrentUserInfo();
 
-$logined_user_info = JWUser::GetCurrentUserInfo();
+$head_options = array(
+	'version_css_jiwai_screen' => 'v1',
+);
 
-$head_options = array();
-
-if ( isset($g_user_friends) && $g_user_friends ) {
-	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
-	$page_user_info		= $rows[$g_page_user_id];
-	$head_options['ui_user_id']		= $g_page_user_id;
-} else {
-	$page_user_info		= $logined_user_info;
-}
+$page_user_info		= $current_user_info;
 
 $searched_ids		= JWSearch::GetSearchUserIds($q);
 $searched_num		= count( $searched_ids );
-$pagination         = new JWPagination($searched_num, $page, 15);
-
-$searched_ids       = @array_slice( $searched_ids, ($page-1)*15, 15 );
 $searched_user_rows	= JWUser::GetDbRowsByIds($searched_ids);
 
-/*
-$picture_ids        = JWFunction::GetColArrayFromRows($searched_user_rows, 'idPicture');
-$picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
-*/
-
+$searched_user_rows = JWUser::GetDbRowsByIds($searched_ids);
+$picture_ids = JWFunction::GetColArrayFromRows($searched_user_rows, 'idPicture');
+$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 ?>
-
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<?php JWTemplate::html_head($head_options) ?>
+<?php JWTemplate::html_head($head_options); ?>
 </head>
 
-<body class="account" id="friends">
-<?php JWTemplate::header("/wo/account/settings") ?>
-<?php JWTemplate::ShowActionResultTipsMain(); ?>
+<body class="normal">
+
+<?php JWTemplate::header("/wo/account/settings");?>
+<?php JWTemplate::ShowActionResultTipsMain();?>
 
 <div id="container">
-<h2 style="margin-bottom:10px;">找用户 - <form style="display:inline;margin:0px;padding:0;" action="/wo/search/users" method="GET" id="search_user"><input type="text" style="height:18px;padding-left:5px;" name="q" value="<?php echo (isset($q)) ? $q : '用户名、Email';?>" onclick='this.value=""' /><input type="button" style="height:24px; padding:2px 5px;" onClick='$("search_user").submit();' value="找"/></form></h2>
-<?php JWTemplate::FriendsTab( $page_user_info['id'], 'search' ); ?>
-<div class="tabbody" id="myfriend">
+    <div id="wtFollow"><!-- wtFollow start -->
+        <p class="title">叽歪成员搜索</p>
+	<div class="follow">
+	<ul class="followlist">
+<?php
+foreach($searched_ids as $list_user_id)
+{
+    $list_user_row = $searched_user_rows[$list_user_id];
 
-    <table width="100%" border="0" cellspacing="1" cellpadding="0" class="tablehead">
-    <tr>
-        <td width="285"><a href="#">用户名</a></td>
-        <td width="60"><a href="#">消息数</a></td>
-        <td width="60"><a href="#">彩信数</a></td>
-        <td><a href="#">最后更新时间</a></td>
-    </tr>
-    </table>
+    $list_user_picture_id = @$list_user_row['idPicture'];
 
+    $list_user_icon_url = JWTemplate::GetConst('UrlStrangerPicture');
+    if ( $list_user_picture_id )
+    $list_user_icon_url = $picture_url_row[$list_user_picture_id];
+?>
+	<li><a href="/<?php echo $list_user_row['nameUrl']; ?>/" title="<?php echo $list_user_row['nameScreen']; ?>" rel="contact"><img icon="<?php echo $list_user_row['id'];?>" class="buddy_icon" src="<?php echo $list_user_icon_url; ?>" title="<?php echo $list_user_row['nameFull']; ?>" border="0" /><?php echo $list_user_row['nameScreen']; ?></a></li>
+<?php
+}
+?>
+	</ul>
+	</div>
+        <div style="clear:both; height:16px;"></div>
+    </div><!-- wtFollow end -->
+    <!-- wrapper end -->
 
-<?php JWTemplate::ListUser($logined_user_info['id'], $searched_ids, array('type'=>'search')); ?>
+    <div id="wtchannelsidebar">
+    <div class="sidediv">
+	    <form id="f3" action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>">
+		    <P class="title">成员搜索</P>
+		    <p><input name="q" type="text" class="inputStyle" value="<?php echo htmlspecialchars($q);?>"/></p>
+		    <p class="sidediv3"><input name="Submit" type="submit" class="submitbutton" onClick="$('f3').submit();" value="搜索成员" /></p>
+	    </form>
+
+	    <div class="line"></div>
+	    <P class="sidediv4">你可以使用成员的<span class="gray12">用户名，QQ号，Email，MSN帐号</span>等来进行搜索</P>
+	    <div class="line"></div>
+	    <div style="clear:both;"></div>
+    </div><!-- sidediv -->
+    </div><!-- wtsidebar -->
 </div>
 
-<?php JWTemplate::PaginationLimit( $pagination, $page, null, $limit = 4 ) ; ?>
-
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+<?php JWTemplate::container_ending();?>
 </div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
+<?php JWTemplate::footer();?>
 </body>
 </html>

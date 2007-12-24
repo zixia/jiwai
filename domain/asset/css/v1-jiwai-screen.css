@@ -387,6 +387,11 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtchannelsidebar a.pad3:hover { color:#F87A01;  text-decoration:underline;}
 #wtchannelsidebar .content {line-height:20px; height:100%; overflow:hidden; margin:10px 8px 0 8px;}
 #wtchannelsidebar .rsshim { display:block; background:url(../images/channel-rss-bg.gif) #f2f2f2 no-repeat center; height:27px;text-align:left;text-indent:0px;margin:0 auto; padding:10px 0 10px 30px; color:#F87A01; font-weight:bold; font-size:12px; text-decoration:none;}
+#wtchannelsidebar .title {font-size:14px; font-weight:bold; line-height:20px;padding:16px 0 0 10px;}
+#wtchannelsidebar .sidediv3 { padding:8px 0 0 0;text-align:center;}
+#wtchannelsidebar .sidediv4 { padding:10px;line-height:22px;}
+#wtchannelsidebar .gray12 { color:#555555; font-size:12px;font-weight:bold;line-height:22px;}
+#wtchannelsidebar .inputStyle { margin: 11px 0 5px 10px;padding: 3px 0 0 5px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 192px;height:18px;}
 /* The wtchannelsidebar end */
 
 /* The wtAvatar start */
@@ -511,5 +516,16 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtLightbox .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 200px;height:18px;}
 #wtLightbox .mar { margin: 0 0 0 1em;}
 /* The wtLightbox end*/
+
+/* The wtFollow start */
+#wtFollow { margin:10px 0 0 0; width:532px;border:1px solid #D3D3D5;height:100%;background-color:#FFFFFF;float:left;font-family:Arial,Helvetica,sans-serif;}
+#wtFollow p { margin:15px 0 0 0;}
+#wtFollow a { color:#FF6000;text-decoration:none;}
+#wtFollow a:hover { color:#FF6000;text-decoration:underline;}
+#wtFollow .title { color:#000; font-size:26px; font-weight:bold;padding:8px 20px 10px 15px;}
+#wtFollow .follow { padding:0 0 0 15px;}
+#wtFollow .followlist li { overflow:hidden;float:left;width:48px; height:48px;padding: 5px 20px 35px 5px;font-size:12px;text-align: center;font-family: Arial,sans-serif;}
+#wtFollow .followlist li a img {display:block;width:48px; height:48px;}
+/* The wtFollow end */
 
 .tipnote {clear:both; background-color:#FFF996; line-height:21px; border:1px solid #C2C2C2; margin:8px auto; text-indent:20px;} 

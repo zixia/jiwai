@@ -4,17 +4,11 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-$page = ($page < 1 ) ? 1 : $page;
-
-/*
- *	除了显示 /wo/friends/ 之外，还负责显示 /zixia/friends/
- *	如果是其他用户的 friends 页(/zixia/friends)，则 $g_user_friends = true, 并且 $g_page_user_id 是页面用户 id
- *
- */
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 
-$head_options = array();
+$head_options = array(
+	'version_css_jiwai_screen' => 'v1',
+);
 
 if ( isset($g_user_friends) && $g_user_friends ) {
 	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
@@ -25,50 +19,79 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 }
 
 $friend_num			= JWFollower::GetFollowingNum	($page_user_info['id']);
-$pagination         = new JWPagination($friend_num, $page, 15);
-$friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'] );
 $friend_user_rows	= JWUser::GetDbRowsByIds	($friend_ids);
+$action_rows = JWSns::GetUserActions($logined_user_info['id'], $friend_ids);
 
-/*
-$picture_ids        = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPicture');
-$picture_url_rows   = JWPicture::GetUrlRowByIds($picture_ids);
-*/
 
+$followings_num = JWFollower::GetFollowingNum( $page_user_info['id'] );
+$picture_ids = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPicture');
+$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 ?>
-
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<?php JWTemplate::html_head($head_options) ?>
+<?php JWTemplate::html_head( $head_options ); ?>
 </head>
 
-<body class="account" id="friends">
-<?php JWTemplate::header("/wo/account/settings") ?>
-<?php JWTemplate::ShowActionResultTipsMain(); ?>
+
+<body class="normal">
+
+<?php JWTemplate::header("/wo/account/settings");?>
+<?php JWTemplate::ShowActionResultTipsMain();?>
 
 <div id="container">
-<?php JWTemplate::FriendsTab( $page_user_info['id'], 'friends' ); ?>
-<div class="tabbody" id="myfriend">
+    <div id="wtFollow"><!-- wtFollow start -->
+<?php
+if ( isset($g_user_friends) && $g_user_friends ) {
+    echo '<p class="title">'.$page_user_info['nameScreen'] .'关注的人（'.$followings_num.'）</p>';
+}
+else
+{
+    echo '<p class="title">你关注的人（'.$followings_num.'）</p>';
+}
 
-    <table width="100%" border="0" cellspacing="1" cellpadding="0" class="tablehead">
-    <tr>
-        <td width="285"><a href="#">用户名</a></td>
-        <td width="60"><a href="#">叽歪数</a></td>
-        <!--td width="60"><a href="#">彩信数</a></td-->
-        <td><a href="#">最后更新时间</a></td>
-    </tr>
-    </table>
+?>
+        <div class="follow">
+	<ul class="followlist">
+<?php
+foreach( $friend_ids as $list_user_id )
+{
+    $list_user_row = $friend_user_rows[$list_user_id];
+    $list_user_picture_id = @$list_user_row['idPicture'];
+    $list_user_icon_url = JWTemplate::GetConst('UrlStrangerPicture');
+    if ( $list_user_picture_id )
+        $list_user_icon_url = $picture_url_row[$list_user_picture_id];
 
+?>
+<li><a href="/<?php echo $list_user_row['nameUrl']; ?>/" title="<?php echo $list_user_row['nameScreen']; ?>" rel="contact"><img icon="<?php echo $list_user_row['id'];?>" class="buddy_icon" src="<?php echo $list_user_icon_url; ?>" title="<?php echo $list_user_row['nameFull'];  ?>" border="0" /><?php echo $list_user_row['nameScreen']; ?></a></li>
+<?php
+}
+?>
+	</ul>
+        </div>
+	<div style="clear: both;"></div>
+    </div><!-- wtFollow end -->
+    <div id="wtchannelsidebar">
+    <div class="sidediv">
+	    <form id="f3" action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>">
+		    <P class="title">成员搜索</P>
+		    <p><input name="q" type="text" class="inputStyle" /></p>
+		    <p class="sidediv3"><input name="Submit" type="submit" class="submitbutton" onClick="$('f3').submit();" value="搜索成员" /></p>
+	    </form>
 
-<?php JWTemplate::ListUser($logined_user_info['id'], $friend_ids, array('type'=>'following')); ?>
+	    <div class="line"></div>
+	    <P style="padding:5px 0 10px 10px"><a href="/wo/invitations/invite">&#187;&nbsp;邀请你的朋友加入叽歪</a></P>
+	    <P style="padding:5px 0 10px 10px "><a href="/wo/followers/">&#187;&nbsp;关注你的人</a></P>
+	    <div class="line"></div>
+	    <div style="clear:both;"></div>
+    </div><!-- sidediv -->
+    </div><!-- wtsidebar -->
 </div>
 
-<?php JWTemplate::PaginationLimit( $pagination, $page, null, $limit = 4 ) ; ?>
-
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+<?php JWTemplate::container_ending();?>
 </div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
+<?php JWTemplate::footer();?>
 </body>
 </html>
+

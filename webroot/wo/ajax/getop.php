@@ -122,6 +122,22 @@ _HTML_;
 		<li><a href="/wo/followings/nudge/$user_id" class="Concern">挠挠</a></li>
 _HTML_;
 	}
+	if ( $current_user_id )
+	{
+		if ( $request_row_in = JWFollowerRequest::GetTableRow( $current_user_id, $user_id ) )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/friend_requests/accept/$user_id" title="附言：$request_row_in[note]">接受关注请求</a></li>
+			<li><a href="/wo/friend_requests/deny/$user_id">拒绝关注请求</a></li>
+_HTML_;
+		}
+		if ( $request_row_out = JWFollowerRequest::GetTableRow( $user_id, $current_user_id ) )
+		{
+			echo <<<_HTML_
+			<li><a href="/wo/friend_requests/cancel/$user_id" title="附言：$request_row_out[note]">取消请求关注</a></li>
+_HTML_;
+		}
+	}
 	?>
      </ul>
    </div>
