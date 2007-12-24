@@ -7,31 +7,30 @@
 */
 class JWTextFormat {
 
-	static public function PreFormatRobotMsg( $text ) {
-		//Tags
-		$text = self::_StripTags( $text );
-		
-		//Mobile Soft
+	static public function PreFormatRobotMsg( $text ) 
+	{
+		/* Mobile Software */
 		$text = self::_StripQQTail( $text );
 		$text = self::_StripMsnHead( $text );
 		
-		//html entity
+		/* html entity */
 		$text = self::_EntityDecode( $text );
 
-		//trim special char
+		/* trim special char */
 		$text = self::_TrimSpecialChar( $text );
 
 		return $text;
 	}
 
-	static public function PreFormatWebMsg( $text ) {
-		//Tags
-		$text = self::_StripTags( $text );
+	static public function PreFormatWebMsg( $text, $type=null ) 
+	{
+		/* html Tags */
+		$text = self::_StripTags( $text, $type );
 		
-		//html entity
+		/* html entity */
 		$text = self::_EntityDecode( $text );
 
-		//trim special char
+		/* trim special char */
 		$text = self::_TrimSpecialChar( $text );
 
 		return $text;
@@ -78,7 +77,8 @@ class JWTextFormat {
 	/**
 	 * trim special char
 	 */
-	static public function _TrimSpecialChar( $text ) {
+	static public function _TrimSpecialChar( $text ) 
+	{
 		// new line to space
 		$text = preg_replace( '/[\n\r]/', ' ', $text);
 
@@ -97,18 +97,29 @@ class JWTextFormat {
 	/**
 	 * Strip tags | comment | js | style propertye
 	 */
-	static public function _StripTags( $text ) {
+	static public function _StripTags( $text, $type=null ) 
+	{
 		$search = array(
 			'@<script[^>]*?>.*?</script>@si',	// Strip out javascript
 			'@<style[^>]*?>.*?</style>@siU',	// Strip style tags properly
-			'@<[\/\!]*?[^<>]*?>@si',		// Strip out HTML tags
 			'@<![\s\S]*?--[ \t\n\r]*>@'		// Strip multi-line comments including CDATA
 		);
+		
+		/* allow gtalk|msn send html tag */
+		if (false===('gtalk'==$type
+			|| 'msn'==$type
+			|| 'yahoo'==$type
+			|| 'aim'==$type
+			|| 'fetion'==$type))
+		{
+			array_push( $search, '@<[\/\!]*?[^<>]*?>@si' );
+		}
 
 		return preg_replace( $search, '', $text );
 	}
 
-	static public function _StripMsnHead( $text ) {
+	static public function _StripMsnHead( $text ) 
+	{
 		$msnString = '对方正在使用手机MSN,详见http://mobile.msn.com.cn。';
 		$text = trim( str_replace( $msnString, '', $text ) );
 
@@ -118,7 +129,8 @@ class JWTextFormat {
 	/**
 	 * Strip Mobile QQ tail
 	 */
-	static public function _StripQQTail( $text ) {
+	static public function _StripQQTail( $text ) 
+	{
 
 		$qqString1 = '(本消息发自腾讯官方';
 		$qqString2 = '（您的好友正在使用手机QQ';
@@ -139,7 +151,8 @@ class JWTextFormat {
 	/**
 	 * Decode Html Entity
 	 */
-	static public function _EntityDecode( $text ) {
+	static public function _EntityDecode( $text ) 
+	{
 		$quots = array(
 			'&apos;' => "'",
 		);

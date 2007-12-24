@@ -933,7 +933,7 @@ class JWSns {
 
 	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature='N' ) 
 	{
-		$status = JWTextFormat::PreFormatWebMsg( $status );
+		$status = JWTextFormat::PreFormatWebMsg( $status, $device );
 		if( 'Y' == $isSignature ) {
 			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
 				return null;
