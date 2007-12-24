@@ -88,7 +88,15 @@ function getUserExtendWithStatus($user){
 	$userInfo['followers_count'] = JWFollower::GetFollowerNum($idUser);
 	$userInfo['favourite_count'] = JWFavourite::GetFavouriteNum( $idUser );
 	$userInfo['utc_offset'] = 28800;
-	$userInfo['statuses_count'] = JWStatus::GetStatusNum( $idUser );
+
+	if ($user['idConference'])
+	{
+		$userInfo['statuses_count'] = JWStatus::GetStatusNumFromConference( $user['idConference'] );
+	}
+	else
+	{
+		$userInfo['statuses_count'] = JWStatus::GetStatusNum( $idUser );
+	}
 
 	
 	//Get Current Stuats,
