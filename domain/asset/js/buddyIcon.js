@@ -190,6 +190,7 @@ var JWBuddyIcon =
 	createInitDiv: function(target) 
 	{
 		var uid = target.getProperty('icon');
+		var t = target.getProperty('title');
 		var d = document.createElement('div');
 		var src = target.getProperty('src');
 		var href = target.parentNode.tagName=='A' ? target.parentNode.href : 'javascript:void(0);';
@@ -201,7 +202,7 @@ var JWBuddyIcon =
 		d.id = 'wtAvatar';
 		
 		d.innerHTML = '<div id="avatar_'+uid+'_up" class="up">' + 
-				'<div class="avatar"><a href="'+href+'"><img style="margin:0px; border:0px; padding:0px;" height="48" width="48" src="'+src+'"/></a></div>' +
+				'<div class="avatar"><a href="'+href+'" title="'+t+'"><img style="margin:0px; border:0px; padding:0px;" height="48" width="48" src="'+src+'"/></a></div>' +
 				'<div id="avatar_'+uid+'_nav" class="nav nav_down"></div>' +
 				'<div style="clear:both;"></div>' + 
 				'</div>' +
