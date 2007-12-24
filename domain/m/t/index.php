@@ -25,7 +25,7 @@ if( $tag_name )
 }
 else
 {
-	JWTemplate::RedirectBackToLastUrl('/');
+	redirect_to_404();
 }
 
 if( null == $func )

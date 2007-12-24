@@ -16,7 +16,7 @@ if( empty( $userInfo ) ){
         require_once( dirname(__FILE__) . '/public_timeline.inc.php');
         exit(0);
     }
-    redirect( '/' );
+    redirect_to_404( '/' );
 }else{
     $idUser = $userInfo['id'];
     $nameScreen = $userInfo['nameScreen'];

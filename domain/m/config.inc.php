@@ -64,6 +64,12 @@ function redirect($url = null){
 	exit;
 }
 
+function redirect_to_404()
+{
+	JWSession::SetInfo('notice', '哎呀，叽歪没有找到这个页面！');
+	JWTemplate::RedirectToUrl('/');
+}
+
 function actionop($idUser, $idOthers, $forFollow=false){
 
 	$isArray = is_array( $idOthers ) ;
