@@ -113,9 +113,8 @@ class JWRobotLogic {
 		{
 			// 非注册用户（在Device表中没有的设备）
 			if( $robotMsgtype == null || $robotMsgtype == 'NORMAL' )
-				$reply_robot_msg = JWRobotLingo::CreateAccount($robotMsg, true);
-			else
-				$reply_robot_msg = null; 
+				JWRobotLingo::CreateAccount($robotMsg);
+			$reply_robot_msg = null; 
 		}
 
 		if ( empty($reply_robot_msg) ) {
