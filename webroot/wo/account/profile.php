@@ -1,25 +1,18 @@
 <?php
-/*
-@header("Expires: Thu, 19 Nov 1981 08:52:00 GMT");
-@header("Cache-Control: no-store, no-cache, must-revalidate");
-@header("Pragma: no-cache");
-*/
-
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
-//var_dump($_REQUEST);
 
-$user_info		= JWUser::GetCurrentUserInfo();
+$user_info = JWUser::GetCurrentUserInfo();
 $new_user_info = @$_REQUEST['user'];
 $outInfo = $user_info;
-$has_photo		= !empty($user_info['idPicture']);
+$has_photo = !empty($user_info['idPicture']);
 
 if ( $new_user_info )
 {
-
-	if( false == isset($new_user_info['protected']) ) {
+	if( false == isset($new_user_info['protected']) ) 
+	{
 		$new_user_info['protected'] = 'N';
 	}
 
@@ -133,12 +126,11 @@ if ( $new_user_info )
 	}
 }
 
-//Procince and city id
+/*Procince and city id */
 $pid = $cid =0;
 @list($pid, $cid) = explode('-', $outInfo['location']);
 ?>
 <html>
-
 <head>
 <?php JWTemplate::html_head() ?>
 
@@ -162,6 +154,11 @@ function validate_form(form)
     
 	return bValid;
 }
+
+window.jiwai_init_hook_location_setting = function()
+{
+	JWLocation.select('provinceSelect','citySelect',<?php echo intval($pid);?>,<?php echo intval($cid);?>); 
+}
 </script>
 </head>
 
@@ -176,18 +173,19 @@ function validate_form(form)
 <?php JWTemplate::SettingTab('/wo/account/profile') ?>
 
 <?php
-if ( $has_photo ){
-    // we have photo
+if ( $has_photo )
+{
     $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb96');
-}else{
-    // we have no photo
+}
+else
+{
     $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
 }
 ?>
 
 <div class="tabbody">
 <h2>修改个人资料</h2>
-<form id="f" enctype="multipart/form-data" method="post" action="/wo/account/profile" >
+<form id="f" enctype="multipart/form-data" method="post" class="validator" action="/wo/account/profile" >
 
 <fieldset>
     <table width="100%" cellspacing="3">
@@ -213,7 +211,7 @@ if ( $has_photo ){
     <tr>
         <th>来自：</th>
         <td>
-            <select id='provinceSelect' name="province" style="width:112px;" onChange="JiWaiLocation.select('provinceSelect','citySelect', this.options[this.options.selectedIndex].value, 0);"></select>
+            <select id='provinceSelect' name="province" style="width:112px;" onChange="JWLocation.select('provinceSelect','citySelect', this.options[this.options.selectedIndex].value, 0);"></select>
             <select id='citySelect' name="city" style="width:112px;"></select>
         </td>
         <td class="note">选择所在地区</td>
@@ -252,9 +250,5 @@ if ( $has_photo ){
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>
-<script defer="true">
-	JWValidator.init('f');
-	JiWaiLocation.select('provinceSelect','citySelect',<?php echo intval($pid);?>,<?php echo intval($cid);?>); 
-</script>
 </body>
 </html>

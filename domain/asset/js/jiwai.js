@@ -326,11 +326,30 @@ alert('ok');
         }    
     },
 
-	onLoad: function() {
-		JiWai.AutoEmote();
+	InitHook: function()
+	{
+		var pre_init_str = 'jiwai_init_hook_';
+		for ( var h in Window )
+		{
+			if ( 0 != h.indexOf(pre_init_str) )
+				continue;
+			var func = Window[h];
+			if ( typeof func == 'function' )
+			{
+				try { func(); }catch(e){}
+			}
+		}
+	},
+	onLoad: function() 
+	{
 		if ( window.JWBuddyIcon ) JWBuddyIcon.init();
 		if ( window.JWValidator ) JWValidator.init();
-		if (window.RefreshInterval && location.search && location.search.length>1) 
+		if ( window.JWLocation ) JWLocation.init();
+
+		JiWai.AutoEmote();
+		JiWai.InitHook();
+
+		if ( window.RefreshInterval && location.search && location.search.length>1) 
 			setTimeout(JiWai.Refresh, RefreshInterval*1000);
 	},
 	Init: function() {
@@ -340,4 +359,3 @@ alert('ok');
 }
 
 JiWai.Init();
-

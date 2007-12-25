@@ -1,7 +1,8 @@
-var JiWaiLocation = {
+var JWLocation = {
 	o: undefined,
-	init: function(d){
-		JiWaiLocation.o = eval( '(' + d + ')' );
+	data: '{$v}',
+	init: function(){
+		JWLocation.o = eval( '(' + JWLocation.data + ')' );
 	},
 	select: function(idp, idc, pid, cid){
 		var ep = $(idp);
@@ -11,14 +12,14 @@ var JiWaiLocation = {
 
 		if( ep.options.length == 0 ){
 			ep.options.add( new Option('',0,false,false) );
-			for( var k in JiWaiLocation.o ){
-				var v = JiWaiLocation.o[k][0];
+			for( var k in JWLocation.o ){
+				var v = JWLocation.o[k][0];
 				ep.options.add( new Option( v , k, (pid && k==pid), (pid && k==pid) ) );
 			}
 		}
 
 		ec.options.length = 0;
-		var p = JiWaiLocation.o[pid];
+		var p = JWLocation.o[pid];
 		if( p ) {
 			ec.options.add( new Option('',0,false,false) );
 			for(var i=0; i<p[1].length; i++){
@@ -29,4 +30,3 @@ var JiWaiLocation = {
 		}
 	}
 };
-JiWaiLocation.init('{$v}');
