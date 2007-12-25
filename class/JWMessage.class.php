@@ -55,22 +55,24 @@ class JWMessage {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUserSender, $idUserReceiver, $message, $device='web', $time=null )
+	static public function Create( $sender_id, $receiver_id, $message, $device='web', $options=array() )
 	{
-		$idUserSender 	= JWDB::CheckInt($idUserSender);
-		$idUserReceiver	= JWDB::CheckInt($idUserReceiver);
+		$sender_id = JWDB::CheckInt($sender_id);
+		$receiver_id = JWDB::CheckInt($receiver_id);
 
-		$time = intval($time);
-
+		$time = isset($options['time']) ? intval($options['time']) : time();
 		if ( 0>=$time )
 			$time = time();
 
-		// 去掉回车，替换为空格
+		$message_reply_id = isset($options['reply_id']) ? $options['reply_id'] : null;
+
+		/* strip \r\n with \s */
 		$message = preg_replace('[\r\n]',' ',$message);
 
 		return JWDB::SaveTableRow('Message', array(
-			'idUserSender' => $idUserSender,
-			'idUserReceiver' => $idUserReceiver,
+			'idUserSender' => $sender_id,
+			'idUserReceiver' => $receiver_id,
+			'idMessageReplyTo' => $message_reply_id,
 			'message' => $message,
 			'device' => $device,
 			'timeCreate' => JWDB::MysqlFuncion_Now($time),
