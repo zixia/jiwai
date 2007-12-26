@@ -335,7 +335,7 @@ _SQL_;
 	{
 		$name_screen = JWDB::EscapeString($name_screen);
 		$sql = <<<_SQL_
-SELECT *
+SELECT *, id AS idUser
 FROM
 	User
 WHERE
@@ -353,7 +353,7 @@ _SQL_;
 	{
 		$name_url = JWDB::EscapeString($name_url);
 		$sql = <<<_SQL_
-SELECT *
+SELECT *, id AS idUser
 FROM
 	User
 WHERE
@@ -372,7 +372,7 @@ _SQL_;
 		$remail = strrev($email);
 		$remail = JWDB::EscapeString($remai);
 		$sql = <<<_SQL_
-SELECT *
+SELECT *, id AS idUser
 FROM
 	User
 WHERE
