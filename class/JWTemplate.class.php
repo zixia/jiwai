@@ -246,13 +246,31 @@ _HTML_;
 			'/wo/openid/' => '/wo/account/settings',
 		);
 
-		if (!$highlight) {
+		if (null==$highlight) 
+		{
 			$a = array_reverse($nav);
 			$urlNow = $_SERVER['REQUEST_URI'];
 			$urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
-			foreach($highlightAlias as $u=>$aurl) if( 0===strncasecmp($u,$urlNow,strlen($u))){$urlNow=$aurl; break;}
-			foreach ($a as $url => $txt) if (substr($urlNow, 0, strlen($url))==$url) { $highlight = $url; break; }
-			if (!$highlight && empty($nameScreen) ) $highlight = '/public_timeline/'; //$url;
+			foreach ($highlightAlias as $u=>$aurl) 
+			{
+				if ( 0===strncasecmp($u,$urlNow,strlen($u)))
+				{
+					$urlNow=$aurl;
+					break;
+				}
+			}
+			foreach ($a as $url => $txt)
+			{
+				if (substr($urlNow, 0, strlen($url))==$url) 
+				{ 
+					$highlight = $url;
+					break;
+				}
+			}
+			if ( null==$highlight && empty($nameScreen) )
+			{
+				$highlight = '/public_timeline/'; //$url;
+			}
 		}
 
 		if( empty( $userInfo ) ) {
@@ -762,10 +780,11 @@ _HTML_;
 	static public function Timeline($statusIds, $userRows, $statusRows, $options=array() )
 	{
 		
-		$idCurrent = JWLogin::GetCurrentUserId();
-
 		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
 			return;
+
+		$current_user_id = JWLogin::GetCurrentUserId();
+		$is_admin = JWUser::IsAdmin($current_user_id);
 
 		if ( !isset($options['pagination']) )
 			$options['pagination'] 	= false;
@@ -788,6 +807,8 @@ _HTML_;
 
 		if( $options['protected'] ) return;
 
+		$is_favourited_array = JWFavourite::IsFavourited($current_user_id, $statusIds);
+
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
 		if (!$options['strip']) {
 ?>
@@ -803,6 +824,9 @@ _HTML_;
 
 			$user_id 	= $statusRows[$status_id]['idUser'];
 			$conference_id = $statusRows[$status_id]['idConference'];
+
+			$can_delete = $is_admin || $user_id == $current_user_id;
+			$is_favourited = $is_favourited_array[$status_id];
 
 			if ( JWSns::IsProtectedStatus( $statusRows[$status_id], $current_user_id ) )
 				continue;
@@ -875,10 +899,15 @@ _HTML_;
 				break;
 			}
 
+			$meta_options = $options;
+
+			$meta_options['can_delete'] = $can_delete;
+			$meta_options['is_favourited'] = $is_favourited;
+
 			//meta_info
 			$reply_user_row = ( $statusRows[$status_id]['idUserReplyTo'] ) ?
 				JWUser::GetUserInfo( $statusRows[$status_id]['idUserReplyTo'] ) : null;
-			self::ShowStatusMetaInfo( $statusRows[$status_id], $options );
+			self::ShowStatusMetaInfo( $statusRows[$status_id], $meta_options );
 		?>
 	</div><!-- cont -->
 </div><!-- odd -->
@@ -932,7 +961,6 @@ __HTML__;
 
 	static public function ShowStatusMetaInfo( $status_row, $options=array()) 
 	{
-
 		if( empty( $status_row ) )
 			return;
 
@@ -998,9 +1026,15 @@ __HTML__;
 		$action_string = null;
 		if ( $current_user_id && $status_id )	
 		{
-			$is_fav	= JWFavourite::IsFavourite($current_user_id, $status_id);
+			$is_fav	= isset($options['is_favourited']) ? 
+				$options['is_favourited'] : JWFavourite::IsFavourite($current_user_id, $status_id);
+
 			$action_string .= self::FavouriteAction($status_id, $is_fav);
-			if (  JWStatus::IsUserCanDelStatus( $current_user_id, $status_id ) )
+
+			$can_delete = isset($options['can_delete']) ?
+				$options['can_delete'] : JWStatus::IsUserCanDelStatus($current_user_id, $status_id);
+
+			if ( $can_delete )
 			{
 				$action_string .= self::TrashAction($status_id);
 			}

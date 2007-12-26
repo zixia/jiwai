@@ -161,6 +161,47 @@ _SQL_;
 							);
 	}
 
+	/** 
+	 * return if favorites
+	 */
+	static public function IsFavourited($user_id, $status_ids=array())
+	{
+		if (empty($status_ids) )
+			return array();
+
+		$rtn = array();
+		foreach ($status_ids as $id)
+		{
+			$rtn[$id] = false;
+		}
+
+		if ( null == $user_id )
+			return $rtn;
+
+		$id_string = implode(',', $status_ids);
+
+		$user_id = JWDB::CheckInt($user_id);
+
+		$sql = <<<_SQL_
+SELECT idStatus
+FROM Favourite
+WHERE 
+	idUser=$user_id
+	AND idStatus IN ($id_string)
+_SQL_;
+	
+		$rows = JWDB::GetQueryResult($sql, true);
+		if ( empty($rows) )
+			return $rtn;
+		
+		foreach ( $rows as $one )
+		{
+			$rtn[$one['idStatus']] = true;
+		}
+
+		return $rtn;
+	}
+
 	/*
 	 *	@param	int		$idUser
 	 *	@return	int		$favouriteNum for $idUser
