@@ -54,7 +54,7 @@ class JWDB_Cache_User implements JWDB_Cache_Interface
 		 */ 
 
 		$pk_id = $dbRow['id'];
-		$email = strrev($dbRow['email']);
+		$email = $dbRow['email'];
 		$name_screen = $dbRow['nameScreen'];
 		$name_url = $dbRow['nameUrl'];
 
@@ -67,11 +67,17 @@ class JWDB_Cache_User implements JWDB_Cache_Interface
 			),
 			JWDB_Cache::GetCacheKeyByFunction( 
 				array('JWUser','GetDbRowByNameUrl'), array($name_url) 
-			),
-			JWDB_Cache::GetCacheKeyByFunction( 
-				array('JWUser','GetDbRowByEmail'), array($email) 
 			)
 		);
+
+		if ( $email ) 
+		{
+			array_push( $dirty_keys,
+				JWDB_Cache::GetCacheKeyByFunction( 
+					array('JWUser','GetDbRowByEmail'), array($email) 
+				)
+			);
+		}
 
 		foreach ( $dirty_keys as $dirty_key )
 		{
