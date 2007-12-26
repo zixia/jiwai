@@ -346,6 +346,7 @@ _SQL_;
 		if ( empty($row) )
 			return array();
 
+		$row['email'] = strrev($row['email']);
 		return $row;
 	}
 
@@ -364,6 +365,7 @@ _SQL_;
 		if ( empty($row) )
 			return array();
 
+		$row['email'] = strrev($row['email']);
 		return $row;
 	}
 
@@ -386,6 +388,7 @@ _SQL_;
 		if ( empty($row) )
 			return array();
 
+		$row['email'] = strrev($row['email']);
 		return $row;
 	}
 

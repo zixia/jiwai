@@ -10,10 +10,10 @@ if ( isset($_REQUEST['email']) )
 	{
 		$user_db_row = JWUser::GetUserInfo($email);
 	}
-    else
-    {
+	else
+	{
 		$notice_html = '哎呀！您输入的邮件地址不合法！';
-    }
+	}
 
 	if ( false==empty($user_db_row) )
 	{
@@ -26,12 +26,12 @@ if ( isset($_REQUEST['email']) )
 		exit(0);
 	}
 
-    if (empty($notice_html))
-    {
-        $notice_html = '哎呀！我们没有找到你的邮件地址！';
-    }
+	if (empty($notice_html))
+	{
+		$notice_html = '哎呀！我们没有找到你的邮件地址！';
+	}
 
-    JWSession::SetInfo('notice', $notice_html);
+	JWSession::SetInfo('notice', $notice_html);
 	JWTemplate::RedirectBackToLastUrl('/');
 }
 
