@@ -12,29 +12,29 @@
 class JWIdWrapper {
 
 	static public $string_pool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	static public $string_pre = 'ILOVEJIWAIANDWORKSFORJIWAI';
 	static public $pool_len = 36;
-
-	static public $string_pre = 'X';
-	static public $pre_len = 1;
+	static public $pre_len = 26;
 
 	static public function IsWrappedId( $id )
 	{
-		if ( self::$string_pre==substr($id, 0, self::$pre_len) 
-			&& strlen($id)==strspn($id, self::$string_pool) )
-		{
+		if ( false===strpos(self::$string_pre, substr($id, 0, 1)) )
+			return false;
+
+		if ( strlen($id)==strspn($id, self::$string_pool) )
 			return true;
-		}
 
 		return false;
 	}
 
 	static public function EncodeId($decoded_id)
 	{
-		$id = strtoupper($decoded_id);
-		if ( self::IsWrappedId($id) )
-			return $decoded_id;
+		$id = intval( $decoded_id );
 
-		$id = intval($id);
+		if ( $id < 0 )
+			return false;
+
+		$pre = self::$string_pre[intval($id%self::$pre_len)];
 		$encoded_id = null;
 		
 		do
@@ -45,15 +45,16 @@ class JWIdWrapper {
 		}
 		while ($id>0);
 
-		return self::$string_pre . $encoded_id;
+		return $pre . $encoded_id;
 	}
 
 	static public function DecodeId($encoded_id)	
 	{
 		$id = strtoupper($encoded_id);
 		if ( false==self::IsWrappedId($id) )
-			return $encoded_id;
+			return false; 
 
+		$pre = substr($id, 0, 1);
 		$id = strrev(substr($id, 1));
 		$base = 0;
 		
@@ -73,7 +74,9 @@ class JWIdWrapper {
 			$base = ($base==0) ? self::$pool_len : ($base*self::$pool_len);
 		}
 
-		return $decoded_id;
+		$pre_verify = self::$string_pre[intval($decoded_id%self::$pre_len)];
+
+		return $pre==$pre_verify ? $decoded_id : $encoded_id;
 	}
 }
 ?>
