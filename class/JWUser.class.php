@@ -369,8 +369,11 @@ _SQL_;
 
 	static public function GetDbRowByEmail($email)
 	{
+		if ( empty($email) )
+			return array();
+
 		$remail = strrev($email);
-		$remail = JWDB::EscapeString($remai);
+		$remail = JWDB::EscapeString($remail);
 		$sql = <<<_SQL_
 SELECT *, id AS idUser
 FROM
