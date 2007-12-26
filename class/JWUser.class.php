@@ -316,8 +316,6 @@ _SQL_;
 		if ( empty($user_info) )
 			return $one_item==null ? array() : null;
 
-		$user_info['email'] = strrev($user_info['email']);
-
 		if ( null==$one_item )
 		{
 			return $user_info;
