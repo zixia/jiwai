@@ -970,7 +970,7 @@ __HTML__;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 
-		$owner_user = JWUser::GetDbRowById( $status_row['idUser'] );
+		$owner_user = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] );
 		$owner_user_url = UrlEncode($owner_user['nameUrl']);
 		$owner_user_screen = $owner_user['nameScreen'];
 
@@ -993,7 +993,7 @@ __HTML__;
 
 		if( $reply_user_id ) 
 		{
-			if( $reply_user = JWUser::GetDbRowById( $reply_user_id ) )
+			if( $reply_user = JWDB_Cache_User::GetDbRowById( $reply_user_id ) )
 			{
 				$reply_name_url = $reply_user['nameUrl'];
 				$reply_name_screen = $reply_user['nameScreen'];
@@ -1003,7 +1003,7 @@ __HTML__;
 		if( $thread_id ) {
 			if( $thread_status = JWStatus::GetDbRowById( $thread_id ) ) 
 			{
-				if( $thread_user = JWUser::GetDbRowById( $thread_status['idUser'] ) )
+				if( $thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] ) )
 				{
 					$reply_status_id = $thread_id;
 					$reply_name_url = $thread_user['nameUrl'];
@@ -1337,8 +1337,8 @@ _HTML_;
 				break;
 		}
 
-		//$user_db_rows 		= JWUser::GetDbRowsByIds($user_ids);
-		$user_db_rows = JWUser::GetDbRowsByIds($user_ids, $activeOrder, 60);
+		//$user_db_rows 		= JWDB_Cache_User::GetDbRowsByIds($user_ids);
+		$user_db_rows = JWUser::GetDbRowsByIdsAndOrderByActivate($user_ids, 60);
 		$picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 
 		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
@@ -2089,10 +2089,10 @@ __HTML__;
 		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线的人', 'id'=>'friend'));
 
 		return;
-		$friend_rows			= JWUser::GetDbRowsByIds($friendIds);
+		$friend_rows = JWUser::GetDbRowsByIdsAndOrderByActivate($friendIds);
 
-		$picture_ids			= JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
-		$picture_url_rows   	= JWPicture::GetUrlRowByIds($picture_ids);
+		$picture_ids = JWFunction::GetColArrayFromRows($friend_rows, 'idPicture');
+		$picture_url_rows = JWPicture::GetUrlRowByIds($picture_ids);
 
 		echo <<<_HTML_
   		<div id="friend">
@@ -2496,7 +2496,7 @@ _HTML_;
 			break;
 		}
 
-		$list_user_rows = JWUser::GetDbRowsByIds($idListUsers);
+		$list_user_rows = JWDB_Cache_User::GetDbRowsByIds($idListUsers);
 		$picture_ids = JWFunction::GetColArrayFromRows($list_user_rows, 'idPicture');
 		$picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 

@@ -11,7 +11,7 @@ $head_options = array(
 );
 
 if ( isset($g_user_friends) && $g_user_friends ) {
-	$rows				= JWUser::GetDbRowsByIds(array($g_page_user_id));
+	$rows				= JWDB_Cache_User::GetDbRowsByIds(array($g_page_user_id));
 	$page_user_info		= $rows[$g_page_user_id];
 	$head_options['ui_user_id']		= $g_page_user_id;
 } else {
@@ -20,7 +20,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 
 $friend_num			= JWFollower::GetFollowingNum	($page_user_info['id']);
 $friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'] );
-$friend_user_rows	= JWUser::GetDbRowsByIds	($friend_ids);
+$friend_user_rows	= JWDB_Cache_User::GetDbRowsByIds	($friend_ids);
 $action_rows = JWSns::GetUserActions($logined_user_info['id'], $friend_ids);
 
 

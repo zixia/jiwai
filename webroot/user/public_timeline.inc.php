@@ -7,7 +7,7 @@ JWTemplate::html_doctype();
 
 $status_data 	= JWStatus::GetStatusIdsFromPublic(100);
 $status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
-$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
+$user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 
 $keywords 		= '叽歪de广场 ';
 $user_showed 	= array();

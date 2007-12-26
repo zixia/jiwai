@@ -74,7 +74,7 @@ function renderXmlReturn($idStatus){
 function getStatus($idStatus, &$status, &$user){
 	$status = JWDB_Cache_Status::GetDbRowById($idStatus);
 	if( $status ){
-		$user = JWUser::GetDbRowById($status['idUser']);
+		$user = JWDB_Cache_User::GetDbRowById($status['idUser']);
 		return true;
 	}
 	return false;

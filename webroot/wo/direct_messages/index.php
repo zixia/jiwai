@@ -27,7 +27,7 @@ $message_ids = $message_info['message_ids'];
 $user_ids = $message_info['user_ids'];
 
 $message_db_rows = JWMessage::GetMessageDbRowsByIds($message_ids);
-$user_db_rows = JWUser::GetDbRowsByIds($user_ids);
+$user_db_rows = JWDB_Cache_User::GetDbRowsByIds($user_ids);
 
 $picture_ids = JWFunction::GetColArrayFromRows($user_db_rows, 'idPicture');
 $picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
@@ -63,7 +63,7 @@ if ( $message_box_type == JWMessage::INBOX ) {
 <?php
 $be_friend_ids = JWFollower::GetBioFollowingIds($logined_user_id);
 
-$friend_rows	= JWUser::GetDbRowsByIds($be_friend_ids);
+$friend_rows	= JWDB_Cache_User::GetDbRowsByIds($be_friend_ids);
 
 function cmp($a, $b)
 {

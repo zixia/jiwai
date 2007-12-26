@@ -15,7 +15,7 @@ $user_status_num = JWDB_Cache_Status::GetCountPostByIdTagAndIdUser($tag_row['id'
 $pagination = new JWPagination($user_status_num, $page);
 $status_data = JWDB_Cache_Status::GetStatusIdsPostByIdTagAndIdUser($tag_row['id'], $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
-$user_rows = JWUser::GetDbRowsByIds($status_data['user_ids']);
+$user_rows = JWDB_Cache_User::GetDbRowsByIds($status_data['user_ids']);
 
 /* meta-seo content */
 $keywords = $tag_row['name'];

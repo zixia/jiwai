@@ -115,12 +115,12 @@ class JWNotify{
 		$is_protected_conference = false;
 
 		/* sender_user */
-		$sender_user = JWUser::GetDbRowById( $status_row['idUser'] );
+		$sender_user = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] );
 
 		/* receiver_user */
 		if ( $status_row['idUserReplyTo'] )
 		{
-			$receiver_user = JWUser::GetDbRowById( $status_row['idUserReplyTo'] );
+			$receiver_user = JWDB_Cache_User::GetDbRowById( $status_row['idUserReplyTo'] );
 		}
 		
 		/* conference_user and conference */
@@ -129,7 +129,7 @@ class JWNotify{
 			$conference = JWConference::GetDbRowById( $status_row['idConference'] );
 			if ( false == empty( $conference ) && $conference['idUser'] )
 			{
-				$conference_user = JWUser::GetDbRowById( $conference['idUser'] );
+				$conference_user = JWDB_Cache_User::GetDbRowById( $conference['idUser'] );
 				$options['idConference'] = $status_row['idConference'];
 				$is_protected_conference = $conference['friendOnly'] == 'Y' 
 						|| $conference_user['protected'] == 'Y';
@@ -215,7 +215,7 @@ class JWNotify{
 		{
 			if ( $thread_status )
 			{
-				$thread_user = JWUser::GetDbRowById( $thread_status['idUser'] );
+				$thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] );
 				$reply_plus_url = ' 回复请到：http://JiWai.de/' . $thread_user['nameUrl']
 						. '/thread/' . $thread_status['id'] . '/' . $idStatus;
 			}

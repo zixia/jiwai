@@ -140,7 +140,7 @@ if (empty($g_with_friends)) {
 	$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($idUser, 20);
 	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 }
-$user_rows = JWUser::GetDbRowsByIds	($status_data['user_ids']);
+$user_rows = JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 Timeline($status_data['status_ids'], $user_rows, $status_rows, array('icon'=>!empty($g_with_friends)));
 //FIXME friends' status not refresh on f8 profile
 

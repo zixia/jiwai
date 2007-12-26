@@ -68,7 +68,7 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = n
 		JWTemplate::RedirectTo404NotFound();
 	}
 
-	$user_row = JWUser::GetDbRowById( $status_info['idUser'] );
+	$user_row = JWDB_Cache_User::GetDbRowById( $status_info['idUser'] );
 	$page_user_info = $user_row;
 
 	$current_user_id = JWLogin::GetCurrentUserId();
@@ -91,7 +91,7 @@ $status_rows = $user_rows = array();
 if( false == empty( $replies_data ) ) 
 {
 	$replies_info = JWDB_Cache_Status::GetDbRowsByIds( @$replies_data['status_ids'] );
-	$user_rows = JWUser::GetDbRowsByIds( @$replies_data['user_ids'] );
+	$user_rows = JWDB_Cache_User::GetDbRowsByIds( @$replies_data['user_ids'] );
 }
 
 /* meta-seo content */

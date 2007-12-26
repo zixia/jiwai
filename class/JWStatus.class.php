@@ -263,7 +263,7 @@ class JWStatus {
 		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
 		//user info
-		$userInfo  = JWUser::GetDbRowById( $idUser );
+		$userInfo  = JWDB_Cache_User::GetDbRowById( $idUser );
 		$isProtected = $userInfo['protected'];
 
 		/** choose idPicture | idConference */
@@ -1400,7 +1400,7 @@ _SQL_;
 		array_push($friend_ids, $idUser);
 		$condition_in = JWDB::GetInConditionFromArray($friend_ids);
 
-		$friend_confrence_rows = JWUser::GetDbRowsByIds($friend_ids);
+		$friend_confrence_rows = JWDB_Cache_User::GetDbRowsByIds($friend_ids);
 		$friend_confrence_ids = JWFunction::GetColArrayFromRows($friend_confrence_rows, 'idConference');
 		$friend_confrence_ids = array_unique($friend_confrence_ids);
 		$friend_confrence_in = JWDB::GetInConditionFromArray($friend_confrence_ids);

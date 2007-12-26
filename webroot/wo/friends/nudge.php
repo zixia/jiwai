@@ -22,7 +22,7 @@ _HTML_;
 	else
 	{
 		$nudged_user_id = intval($match[1]);
-		$nudged_user_rows	= JWUser::GetDbRowsByIds(array($nudged_user_id));
+		$nudged_user_rows	= JWDB_Cache_User::GetDbRowsByIds(array($nudged_user_id));
 		$nudged_user_row	= $nudged_user_rows[$nudged_user_id];
 
 		$send_via_device	= JWUser::GetSendViaDeviceByUserId($nudged_user_id);

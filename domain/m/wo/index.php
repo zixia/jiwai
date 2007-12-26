@@ -14,7 +14,7 @@ $pagination = new JWPagination($statusNum, $page, 10);
 $statusData = JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 $statusRows = JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
-$userRows = JWUser::GetDbRowsByIds($statusData['user_ids']);
+$userRows = JWDB_Cache_User::GetDbRowsByIds($statusData['user_ids']);
 
 krsort( $statusRows );
 

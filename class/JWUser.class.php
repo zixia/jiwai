@@ -113,7 +113,7 @@ _SQL_;
 		$md5_pass = self::CreatePassword($plainPassword);
 		
 		//凡是通过Web改了密码，为WebUser
-		return JWDB::UpdateTableRow( 'User', $idUser, array('pass'=>$md5_pass, 'isWebUser'=>'Y', ) );
+		return JWDB_Cache::UpdateTableRow( 'User', $idUser, array('pass'=>$md5_pass, 'isWebUser'=>'Y', ) );
 	}
 
 
@@ -164,37 +164,62 @@ _SQL_;
 		return null;
 	}
 
+	static public function GetDbRowsByIdsAndOrderByActivate($user_ids, $limit=60)
+	{
+		if ( empty($user_ids) )
+			return array();
+
+		if ( false==is_array($user_ids) )
+			throw new JWException('must array');
+
+		$condition_in = JWDB::GetInConditionFromArray($user_ids);
+
+		$sql = <<<_SQL_
+SELECT	*, id AS idUser 
+FROM	User
+WHERE
+	id IN ($condition_in)
+ORDER BY timeStamp DESC
+LIMIT $limit
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		$user_map = array();
+
+		if ( empty($rows) )
+			return array();
+
+		foreach ( $rows as $row )
+		{
+			$row['email'] = strrev($row['email']);
+			$user_map[$row['idUser']] = $row;
+		}
+
+		return $user_map;
+	}
+
 	/*
 	 *	根据 idUser 获取 Row 的详细信息
 	 *	@param	array	idUser
 	 * 	@return	array	以 idUser 为 key 的 status row
 	 * 
 	 */
-	static public function GetDbRowsByIds($idUsers, $activeOrder=false, $limit=60 )
+	static public function GetDbRowsByIds($user_ids, $limit=9999)
 	{
-		if ( empty($idUsers) )
+		if ( empty($user_ids) )
 			return array();
 
-		if ( !is_array($idUsers) )
+		if ( false==is_array($user_ids) )
 			throw new JWException('must array');
 
-		$condition_in = JWDB::GetInConditionFromArray($idUsers);
+		$condition_in = JWDB::GetInConditionFromArray($user_ids);
 
 		$sql = <<<_SQL_
 SELECT	*, id as idUser
 FROM	User
 WHERE	id IN ($condition_in)
 _SQL_;
-
-		if( $activeOrder == true ) {
-		$sql = <<<_SQL_
-SELECT	*, id as idUser
-FROM	User
-WHERE	id IN ($condition_in)
-ORDER BY timeStamp DESC
-LIMIT $limit
-_SQL_;
-		}
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -244,61 +269,123 @@ _SQL_;
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static public function GetUserInfo( $value=null, $one_item=null , $byWhat=null)
+	static public function GetUserInfo( $value=null, $one_item=null , $by_what=null)
 	{
-		if ( preg_match('/@/',$value) )
-			$by_what = 'email';
-		else if ( preg_match('/^\d+$/',$value) )
-			$by_what = 'idUser';
-		else
-			$by_what = 'nameScreen';
-
-		$by_what = ( $byWhat == null ) ? $by_what : $byWhat ;
-
-		switch ( $by_what ){
-		case 'idUser':
-			$by_what = 'id';
-			if ( !is_int(intval($value)) ) return null;
-			break;
-
-		case 'nameScreen':
-		case 'nameUrl':
-			$value = JWDB::EscapeString($value);
-			break;
-
-		case 'email':
-			if ( !self::IsValidEmail($value) ) return null;
-			// email need reverse 
-			$value = JWDB::EscapeString(strrev($value));
-			break;
-		default:
-			throw new JWException("Unsupport get user info by $by_what");
+		if ( $by_what == null )
+		{
+			if ( preg_match('/@/',$value) )
+			{
+				$by_what = 'email';
+			}
+			else if ( preg_match('/^\d+$/',$value) )
+			{
+				$by_what = 'idUser';
+			}
+			else
+			{
+				$by_what = 'nameScreen';
+			}
 		}
 
-		$sql = <<<_SQL_
-SELECT	*, id as idUser
-FROM	User 
-WHERE	$by_what='$value' LIMIT 1
-_SQL_;
+		$user_info = array();
+		switch ( $by_what )
+		{
+			case 'idUser':
+				$user_info = JWDB_Cache_User::GetDbRowById($value);
+				break;
 
-		//TODO memcache here.
-		$aUserInfo 			= JWDB::GetQueryResult($sql);
+			case 'nameScreen':
+				$user_info = JWDB_Cache_User::GetDbRowByNameScreen($value);
+				break;
 
-		if ( empty($aUserInfo) )
-			return array();
+			case 'nameUrl':
+				$user_info = JWDB_Cache_User::GetDbRowByNameUrl($value);
+				break;
 
-		$aUserInfo['email']	= strrev($aUserInfo['email']);
+			case 'email':
+				if ( false==self::IsValidEmail($value) ) 
+					return $one_item==null ? array() : null;
 
-		if ( empty($one_item) ){
-			return $aUserInfo;
+				$user_info = JWDB_Cache_User::GetDbRowByEmail($value);
+				break;
+
+			default:
+				throw new JWException("Unsupport get user info by $by_what");
 		}
 
-		if ( isset($aUserInfo) && array_key_exists($one_item,$aUserInfo) ){
-			return $aUserInfo[$one_item];
+		if ( empty($user_info) )
+			return $one_item==null ? array() : null;
+
+		$user_info['email'] = strrev($user_info['email']);
+
+		if ( null==$one_item )
+		{
+			return $user_info;
+		}
+
+		if ( array_key_exists($one_item, $user_info) )
+		{
+			return $user_info[$one_item];
 		}
 
 		return array();
 	}
+
+	static public function GetDbRowByNameScreen($name_screen)
+	{
+		$name_screen = JWDB::EscapeString($name_screen);
+		$sql = <<<_SQL_
+SELECT *
+FROM
+	User
+WHERE
+	nameScreen='$name_screen'
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		if ( empty($row) )
+			return array();
+
+		return $row;
+	}
+
+	static public function GetDbRowByNameUrl($name_url)
+	{
+		$name_url = JWDB::EscapeString($name_url);
+		$sql = <<<_SQL_
+SELECT *
+FROM
+	User
+WHERE
+	nameUrl='$name_url'
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		if ( empty($row) )
+			return array();
+
+		return $row;
+	}
+
+	static public function GetDbRowByEmail($email)
+	{
+		$remail = strrev($email);
+		$remail = JWDB::EscapeString($remai);
+		$sql = <<<_SQL_
+SELECT *
+FROM
+	User
+WHERE
+	email='$remail'
+_SQL_;
+		$row = JWDB::GetQueryResult($sql);
+
+		if ( empty($row) )
+			return array();
+
+		return $row;
+	}
+
 
 	/*
 	 * 修改用户信息
@@ -323,7 +410,7 @@ _SQL_;
 		if ( array_key_exists('nameFull', $modifiedUserInfo) ) 
 			$modifiedUserInfo['nameFull'] = preg_replace( '/\xE2\x80\xAE/U', '', $modifiedUserInfo['nameFull']);
 
-		return JWDB::UpdateTableRow('User', $idUser, $modifiedUserInfo);
+		return JWDB_Cache::UpdateTableRow('User', $idUser, $modifiedUserInfo);
 	}
 
 
@@ -536,7 +623,7 @@ _SQL_;
 
 		$idUser = intval($idUser);
 
-		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'idConference' => $idConference ) );
+		return JWDB_Cache::UpdateTableRow( 'User', $idUser, array ( 'idConference' => $idConference ) );
 	}
 
 	
@@ -553,7 +640,7 @@ _SQL_;
 
 		// set 0 to disable
 		if ( null===$idPicture )
-			return JWDB::UpdateTableRow( 'User', $idUser, array ('idPicture' => null) );
+			return JWDB_Cache::UpdateTableRow( 'User', $idUser, array ('idPicture' => null) );
 
 		$idPicture = intval($idPicture);
 
@@ -561,7 +648,7 @@ _SQL_;
 			throw new JWException('must int');
 
 		// if enabled, we set the timestamp of new picture
-		return JWDB::UpdateTableRow( 'User', $idUser, array ( 'idPicture' => $idPicture ) );
+		return JWDB_Cache::UpdateTableRow( 'User', $idUser, array ( 'idPicture' => $idPicture ) );
 	}
 
 	/*
@@ -611,7 +698,7 @@ _SQL_;
 
 		$idUser	= intval($user_info['id']);
 
-		return JWDB::UpdateTableRow('User', $idUser, $db_change_set);
+		return JWDB_Cache::UpdateTableRow('User', $idUser, $db_change_set);
 	}
 
 	/*
@@ -620,7 +707,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDeviceRowsByUserIds($idUsers)
 	{
-		$user_rows	= JWUser::GetDbRowsByIds($idUsers);
+		$user_rows	= JWDB_Cache_User::GetDbRowsByIds($idUsers);
 
 		$send_via_device_rows = array();
 
@@ -638,7 +725,7 @@ _SQL_;
 
 	static public function GetSendViaDeviceByUserId($idUser)
 	{
-		$rows = JWUser::GetSendViaDeviceRowsByUserIds(array($idUser));
+		$rows = self::GetSendViaDeviceRowsByUserIds(array($idUser));
 
 		if ( empty($rows) )
 			return array();
@@ -652,7 +739,7 @@ _SQL_;
 	 */
 	static public function GetSendViaDevice($idUser)
 	{
-		$user_rows	= JWUser::GetDbRowsByIds(array($idUser));
+		$user_rows	= JWDB_Cache_User::GetDbRowsByIds(array($idUser));
 
 		if ( isset($user_rows[$idUser]['deviceSendVia']) )
 			return $user_rows[$idUser]['deviceSendVia'];
@@ -676,12 +763,12 @@ _SQL_;
 			$device = 'web';
 		}
 
-		return JWDB::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));
+		return JWDB_Cache::UpdateTableRow('User', $idUser, array('deviceSendVia'=>$device));
 	}
 
 	static public function IsProtected($idUser)
 	{
-		$user_db_row = JWUser::GetDbRowById($idUser);
+		$user_db_row = JWDB_Cache_User::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['protected']);
 	}
 
@@ -691,14 +778,14 @@ _SQL_;
 		// now we assume all user cis sub sms. (it's free)
 		return true;
 
-		$user_db_row = JWUser::GetDbRowById($idUser);
+		$user_db_row = JWDB_Cache_User::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['isSubSms']);
 	}
 
 
 	static public function IsWebUser($idUser)
 	{
-		$user_db_row = JWUser::GetDbRowById($idUser);
+		$user_db_row = JWDB_Cache_User::GetDbRowById($idUser);
 		return ('Y'==$user_db_row['isWebUser']);
 	}
 
@@ -710,19 +797,19 @@ _SQL_;
 			throw new JWException('must int');
 
 		$condition = array( 'isWebUser'	=> ($isWebUser ? 'Y' : 'N') );
-		return JWDB::UpdateTableRow('User', $idUser, $condition);
+		return JWDB_Cache::UpdateTableRow('User', $idUser, $condition);
 	}
 
 
 	static public function GetFeaturedUserIds($max=10)
 	{
-		$featured_user_info	= JWUser::GetUserInfo('featured');
-		$status_row 		= JWStatus::GetStatusIdsFromUser($featured_user_info['idUser'], $max);
+		$featured_user_info = self::GetUserInfo('featured');
+		$status_row = JWDB_Cache_Status::GetStatusIdsFromUser($featured_user_info['id'], $max);
 
 		if ( empty($status_row['status_ids']) )
 			return;
 
-		$status_db_row		= JWStatus::GetDbRowsByIds($status_row['status_ids']);
+		$status_db_row	= JWDB_Cache_Status::GetDbRowsByIds($status_row['status_ids']);
 
 		$user_ids 			= array();
 
@@ -732,7 +819,7 @@ _SQL_;
 			if ( ! preg_match('/^(\S+)/', $status, $matches) )
 				continue;
 
-			$user_info = JWUser::GetUserInfo($matches[1]);
+			$user_info = self::GetUserInfo($matches[1]);
 			if ( empty($user_info) )
 				continue;
 
@@ -851,7 +938,7 @@ _SQL_;
 
 	static public function IsAdmin($idUser)
 	{
-		$admin_user_db_row = JWUser::GetUserInfo('adm');
+		$admin_user_db_row = self::GetUserInfo('adm');
 
 		if ( 		1==$idUser	// zixia
 				|| 89==$idUser	// seek
@@ -882,7 +969,7 @@ _SQL_;
 		$updateRow = array(
 			'timeStamp' => null,
 		);
-		return JWDB::UpdateTableRow( 'User', $idUser, $updateRow );
+		return JWDB_Cache::UpdateTableRow( 'User', $idUser, $updateRow );
 	}
 
 	static public function CreateDriftBottle($ipName=null, $ipNameFull=null){
@@ -1026,7 +1113,7 @@ _SQL_;
 					case JWFuncCode::PRE_CONF_IDUSER:
 						if( $preAndId['id'] )
 						{
-							$user = JWUser::GetDbRowById( $preAndId['id'] );
+							$user = JWDB_Cache_User::GetDbRowById( $preAndId['id'] );
 							if( false == $user )
 								return 'CO-' . $user['idConference'];
 						}
@@ -1034,7 +1121,7 @@ _SQL_;
 					case JWFuncCode::PRE_REG_INVITE:
 						if( $preAndId['id'] )
 						{
-							$user = JWUser::GetDbRowById( $preAndId['id'] );
+							$user = JWDB_Cache_User::GetDbRowById( $preAndId['id'] );
 							if( false == $user )
 								return 'IN-' . $user['idConference'];
 						}

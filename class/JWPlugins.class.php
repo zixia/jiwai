@@ -29,7 +29,7 @@ class JWPlugins
 
 
 			$photo_row = JWPicture::GetDbRowById( $status_row['idPicture'] );
-			$user_row = JWUser::GetDbRowById( $status_row['idUser'] );
+			$user_row = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] );
 
 			$photo_title = $photo_row['fileName'];
 			$photo_src = JWPicture::GetUrlById($status_row['idPicture'], 'middle');

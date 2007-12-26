@@ -31,7 +31,7 @@ else
 }
 
 $request_user_ids = array_keys( $request_note_rows ); 
-$request_user_rows = JWUser::GetDbRowsByIds($request_user_ids);
+$request_user_rows = JWDB_Cache_User::GetDbRowsByIds($request_user_ids);
 $picture_ids = JWFunction::GetColArrayFromRows($request_user_rows, 'idPicture');
 $picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 ?>

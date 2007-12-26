@@ -37,7 +37,7 @@ if( isset($_REQUEST['jw_status']))
 
 //get followers
 $follower_ids = JWTagFollower::GetFollowerIds( $tag_row['id'] );
-$follower_rows = JWUser::GetDbRowsByIds( $follower_ids );
+$follower_rows = JWDB_Cache_User::GetDbRowsByIds( $follower_ids );
 $picture_ids = JWFunction::GetColArrayFromRows($follower_rows, 'idPicture');
 $picture_url_rows = JWPicture::GetUrlRowByIds($picture_ids);
 $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
@@ -54,7 +54,7 @@ $status_data = JWDB_Cache_Status::GetStatusIdsTopicByIdTag( $tag_row['id'], $pag
 $status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
 
 //get user info
-$user_rows = JWUser::GetDbRowsByIds( $status_data['user_ids'] );
+$user_rows = JWDB_Cache_User::GetDbRowsByIds( $status_data['user_ids'] );
 
 $keywords = $tag_row['name'];
 $user_showed = array();

@@ -51,7 +51,7 @@ if( JWSns::IsProtected($user_row, $current_user_id) )
 	{
 		$thread_status = JWDB_Cache_Status::GetDbRowById( $thread_id );
 		if ( $thread_status['idUser'] )
-			$thread_user = JWUser::GetDbRowById( $thread_status['idUser'] );
+			$thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] );
 	}
 
 	$reply_link_string = "回复";

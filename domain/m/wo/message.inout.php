@@ -12,7 +12,7 @@ $messageIds = $messageInfo['message_ids'];
 $userIds    = $messageInfo['user_ids'];
 
 $messageRows    = JWMessage::GetMessageDbRowsByIds( $messageIds );
-$userRows       = JWUser::GetDbRowsByIds( $userIds);
+$userRows       = JWDB_Cache_User::GetDbRowsByIds( $userIds);
 
 if( $boxType == JWMessage::INBOX ) {
 	$messageIdsUpdate = array();

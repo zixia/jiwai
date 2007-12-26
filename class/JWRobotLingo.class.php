@@ -362,7 +362,7 @@ class JWRobotLingo {
 			return null;
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetDbRowById($address_user_id);
+		$address_user_row = JWDB_Cache_User::GetDbRowById($address_user_id);
 
 		/*
 	 	 *	解析命令参数
@@ -488,7 +488,7 @@ class JWRobotLingo {
 			return null;
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetDbRowById($address_user_id);
+		$address_user_row = JWDB_Cache_User::GetDbRowById($address_user_id);
 
 		/** Parse Param  **/
 		$body = $robotMsg->GetBody();
@@ -607,7 +607,7 @@ class JWRobotLingo {
 		$address_user_id = $device_db_row['idUser'];
 
 
-		$address_user_row = JWUser::GetDbRowById($address_user_id);
+		$address_user_row = JWDB_Cache_User::GetDbRowById($address_user_id);
 
 
 		/*
@@ -667,7 +667,7 @@ class JWRobotLingo {
 			return null;
 
 		$address_user_id = $device_db_row['idUser'];
-		$address_user_row = JWUser::GetDbRowById($address_user_id);
+		$address_user_row = JWDB_Cache_User::GetDbRowById($address_user_id);
 
 		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ){
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_GET_HELP' );
@@ -764,7 +764,7 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		$address_user_db_row = JWUser::GetDbRowById($address_user_id);
+		$address_user_db_row = JWDB_Cache_User::GetDbRowById($address_user_id);
 		$friend_name = $matches[1];
 
 		if( strtolower( trim($friend_name) ) == 'all' ) {
@@ -1059,7 +1059,7 @@ class JWRobotLingo {
 		/**
 		 * Temporary limit to send message
 		 */
-		$address_user = JWUser::GetDbRowById( $address_user_id );
+		$address_user = JWDB_Cache_User::GetDbRowById( $address_user_id );
 		if( false == JWFollower::IsFollower( $address_user_id, $friend_id )
 			&& ( time() - strtotime($address_user['timeCreate']) < 30*86400 ) )
 		{
@@ -1088,7 +1088,7 @@ class JWRobotLingo {
 		
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 		if( false  == empty( $device_db_row ) )
-			$user_info = JWUser::GetDbRowById( $device_db_row['idUser'] );
+			$user_info = JWDB_Cache_User::GetDbRowById( $device_db_row['idUser'] );
 
 		$registered = true;
 		if( empty( $device_db_row ) || empty($user_info) ){
@@ -1352,7 +1352,7 @@ class JWRobotLingo {
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 			}
 
-			$users = JWUser::GetDbRowsByIds( $idUserBlocks, false, count($idUserBlocks) );
+			$users = JWDB_Cache_User::GetDbRowsByIds( $idUserBlocks, false, count($idUserBlocks) );
 			$nameScreens = null;
 			foreach( $users as $u ) {
 				$nameScreens .= $u['nameScreen'].', ';

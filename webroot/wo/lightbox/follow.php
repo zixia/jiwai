@@ -9,7 +9,7 @@ $follower_user_id = $follower_user_row = null;
 if ( preg_match('/^\/(\d+)$/',$param,$match) )
 {
 	$follower_user_id = intval($match[1]);
-	$follower_user_row = JWUser::GetDbRowById( $follower_user_id );
+	$follower_user_row = JWDB_Cache_User::GetDbRowById( $follower_user_id );
 }
 
 if( empty( $follower_user_row ) )

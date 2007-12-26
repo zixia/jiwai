@@ -2,7 +2,7 @@
 $followersNum = JWFollower::GetFollowerNum( $userInfo['id'] );
 $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds  = JWFollower::GetFollowerIds( $userInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-$followerRows = JWUser::GetDbRowsByIds($followerIds);
+$followerRows = JWDB_Cache_User::GetDbRowsByIds($followerIds);
 
 $pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followings/' );
 

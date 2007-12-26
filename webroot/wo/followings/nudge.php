@@ -20,7 +20,7 @@ if ( $logined_user_id )
 	else
 	{
 		$nudged_user_id = intval($match[1]);
-		$nudged_user_rows	= JWUser::GetDbRowsByIds(array($nudged_user_id));
+		$nudged_user_rows	= JWDB_Cache_User::GetDbRowsByIds(array($nudged_user_id));
 		$nudged_user_row	= $nudged_user_rows[$nudged_user_id];
 
 		JWSns::ExecWeb($logined_user_id, "nudge $nudged_user_row[nameScreen]", '挠挠此人');

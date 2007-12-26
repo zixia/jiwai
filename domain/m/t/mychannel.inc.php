@@ -68,7 +68,7 @@ $status_data = JWDB_Cache_Status::GetStatusIdsTopicByIdTag( $tag_row['id'], $pag
 $status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
 
 //get user info
-$user_rows = JWUser::GetDbRowsByIds( $status_data['user_ids'] );
+$user_rows = JWDB_Cache_User::GetDbRowsByIds( $status_data['user_ids'] );
 JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
 'pagination' => $pagination,
 'isInTag' => true,

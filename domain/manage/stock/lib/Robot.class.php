@@ -188,7 +188,7 @@ class StockCmdRobot{
 		if( empty( $ids ) ){
 			return "系统中还没有登记股票账户";
 		}
-		$userRows = JWUser::GetDbRowsByIds( $ids );
+		$userRows = JWDB_Cache_User::GetDbRowsByIds( $ids );
 		return self::_ListAccount( $userRows );
 	}
 	static public function Lingo_Cate($cmd){
@@ -196,7 +196,7 @@ class StockCmdRobot{
 		if( empty( $ids ) ){
 			return "系统中还没有登记分类账户";
 		}
-		$userRows = JWUser::GetDbRowsByIds( $ids );
+		$userRows = JWDB_Cache_User::GetDbRowsByIds( $ids );
 		return self::_ListAccount( $userRows );
 	}
 
@@ -303,7 +303,7 @@ class StockCmdRobot{
 
 			$userIds = JWFollowRecursion::GetSuperior( $meUser['id'], 1, $isStock );
 			$userIds = array_diff( $userIds, array( $meUser['id'] )) ;
-			$param_array = JWUser::GetDbRowsByIds( $userIds );
+			$param_array = JWDB_Cache_User::GetDbRowsByIds( $userIds );
 			if( empty( $param_array ) ) {
 				return "【(${me})$meUser[nameFull]】" . "不存在级联关系";
 			}
@@ -371,7 +371,7 @@ class StockCmdRobot{
 			return "【(${me})$meUser[nameFull]】" . "不存在级联关系";
 		}
 
-		$userRows = JWUser::GetDbRowsByIds( $userIds );
+		$userRows = JWDB_Cache_User::GetDbRowsByIds( $userIds );
 
 		$partResult = self::_ListAccount( $userRows ) ;
 		

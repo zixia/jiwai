@@ -77,7 +77,7 @@ class JWDB_Cache_Picture implements JWDB_Cache_Interface
 		$pk_id		= $dbRow['id'];
 		$user_id	= $dbRow['idUser'];
 
-		//$user_db_row = JWDB_Cache_User::GetUserInfo($user_id);
+		//$user_db_row = JWUser::GetUserInfo($user_id);
 		//JWDB_Cache_User::OnDirty($user_db_row);
 
 		$dirty_keys = array(

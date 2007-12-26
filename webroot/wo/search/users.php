@@ -16,9 +16,9 @@ $page_user_info		= $current_user_info;
 
 $searched_ids		= JWSearch::GetSearchUserIds($q);
 $searched_num		= count( $searched_ids );
-$searched_user_rows	= JWUser::GetDbRowsByIds($searched_ids);
+$searched_user_rows	= JWDB_Cache_User::GetDbRowsByIds($searched_ids);
 
-$searched_user_rows = JWUser::GetDbRowsByIds($searched_ids);
+$searched_user_rows = JWDB_Cache_User::GetDbRowsByIds($searched_ids);
 $picture_ids = JWFunction::GetColArrayFromRows($searched_user_rows, 'idPicture');
 $picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 ?>

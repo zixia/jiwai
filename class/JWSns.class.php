@@ -167,7 +167,7 @@ class JWSns {
 		if ( !is_array($idFriends) )
 			throw new JWException('must array');
 		
-		$friend_user_rows	= JWUser::GetDbRowsByIds($idFriends);
+		$friend_user_rows	= JWDB_Cache_User::GetDbRowsByIds($idFriends);
 		$user_info			= JWUser::GetUserInfo($idUser);
 
 		$user_notice_settings 	= JWUser::GetNotification($idUser);
@@ -365,7 +365,7 @@ class JWSns {
 		$code_invite 	= JWDevice::GenSecret(32, JWDevice::CHAR_ALL); 
 		$id_invite	= JWInvitation::Create($idUser,$address,$type,$email_message, $code_invite);
 
-		$user_rows 	= JWUser::GetDbRowsByIds(array($idUser));
+		$user_rows 	= JWDB_Cache_User::GetDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
 		switch ( $type )
@@ -591,7 +591,7 @@ class JWSns {
 		/* For conference Protected setting */
 		if ( $conference )
 		{
-			$conference_user = JWUser::GetDbRowById( $conference['idUser'] );
+			$conference_user = JWDB_Cache_User::GetDbRowById( $conference['idUser'] );
 			if ( $conference['friendOnly'] == 'Y' )
 			{
 				if ( false == JWFollower::IsFollower( $idUser, $conference_user['id'] ) )
@@ -960,7 +960,7 @@ class JWSns {
 		}
 
 		/* protected user */
-		if ( $status_row['idUser'] && $user_row = JWUser::GetDbRowById( $status_row['idUser'] ) )
+		if ( $status_row['idUser'] && $user_row = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] ) )
 		{
 			if ( self::IsProtected( $user_row, $action_user_id ) )
 				return true;
@@ -970,7 +970,7 @@ class JWSns {
 		if ( $status_row['idConference'] )
 		{
 			$conference = JWConference::GetDbRowById( $status_row['idConference'] );
-			if ( $conference && $conference_user = JWUser::GetDbRowById( $conference['idUser'] ) )
+			if ( $conference && $conference_user = JWDB_Cache_User::GetDbRowById( $conference['idUser'] ) )
 				return self::IsProtected( $conference_user, $action_user_id );
 		}
 

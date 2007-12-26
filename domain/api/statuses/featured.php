@@ -43,7 +43,7 @@ function renderXmlStatuses(){
 
 function getFeaturedWithStatus(){
 	$featuredIds = JWUser::GetFeaturedUserIds(20);
-	$featured = JWUser::GetDbRowsByIds( $featuredIds );
+	$featured = JWDB_Cache_User::GetDbRowsByIds( $featuredIds );
 
 	$statusIds = array();
 	foreach( $featuredIds as $f ){

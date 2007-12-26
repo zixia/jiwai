@@ -17,7 +17,7 @@ $page = ( $page < 1 ) ? 1 : $page;
 $page_user_id		= $g_page_user_id;
 
 $current_user_id	= JWLogin::GetCurrentUserId();
-$page_user_info 	= JWUser::GetDbRowById($page_user_id);
+$page_user_info 	= JWDB_Cache_User::GetDbRowById($page_user_id);
 
 $protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 
@@ -102,7 +102,7 @@ $status_rows	= JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids']);
 
 $status_data['user_ids'][] = $page_user_id;
 
-$user_rows		= JWUser::GetDbRowsByIds	($status_data['user_ids']);
+$user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 
 if( $page_user_info['idConference'] ) {
 	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
@@ -200,7 +200,7 @@ JWTemplate::ShowActionResultTips();
 //die(var_dump($page_user_id));
 $status_user_info = $page_user_info;
 if( @$head_status_rows[$head_status_id] ) {
-	$status_user_info = JWUser::GetDbRowById( $head_status_rows[$head_status_id]['idUser'] );
+	$status_user_info = JWDB_Cache_User::GetDbRowById( $head_status_rows[$head_status_id]['idUser'] );
 }
 
 JWTemplate::StatusHead( $status_user_info, @$head_status_rows[$head_status_id] , null );

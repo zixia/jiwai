@@ -4,7 +4,7 @@ $pageTitle = "我关注的人";
 $followingsNum = JWFollower::GetFollowingNum( $loginedUserInfo['id'] );
 $pagination = new JWPagination( $followingsNum, $page, 10 );
 $followingIds  = JWFollower::GetFollowingIds( $loginedUserInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-$followingRows = JWUser::GetDbRowsByIds($followingIds);
+$followingRows = JWDB_Cache_User::GetDbRowsByIds($followingIds);
 
 $actionOps = actionop( $loginedUserInfo['id'], $followingIds );
 

@@ -649,19 +649,20 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	/*
 	 *	规范命名方式，以后都应该是 GetDbRowsByIds 或者 GetDbRowById，不用在函数名称中加数据库表名
 	 */
-	static public function GetDbRowsByIds ($idStatuses)
+	static public function GetDbRowsByIds ($status_ids)
 	{
-		return JWDB_Cache::GetCachedDbRowsByIds('Status', $idStatuses, array("JWStatus","GetDbRowsByIds") );
+		$status_ids = array_unique($status_ids);
+		return JWDB_Cache::GetCachedDbRowsByIds('Status', $status_ids, array("JWStatus","GetDbRowsByIds") );
 	}
 
-	static public function GetDbRowById ($idStatus)
+	static public function GetDbRowById ($status_id)
 	{
-		$status_db_rows = self::GetDbRowsByIds(array($idStatus));
+		$status_db_rows = self::GetDbRowsByIds(array($status_id));
 
 		if ( empty($status_db_rows) )
 			return array();
 
-		return $status_db_rows[$idStatus];
+		return $status_db_rows[$status_id];
 	}
 
 	static public function GetStatusNum($idUser)
