@@ -48,7 +48,7 @@ html>body #navigation ul  {margin-top:45px;}
 #navigation .line1 {background-color:#BDBDBD; width:78px;line-height:1px; height:1px; overflow:hidden;}
 #navigation .nav {background-color:#BDBDBD; width:78px;}
 #navigation .nav a {border:1px solid #ffffff; display: block; width:74px; height:30px; line-height:36px; text-align:center; margin:0 1px; text-decoration:none; overflow:hidden;color: #242424;background-color: #F7F7F7;}
-#navigation .nav a:active, #navigation .nav a:hover {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
+#navigation .nav a.active, #navigation .nav a:hover {background-color:#F97B00; border:none; width:76px; height:32px; line-height:38px; color:#ffffff;}
 /* The header end */
 
 /* The separator start */
@@ -94,10 +94,10 @@ html>body #navigation ul  {margin-top:45px;}
 #permalink .odd .cont h3 { font-weight:bold;padding:5px 0 0 5px;}
 #permalink .meta {color:#929292; font-size:12px;padding:5px 0 8px 5px;}
 #permalink .meta a:link,#permalink .meta a:visited {color:#D05D02;text-decoration:none;}
-#permalink .meta a:hover,#wtTimeline .meta a:active {color:#009BC7;text-decoration:underline;}
+#permalink .meta a:hover,#wtTimeline .meta a.active {color:#009BC7;text-decoration:underline;}
 #permalink .reply {color:#009BC7; font-size:12px;}
 #permalink .reply a:link,#permalink .reply a:visited {color:#009BC7;text-decoration:underline;}
-#permalink .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
+#permalink .reply a:hover,#wtTimeline .reply a.active {color:#009BC7;text-decoration:none;}
 
 #sidebar { width:229px; float:right; overflow:hidden;}
 #sidebar h3#sidebar_title {margin:0;background:url(h_sidebar.gif) no-repeat 0 0;text-indent:-8000px;height:42px;}
@@ -250,11 +250,11 @@ table.navtip_table td {font-size:13px; line-height:20px; vertical-align:middle;}
 #wtTimeline a:hover {color:#FF830B; text-decoration:underline;}
 #wtTimeline .meta {color:#929292; font-size:12px; display:block; margin-top:5px;}
 #wtTimeline .meta a:link,#wtTimeline .meta a:visited{color:#D05D02;text-decoration:none;}
-#wtTimeline .meta a:hover,#wtTimeline .meta a:active{color:#009BC7;text-decoration:underline;}
+#wtTimeline .meta a:hover,#wtTimeline .meta a.active{color:#009BC7;text-decoration:underline;}
 #wtTimeline .pic { border:1px solid #999999; background-color:#000000; padding:4px; width:auto; margin:5px 0 0px 0;}
 #wtTimeline .reply {color:#009BC7; font-size:12px;}
 #wtTimeline .reply a:link,#wtTimeline .reply a:visited {color:#009BC7;text-decoration:underline;}
-#wtTimeline .reply a:hover,#wtTimeline .reply a:active{color:#009BC7;text-decoration:none;}
+#wtTimeline .reply a:hover,#wtTimeline .reply a.active{color:#009BC7;text-decoration:none;}
 /* The wtTimeline end */
 
 /* The wtTableMenu start */
@@ -264,7 +264,7 @@ table.navtip_table td {font-size:13px; line-height:20px; vertical-align:middle;}
 #wtTableMenu .middle {float: left;width: 530px;height: 46px;text-align: left;font-size: 12px;background: url(../images/org-tit-bg.gif) repeat-x right bottom;background-color: #FFF;margin: 0 0 0 0;}
 #wtTableMenu .right {float: right;width: 2px;height:46px;padding: 0 0 0 0;background: url(../images/org-tit-r.gif) no-repeat right bottom;background-color: #FFF;} 
 #wtTableMenu a,#wtTableMenu a:link,#wtTableMenu a:visited {float: right;width: 73px;height: 21px;display: block;background: url(../images/org-tab-on.gif) no-repeat 0 0;text-align: center;line-height: 18px;color: #FFF;font-size: 14px; font-weight: bold;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 
-#wtTableMenu a:hover,#wtTableMenu a:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;}
+#wtTableMenu a:hover,#wtTableMenu a.active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;}
 #wtTableMenu a.active,#wtTableMenu a.active:link,#wtTableMenu a.active:visited,#wtTableMenu a.active:hover,#wtTableMenu a.active:active {width: 73px;height: 21px;background: url(../images/org-tab-off.gif) no-repeat 0 0;color: #000000;padding: 9px 0 0 0;margin: 7px 5px 0 0;text-decoration: none;} 
 /* The wtTableMenu end */
 
@@ -419,10 +419,10 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtTimelineLaunch a:hover {color:#FF830B; text-decoration:underline;}
 #wtTimelineLaunch .meta {color:#929292; font-size:12px; display:block; float:right;padding:0 8px 0 0;}
 #wtTimelineLaunch .meta a:link,#wtTimelineLaunch .meta a:visited {color:#D05D02;text-decoration:none;}
-#wtTimelineLaunch .meta a:hover,#wtTimelineLaunch .meta a:active {color:#009BC7;text-decoration:underline;}
+#wtTimelineLaunch .meta a:hover,#wtTimelineLaunch .meta a.active {color:#009BC7;text-decoration:underline;}
 #wtTimelineLaunch .reply {color:#009BC7; font-size:12px;}
 #wtTimelineLaunch .reply a:link,#wtTimeline .reply a:visited {color:#009BC7;text-decoration:underline;}
-#wtTimelineLaunch .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
+#wtTimelineLaunch .reply a:hover,#wtTimeline .reply a.active {color:#009BC7;text-decoration:none;}
 #wtTimelineLaunch .Concerndiv { margin:10px; clear:both;}
 #wtTimelineLaunch .Concern {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none;clear:both;}
 #wtTimelineLaunch .Concern a:link {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none; clear:both;}
@@ -483,6 +483,9 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .floatleft1 { float:left; padding:8px 5px 0 0;}
 #wtMainBlock .floatright { float:right;}
 #wtMainBlock .meta {color:#333333; font-size:12px; display:block; margin-top:5px;}
+#wtMainBlock .login { padding:22px 0 0 60px;}
+#wtMainBlock .mar { margin: 0 0 0 1em;}
+#wtMainBlock .po { padding:0 0 0 45px; font-size:12px; color:#666666;} 
 /* The wtMainBlock end */
 
 /* The wtRegist start */

@@ -90,7 +90,7 @@ JWTemplate::html_head(array(
 
 <body class="account" id="create">
 
-<?php JWTemplate::header() ?>
+<?php JWTemplate::header('/wo/account/create') ?>
 <?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
