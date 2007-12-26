@@ -8,7 +8,8 @@
  */
 
 // on page load call TB_init
-window.addEvent('domready', TB_init);
+/* we do not need this func, marked by seek @2007-12-25 X'mas*/
+//window.addEvent('domready', TB_init);
 
 // prevent javascript error before the content has loaded
 TB_WIDTH = 0;
