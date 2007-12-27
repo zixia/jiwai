@@ -9,8 +9,9 @@ class JWPubSub_Listener_Mt implements JWPubSub_Listener
 		$address = $data['address'];
 		$message = $data['message'];
 		$server_address = $data['server_address'];
+		$link_id = isset($data['link_id']) ? $data['link_id'] : null;
 
-		if ( JWRobot::SendMtRaw( $address, $type, $message, $server_address ) )
+		if ( JWRobot::SendMtRaw( $address, $type, $message, $server_address, $link_id ) )
 		{
 			echo "[MT]: $type://$server_address -> $type://$address\n";
 		}
