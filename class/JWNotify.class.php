@@ -380,7 +380,7 @@ class JWNotify{
 	{
 		$user_id = JWDB::CheckInt( $user_id );
 
-		$follower_ids = JWFollower::GetNotificationIds( $user_id );
+		$follower_ids = JWDB_Cache_Follower::GetNotificationIds( $user_id );
 		
 		$user_info = JWUser::GetUserInfo( $user_id );
 
@@ -406,7 +406,7 @@ class JWNotify{
 	 */
 	static public function GetAvailableConferenceFollowerIds($conference, $conference_user) 
 	{
-		$follower_ids = JWFollower::GetNotificationIds( $conference_user['id'] );
+		$follower_ids = JWDB_Cache_Follower::GetNotificationIds( $conference_user['id'] );
 		
 		/* friend private */
 		if ( $conference_user['protected']=='Y' || $conference['friendOnly']=='Y' ) 

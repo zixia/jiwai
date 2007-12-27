@@ -546,8 +546,8 @@ class JWSns {
 		//TODO
 		$num_pm			= JWMessage::GetMessageNum($idUser);
 		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
-		$num_following		= JWFollower::GetFollowingNum($idUser);
-		$num_follower		= JWFollower::GetFollowerNum($idUser);
+		$num_following		= JWDB_Cache_Follower::GetFollowingNum($idUser);
+		$num_follower		= JWDB_Cache_Follower::GetFollowerNum($idUser);
 
 		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
 		$num_mms		= JWStatus::GetStatusMmsNum($idUser);

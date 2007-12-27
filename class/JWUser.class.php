@@ -172,6 +172,8 @@ _SQL_;
 		if ( false==is_array($user_ids) )
 			throw new JWException('must array');
 
+		$user_ids = array_unique( $user_ids );
+
 		$condition_in = JWDB::GetInConditionFromArray($user_ids);
 
 		$sql = <<<_SQL_
@@ -212,6 +214,8 @@ _SQL_;
 
 		if ( false==is_array($user_ids) )
 			throw new JWException('must array');
+
+		$user_ids = array_unique( $user_ids );
 
 		$condition_in = JWDB::GetInConditionFromArray($user_ids);
 

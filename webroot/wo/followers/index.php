@@ -13,7 +13,7 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$follower_num			= JWFollower::GetFollowerNum	($page_user_info['id']);
+$follower_num			= JWDB_Cache_Follower::GetFollowerNum	($page_user_info['id']);
 
 $follower_ids         = JWFollower::GetFollowerIds( $page_user_info['id'] );
 $follower_user_rows		= JWDB_Cache_User::GetDbRowsByIds	($follower_ids);
@@ -96,4 +96,3 @@ foreach ( $follower_ids as $list_user_id )
 <?php JWTemplate::footer(); ?>
 </body>
 </html>
-

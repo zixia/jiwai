@@ -277,8 +277,8 @@ class JWMail {
 		}
 
 		$num_status = JWStatus::GetStatusNum( $user['id'] );
-		$num_following = JWFollower::GetFollowingNum( $user['id'] );
-		$num_follower = JWFollower::GetFollowerNum( $user['id'] );
+		$num_following = JWDB_Cache_Follower::GetFollowingNum( $user['id'] );
+		$num_follower = JWDB_Cache_Follower::GetFollowerNum( $user['id'] );
 
 		$invitation_code = JWUser::GetIdEncodedFromIdUser( $user['id'] );
 	

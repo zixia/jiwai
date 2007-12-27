@@ -18,13 +18,10 @@ if ( isset($g_user_friends) && $g_user_friends ) {
 	$page_user_info		= $logined_user_info;
 }
 
-$friend_num			= JWFollower::GetFollowingNum	($page_user_info['id']);
-$friend_ids         = JWFollower::GetFollowingIds( $page_user_info['id'] );
-$friend_user_rows	= JWDB_Cache_User::GetDbRowsByIds	($friend_ids);
-$action_rows = JWSns::GetUserActions($logined_user_info['id'], $friend_ids);
+$friend_ids = JWFollower::GetFollowingIds( $page_user_info['id'] );
+$friend_user_rows = JWDB_Cache_User::GetDbRowsByIds($friend_ids);
+$followings_num = count( $friend_user_rows );
 
-
-$followings_num = JWFollower::GetFollowingNum( $page_user_info['id'] );
 $picture_ids = JWFunction::GetColArrayFromRows($friend_user_rows, 'idPicture');
 $picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 ?>
@@ -94,4 +91,3 @@ foreach( $friend_ids as $list_user_id )
 <?php JWTemplate::footer();?>
 </body>
 </html>
-

@@ -61,7 +61,7 @@ if ( $message_box_type == JWMessage::INBOX ) {
 <?php JWTemplate::ShowActionResultTips() ?>
 
 <?php
-$be_friend_ids = JWFollower::GetBioFollowingIds($logined_user_id);
+$be_friend_ids = JWDB_Cache_Follower::GetBioFollowingIds($logined_user_id);
 
 $friend_rows	= JWDB_Cache_User::GetDbRowsByIds($be_friend_ids);
 

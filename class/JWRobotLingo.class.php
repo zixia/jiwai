@@ -768,7 +768,7 @@ class JWRobotLingo {
 		$friend_name = $matches[1];
 
 		if( strtolower( trim($friend_name) ) == 'all' ) {
-			$friendIds = JWFollower::GetBioFollowingIds( $device_db_row['idUser'] );
+			$friendIds = JWDB_Cache_Follower::GetBioFollowingIds( $device_db_row['idUser'] );
 			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
 				JWNotify::GetPrettySender($address_user_db_row),
 			));

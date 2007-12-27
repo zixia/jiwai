@@ -596,6 +596,9 @@ die(var_dump($db_result));
 			case "Status":
 				return JWDB_Cache_Status::OnDirty($dbRow);
 				break;
+			case "Follower":
+				return JWDB_Cache_Follower::OnDirty($dbRow);
+				break;
 			default:
 				throw new JWException("JWDBCache::OnDirty($dbRow[id], $table) not support yet!");
 				break;

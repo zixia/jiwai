@@ -340,8 +340,8 @@ _HTML_;
 		$userInfo = JWUser::GetUserInfo( $idUser );
 		$wo = preg_match( '/^\/wo\//', $_SERVER['REQUEST_URI'] );
 
-		$followingsNum = JWFollower::GetFollowingNum( $idUser );
-		$followersNum = JWFollower::GetFollowerNum( $idUser );
+		$followingsNum = JWDB_Cache_Follower::GetFollowingNum( $idUser );
+		$followersNum = JWDB_Cache_Follower::GetFollowerNum( $idUser );
 		$inRequestsNum = JWFollowerRequest::GetInRequestNum( $idUser );
 		$outRequestsNum = JWFollowerRequest::GetOutRequestNum( $idUser );
 

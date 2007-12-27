@@ -45,17 +45,17 @@ class JWFollower {
 	 * Is idFollower is idUser's follower?
 	 *
 	 */
-	static function IsFollower($idUser, $idFollower)
+	static function IsFollower($user_id, $follower_user_id)
 	{
-		if( false == $idFollower || false == $idUser )
+		if( false == $follower_user_id || false == $user_id )
 			return false;
 
-		$idUser = JWDB::CheckInt( $idUser );
-		$idFollower = JWDB::CheckInt( $idFollower );
+		$user_id = JWDB::CheckInt( $user_id );
+		$follower_user_id = JWDB::CheckInt( $follower_user_id );
 
-		$followerArray = self::GetFollowerIds( $idUser );
+		$followerArray = self::GetFollowerIds( $user_id );
 
-		return in_array( $idFollower, $followerArray );
+		return in_array( $follower_user_id, $followerArray );
 	}
 
 
@@ -64,25 +64,31 @@ class JWFollower {
 	 * 	Get follower list
 	 *	@return array	array of follower id list
 	 */
-	static function GetFollowerIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset = 0)
+	static function GetFollowerIds($user_id, $num=self::DEFAULT_FOLLOWER_MAX, $offset = 0)
 	{
-		$followerInfos = self::GetFollowerInfos( $idUser, $numMax, $offset );
-		return array_keys( $followerInfos );
-	}
+		$cached_result = JWDB_Cache_Follower::GetFollowerInfos_Inner($user_id,$num,$offset);
 
-	static function GetNotificationIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset = 0)
+		if ( empty($cached_result) )
+			return array();
+
+		return $cached_result['user_ids'];
+	}
+	
+	/**
+	 * for called for JWDB_Cache_Follower 
+	 */
+	static function GetNotificationIds($user_id)
 	{
-		$idUser = JWDB::CheckInt($idUser);
-		$numMax = JWDB::CheckInt($numMax);
+		$user_id = JWDB::CheckInt($user_id);
 
 		$sql = <<<_SQL_
 SELECT	idFollower
-	FROM	Follower
-	WHERE	
-		idUser=$idUser 
-		AND notification='Y'
-	ORDER BY id DESC
-	LIMIT $offset,$numMax
+FROM	
+	Follower
+WHERE	
+	idUser=$user_id
+	AND notification='Y'
+ORDER BY id DESC
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);
@@ -108,14 +114,14 @@ _SQL_;
 			true: 成功 
 			false: 失败
 	 */
-	static public function Destroy($idUser, $idFollower)
+	static public function Destroy($user_id, $follower_user_id)
 	{
-		$idUser = JWDB::CheckInt($idUser);
-		$idFollower = JWDB::CheckInt($idFollower);
+		$user_id = JWDB::CheckInt($user_id);
+		$follower_user_id = JWDB::CheckInt($follower_user_id);
 
-		return JWDB::DelTableRow('Follower', array(
-			'idUser' => $idUser,
-			'idFollower' => $idFollower,
+		return JWDB_Cache::DelTableRow('Follower', array(
+			'idUser' => $user_id,
+			'idFollower' => $follower_user_id,
 		));
 	}
 
@@ -128,30 +134,30 @@ _SQL_;
 			true: 成功 
 			false: 失败
 	 */
-	static public function Create($idUser, $idFollower, $notification='N')
+	static public function Create($user_id, $follower_user_id, $notification='N')
 	{
-		$idUser = JWDB::CheckInt($idUser);
-		$idFollower = JWDB::CheckInt($idFollower);
+		$user_id = JWDB::CheckInt($user_id);
+		$follower_user_id = JWDB::CheckInt($follower_user_id);
 
-		return JWDB::SaveTableRow('Follower', array(
-			'idUser' => $idUser,
-			'idFollower' => $idFollower,
+		return JWDB_Cache::SaveTableRow('Follower', array(
+			'idUser' => $user_id,
+			'idFollower' => $follower_user_id,
 			'notification' => $notification,
 			'timeCreate' => JWDB::MysqlFuncion_Now(),
 		));
 	}
 
-	static public function SetNotification($idUser, $idFollower, $notification='N'){
-		$idUser = JWDB::CheckInt($idUser);
-		$idFollower = JWDB::CheckInt($idFollower);
+	static public function SetNotification($user_id, $follower_user_id, $notification='N'){
+		$user_id = JWDB::CheckInt($user_id);
+		$follower_user_id = JWDB::CheckInt($follower_user_id);
 		
 		$idExist = JWDB::ExistTableRow( 'Follower', array(
-			'idUser' => $idUser,
-			'idFollower' => $idFollower,
+			'idUser' => $user_id,
+			'idFollower' => $follower_user_id,
 		));
 
 		if( $idExist ) {
-			return JWDB::UpdateTableRow( 'Follower', $idExist, array(
+			return JWDB_Cache::UpdateTableRow( 'Follower', $idExist, array(
 				'notification' => $notification,
 			));
 		}
@@ -159,59 +165,38 @@ _SQL_;
 		return true;	
 	}
 
-
-	/*
-	 *	@param	int		$idUser
-	 *	@return	int		$friendNum for $idUser
+	/**
+	 * 	Get ids of whom is $user_id's friend.
+	 *	@return array	array of friend id list
 	 */
-	static public function GetFriendNum($idUser)
+	static function GetFollowingIds($user_id, $num=JWFollower::DEFAULT_FOLLOWER_MAX, $offset=0)
 	{
-		$idUser = intval($idUser);
+		$cached_result = JWDB_Cache_Follower::GetFollowingInfos_Inner($user_id, $num, $offset);
+		
+		if ( empty($cached_result) )
+			return array();
 
-		if ( !is_int($idUser) )
-			throw new JWException('must be int');
-
-		$sql = <<<_SQL_
-SELECT	COUNT(*) as num
-FROM	Follower
-WHERE	idFollower=$idUser
-		AND idUser IS NOT NULL
-_SQL_;
-		$row = JWDB::GetQueryResult($sql);
-
-		return $row['num'];
+		return $cached_result['user_ids'];
 	}
 
 	/**
-	 * 	Get ids of whom is $idUser's friend.
+	 * 	for called from JWDB_Cache_Follower
+	 * 	Get ids of whom is $user_id's friend (bio)
 	 *	@return array	array of friend id list
 	 */
-	static function GetFollowingIds($idUser, $numMax=9999, $offset=0)
+	static function GetBioFollowingIds($user_id)
 	{
-		$followingInfos = self::GetFollowingInfos( $idUser, $numMax, $offset );
-		return array_keys( $followingInfos );
-	}
-
-	/**
-	 * 	Get ids of whom is $idUser's friend (bio)
-	 *	@return array	array of friend id list
-	 */
-	static function GetBioFollowingIds($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0)
-	{
-		$idUser = JWDB::CheckInt($idUser);
-		$numMax = JWDB::CheckInt($numMax);
-		$offset  = intval($offset);
+		$user_id = JWDB::CheckInt($user_id);
 
 		$sql = <<<_SQL_
 SELECT	idUser
 FROM	Follower
-WHERE	idFollower=$idUser 
+WHERE	idFollower=$user_id
 		AND idUser IN
 		(
-		 SELECT idFollower FROM Follower WHERE idUser=$idUser 
+		 SELECT idFollower FROM Follower WHERE idUser=$user_id
 		)
 ORDER BY id DESC
-LIMIT $offset,$numMax
 _SQL_;
 
 		$arr_result = JWDB::GetQueryResult($sql, true);
@@ -228,23 +213,19 @@ _SQL_;
 		return $rtn;
 	}
 
-	static function GetFollowerInfos($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
+	static function GetFollowerInfos($user_id, $num=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
 
-		$idUser = JWDB::CheckInt($idUser);
-		$numMax = JWDB::CheckInt($numMax);
+		$user_id = JWDB::CheckInt($user_id);
+		$num = JWDB::CheckInt($num);
 		
-		$sql = <<<_SQL_
-SELECT	*
-	FROM	Follower
-	WHERE	
-		idUser=$idUser
-		AND idFollower IS NOT NULL
-	ORDER BY id DESC
-	LIMIT $offset, $numMax
-_SQL_;
+		$cached_result = JWDB_Cache_Follower::GetFollowerInfos_Inner($user_id, $num, $offset);
+		
+		if ( empty($cached_result) )
+			return array();
 
-		$arr_result = JWDB::GetQueryResult($sql, true);
-
+		$ids = $cached_result['ids'];
+		
+		$arr_result = JWDB_Cache_Follower::GetDbRowsByIds( $ids );
 		if ( empty($arr_result) )
 			return array();
 
@@ -256,23 +237,19 @@ _SQL_;
 		return $rtn;
 	}
 
-	static function GetFollowingInfos($idUser, $numMax=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
+	static function GetFollowingInfos($user_id, $num=self::DEFAULT_FOLLOWER_MAX, $offset=0) {
 
-		$idUser = JWDB::CheckInt($idUser);
-		$numMax = JWDB::CheckInt($numMax);
+		$user_id = JWDB::CheckInt($user_id);
+		$num = JWDB::CheckInt($num);
 
-		$sql = <<<_SQL_
-SELECT	*
-	FROM	Follower
-	WHERE	
-		idFollower=$idUser
-		AND idUser IS NOT NULL
-	ORDER BY id DESC
-	LIMIT $offset, $numMax
-_SQL_;
+		$cached_result = JWDB_Cache_Follower::GetFollowingInfos_Inner($user_id, $num, $offset);
+		
+		if ( empty($cached_result) )
+			return array();
 
-		$arr_result = JWDB::GetQueryResult($sql, true);
-
+		$ids = $cached_result['ids'];
+		
+		$arr_result = JWDB_Cache_Follower::GetDbRowsByIds( $ids );
 		if ( empty($arr_result) )
 			return array();
 
@@ -283,22 +260,143 @@ _SQL_;
 
 		return $rtn;
 	}
+	
+	/**
+	 * for called by jwdb_cache_follower 
+	 */
+	static function GetFollowerInfos_Inner($user_id, $num=self::DEFAULT_FOLLOWER_MAX, $offset=0)
+	{
+		$user_id = JWDB::CheckInt($user_id);
+		$num = JWDB::CheckInt($num);
+
+		$sql = <<<_SQL_
+SELECT	
+	id,idFollower
+FROM	
+	Follower
+WHERE	
+	idUser=$user_id
+	AND idFollower IS NOT NULL
+ORDER BY id DESC
+LIMIT $offset, $num
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$rtn_id = array();
+		$rtn_user = array();
+		foreach ( $arr_result as $row ){
+			array_push( $rtn_id, $row['id'] );
+			array_push( $rtn_user, $row['idFollower'] );
+		}
+
+		return array('ids'=> $rtn_id, 'user_ids'=> $rtn_user,);
+	}
+
+	/**
+	 * for called by jwdb_cache_follower 
+	 */
+	static function GetFollowingInfos_Inner($user_id, $num=self::DEFAULT_FOLLOWER_MAX, $offset=0)
+	{
+		$user_id = JWDB::CheckInt($user_id);
+		$num = JWDB::CheckInt($num);
+
+
+		$sql = <<<_SQL_
+SELECT	
+	id,idUser
+FROM	
+	Follower
+WHERE	
+	idFollower=$user_id
+	AND idFollower IS NOT NULL
+ORDER BY id DESC
+LIMIT $offset, $num
+_SQL_;
+
+		$arr_result = JWDB::GetQueryResult($sql, true);
+
+		if ( empty($arr_result) )
+			return array();
+
+		$rtn_id = array();
+		$rtn_user = array();
+		foreach ( $arr_result as $row ){
+			array_push( $rtn_id, $row['id'] );
+			array_push( $rtn_user, $row['idUser'] );
+		}
+
+		return array('ids'=> $rtn_id, 'user_ids'=> $rtn_user,);
+	}
+
+	/**
+	 * for called by jwdb_cache_follower 
+	 */
+	static public function GetDbRowById($id)
+	{
+		$id = JWDB::CheckInt($id);
+		$follower_db_rows = self::GetDbRowsByIds(array($id));
+
+		if ( empty($follower_db_rows) )
+			return array();
+
+		return $follower_db_rows[$id];
+	}
+
+	/**
+	 * for called by jwdb_cache_follower 
+	 */
+	static public function GetDbRowsByIds($ids)
+	{
+		if ( empty($ids) )
+			return array();
+
+		if ( false==is_array($ids) )
+			throw new JWException('must array');
+
+		$ids = array_unique( $ids );
+
+		$condition_in = JWDB::GetInConditionFromArray($ids);
+
+		$sql = <<<_SQL_
+SELECT	*
+FROM	Follower	
+WHERE	id IN ($condition_in)
+_SQL_;
+
+		$rows = JWDB::GetQueryResult($sql,true);
+
+		$follow_map = array();
+
+		if ( empty($rows) )
+			return array();
+
+		foreach ( $rows as $row )
+		{
+			$follow_map[$row['id']] = $row;
+		}
+
+		return $follow_map;
+	}
 
 	/*
-	 *	@param	int		$idUser
-	 *	@return	int		$friendNum for $idUser
+	 *	@param	int		$user_id
+	 *	@return	int		$friendNum for $user_id
 	 */
-	static public function GetFollowingNum($idUser)
+	static public function GetFollowingNum($user_id)
 	{
-		$idUser = intval($idUser);
+		$user_id = intval($user_id);
 
-		if ( !is_int($idUser) )
+		if ( !is_int($user_id) )
 			throw new JWException('must be int');
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
 FROM	Follower
-WHERE	idFollower=$idUser
+WHERE	idFollower=$user_id
 		AND idUser IS NOT NULL
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
@@ -307,17 +405,17 @@ _SQL_;
 	}
 
 	/*
-	 *	@param	int		$idUser
-	 *	@return	int		$followerNum for $idUser
+	 *	@param	int		$user_id
+	 *	@return	int		$followerNum for $user_id
 	 */
-	static public function GetFollowerNum($idUser)
+	static public function GetFollowerNum($user_id)
 	{
-		$idUser = JWDB::CheckInt($idUser);
+		$user_id = JWDB::CheckInt($user_id);
 
 		$sql = <<<_SQL_
 SELECT	COUNT(*) as num
 FROM	Follower
-WHERE	idUser=$idUser
+WHERE	idUser=$user_id
 		AND idFollower IS NOT NULL
 _SQL_;
 		$row = JWDB::GetQueryResult($sql);
