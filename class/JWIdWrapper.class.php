@@ -76,7 +76,7 @@ class JWIdWrapper {
 
 		$pre_verify = self::$string_pre[intval($decoded_id%self::$pre_len)];
 
-		return $pre==$pre_verify ? $decoded_id : $encoded_id;
+		return $pre==$pre_verify ? false : $encoded_id;
 	}
 }
 ?>
