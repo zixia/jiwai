@@ -115,7 +115,7 @@ class JWStatus {
 					break;
 				}
 			}
-			else if ( '#' == $symbol )
+			else if ( '[]' == $symbol )
 			{
 				$tag_row_id = JWTag::GetIdByNameOrCreate( $value );
 				if ( false == empty($tag_row_id) ) 
@@ -225,13 +225,29 @@ class JWStatus {
 		/**
 		 * Convert to semi corner
 		 */
-		$status = JWTextFormat::ConvertCorner( $status, array('＃', '＄', '＠') );
+		$status = JWTextFormat::ConvertCorner( $status, array('＃', '＄', '＠', '【', '】') );
 
 		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
 		{
 			$symbol = trim( $matches[1] );
 			$value = $matches[2];
 			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>\$@#]{3,20})([\b\s]+)/', '', $status );
+
+			if ( $symbol_need==null || $symbol == $symbol_need ) 
+			{
+				return array(
+					'symbol' => $symbol,
+					'value' => $value,
+					'status' => $status,
+				);
+			}
+		}
+
+		if ( preg_match( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', $status, $matches) )
+		{
+			$symbol = '[]';
+			$value = $matches[2];
+			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
 
 			if ( $symbol_need==null || $symbol == $symbol_need ) 
 			{
@@ -875,33 +891,27 @@ _SQL_;
 		if( $reply_to_id ) 
 		{
 			$user = JWUser::GetUserInfo( $reply_to_id ) ;
-
-			if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
+			$symbol_info = self::GetSymbolInfo($status);
+			if ( $symbol_info && '@'==$symbol_info['symbol'] )
 			{
-				$reply_to = $matches[1];
-				$reply_user = JWUser::GetUserInfo( $reply_to ) ;
-
-				if( false == empty($reply_user) && $reply_user['id'] == $user['id'] ) 
-					$status = preg_replace( '/^@\s*('.$user['nameScreen'].')\s*/i', '', $status );
+				$reply_user = JWUser::GetUserInfo( $symbol_info['value'] ) ;
+				if ( false==empty($reply_user) && $reply_user['id'] == $user['id'] )
+					$status = $symbol_info['status'];
 			}
-
 			$status = "@$user[nameScreen] $status";
 		}
 
 		if( $tag_id && null==$reply_to_id ) 
 		{
 			$tag = JWTag::GetDbRowById( $tag_id ) ;
-
-			if ( preg_match( '/^#\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
+			$symbol_info = self::GetSymbolInfo($status);
+			if ( $symbol_info && '[]'==$symbol_info['symbol'] )
 			{
-				$tag_name = $matches[1];
-				$tag_row = JWTag::GetDbRowByName( $tag_name ) ;
-
-				if( false == empty($tag_row) && $tag_row['id'] == $tag_id ) 
-					$status = preg_replace( '/^#\s*('.$tag['name'].')\s*/i', '', $status );
+				$tag_row = JWTag::GetDbRowByName( $symbol_info['value'] ) ;
+				if ( false==empty($tag_row) && $tag_row['id'] == $tag_id )
+					$status = $symbol_info['status'];
 			}
-
-			$status = "#$tag[name] $status";
+			$status = "[$tag[name]] $status";
 		}
 
 		return $status;
@@ -1021,19 +1031,16 @@ _HTML_;
 		if( $tag_id && null == $reply_to_user_id ) 
 		{
 			$tag_row = JWTag::GetDbRowById( $tag_id );
-
-			if ( preg_match( '/^#\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
-			{    
-				$t = JWTag::GetDbRowByName( $matches[1] );
+			$symbol_info=self::GetSymbolInfo($status);
+			if ( $symbol_info && '[]'==$symbol_info['symbol'] ) 
+			{
+				$t = JWTag::GetDbRowByName( $symbol_info['value'] );
 				if( false==empty($t) && $t['id'] == $tag_id ) 
-				{
-					$status = preg_replace( '/#\s*('.$matches[1].')\s*/i', '', $status );
-				}
+					$status = $symbol_info['status'];
 			}
-
 			if( false == empty( $tag_row ) )
 			{
-				$status = "#<a href='/t/$tag_row[name]/'>$tag_row[name]</a> $status";
+				$status = "[<a href='/t/$tag_row[name]/'>$tag_row[name]</a>] $status";
 			}
 		}
 
