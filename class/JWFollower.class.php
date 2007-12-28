@@ -53,9 +53,9 @@ class JWFollower {
 		$user_id = JWDB::CheckInt( $user_id );
 		$follower_user_id = JWDB::CheckInt( $follower_user_id );
 
-		$followerArray = self::GetFollowerIds( $user_id );
+		$following_array = self::GetFollowingIds( $follower_user_id );
 
-		return in_array( $follower_user_id, $followerArray );
+		return in_array( $user_id, $following_array );
 	}
 
 

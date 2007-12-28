@@ -50,18 +50,18 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 		self::Instance();
 
 		$pk_id = $dbRow['id'];
-		$user_id= $dbRow['idUser'];
-		$follower_user_id= $dbRow['idFollower'];
+		$user_id= intval($dbRow['idUser']);
+		$follower_user_id= intval($dbRow['idFollower']);
 
 		$dirty_keys = array();
 
 		array_push( $dirty_keys,
 			JWDB_Cache::GetCacheKeyById('Follower', $pk_id), 
 			JWDB_Cache::GetCacheKeyByFunction( 
-				array('JWFollower','GetFollowerInfo_Inner'), array($user_id) 
+				array('JWFollower','GetFollowerInfos_Inner'), array($user_id) 
 			),
 			JWDB_Cache::GetCacheKeyByFunction( 
-				array('JWFollower','GetFollowingInfo_Inner'), array($follower_user_id) 
+				array('JWFollower','GetFollowingInfos_Inner'), array($follower_user_id) 
 			),
 			JWDB_Cache::GetCacheKeyByFunction( 
 				array('JWFollower','GetBioFollowingIds'), array($user_id) 
@@ -88,6 +88,7 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetBioFollowingIds($user_id)
 	{
+		$user_id = JWDB::CheckInt($user_id);
 		/* call back function & param */
 		$ds_function = array('JWFollower','GetBioFollowingIds');
 		$ds_param = array($user_id);
@@ -111,6 +112,7 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetNotificationIds($user_id)
 	{
+		$user_id = JWDB::CheckInt($user_id);
 		/* call back function & param */
 		$ds_function = array('JWFollower','GetNotificationIds');
 		$ds_param = array($user_id);
@@ -134,6 +136,7 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetFollowerNum($user_id)
 	{
+		$user_id = JWDB::CheckInt($user_id);
 		/* call back function & param */
 		$ds_function = array('JWFollower','GetFollowerNum');
 		$ds_param = array($user_id);
@@ -157,6 +160,7 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetFollowingNum($user_id)
 	{
+		$user_id = JWDB::CheckInt($user_id);
 		/* call back function & param */
 		$ds_function = array('JWFollower','GetFollowingNum');
 		$ds_param = array($user_id);
@@ -180,6 +184,8 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetFollowingInfos_Inner($follower_user_id, $num=JWFollower::DEFAULT_FOLLOWER_MAX, $start=0)
 	{
+		$follower_user_id = JWDB::CheckInt($follower_user_id);
+
 		$max_num = $start + $num;
 		$mc_max_num = JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -224,6 +230,8 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 
 	static public function GetFollowerInfos_Inner($user_id, $num=JWFollower::DEFAULT_FOLLOWER_MAX, $start=0)
 	{
+		$user_id = JWDB::CheckInt($user_id);
+
 		$max_num = $start + $num;
 		$mc_max_num = JWDB_Cache::GetMaxCacheNum($max_num);
 
