@@ -207,7 +207,8 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 			,$expire_time
 		);
 
-		if ( false == JWDB_Cache::IsCachedCountEnough(count($follow_info['ids']),$max_num) )
+		if ( false==empty($follow_info) 
+			&& false == JWDB_Cache::IsCachedCountEnough(count($follow_info['ids']),$max_num) )
 		{
 			$follow_info = JWDB_Cache::GetCachedValueByKey(
 				$mc_key
@@ -253,7 +254,8 @@ class JWDB_Cache_Follower implements JWDB_Cache_Interface
 			,$expire_time
 		);
 
-		if ( false == JWDB_Cache::IsCachedCountEnough(count($follow_info['ids']),$max_num) )
+		if ( false==empty($follow_info) 
+			&& false == JWDB_Cache::IsCachedCountEnough(count($follow_info['ids']),$max_num) )
 		{
 			$follow_info = JWDB_Cache::GetCachedValueByKey(
 				$mc_key
