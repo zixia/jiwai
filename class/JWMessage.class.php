@@ -245,9 +245,12 @@ _SQL_;
 		}
 		else
 		{
+			$message_map = array();
 			foreach ( $rows as $row ) {
 				$message_map[$row['idMessage']] = $row;
 			}
+
+			$message_map = JWDB_Cache::SortArrayByKeyOrder($message_map, $message_ids);
 		}
 
 		return $message_map;

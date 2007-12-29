@@ -579,9 +579,8 @@ i {color:red; font-size:12px; display:block; margin:0px; font-style:normal;}
 #wtTimeline .entry {padding:8px 10px 0px 10px; clear:both;}
 #wtTimeline .head {float:left; width:64px; overflow:hidden; height:55px;}
 #wtTimeline .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
-#wtTimeline .content {font-size:14px; line-height:20px; height:100%; overflow:hidden; border:1px solid #FFCFA8; padding:5px 20px 6px 6px; background-color:#ffffff;}
+#wtTimeline .content {font-size:14px; line-height:22px; height:100%; overflow:hidden;border:1px solid #FFCFA8; padding:5px 6px 6px 6px; background-color:#ffffee;}
 #wtTimeline .content .bg {background:url(../images/org-con-bg.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
-#wtTimeline .content {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color:white;}
 #wtTimeline a:hover {color:#FF830B; text-decoration:underline;}
 #wtTimeline .meta {color:#929292; font-size:12px; display:block; margin-top:5px;}
 #wtTimeline .meta a:link, #wtTimeline .meta a:visited {color:#D05D02; text-decoration:none;}

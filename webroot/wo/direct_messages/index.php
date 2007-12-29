@@ -129,14 +129,16 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 
         $time_desc = JWStatus::GetTimeDesc( $message_row['timeCreate'] );
 
+	$content_class_name = 'cont';
 	if ( JWMessage::INBOX==$message_box_type && JWMessage::MESSAGE_NOTREAD==$message_row['messageStatusReceiver'] )
 	{
 		JWMessage::SetMessageStatus($message_row['id'], JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
+		$content_class_name = 'content';
 	}
 ?>
         <div class="odd" id="status_<?php echo $message_row['id']; ?>">
         <div class="head"><a href="/<?php echo $user_db_row['nameUrl']; ?>/"><img icon="<?php echo $user_db_row['id']; ?>" class="buddy_icon" width="48" height="48" title="<?php echo $user_db_row['nameScreen']; ?>" src="<?php echo $photo_url; ?>"/></a></div>
-    <div class="content">
+    <div class="<?php echo $content_class_name;?>">
         <div class="bg"></div>
 
 <?php echo $message_row['message']; ?><br/>

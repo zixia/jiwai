@@ -95,9 +95,13 @@ class JWNudge {
 			if( null == $availableSendVia )
 				continue;
 
-			if( $messageType == 'direct_messages' ) {
+			if( $messageType == 'direct_messages' ) 
+			{
 				$idMessage = $message['idMessage'];
+				/**
+				 * for display new message until read on web
 				JWMessage::SetMessageStatus( $idMessage, JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD );
+				*/
 				$message = $message['message'];
 			}
 
