@@ -97,9 +97,9 @@ function renderFeedReturn($options, $tag, $feedType=JWFeed::ATOM){
 	$statuses = getUserTimelineStatuses( $options, false );
 
 	$feed = new JWFeed(array(
-				'title'	=> '叽歪 / #'. $tag['name'],
+				'title'	=> '叽歪 / ['. $tag['name'] .']',
 			       	'url'	=> 'http://JiWai.de/t/'.$tag['name'] .'/', 
-				'desc'	=> '#' .$tag['name'].'的叽歪de更新' , 
+				'desc'	=> '[' .$tag['name']. ']的叽歪de更新' , 
 				'ttl'	=> 40,
 				)); 
 

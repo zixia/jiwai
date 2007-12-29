@@ -502,7 +502,7 @@ _HTML_;
 				<p>
                     <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
                     <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
-					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value="<?php echo $reply_user_nameScreen_txt;?>"></textarea>
+					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
@@ -530,7 +530,7 @@ _HTML_;
 			</form>
 				 </div>
 <script type="text/javascript">
-	<?php if( 2 != $options['mode']) echo "$('jw_status').focus();"?>
+	<?php if( 2 != $mode ) echo "$('jw_status').focus();"?>
 	function updateStatusTextCharCounter(value) {
 		len_max = 140;
 		if (len_max - value.length >= 0) {

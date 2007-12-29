@@ -1341,8 +1341,6 @@ _SQL_;
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
 
-		array_push($user_ids, $idUser);
-
 		return array (
 			'status_ids' => $status_ids,
 			'user_ids' => $user_ids,
