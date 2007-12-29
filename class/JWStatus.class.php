@@ -84,6 +84,9 @@ class JWStatus {
 			$symbol = $symbol_info['symbol'];
 			$value = $symbol_info['value'];
 
+			if ( '#' == $symbol )
+				break;
+
 			if ( '$' == $symbol )
 			{
 				$conference_user = JWUser::GetUserInfo( $value );
