@@ -33,28 +33,28 @@
 		$action_row = JWSns::GetTagAction( $current_user_id, $tag_row['id'] );
 		if( $action_row['follow'] )
 		{
-			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/followchannel/' . $tag_row['id'].'" class="pad">关注此#</a></div>';
+			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/followchannel/' . $tag_row['id'].'" class="pad">关注这里</a></div>';
 		}
 		if( $action_row['leave'] ) 
 		{
-			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/leavechannel/' . $tag_row['id'].'" class="pad">取消关注此#</a></div>';
+			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/leavechannel/' . $tag_row['id'].'" class="pad">取消关注这里</a></div>';
 		}
 		if( $action_row['on'] ) 
 		{
-			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/onchannel/' . $tag_row['id'].'" class="pad">接受此#更新通知</a></div>';
+			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/onchannel/' . $tag_row['id'].'" class="pad">接受这里更新通知</a></div>';
 		}
 		if( $action_row['off'] ) 
 		{
-			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/offchannel/' . $tag_row['id'].'" class="pad">取消此#更新通知</a></div>';
+			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/offchannel/' . $tag_row['id'].'" class="pad">取消这里更新通知</a></div>';
 		}
 ?>
         <div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 		<div class="line"><div></div></div>
 
 <?php if ( $current_user_id ) { ?>
-        <a href="<?php echo JW_SRVNAME .'/' .$current_user_info['nameScreen'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在此#中的叽歪</a>
+        <a href="<?php echo JW_SRVNAME .'/' .$current_user_info['nameScreen'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在这里的叽歪</a>
 <?php } ?>
 
-<a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅#<?php echo $tag_row['name'];  ?>的消息</a>
+<a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅[<?php echo $tag_row['name'];  ?>]的消息</a>
 		<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
   </div><!-- wtsidebar -->

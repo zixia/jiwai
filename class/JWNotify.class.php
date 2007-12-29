@@ -528,7 +528,7 @@ class JWNotify{
 	{
 		if ( isset( $options['tag'] ) ) 
 		{
-			return $userSender['nameScreen'].'[#'.$options['tag'].']';
+			return $userSender['nameScreen'].'['.$options['tag'].']';
 		}
 		return $userSender['nameScreen'];
 	}

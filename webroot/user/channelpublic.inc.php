@@ -57,7 +57,7 @@ JWTemplate::html_head($head_options);
 <div id="container">
 	<div id="content">
 	<div id="wtchannel">
-	<div class="cha_tit"><span class="pad"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name']. '/';?>">查看大家的</a></span>#<?php echo $tag_row['name'];?></div>
+	<div class="cha_tit"><span class="pad"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name']. '/';?>">查看大家的</a></span>[<?php echo $tag_row['name'];?>]</div>
 	</div>
 
 <!-- wtTimeline start -->

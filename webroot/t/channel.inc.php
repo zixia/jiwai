@@ -93,14 +93,14 @@ JWTemplate::html_head($options);
 <?php JWTemplate::header('/t/'.$tag_row['name'].'/') ?> 
 <?php
 $has_following = JWTagFollower::IsFollower( $tag_row['id'], $current_user_id );
-$follow_string = $has_following ? '已关注' : '关注此#';
+$follow_string = $has_following ? '已关注' : '关注['.$tag_row['name'].']';
 ?>
 
 <div id="container">
 	<div id="content">
 	<?php JWTemplate::ShowActionResultTips(); ?>
 	<div id="wtchannel">
-	<div class="cha_tit"><span class="pad"><?php if($has_following) echo $follow_string; else { ?> <a href="<?php echo JW_SRVNAME .'/wo/followings/followchannel/' .$tag_row['id']; ?>"><?php echo $follow_string;?><?php } ?></a></span>#<?php echo $tag_row['name'];?></div>
+	<div class="cha_tit"><span class="pad"><?php if($has_following) echo $follow_string; else { ?> <a href="<?php echo JW_SRVNAME .'/wo/followings/followchannel/' .$tag_row['id']; ?>"><?php echo $follow_string;?><?php } ?></a></span>[<?php echo $tag_row['name'];?>]</div>
 	</div>
 		<div id="wrapper">
 <?php
