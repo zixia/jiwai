@@ -23,6 +23,9 @@ if( JWSns::IsProtected($user_row, $current_user_id) )
 {
 	$show_protected = false;
 	$status = $user_name_screen .'设置了隐私保护，只和互相关注的人分享叽歪。';
+	$status_id = null;
+	$reply_link_string = null;
+	$replyto_link = null;
 }else
 {
 	if( $user_row['idConference'] ) 
@@ -67,6 +70,17 @@ if( JWSns::IsProtected($user_row, $current_user_id) )
 }
 
 $actions = JWSns::GetUserAction( $current_user_id, $user_id );
+if ( empty($actions) )
+{
+	$actions = array(
+		'nudge' => false,
+		'follow' => false,
+		'on' => false,
+		'leave' => false,
+		'd' => false,
+		'off' => false,
+	);
+}
 ?>
 <div id="wtTimelineLaunch">
    <div class="entry" id="status_<?php echo $status_id;?>">

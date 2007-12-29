@@ -87,7 +87,7 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = n
 $countReply = JWDB_Cache_Status::GetCountReply( $status_info['id'] );
 $replies_data = JWDB_Cache_Status::GetStatusIdsByIdThread($status_info['id'], $countReply);
 
-$status_rows = $user_rows = array();
+$status_rows = $user_rows = $replies_info = array();
 if( false == empty( $replies_data ) ) 
 {
 	$replies_info = JWDB_Cache_Status::GetDbRowsByIds( @$replies_data['status_ids'] );

@@ -110,13 +110,15 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 {
         switch ($message_box_type)
         {
-            default:
             case JWMessage::INBOX:
                 $user_id = $message_row['idUserSender'];
                 break;
             case JWMessage::OUTBOX:
                 $user_id = $message_row['idUserReceiver'];
                 break;
+            default:
+                $user_id = $message_row['idUserReceiver'];
+		break;
         }
 
         $user_db_row = $user_db_rows[$user_id];

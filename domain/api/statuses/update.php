@@ -37,7 +37,10 @@ if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $is
 	if( $insertedId === true ) {
 		$insertedId = JWDB::GetInsertedId();
 	}
-	$status = JWStatus::GetDbRowById( $insertedId );
+	$status = JWDB_Cache_Status::GetDbRowById( $insertedId );
+	if (empty($status))
+		JWApi::OutHeader(406, true);
+
 	switch($type){
 		case 'xml':
 			renderXmlReturn($status);

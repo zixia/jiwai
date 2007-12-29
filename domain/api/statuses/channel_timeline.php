@@ -25,7 +25,7 @@ if( false == in_array($type, array('xml','json','atom','rss'))){
  */
 $idTag = mb_convert_encoding($idTag, 'UTF-8', 'GB2312,UTF-8');
 
-if( !$idUser && !($idUser=JWApi::GetAuthedUserId()) ){
+if( false==($idUser=JWApi::GetAuthedUserId()) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
 $tag_row = JWTag::GetDbRowById( $idTag );

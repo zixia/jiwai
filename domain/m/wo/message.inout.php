@@ -11,7 +11,7 @@ $messageInfo = JWMessage::GetMessageIdsFromUser( $loginedUserInfo['id'], $boxTyp
 $messageIds = $messageInfo['message_ids'];
 $userIds    = $messageInfo['user_ids'];
 
-$messageRows    = JWMessage::GetMessageDbRowsByIds( $messageIds );
+$messageRows    = JWMessage::GetDbRowsByIds( $messageIds );
 $userRows       = JWDB_Cache_User::GetDbRowsByIds( $userIds);
 
 if( $boxType == JWMessage::INBOX ) {

@@ -20,7 +20,7 @@ if( $action == null ) {
 		JWSession::SetInfo('notice', "不存在编号为 {$value} 的用户");
 		redirect();
 	}
-	$value = $receiverRow[nameScreen];
+	$value = $receiverRow['nameScreen'];
 }
 
 switch($action){

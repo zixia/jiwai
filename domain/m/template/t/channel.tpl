@@ -1,7 +1,7 @@
 <!--{include header}-->
 <!--{include wo/update}-->
 
-<h2><a href="/wo/">最新叽歪</a>｜<a href="/wo/replies/">叽友回复</a>｜#{$tag_row['name']}</h2>
+<h2><a href="/wo/">最新叽歪</a>｜<a href="/wo/replies/">叽友回复</a>｜[{$tag_row['name']}]</h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>

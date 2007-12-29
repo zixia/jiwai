@@ -1615,6 +1615,7 @@ if ($menuList[0][0] == 'login') {
 			return;
 
 		$arr_user_info = JWUser::GetUserInfo($idUserDst);
+		$current_user_id = JWLogin::GetCurrentUserId();
 
 		$flag = false;
 		foreach( $action as $one=>$result ) {

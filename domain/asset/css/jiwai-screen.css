@@ -64,10 +64,10 @@ a:hover {color:#F87A01;}
 
 #header {margin:0 auto; height:80px; width:776px; border-bottom:5px solid #F97B00;}
  #navigation {}
- #header h2 {width:175px; height:63px; float:left; margin-top:16px; margin-left:0px;}
+ #header h2 {width:210px; height:63px; float:left; margin-top:16px; margin-left:0px;}
  html>body #header h2 {background:url(../images/org-logo.png); no-repeat;}
  * html #header h2 {filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="http://asset.jiwai.de/images/org-logo.png");}
- #header h2 a {width:175px; height:63px; display:block; text-indent:-8000px;}
+ #header h2 a {width:210px; height:63px; display:block; text-indent:-8000px;}
 
 
  #header .tip {width:295px; height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}

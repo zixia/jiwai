@@ -95,7 +95,8 @@ function update($idUser, $status) {
 		 *	为了 /help/ 留言板的更新都自动加上 @help
 		 */
 		$helpUserId	= JWUser::GetUserInfo('help', 'idUser');
-		if ( false !== strpos( $_SERVER['HTTP_REFERER'], 'jiwai.de/help/' )
+		if ( isset($_SERVER['HTTP_REFERER']) 
+			&& false !== strpos( $_SERVER['HTTP_REFERER'], 'jiwai.de/help/' )
 				&& $idUser != $helpUserId
 				&& !preg_match('/^@help /',$status) ) {
 				$status = '@help ' . $status;

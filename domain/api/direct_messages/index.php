@@ -17,7 +17,7 @@ if( ! $idUser ){
 $since = ($since==null) ? null : ( is_numeric($since) ? date("Y-m-d H:i:s", $since) : $since );
 $timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
 $messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::INBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $timeSince);
-$messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
+$messages = JWMessage::GetDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower(trim($pathParam,'.'));
 if( !in_array( $type, array('json','xml','atom','rss') )){
@@ -82,8 +82,8 @@ function renderFeedReturn( $messages, $idUser, $feedType=JWFeed::RSS20 ){
 	
 	foreach ( $messages as $m ) {
 		$userSender = isset( $tempUser[$m['idUserSender']] ) ?
-			$tempUser[$idUserSender] :
-			( $tempUser[$idUserSender] = JWUser::GetUserInfo( $m['idUserSender'] ) );
+			$tempUser[$m['idUserSender']] :
+			( $tempUser[$m['idUserSender']] = JWUser::GetUserInfo( $m['idUserSender'] ) );
 
 		$feed->AddItem(array( 
 				'title'	=> $userSender['nameScreen'] . '给'. $userReceiver['nameScreen'].'的悄悄话',

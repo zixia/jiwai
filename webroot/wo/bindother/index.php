@@ -67,10 +67,14 @@ if ( $bindother_id )
 <?php
 	$bind = JWBindOther::GetBindOther($user_info['id']);
 	$bind = isset($bind[$service]) ? $bind[$service] : array();
+	$bind_login_name = null;
 
-	if ( false == empty($bind) ) {
+	if ( false == empty($bind) ) 
+	{
 		$sync_reply = $bind['syncReply'];
 		$sync_conference = $bind['syncConference'];
+		$bind_login_name = $bind['loginName'];
+
 		echo <<<_HTML_
 			<form id="f1" method="post">
 				<div style="margin-left:20px; font-size:14px;font-weight:bold;">你已经成功绑定了 <?php echo $service_name;?> (<a href="javascript:void(0);" onclick="if(confirm('你确定要删除 $service_name 绑定吗？'))$('f1').submit();return false;">删除</a>)</div>
@@ -85,7 +89,7 @@ _HTML_;
 		<tr>
 			<th valign="top">用户名：</th>
 			<td width="260">
-				<input name="login_name" type="text" id="login_name" value="<?php echo $bind['loginName'];?>" alt="用户名" title="用户名" check="null"/><i></i>
+				<input name="login_name" type="text" id="login_name" value="<?php echo $bind_login_name;?>" alt="用户名" title="用户名" check="null"/><i></i>
 			</td>
 			<td class="note">用来登陆 <?php echo $service_name;?> 的用户名</td>
 		</tr>

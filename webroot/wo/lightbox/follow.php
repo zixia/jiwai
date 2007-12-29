@@ -29,7 +29,7 @@ if ( $_POST )
 					JWSns::ExecWeb($current_user_id, "on $follower_user_row[nameScreen]", '接收更新通知');
 				break;
 				default:
-					JWSns::ExecWeb($current_user_id, "follow $follower_user_row[nameScreen]", "关注$nameScreen");
+					JWSns::ExecWeb($current_user_id, "follow $follower_user_row[nameScreen]", "关注$follower_user_row[nameScreen]");
 				break;
 			}
 			

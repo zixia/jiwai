@@ -35,7 +35,6 @@ JWRender::Display( $tpl , array(
                     'statuses' => $statuses,
                     'users' => $userRows,
                     'shortcut' => $shortcut,
-                    'showProtected' => $showProtected,
                     'loginedUserInfo' => $loginedUserInfo,
                     'pageString' => $pageString,
                 ));

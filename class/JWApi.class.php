@@ -117,38 +117,46 @@ class JWApi{
 	  * Rebuild Status Array by given status db row.
 	  */
 	  
-	static function ReBuildStatus(&$status){
-		$outInfo = array();
-		$outInfo['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
-		$outInfo['text'] = $status['status'];
-		$outInfo['id'] = $status['idStatus'];
-		if( isset( $status['favourite_id'] ) ){
-			$outInfo['favourite_id'] = $status['favourite_id'];
-            if( isset( $status['device'] ) ){
-                $outInfo['device'] = $status['device'];
-            }
+	static function ReBuildStatus(&$status)
+	{
+		$out_info = array();
+		
+		if ( empty($status) )
+			return $out_info;
+
+		$out_info['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
+		$out_info['text'] = $status['status'];
+		$out_info['id'] = $status['idStatus'];
+		if( isset( $status['favourite_id'] ) )
+		{
+			$out_info['favourite_id'] = $status['favourite_id'];
+			if( isset( $status['device'] ) )
+			{
+				$out_info['device'] = $status['device'];
+			}
 		}
-		return $outInfo;
+		return $out_info;
 	}
 
 	/**
 	  * Rebuild Message output, compatiable with twitter
 	  */
 	static function ReBuildMessage(&$message){
-		$mInfo = array();
 
-		$mInfo['id'] = isset($message['id']) ? $message['id'] : $message['idMessage'];
-		$mInfo['text'] = $message['message'];
-		$mInfo['sender_id'] = $message['idUserSender'];
-		$mInfo['recipient_id'] = $message['idUserReceiver'];
-		$mInfo['created_at'] = date("D M d H:i:s O Y",$message['timeCreate']);
+		$m_info = array();
+
+		$m_info['id'] = isset($message['id']) ? $message['id'] : $message['idMessage'];
+		$m_info['text'] = $message['message'];
+		$m_info['sender_id'] = $message['idUserSender'];
+		$m_info['recipient_id'] = $message['idUserReceiver'];
+		$m_info['created_at'] = date("D M d H:i:s O Y", strtotime($message['timeCreate']));
 
 		$screenNameSenderUser = JWUser::GetUserInfo( $message['idUserSender'], 'nameScreen' );
 		$screenNameReceiverUser = JWUser::GetUserInfo( $message['idUserReceiver'], 'nameScreen' );
-		$mInfo['sender_screen_name'] = $screenNameSenderUser;
-		$mInfo['recipient_screen_name'] = $screenNameReceiverUser;
+		$m_info['sender_screen_name'] = $screenNameSenderUser;
+		$m_info['recipient_screen_name'] = $screenNameReceiverUser;
 		
-		return $mInfo;
+		return $m_info;
 	}
 
 	static function ArrayToXml($array, $level=1, $topTagName=''){

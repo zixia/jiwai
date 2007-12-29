@@ -261,8 +261,8 @@ class JWRobotLingoReply {
 			break;
 			case 76: //Bao Bao Shu
 			{
-				$map['REPLY_UPDATESTATUS'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/wishtree={1} ，快来给我的愿望加油吧。';
-				$map['REPLY_UPDATESTATUS_IM'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/wishtree={1} ，快来给我的愿望加油吧，把链接挂在{2}状态上，让你的朋友给你加油吧。';
+				$map['REPLY_UPDATESTATUS'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/promo/2008wish/{1} ，快来给我的愿望加油吧。';
+				$map['REPLY_UPDATESTATUS_IM'] = '我在宝宝树2008华人父母新年许愿活动中，许下一个愿望，愿望地址：www.babytree.com/promo/2008wish/{1} ，快来给我的愿望加油吧，把链接挂在{2}状态上，让你的朋友给你加油吧。';
 			}
 			break;
 			default:

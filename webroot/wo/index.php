@@ -141,10 +141,9 @@ switch ( $active_tab )
 
 }
 
-//die(var_dump($status_data['status_ids']));
-
-//$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
-$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
+$status_rows = $user_rows = $user_ids = $status_ids = array();
+if ( false==empty($status_data) )
+	$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 
 
 if( ( $active_tab == 'friends' || $active_tab == 'archive' ) 
@@ -158,9 +157,15 @@ if( ( $active_tab == 'friends' || $active_tab == 'archive' )
 	}
 }
 
-$user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
+if ( false==empty($status_data) )
+{
+	$user_ids = $status_data['user_ids'];
+	$status_ids = $status_data['status_ids'];
+}
 
-JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, array(
+$user_rows = JWDB_Cache_User::GetDbRowsByIds($user_ids);
+
+JWTemplate::Timeline($status_ids, $user_rows, $status_rows, array(
 	'search' => true,
 	//'pagination' => ($active_tab!='friends' ? $pagination : false),
 	'pagination' => $pagination,
