@@ -677,17 +677,17 @@ _TAB_;
 <h3><?php echo $name_screen;?></h3>
 	<p class="t-text"><?php echo $status;?></p>
 <?php
-$plugin_result = JWPlugins::GetPluginResult( $statusRow );
-//plugins
-switch( $plugin_result['type'] )
-{
-	case 'html':
-		echo $plugin_result['html'];
-		break;
-}
-
 if( false == $protected && false == $noneStatus )
 { 
+	/* for plugins display */
+	$plugin_result = JWPlugins::GetPluginResult( $statusRow );
+	switch( $plugin_result['type'] )
+	{
+		case 'html':
+			echo $plugin_result['html'];
+			break;
+	}
+	/* end plugins */
 
 	$reply_user_row = ( $statusRow['idUserReplyTo'] ) ?
 		JWUser::GetUserInfo( $statusRow['idUserReplyTo'] ) : null;
