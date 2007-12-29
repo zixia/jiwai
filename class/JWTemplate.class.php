@@ -277,7 +277,9 @@ _HTML_;
 			$msgString = '';
 		}else{
 			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
-			$msgString = ( $msgCount == 0 ) ? '' : '&nbsp;未读悄悄话&nbsp;<a style="padding:0px;" href="/wo/direct_messages/">[&nbsp;'.$msgCount.'&nbsp;]</a>&nbsp;条&nbsp;';
+			$msgString = '<a style="padding-left:0px;" href="/wo/direct_messages/">';
+			$msgString .= (0==$msgCount) ? '<img style="margin-bottom:-4px;" src="'.self::GetAssetUrl('/images/icon_unread_bw.gif').'">' : '<img style="margin-bottom:-4px;" src="'.self::GetAssetUrl('/images/icon_unread.gif').'">('.$msgCount.')';
+			$msgString .= '</a>';
 		}
 
 ?>
@@ -490,7 +492,7 @@ _HTML_;
 		<div id="jwupdate">
 			<form action="<?php echo $formAction; ?>" id="updaterForm" method="post" onsubmit="$('jw_status').style.backgroundColor='#eee';">
 				<h2>
-					<span class="tip">还可输入：<span class="counter" id="status-field-char-counter">140</span> 个字符</span><?php echo $title;?><?php if(1 == $mode) { ?>给：<select name="user[id]" class="jwselect" id="user_id"> <?php
+					<span class="tip">还可输入：<span class="counter" id="status-field-char-counter">140</span> 个字符</span><?php echo $title;?><?php if(isset($options['friends'])) { ?>给：<select name="user[id]" class="jwselect" id="user_id"> <?php
 foreach ($options['friends'] as $id => $f) echo <<<_HTML_
 <option value="$id">$f[nameScreen]</option>
 _HTML_;

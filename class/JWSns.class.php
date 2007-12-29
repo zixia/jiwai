@@ -47,40 +47,42 @@ class JWSns {
 	 *	@param	int		$idUserReceiver
 	 *	@param	string	$message
 	 */
-	static public function CreateMessage($idUserSender, $idUserReceiver, $message, $device='web', $time=null)
+	static public function CreateMessage($sender_id, $receiver_id, $message, $device='web', $options=array())
 	{
 		
-		if ( JWBlock::IsBlocked( $idUserReceiver, $idUserSender, false ) )  // idUserReceiver blocked idUserSender;
+		if ( JWBlock::IsBlocked( $receiver_id, $sender_id, false ) )  // receiver_id blocked sender_id;
 			return false;		
 
-		if ( false == ($idMessage = JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time)) )
+		if ( false == ($message_id = JWMessage::Create($sender_id, $receiver_id, $message, $device, $options)) )
 		{
-			JWLog::LogFuncName("JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) failed");
+			JWLog::LogFuncName("JWMessage::Create($sender_id, $receiver_id, $message, $device) failed");
 			return false;
 		}
 
-		$notice_settings 	= JWUser::GetNotification($idUserReceiver);
-		$need_notice_mail	= ('Y'==$notice_settings['send_new_direct_text_email']);
+		$notice_settings = JWUser::GetNotification($receiver_id);
+		$need_notice_mail = ('Y'==$notice_settings['send_new_direct_text_email']);
 
-		$sender_row 	= JWUser::GetUserInfo($idUserSender);
-		$receiver_row 	= JWUser::GetUserInfo($idUserReceiver);
+		$sender_row = JWUser::GetUserInfo($sender_id);
+		$receiver_row = JWUser::GetUserInfo($receiver_id);
 
 		if ( $need_notice_mail )
+		{
 			JWMail::SendMailNoticeDirectMessage($sender_row, $receiver_row, $message, JWDevice::GetNameFromType($device) );
+		}
 
-		JWLog::Instance()->LogFuncName(LOG_INFO, "JWMessage::Create($idUserSender, $idUserReceiver, $message, $device, $time) "
-											.",\tnotification email "
-											. ( $need_notice_mail ? 'sent. ' : 'web')
-								);
+		JWLog::Instance()->LogFuncName(LOG_INFO, 
+			"JWMessage::Create($sender_id, $receiver_id, $message, $device) "
+			.",\tnotification email "
+			. ( $need_notice_mail ? 'sent. ' : 'web')
+		);
 	
-		
 		$message = "$sender_row[nameScreen]: $message (可直接回复 D $sender_row[nameScreen] 你想说的悄悄话)";
-		$messageInfo = array(
+		$message_info = array(
 			'message' => $message,
-			'idMessage' => $idMessage,
+			'idMessage' => $message_id,
 		);
 
-		JWNudge::NudgeToUsers( array($idUserReceiver), $messageInfo, 'direct_messages', $device );
+		JWNudge::NudgeToUsers( array($receiver_id), $message_info, 'direct_messages', $device );
 
 		return true;
 	}
