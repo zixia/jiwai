@@ -55,22 +55,22 @@ class JWMessage {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUserSender, $idUserReceiver, $message, $device='web', $time=null )
+	static public function Create( $sender_id, $receiver_id, $message, $device='web', $options=array() )
 	{
-		$idUserSender 	= JWDB::CheckInt($idUserSender);
-		$idUserReceiver	= JWDB::CheckInt($idUserReceiver);
-
-		$time = intval($time);
-
+		$sender_id = JWDB::CheckInt($sender_id);
+		$receiver_id = JWDB::CheckInt($receiver_id);
+		$time = isset($options['time']) ? intval($options['time']) : time();
 		if ( 0>=$time )
 			$time = time();
 
-		// 去掉回车，替换为空格
+		$message_reply_id = isset($options['reply_id']) ? $options['reply_id'] : null;
+		/* strip \r\n with \s */
 		$message = preg_replace('[\r\n]',' ',$message);
 
 		return JWDB::SaveTableRow('Message', array(
-			'idUserSender' => $idUserSender,
-			'idUserReceiver' => $idUserReceiver,
+			'idUserSender' => $sender_id,
+			'idUserReceiver' => $receiver_id,
+			'idMessageReplyTo' => $message_reply_id,
 			'message' => $message,
 			'device' => $device,
 			'timeCreate' => JWDB::MysqlFuncion_Now($time),
@@ -217,40 +217,34 @@ _SQL_;
 	 * 	@return	array	以 idMessage 为 key 的 message row
 	 * 
 	 */
-	static public function GetMessageDbRowsByIds ($idMessages, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL )
+	static public function GetDbRowsByIds ($message_ids)
 	{
-		if ( empty($idMessages) )
+		if ( empty($message_ids) )
 			return array();
 
-		if ( !is_array($idMessages) )
+		if ( false==is_array($message_ids) )
 			throw new JWException('must array');
 
-		$idMessages = array_unique($idMessages);
+		$message_ids = array_unique($message_ids);
 
-		$condition_in = JWDB::GetInConditionFromArray($idMessages);
+		$condition_in = JWDB::GetInConditionFromArray($message_ids);
 
-		$messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
 		$sql = <<<_SQL_
 SELECT
-		id as idMessage
-		, id
-		, idUserSender
-		, idUserReceiver
-		, message
-		, UNIX_TIMESTAMP(timeCreate) AS timeCreate
-		, device
-		, messageStatusReceiver
-		, messageStatusSender
-FROM	Message
-WHERE	(id IN ($condition_in)) $messageStatus
+	    *, id as idMessage
+FROM    Message
+WHERE
+	    id IN ($condition_in)
 _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
-
-		if ( empty($rows) ){
+		if ( empty($rows) )
+		{
 			$message_map = array();
-		} else {
+		}
+		else
+		{
 			foreach ( $rows as $row ) {
 				$message_map[$row['idMessage']] = $row;
 			}
@@ -259,14 +253,14 @@ _SQL_;
 		return $message_map;
 	}
 
-	static public function GetMessageDbRowById ($idMessage, $type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL)
+	static public function GetDbRowById($message_id)
 	{
-		$message_db_rows = JWMessage::GetMessageDbRowsByIds(array($idMessage),$type, $messageType);
+		$message_db_rows = self::GetDbRowsByIds(array($message_id));
 
 		if ( empty($message_db_rows) )
 			return array();
 
-		return $message_db_rows[$idMessage];
+		return $message_db_rows[$message_id];
 	}
 
 

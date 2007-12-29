@@ -37,7 +37,7 @@ if( false == JWFollower::IsFollower($idUserSender, $idUserReceiver) ){
 }
 
 $text = urlDecode( $text );
-if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device, $time=null)){
+if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device)){
 	$insertedId = JWDB::GetInsertedId();
 	$message = JWMessage::GetMessageDbRowById( $insertedId );
 	switch($type){
