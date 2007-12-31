@@ -17,7 +17,7 @@ if( $action == null ) {
 
 switch($action){
 	case 'message':
-		$messageRow = JWMessage::GetMessageDbRowById( $value );
+		$messageRow = JWMessage::GetDbRowById( $value );
 		if( empty($messageRow) ||
 			false == ( $messageRow['idUserSender'] == $loginedUserInfo['id']
 				|| $messageRow['idUserReceiver'] == $loginedUserInfo['id']

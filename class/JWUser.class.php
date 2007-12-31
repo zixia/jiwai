@@ -899,10 +899,11 @@ WHERE nameScreen like '%$key%' OR nameScreen like '%$key%'
 LIMIT	$offset, $limit
 _SQL_;
 
-		$user_ids = array();
-
 		$rows = JWDB::GetQueryResult($sql,true);
+		if (empty($rows))
+			return array();
 
+		$user_ids = array();
 		foreach ( $rows as $row )
 		{
 			array_push($user_ids,$row['idUser']);

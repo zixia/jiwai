@@ -13,8 +13,12 @@ $statusNum	= JWStatus::GetStatusNumFromReplies($loginedIdUser);
 $pagination	= new JWPagination($statusNum, $page, 10);
 $statusData 	= JWStatus::GetStatusIdsFromReplies($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
-$statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
-$userRows	= JWDB_Cache_User::GetDbRowsByIds	($statusData['user_ids']);
+$statusRows = $userRows = array();
+if ( false==empty($statusData) )
+{
+	$statusRows	= JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
+	$userRows	= JWDB_Cache_User::GetDbRowsByIds	($statusData['user_ids']);
+}
 
 krsort( $statusRows );
 

@@ -7,6 +7,7 @@ use MIME::Base64;
 use Getopt::Std;
 use DBI;
 use DBD::mysql;
+use Data::Dumper;
 
 =pod
 http://www.faqs.org/rfcs/rfc2047
@@ -41,13 +42,15 @@ sub _buildMail {
         'From'      => $from,
         'Subject'   => $subject,
         'message_from_file' => 1,
+        'headers_from_message'  => 0,
         'Message'   => $message,
         'servers'   => [$server, ],
     ) or die Mail::Bulkmail->error();
 
     $bulk->header("MIME-Version", "1.0");
-    $bulk->header("Content-Type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_000E_01C836A5.7F4E22B0"');
+    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0029_01C8487B.31D1A7E0"');
 =pod
+    print Dumper($bulk); die "header";
     $bulk->header("Content-Transfer-Encoding", "quoted-printable");
 =cut
     return $bulk;

@@ -51,11 +51,15 @@ $tag_status_num = JWDB_Cache_Status::GetCountTopicByIdTag( $tag_row['id'] );
 
 $pagination = new JWPagination($tag_status_num, $page);
 $status_data = JWDB_Cache_Status::GetStatusIdsTopicByIdTag( $tag_row['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos());
-$status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
 
-//get user info
-$user_rows = JWDB_Cache_User::GetDbRowsByIds( $status_data['user_ids'] );
+$status_rows = $user_rows = array();
+if ( false==empty($status_data) )
+{
+	$status_rows = JWDB_Cache_Status::GetDbRowsByIds( $status_data['status_ids'] );
+	$user_rows = JWDB_Cache_User::GetDbRowsByIds( $status_data['user_ids'] );
+}
 
+/* meta info [ keywords, description ] */
 $keywords = $tag_row['name'];
 $user_showed = array();
 foreach ( $user_rows  as $user_id=>$one )
@@ -69,9 +73,9 @@ foreach ( $user_rows  as $user_id=>$one )
 }
 
 $description = $tag_row['name'];
-foreach ( $status_data['status_ids'] as $status_id )
+foreach ( $status_rows AS $status_id=>$one )
 {
-	$description .= $status_rows[$status_id]['status'];
+	$description .= $one['status'];
 	if ( mb_strlen($description,'UTF-8') > 140 )
 	{
 			$description = mb_substr($description,0,140,'UTF-8');

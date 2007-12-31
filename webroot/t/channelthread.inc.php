@@ -216,7 +216,7 @@ if( !empty($idStatusReply) )
 
 <div id="wtchannelsidebar">
 <div class="sidediv">
-<div style="margin:15px 0 0 10px;"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name'] .'/';?>" class="pad1">回到#<?php echo $tag_row['name']; ?></a></div>
+<div style="margin:15px 0 0 10px;"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name'] .'/';?>" class="pad1">回到[<?php echo $tag_row['name']; ?>]</a></div>
 <div class="line2"><div></div></div>
 <h2 class="forul">其他话题</h2>
 
