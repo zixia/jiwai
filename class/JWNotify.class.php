@@ -146,7 +146,7 @@ class JWNotify{
 		/* tag */
 		if ( $status_row['idTag'] )
 		{
-			$tag = JWTag::GetDbRowById( $status_row['idTag'] );
+			$tag = JWDB_Cache_Tag::GetDbRowById( $status_row['idTag'] );
 		}
 
 		/* thread */

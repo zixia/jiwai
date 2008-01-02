@@ -951,6 +951,7 @@ _SQL_;
 
 		if ( 		1==$idUser	// zixia
 				|| 89==$idUser	// seek
+				|| 863==$idUser	// lecause
 				|| $admin_user_db_row['idUser']==$idUser )
 			return true;
 

@@ -84,7 +84,7 @@ JWTemplate::Timeline( $status_data['status_ids'], $user_rows, $status_rows, arra
 	foreach( $tag_info_rows as $k => $v )
 	{
 		$count_tag_post = $v;
-		$tag_row = JWTag::GetDbRowById( $k );
+		$tag_row = JWDB_Cache_Tag::GetDbRowById( $k );
 		echo '<a href="' .JW_SRVNAME. "/$nameScreen/t/" .$tag_row['name']. '/" class="cloud';
 		echo intval($count_tag_post * $count_style / $count_tag_all_post)+1 .'">'. $tag_row['name'];
 		echo '</a>';

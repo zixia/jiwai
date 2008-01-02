@@ -8,7 +8,7 @@ function reply_status($idStatus)
 		$message = $_REQUEST['jw_status'];
 		$message = trim($message);
 
-		$status_row = JWStatus::GetDbRowById( $idStatus );
+		$status_row = JWDB_Cache_Status::GetDbRowById( $idStatus );
 		
 		$current_user_id  = JWLogin::GetCurrentUserId();
 		$status = $_REQUEST['jw_status'] ;
@@ -60,7 +60,7 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null)
 
 	JWTemplate::html_doctype();
 
-	$status_info    = JWStatus::GetDbRowById( $idStatus );
+	$status_info    = JWDB_Cache_Status::GetDbRowById( $idStatus );
 	if( empty( $status_info) || $status_info['idUser'] != $page_user_id ) {
 		JWTemplate::RedirectTo404NotFound();
 	}
@@ -195,9 +195,9 @@ $options = array(
 );
 JWTemplate::updater( $options );
 
-if( !empty($idStatusReply) )
+if( false==empty($idStatusReply) )
 {
-	$reply_status_info = JWStatus::GetDbRowById( $idStatusReply );
+	$reply_status_info = JWDB_Cache_Status::GetDbRowById( $idStatusReply );
 	if ( !empty($reply_status_info ) )
 	{
 		$reply_user_info = JWUser::GetUserInfo( $reply_status_info['idUser'] );

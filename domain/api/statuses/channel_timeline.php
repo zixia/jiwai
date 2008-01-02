@@ -28,7 +28,7 @@ $idTag = mb_convert_encoding($idTag, 'UTF-8', 'GB2312,UTF-8');
 if( false==($idUser=JWApi::GetAuthedUserId()) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
-$tag_row = JWTag::GetDbRowById( $idTag );
+$tag_row = JWDB_Cache_Tag::GetDbRowById( $idTag );
 $user = JWUser::GetUserInfo( $idUser );
 
 if( !$user ){

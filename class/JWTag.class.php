@@ -29,7 +29,7 @@ class JWTag {
         if( false === self::IsValidTagName( $tag_name ) )
             return null;
 
-        return JWDB::SaveTableRow( 'Tag', array(
+        return JWDB_Cache::SaveTableRow( 'Tag', array(
             'name' => $tag_name,
             'description' => $tag_name,
             'timeCreate' => JWDB::MysqlFuncion_Now(),
@@ -63,8 +63,7 @@ class JWTag {
         if( null == $tag_name )
             return false;
 
-        $sql = "SELECT * FROM Tag WHERE name='$tag_name'";
-        $row = JWDB::GetQueryResult( $sql );
+	$row = JWDB_Cache_Tag::GetDbRowByName($tag_name);
 
         if( empty($row) ) 
 	{
@@ -107,59 +106,5 @@ class JWTag {
 
 	    return $rtn_array;
     }
-
-	/**
-	 * Get All DbRows of Tag [ limit ]
-	 */
-	static public function GetDbRowsAll( $num = JWStatus::DEFAULT_STATUS_NUM, $start = 0) 
-	{
-
-		$sql = <<<_SQL_
-SELECT * 
-	FROM
-		Tag
-ORDER BY 	timeCreate desc
-LIMIT		$start, $num
-_SQL_;
-
-		$rows = JWDB::GetQueryResult( $sql, true );
-
-		if (empty($rows))
-			return array();
-
-		return $rows;
-	}
-
-	/**
-	 * Get sum of Tag All Post
-	 */
-	static public function GetCountPostAll()
-	{  
-
-		$sql = <<<_SQL_
-SELECT sum(countPost) AS sum
-	FROM
-		Tag
-_SQL_;
-		$row = JWDB::GetQueryResult( $sql );
-
-		return $row['sum'];
-	}
-
-	/**
-	 * Get sum of Tag All Topic
-	 */
-	static public function GetCountTopicAll()
-	{  
-
-		$sql = <<<_SQL_
-SELECT sum(countTopic) AS sum
-	FROM
-		Tag
-_SQL_;
-		$row = JWDB::GetQueryResult( $sql );
-
-		return $row['sum'];
-	}
 }
 ?>

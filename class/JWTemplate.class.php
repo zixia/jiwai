@@ -982,7 +982,7 @@ __HTML__;
 		$reply_user_id = $status_row['idUserReplyTo'];
 		$thread_id = $status_row['idThread'];
 		$tag_id = $status_row['idTag'];
-		$tag_row = empty($tag_id) ? null : JWTag::GetDbRowById( $tag_id );
+		$tag_row = empty($tag_id) ? null : JWDB_Cache_Tag::GetDbRowById( $tag_id );
 		$tag_name = empty($tag_row) ? null : $tag_row['name'];
 
 		$reply_user = null;
@@ -1003,7 +1003,7 @@ __HTML__;
 		}
 
 		if( $thread_id ) {
-			if( $thread_status = JWStatus::GetDbRowById( $thread_id ) ) 
+			if( $thread_status = JWDB_Cache_Status::GetDbRowById( $thread_id ) ) 
 			{
 				if( $thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] ) )
 				{

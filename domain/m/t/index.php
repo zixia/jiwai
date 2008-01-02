@@ -21,7 +21,7 @@ if( $tag_name )
 		JWTemplate::RedirectTo404NotFound();
 	}
 
-	$tag_row = JWTag::GetDbRowById( $tag_id );
+	$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id );
 }
 else
 {

@@ -906,11 +906,11 @@ _SQL_;
 
 		if( $tag_id && null==$reply_to_id ) 
 		{
-			$tag = JWTag::GetDbRowById( $tag_id ) ;
+			$tag = JWDB_Cache_Tag::GetDbRowById( $tag_id ) ;
 			$symbol_info = self::GetSymbolInfo($status);
 			if ( $symbol_info && '[]'==$symbol_info['symbol'] )
 			{
-				$tag_row = JWTag::GetDbRowByName( $symbol_info['value'] ) ;
+				$tag_row = JWDB_Cache_Tag::GetDbRowByName( $symbol_info['value'] ) ;
 				if ( false==empty($tag_row) && $tag_row['id'] == $tag_id )
 					$status = $symbol_info['status'];
 			}
@@ -1033,11 +1033,11 @@ _HTML_;
 
 		if( $tag_id && null == $reply_to_user_id ) 
 		{
-			$tag_row = JWTag::GetDbRowById( $tag_id );
+			$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id );
 			$symbol_info=self::GetSymbolInfo($status);
 			if ( $symbol_info && '[]'==$symbol_info['symbol'] ) 
 			{
-				$t = JWTag::GetDbRowByName( $symbol_info['value'] );
+				$t = JWDB_Cache_Tag::GetDbRowByName( $symbol_info['value'] );
 				if( false==empty($t) && $t['id'] == $tag_id ) 
 					$status = $symbol_info['status'];
 			}
@@ -1373,7 +1373,7 @@ _SQL_;
 		$idUser 	= JWDB_Cache::CheckInt($idUser);
 		$idStatus	= JWDB_Cache::CheckInt($idStatus);
 
-		$db_row = self::GetDbRowById($idStatus);
+		$db_row = JWDB_Cache_Status::GetDbRowById($idStatus);
 
 		if ( empty($db_row) )
 			return false;

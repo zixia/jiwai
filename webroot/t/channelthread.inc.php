@@ -47,7 +47,7 @@ function reply_status($idStatus)
 
 function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = null)
 {
-	$tag_row = JWTag::GetDbRowById( $idTag );
+	$tag_row = JWDB_Cache_Tag::GetDbRowById( $idTag );
 
 	$status_info    = JWStatus::GetDbRowById( $idStatus );
 	//$idTag = $status_info['idTag'];

@@ -202,7 +202,7 @@ class JWRobotLingo {
 			if( substr($followe,0,1) == '#' ) 
 			{
 				$tag_name = substr( $followe, 1 );
-				$tag_row = JWTag::GetDbRowByName( $tag_name );
+				$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 				if( false == empty( $tag_row ) )
 				{
 					$notification = $on ? 'Y' : 'N';
@@ -311,7 +311,7 @@ class JWRobotLingo {
 			if( substr($followe,0,1) == '#' ) 
 			{
 				$tag_name = substr( $followe, 1 );
-				$tag_row = JWTag::GetDbRowByName( $tag_name );
+				$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 				if( false == empty( $tag_row ) )
 				{
 					JWTagFollower::Destroy( $tag_row['id'], $address_user_id );
@@ -507,7 +507,7 @@ class JWRobotLingo {
 		if( substr($followe,0,1) == '#' ) 
 		{
 			$tag_name = substr( $followe, 1 );
-			$tag_row = JWTag::GetDbRowByName( $tag_name );
+			$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 			if( false == empty( $tag_row ) )
 			{
 				if(false == JWTagFollower::IsFollower( $tag_row['id'], $address_user_id ) )

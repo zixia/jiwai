@@ -107,7 +107,7 @@ switch ( $func )
 				JWTemplate::RedirectToUrl( '/'.urlEncode( $nameScreen ).'/t/'.urlEncode($tag_name).'/' );
 			}
 			
-			$tag_row = JWTag::GetDbRowByName( $tag_name );
+			$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 			if ( false == empty($tag_row) )
 				require_once(dirname(__FILE__) . "/channelpublic.inc.php");
 			else

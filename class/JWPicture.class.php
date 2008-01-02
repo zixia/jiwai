@@ -185,7 +185,7 @@ _SQL_;
 		if ( empty($idPictures) )
 			return $url_row;
 
-		$picture_rows 	= self::GetDbRowsByIds($idPictures);
+		$picture_rows = JWDB_Cache_Picture::GetDbRowsByIds($idPictures);
 		
 		foreach ( $idPictures as $picture_id )
 		{

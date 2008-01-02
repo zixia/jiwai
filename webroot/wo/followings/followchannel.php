@@ -17,7 +17,7 @@ if ( $idLoginedUser )
 	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
 		$idTag = intval($match[1]);
 
-		$tagRow = JWTag::GetDbRowById( $idTag ); 
+		$tagRow = JWDB_Cache_Tag::GetDbRowById( $idTag ); 
 		$userRow = JWUser::GetUserInfo( $idLoginedUser );
 
                 JWSns::ExecWeb($idLoginedUser, "follow #$tagRow[name]", '打开关注此#');
