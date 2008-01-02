@@ -55,8 +55,8 @@
 <td>${$one['dealStatus']=='NONE' ? '未处理' : ($one['dealStatus']=='FIXED' ? '已处理' : '已备案')}</td>
 <td>
 <!--{if ($one['dealStatus'] == 'NONE')}-->
-	<a href="/feed_message.php?deal={$one['id']}">处理</a>&nbsp;<a href="/feed_message.php?id={$one['id']}">备案</a>
-<!--{/if}-->&nbsp;<a href="/feed_message.php?delete={$one['id']}">Ｘ</a>
+	<a href="/feed_complain.php?deal={$one['id']}">处理</a>&nbsp;<a href="/feed_complain.php?id={$one['id']}">备案</a>
+<!--{/if}-->&nbsp;<a href="/feed_complain.php?delete={$one['id']}">Ｘ</a>
 </td>
 </tr>
 <!--{/foreach}-->
