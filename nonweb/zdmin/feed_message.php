@@ -6,6 +6,10 @@ if( isset( $_POST ))
     $device = isset( $_POST['select'] ) ? $_POST['select'] : NULL;
     $time = isset( $_POST['select2'] ) ? $_POST['select2'] : NULL;
     $deal_status = isset( $_POST['select3'] ) ? $_POST['select3'] : NULL;
+
+    if ( '不限' == $device ) 
+	    $device = null;
+
     switch( $deal_status )
     {
         case '未处理':
@@ -40,9 +44,9 @@ if( isset( $_POST ))
             $time_begin = date("Y-m-d",time()-3600*24*30);
             break;
     }
-    
+
     $time_end = date('Y-m-d', time()+86400);
-    $result = JWFeedBack::GetDbRowByCondition($device,null,$deal_status,$time_begin,$time_end);
+    $result = JWFeedBack::GetDbRowByCondition($device,JWFeedBack::T_MOMT,$deal_status,$time_begin,$time_end);
 
 } 
 if( isset($_GET['id']) )

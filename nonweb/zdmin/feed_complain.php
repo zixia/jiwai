@@ -42,7 +42,7 @@ if(isset($_POST))
     if( $device=='不限')
         $device = NULL;
     $time_end = date('Y-m-d', time()+86400);
-    $result = JWFeedBack::GetDbRowByCondition($device,null,$deal_status,$time_begin,$time_end);
+    $result = JWFeedBack::GetDbRowByCondition($device,JWFeedBack::T_COMPLAIN,$deal_status,$time_begin,$time_end);
 }
 if( isset($_GET['id']) )
 {

@@ -28,7 +28,8 @@ class JWFeedBack {
 	 * type
 	 */
 	const T_MO = 'MO';
-	const T_MMS = 'MT';
+	const T_MT = 'MT';
+	const T_MOMT = 'MOMT';
 	const T_COMPLAIN = 'COMPLAIN';
 
 	/**
@@ -63,8 +64,8 @@ class JWFeedBack {
 
 			return JWDB::SaveTableRow( 'FeedBack' , array(
 				'idUser' => $user_id,
-                'device' => $device,
-                'remark' => $remark,
+				'device' => $device,
+				'remark' => $remark,
 				'timeCreate' => JWDB::MysqlFuncion_Now(),
 				'type' => $type,
 				'dealStatus' => self::DEAL_NONE,
@@ -119,10 +120,20 @@ SQL;
 	static public function GetDbRowByCondition( $device=null,$type=null, $deal_status=null, $time_begin=null, $time_end=null ) 
 	{
 		$condition = null;
-        if( $device )
-            $condition .=" AND device = '$device'";
+		if( $device )
+			$condition .=" AND device = '$device'";
+
 		if( $type )
-			$condition .= " AND type = '$type'";
+		{
+			if ( self::T_MOMT==$type ) 
+			{
+				$condition .= "AND ( type='MO' OR type='MT' )";
+			}
+			else
+			{
+				$condition .= " AND type = '$type'";
+			}
+		}
 				
 		if( $deal_status )
 			$condition .= " AND dealStatus = '$deal_status'";
