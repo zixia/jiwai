@@ -19,14 +19,14 @@ $user_name_url = $user_row['nameUrl'];
 $current_user_id = JWLogin::GetCurrentUserId();
 
 $show_protected = true;
+$show_status = false;
+$status_id = null;
 if( JWSns::IsProtected($user_row, $current_user_id) )
 {
 	$show_protected = false;
 	$status = $user_name_screen .'设置了隐私保护，只和互相关注的人分享叽歪。';
-	$status_id = null;
-	$reply_link_string = null;
-	$replyto_link = null;
-}else
+}
+else
 {
 	if( $user_row['idConference'] ) 
 	{
@@ -36,36 +36,45 @@ if( JWSns::IsProtected($user_row, $current_user_id) )
 	{
 		$user_status_data = JWStatus::GetStatusIdsFromUser( $user_id, 1 );
 	}
-	$user_status_rows = JWDB_Cache_Status::GetDbRowsByIds( $user_status_data['status_ids'] );
 
-	$status_id = intval( $user_status_data['status_ids'][0] );
-	$thread_id = $user_status_rows[$status_id]['idThread'];
-
-	$formated_status = JWStatus::FormatStatus( $user_status_rows[$status_id] );
-	$status = $formated_status['status'];
-
-	$timeCreate = $user_status_rows[$status_id]['timeCreate'];
-	$duration = JWStatus::GetTimeDesc( $timeCreate );
-
-	$replyto = $formated_status['replyto'];
-	
-	$thread_user = null;
-	if ( $thread_id ) 
+	if ( empty($user_status_data) || empty($user_status_data['status_ids']) )
 	{
-		$thread_status = JWDB_Cache_Status::GetDbRowById( $thread_id );
-		if ( $thread_status['idUser'] )
-			$thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] );
-	}
-
-	$reply_link_string = "回复";
-	$reply_status_id = ( $thread_id ) ? $thread_id : $status_id;
-	if ( false == empty($thread_user) )
-	{
-		$replyto_link = "/$thread_user[nameUrl]/thread/$reply_status_id/$status_id";
+		$status = '迄今为止没有叽歪过。';
 	}
 	else
 	{
-		$replyto_link = "/$user_name_url/thread/$reply_status_id/$status_id";
+		$show_status = true;
+		$user_status_rows = JWDB_Cache_Status::GetDbRowsByIds( $user_status_data['status_ids'] );
+
+		$status_id = intval( $user_status_data['status_ids'][0] );
+		$thread_id = $user_status_rows[$status_id]['idThread'];
+
+		$formated_status = JWStatus::FormatStatus( $user_status_rows[$status_id] );
+		$status = $formated_status['status'];
+
+		$timeCreate = $user_status_rows[$status_id]['timeCreate'];
+		$duration = JWStatus::GetTimeDesc( $timeCreate );
+
+		$replyto = $formated_status['replyto'];
+		
+		$thread_user = null;
+		if ( $thread_id ) 
+		{
+			$thread_status = JWDB_Cache_Status::GetDbRowById( $thread_id );
+			if ( $thread_status['idUser'] )
+				$thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] );
+		}
+
+		$reply_link_string = "回复";
+		$reply_status_id = ( $thread_id ) ? $thread_id : $status_id;
+		if ( false == empty($thread_user) )
+		{
+			$replyto_link = "/$thread_user[nameUrl]/thread/$reply_status_id/$status_id";
+		}
+		else
+		{
+			$replyto_link = "/$user_name_url/thread/$reply_status_id/$status_id";
+		}
 	}
 }
 
@@ -87,15 +96,13 @@ if ( empty($actions) )
      <div class="content">
         <div class="bg"></div>
         <?php echo $status;?><br />
-		<?php if( $show_protected ) 
-		{
-		?>
+	<?php if ($show_protected && $show_status) { ?>
         <div class="meta">
           <span class="floatright">
            <span class="reply"><a href=<?php echo $replyto_link;?>><?php echo $reply_link_string;?></a></span>
           </span>
         </div><!-- meta -->
-		<?php } ?>
+	<?php } ?>
      </div><!-- content -->
    </div><!-- entry -->                                                                                                      <div class="Concerndiv">
      <ul class="Concern">
