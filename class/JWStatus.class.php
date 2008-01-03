@@ -246,15 +246,15 @@ class JWStatus {
 			}
 		}
 
-		if ( preg_match( '/^(\s*\[\s*)([^<>,:\$@#\]\[]{3,20})(\s*\])(\s*)/U', $status, $matches) )
+		if ( preg_match( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', $status, $matches) )
 		{
 			$symbol = '[]';
 			$value = $matches[2];
-			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>,:\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
+			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
 			$maybe_tags = JWTextFormat::ConvertCorner( $value, array('，') );
 			$maybe_tags = array_unique(explode( ',', $maybe_tags));
 
-			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>,:\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
+			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
 			
 			if ( 1<count($maybe_tags) )
 			{
