@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body>
+<GetSMS xmlns="http://intermobiz.com/">
+<entCode>jiwai</entCode>
+<password>123456</password>
+<timestamp>0102170000</timestamp>
+<ckeckCode>b1ef00858ad47eefaacc1877ffca07b2</ckeckCode>
+</GetSMS>
+</soap:Body>
+</soap:Envelope>
