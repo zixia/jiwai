@@ -14,6 +14,8 @@ public class FetionJiWaiRobot implements MoMtProcessor {
 
     private static Hashtable<String, String> mSidSip = new Hashtable<String, String>();
 
+    private static String mSipCacheFile = "sip.cache";
+
     /**
      * Fetion instance
      */
@@ -64,7 +66,8 @@ public class FetionJiWaiRobot implements MoMtProcessor {
             Logger.logError("Please given server|password|account|queuepath");
             System.exit(1);
         }
-        
+
+        htDeSerialize();
     }
     
     public static void main(String args[]) {
@@ -102,6 +105,7 @@ public class FetionJiWaiRobot implements MoMtProcessor {
 
     public void sendPresence(){
         try {
+            htSerialize();
             mFetionSession.heartBeat();
             Logger.log("Send Presence Success");
         }catch(Exception e){
@@ -121,6 +125,28 @@ public class FetionJiWaiRobot implements MoMtProcessor {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public static void htSerialize() {
+        try {
+            FileOutputStream fos = new FileOutputStream(mSipCacheFile);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(mSidSip);
+            oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void htDeSerialize() {
+        try {
+            FileInputStream fis = new FileInputStream(mSipCacheFile);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            mSidSip = (Hashtable<String, String>) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static String getSidFromSip(String sip) {
