@@ -250,7 +250,19 @@ class JWStatus {
 		{
 			$symbol = '[]';
 			$value = $matches[2];
+			$maybe_tags = JWTextFormat::ConvertCorner( $value, array('，') );
+			$maybe_tags = array_unique(explode( ',', $maybe_tags));
+
 			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,20})(\s*\])(\s*)/U', '', $status));
+			
+			if ( 1<count($maybe_tags) )
+			{
+				$value = array_shift($maybe_tags);
+				while ( $one = array_shift($maybe_tags) )
+				{
+					$status = '['.$one.'] '.$status;
+				}
+			}
 
 			if ( $symbol_need==null || $symbol == $symbol_need ) 
 			{
@@ -1049,6 +1061,7 @@ _HTML_;
 
 		// Add @ Link For other User
 		$status = preg_replace(	 "/@\s*([^\s<>@#]{3,20})(\b|\s|$)/" ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
+		$status = preg_replace(	 "/\[\s*([^\s<>@#\]\[]{3,20})\](\b|\s|$)/" ,"[<a href='/t/\\1/'>\\1</a>]\\2" ,$status );
 
 		return array ( 
 			'status' => $status, 
