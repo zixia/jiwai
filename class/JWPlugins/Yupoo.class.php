@@ -99,7 +99,7 @@ class JWPlugins_Yupoo{
 		if( $xmlObject && !empty($xmlObject) ) 
 		{
 			$photoNode = $xmlObject->photo;
-			if ( null==$photoNode )
+			if ( null===$photoNode )
 				return null;
 
 			$secret = $host = $dir = $filename = $originalformat = null;
