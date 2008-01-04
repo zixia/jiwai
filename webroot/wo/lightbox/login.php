@@ -12,11 +12,12 @@ if ( array_key_exists('username_or_email',$_POST) )
 		// if it return, mean $username_or_email is not a valid openid url.
 	}
 
+	$user_id = null;
 	if( true == JWUser::IsValidName($username_or_email) )
-		$idUser = JWUser::GetUserFromPassword($username_or_email, $password);
-	//$idUser = $username_or_email;
+		$user_id = JWUser::GetUserFromPassword($username_or_email, $password);
+	//$user_id = $username_or_email;
 
-	if ( !$idUser )
+	if ( null==$user_id )
 		if (true == JWDevice::IsValid($username_or_email, 'all'))
 		{
 			$deviceUserId_rows    = JWUser::GetSearchDeviceUserIds($username_or_email, array('sms','qq','msn','skype','newsmth','facebook','yahoo'));
@@ -27,7 +28,7 @@ if ( array_key_exists('username_or_email',$_POST) )
 				{
 					if(JWUser::VerifyPassword($deviceUserId, $password)) 
 					{
-						$idUser = $deviceUserId;
+						$user_id = $deviceUserId;
 						break;
 					}
 				}
@@ -39,14 +40,14 @@ if ( array_key_exists('username_or_email',$_POST) )
 			exit(0);
 		}
 
-	if ( $idUser )
+	if ( $user_id )
 	{
-		echo '+'.$idUser;
+		echo '+'.$user_id;
 		if ( isset($_REQUEST['remember_me']) && $_REQUEST['remember_me'] )
 			$remember_me = true;
 		else
 			$remember_me = false;
-		JWLogin::Login($idUser, $remember_me);
+		JWLogin::Login($user_id, $remember_me);
 	}
 	else
 	{

@@ -116,10 +116,13 @@ $options=array(
 );
 JWTemplate::updater( $options );
 
-JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
-'pagination' => $pagination,
-'isInTag' => true,
-));
+if (false==empty($status_data)) 
+{
+	JWTemplate::Timeline( $status_data['status_ids'],$user_rows,$status_rows, array(
+		'pagination' => $pagination,
+		'isInTag' => true,
+	));
+}
 ?>
 
 		</div><!-- wrapper end -->

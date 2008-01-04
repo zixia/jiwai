@@ -925,6 +925,8 @@ _SQL_;
 
 		$user_ids = array();
 		$rows = JWDB::GetQueryResult($sql,true);
+		if ( empty($rows) )
+			return array();
 
 		foreach ( $rows as $row )
 		{

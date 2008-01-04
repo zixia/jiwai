@@ -415,7 +415,8 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		 *
 		 */
 
-		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		if ( false==empty($status_info) 
+			&& false == JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
 		{
 			$status_info	= JWDB_Cache::GetCachedValueByKey(
 										 $mc_key

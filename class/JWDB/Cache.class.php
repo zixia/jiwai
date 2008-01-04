@@ -214,6 +214,9 @@ die(var_dump($hit_ids));
 			if ( false == isset( $key_map_mc2db[ $unhit_mc_key ] ) )
 				continue;
 
+			if ( false == isset( $db_rows[$key_map_mc2db[$unhit_mc_key]] ) )
+				continue;
+
 			self::$msMemcache->Set($unhit_mc_key, $db_rows[ $key_map_mc2db[$unhit_mc_key] ]);
 			$hit_db_rows[ $key_map_mc2db[$unhit_mc_key] ] 	= $db_rows[ $key_map_mc2db[$unhit_mc_key] ];
 		}

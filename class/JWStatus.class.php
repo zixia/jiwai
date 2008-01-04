@@ -228,7 +228,9 @@ class JWStatus {
 		/**
 		 * Convert to semi corner
 		 */
-		$status = JWTextFormat::ConvertCorner( $status, array('＃', '＄', '＠', '【', '】','，','：') );
+		$status = JWTextFormat::ConvertCorner( $status, array(
+			'＃', '＄', '＠', '【', '】', '［', '］', '，', '：',
+		));
 
 		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
 		{
@@ -1062,7 +1064,7 @@ _HTML_;
 
 		// Add @ Link For other User
 		$status = preg_replace(	 '/@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ,"@<a href='/\\1/'>\\1</a>\\2" ,$status );
-		$status = preg_replace(	 "/\[\s*([^\s<>@#\]\[]{3,20})\](\b|\s|$)/" ,"[<a href='/t/\\1/'>\\1</a>]\\2" ,$status );
+		$status = preg_replace(	 "/\[\s*([^<>@#\]\[]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/'>\\1</a>]\\2" ,$status );
 
 		return array ( 
 			'status' => $status, 

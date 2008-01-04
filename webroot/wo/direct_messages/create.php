@@ -26,7 +26,10 @@ else if ( isset($_REQUEST['user']['id']) )
 {
 	$receiver_user_id = $_REQUEST['user']['id'];
 }
-
+else
+{
+	JWTemplate::RedirectTo404NotFound();
+}
 
 $receiver_user_row = JWUser::GetUserInfo($receiver_user_id);
 if ( empty($receiver_user_row) )

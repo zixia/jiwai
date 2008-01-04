@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'../../../../jiwai.inc.php');
-function update_feedback($idUser,$device_row)
+function update_feedback($user_id,$device_row)
 {
 	if (empty($_POST))
 		return;
@@ -19,7 +19,7 @@ function update_feedback($idUser,$device_row)
 				'number' => $device_row[$device]['address'],
 				);
 
-		$is_succ = JWFeedBack::Create($idUser,$device, $type,$message,$meta_info);
+		$is_succ = JWFeedBack::Create($user_id,$device, $type,$message,$meta_info);
 
 		if( false == $is_succ )
 		{
@@ -41,7 +41,7 @@ function update_feedback($idUser,$device_row)
 				'user' => $user,		   
 				);
 		$device=null;
-		$is_succ = JWFeedBack::Create($idUser,$device, $type, $reason, $meta_info);
+		$is_succ = JWFeedBack::Create($user_id,$device, $type, $reason, $meta_info);
 
 		if( false == $is_succ )
 		{
@@ -62,14 +62,14 @@ JWLogin::MustLogined();
 <html>
 <head>
 <?php
-$logined_user_info  = JWUser::GetCurrentUserInfo();
-$logined_user_id	= $logined_user_info['id'];
+$current_user_info  = JWUser::GetCurrentUserInfo();
+$current_user_id	= $current_user_info['id'];
 
-$options = array ('ui_user_id' => $logined_user_id );
+$options = array ('ui_user_id' => $current_user_id );
 JWTemplate::html_head($options);
 
-$device_row = JWDevice::GetDeviceRowByUserId($logined_user_id);
-update_feedback($logined_user_id,$device_row);
+$device_row = JWDevice::GetDeviceRowByUserId($current_user_id);
+update_feedback($current_user_id,$device_row);
 $supported_device_types = JWDevice::GetSupportedDeviceTypes();
 foreach($supported_device_types as $type)
 {
@@ -88,7 +88,7 @@ foreach($supported_device_types as $type)
 		}
 	}
 }
-$via_device = JWUser::GetSendViaDevice($logined_user_id);
+$via_device = JWUser::GetSendViaDevice($current_user_id);
 $activeOptions['web'] = true;
 ?>
 </head>
