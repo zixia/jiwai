@@ -78,11 +78,9 @@ class JWRobotLingo_Conference {
 	
 		if ( $followe_user_db_row['idUser'] != $address_user_id  
 				&& false == JWFollower::IsFollower($followe_user_db_row['idUser'], $address_user_id) ) {
-			JWSns::CreateFriends( $address_user_id, array($followe_user_db_row['idUser']) );
+			JWSns::CreateFollower( $followe_user_db_row['idUser'], $address_user_id, true );
 		}
 		
-		JWSns::CreateFollowers($followe_user_db_row['idUser'], array($address_user_id));
-
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_SUC', 
 				array(
 					$followe_user_db_row['nameFull'],

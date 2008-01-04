@@ -138,7 +138,7 @@ class JWRobotLingo_Add {
 		//被邀请人成功注册了用户；
 		$newUserInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
 		if( $idUser ) {
-			JWSns::CreateFriends($idUser, array($device_db_row['idUser']), true );
+			JWSns::CreateFollower($idUser, $device_db_row['idUser'], true );
 			$userInfo = JWUser::GetUserInfo( $idUser );	
 			$reply = JWRobotLingo_AddReply::GetReplyString($robotMsg, 'REPLY_F_SUC_Y_FOLLOW', 
 					array(

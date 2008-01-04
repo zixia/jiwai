@@ -40,7 +40,7 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 			array_push( $reciprocal_user_ids, $inviter_id );
 
 			// 互相加为好友
-			JWSns::CreateFriends( $user_id, $reciprocal_user_ids, true );
+			JWSns::CreateFollower( $user_id, $reciprocal_user_ids, true );
 		}
 
 		if ( isset($_SESSION['login_redirect_url']) )
