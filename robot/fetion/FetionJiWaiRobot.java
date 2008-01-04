@@ -33,7 +33,7 @@ public class FetionJiWaiRobot implements MoMtProcessor {
     public static String mAccount   = null;
     public static String mPassword  = null;
     public static String mQueuePath = null;
-    public static String _mStatus   = "叽歪一下吧！（发送HELP了解更多）";
+    public static String _mStatus   = "叽歪";
     public static String mStatus    = null;
     public static String mAddress   = null;
     public static String mOnlineScript = null;
@@ -106,7 +106,7 @@ public class FetionJiWaiRobot implements MoMtProcessor {
     public void sendPresence(){
         try {
             htSerialize();
-            mFetionSession.heartBeat();
+            mFetionSession.setNickname(mStatus);
             Logger.log("Send Presence Success");
         }catch(Exception e){
             worker.stopProcessor();
