@@ -1060,8 +1060,8 @@ class JWRobotLingo {
 		 * Temporary limit to send message
 		 */
 		$address_user = JWDB_Cache_User::GetDbRowById( $address_user_id );
-		if( false == JWFollower::IsFollower( $address_user_id, $friend_id )
-			&& ( time() - strtotime($address_user['timeCreate']) < 30*86400 ) )
+		if( $address_user['messageFriendOnly']=='Y' 
+			&& false == JWFollower::IsFollower( $address_user_id, $friend_id ) )
 		{
 			return null;
 		}
