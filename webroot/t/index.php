@@ -46,6 +46,10 @@ switch ( $func )
 		$reply_status_id = intval(@$matches[2]);
 
 		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
+		if (empty($status_row) )
+		{
+			JWTemplate::RedirectTo404NotFound();
+		}
 		$page_user_id = $status_row['idUser'];
 
 		if ( false==JWLogin::IsLogined())

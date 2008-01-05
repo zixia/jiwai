@@ -1,18 +1,17 @@
 <?php
-
-$user = array();
-extract($_REQUEST, EXTR_IF_EXISTS);
-
-
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-//var_dump($_REQUEST);
+$user = array();
+extract($_REQUEST, EXTR_IF_EXISTS);
+if (false===isset($user['profile_background_tile']) )
+	$user['profile_background_tile'] = 0;
+if (false===isset($user['profile_background_image']) )
+	$user['profile_background_image'] = null;
 
-$user_info		= JWUser::GetCurrentUserInfo();
-
+$user_info = JWUser::GetCurrentUserInfo();
 
 $ui = new JWDesign($user_info['idUser']);
 

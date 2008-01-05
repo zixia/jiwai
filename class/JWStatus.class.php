@@ -494,7 +494,7 @@ _SQL_;
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
@@ -520,7 +520,7 @@ _SQL_;
 		$userInfo = JWUser::GetUserInfo( $idUser );
 
 		if( empty( $userInfo ) || null == $userInfo['idConference'] ){
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 		}
 
 		$idConference = JWDB_Cache::CheckInt( $userInfo['idConference'] );
@@ -543,7 +543,7 @@ _SQL_;
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
@@ -583,7 +583,7 @@ _SQL_;
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
@@ -753,6 +753,8 @@ _SQL_;
 			//AND User.id<>1927 -- XXX block youyouwan
 
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
+		if ( empty($rows) )
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
 		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1352,7 +1354,7 @@ _SQL_;
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if (empty($rows))
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1456,8 +1458,7 @@ _SQL_;
 		$rows = JWDB_Cache::GetQueryResult($sql,true);
 
 		if ( empty($rows) )
-			return array();
-
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1574,7 +1575,7 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1621,7 +1622,7 @@ _SQL_;
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1655,7 +1656,7 @@ LIMIT $offset, $limit
 _SQL_;
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1688,7 +1689,7 @@ LIMIT $offset, $limit
 _SQL_;
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
@@ -1894,7 +1895,7 @@ _SQL_;
 
 		$rows = JWDB_Cache::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return array();
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
 		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));

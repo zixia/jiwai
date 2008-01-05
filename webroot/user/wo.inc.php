@@ -126,9 +126,9 @@ if ( false == $protected ) {
 
 $description .= @$head_status_rows[$head_status_id]['status'];
 
-foreach ( $status_data['status_ids'] as $status_id )
+foreach ( $status_rows as $one )
 {
-	$description .= ' '.$status_rows[$status_id]['status'];
+	$description .= ' '.$one['status'];
 	if ( mb_strlen($description,'UTF-8') > 140 )
 	{
 			$description = mb_substr($description,0,140,'UTF-8');
