@@ -49,6 +49,8 @@ class JWSns {
 	 */
 	static public function CreateMessage($sender_id, $receiver_id, $message, $device='web', $options=array())
 	{
+		if (false==isset($options['noreply_tips']))
+			$options['noreply_tips'] = false;
 		
 		if ( JWBlock::IsBlocked( $receiver_id, $sender_id, false ) )  // receiver_id blocked sender_id;
 			return false;		
@@ -76,7 +78,11 @@ class JWSns {
 			. ( $need_notice_mail ? 'sent. ' : 'web')
 		);
 	
-		$message = "$sender_row[nameScreen]: $message (可直接回复 D $sender_row[nameScreen] 你想说的悄悄话)";
+		if ( false==$options['noreply_tips'] )
+		{
+			$message = "$sender_row[nameScreen]: $message "
+					."(可直接回复 D $sender_row[nameScreen] 你想说的悄悄话)";
+		}
 		$message_info = array(
 			'message' => $message,
 			'idMessage' => $message_id,

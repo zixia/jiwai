@@ -237,7 +237,8 @@ class JWRobotLingo {
 						$address_user_row['nameScreen'],
 						urlEncode($address_user_row['nameUrl']),		
 					));
-					JWNudge::NudgeToUsers( $userInfoFollower['idUser'], $outMessage, 'nudge', $type);
+					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], 
+								$outMessage,$type, array('noreply_tips'=>true,) );
 				}
 			}
 				
@@ -575,7 +576,8 @@ class JWRobotLingo {
 					$address_user_row['nameScreen'], 
 					urlEncode($address_user_row['nameUrl']),		
 				));
-				JWNudge::NudgeToUsers($follower['id'], $outMessage, 'nudge', $type);
+				JWSns::CreateMessage( $address_user_id, $friend_user_id,
+							$outMessage,$type, array('noreply_tips'=>true,) );
 			}
 		}
 
