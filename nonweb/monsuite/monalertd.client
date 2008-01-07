@@ -1,0 +1,70 @@
+#!/usr/bin/perl -w
+
+use strict;
+use POSIX;
+use IO::Socket;
+use Sys::Syslog;
+
+=pod
+NOTICE: ALL SUBROUTINES RETURN
+1 - SUCCESS
+0 - FAILURE
+=cut
+
+sub doSendAlert
+{
+    my ($host, $port, $dev, $reason) = @_;
+
+    my $ret = system("wget --quiet -O /dev/null http://$host:$port/alert/$dev/$reason");
+
+    return ($ret eq 0) ? 1 : 0;
+}
+
+=pod
+This subroutine is designed to interact with the SMS-Alert Daemon outside the box
+=cut
+sub do_keepalive
+{
+    my ($host, $port) = @_;
+    my $interval = 60 * 5;  ## 5 minutes
+
+    while (1)
+    {
+        my $probeDir = 'probe.d';
+        my @probs = <$probeDir/*.prob>;
+
+=pod
+NOTICE: FROMAT OF THE .OUTPUT. STRING
+md1:AboutToFull;md2:CheckFailure;...
+=cut
+        for my $prob (@probs) {
+            open PROB, "$prob |";
+            while (<PROB>) {
+                chomp;
+                my @alerts = split(';', $_);
+                for my $alert (@alerts) {
+                    my ($key, $value) = split(':', $alert);
+                    syslog('err', "SendAlert $key:$value");
+                    doSendAlert($host, $port, $key, $value);
+                }
+            }
+            close PROB;
+        }
+
+        sleep $interval;
+    }
+}
+
+openlog("JWLocalStatus", "ndelay,pid,cons", "local0");
+$SIG{CHLD} = sub { wait() };
+
+my ($host, $port) = @_;
+$host = '60.28.194.36' unless defined $host;
+$port = 50020 unless defined $port;
+
+do_keepalive($host, $port);
+
+closelog();
+
+0;
+

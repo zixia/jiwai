@@ -1,0 +1,50 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Sys::Syslog;
+
+sub detect_diskstats {
+    my ($mountpoint, $threshold) = @_;
+    my $retvar = 0;
+
+    die "no mountpoint specified." unless defined $mountpoint;
+
+    open FOO, "df /$mountpoint |"; 
+
+    while (<FOO>) {
+        my @entry = split;
+        if ($entry[5] eq "/$mountpoint") {
+            my $check = $entry[4];
+            $check =~ s/\%$//g;
+            syslog("info", "/$mountpoint $check.vesus.$threshold");
+            if ($check < $threshold) {
+                $retvar = 1;
+            }
+        }
+    }
+
+    close FOO;
+
+    return $retvar;
+}
+
+my @mountpoints = ('', 'var', 'tmp', 'opt');
+my ($threshold, $retstr) = (80, '');
+
+## BEGIN CHECK DISKSTATS
+for my $mountpoint (@mountpoints) {
+    if (detect_diskstats($mountpoint, $threshold) eq 0) {
+        if (length($retstr)) {$retstr .= ';';}
+        if (length($mountpoint) eq 0) {
+            $retstr .= "root:AboutToFull";
+        }
+        else {
+            $retstr .= "$mountpoint:AboutToFull";
+        }
+    }
+}
+## END DISKSTATS
+
+print $retstr;
+
+0;

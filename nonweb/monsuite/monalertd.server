@@ -1,0 +1,432 @@
+#!/usr/bin/perl -w
+
+use Date::Format;
+use Sys::Syslog;
+use Text::Iconv;
+use Proc::Daemon;
+use IO::Socket;
+use Jiwai::Sms;
+use Jiwai::Censor;
+use strict;
+
+=pod
+Previously, the monalert.config.pl
+=cut
+
+use Net::Telnet;
+use DBI;
+use DBD::mysql;
+
+=pod
+NOTICE for subroutine(s) -  Return 1 on Success, 0 on Failure
+=cut
+
+sub _detect_tcp_port
+{
+    my ($host, $port) = (shift, shift);
+    die "no ssh specifed." unless defined $host;
+    die "no tcp-port specifed." unless defined $port;
+
+    my $timeout = "10";
+
+    my $obj = new Net::Telnet();
+    $obj->errmode("return");
+
+    $obj->open(
+        'Host'  => $host,
+        'Port'  => $port,
+        'Timeout'   => $timeout) or return 0;
+
+    $obj->close();
+
+    1;
+}
+
+sub detect_dns
+{
+    _detect_tcp_port(shift, 53);
+}
+
+sub detect_http
+{
+    _detect_tcp_port(shift, 80);
+}
+
+sub detect_httpL7
+{
+    Jiwai::Censor::DetectHttp(shift, 80, '/', 'jiwai.de');
+}
+sub detect_ssh
+{
+    _detect_tcp_port(shift, 2200)
+}
+
+sub detect_mysql
+{
+    _detect_tcp_port(shift, 3306);
+}
+
+sub detect_sms
+{
+    my $num = shift;
+    my $sms = Jiwai::Sms::new('/dev/ttyUSB0');
+    $sms->openDevice();
+    $sms->sendSms('help', [$num, ]);
+
+    my $reply = $sms->waitReply(10, Jiwai::Sms::NEWMSG);
+
+    $sms->closeDevice();
+
+    syslog("info", "detect_sms: $reply");
+
+    return (defined $reply) ? 1 : 0;
+}
+
+=pod
+END of previous monalert.config.pl
+
+unshift (@INC, "/home/wanghw/scripts");
+require("monalert.config.pl");
+=cut
+
+my $port    = 50020;
+my $pid     = "/var/run/monalert.pid";
+=pod
+detectInterval, the interval in seconds
+intervalMax, the interval in detectIntervals
+
+for instance
+if detectInterval is set to 300
+and intervalMax is set to 24
+
+doScan happens every 300 seconds, aka. 5 minutes
+maximum interval(with auto increment) is 2 hours
+=cut
+my ($detectInterval, $intervalMax) = (300, 24);
+
+## Proc::Daemon::Init;
+
+open PID, ">", $pid;
+print PID $$;
+close PID;
+
+openlog("JWMonAlertBeta", "ndelay,pid,cons", "local0");
+
+# 1 Tick stands for 5min (detectInterval)
+my %monitorTable = (
+    '106693184'     => {
+        'sms'       => { 'threshold0'   => 12, 'threshold' => 4, 'count'  => 0, },
+    },
+    'jiwai.de' => {
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'httpL7'    => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'web-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'web-02.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'asset-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'asset-02.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'db-master-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'mysql'     => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'db-slave-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'mysql'     => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'lb.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'lb-02.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'log-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'robot-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'http'      => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+    'dns-master-01.jw' => {
+        'ssh'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+        'dns'       => { 'threshold0'   => 1, 'threshold' => 1, 'count'  => 0, },
+    },
+);
+
+$SIG{CHLD} = sub { wait() };
+
+if (fork() == 0)
+{
+    doAlertServer($port);
+}
+
+my $sms = Jiwai::Sms::new('/dev/ttyUSB0');
+while (1)
+{
+    doScan(\%monitorTable);
+
+    $sms->openDevice();
+    $sms->cleanStorage();
+    $sms->closeDevice();
+
+    sleep $detectInterval;
+}
+
+closelog();
+unlink $pid;
+
+0;
+
+sub doScan
+{
+    my $monitorTable = shift;
+    while (my ($host, $appTable) = each %$monitorTable)
+    {
+        while (my ($app, $unit) = each %$appTable)
+        {
+            my %arg = %$unit;
+            if (++$arg{'count'} eq $arg{'threshold'}) {
+                if (eval("detect_$app\(\$host\)") eq 1) {   ## success
+                    $monitorTable{$host}{$app}{'threshold'} = $monitorTable{$host}{$app}{'threshold0'};
+                    $monitorTable{$host}{$app}{'count'} = 0;
+                }
+                else {   ## failure
+                    doAlert($host, $app);
+                    $monitorTable{$host}{$app}{'threshold'} =
+                        ($arg{'threshold'} < $intervalMax) ? $arg{'threshold'} * 2 : $intervalMax;
+                    $monitorTable{$host}{$app}{'count'} = 0;
+                }
+            }
+            else {
+                ++$monitorTable{$host}{$app}{'count'};
+            }
+=pod
+            if (eval("detect_$app\(\$host\)") eq 1)
+            {   ## success
+                $monitorTable{$host}{$app}{'threshold'} = $monitorTable{$host}{$app}{'threshold0'};
+                $monitorTable{$host}{$app}{'count'} = 0;
+            }
+            else
+            {   ## failure
+                if (++$arg{'count'} eq $arg{'threshold'})
+                {
+                    doAlert($host, $app);
+                    $monitorTable{$host}{$app}{'threshold'} =
+                        ($arg{'threshold'} < $intervalMax) ? $arg{'threshold'} * 2 : $intervalMax;
+                    $monitorTable{$host}{$app}{'count'} = 0;
+                }
+                else
+                {
+                    ++$monitorTable{$host}{$app}{'count'};
+                }
+            }
+=cut
+        }
+    }
+}
+
+sub doAlert
+{
+    my ($host, $app, $reason, $level) = @_;
+
+    ## return "no host specified." unless defined $host;
+    ## return "no application specified." unless defined $app;
+
+    $reason = "failed to connect" unless defined $reason;
+    $level = "err" unless defined $level;
+
+    ## [Mon Jul  9 10:59:48 CST 2007] (time)
+    ## [Notice] (level)
+    ## 60.28.194.62: (host)
+    ## squid (application)
+    ## failed to connect(reason).
+    my $smsTemplate1 = '%s: %s - %s';
+    my $smsTemplate2 = '%s %s %s';
+    my $dateTemplate = "%a %b %e %T %Y";
+
+    my $smsBody = sprintf($smsTemplate1, $host, $app, $reason);
+    my $smsMessage = sprintf($smsTemplate2, time2str($dateTemplate, time), $level, $smsBody);
+
+    syslog($level, $smsMessage); 
+
+    doSendAlert($smsMessage, $app);
+}
+
+sub doSendAlert
+{
+    my ($message, $app) = @_;
+    chomp $message;
+
+    doSendApi($message);
+
+    my %contactTable = (
+        'wanghw'    => {
+            'cell'  => '13520805254',
+            'mail'  => 'glinus@gmail.com',
+            'omit'  => 'jiwai,msn,gtalk,qq,onlinemo',
+        },
+        'seek'      => {
+            'cell'  => '13955457592',
+            'mail'  => 'shwdai@gmail.com',
+            'call'  => 'jiwai,qq,msn,gtalk,sms',
+        },
+##        'zixia'     => {
+##            'cell'  => '13911833788',
+##        },
+    );
+
+=pod
+    my $converter = Text::Iconv->new("utf-8", "utf-16");
+    $message = $converter->convert($message);
+=cut
+
+    my $sms = Jiwai::Sms::new('/dev/ttyUSB0');
+    $sms->openDevice();
+
+    while (my ($name, $contact) = each %contactTable)
+    {
+        if (defined $contactTable{$name}{'call'})
+        {
+            if (!($contactTable{$name}{'call'} =~ /$app/i))
+            {
+                next;
+            }
+        }
+        elsif (defined  $contactTable{$name}{'omit'})
+        {
+            if ($contactTable{$name}{'omit'} =~ /$app/i)
+            {
+                next;
+            }
+        }
+
+        while (my ($key, $value) = each %$contact)
+        {
+            if ($key eq 'cell')
+            {
+                my ($retry, $tried) = (3, 0);
+                while ($tried < $retry) {
+                    if ($sms->sendSms($message, [$value, ])) { last; }
+                    ++$tried;
+                }
+                ## doSendSms($sms, $message, $value);
+            }
+            elsif ($key eq 'mail')
+            {
+                doSendMail($message, $value);
+            }
+        }
+    }
+
+    $sms->closeDevice();
+
+    1;
+}
+
+=pod
+sub doSendSms
+{
+    my ($message, $cell) = @_;
+
+    warn "no message specified." unless defined $message;
+    warn "no cell phone specified." unless defined $cell;
+
+    my $messageF = "/tmp/$$.$cell";
+
+    open SMSFD, ">", $messageF;
+    print SMSFD $message;
+
+    my $commandTemplate = "sms -d0 -p%s -f%s";
+    my $command = sprintf($commandTemplate, $cell, $messageF);
+
+    my ($retry, $tried) = (3, 0);
+    while ((system($command)) != 0 && ($tried < $retry))
+    {
+        ++$tried;
+        sleep 1;
+    }
+
+    close SMSFD;
+    unlink $messageF;
+}
+=cut
+
+sub doSendApi
+{
+    use URI::Escape;
+    my $message = shift;
+    my ($username, $password) = ('alert', 'alertdem1ma');
+    my $post = 'curl -u ' .
+        $username . ':' . $password .
+        ' -F status=' .
+        uri_escape($message) .
+        ' http://api.jiwai.de/statuses/update.json';
+    my $dumb = `$post`;
+}
+
+sub doSendMail
+{
+    my ($message, $mail) = (shift, shift);
+    warn "no message specified." unless defined $message;
+    warn "no mailbox specified." unless defined $mail;
+}
+
+sub doAlertServer
+{
+    my ($port, $proto, $addr) = @_;
+    die "no port specified." unless defined $port;
+
+    $proto = 'tcp' unless defined $proto;
+    $addr = '' unless defined $addr;     
+
+    my $socketsrv = new IO::Socket::INET (
+        LocalHost   => $addr,
+        LocalPort   => $port,
+        Proto       => $proto,
+        Listen      => 5,
+        Reuse       => 1,
+    );
+
+    die "failed to create socket. $!" unless $socketsrv;
+
+    my ($socket_obj, $buf);
+
+    for (;;)
+    {
+        $socket_obj = $socketsrv->accept();
+        while ($buf = <$socket_obj>) {
+            if ($buf =~ /^GET\s+\/alert\/(\w+)/i)
+            {
+                my ($host, $app) = ($socket_obj->peerhost(), $1);
+                syslog("notice", "try to alert : $host:$app");
+                print $socket_obj $1;
+                $socket_obj->close();
+                if ($buf =~ /^GET\s+\/alert\/(\w+)\/(\w+)/i)
+                {
+                    doAlert($host, $app, $2);
+                }
+                else
+                {
+                    doAlert($host, $app);
+                }
+                last;
+            }
+        }
+    }
+
+    close ($socketsrv);
+
+    0;
+}
