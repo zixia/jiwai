@@ -213,7 +213,7 @@ class JWRobotLingo {
 					{
 						JWTagFollower::SetNotification( $tag_row['id'], $address_user_id, $notification );
 					}
-					array_push( $follower_name, $followe );
+					array_push( $follower_name, '['.$tag_row['name'].']' );
 					continue;
 				}
 			}
@@ -316,7 +316,7 @@ class JWRobotLingo {
 				if( false == empty( $tag_row ) )
 				{
 					JWTagFollower::Destroy( $tag_row['id'], $address_user_id );
-					array_push( $follower_name, "#$tag_name" );
+					array_push( $follower_name, '['.$tag_row['name'].']' );
 					continue;
 				}
 			}
@@ -516,7 +516,7 @@ class JWRobotLingo {
 					JWTagFollower::Create( $tag_row['id'], $address_user_id, 'N' );
 				}
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_FOLLOW_SUC', array(
-					$followe,
+					'['.$tag_row['name'].']',
 				));
 				return JWRobotLogic::ReplyMsg( $robotMsg, $reply );
 			}
