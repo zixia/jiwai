@@ -128,6 +128,10 @@ if (!defined('NO_SESSION')) JWSession::Instance();
 setlocale(LC_ALL, 'zh_CN.UTF-8');
 mb_internal_encoding("UTF-8");
 
+// use for I18n
+// JWI18n::Instance()->SetAppLocale();
+function _e($str) { echo _($str); }
+
 //for Lighty
 if (empty($_SERVER['SCRIPT_URI']) && !empty($_SERVER['REQUEST_URI'])) {
 	$_SERVER['SCRIPT_URI'] = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
