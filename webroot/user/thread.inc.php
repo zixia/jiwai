@@ -3,7 +3,7 @@ function reply_status($idStatus)
 {
 	if( isset($_REQUEST['jw_status']))
 	{
-		JWLogin::MustLogined();
+		JWLogin::MustLogined(true);
 
 		$message = $_REQUEST['jw_status'];
 		$message = trim($message);

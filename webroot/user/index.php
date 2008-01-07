@@ -1,6 +1,7 @@
 <?php
 require_once('../../jiwai.inc.php');
 //die(var_dump($_REQUEST));
+JWLogin::MustLogined(true);
 
 $nameOrId	= @$_REQUEST['nameOrId'];
 $pathParam 	= @$_REQUEST['pathParam'];

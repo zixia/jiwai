@@ -1,7 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 if ( ($idUser=JWLogin::GetCurrentUserId())
 		&& array_key_exists('_method',$_REQUEST)

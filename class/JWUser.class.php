@@ -1005,6 +1005,17 @@ _SQL_;
 		return self::Create( $uArray );
 	}
 
+	static public function IsAnonymous($user_id)
+	{
+		$user = self::GetDbRowById($user_id);
+		if ( $user )
+		{
+			return 'ANONYMOUS' == $user['srcRegister'];
+		}
+
+		return false;
+	}
+
 	static public function GetPossibleName($nameInput, $email=null, $type=null)
 	{
 		# get rid of openid http

@@ -1,12 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-//JWLogin::MustLogined();
-
-//die(var_dump($_SERVER));
-//die(var_dump($_REQUEST));
-
-	//"<span id='status_actions_51444762'>
+JWLogin::MustLogined(true);
 
 $idLoginedUser=JWLogin::GetCurrentUserId();
 

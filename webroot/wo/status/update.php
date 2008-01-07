@@ -2,10 +2,8 @@
 require_once('../../../jiwai.inc.php');
 JWDebug::init();
 
-$idUser = JWLogin::GetPossibleUserId();
-if( null == $idUser ) {
-	JWLogin::MustLogined();
-}
+JWLogin::MustLogined(true);
+$update_user_id = JWLogin::GetPossibleUserId();
 
 if ( array_key_exists('jw_status', $_REQUEST) ){
 	if ( $status = trim($_REQUEST['jw_status']) )
@@ -16,7 +14,7 @@ if ( array_key_exists('jw_status', $_REQUEST) ){
 		$help_user_id	= JWUser::GetUserInfo('help', 'idUser');
 
 		if ( preg_match('#\.(de|vm)/help/$#i', $_SERVER['HTTP_REFERER'])
-				&& $idUser != $help_user_id
+				&& $update_user_id != $help_user_id
 				&& !preg_match('/^@help /',$status) )
 		{
 			$status = '@help ' . $status;
@@ -25,19 +23,28 @@ if ( array_key_exists('jw_status', $_REQUEST) ){
         
         /*
 
-		if ( !JWSns::UpdateStatus($idUser, $status) )
-			JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
+		if ( !JWSns::UpdateStatus($update_user_id, $status) )
+			JWLog::Instance()->Log(LOG_ERR, "Create($update_user_id, $status) failed");
         */
 
-            $robotMsg = new JWRobotMsg();
-            $robotMsg->Set( $idUser , 'web', $status, 'web@jiwai.de' );
-            $replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
-            if( $replyMsg === false ) {
-                JWLog::Instance()->Log(LOG_ERR, "Create($idUser, $status) failed");
-            }
-            if( false == empty( $replyMsg ) ){
-                JWSession::SetInfo('notice', $replyMsg->GetBody() );
-            }
+		$robotMsg = new JWRobotMsg();
+		$robotMsg->Set( $update_user_id , 'web', $status, 'web@jiwai.de' );
+
+		if ( JWUser::IsAnonymous($update_user_id) )
+		{
+			$replyMsg = JWRobotLogic::ProcessMoStatus( $robotMsg );
+		}
+		else
+		{
+			$replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
+		}
+
+		if( $replyMsg === false ) {
+			JWLog::Instance()->Log(LOG_ERR, "Create($update_user_id, $status) failed");
+		}
+		if( false == empty( $replyMsg ) ){
+			JWSession::SetInfo('notice', $replyMsg->GetBody() );
+		}
 	}
 }
 

@@ -131,6 +131,7 @@ _HTML_;
 			$options['ui_user_id'] = JWLogin::GetCurrentUserId();
 
 		$current_user_id = JWLogin::GetCurrentUserId();
+		$current_anonymouse_user = JWUser::IsAnonymous($current_user_id) ? 'true' : 'false';
 
 		/*
 		 *	强制不使用自定义界面，设置为 false 即可
@@ -183,6 +184,7 @@ $openid_html
 	<script type="text/javascript" src="$asset_url_js_box"></script>
 	<script type="text/javascript" src="$asset_url_js_action"></script>
 	<script>var current_user_id = '$current_user_id';</script>
+	<script>var current_anonymouse_user = $current_anonymouse_user;</script>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
@@ -791,6 +793,7 @@ _HTML_;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 		$is_admin = JWUser::IsAdmin($current_user_id);
+		$is_anonymouse = JWUser::IsAnonymous($current_user_id);
 
 		if ( !isset($options['pagination']) )
 			$options['pagination'] 	= false;
@@ -831,7 +834,7 @@ _HTML_;
 			$user_id 	= $statusRows[$status_id]['idUser'];
 			$conference_id = $statusRows[$status_id]['idConference'];
 
-			$can_delete = $is_admin || $user_id == $current_user_id;
+			$can_delete = ($is_admin || $user_id==$current_user_id) && false==$is_anonymouse;
 			$is_favourited = $is_favourited_array[$status_id];
 
 			if ( JWSns::IsProtectedStatus( $statusRows[$status_id], $current_user_id ) )

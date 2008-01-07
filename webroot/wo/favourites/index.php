@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-JWLogin::MustLogined();
+JWLogin::MustLogined(true);
 
 $logined_user_info 	= JWUser::GetCurrentUserInfo();
 $logined_user_id 	= $logined_user_info['id'];

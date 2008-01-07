@@ -77,9 +77,27 @@ class JWLogin {
 	}
 
 
-	static public function MustLogined()
+	static public function MustLogined($allow_drift=false)
 	{
-		if ( self::IsLogined() ){
+		if ( self::IsLogined() )
+		{
+			if ( false===$allow_drift )
+			{
+				$current_user_info = JWUser::GetCurrentUserInfo();
+				if ( 'ANONYMOUS' !== $current_user_info['srcRegister'] )
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if ( true==$allow_drift && $possible_user_id = self::GetPossibleUserId() )
+		{
+			self::Login($possible_user_id);
 			return true;
 		}
 
@@ -133,11 +151,13 @@ class JWLogin {
 			return null;
 		
 		/** Tempory name **/
-		$ipName = preg_replace( '/(\d)$/', 'x', $ip );
+		$ipName = preg_replace( '/(\d+)$/', '*', $ip );
 		$ipFullName = $ipName;
 
+		/**
 		$ipName = 'Anonymity';
 		$ipFullName = '匿名';
+		*/
 
 		$userInfo = JWUser::GetUserInfo( $ipName );
 		if( $userInfo )

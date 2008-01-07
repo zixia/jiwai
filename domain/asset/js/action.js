@@ -10,9 +10,14 @@ var JWAction =
 	mVersion : 1,
 	callback : null,
 
-	isLogined : function(callback)
+	isLogined : function(callback, allow_anonymous)
 	{
-		if( current_user_id > 0 )
+		if ( allow_anonymous == undefined )
+			allow_anonymous = true;
+		else if ( allow_anonymous == false )
+			allow_anonymous = (current_anonymouse_user==false);
+
+		if ( current_user_id > 0 && allow_anonymous==true )
 			return true;
 
 		JWAction.callback = callback;
@@ -219,6 +224,6 @@ var JWAction =
 			return false;
 		};
 
-		return this.isLogined( callback ) ? callback() : false;
+		return this.isLogined( callback, false ) ? callback() : false;
 	}
 };
