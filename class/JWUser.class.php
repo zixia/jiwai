@@ -999,6 +999,7 @@ _SQL_;
 			'nameUrl' => $ipName,
 			'pass' => JWDevice::GenSecret(8),
 			'isWebUser' => 'Y',
+			'srcRegister' => 'ANONYMOUS',
 		);
 
 		return self::Create( $uArray );

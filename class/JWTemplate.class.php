@@ -157,6 +157,10 @@ _HTML_;
 		}
 		$time = time();
 
+		/* for description htmlspecialchars */
+		$description = htmlspecialchars($description);
+		$keywords = htmlspecialchars($keywords);
+
 		echo <<<_HTML_
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
