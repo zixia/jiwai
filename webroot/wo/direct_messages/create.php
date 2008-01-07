@@ -12,11 +12,11 @@ $current_user_info = JWUser::GetUserInfo($current_user_id);
  *
  */
 $reply_message_id = null;
-if ( preg_match('/^\/(\d+)(?:\/\d+|\/?)$/',@$_REQUEST['pathParam'] ,$matches) )
+if ( preg_match('/^\/(\d+)(\/\d+|\/?)$/',@$_REQUEST['pathParam'] ,$matches) )
 {
 	$receiver_user_id = $matches[1];
-	if ( isset($matches[2]) )
-		$reply_message_id = trim($matches[2],'/');
+	$reply_message_id = intval(trim($matches[2],'/'));
+	$reply_message_id = $reply_message_id ? $reply_message_id : null;
 }
 else if ( preg_match('/^\/(\S+)\/(\S+)$/',@$_REQUEST['pathParam'] ,$matches) )
 {
