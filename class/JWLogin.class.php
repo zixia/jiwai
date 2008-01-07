@@ -147,8 +147,14 @@ class JWLogin {
 
 		$ip = JWRequest::GetRemoteIp();
 
-		if( null == $ip )
+		if ( null == $ip )
 			return null;
+
+		$ip_list = preg_split('/[\s,]+/', $ip);
+		if (empty($ip_list) )
+			return null;
+
+		$ip = array_pop( $ip_list );
 		
 		/** Tempory name **/
 		$ipName = preg_replace( '/(\d+)$/', '*', $ip );
