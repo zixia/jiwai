@@ -40,6 +40,11 @@ define('CLASS_ROOT',	JW_ROOT . 'class/');
 define('LIB_ROOT',	JW_ROOT . 'lib/');
 
 /**
+ * Path of Locale
+ */
+define('LOCALE_ROOT', JW_ROOT . 'locale/');
+
+/**
  * Path of cache
  *
  */
