@@ -229,7 +229,7 @@ class JWStatus {
 		 * Convert to semi corner
 		 */
 		$status = JWTextFormat::ConvertCorner( $status, array(
-			'＃', '＄', '＠', '【', '】', '［', '］', '，', '：',
+			'　','＃', '＄', '＠', '【', '】', '［', '］', '，', '：',
 		));
 
 		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s]+)/', $status, $matches ) )

@@ -10,6 +10,8 @@ if (false===isset($user['profile_background_tile']) )
 	$user['profile_background_tile'] = 0;
 if (false===isset($user['profile_background_image']) )
 	$user['profile_background_image'] = null;
+if (false===isset($user['profile_use_background_image']) )
+	$user['profile_use_background_image'] = null;
 
 $user_info = JWUser::GetCurrentUserInfo();
 
@@ -19,8 +21,8 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 {
 	$file_info = @$_FILES['profile_background_image'];
 	
-	if ( ! $user['profile_use_background_image'] 
-		&& !isset($file_info) )
+	if ( false==isset($user['profile_use_background_image']) 
+		&& false==isset($file_info) )
 	{
 		// 不使用背景图片
 		$user['profile_use_background_image'] = null;

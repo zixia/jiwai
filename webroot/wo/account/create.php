@@ -135,7 +135,7 @@ JWTemplate::html_head(array(
 	<!-- username -->
 	<li class="box1">用户名</li>
 	<li class="box2">
-		<input id="user_name_screen" style="display:inline;" name="user[name_screen]" size="30" type="text" minlength="4" maxlength="16" value="<?php echo @$user['name_screen'];?>" alt="用户名" ajax="NameScreen"/>
+		<input id="user_name_screen" style="display:inline;" name="user[name_screen]" size="30" type="text" minlength="2" maxlength="16" value="<?php echo @$user['name_screen'];?>" alt="用户名" ajax="NameScreen"/>
 		<i></i>
 	</li>
 	<li class="box3">中文两字以上，英文或数字至少4个字符</li>
