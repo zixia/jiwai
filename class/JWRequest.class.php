@@ -138,5 +138,18 @@ class JWRequest {
 		}
 		return false;
 	}
+
+	static public function IsWindowsLiveBrowser(){
+        /**
+         * User-Agent Headers
+         * MSN, MSN Messenger
+         * Windows Messenger, MSMSGS
+         * Windows Live Messenger, Windows Live Messenger
+         */
+		$agent = @$_SERVER['HTTP_USER_AGENT'];
+		if( null == $agent )
+			return  false;
+        return (strpos($agent, 'Windows Live Messenger') === false) ? false : true;
+	}
 }
 ?>

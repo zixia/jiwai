@@ -146,4 +146,9 @@ if( substr(@$_SERVER['SERVER_NAME'],0,5) == 'jiwai' && JWRequest::IsWapBrowser()
 	Header('Location: http://m.jiwai.de/');
 	exit;
 }
+
+//XiaoI P4
+if (JWRequest::IsWindowsLiveBrowser()) {
+    header('p3p: CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+}
 ?>
