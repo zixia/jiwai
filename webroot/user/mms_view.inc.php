@@ -33,9 +33,13 @@ JWTemplate::html_head($head_options) ;
 	<h2>
 		<?php echo htmlSpecialChars($page_user_info['nameFull']); ?>的彩信消息 -- <?php echo $photo_name; ?>
 		<span class="h2note">
-			<span>拍摄时间:<?php echo substr($status['timeCreate'],0,16);?></span>
+			<span>拍摄时间:<?php echo $status['timeCreate'];?></span>
 			<div id="status_action_<?echo $status['id'];?>">
 <?php
+$reply_count = JWDB_Cache_Status::GetCountReply($status['id']);
+echo "<a href=".JW_SRVNAME."/${page_user_info['nameUrl']}/thread/${status['id']}/${status['id']} >";
+echo 0<$reply_count?$reply_count."条回复":"回复";
+echo "</a>";
 if( $current_user_id ) {
 	$is_fav = JWFavourite::IsFavourite($current_user_id,$status['id']);
 	echo JWTemplate::FavouriteAction($status['id'],$is_fav);
