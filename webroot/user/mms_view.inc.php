@@ -49,10 +49,8 @@ if( $page_user_id == $current_user_id ) {
 	</h2>
 	<div class="bigimg" style="text-align:center;">
 		<img src="<?php echo $photo_url; ?>" title="<?php echo $photo_name;?>" alt="<?php echo $photo_name;?>" />
-		<div><?php echo $status['status']; ?></div>
-	</div>
-	<div style=" width:145px; margin:0 auto; padding:0 0 40px 25px;">					 
-	<a class="button" href="javascript:history.go(-1);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back2.gif'); ?>" alt="返回" /></a>
+		<div><?php echo $status['status']; ?></div><br/>
+	<input type="button" class="submitbutton" onclick="javascript:location.href='<?php echo JW_SRVNAME ."/${page_user_info['nameUrl']}/mms/";?>';" value="返回" />
 	</div>
 	<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
