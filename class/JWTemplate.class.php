@@ -2705,15 +2705,13 @@ _HEAD_;
 
 	static public function RedirectToUrl( $url )
 	{
-		if ( false == empty($url) )
+		if ( empty($url) )
 		{
-			header("Location: $url"); 
-			exit( 0 );
+			$url = $_SERVER['REQUEST_URI'];
 		}
-		else
-		{
-			self::RedirectBackToLastUrl( '/' );
-		}
+
+		header("Location: $url"); 
+		exit( 0 );
 	}
 }
 ?>
