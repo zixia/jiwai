@@ -24,15 +24,16 @@ class JWTag {
     /**
      * Create a tag
      */
-    static public function Create( $tag_name=null ) 
+    static public function Create( $tag_name=null,$description=null,$admin=null ) 
     {
         if( false === self::IsValidTagName( $tag_name ) )
             return null;
 
         return JWDB::SaveTableRow( 'Tag', array(
             'name' => $tag_name,
-            'description' => $tag_name,
+            'description' => $description,
             'timeCreate' => JWDB::MysqlFuncion_Now(),
+            'admin' =>  $admin,
         ));
     }
 
@@ -67,21 +68,38 @@ class JWTag {
         $row = JWDB::GetQueryResult( $sql );
 
         if( empty($row) ) 
-	{
+	    {
 		return self::Create( $tag_name );
-	}
+	    }
 
         return $row['id'];
     }
+    /**
+     * Get Id
+     */
+     static public function GetIdByDescription( $description=null )
+     {
+        $description = trim( $description );
+        if ( null == $description )
+            return false;
+        $sql = "SELECT * FROM Tag WHERE description='$description'";
+        $row = JWDB::GetQueryResult( $sql );
+
+        if( empty($row) )
+        {
+            return false;
+        }
+        return $row['id'];
+     }
 
     /**
      * Get DbRow
      */
     static public function GetDbRowById( $tag_id=null ) 
     {
-	$tag_id = JWDB::CheckInt( $tag_id );
-	$rows = self::GetDbRowsByIds( array( $tag_id ) );
-	return isset( $rows[$tag_id] ) ? $rows[ $tag_id ] : array();
+		$tag_id = JWDB::CheckInt( $tag_id );
+		$rows = self::GetDbRowsByIds( array( $tag_id ) );
+		return isset( $rows[$tag_id] ) ? $rows[ $tag_id ] : array();
     }
 
     /**
@@ -161,5 +179,14 @@ _SQL_;
 
 		return $row['sum'];
 	}
+    /*
+     * Set Conference
+     */
+    static public function SetConference( $tag_id ,$conference_id = NULL )
+    {
+        $tag_id = intval( $tag_id );
+
+        return JWDB::UpdateTableRow( 'Tag', $tag_id, array( 'idConference' => $conference_id ) );
+    }
 }
 ?>

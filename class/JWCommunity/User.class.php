@@ -12,19 +12,15 @@ class JWCommunity_User{
 	/**
 	 * 创建股票用户
 	 */
-	static public function CreateUserStock($stockNum, $nameFull, $number=null){
-		$nameScreen = 'gp' . $stockNum;
-		$options = array(
-				'number'=> $number,
-				'forceFilter' => 'Y',
-				'deviceAllow' => 'sms,im,web',
-				'friendOnly' => 'N',
-			);
+    static public function CreateUserStock( $stock_num, $full_name, $number=null,$admin )
+    {
+        $tag_name = $full_name;
+        
+        return JWTag::Create( $tag_name , $stock_num, $admin );
+    }
 
-		return self::CreateUserWithConference($nameScreen, $nameFull, $options );
-	}
-
-	static public function CreateUserStockCategory($nameScreen, $nameFull){
+	static public function CreateUserStockCategory($nameScreen, $nameFull)
+	{
 		$options = array(
 				'numberUseIdUser' => true,
 				'forceFilter' => 'Y',
@@ -42,10 +38,12 @@ class JWCommunity_User{
 			'nameFull' => $nameFull,
 		);
 		$idUser = JWDB::SaveTableRow( 'User', $userArray );
-		if( $idUser ) {
+		if( $idUser ) 
+		{
 
 			$number = isset( $options['number'] ) ? $options['number'] : null;
-			if( $number==null ) {
+			if( $number==null ) 
+			{
 				$number = isset($options['numberUseIdUser'])  ? $idUser : null;
 			}
 
