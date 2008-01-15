@@ -56,6 +56,7 @@ $options = array(
 		'idUser' => $idUser,
 		'idConference' => $user['idConference'],
 		'page' => $page,
+		'idUserAuthed' => $idUserAuthed,
 		);
 
 switch($type){
@@ -130,6 +131,7 @@ function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
 function getUserTimelineStatuses($options, $needReBuild=false){
 	/* Twitter compatible */
 
+	$current_user_id = $options['idUserAuthed'];
 	$count	= intval($options['count']);
 	if ( 0>=$count )
 		$count = JWStatus::DEFAULT_STATUS_NUM;
@@ -151,7 +153,11 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 
 	$statuses = array();
 
-	foreach ( $status_data['status_ids'] as $status_id ){
+	foreach ( $status_data['status_ids'] as $status_id )
+	{
+		if ( JWSns::IsProtectedStatus( $status_rows[$status_id], $current_user_id ) )
+			continue;
+
 		$user_id = intval($status_rows[$status_id]['idUser']);
 		
 		$statusInfo = ($needReBuild) ?
