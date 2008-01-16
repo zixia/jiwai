@@ -7,8 +7,9 @@ class
 
 // BEGIN consts
 
-  const String storeUsername     = "login.username";
-  const String storePassword     = "login.password";
+  const String storeUsername  = "login.username";
+  const String storePassword  = "login.password";
+  const String storeTortoise  = "mode.tortoise";
 
   const int    CMD_OPEN     = 1;
   const int    CMD_BACK     = 2;
@@ -23,6 +24,7 @@ class
   const int    CMD_DRMSG    = 11;
   const int    CMD_READALL  = 12;
   const int    CMD_WANDER   = 13;
+  const int    CMD_SETTING  = 14;
 
   const int    MAX_CMD_ID   = 24;
 
@@ -39,7 +41,8 @@ class
   const String FacilityUser = "user_timeline";
   const String FacilityFri  = "friends_timeline";
   const String FacilityDr   = "direct_messages";
-  const String FacilityBlog = "jiwaide_blog";
+  const String FacilityFriends  = "friends";
+  const String FacilityFollowers= "followers";
 
   const String loginUrl = "api.jiwai.de/account/verify_credentials.xml";
   const String logoutUrl= "api.jiwai.de/account/end_session.xml";
@@ -61,6 +64,7 @@ class
   MenuItem  MenuDrmsg   = new MenuItem(CMD_DRMSG,   @CmdDrmsg);
   MenuItem  MenuOptions = new MenuItem(OPEN_MENU,   @CmdMenu);
   MenuItem  MenuReadall = new MenuItem(CMD_READALL, @CmdReadall);
+  MenuItem  MenuSetting = new MenuItem(CMD_SETTING, @CmdSetting);
 
   Menu MENU = new Menu().add(OPEN_MENU, @CmdMenu);
 
@@ -75,8 +79,10 @@ class
   int progressCurrent;
 
   boolean anonymousMode = true;
+  boolean tortoiseMode = false;
 
   Component tobeFocused;
+  Prompt prompt;
 
   Shell timelineListShell;
   Shell tempShell;
@@ -93,7 +99,8 @@ class
     FacilityUser  => [],
     FacilityFri   => [],
     FacilityDr    => [],
-    FacilityBlog  => []
+    FacilityFriends   => [],
+    FacilityFollowers => []
   ];
 
   Value timelineViewed= [
@@ -101,7 +108,8 @@ class
     FacilityUser  => STATUS_UNVIEWED,
     FacilityFri   => STATUS_UNVIEWED,
     FacilityDr    => STATUS_UNVIEWED,
-    FacilityBlog  => STATUS_UNVIEWED
+    FacilityFriends   => STATUS_UNVIEWED,
+    FacilityFollowers => STATUS_UNVIEWED
   ];
 
 // END Variables
@@ -118,17 +126,18 @@ class
 
   void createTimelineListMenu() {
     MENU = new Menu()
-      .add(CMD_ABOUT,  @CmdAbout)
-      .add(CMD_READALL,@CmdReadall)
       .add(CMD_RELOAD, @CmdReload)
-      .add(CMD_LOGOUT, @CmdLogout);
+      .add(CMD_READALL,@CmdReadall)
+      .add(CMD_ABOUT,  @CmdAbout)
+      .add(CMD_LOGOUT, @CmdLogout)
+      .add(CMD_SETTING,@CmdSetting);
   }
 
   void createTimelineViewMenu () {
     MENU = new Menu()
-      .add(CMD_ABOUT,  @CmdAbout)
+      .add(CMD_RELOAD, @CmdReload)
       .add(CMD_READALL,@CmdReadall)
-      .add(CMD_RELOAD, @CmdReload);
+      .add(CMD_ABOUT,  @CmdAbout);
   }
 
 // END createMenus
@@ -166,6 +175,14 @@ class
           ],
         ["name"    => @TimelineDr,
         "fname"    => FacilityDr,
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => @ListFriends,
+        "fname"    => FacilityFriends,
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => @ListFollowers,
+        "fname"    => FacilityFollowers,
         "viewed"   => STATUS_UNVIEWED
           ]
       ];
@@ -251,6 +268,8 @@ class
         bulkReadall();
         animatePopShell(shell);
         animatePushShell(createTimelineList());
+      } else if (action == CMD_SETTING) {
+        animatePushShell(createSettingView());
       }
     }
 
@@ -258,6 +277,7 @@ class
   }
 
   void pushExclusiveView(String info) {
+/*
     Flow view = new Flow(getStyle("default"));
     view.setPreferredSize(-100, 30);
     view.add(createUpdateText(info));
@@ -267,6 +287,9 @@ class
     animatePushShell(exclusiveShell);
     MENU.reset();
     flushScreen(false);
+*/
+    prompt = new Prompt(null, info, null, MenuCancel);
+    prompt.push();
   }
 
   Shell createAboutView() {
@@ -320,10 +343,19 @@ class
         final Style labelStyle = (String(status.viewed).equals(STATUS_UNVIEWED))
           ? getStyle("list.unread")
           : getStyle("list.read");
-        Label name = new Label(labelStyle, status.title);
+
+        String labelText = "";
+        if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
+          if (String(status.content.val).trim().equals("")) {
+            labelText = " - " + @NotEverJiWai;
+          } else {
+            labelText = " - " + status.content.val;
+          }
+        }
+
+        Label name = new Label(labelStyle, status.title + labelText);
         name.setPreferredWidth(-100);
         name.setFlags(VISIBLE|LINEFEED);
-
         textFlow.add(name);
         itemFlow.add(textFlow);
 
@@ -399,13 +431,19 @@ class
     Flow view = new Flow(getStyle("default"));
     view.setPreferredSize(-100, -100);
 
-    final Calendar cal = new Calendar();
-    cal.setMillis(status.created);
-    final String created = cal.format(FORMAT_DATETIME);
+    String created = status.created;
+    if (facility.equals(FacilityPub)
+    || facility.equals(FacilityUser)
+    || facility.equals(FacilityFri)
+    || facility.equals(FacilityDr)) {
+        final Calendar cal = new Calendar();
+        cal.setMillis(status.created);
+        created = cal.format(FORMAT_DATETIME);
+    }
 
     String inputTitle = (String(status.author).equals(username))
       ? @HintUpdate 
-      : (facility.equals(FacilityUser) || facility.equals(FacilityBlog))
+      : (facility.equals(FacilityUser) || facility.equals(FacilityFriends))
         ? @HintUpdate
         : (facility.equals(FacilityDr))
           ? @HintDrmsg
@@ -418,12 +456,29 @@ class
     if (facility.equals(FacilityDr)) {
       view.add(createBodyText(status.title));
       view.add(createBodyText(status.content.val));
-    } else if (facility.equals(FacilityBlog)) {
+    } else if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
       view.add(createBodyText(status.title));
       view.add(createBodyText(status.content.val));
-      alertError(status);
     } else {
       view.add(createBodyText(status.title));
+    }
+
+    if (tortoiseMode) {
+      call(null, "avatar" , "get",
+          ["url" => createAuthedUrl("api.jiwai.de/users/show/" + status.author + ".xml")],
+          picok, picnok);
+    }
+
+    void picok(Object state, Value ret) {
+      Picture pict = getPicture(String(ret));
+      Flow pictFlow = new Flow(getStyle("avatar"));
+      pictFlow.setFlags(VISIBLE|LINEFEED);
+      pictFlow.add(pict);
+      view.insert(3, pictFlow);
+    }
+
+    void picnok(Object state, String error) {
+      alertError(error);
     }
 
     final Shell shell = new Shell(view);
@@ -448,8 +503,10 @@ class
           return MenuReply;
         } else if (facility.equals(FacilityDr)) {
           return MenuDrmsg;
-        } else if (facility.equals(FacilityBlog)) {
-          return MenuUpdate;
+        } else if (facility.equals(FacilityFriends)) {
+          return MenuReply;
+        } else if (facility.equals(FacilityFollowers)) {
+          return MenuReply;
         }
       }
       return null;
@@ -472,6 +529,49 @@ class
     return shell;
   }
     
+  Shell createSettingView()
+  {
+    Flow view = new Flow(getStyle("default"));
+    view.setPreferredSize(-100, -100);
+
+    view.add(createHeaderText(""));
+    view.add(createSubHeaderText(@InfoTortoise));
+
+    Choice choiceTortoise = createFormChoice();
+    view.add(choiceTortoise);
+
+    final Shell shell = new Shell(view);
+    shell.setStyle(getStyle("maxi"));
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
+    {
+      if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      }
+      return null;
+    }
+  
+    void myActionHandler(final Shell shell, final Component source, final int action) 
+    {
+      Store store = getStore();
+      if (action == CMD_BACK) {
+        Choice tortoiseChoice = source;
+        if (0 == tortoiseChoice.getSelected()) {
+          // Enable
+          tortoiseMode = true;
+          store.put(storeTortoise, "Y");
+        } else {
+          tortoiseMode = false;
+          store.put(storeTortoise, "N");
+        }
+        animatePopShell(shell);
+      }
+    }
+    return shell;
+  }
+
   Shell createLoginForm() {
     createPreLoginMenu();
     Flow loginForm = new Flow(getStyle("default"));
@@ -561,6 +661,12 @@ class
     call(facility, facility, "getItems", arg, fetchok, fetchnok);
   }
 
+  void fetchList(String facility)
+  {
+    Value arg = ["url" => createAuthedUrl("api.jiwai.de/statuses/" + facility + ".xml")];
+    call(facility, facility, "get", arg, fetchok, fetchnok);
+  }
+
   void rawFetchTimeline(String facility)
   {
     Value arg = [
@@ -637,7 +743,7 @@ class
     timelineViewed[state] = STATUS_UNVIEWED;
 
     if (++progressCurrent == progressTotal) {
-      popShell(exclusiveShell);
+      closePrompt();
       popShell(tempShell);
       timelineListShell = createTimelineList();
       pushShell(timelineListShell);
@@ -651,7 +757,7 @@ class
     timelineViewed[state] = STATUS_UNVIEWED;
 
     if (++progressCurrent == progressTotal) {
-      popShell(exclusiveShell);
+      closePrompt();
     }
   }
 
@@ -744,6 +850,13 @@ class
 // END callBacks
 
 // BEGIN handies
+  void closePrompt()
+  {
+    if (prompt != null) {
+      prompt.pop();
+      prompt = null;
+    }
+  }
 
   void animatePushShell(Shell foo)
   {
@@ -756,18 +869,19 @@ class
   {
     //int w, int h = getScreenSize();
     //slideOut(-w, 0, w, h, foo);
-    //slideOut(-w, 0, w, h, foo);
     popShell(foo);
   }
 
   void bulkFetch() {
-    progressTotal = 4;
+    progressTotal = 6;
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
     fetchTimeline(FacilityPub);
     fetchTimeline(FacilityUser);
     fetchTimeline(FacilityFri);
     fetchTimeline(FacilityDr);
+    fetchList(FacilityFriends);
+    fetchList(FacilityFollowers);
   }
 
   void fetchOnce(String facility) {
@@ -782,7 +896,11 @@ class
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
     foreach (String facility : facilities) {
-      fetchTimeline(facility);
+      if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
+        fetchList(facility);
+      } else {
+        fetchTimeline(facility);
+      }
     }
   }
 
@@ -816,6 +934,29 @@ class
     retLabel.setFlags(VISIBLE|LINEFEED);
     retLabel.setPreferredWidth(-100);
     return retLabel;
+  }
+
+  Label createChoiceLabel(String name)
+  {
+    Label retLabel = new Label(getStyle("form.choice.item"), name);
+    retLabel.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
+    retLabel.setPreferredWidth(-100);
+    return retLabel;
+  }
+
+  Choice createFormChoice()
+  {
+    Choice retChoice = new Choice(getStyle("form.choice.display"), getStyle("form.choice.list"));
+    List choices = new List();
+    choices.add(createChoiceLabel(@ChoiceEnabled));
+    choices.add(createChoiceLabel(@ChoiceDisabled));
+    retChoice.setChoices(choices, 1);
+
+    if (tortoiseMode) {retChoice.setSelected(0);}
+
+    retChoice.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+    retChoice.setPreferredWidth(-100);
+    return retChoice;
   }
 
   Text createHeaderText(String name)
@@ -885,6 +1026,17 @@ class
         ++unviewed;
       }
     }
+    return unviewed;
+  }
+
+  int getAllUnviewedSize()
+  {
+    int unviewed = 0;
+    unviewed += getUnviewedSize(FacilityPub);
+    unviewed += getUnviewedSize(FacilityUser);
+    unviewed += getUnviewedSize(FacilityFri);
+    unviewed += getUnviewedSize(FacilityDr);
+    unviewed += getUnviewedSize(FacilityFriends);
     return unviewed;
   }
 
@@ -966,13 +1118,22 @@ class
 
   void startWidget()
   {
-    setMinimizedView(createMinimizedView("viewMini", getStyle("default")));
+    if (getAllUnviewedSize() > 0) {
+      setMinimizedView(createMinimizedView("unviewMini", getStyle("default")));
+    } else {
+      setMinimizedView(createMinimizedView("viewMini", getStyle("default")));
+    }
   }
 
   Shell openWidget()
   {
     createPreLoginMenu();
     Store store = getStore();
+    tortoiseMode = store.has(storeTortoise)
+      ? String(store.getValue(storeTortoise)).equals("Y")
+      ? true
+      : false
+      : false;
     username = store.has(storeUsername)? String(store.getValue(storeUsername)) : "";
     password = store.has(storePassword)? String(store.getValue(storePassword)) : "";
 

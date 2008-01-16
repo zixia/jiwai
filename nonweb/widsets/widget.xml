@@ -63,7 +63,60 @@
     <service type="syndication" id="direct_messages">
       <reference from="direct_messages" to="feedurl"/>
     </service>
+    <service type="http" id="avatar">
+      <filter id="avatarFilter"/>
+    </service>
+    <service type="http" id="friends">
+      <filter id="usersFilter"/>
+    </service>
+    <service type="http" id="followers">
+      <filter id="usersFilter"/>
+    </service>
   </services>
+
+  <filters>
+    <filter id="avatarFilter">
+      <item>
+        <strcat>
+          <xpath>/user/profile_image_url/text()</xpath>
+        </strcat>
+      </item>
+    </filter>
+    <filter id="usersFilter">
+      <list>
+        <xpath>/users</xpath>
+        <foreach>
+          <xpath>user</xpath>
+          <list>
+            <item name="iid">
+              <xpath>id/text()</xpath>
+            </item>
+            <item name="title">
+              <xpath>screen_name/text()</xpath>
+            </item>
+            <item name="link">
+              <xpath>url/text()</xpath>
+            </item>
+            <item name="created">
+              <xpath>status/created_at/text()</xpath>
+            </item>
+            <item name="author">
+              <xpath>screen_name/text()</xpath>
+            </item>
+            <list name="content">
+              <xpath>status</xpath>
+              <item name="created">
+                <xpath>created_at/text()</xpath>
+              </item>
+              <item name="val">
+                <xpath>text/text()</xpath>
+              </item>
+            </list>
+          </list>
+        </foreach>
+      </list>
+    </filter>
+  </filters>
 
   <resources>
     <code src="jiwaide.he"/>
@@ -265,11 +318,48 @@
       {
         align: hcenter vcenter;
       }
+
+      avatar
+      {
+        align: hcenter vcenter;
+        padding: 0 10 2 10;
+        margin: 0 5 0 5;
+      }
+
+      form.choice.display : form.base {
+        label-icon-orientation: right;
+        focused {
+          border-type: rectangle red;
+        }
+      }
+      
+      form.choice.list {
+        width: 100%;
+        align: left bottom;
+        background: solid white;
+        border: 3 3 3 3;
+        padding: 3 3 3 3;
+      }
+
+      form.choice.item {
+        padding: 2 10 2 10;
+        font: proportional medium bold;
+        background: solid #ffffff;
+        color: #000000;
+        label-icon-orientation: right;
+        focused {
+        background: solid #9ec500;
+        color: #ffffff;
+        }
+      }
     </stylesheet>
   </resources>
 
   <layout minimizedheight="45sp">
     <view id="viewMini">
+      <img class="minimizedPng" src="minimized.png"/>
+    </view>
+    <view id="unviewMini">
       <img class="minimizedPng" src="minimized.png"/>
     </view>
   </layout>
