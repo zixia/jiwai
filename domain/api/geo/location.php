@@ -76,8 +76,6 @@ function renderJsonReturn($options = null) {
  * Get geo info from ids
  */
 function GetGeoCodeFromID($mnc, $mcc, $cid, $lac) {
-    $cache = '/tmp/geo.cache';
-
     $pUrl = 'http://www.google.com/glm/mmap';
     $pUri = '/glm/mmap';
 
@@ -114,7 +112,6 @@ function GetGeoCodeFromID($mnc, $mcc, $cid, $lac) {
     $pData = curl_exec($ch);
 
     if (curl_errno($ch)) {
-        print "Error: " . curl_error($ch);
         return false;
     }
 
@@ -124,9 +121,6 @@ function GetGeoCodeFromID($mnc, $mcc, $cid, $lac) {
     if ($ret['code'] === 21 &&
         $ret['opcode'] === 27 &&
         $ret['retcode'] === 0) {
-        file_put_contents($cache,
-                "mnc:$mnc;mcc:$mcc;cid:$cid;lac:$lac;lat:" . $ret['lat'] . ";lon:" . $ret['lon'] . "\n",
-                FILE_APPEND);
         return array('latitude' => $ret['lat'] / 1000000.0, 'longitude' => $ret['lon'] / 1000000.0);
     } else {
         return false;
