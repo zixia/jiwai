@@ -107,7 +107,7 @@ class JWPlugins_Yupoo{
 				$$k = (string)$n;
 			}
 
-			if( $secret && $host && $dir && $filename && $originalformat ) 
+			if( $secret && $dir && $filename && $originalformat ) 
 			{
 				return array(
 					'secret' => $secret,
@@ -125,7 +125,7 @@ class JWPlugins_Yupoo{
 	static public function BuildPhotoUrl( $photoInfo ) 
 	{
 		if ( false == empty($photoInfo) )
-			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.jpg';
+			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'/small/';
 		else
 			return null;
 	}
