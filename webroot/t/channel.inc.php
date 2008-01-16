@@ -31,7 +31,7 @@ if( isset($_REQUEST['jw_status']))
 	else
 	{
 		JWSession::SetInfo('notice', '你的请求发送成功。');
-		JWTemplate::RedirectBackToLastUrl('/');
+		JWTemplate::RedirectToUrl(null);
 	}
 }
 

@@ -2709,17 +2709,14 @@ _HEAD_;
 		}
 	}
 
-	static public function RedirectToUrl( $url )
+	static public function RedirectToUrl( $url=null )
 	{
-		if ( false == empty($url) )
+		if ( empty($url) )
 		{
-			header("Location: $url"); 
-			exit( 0 );
+			$url = $_SERVER['REQUEST_URI'];
 		}
-		else
-		{
-			self::RedirectBackToLastUrl( '/' );
-		}
+		Header( 'Location: ' . $url );
+		exit(0);
 	}
 }
 ?>
