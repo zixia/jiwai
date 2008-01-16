@@ -18,6 +18,7 @@ class JWPlugins
 		'Box',
 		'Yobo',
 		'Video',
+        'Flickr',
 	);
 
 	static public function GetPluginResult( $status_row )
@@ -30,7 +31,6 @@ class JWPlugins
 
 			$photo_row = JWPicture::GetDbRowById( $status_row['idPicture'] );
 			$user_row = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] );
-
 			$photo_title = $photo_row['fileName'];
 			$photo_src = JWPicture::GetUrlById($status_row['idPicture'], 'middle');
 			$photo_href = JW_SRVNAME .'/'. $user_row['nameUrl'] .'/mms/'. $status_row['id'];
