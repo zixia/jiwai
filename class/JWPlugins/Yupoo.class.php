@@ -16,6 +16,7 @@ class JWPlugins_Yupoo{
 	static public function GetPluginResult( $string )
 	{
 		$info = self::GetPluginInfo( $string );
+
 		if ( $info )
 		{
 			$src = self::BuildPhotoUrl( $info );
@@ -104,9 +105,10 @@ class JWPlugins_Yupoo{
 			foreach( $photoNode->attributes() as $k=>$n ) {
 				$$k = (string)$n;
 			}
-
-			if( $secret && $host && $dir && $filename && $originalformat ) 
+			
+            if( $secret && $dir && $filename && $originalformat ) 
 			{
+
 				return array(
 					'secret' => $secret,
 					'host' => $host,
@@ -124,8 +126,10 @@ class JWPlugins_Yupoo{
 	{
 		if ( false == empty($photoInfo) )
 			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'_m.jpg';
+
 		else
 			return null;
 	}
 }
+
 ?>
