@@ -31,11 +31,16 @@ JWTemplate::html_head($head_options) ;
 
 <div id="container">
 	<h2>
-		<?php echo htmlSpecialChars($page_user_info['nameFull']); ?>的彩信消息 -- <?php echo $photo_name; ?>
+		<?php echo htmlSpecialChars($page_user_info['nameFull']); ?>的彩信消息&nbsp;--&nbsp;<?php echo $photo_name; ?>
 		<span class="h2note">
-			<span>拍摄时间:<?php echo substr($status['timeCreate'],0,16);?></span>
+			<span>拍摄时间:<?php echo $status['timeCreate'];?></span>
 			<div id="status_action_<?echo $status['id'];?>">
 <?php
+$reply_count = JWDB_Cache_Status::GetCountReply($status['id']); 
+echo '<a href="'.JW_SRVNAME.'/'.$page_user_info['nameUrl'].'/thread/'.$status['id'].'/'.$status['id'].'">'; 
+echo $reply_count ? $reply_count.'条回复' : '回复' ;
+echo "</a>"; 
+
 if( $current_user_id ) {
 	$is_fav = JWFavourite::IsFavourite($current_user_id,$status['id']);
 	echo JWTemplate::FavouriteAction($status['id'],$is_fav);
@@ -47,12 +52,11 @@ if( $page_user_id == $current_user_id ) {
 			</div>
 		</span>
 	</h2>
-	<div class="bigimg" style="text-align:center;">
+	<div style="margin:20px; font-size:14px;">
 		<img src="<?php echo $photo_url; ?>" title="<?php echo $photo_name;?>" alt="<?php echo $photo_name;?>" />
-		<div><?php echo $status['status']; ?></div>
-	</div>
-	<div style=" width:145px; margin:0 auto; padding:0 0 40px 25px;">					 
-	<a class="button" href="javascript:history.go(-1);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-text-back2.gif'); ?>" alt="返回" /></a>
+		<br/><br/>
+		<div><?php echo $status['status']; ?></div><br/> 
+	        <input type="button" class="submitbutton" onclick="javascript:location.href='<?php echo JW_SRVNAME ."/${page_user_info['nameUrl']}/mms/";?>';" value="返回" /> 
 	</div>
 	<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
 </div><!-- #container -->
