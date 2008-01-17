@@ -11,6 +11,7 @@
     通过
     ${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}
     <a href="/wo/status/unfavourite/{$status['id']}/">取消收藏</a>
+    <a href="/wo/status/r/{$status['id']}">回复</a>
     </span>
 </li>
 <!--{/foreach}-->

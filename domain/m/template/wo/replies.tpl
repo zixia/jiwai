@@ -11,6 +11,7 @@
 	通过
 	${JWDevice::GetNameFromType($status['device'], @$status['idPartner'])}
 	${($loginedUserInfo['id'] && false==JWFavourite::IsFavourite($loginedUserInfo['id'],$status['id'])) ? "<a href=\"/wo/status/favourite/".$status['id']."\">收藏</a>" : ''}
+    <a href="/wo/status/r/{$status['id']}">回复</a>
 	</span>
 </li>
 <!--{/foreach}-->
