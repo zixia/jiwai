@@ -24,11 +24,11 @@
       <option value="zh_TW">Taiwan Chinese</option>
     </parameter>
 
-    <parameter type="url" visible="false" name="update" method="post">
+    <parameter type="url" visible="false" name="update" editable="false" method="post">
       <value>http://${username}:${password}@api.jiwai.de/statuses/update.xml</value>
     </parameter>
-    <parameter type="url" visible="false" name="jiwaide_blog" editable="false">
-      <value>http://feeds.feedburner.com/jiwai</value>
+    <parameter type="url" visible="false" name="register" editable="false" method="post">
+      <value>http://api.jiwai.de/account/new.json</value>
     </parameter>
     <parameter type="url" visible="false" name="public_timeline" editable="false">
       <value>http://api.jiwai.de/statuses/public_timeline.rss</value>
@@ -48,6 +48,7 @@
     <service type="http" id="login" />
     <service type="http" id="logout" />
     <service type="http" id="update" />
+    <service type="http" id="register" />
     <service type="syndication" id="jiwaide_blog">
       <reference from="jiwaide_blog" to="feedurl"/>
     </service>
@@ -176,7 +177,18 @@
       color: #000000;
       font: medium underlined;
       border-type: none;
-      padding: 10 0 10 10;
+      padding: 10 0 5 10;
+      focused {
+      color: #d05d02;
+      font: medium plain;
+      }
+      }
+
+      form.link2 : form.base {
+      color: #000000;
+      font: medium underlined;
+      border-type: none;
+      padding: 5 0 10 10;
       focused {
       color: #d05d02;
       font: medium plain;
@@ -192,6 +204,10 @@
       focused {
       border-type: rectangle #d05d02;
       }
+      }
+
+      form.input2 : form.input {
+      margin: 5 10 10 10;
       }
 
       form.static : form.base {
