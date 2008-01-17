@@ -6,6 +6,19 @@ if(!defined('TPL_TEMPLATE_DIR'))
 
 require_once( '/opt/jiwai.de/jiwai.inc.php' );
 
+function checkUser(){
+	global $in_login_page;
+	if ( $in_login_page ) 
+		return true;
+
+	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
+	if ( $idUser ) 
+		return true;
+
+	JWTemplate::RedirectToUrl( '/login.php' );
+}
+checkUser();
+
 function SetNotice($notice=null, $refresh=false){
 	if( $notice )
 		$_SESSION['notice'] = $notice;
@@ -34,29 +47,5 @@ function CmdResult($result=null){
 	}
 
 	$_SESSION['CmdResult'] = $result;
-}
-
-JWSession::Instance();
-if( false == isset( $_SESSION['stock_user'] ) && $_POST ){
-	$user = $pass = null;
-	if( $_POST ) {
-		extract( $_POST, EXTR_IF_EXISTS );
-		$fp = @fopen( dirname(dirname(__FILE__) ).'/stock_user', 'r' );
-		while( $l = trim( @fgets($fp) ) ) {
-			$u = $p = null;
-			@list( $u, $p ) = explode( ':', $l, 2 );
-			if( $u == $user && $p == $pass ) {
-				$_SESSION['stock_user'] = array( 'user'=>$u, 'pass'=>md5($p), );
-			}
-		}
-		@fclose( $fp );
-	}
-
-	Header('Location: /');
-	exit;
-}
-if( false == isset( $_SESSION['stock_user'] ) ) {
-	JWRender::Display( 'login' , array('user'=>@$user, 'pass'=>@$pass,) );
-	exit;
 }
 ?>

@@ -58,5 +58,21 @@ _SQL_;
 				));
 		}
 	}
+    static public function GetDbRowByIdTag( $tag_id )
+    {
+        $tag_id = JWDB::CheckInt( $tag_id );
+        $sql = <<<_SQL_
+SELECT * FROM ComStockAccount WHERE idUser='$tag_id'
+_SQL_;
+        $rows = JWDB::GetQueryResult( $sql, true);
+        if( empty($rows) )
+            return array();
+        $rtn_array = array();
+        foreach( $rows as $k =>$one )
+        {
+            $rtn_array = $one;
+        }
+        return $rtn_array;
+    }
 }
 ?>

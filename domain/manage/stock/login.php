@@ -1,22 +1,25 @@
 <?php
 $user = $pass = null;
-if( $_POST ) {
-	extract( $_POST, EXTR_IF_EXISTS );
-	$fp = @fopen( dirname(dirname(__FILE__) ).'/stock_user', 'r' );
-	var_Dump( $fp );
-	while( $l = trim( @fgets($fp) ) ) {
-		$u = $p = null;
-		@list( $u, $p ) = explode( ':', $l, 2 );
-		if( $u == $user && $p == $pass ) {
-			$_SESSION['stock_user'] = array( 'user'=>$u, 'pass'=>md5($p), );
-		}
-	}
-	@fclose( $fp );
-}
+if ( $_POST ) {
 
-if( isset( $_SESSION['stock_user'] ) ) {
-	Header('Location: /');
-	exit;
+	extract( $_POST, EXTR_IF_EXISTS );
+
+	$user_id = JWUser::GetUserFromPassword( $user, $pass );
+
+	if ( $user_id )
+	{
+		$zdmin_file = FRAGMENT_ROOT . 'zdminuser/stock';
+		$zdmin_users = file_get_contents( $zdmin_file );
+		$user_array = explode( ',', $zdmin_users );
+
+		if ( in_array( $user_id, $user_array ) )
+		{
+			$_SESSION['idUser'] = $user_id;
+			JWTemplate::RedirectToUrl( '/index.php' );
+		}
+	}	
+
+	JWTemplate::RedirectToUrl( '/login.php' );
 }
 
 require_once( dirname(__FILE__).'/config.inc.php' );

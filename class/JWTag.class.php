@@ -66,21 +66,38 @@ class JWTag {
 	$row = JWDB_Cache_Tag::GetDbRowByName($tag_name);
 
         if( empty($row) ) 
-	{
+	    {
 		return self::Create( $tag_name );
-	}
+	    }
 
         return $row['id'];
     }
+    /**
+     * Get Id
+     */
+     static public function GetIdByDescription( $description=null )
+     {
+        $description = trim( $description );
+        if ( null == $description )
+            return false;
+        $sql = "SELECT * FROM Tag WHERE description='$description'";
+        $row = JWDB::GetQueryResult( $sql );
+
+        if( empty($row) )
+        {
+            return false;
+        }
+        return $row['id'];
+     }
 
     /**
      * Get DbRow
      */
     static public function GetDbRowById( $tag_id=null ) 
     {
-	$tag_id = JWDB::CheckInt( $tag_id );
-	$rows = self::GetDbRowsByIds( array( $tag_id ) );
-	return isset( $rows[$tag_id] ) ? $rows[ $tag_id ] : array();
+		$tag_id = JWDB::CheckInt( $tag_id );
+		$rows = self::GetDbRowsByIds( array( $tag_id ) );
+		return isset( $rows[$tag_id] ) ? $rows[ $tag_id ] : array();
     }
 
     /**
