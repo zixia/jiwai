@@ -1,4 +1,8 @@
 <?php
+// enable gzip
+ini_set('zlib.output_compression', 1);
+ini_set('zlib.output_handler', 'On');
+
 if(!defined('TPL_COMPILED_DIR')) 
 	define('TPL_COMPILED_DIR', dirname(__FILE__).'/compiled' );
 if(!defined('TPL_TEMPLATE_DIR')) 
@@ -36,6 +40,21 @@ function buildReplyUrl($nameScreen){
 		return "@<a href=\"$url\">".$nameScreen."</a> ";
 	}
 	return "@$nameScreen";
+}
+
+function get_session_var($name, $use_once=true)
+{
+	$ret_val = null;
+	if ( isset($_SESSION[$name]) )
+	{
+		$ret_val = $_SESSION[$name];
+		if ( true == $use_once ) 
+		{
+			unset( $_SESSION[$name] );
+		}
+	}
+
+	return $ret_val;
 }
 
 function paginate($pagination, $url){
