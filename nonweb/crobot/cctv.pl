@@ -23,36 +23,59 @@ my %userMap = (
     'CCTV7'     => 'cctv7',
     'CCTV8'     => 'cctv8',
     'CCTV9'     => 'cctv9',
-    'CCTV10'    => 'cctv10',
-    'CCTV11'    => 'cctv11',
-    'CCTV12'    => 'cctv12',
-    'CCTV13'    => 'cctv13',
-    'CCTV15'    => 'cctv15',
-    'CCTV16'    => 'cctv16',
+    #'CCTV10'    => 'cctv10',
+    #'CCTV11'    => 'cctv11',
+    #'CCTV12'    => 'cctv12',
+    #'CCTV13'    => 'cctv13',
+    #'CCTV15'    => 'cctv15',
+    #'CCTV16'    => 'cctv16',
 );
+
+sub getTVGuideCacheByChannel {
+    my $channel = shift;
+    my $timestamp = `date +%Y%m%d -d "4 hours ago"`; chomp $timestamp;
+
+    if (defined $channelMap{$channel}) { $channel = $channelMap{$channel}; }
+    return "/tmp/cctv/$channel.$timestamp.cache";
+}
 
 sub getTVGuideByChannel {
     my $channel = shift;
     my $url = getTVGuideUrlByChannel($channel);
     my @guide = ();
     my $raw = `wget -U "Googlebot" -q -O - $url`;
+    my $today = `date +%Y-%m-%d`; chomp $today;
+    my $tomorrow = `date +%Y-%m-%d -d tomorrow`; chomp $tomorrow;
 
     my $converter = Text::Iconv->new("gbk", "utf-8");
     my $converted = $converter->convert($raw);
 
     open HTTP, "<", \$converted;
-    my $roi = 0;
+    my ($roi, $across, $hourSoFar, $hourNow) = (0, 0, 0, 0);
 
     while (<HTTP>) {
+        my ($time, $show) = ();
         chomp;
         if (m#<div\s+id="pg">#i) {$roi = 1;}
         next if ($roi eq 0);
         $_ =~ s#<a\s+href=\".*?\">##i;
         $_ =~ s#<\/a>##i;
         if (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>\s+<div.*?>([^<>]+)\s+#i) {
-            push(@guide, "$1-$2");
+            ($time, $show) = ($1, $2);
+            ($hourNow) = split(":", $1);
         } elsif (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>.*?([^<>]+)\s+<\/div>#i) {
-            push(@guide, "$1-$2");
+            ($time, $show) = ($1, $2);
+            ($hourNow) = split(":", $1);
+        }
+        if (($across eq 0) and ($hourNow < $hourSoFar)) {
+            $across = 1;
+        }
+        next unless defined $time;
+        $hourSoFar = $hourNow;
+        if ($across eq 1) {
+            push(@guide, "$tomorrow $time;$show;0");
+        } else {
+            push(@guide, "$today $time;$show;0");
         }
     }
 
@@ -86,18 +109,55 @@ sub TVGuideFactory {
     die "no channel specified" unless defined $channel;
 
     my @tvguide = getTVGuideByChannel($channel);
-    return join(" ", @tvguide);
+    return @tvguide;
+}
+
+sub writeCache {
+    my ($channel, @guide) = @_;
+
+    my $cache = getTVGuideCacheByChannel($channel);
+
+    open CACHE, ">$cache" or warn "$cache: $!";
+    for my $entry (@guide) {
+        chomp $entry;
+        print CACHE $entry, "\n";
+    }
+    close CACHE
 }
 
 sub postTVGuide {
     my ($channel) = @_;
     die "no channel specified" unless defined $channel;
 
-    my $guide = TVGuideFactory($channel);
-    warn "no guide founded" unless $guide;
+    if (defined($channelMap{$channel})) {$channel = $channelMap{$channel};}
+    my ($username, $password) = ($userMap{$channel}, $userMap{$channel} . 'epgdem1ma');
 
-    my ($username, $password) = ($channel, $channel . 'dem1ma');
-    `curl -A "Googlebot" -u "$username:$password" -Fstatus="$guide" http://api.jiwai.de/statuses/update.json`;
+    my $cache = getTVGuideCacheByChannel($channel);
+
+    open CACHE, "<$cache" or warn "$cache: $!";
+    my @guide = <CACHE>;
+    close CACHE;
+
+    if (!@guide) {
+        @guide = TVGuideFactory($channel);
+        writeCache($channel, @guide);
+    }
+
+    my ($lower, $upper) = (60 * 15, 60 * 30);
+    my $len = @guide;
+    for my $i (0 .. $len - 1) {
+        my $entry = $guide[$i]; chomp $entry;
+        my ($time, $show, $f) = split(/;/, $entry);
+        my $tsNow = `date +%s`; chomp $tsNow;
+        my $tsShow= `date +%s -d "$time"`; chomp $tsShow;
+        my $tsDiff = int($tsShow - $tsNow);
+        if ($tsDiff > $lower and $tsDiff < $upper and $f eq 0) {
+            print "$channel with $tsDiff\n";
+            `curl -u "$username:$password" -Fstatus="$channel $time $show" http://api.jiwai.de/statuses/update.json`;
+            $guide[$i] = "$time;$show;1";
+        }
+    }
+    writeCache($channel, @guide);
 }
 
 for my $channel (keys %userMap) {

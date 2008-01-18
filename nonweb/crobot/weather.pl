@@ -12,17 +12,49 @@ my %userMap = (
     '杭州'  => 'hz',
     '天津'  => 'tj',
     '深圳'  => 'sz',
+    '重庆'  => 'cq',
+    '沈阳'  => 'sy',
+    '南京'  => 'nj',
+    '成都'  => 'cd',
+    '西安'  => 'xa',
+    '石家庄'    => 'sjz',
+    '太原'  => 'ty',
+    '郑州'  => 'zz',
+    '长春'  => 'cc',
+    '哈尔滨'    => 'heb',
+    '呼和浩特'  => 'hhht',
+    '济南'  => 'jn',
+    '合肥'  => 'hf',
+    '福州'  => 'fz',
+    '厦门'  => 'xm',
+    '长沙'  => 'cs',
+    '南宁'  => 'nn',
+    '桂林'  => 'gl',
+    '南昌'  => 'nc',
+    '贵阳'  => 'gy',
+    '香港'  => 'xk',
+    '澳门'  => 'am',
+    '昆明'  => 'km',
+    '台北'  => 'tb',
+    '拉萨'  => 'ls',
+    '海口'  => 'hk',
+    '兰州'  => 'lz',
+    '银川'  => 'yc',
+    '西宁'  => 'xn',
+    '乌鲁木齐'  => 'wlmq',
 );
 
 my %cityMap = (
     '北京'  => 125 ,
-    '广州'  => 292 ,
     '上海'  => 252 ,
+    '广州'  => 292 ,
+    '武汉'  => 211 ,
+    '杭州'  => 255 ,
     '天津'  => 127 ,
+    '深圳'  => 296 ,
     '重庆'  => 212 ,
     '沈阳'  => 115 ,
     '南京'  => 244 ,
-    '武汉'  => 211 ,
     '成都'  => 166 ,
     '西安'  => 186 ,
     '石家庄'    => 82 ,
@@ -33,11 +65,9 @@ my %cityMap = (
     '呼和浩特'  => 69 ,
     '济南'  => 140 ,
     '合肥'  => 248 ,
-    '杭州'  => 255 ,
     '福州'  => 276 ,
     '厦门'  => 287 ,
     '长沙'  => 218 ,
-    '深圳'  => 296 ,
     '南宁'  => 295 ,
     '桂林'  => 232 ,
     '南昌'  => 264 ,
@@ -138,7 +168,7 @@ sub postWeatherReport {
 
     my ($username, $password) = ($city . '天气', $userMap{$city} . 'weatherdem1ma');
 
-    `curl -A "Googlebot" -u "$username:$password" -Fstatus="$weather" http://api.jiwai.de/statuses/update.json`;
+    `curl -u "$username:$password" -Fstatus="$weather" http://api.jiwai.de/statuses/update.json`;
 }
 
 for my $city (keys %userMap) {
