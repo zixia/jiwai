@@ -1774,7 +1774,9 @@ _HTML_;
 			if ( isset($aDeviceInfo_rows[$key]) && empty($aDeviceInfo_rows[$key]['secret']) )
 			{
 				$imicoUrlHref = $isUserLogined ?
-					( $key=='sms' ? $imicoUrlSms : $imicoUrlIm ) : $imicoUrlHelpSms;
+					( $key=='sms' ? $imicoUrlSms : $imicoUrlIm ) 
+					: 
+					( $key=='sms' ? $imicoUrlHelpSms : $imicoUrlHelpIm );
 				echo <<<_HTML_
 					<a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-${key}.gif title="$bindTip" title="$bindTip" /></a>
 _HTML_;
