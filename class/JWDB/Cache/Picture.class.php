@@ -51,6 +51,7 @@ class JWDB_Cache_Picture implements JWDB_Cache_Interface
 	 */
 	static public function GetDbRowsByIds ($idPictures)
 	{
+		$idPictures = array_unique(array_values($idPictures));
 		return JWDB_Cache::GetCachedDbRowsByIds('Picture', $idPictures);
 	}
 

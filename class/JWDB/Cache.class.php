@@ -174,6 +174,13 @@ die(var_dump($hit_ids));
 		$unhit_mc_keys	= array_diff($mc_keys	, $hit_mc_keys);
 
 
+		/**
+		 * important for un unique ids, thus will cause count(hit_ids) != count(ids),  but unhit_mc_keys is empty!!!
+		 * add by seek@jiwai.com 2008.1.19
+		 */
+		if ( empty($unhit_mc_keys) )
+			return self::SortArrayByKeyOrder( $hit_db_rows, $ids );
+
 		if ( ! method_exists($function[0],$function[1]) )
 			throw new JWException("function $function[0]::$function[1] not exists.");
 
