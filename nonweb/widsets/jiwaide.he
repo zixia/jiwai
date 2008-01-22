@@ -26,6 +26,8 @@ class
   const int    CMD_WANDER   = 13;
   const int    CMD_SETTING  = 14;
   const int    CMD_REGISTER = 15;
+  const int    CMD_FOLLOW   = 16;
+  const int    CMD_UNFOLLOW = 16;
 
   const int    MAX_CMD_ID   = 24;
 
@@ -43,7 +45,7 @@ class
   const String FacilityFri  = "friends_timeline";
   const String FacilityDr   = "direct_messages";
   const String FacilityFriends  = "friends";
-  const String FacilityFollowers= "followers";
+  const String FacilityFeatures = "featured";
 
   const String loginUrl = "api.jiwai.de/account/verify_credentials.json";
   const String logoutUrl= "api.jiwai.de/account/end_session.json";
@@ -62,8 +64,10 @@ class
   MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   @CmdLogin);
   MenuItem  MenuBack    = new MenuItem(CMD_BACK,    @CmdBack);
   MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  @CmdCancel);
-  MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  @CmdUpdate);
+  MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  @CmdUpdateLite);
   MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   @CmdReply);
+  MenuItem  MenuFollow  = new MenuItem(CMD_FOLLOW,  @CmdFollow);
+  MenuItem  MenuUnFollow= new MenuItem(CMD_UNFOLLOW,@CmdUnFollow);
   MenuItem  MenuDrmsg   = new MenuItem(CMD_DRMSG,   @CmdDrmsg);
   MenuItem  MenuOptions = new MenuItem(OPEN_MENU,   @CmdMenu);
   MenuItem  MenuReadall = new MenuItem(CMD_READALL, @CmdReadall);
@@ -104,7 +108,7 @@ class
     FacilityFri   => [],
     FacilityDr    => [],
     FacilityFriends   => [],
-    FacilityFollowers => []
+    FacilityFeatures => []
   ];
 
   Value timelineViewed= [
@@ -113,7 +117,7 @@ class
     FacilityFri   => STATUS_UNVIEWED,
     FacilityDr    => STATUS_UNVIEWED,
     FacilityFriends   => STATUS_UNVIEWED,
-    FacilityFollowers => STATUS_UNVIEWED
+    FacilityFeatures => STATUS_UNVIEWED
   ];
 
 // END Variables
@@ -125,7 +129,7 @@ class
   }
 
   void createUpdateMenu() {
-    MENU = new Menu().add(CMD_UPDATE, @CmdUpdate);
+    MENU = new Menu().add(CMD_UPDATE, @CmdUpdateLite);
   }
 
   void createTimelineListMenu() {
@@ -185,8 +189,8 @@ class
         "fname"    => FacilityFriends,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @ListFollowers,
-        "fname"    => FacilityFollowers,
+        ["name"    => @ListFeatures,
+        "fname"    => FacilityFeatures,
         "viewed"   => STATUS_UNVIEWED
           ]
       ];
@@ -349,7 +353,7 @@ class
           : getStyle("list.read");
 
         String labelText = "";
-        if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
+        if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
           if (String(status.content.val).trim().equals("")) {
             labelText = " - " + @NotEverJiWai;
           } else {
@@ -460,7 +464,7 @@ class
     if (facility.equals(FacilityDr)) {
       view.add(createBodyText(status.title));
       view.add(createBodyText(status.content.val));
-    } else if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
+    } else if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
       view.add(createBodyText(status.title));
       view.add(createBodyText(status.content.val));
     } else {
@@ -509,8 +513,8 @@ class
           return MenuDrmsg;
         } else if (facility.equals(FacilityFriends)) {
           return MenuReply;
-        } else if (facility.equals(FacilityFollowers)) {
-          return MenuReply;
+        } else if (facility.equals(FacilityFeatures)) {
+          return (isFollowed(status.iid)) ? MenuUnFollow : MenuFollow;
         }
       }
       return null;
@@ -528,8 +532,27 @@ class
       } else if (action == CMD_DRMSG) {
         replyInput.setData(status.author);
         replyInput.edit(doDrStatus);
+      } else if (action == CMD_FOLLOW) {
+        // Follow
+        call(null, "follow" , "get",
+            ["url" => createAuthedUrl("api.jiwai.de/friendships/create/" + status.author + ".json")],
+            followok, follownok);
+      } else if (action == CMD_UNFOLLOW) {
+        // Un-Follow
+        call(null, "unfollow" , "get",
+            ["url" => createAuthedUrl("api.jiwai.de/friendships/destroy/" + status.author + ".json")],
+            followok, follownok);
       }
     }
+
+    void followok(Object state, Value ret) {
+      alertError(@InfoUpdateSuc);
+    }
+
+    void follownok(Object state, String error) {
+      alertError(error);
+    }
+
     return shell;
   }
     
@@ -586,7 +609,6 @@ class
     view.setPreferredSize(-100, -100);
 
     view.add(createHeaderText(""));
-    view.add(createSubHeaderText(@InfoRegister));
 
     view.add(createFormLabel(@InfoUsername));
     Input inputUsername = new Input(getStyle("form.input"), @InfoUsername, rUsername, ANY);
@@ -626,6 +648,7 @@ class
       Store store = getStore();
       if (action == CMD_BACK) {
         animatePopShell(shell);
+        animatePushShell(createLoginForm());
       } else if (action == CMD_REGISTER) {
         rUsername = inputUsername.getText();
         rPassword = inputPassword.getText();
@@ -653,6 +676,7 @@ class
       password = rPassword;
       alertError(@InfoRegisterSuc);
       animatePopShell(Shell(state));
+      animatePushShell(createLoginForm());
     }
 
     void regnok(Object state, String error) {
@@ -738,6 +762,7 @@ class
         call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
       } else if (action == CMD_REGISTER) {
         animatePushShell(createRegisterView());
+        animatePopShell(shell);
       }
     }
 
@@ -860,6 +885,9 @@ class
 
   void fetchnok(Object state, String error)
   {
+    if (++progressCurrent == progressTotal) {
+      closePrompt();
+    }
     alertError(@InfoSyndFail + ": "+error);
   }
 
@@ -978,7 +1006,7 @@ class
     fetchTimeline(FacilityFri);
     fetchTimeline(FacilityDr);
     fetchList(FacilityFriends);
-    fetchList(FacilityFollowers);
+    fetchList(FacilityFeatures);
   }
 
   void fetchOnce(String facility) {
@@ -993,7 +1021,7 @@ class
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
     foreach (String facility : facilities) {
-      if (facility.equals(FacilityFriends) || facility.equals(FacilityFollowers)) {
+      if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
         fetchList(facility);
       } else {
         fetchTimeline(facility);
@@ -1113,6 +1141,16 @@ class
       ];
       timelineList[facility].add(tobeInsert);
     }
+  }
+
+  boolean isFollowed(String id)
+  {
+    foreach (Value item: timelineList[FacilityFriends]) {
+      if (String(item.iid).equals(id)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   int getUnviewedSize(String facility)

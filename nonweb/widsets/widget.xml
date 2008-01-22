@@ -49,6 +49,8 @@
     <service type="http" id="logout" />
     <service type="http" id="update" />
     <service type="http" id="register" />
+    <service type="http" id="follow" />
+    <service type="http" id="unfollow" />
     <service type="syndication" id="jiwaide_blog">
       <reference from="jiwaide_blog" to="feedurl"/>
     </service>
@@ -71,6 +73,9 @@
       <filter id="usersFilter"/>
     </service>
     <service type="http" id="followers">
+      <filter id="usersFilter"/>
+    </service>
+    <service type="http" id="featured">
       <filter id="usersFilter"/>
     </service>
   </services>
@@ -167,7 +172,7 @@
       border: 1 1 1 1;
       border-type: rectangle #a4a4a4;
       padding: 2 4 2 2;
-      font: proportional medium plain;
+      font: proportional small plain;
       focused {
       border-type: rectangle red;
       }
@@ -175,28 +180,28 @@
 
       form.link : form.base {
       color: #000000;
-      font: medium underlined;
+      font: small underlined;
       border-type: none;
-      padding: 10 0 5 10;
+      padding: 4 0 2 10;
       focused {
       color: #d05d02;
-      font: medium plain;
+      font: small plain;
       }
       }
 
       form.link2 : form.base {
       color: #000000;
-      font: medium underlined;
+      font: small underlined;
       border-type: none;
       padding: 5 0 10 10;
       focused {
       color: #d05d02;
-      font: medium plain;
+      font: small plain;
       }
       }
 
       form.input : form.base {
-      margin: 5 10 0 10;
+      margin: 2 10 0 10;
       border: 1 1 1 1;
       border-type: rectangle #a4a4a4;
       background: vgradient #f1f1f1 #ffffff;
@@ -207,7 +212,7 @@
       }
 
       form.input2 : form.input {
-      margin: 5 10 10 10;
+      margin: 2 10 4 10;
       }
 
       form.static : form.base {
@@ -217,7 +222,7 @@
 
       form.label : form.base {
       color: #d05d02;
-      margin: 5 10 0 10;
+      margin: 2 10 0 10;
       padding-left: 10px;
       border: 1 1 1 1;
       border-type: none;
@@ -227,8 +232,8 @@
       <!-- Text -->
       text.subheader {
       color: #d05d02;
-      padding: 5 10 5 10;
-      font: proportional medium plain;
+      padding: 6 10 4 10;
+      font: small plain;
       }
 
       text.body {
@@ -240,7 +245,7 @@
 
       text.label {
       color: #000000;
-      padding: 0 10 5 10;
+      padding: 0 10 2 10;
       font: proportional small plain;
       line-spacing: 2;
       }
@@ -287,13 +292,13 @@
 
       <!-- Timeline List -->
       timeline.list {
-      padding: 1 5 2 5;
+      padding: 1 5 1 5;
       border: 1 0 1 0;
-      vspacing: 5;
+      <!--vspacing: 5;-->
       hspacing: 5;
       background: solid white;
       color: #000000;
-      font: medium plain;
+      font: small plain;
       focused
       {
       background: solid #9ec500;
@@ -316,7 +321,7 @@
 
       timeline.unread {
       color: black;
-      font: medium bold underlined;
+      font: small bold underlined;
       focused {
       color: white;
       }
@@ -324,7 +329,7 @@
 
       timeline.read {
       color: black;
-      font: medium plain;
+      font: small plain;
       focused {
       color: white;
       }
