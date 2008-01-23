@@ -8,6 +8,10 @@ public class HelloClient extends SocketClient {
 	private boolean fDebug = false;
 	
 	private String mGetData;
+
+    public void addSendStr(String str) { }
+    public void addRecvStr(String str) { }
+    public void addDebugStr(String str) { }
 	
 	private ArrayList<IMoListener> mMoListeners = new ArrayList<IMoListener>();
 
@@ -92,6 +96,7 @@ public class HelloClient extends SocketClient {
 		for (;;) {
 			if (Thread.interrupted()) break;
 			this.mGetData = this.waitResponse();
+            if (null == this.mGetData) continue;
 			String append = null;
 			if (this.mGetData.indexOf("\r\nL: ") > 0) {
 				append = this.mGetData.substring(this.mGetData.indexOf("\r\nL: ") + 5);

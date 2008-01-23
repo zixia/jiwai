@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.text.SimpleDateFormat;
 
 import fetion.*;
 
@@ -15,6 +16,8 @@ public class FetionJiWaiRobot implements MoMtProcessor {
     private static Hashtable<String, String> mSidSip = new Hashtable<String, String>();
 
     private static String mSipCacheFile = "sip.cache";
+
+    private static String mOriginalTime = null;
 
     /**
      * Fetion instance
@@ -73,7 +76,6 @@ public class FetionJiWaiRobot implements MoMtProcessor {
     public static void main(String args[]) {
         mRobot = new FetionJiWaiRobot();
         worker = new MoMtWorker(DEVICE, mQueuePath, mRobot);
-        worker.startOnlineProcessor( mOnlineScript );
         connect();
         new Thread( new SocketSession( onlinePort, 5, new Service() ) ).start();
         mRobot.run();
@@ -81,15 +83,23 @@ public class FetionJiWaiRobot implements MoMtProcessor {
 
     public static void connect() {
         try{
+            if (mFetionSession != null) {
+                mFetionSession.Logout();
+                mFetionSession = null;
+                worker.stopProcessor();
+            }
+            worker.startOnlineProcessor( mOnlineScript );
+            mOriginalTime = (new SimpleDateFormat("MM/dd HH:mm:ss")).format(new Date());
             mFetionSession = new HelloFetion(mAddress, mPassword);
             mMoListener = new JiWaiFetionListener();
             mFetionSession.Login();
             mFetionSession.setNickname(mStatus);
             mFetionSession.addMoListener(mMoListener);
             worker.startProcessor();
+            mFetionSession.setNickname(mStatus);
         }catch(Exception e ){
             Logger.logError("Fetion Login failed");
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +116,7 @@ public class FetionJiWaiRobot implements MoMtProcessor {
     public void sendPresence(){
         try {
             htSerialize();
+            mFetionSession.heartBeat();
             mFetionSession.setNickname(mStatus);
             Logger.log("Send Presence Success");
         }catch(Exception e){
@@ -159,15 +170,30 @@ public class FetionJiWaiRobot implements MoMtProcessor {
         return sid;
     }
 
+    /**
+     *  @return true to continue processing, false the otherwise
+     */
+    private static boolean processCommand(String sip, String text) {
+        String command = text.toLowerCase();
+        if (command.equals("uptime")) {
+            mFetionSession.sendMessage(sip, mOriginalTime);
+            return false;
+        }
+        return true;
+    }
+
     public static void processMo(String sip, String text) {
         String sid = getSidFromSip(sip);
         if (null != sid) {
             mSidSip.put(sid, sip);
-            MoMtMessage msg = new MoMtMessage(DEVICE);
-            msg.setAddress(sid);
-            msg.setServerAddress(mAddress);
-            msg.setBody(text);
-            worker.saveMoMessage(msg);
+            String command = text.toLowerCase();
+            if (processCommand(sip, text)) {
+                MoMtMessage msg = new MoMtMessage(DEVICE);
+                msg.setAddress(sid);
+                msg.setServerAddress(mAddress);
+                msg.setBody(text);
+                worker.saveMoMessage(msg);
+            }
         }
     }
 
@@ -211,6 +237,7 @@ public class FetionJiWaiRobot implements MoMtProcessor {
 
                     //Relogin
                     if( line.equals("Relogin") ){
+                        worker.stopProcessor();
                         connect();
                         break;
                     }

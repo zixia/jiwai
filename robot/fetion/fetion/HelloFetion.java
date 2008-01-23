@@ -36,7 +36,7 @@ public class HelloFetion implements Runnable {
 	
 	private String mSendData;
 	
-	private MainFrame mMainFrame = new MainFrame();
+	private MainFrame mMainFrame = null; //new MainFrame();
 	
 	private ArrayList mContactList = new ArrayList();
 		
@@ -58,13 +58,8 @@ public class HelloFetion implements Runnable {
 		this.mClient.sendMsg(buddy, text, this.fForceSms);
 	}
 
-    public void heartBeat() {
-        try {
-            this.mClient.sendKeepAlive();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void heartBeat() throws Exception {
+        this.mClient.sendKeepAlive();
     }
 
     public static String getUriFromMobile(String mobile) {
@@ -77,7 +72,7 @@ public class HelloFetion implements Runnable {
             mConnection.setRequestProperty("Content-Type", "text-plain");
             mConnection.setRequestProperty("charset", "utf-8");
             OutputStreamWriter mOut = new OutputStreamWriter(mConnection.getOutputStream(), "utf-8");
-            mOut.write("<config><user mobile-no=\"13466366523\" /><client type=\"PC\" version=\"2.1.0.0\" platform=\"W5.1\" /><servers version=\"0\" /><service-no version=\"0\" /><parameters version=\"0\" /><hints version=\"0\" /><http-applications version=\"0\" /></config>");
+            mOut.write("<config><user mobile-no=\"" + mobile + "\" /><client type=\"PC\" version=\"2.1.0.0\" platform=\"W5.1\" /><servers version=\"0\" /><service-no version=\"0\" /><parameters version=\"0\" /><hints version=\"0\" /><http-applications version=\"0\" /></config>");
             mOut.flush();
             mOut.close();
             InputStreamReader mIn = new InputStreamReader(mConnection.getInputStream(), "utf-8");
@@ -144,6 +139,14 @@ public class HelloFetion implements Runnable {
         }
 
         return mUri;
+    }
+
+    public void Logout()
+    {
+        if (null != this.mClient)
+        {
+            this.mClient.sendLogout();
+        }
     }
 	
 	private void realLogin()
