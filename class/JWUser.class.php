@@ -442,6 +442,9 @@ _SQL_;
 		// Generate md5 password
 		$userInfo['pass']	= self::CreatePassword($userInfo['pass']);
 
+		if ( empty($userInfo['email']) )
+			$userInfo['email']=null;
+
 		if ( empty($userInfo['isWebUser']) )
 			$userInfo['isWebUser']='Y';
 
