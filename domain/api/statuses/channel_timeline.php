@@ -72,6 +72,8 @@ switch($type){
 }
 
 function renderXmlReturn($options){
+    ob_start();
+    ob_start("ob_gzhandler");
 
 	$statuses = getUserTimelineStatuses( $options, true );
 	
@@ -81,18 +83,28 @@ function renderXmlReturn($options){
 	$xmlString .= JWApi::ArrayToXml($statuses, 0, 'statuses');
 
 	echo $xmlString;
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderJsonReturn($options){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$statuses = getUserTimelineStatuses( $options, true );
 	if( $options['callback'] ){
 		echo $options['callback'].'('. json_encode($statuses) .')';
 	}else{
 		echo json_encode($statuses);
 	}
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderFeedReturn($options, $tag, $feedType=JWFeed::ATOM){
+    ob_start();
+    ob_start("ob_gzhandler");
 
 	$statuses = getUserTimelineStatuses( $options, false );
 
@@ -115,7 +127,9 @@ function renderFeedReturn($options, $tag, $feedType=JWFeed::ATOM){
 				));
 	}
 	$feed->OutputFeed($feedType);
-	exit(0);
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 /*

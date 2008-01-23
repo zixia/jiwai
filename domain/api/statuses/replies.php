@@ -40,11 +40,18 @@ switch( $type ){
 }
 
 function renderJsonStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$statusesWithUser = getStatusesWithUser( $idUser );
 	echo json_encode( $statusesWithUser );
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderXmlStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$statusesWithUser = getStatusesWithUser( $idUser );
 	
 	$xmlString = null;
@@ -52,9 +59,14 @@ function renderXmlStatuses($idUser){
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $statusesWithUser, 0, "statuses" );
 	echo $xmlString;
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderFeedStatuses($idUser, $feedType) {
+    ob_start();
+    ob_start("ob_gzhandler");
 	$user = JWUser::GetUserInfo( $idUser );
 	$statusesWithUser = getStatusesWithUser( $idUser , false);
 
@@ -77,6 +89,9 @@ function renderFeedStatuses($idUser, $feedType) {
 			) );
 	}
 	$feed->OutputFeed($feedType);
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 /**

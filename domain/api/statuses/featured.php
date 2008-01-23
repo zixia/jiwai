@@ -27,11 +27,18 @@ switch( $type ){
 }
 
 function renderJsonStatuses(){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$featuredWithStatus = getFeaturedWithStatus(  );
 	echo json_encode( $featuredWithStatus );
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderXmlStatuses(){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$featuredWithStatus = getFeaturedWithStatus(  );
 
 	$xmlString = null;
@@ -39,6 +46,9 @@ function renderXmlStatuses(){
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $featuredWithStatus, 1, "users" );
 	echo $xmlString;
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function getFeaturedWithStatus(){

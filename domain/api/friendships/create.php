@@ -31,7 +31,7 @@ if( true === JWFollower::IsFollower($unFriendId, $idUser) ){
 }
 
 //Destroy the friendship of idUser & unFriendId
-JWFollower::Create($idUser, $unFriendId);
+JWFollower::Create($unFriendId, $idUser);
 
 switch( $type ){
 	case 'json':

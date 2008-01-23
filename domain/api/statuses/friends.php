@@ -40,17 +40,27 @@ switch( $type ){
 }
 
 function renderJsonStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$friendsWithStatus = getFriendsWithStatus( $idUser );
 	echo json_encode( $friendsWithStatus );
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderXmlStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$friendsWithStatus = getFriendsWithStatus( $idUser );
 	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $friendsWithStatus, 1, "users" );
 	echo $xmlString;
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function getFriendsWithStatus($idUser){

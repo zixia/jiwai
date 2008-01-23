@@ -15,7 +15,13 @@ $name_screen = @$_POST['name_screen'];
 $pass = @$_POST['pass'];
 
 $validApiKeys = array(
-    '0e4a4c24954f22cecea6b06b33efbfd7'  => 'Widsets',
+    '0e4a4c24954f22cecea6b06b33efbfd7'  => 'widsets',
+    '6021742976b2af34f210abea548328bb'  => 'showr',
+    '4107f1349979cc9ed2951fb82b6105d4'  => 'jiwai',
+);
+
+$autoFollowers = array(
+    2,  // JiWai
 );
 
 if (null == $apikey
@@ -48,8 +54,11 @@ $user['ip'] = JWRequest::GetIpRegister();
 $user['srcRegister'] = $validApiKeys[$apikey];
 
 if ( $user_id = JWUser::Create($user) ) {
+    foreach ($autoFollowers as $idFollower) {
+        JWSns::CreateFollower($user_id, $idFollower);
+        JWSns::CreateFollower($idFollower, $user_id);
+    }
     $result = array( 'register' => 'success', );
-    JWLogin::Login( $user_id );
 } else {
     JWApi::OutHeader(406, true);
 }

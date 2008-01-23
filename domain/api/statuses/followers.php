@@ -32,11 +32,18 @@ switch( $type ){
 }
 
 function renderJsonStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$followersWithStatus = getFollowersWithStatus( $idUser );
 	echo json_encode( $followersWithStatus );
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function renderXmlStatuses($idUser){
+    ob_start();
+    ob_start("ob_gzhandler");
 	$followersWithStatus = getFollowersWithStatus( $idUser );
 
 	$xmlString = null;
@@ -44,6 +51,9 @@ function renderXmlStatuses($idUser){
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	$xmlString .= JWApi::ArrayToXml( $followersWithStatus, 1, "users" );
 	echo $xmlString;
+    ob_end_flush();
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
 }
 
 function getFollowersWithStatus($idUser){
