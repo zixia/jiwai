@@ -1,10 +1,12 @@
 <?php
-$user = $pass = null;
+$in_login_page = true;
+require_once( 'config.inc.php' );
+$username = $password = null;
 if ( $_POST ) {
 
 	extract( $_POST, EXTR_IF_EXISTS );
 
-	$user_id = JWUser::GetUserFromPassword( $user, $pass );
+	$user_id = JWUser::GetUserFromPassword( $username, $password );
 
 	if ( $user_id )
 	{
@@ -15,6 +17,7 @@ if ( $_POST ) {
 		if ( in_array( $user_id, $user_array ) )
 		{
 			$_SESSION['idUser'] = $user_id;
+			$_SESSION[$_SERVER['HTTP_HOST']] = true;
 			JWTemplate::RedirectToUrl( '/index.php' );
 		}
 	}	
@@ -22,5 +25,5 @@ if ( $_POST ) {
 	JWTemplate::RedirectToUrl( '/login.php' );
 }
 
-require_once( dirname(__FILE__).'/config.inc.php' );
+JWRender::display("login", array());
 ?>

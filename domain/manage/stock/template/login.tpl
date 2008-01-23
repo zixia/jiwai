@@ -1,14 +1,8 @@
-<!--{include header}-->
-
-<h3>登录股票社区管理系统</h3>
-
-<form action='' id='f' method="POST" onSubmit="return JWValidator.validate('f');">
-
-用 户：<input type="text" name="user" value="{$user}" id="user" check="null" alt="用户"/><br/>
-密 码：<input type="password" name="pass" id="pass" check="null" alt="密码"/><br/>
-
-<input type="submit" value="提交"/>
-
+<h3>请登录后台系统</h3>
+<form method="POST">
+<p>用户名</p>
+<p><input type="text" name="username"/></p>
+<p>密码</p>
+<p><input type="password" name="password"/></p>
+<p><input type="submit" value="登录"/>
 </form>
-
-<!--{include footer}-->
