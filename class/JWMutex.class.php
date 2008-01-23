@@ -130,17 +130,25 @@ class JWMutex {
 		$this->mIsAcquired = false;
 	}
 
-    /**
-    * Destructing method, write everything left
-    *
-    */
-    function __destruct()
-    {
-	if ( false == empty($this->mMutexHandle) && is_resource($this->mMutexHandle) ) {
-        	@sem_remove($this->mMutexHandle);
-		@unlink( $this->mMutexFile );
+	/**
+	 * Destructing method, write everything left
+	 *
+	 */
+	function __destruct()
+	{
+		if ( false == empty($this->mMutexHandle) && is_resource($this->mMutexHandle) ) 
+		{
+			if ( self::SEM == $this->mBackend )
+			{
+				@sem_remove($this->mMutexHandle);
+			}
+			else
+			{
+				@fclose( $this->mMutexHandle );
+				@unlink( $this->mMutexFile );
+			}
+		}
 	}
-    }
 
 	public function Acquire()
 	{
