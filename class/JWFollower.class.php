@@ -147,22 +147,24 @@ _SQL_;
 		));
 	}
 
-	static public function SetNotification($user_id, $follower_user_id, $notification='N'){
+	static public function SetNotification($user_id, $follower_user_id, $notification='N')
+	{
 		$user_id = JWDB::CheckInt($user_id);
 		$follower_user_id = JWDB::CheckInt($follower_user_id);
 		
-		$idExist = JWDB::ExistTableRow( 'Follower', array(
+		$exist_id = JWDB::ExistTableRow( 'Follower', array(
 			'idUser' => $user_id,
 			'idFollower' => $follower_user_id,
 		));
 
-		if( $idExist ) {
-			return JWDB_Cache::UpdateTableRow( 'Follower', $idExist, array(
+		if( $exist_id ) 
+		{
+			return JWDB_Cache::UpdateTableRow( 'Follower', $exist_id, array(
 				'notification' => $notification,
 			));
 		}
 		
-		return true;	
+		return false;	
 	}
 
 	/**

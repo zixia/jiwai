@@ -136,7 +136,9 @@ class JWSns {
 	static public function CreateFollower($idUser, $idFollower, $notification='N')
 	{
 		if ( JWFollower::IsFollower($idUser, $idFollower) )
-			return true;
+		{
+			return JWFollower::SetNotification($idUser, $idFollower, $notification);
+		}
 
  		self::UnBlock( $idFollower, $idUser );
 
@@ -823,7 +825,8 @@ class JWSns {
 		
 		$idVistors = $memcache->Get( $vKey );
 		if( false == $idVistors ) {
-			if ( $idUserVistor > 0 && $idUser != $idUserVistor ) {
+			if ( $idUserVistor > 0 && $idUser != $idUserVistor && false==JWUser::IsAnonymous($idUserVistor) )
+			{
 				$idVistors = array( $idUserVistor );
 				$memcache->Set( $vKey, $idVistors );
 				return $idVistors ;
@@ -831,7 +834,7 @@ class JWSns {
 			return array();
 		}
 		
-		if( $idUserVistor > 0 && $idUser != $idUserVistor ) {
+		if( $idUserVistor > 0 && $idUser != $idUserVistor && false==JWUser::IsAnonymous($idUserVistor)) {
 			$idVistors = array_unique( array_merge( array($idUserVistor), $idVistors ) );
 			if( count( $idVistors ) > $maxNum ) {
 				$idVistors = array_slice( $idVistors, 0, $maxNum );
