@@ -44,10 +44,10 @@ switch ( $active_tab )
 	default:
 	case 'archive':
 		// 显示用户自己的
-		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id);
+		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id)-1;
 
 		$pagination	= new JWPagination($user_status_num, $page);
-		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() +1);
 		break;
 
 	case 'replies':
@@ -80,7 +80,7 @@ $user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 if( $page_user_info['idConference'] ) {
 	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
 }else{
-	$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
+	$head_status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, 1 );
 }
 $head_status_rows 	= JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
 $head_status_id 	= @array_shift($head_status_data['status_ids']); 
@@ -140,7 +140,7 @@ $options = array(
 		'description' => htmlspecialchars($description),
 		'author' => htmlspecialchars($keywords),
 		'rss' => $rss,
-		'refresh_time' => '60',
+		//'refresh_time' => '60',
 		'refresh_url' => '',
 		'ui_user_id' => $page_user_id,
 		'openid_server'	=> "http://jiwai.de/wo/openid/server",
