@@ -749,6 +749,9 @@ _SQL_;
 			case 'yahoo':
 				$name='jiwai001';
 				break;
+			case 'gtalk' :
+				$name='wo@jiwai.de';
+				break;
 			case 'msn':
 				$row = null;
 				if( false == empty($address) ) {
