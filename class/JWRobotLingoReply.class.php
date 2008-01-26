@@ -18,7 +18,7 @@ class JWRobotLingoReply {
 
 	static private $msReplyMap = array(
 			//Reply
-			'REPLY_HELP_SUC'	=> '告诉我们这一刻您在做什么，我们会让您的朋友们知道！想要更多帮助，回复TIPS。',
+			'REPLY_HELP_SUC'	=> '改名：发送gm+空格+新名字，例如“gm girl”；发悄悄话给别人：发送D+空格+别人的名字+空格+悄悄话；关闭接收消息：发送guan',
 			'REPLY_TIPS_SUC'	=> '命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。',
 
 			'REPLY_ADD_HELP' => 'ADD命令帮助：ADD 帐号。',

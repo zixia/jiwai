@@ -31,7 +31,7 @@ if( false === JWFollower::IsFollower($unFriendId, $idUser) ){
 }
 
 //Destroy the friendship of idUser & unFriendId
-if( false == JWFriend::Destroy($unFriendId, $idUser) ){
+if( false == JWFollower::Destroy($unFriendId, $idUser) ){
 	JWApi::OutHeader(500, true);
 }
 

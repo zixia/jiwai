@@ -46,10 +46,12 @@ sub _buildMail {
         'Message'   => $message,
         'servers'   => [$server, ],
     ) or die Mail::Bulkmail->error();
+    $bulk->header("MIME-Version", "1.0");
+    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0006_01C85705.1F18C870"');
 
+=pod
     $bulk->header("MIME-Version", "1.0");
     $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0029_01C8487B.31D1A7E0"');
-=pod
     print Dumper($bulk); die "header";
     $bulk->header("Content-Transfer-Encoding", "quoted-printable");
 =cut

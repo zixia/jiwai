@@ -678,6 +678,10 @@ _TAB_;
 		if( false == JWBlock::IsBlocked( $userRow['id'], $current_user_id ) ) {
 			$follow_string = "<a href=\"/wo/followings/follow/$userRow[id]\" $oc>关注此人</a>";
 		}
+		else
+		{
+			$follow_string = null;
+		}
 	}
 ?>
 
