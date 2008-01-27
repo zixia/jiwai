@@ -28,8 +28,10 @@ i{color:red;font-size:12px;margin:5px 0 8px 0;font-style:normal;float:none;}
 
 /* The header start */
 #header { margin:0 auto; height:80px;width:776px; border-bottom:5px solid #F97B00;}
-#header h2 { width:175px; height:63px; float:left; background:url(../images/org-logo.gif) no-repeat; margin:16px 0 0 0;}
-#header h2 a { width:175px; height:63px; display:block; text-indent:-8000px;}
+#header h2 {width:210px; height:63px; float:left; margin:16px 0 0 0;}
+html>body #header h2 {background:url(../images/org-logo.png); no-repeat;}
+* html #header h2 {filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="http://asset.jiwai.de/images/org-logo.png");}
+#header h2 a { width:210px; height:63px; display:block; text-indent:-8000px;}
 #header .tip {height:26px; line-height:26px; background:url(../images/org-tip.gif) no-repeat; text-indent:25px; color:#5E7C1C; position:absolute; margin-top:17px;}
 html>body #header .tip {margin-left:170px;}
 *+html #header .tip {margin-left:0!important}
