@@ -1,13 +1,13 @@
 <?php
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-
 JWLogin::MustLogined();
 $user_id	= JWLogin::GetCurrentUserId();
-$user = JWUser::GetUserInfo($user_id);
+$user_info = JWUser::GetUserInfo($user_id);
 
-if( $user['protected'] == 'Y'){
-	$subMenu = 'flash';
+if( $user_info['protected'] == 'Y')
+{
+	$sub_menu = 'flash';
 	require_once( './noperm.php' );
 	exit;
 }
@@ -15,50 +15,41 @@ if( $user['protected'] == 'Y'){
 ?>
 <html>
 <head>
-<?php JWTemplate::html_head() ?>
+<?php JWTemplate::html_head(array(
+	'version_css_jiwai_screen' => 'v1',
+));?>
 </head>
 
+<body class="account" id="create">
 
-<body class="account" id="settings">
-<?php JWTemplate::accessibility() ?>
 <?php JWTemplate::header() ?>
 
 <div id="container">
-    <?php JWTemplate::UserGadgetNav('flash'); ?>
-    <div class="tabbody">
+    <p class="top">窗可贴</p>
+    <div id="wtMainBlock">
+        <div class="leftdiv">
+            <ul class="leftmenu">
+                <li><a href="/wo/gadget/">窗可贴说明</a></li>
+                <li><a href="/wo/gadget/image/">图片窗可贴</a></li>
 
-<h2>叽歪de你和你的朋友们</h2>
-<fieldset>
-<div style="width:530px;text-align:center">
-	<embed pluginspage=" http://www.macromedia.com/go/getflashplayer" 
-			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
-			src=" http://asset.jiwai.de/gadget/flash/friends_gadget_maker.swf"
-			type="application/x-shockwave-flash" 
-			height="600" width="530"
-			name="jiwai_badge"/>
-	</embed>
-</div>
-</fieldset>
+                <li><a href="/wo/gadget/flash/" class="now">Flash窗可贴</a></li>
+                <li><a href="/wo/gadget/javascript/">代码窗可贴</a></li>
+            </ul>
+        </div><!-- leftdiv -->
+        <div class="rightdiv">
+            <div class="lookfriend">
+                <p class="black15bold">你和你关注的人</p>
+                <p class="gadgetFlash">
+                    <embed pluginspage=" http://www.macromedia.com/go/getflashplayer" quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id; ?>" src=" http://asset.jiwai.de/gadget/flash/friends_gadget_maker.swf" type="application/x-shockwave-flash" height="600" width="530" name="jiwai_badge"/>
+                    </embed></p><!-- gadgetFlash -->
+            </div><!-- lookfriend -->
+                <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
 
-<h2>叽歪de你自己</h2>
-<fieldset>
-<div style="width:600px;text-align:center">
-	<embed pluginspage="http://www.macromedia.com/go/getflashplayer" 
-			quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id?>" 
-			src="http://asset.jiwai.de/gadget/flash/user_gadget_maker.swf" 
-			type="application/x-shockwave-flash" 
-			height="250" width="600" wmode="transparent" 
-			name="jiwai_badge"/>
-	</embed>
-</div>
-</fieldset>
-
-    </div>
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+        </div><!-- rightdiv -->
+    </div><!-- #wtMainBlock -->
+                <div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 </div><!-- #container -->
-
-
-<?php JWTemplate::footer() ?>
-
+<?php JWTemplate::footer(); ?>
 </body>
 </html>
+

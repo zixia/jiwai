@@ -1,54 +1,66 @@
-<?php
+<?php 
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-/*
-@header("Expires: Thu, 19 Nov 1981 08:52:00 GMT");
-@header("Cache-Control: no-store, no-cache, must-revalidate");
-@header("Pragma: no-cache");
-*/
-
 ?>
 <html>
-
 <head>
-<?php JWTemplate::html_head() ?>
+<?php JWTemplate::html_head(array(
+	'version_css_jiwai_screen' => 'v1',
+));?>
 </head>
 
+<body class="account" id="create">
 
-<body class="account" id="settings">
-<?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header() ?>
+<?php JWTemplate::accessibility(); ?>
+<?php JWTemplate::header(); ?>
 
 <div id="container">
-    <?php JWTemplate::UserGadgetNav('index'); ?>
-    <div class="tabbody" style="height:680px;" >
+    <p class="top">窗可贴</p>
+        <div id="wtMainBlock">
+            <div class="leftdiv">
+                <ul class="leftmenu">
+                    <li><a href="/wo/gadget/" class="now">窗可贴说明</a></li>
+                    <li><a href="/wo/gadget/image/">图片窗可贴</a></li>
 
-        <h2>说明</h2>
-        <fieldset>
-            <p>我们目前支持 <a href="javascript">JavaScript</a> 、<a href="flash">Flash</a> 、<a href="image">Image</a> 等三种格式。</p>
-            <p>在不同的博客站点，插入叽歪de窗可贴的方法略有不同。</p>
-            <p>你的博客是：</p>
-            
-            <style type="text/css">
-            #blogs li { margin-top: 10px; }
-            </style>
-            
-            <ul id="blogs">
-            <li><a class="ext" href="http://help.jiwai.de/BlogbusWidget"><img width="185" height="55" border="0" alt="博客大巴" src="http://www.blogbus.com/images/site_v4/logo.gif"/>BlogBus</a><span class="exttail">∞</span></li><br/>
-            <li><a class="ext" href="http://help.jiwai.de/SinablogWidget"><img width="180" height="33" alt="新浪博客" src="http://image2.sina.com.cn/blog/in061204img/yocc061219/3.5logo.gif"/>新浪博客</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/SohublogWidget"><img border="0" alt="SohuBlog" src="http://blog.sohu.com/home/new/style/images/bloglogo.jpg"/>Sohu博客</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/MsnSpaceWidget"><span style="font-size:2em">Windows Live<span class="tm">™</span> Spaces</span> MSN Space</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/BloggerWidget"><img width="173" height="50" src="http://blogger.com/img/logo100.gif" alt=" Blogger "/>Blogger</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/NeteaseblogWidget"><img src="http://blog.163.com/style/common/index/image/logo.gif" alt="网易博客">网易博客</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/TianyaWidget"><img width="151" height="47" src="http://blog.tianya.cn/images/blog_2.gif"/>天涯博客</a><span class="exttail">∞</span></li><br>
-            <li><a class="ext" href="http://help.jiwai.de/YculWidget"><img width="185" height="55" border="0" alt="歪酷博客 Ycul Blog - 记录我们的时代" src="http://sta.yculblog.com/images/logo/general-185x55.gif"/>歪酷博客</a><span class="exttail">∞</span></li><br>
-            </ul>
-        </fieldset>
-    </div>
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+                    <li><a href="/wo/gadget/flash/">Flash窗可贴</a></li>
+                    <li><a href="/wo/gadget/javascript/">代码窗可贴</a></li>
+                </ul>
+            </div><!-- leftdiv -->
+            <div class="rightdiv">
+            	<div class="lookfriend">
+            		<p class="black15bold">在你的博客或者论坛签名档上自动显示你的叽歪</p>
+            		<p class="gray12">你可以根据喜好自由样式，大小以及内容。</p>
+            		<p class="gray12">根据Blog的实际情况和个人喜好，可以选择图片、Flash或者JavaScript代码三种不同形式的窗可贴</p>
+            		<p class="gadget12">我们罗列出了一些窗可贴的使用方法，希望对您有所帮助：</p>
+        		</div><!-- lookfriend -->
+
+        		<div class="lookfriend">
+            		<ul class="gadget">
+                		<li><a href="http://help.jiwai.de/BlogbusWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_blogbus.gif'); ?>" title="博客大巴" border="0" /><p class="smallblack">博客大巴</p></a></li>
+                		<li><a href="http://help.jiwai.de/SinablogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_sina.gif'); ?>" width="30" height="30" title="新浪博客" /><p class="smallblack">新浪博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/MsnSpaceWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_msn.gif'); ?>" width="30" height="30" title="MSN空间" /><p class="smallblack">MSN空间</p></a></li>
+                		<li><a href="http://help.jiwai.de/SohublogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_sohu.gif'); ?>" width="30" height="30" title="搜狐博客" /><p class="smallblack">搜狐博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/NeteasyblogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_163.gif'); ?>" width="30" height="30" title="网易博客" /><p class="smallblack">网易博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/MopblogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_maopu.gif'); ?>" width="30" height="30" title="猫扑博客" /><p class="smallblack">猫扑博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/TianhublogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tianhu.gif'); ?>" width="30" height="30" title="天虎博客" /><p class="smallblack">天虎博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/BlogChineseWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_blogchinese.gif'); ?>" width="30" height="30" title="BlogChinese" /><p class="smallblack">BlogChinese</p></a></li>
+
+                		<li><a href="http://help.jiwai.de/TomblogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tom.gif'); ?>" width="30" height="30" title="TOM博客" /><p class="smallblack">TOM博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/QzoneblogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_qzone.gif'); ?>" width="30" height="30" title="QQ空间" /><p class="smallblack">QQ空间</p></a></li>
+                		<li><a href="http://help.jiwai.de/BlogCnWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_blogcn.gif'); ?>" width="30" height="30" title="博客中国" /><p class="smallblack">博客中国</p></a></li>
+                		<li><a href="http://help.jiwai.de/HexunblogWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_hexun.gif'); ?>" width="30" height="30" title="和讯博客" /><p class="smallblack">和讯博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/BloggerWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_bokeren.gif'); ?>" width="30" height="30" title="博客人" /><p class="smallblack">博客人</p></a></li>
+                		<li><a href="http://help.jiwai.de/TianyaWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tianya.gif'); ?>" width="30" height="30" title="天涯博客" /><p class="smallblack">天涯博客</p></a></li>
+                		<li><a href="http://help.jiwai.de/YculWidget" class="smallblack"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_yculblog.gif'); ?>" width="30" height="30" title="歪酷博客" /><p class="smallblack">歪酷博客</p></a></li>
+            		</ul>
+        		</div><!-- lookfriend -->
+    		<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
+
+    		</div><!-- rightdiv -->
+		</div><!-- #wtMainBlock -->
+		<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 </div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
+<?php JWTemplate::footer(); ?>
 </body>
 </html>
+
