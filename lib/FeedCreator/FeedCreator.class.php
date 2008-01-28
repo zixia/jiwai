@@ -1054,7 +1054,7 @@ class RSSCreator091 extends FeedCreator {
 		$feed.= $this->_createStylesheetReferences();
 		$feed.= "<rss version=\"".$this->RSSVersion."\">\n"; 
 		$feed.= "    <channel>\n";
-		$feed.= "        <title>".FeedCreator::iTrunc(htmlspecialchars($this->title),100)."</title>\n";
+		$feed.= "        <title>".htmlspecialchars(FeedCreator::iTrunc($this->title,100))."</title>\n";
 		$this->descriptionTruncSize = 500;
 		$feed.= "        <description>".$this->getDescription()."</description>\n";
 		$feed.= "        <link>".$this->link."</link>\n";
@@ -1065,7 +1065,7 @@ class RSSCreator091 extends FeedCreator {
 		if ($this->image!=null) {
 			$feed.= "        <image>\n";
 			$feed.= "            <url>".$this->image->url."</url>\n"; 
-			$feed.= "            <title>".FeedCreator::iTrunc(htmlspecialchars($this->image->title),100)."</title>\n"; 
+			$feed.= "            <title>".htmlspecialchars(FeedCreator::iTrunc($this->image->title,100))."</title>\n";
 			$feed.= "            <link>".$this->image->link."</link>\n";
 			if ($this->image->width!="") {
 				$feed.= "            <width>".$this->image->width."</width>\n";
@@ -1116,7 +1116,7 @@ class RSSCreator091 extends FeedCreator {
 
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "        <item>\n";
-			$feed.= "            <title>".FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
+			$feed.= "            <title>".htmlspecialchars(FeedCreator::iTrunc(strip_tags($this->items[$i]->title),100))."</title>\n";
 			$feed.= "            <link>".htmlspecialchars($this->items[$i]->link)."</link>\n";
 			$feed.= "            <description>".$this->items[$i]->getDescription()."</description>\n";
 			
@@ -1202,13 +1202,13 @@ class PIECreator01 extends FeedCreator {
 		$feed = "<?xml version=\"1.0\" encoding=\"".$this->encoding."\"?>\n";
 		$feed.= $this->_createStylesheetReferences();
 		$feed.= "<feed version=\"0.1\" xmlns=\"http://example.com/newformat#\">\n"; 
-		$feed.= "    <title>".FeedCreator::iTrunc(htmlspecialchars($this->title),100)."</title>\n";
+		$feed.= "    <title>".htmlspecialchars(FeedCreator::iTrunc($this->title,100))."</title>\n";
 		$this->truncSize = 500;
 		$feed.= "    <subtitle>".$this->getDescription()."</subtitle>\n";
 		$feed.= "    <link>".$this->link."</link>\n";
 		for ($i=0;$i<count($this->items);$i++) {
 			$feed.= "    <entry>\n";
-			$feed.= "        <title>".FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title)),100)."</title>\n";
+			$feed.= "        <title>".htmlspecialchars(FeedCreator::iTrunc(strip_tags($this->items[$i]->title),100))."</title>\n";
 			$feed.= "        <link>".htmlspecialchars($this->items[$i]->link)."</link>\n";
 			$itemDate = new FeedDate($this->items[$i]->date);
 			$feed.= "        <created>".htmlspecialchars($itemDate->iso8601())."</created>\n";
