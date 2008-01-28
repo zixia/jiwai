@@ -55,7 +55,8 @@ if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $is
 	JWApi::OutHeader(500, true);
 }
 
-function renderXmlReturn($status){
+function renderXmlReturn($status)
+{
 	$oStatus = JWApi::ReBuildStatus($status);
 	$user = JWUser::GetUserInfo( $status['idUser'] );
 	$userInfo = JWApi::ReBuildUser( $user );
@@ -68,7 +69,8 @@ function renderXmlReturn($status){
 	echo $xmlString;
 }
 
-function renderJsonReturn($status){
+function renderJsonReturn($status)
+{
 	$oStatus = JWApi::RebuildStatus($status);
 	$user = JWUser::GetUserInfo( $status['idUser'] );
 	$userInfo = JWApi::ReBuildUser( $user );

@@ -118,7 +118,8 @@ function renderFeedReturn($options, $feedType=JWFeed::ATOM){
  *	@param	array	options, include: count, since_id, since
  *
  */
-function getFavouriteStatuses($options, $needReBuild=false){
+function getFavouriteStatuses($options, $needReBuild=false)
+{
 	/* Twitter compatible */
 
 	$idUserObject = $options['idUserObject'];
@@ -137,9 +138,11 @@ function getFavouriteStatuses($options, $needReBuild=false){
 	$statusRows = JWStatus::GetDbRowsByIds($statusIds);
 
 	$status_rows = array();
-	foreach( $statusIds as $status_id ) {
+	foreach( $statusIds as $status_id ) 
+	{
 		$favourite_id = array_shift( $favouriteIds );
-		if( isset( $statusRows[ $status_id ] ) ){
+		if( isset( $statusRows[ $status_id ] ) )
+		{
 			$status = $statusRows[ $status_id ];
 			$status[ 'favourite_id'] = $favourite_id;
 			array_push( $status_rows, $status);
@@ -148,18 +151,24 @@ function getFavouriteStatuses($options, $needReBuild=false){
 
 	$user_rows = array();
 	$statuses = array();
-	foreach ( $status_rows as $status ){
+	foreach ( $status_rows as $status )
+	{
 		$user_id = intval($status['idUser']);
 		
 		$statusInfo = ($needReBuild) ?
 		       	JWApi::ReBuildStatus( $status ) : $status;
 
-		if( false == isset($user_rows[$user_id]) ) {
+		if( false == isset($user_rows[$user_id]) ) 
+		{
 			$user_rows[$user_id] = JWUser::GetUserInfo( $user_id );
 		}
 
+		$user_row = $user_rows[$user_id];
+		$user_row['idPicture'] = ( $status['idPicture'] && $status['isMms']=='N' )
+			? $status['idPicture'] : $user_row['idPicture'];
+
 		$userInfo   = ($needReBuild) ?
-			JWApi::ReBuildUser($user_rows[$user_id]) : $user_rows[$user_id];
+			JWApi::ReBuildUser($user_row) : $user_row;
 		$statusInfo['user'] = $userInfo;
 		$statuses[] = $statusInfo;
 	}

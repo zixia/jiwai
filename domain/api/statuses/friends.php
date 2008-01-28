@@ -63,24 +63,32 @@ function renderXmlStatuses($idUser){
     ob_end_flush();
 }
 
-function getFriendsWithStatus($idUser){
+function getFriendsWithStatus($idUser)
+{
 	$friendIds = JWFollower::GetFollowingIds($idUser);
 	$friends = JWDB_Cache_User::GetDbRowsByIds( $friendIds );
 	$statusIds = array();
-	foreach( $friendIds as $f ){
+	foreach( $friendIds as $f )
+	{
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
-		if( false == empty( $_rs ) ) {
+		if( false == empty( $_rs ) ) 
+		{
 			$statusIds[$f] = $_rs['status_ids'][0];
 		}
 	}
 	$statuses = JWStatus::GetDbRowsByIds( array_values($statusIds) );
 	
 	$friendsWithStatuses = array();
-	foreach($friendIds as $f ){
-		$user = $friends[$f];
-		$userInfo = JWApi::ReBuildUser( $user );
-		$status = $statuses[ $statusIds[$f] ];
-		$statusInfo = JWApi::ReBuildStatus( $status );
+	foreach($friendIds as $f )
+	{
+		$user_row = $friends[$f];
+		$status_row = $statuses[ $statusIds[$f] ];
+		$user_row['idPicture'] = ($status_row['idPicture'] && $status_row['isMms']=='N') 
+			? $status_row['idPicture'] : $user_row['idPicture'];
+
+		$statusInfo = JWApi::ReBuildStatus( $status_row );
+
+		$userInfo = JWApi::ReBuildUser( $user_row );
 		$userInfo['status'] = $statusInfo;
 
 		$friendsWithStatuses[] = $userInfo;

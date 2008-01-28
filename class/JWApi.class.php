@@ -98,19 +98,22 @@ class JWApi{
 	/**
 	  * Rebuild User Array by given user db row.
 	  */
-	function ReBuildUser(&$user){
+	function ReBuildUser(&$user)
+	{
 
-		$uInfo = array();
+		$user_info = array();
 
-		$uInfo['id'] = $user['id'];
-		$uInfo['name'] = $user['nameFull'];
-		$uInfo['screen_name'] = $user['nameScreen'];
-		$uInfo['description'] = $user['bio'];
-		$uInfo['location'] = JWLocation::GetLocationName( $user['location'] );
-		$uInfo['url'] = $user['url'];
-		$uInfo['protected'] = $user['protected']=='Y' ? true : false;
-		$uInfo['profile_image_url'] = JWPicture::GetUserIconUrl( $user['id'],'thumb48s');
-		return $uInfo;
+		$user_info['id'] = $user['id'];
+		$user_info['name'] = $user['nameFull'];
+		$user_info['screen_name'] = $user['nameScreen'];
+		$user_info['description'] = $user['bio'];
+		$user_info['location'] = JWLocation::GetLocationName( $user['location'] );
+		$user_info['url'] = $user['url'];
+		$user_info['protected'] = $user['protected']=='Y' ? true : false;
+
+		$user_info['profile_image_url'] = JWPicture::GetUrlById( $user['idPicture'],'thumb48s');
+
+		return $user_info;
 	}
 
 	/**

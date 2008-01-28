@@ -157,13 +157,19 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 
 	$statuses = array();
 
-	foreach ( $status_data['status_ids'] as $status_id ){
-		$user_id = intval($status_rows[$status_id]['idUser']);
-		
+	foreach ( $status_data['status_ids'] as $status_id )
+	{
+		$status_row = $status_rows[$status_id];
+		$user_row = $user_rows[$status_row['idUser']];
+
+		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+			? $status_row['idPicture'] : $user_row['idPicture'];
+
 		$statusInfo = ($needReBuild) ?
-		       	JWApi::ReBuildStatus( $status_rows[$status_id] ) : $status_rows[$status_id];
+		       	JWApi::ReBuildStatus( $status_row ) : $status_row;
+
 		$userInfo   = ($needReBuild) ?
-			JWApi::ReBuildUser($user_rows[$user_id]) : $user_rows[$user_id];
+			JWApi::ReBuildUser($user_row) : $user_row;
 		$statusInfo['user'] = $userInfo;
 		$statuses[] = $statusInfo;
 	}

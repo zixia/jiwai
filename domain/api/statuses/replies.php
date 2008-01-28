@@ -99,26 +99,36 @@ function renderFeedStatuses($idUser, $feedType) {
   * @param $idUser, 用户id
   * @param $needRebuild, 是不是按照 xml/json方式，重新组织field名
   */
-function getStatusesWithUser($idUser, $needReBuild=true){
+function getStatusesWithUser($idUser, $needReBuild=true)
+{
 
 	global $page;
 	if( 1>=$page ) $page = 1;
 	$start = 20 * ( $page - 1 );
 
 	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20, $start);
-	$statuses = JWStatus::GetDbRowsByIds( $statusIds['status_ids'] );
+	$status_rows = JWStatus::GetDbRowsByIds( $statusIds['status_ids'] );
 	$statusesWithUser = array();
 	$userTemp = array();
-	foreach( $statusIds['status_ids'] as $sid ){
-		$s = isset($statuses[$sid]) ? $statuses[$sid] : null;
-		if( !$s )
+
+	foreach( $statusIds['status_ids'] as $sid )
+	{
+		$status_row = isset($status_rows[$sid]) ? $status_rows[$sid] : null;
+		if( empty($status_row) )
 			continue;
-		$oInfo = $needReBuild ? JWApi::ReBuildStatus( $s ) : $s;
-		if( false === isset( $userTemp[$s['idUser']] ) ){
-			$user = JWUser::GetUserInfo($s['idUser']);
-			$userTemp[$s['idUser']] = $needReBuild ? JWApi::ReBuildUser($user) : $user;
+
+		$oInfo = $needReBuild ? JWApi::ReBuildStatus( $status_row ) : $status_row;
+		if( false === isset( $userTemp[$s['idUser']] ) )
+		{
+			$user_row = JWUser::GetUserInfo($status_row['idUser']);
+			$userTemp[$status_row['idUser']] = $user_row;
 		}
-		$oInfo['user'] = $userTemp[$s['idUser']];
+
+		$user_row = $userTemp[$status_row['idUser']];
+		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+			? $status_row['idPicture'] : $user_row['idPicture'];
+
+		$oInfo['user'] = $needReBuild ? JWApi::ReBuildUser($user_row) : $user_row;
 		$statusesWithUser[] = $oInfo;
 	}
 	return $statusesWithUser;

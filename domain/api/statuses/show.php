@@ -7,33 +7,41 @@ $type = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 
 $pathParam = trim( $pathParam, '/' );
-if( ! $pathParam ) {
+if( ! $pathParam ) 
+{
 	JWApi::OutHeader(400, true);	
 }
 
 @list($id, $type) = explode( ".", $pathParam, 2);
-if( !in_array( $type, array('json','xml') )){
+if( !in_array( $type, array('json','xml') ))
+{
 	JWApi::OutHeader(406, true);
 }
 
-if( is_numeric($id) ){
-	switch( $type ){
-	case 'json':
-		renderJsonStatuses($id);
-	break;
-	case 'xml':
-		renderXmlStatuses($id);
-	break;
-	default:
-		JWApi::OutHeader(406, true);
+if( is_numeric($id) )
+{
+	switch( $type )
+	{
+		case 'json':
+			renderJsonStatuses($id);
+			break;
+		case 'xml':
+			renderXmlStatuses($id);
+			break;
+		default:
+			JWApi::OutHeader(406, true);
 	}
-}else{
+}
+else
+{
 	JWApi::OutHeader(406, true);
 }
 
-function renderJsonStatuses($id){
+function renderJsonStatuses($id)
+{
 	$status = $user = null;
-	if( getMessage( $id, $status, $user )){
+	if( getMessage( $id, $status, $user ))
+	{
 		$userInfo = JWApi::ReBuildUser($user);
 		$statusInfo = JWApi::ReBuildStatus($status);
 		$statusInfo['user'] = $userInfo;
@@ -41,9 +49,11 @@ function renderJsonStatuses($id){
 	}
 }
 
-function renderXmlStatuses($id){
+function renderXmlStatuses($id)
+{
 	$status = $user = $xmlString = null;
-	if( getMessage( $id, $status, $user )){
+	if( getMessage( $id, $status, $user ))
+	{
 		$userInfo = JWApi::ReBuildUser($user);
 		$statusInfo = JWApi::ReBuildStatus($status);
 		$statusInfo['user'] = $userInfo;
@@ -57,10 +67,19 @@ function renderXmlStatuses($id){
 	}
 }
 
-function getMessage($id, &$status, &$user){
+function getMessage($id, &$status, &$user)
+{
 	$status = JWDB_Cache_Status::GetDbRowById($id);
-	if( $status ){
+	if( $status )
+	{
 		$user = JWDB_Cache_User::GetDbRowById($status['idUser']);
+		if ( false==empty($user) )
+		{
+			if ( $status['idPicture'] && $status['isMms']=='N' )
+			{
+				$user['idPicture'] = $status['idPicture'];
+			}
+		}
 		return true;
 	}
 	return false;

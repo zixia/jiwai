@@ -51,23 +51,30 @@ function renderXmlStatuses(){
     ob_end_flush();
 }
 
-function getFeaturedWithStatus(){
+function getFeaturedWithStatus()
+{
 	$featuredIds = JWUser::GetFeaturedUserIds(20);
 	$featured = JWDB_Cache_User::GetDbRowsByIds( $featuredIds );
 
 	$statusIds = array();
-	foreach( $featuredIds as $f ){
+	foreach( $featuredIds as $f )
+	{
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
 		$statusIds[$f] = $_rs['status_ids'][0];
 	}
-	$statuses = JWStatus::GetDbRowsByIds( array_values($statusIds) );
+	$status_rows = JWStatus::GetDbRowsByIds( array_values($statusIds) );
 	
 	$featuredWithStatuses = array();
-	foreach($featuredIds as $f ){
-		$user = $featured[$f];
-		$userInfo = JWApi::ReBuildUser( $user );
-		$status = $statuses[ $statusIds[$f] ];
-		$statusInfo = JWApi::ReBuildStatus( $status );
+	foreach($featuredIds as $f )
+	{
+		$user_row = $featured[$f];
+		$status_row = $status_rows[ $statusIds[$f] ];
+		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+			? $status_row['idPicture'] : $user_row['idPicture'];
+
+		$userInfo = JWApi::ReBuildUser( $user_row );
+		$statusInfo = JWApi::ReBuildStatus( $status_row );
+
 		$userInfo['status'] = $statusInfo;
 
 		$featuredWithStatuses[] = $userInfo;

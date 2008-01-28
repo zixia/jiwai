@@ -56,22 +56,29 @@ function renderXmlStatuses($idUser){
     ob_end_flush();
 }
 
-function getFollowersWithStatus($idUser){
+function getFollowersWithStatus($idUser)
+{
 	$followerIds = JWFollower::GetFollowerIds($idUser);
 	$followers = JWDB_Cache_User::GetDbRowsByIds( $followerIds );
 	$statusIds = array();
-	foreach( $followerIds as $f ){
+	foreach( $followerIds as $f )
+	{
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
 		$statusIds[$f] = $_rs['status_ids'][0];
 	}
 	$statuses = JWStatus::GetDbRowsByIds( array_values($statusIds) );
 	
 	$followersWithStatuses = array();
-	foreach($followerIds as $f ){
-		$user = $followers[$f];
-		$userInfo = JWApi::ReBuildUser( $user );
-		$status = $statuses[ $statusIds[$f] ];
-		$statusInfo = JWApi::ReBuildStatus( $status );
+	foreach($followerIds as $f )
+	{
+		$user_row = $followers[$f];
+		$status_row = $statuses[ $statusIds[$f] ];
+		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+			? $status_row['idPicture'] : $user_row['idPicture'];
+
+		$userInfo = JWApi::ReBuildUser( $user_row );
+
+		$statusInfo = JWApi::ReBuildStatus( $status_row );
 		$userInfo['status'] = $statusInfo;
 
 		$followersWithStatuses[] = $userInfo;
