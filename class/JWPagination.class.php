@@ -40,6 +40,14 @@ class JWPagination {
 		$this->mNumPerPage		= $per_page;
 	}
 
+	public function SetTotalNum( $total_num, $plus=false )
+	{
+		if ( $plus )
+			$this->mTotalNum += $total_num;
+		else 
+			$this->mTotalNum = $total_num;
+	}
+
 	public function IsShowNewest()
 	{
 		if ( $this->mCurrentPageNo > 2 )

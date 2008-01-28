@@ -44,10 +44,10 @@ switch ( $active_tab )
 	default:
 	case 'archive':
 		// 显示用户自己的
-		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id);
+		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id) - 1;
 
 		$pagination	= new JWPagination($user_status_num, $page);
-		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 		break;
 
 	case 'replies':
@@ -58,12 +58,12 @@ switch ( $active_tab )
 		// 显示用户和好友的
 
 		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
-		$user_status_num= JWStatus::GetStatusMmsNumFromFriends($page_user_id);
+		$user_status_num= JWStatus::GetStatusMmsNumFromFriends($page_user_id) - 1;
 
 		$pagination		= new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWStatus::GetStatusIdsFromFriendsMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+		$status_data 	= JWStatus::GetStatusIdsFromFriendsMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
 
 		break;
 }
@@ -172,7 +172,12 @@ JWTemplate::ShowActionResultTips();
 
 //die(var_dump($page_user_id));
 JWTemplate::StatusHead( $page_user_info, @$head_status_rows[$head_status_id] );
-
+if ( isset($head_status_id) 
+	&& isset($head_status_rows[$head_status_id])
+	&& $head_status_rows[$head_status_id]['isMms']=='N')
+{
+	$pagination->SetTotalNum( 1, true );
+}
 ?>
 
 <?php 
