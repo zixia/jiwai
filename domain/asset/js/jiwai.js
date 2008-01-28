@@ -310,6 +310,7 @@ alert('ok');
         obj.select();
 
         txt=obj.value;
+	$$('.copytips').each(function(item){item.style.display="none";});
         $(obj.id + "_tip").style.display="inline";
         if(window.clipboardData) 
         {    
