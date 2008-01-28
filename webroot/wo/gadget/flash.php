@@ -39,9 +39,10 @@ if( $user_info['protected'] == 'Y')
         <div class="rightdiv">
             <div class="lookfriend">
                 <p class="black15bold">你和你关注的人</p>
-                <p class="gadgetFlash">
+                <div class="gadgetFlash">
                     <embed pluginspage=" http://www.macromedia.com/go/getflashplayer" quality="high" allowscriptaccess="always" align="middle" flashvars="userid=<?php echo $user_id; ?>" src=" http://asset.jiwai.de/gadget/flash/friends_gadget_maker.swf" type="application/x-shockwave-flash" height="600" width="530" name="jiwai_badge"/>
-                    </embed></p><!-- gadgetFlash -->
+                    </embed>
+		</div><!-- gadgetFlash -->
             </div><!-- lookfriend -->
                 <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
 

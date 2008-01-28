@@ -494,7 +494,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .gadget li { float:left;width:70px;padding: 5px 8px 10px 0;font-size:12px;text-align: center;font-family: Arial, sans-serif;}
 #wtMainBlock .gadget li a img {width:30px; height:30px;}
 #wtMainBlock .gadget li p { margin:3px 0 0 0;} 
-#wtMainBlock .gadgetFlash { width: 545px;border:1px solid #CECECE; padding:1px;background-color:#FFF;color:#333333; font-size :12px;}
+#wtMainBlock .gadgetFlash { width: 545px;margin: 15px 0 0 0;height:1%;overflow:hidden; }
 #wtMainBlock .gadgetimage { margin:3px 0 0 0; clear:both;}
 /* The wtMainBlock end */
 
