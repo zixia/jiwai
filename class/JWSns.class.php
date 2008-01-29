@@ -300,7 +300,7 @@ class JWSns {
 				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
 			case 'email':
 				/* 发完消息，再发邮件 :-D */
-				JWMail::SendMailInvitation($user_row, $address, $email_message, $code_invite);
+				JWMail::SendMailInvitation($user_row, $address, $email_message, array());
 				break;
 
 			case 'newsmth':

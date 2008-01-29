@@ -169,7 +169,7 @@ class JWMail {
 			 '/%User.nameFull%/i' => $user['nameFull'],
 
 			 '/%Friend.nameScreen%/i' => @$friend['nameScreen'],
-			 '/%EFriend.nameScreen%/i' => UrlEncode($friend['nameScreen']),
+			 '/%EFriend.nameScreen%/i' => UrlEncode(@$friend['nameScreen']),
 			 '/%Friend.nameFull%/i' => @$friend['nameFull'],
 		);
 
@@ -287,7 +287,7 @@ class JWMail {
 		$template_data = self::LoadTemplate($template_file);
 		$template_data = self::RenderTemplate($template_data,$user, $friend);
 	
-		$template_data = preg_replace('/%INVITATION_ID%/i', $code, $template_data);
+		$template_data = preg_replace('/%INVITATION_ID%/i', $invitation_code, $template_data);
 		$template_data = preg_replace('/%SUBJECT%/i', $message, $template_data);
 		$template_data = preg_replace('/%Photo.Url%/i', $photo_url, $template_data);
 
