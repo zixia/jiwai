@@ -30,6 +30,22 @@ $protected = JWSns::IsProtected( $page_user_info, $current_user_id );
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <?php 
+/* get head_status_fisrt */
+if( $page_user_info['idConference'] ) 
+{
+	$head_status_data = JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
+}
+else
+{
+	$head_status_data = JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
+}
+$head_status_rows = JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
+$head_status_id = @array_shift($head_status_data['status_ids']); 
+$head_status_row = ( $head_status_id ) ? $head_status_rows[$head_status_id] : array();
+$head_status_is_mms = empty($head_status_row) ? false : ($head_status_row['isMms']=='Y');
+$plus = ( $head_status_is_mms ) ? 1 : 0;
+
+/* active_tab switch */
 
 $active_tab = 'archive';
 
@@ -44,10 +60,10 @@ switch ( $active_tab )
 	default:
 	case 'archive':
 		// 显示用户自己的
-		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id) - 1;
+		$user_status_num= JWStatus::GetStatusMmsNum($page_user_id) - $plus;
 
-		$pagination	= new JWPagination($user_status_num, $page);
-		$status_data 	= JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		$pagination = new JWPagination($user_status_num, $page);
+		$status_data = JWStatus::GetStatusIdsFromUserMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+$plus );
 		break;
 
 	case 'replies':
@@ -58,12 +74,12 @@ switch ( $active_tab )
 		// 显示用户和好友的
 
 		//$user_status_num= JWStatus::GetStatusNumFromFriends($page_user_id);
-		$user_status_num= JWStatus::GetStatusMmsNumFromFriends($page_user_id) - 1;
+		$user_status_num = JWStatus::GetStatusMmsNumFromFriends($page_user_id) - $plus;
 
-		$pagination		= new JWPagination($user_status_num, $page);
+		$pagination = new JWPagination($user_status_num, $page);
 
 		//$status_data 	= JWStatus::GetStatusIdsFromFriends( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWStatus::GetStatusIdsFromFriendsMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+1 );
+		$status_data = JWStatus::GetStatusIdsFromFriendsMms( $page_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos()+$plus );
 
 		break;
 }
@@ -77,13 +93,6 @@ $status_data['user_ids'][] = $page_user_id;
 
 $user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 
-if( $page_user_info['idConference'] ) {
-	$head_status_data 	= JWStatus::GetStatusIdsFromConferenceUser( $page_user_id, 1 );
-}else{
-	$head_status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser( $page_user_id, 1 );
-}
-$head_status_rows 	= JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
-$head_status_id 	= @array_shift($head_status_data['status_ids']); 
 
 
 /*
@@ -172,12 +181,6 @@ JWTemplate::ShowActionResultTips();
 
 //die(var_dump($page_user_id));
 JWTemplate::StatusHead( $page_user_info, @$head_status_rows[$head_status_id] );
-if ( isset($head_status_id) 
-	&& isset($head_status_rows[$head_status_id])
-	&& $head_status_rows[$head_status_id]['isMms']=='N')
-{
-	$pagination->SetTotalNum( 1, true );
-}
 ?>
 
 <?php 
