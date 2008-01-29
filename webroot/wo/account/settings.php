@@ -161,14 +161,23 @@ _HTML_;
 if( isset( $_REQUEST['commit_w'] ) ) {
 	$nameUrl = $_REQUEST['nameUrl'];
 	$oldNameUrl = $user_info['nameUrl'];
-	if( true || $nameUrl != $oldNameUrl ) {
+	if( true || $nameUrl != $oldNameUrl ) 
+	{
+
 		$uArray = array(
 			'nameUrl' => $nameUrl,
 			'isUrlFixed' => 'Y',
 		);
 
-		JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
-		JWSession::SetInfo('notice', '修改个人主页地址成功');
+		if ( false == JWUser::IsExistUrl( $nameUrl ) )
+		{
+			JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
+			JWSession::SetInfo('notice', '修改个人主页地址成功');
+		}
+		else
+		{
+			JWSession::SetInfo('notice', '主页地址 /'.$nameUrl.'/ 已经被使用');
+		}
 		header ( "Location: /wo/account/settings" );
 	}
 }

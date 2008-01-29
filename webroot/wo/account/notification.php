@@ -13,10 +13,9 @@ $user_setting	= JWUser::GetNotification($user_info['id']);
 //echo "<pre>";(var_dump($user_setting));
 if ( isset($_REQUEST['commit_x']) )
 {
-	$user_new_setting	= $_REQUEST['user'];
+	$user_new_setting = isset($_REQUEST['user']) ? $_REQUEST['user'] : array();
 
-
-	if ( ! JWUser::SetNotification($user_info['id'], $user_new_setting) )
+	if ( false==JWUser::SetNotification($user_info['id'], $user_new_setting) )
 	{
 		JWSession::SetInfo('error', '通知设置由于系统故障未能保存成功，请稍后再试。');
 	}

@@ -46,6 +46,7 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
               <form action="/wo/gadget/preview/" method="post" target="w" onsubmit="window.open('','w','width=800,height=600,scrollbars')">
                 <p>
                     <span class="black15bold">显示：</span>
+		    	<input type="hidden" name="gadget[pictsize]" value="48"/>
                         <input type="radio" name="gadget[selector]" value="user"  
 <?php
 if ( !isset($gadget['selector']) ) 
