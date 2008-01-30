@@ -42,7 +42,7 @@ echo "<script>var count_select_now=$friends_rows_count;</script>";
 <!-- left start -->
 <div class="leftdiv">
 <ul class="leftmenu">
-	<li><a id="tab_import" href="invite_not_follow" class="now">寻找好友</a></li>
+	<li><a id="tab_import" href="invite" class="now">寻找好友</a></li>
 	<li><a id="tab_email" href="email" class="">Email邀请</a></li>
 	<li><a id="tab_sms" href="sms" class="">短信邀请</a></li>
 </ul>
