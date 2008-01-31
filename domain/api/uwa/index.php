@@ -26,7 +26,7 @@ function formatDate(d) {
 }
 widget.onLoad = function() {
 	var screenName = widget.getValue("screenName");
-	var withFriends = widget.getValue("withFriends");
+	var withFriends = widget.getValue("withFriends") == 'true';
 	var numDisplay = widget.getValue("numDisplay");
 	if (numDisplay<1) numDisplay = 1;
 	if (numDisplay>20) numDisplay = 20;
