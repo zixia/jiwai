@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?php
+echo '<?xml version="1.0" encoding="UTF-8" ?>';
+?>
 <Module>
 <ModulePrefs title="叽歪de"
 		title_url="http://jiwai.de"
-		thumbnail="http://asset.jiwai.de/images/org-logo.gif"
+		thumbnail="http://asset.jiwai.de/gadget/opensocial/simple_thumbnail.png"
+		screenshot="http://asset.jiwai.de/gadget/opensocial/simple_screenshot.png"
 		author="叽歪"
-		author_email="wo@jiwai.de"
+		author_link="http://jiwai.de/freewizard/"
+		author_email="freewizard@jiwai.com"
 		author_affiliation="JiWai.de"
 		description="叽歪的窗可贴 for iGoogle and OpenSocial(Orkut, MySpace, Ning, Hi5...)">
 	<Require feature="dynamic-height" />
@@ -56,17 +60,20 @@ function onFetch(response) {
 		return;
 	}
 	var html = '';//'<table id="contents_table">';
-    var l = 0;
+	var l = 0;
 	for (var i in response) {
 		var o = response[i];
-        l++;
+		l++;
 		//html += '<tr><td>'+o.text+'</td><td>'+o.created_at+'</td></tr>';
+		try {
 		html += '<div style="padding-bottom:6px;border-bottom:solid 1px #eee;">'
-        + '<span><img style="float:right" src="'+o.user.profile_image_url //align="right"
+		+ '<span><img style="float:right" src="'+o.user.profile_image_url //align="right"
 		+ (withFriends ? '"/></span><span>' + o.user.screen_name + ': ' : '"/>')
 		+ '</span><span>' + o.text
 		+ '</span> <span style="color:grey">' + formatDate(new Date(o.created_at))
 		+ '</span></div>';
+		} catch (e) {
+		}
 	}
 	//html += '</table>';
 	_gel('content').innerHTML = html;
