@@ -60,12 +60,15 @@ class JWApi{
 	/**
 	  * Get Authed UserId for API
 	  */
-	static function GetAuthedUserId(){
-		if( JWLogin::IsLogined() ){
+	static function GetAuthedUserId()
+	{
+		if( JWLogin::IsLogined() )
+		{
 			return intval( $_SESSION['idUser'] );
 		}
-		if( isset( $_SERVER['PHP_AUTH_USER'] ) ){
-			$username_or_email = $_SERVER['PHP_AUTH_USER'];
+		if( isset( $_SERVER['PHP_AUTH_USER'] ) )
+		{
+			$username_or_email = mb_convert_encoding($_SERVER['PHP_AUTH_USER'],'UTF-8','GB2312');
 			$password = $_SERVER['PHP_AUTH_PW'];
 			return JWUser::GetUserFromPassword( $username_or_email, $password );
 		}
