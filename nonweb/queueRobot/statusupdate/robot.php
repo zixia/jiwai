@@ -1,5 +1,6 @@
 <?php
 require_once '../../../jiwai.inc.php';
+JWMemcache::Instance()->SetUseLocalCache(false);
 
 class JWPubSub_Listener_StatusUpdate implements JWPubSub_Listener
 {

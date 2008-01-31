@@ -87,6 +87,10 @@ class JWMemcache implements JWMemcache_Interface
 		self::$msUseLocalCache = $useLocalCache;
 	}
 
+	public function SetUseLocalCache($useLocalCache=false, $cache_time=0)
+	{
+		self::$msUseLocalCache = $useLocalCache;
+	}  
 
 	/*
 	 *	以下参数兼容 PHP Memcache Functions

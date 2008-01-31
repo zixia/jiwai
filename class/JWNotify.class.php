@@ -199,7 +199,7 @@ class JWNotify{
 		{
 			$queue_data = array(
 				'device' => $status_row['device'],
-				'message' => $message['im'],
+				'message' => ($tag==null) ? $message['im'] : '['.$tag['name'].'] ' . $message['im'],
 				'not_reply' => null==$receiver_user,
 				'not_conference' => null==$conference,
 				'bind' => $bindOther,

@@ -64,10 +64,13 @@ class JWDevice {
 			return false;
 		}
 
-		switch ( $type ){
+		switch ( $type )
+        {
+			case 'mobiz':
+				return preg_match('/^\d{9,}$/',$address);
 			case 'sms':
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
-            case 'fetion':
+			case 'fetion':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -81,8 +84,8 @@ class JWDevice {
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
-            case 'aol':
-                if (JWUser::IsValidEmail($address, true)) return true;
+			case 'aol':
+				if (JWUser::IsValidEmail($address, true)) return true;
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'msn':		
 				// im check email address
