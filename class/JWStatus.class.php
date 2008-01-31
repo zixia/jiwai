@@ -359,7 +359,7 @@ class JWStatus {
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null, $userOnly = null)
 	{
 		$idUser	= JWDB::CheckInt($idUser);
 		$num	= JWDB::CheckInt($num);
@@ -375,6 +375,9 @@ class JWStatus {
 		if( $timeSince ) {
 			$condition_other .= " AND timeCreate > '$timeSince'";
 		}
+        if( true == $userOnly ) {
+            $condition_other .= " AND idStatusReplyTo IS NULL";
+        }
 
 		/*
 		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
@@ -730,11 +733,16 @@ _SQL_;
 
 		$condition_other = null;
 		if( $idSince > 0 ){
-			$condition_other .= " AND Status.id > $idSince";
+			$condition_other .= " AND id > $idSince";
 		}
 		if( $timeSince ) {
-			$condition_other .= " AND Status.timeCreate > '$timeSince'";
+			$condition_other .= " AND timeCreate > '$timeSince'";
 		}
+
+		//not display CCTV,SMG
+		$condition_other .= " AND (idUser > 52067 OR idUser < 52058)";
+		$condition_other .= " AND (idUser > 51700 OR idUser < 51685)";
+		$condition_other .= " AND (idUser > 51958 OR idUser < 51948)";
 
 		$sql = <<<_SQL_
 SELECT		

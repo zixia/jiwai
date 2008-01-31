@@ -738,7 +738,7 @@ _SQL_;
 				$name='wo.jiwai.de';
 				break;
 			case 'aol':
-				$name='jiwai001';
+				$name='wo@jiwai.de';
 				break;
 			case 'fetion':
 				$name='663665310(飞信号)';

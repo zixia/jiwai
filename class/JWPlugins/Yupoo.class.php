@@ -59,7 +59,7 @@ class JWPlugins_Yupoo{
 		$memcache = JWMemcache::Instance();
 
 		$v = $memcache->Get( $mc_key );
-		if( $v && false ) // after several days, need back to original status. seek@jiwai.com 01-24
+		if( $v ) 
 			return $v;
 
 		$url_row = JWUrlMap::GetDbRowByDescUrl($url);
