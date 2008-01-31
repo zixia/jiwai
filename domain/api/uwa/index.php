@@ -3,11 +3,11 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
-<head><title>叽歪de</title>
+<head><title>叽歪</title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
-<meta name="description" content="叽歪de窗可贴 for UWA (SOW and etc)" />
+<meta name="description" content="叽歪窗可贴 for UWA (SOW and etc)" />
 <meta name="version" content="1.0" />
 <meta name="keyword" content="叽歪 JiWai widget" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
@@ -31,7 +31,7 @@ widget.onLoad = function() {
 	if (numDisplay<1) numDisplay = 1;
 	if (numDisplay>20) numDisplay = 20;
 	if (screenName == null || screenName == '') {
-		widget.setBody('<p class="alert">请先设置你的叽歪登录名</p>');
+		widget.setBody('<p class="alert">请先设置你的叽歪登录名<br />还没有叽歪帐号？<a href="http://jiwai.de/wo/account/create" target="_blank">这里注册</a></p>');
 		return;
 	}
 	var uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + screenName + '.json?count='+numDisplay;
