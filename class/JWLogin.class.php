@@ -76,6 +76,15 @@ class JWLogin {
 		JWLogUserAction::OnLogout($user_id);
 	}
 
+	static public function IsAnonymousLogined()
+	{
+		if ( self::IsLogined() )
+		{
+			$user_id = $_SESSION['idUser'];
+			return JWUser::IsAnonymous( $user_id );
+		}
+		return false;
+	}
 
 	static public function MustLogined($allow_drift=false)
 	{
@@ -83,8 +92,8 @@ class JWLogin {
 		{
 			if ( false===$allow_drift )
 			{
-				$current_user_info = JWUser::GetCurrentUserInfo();
-				if ( 'ANONYMOUS' !== $current_user_info['srcRegister'] )
+				$current_user_id = self::GetCurrentUserId();
+				if ( false==JWUser::IsAnonymous( $current_user_id ) )
 				{
 					return true;
 				}
@@ -95,18 +104,11 @@ class JWLogin {
 			}
 		}
 
-		if ( true==$allow_drift && $possible_user_id = self::GetPossibleUserId() )
-		{
-			self::Login($possible_user_id);
-			return true;
-		}
-
 		$_SESSION['login_redirect_url'] = $_SERVER['SCRIPT_URI'];
 
 		header ("Location: /wo/login"); 
 		exit(0);
 	}
-
 
 	/*
 	 * 检查是否已经登录，或者是系统记住的登录用户
