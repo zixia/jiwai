@@ -915,5 +915,17 @@ class JWSns {
 		
 		return false;
 	}
+
+	static public function SetUserStatusPicture($user_id, $picture_id=null)
+	{
+		if ( null==$picture_id )
+			return ;
+
+		$status_ids = JWStatus::GetNonPictureStatusIdsFromUser( $user_id );
+		foreach ( $status_ids as $status_id )
+		{
+			JWDB_Cache_Status::SetIdPicture( $status_id, $picture_id );
+		}
+	}
 }
 ?>

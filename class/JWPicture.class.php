@@ -642,6 +642,34 @@ _CMD_;
 		exit(0);
 	}
 
+	static public function GetUserPictureIds( $user_id, $len=9999, $offset=0)
+	{
+		$user_id = JWDB::CheckInt( $user_id );
+		$sql = <<<_SQL_
+SELECT
+	id
+FROM 
+	Picture
+WHERE 
+	idUser = $user_id
+	AND `class`='ICON'
+ORDER BY id ASC
+LIMIT $offset, $len
+_SQL_;
+
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if ( empty($rows) )
+			return array();
+
+		$rtn_array = array();
+		foreach ( $rows as $one )
+		{
+			array_push( $rtn_array, $one['id'] );
+		}
+
+		return $rtn_array;
+	}
+
 	/*
 	 *
 	 * @param	string	absFilePathName	user named image file

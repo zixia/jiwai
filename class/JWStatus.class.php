@@ -354,6 +354,32 @@ class JWStatus {
 		));
 	}
 
+	static public function GetNonPictureStatusIdsFromUser($user_id)
+	{
+		$user_id = JWDB::CheckInt($user_id);
+		
+		$sql = <<<_SQL_
+SELECT
+	id
+FROM
+	Status
+WHERE
+	idUser = $user_id
+	AND idPicture IS NULL
+_SQL_;
+		$rows = JWDB::GetQueryResult($sql, true);
+		if ( empty($rows) )
+			return array();
+
+		$rtn_array = array();
+		foreach ( $rows as $one )
+		{
+			array_push( $rtn_array, $one['id'] );
+		}
+
+		return $rtn_array;
+	}
+
 	/*
 	 *	获取用户的 idStatus 
 	 *	@param	int		$idUser	用户的id

@@ -891,5 +891,15 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 		return $status_info;
 	}
+
+	static public function SetIdPicture($status_id, $picture_id=null)
+	{
+		$status_id = JWDB::CheckInt( $status_id );
+		$up_array = array(
+			'idPicture' => $picture_id,
+		);
+
+		return JWDB_Cache::UpdateTableRow( 'Status', $status_id, $up_array );
+	}
 }
 ?>
