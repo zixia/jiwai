@@ -71,24 +71,6 @@ JWTemplate::html_head($options);
 $device_row = JWDevice::GetDeviceRowByUserId($current_user_id);
 update_feedback($current_user_id,$device_row);
 $supported_device_types = JWDevice::GetSupportedDeviceTypes();
-foreach($supported_device_types as $type)
-{
-
-	if ( isset($device_row[$type])
-			&& $device_row[$type]['verified']  )
-	{   
-		$has_active_device = true;
-		if ($viaDevice == $type) 
-		{
-			$viaDevName = JWDevice::GetNameFromType($type);
-		}
-		else 
-		{
-			$otherDev[$type] = JWDevice::GetNameFromType($type);
-		}
-	}
-}
-$via_device = JWUser::GetSendViaDevice($current_user_id);
 $activeOptions['web'] = true;
 ?>
 </head>
