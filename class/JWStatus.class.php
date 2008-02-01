@@ -1038,12 +1038,13 @@ _HTML_;
 		if( $reply_to_user_id ) 
 		{
 			$reply_to_user = JWUser::GetUserInfo( $reply_to_user_id );
-			if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)(.+)/', $status, $matches ) ) 
-			{    
-				$u = JWUser::GetUserInfo( $matches[1] );
+			$symbol_info=self::GetSymbolInfo($status);
+			if ( $symbol_info && '@'==$symbol_info['symbol'] )
+			{
+				$u = JWUser::GetUserInfo( $symbol_info['value'] );
 				if( false==empty($u) && $u['id'] == $reply_to_user_id ) 
 				{
-					$status = preg_replace( '/@\s*'.$matches[1].'\s*/i', '', $status );
+					$status = $symbol_info['status'];
 				}
 			}
 
@@ -1395,6 +1396,9 @@ _SQL_;
 	{
 		if ( JWUser::IsAdmin($idUser) )
 			return true;
+
+		if ( $idUser && JWUser::IsAnonymous($idUser) )
+			return false;
 
 		$idUser 	= JWDB_Cache::CheckInt($idUser);
 		$idStatus	= JWDB_Cache::CheckInt($idStatus);
