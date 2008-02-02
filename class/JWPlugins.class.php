@@ -18,6 +18,7 @@ class JWPlugins
 		'Box',
 		'Yobo',
 		'Video',
+		'Flickr',
 	);
 
 	static public function GetPluginResult( $status_row )
