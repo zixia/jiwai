@@ -15,7 +15,7 @@ $follower_show_num = 12;
 if( isset($_REQUEST['jw_status']))
 {
 
-	JWLogin::MustLogined();
+	JWLogin::MustLogined(true);
 
 	$message = $_REQUEST['jw_status'];
 	$message = trim($message);
