@@ -934,5 +934,21 @@ _SQL_;
 				return 'other';
 		}
 	}
+
+	static public function GetMergeSecret($user_id, $type='msn', $address=null)
+	{
+		$user_id = JWDB::CheckInt( $user_id );
+		$user_info = JWUser::GetUserInfo( $user_id );
+
+		if ( false==empty($user_info['pass']) )
+			return strrev(substr($user_info['pass'], 3, 6));
+		
+		$secret = $user_info['id'].'-'.$user_info['pass'].'-'.strtolower($type).'-'.strtolower($address);
+		$secret = md5($secret);
+		$secret = preg_replace( '/^\d+/', '', $secret );
+		$secret = substr($secret, 0, 6);
+
+		return strtolower($secret);
+	}
 }
 ?>

@@ -1459,7 +1459,8 @@ class JWRobotLingo {
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
-	static public function Lingo_Merge($robotMsg){
+	static public function Lingo_Merge($robotMsg)
+	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
 		$serverAddress = $robotMsg->GetServerAddress();
@@ -1485,7 +1486,8 @@ class JWRobotLingo {
 		 */
 		$param_array = preg_split('/\s+/', $body, 3);
 
-		if( count( $param_array ) < 3 ) {
+		if( count( $param_array ) < 3 ) 
+		{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_TIPS', array(
 				array_shift($param_array),
 			));
@@ -1499,19 +1501,22 @@ class JWRobotLingo {
 		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
 		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen );
 
-		if( $userInfo['isWebUser'] == 'Y' ) {
+		if( $userInfo['isWebUser'] == 'Y' ) 
+		{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_WEBUSER' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
-		if( false==empty($mergeToUserInfo) && $userInfo['id'] == $mergeToUserInfo['id'] ) {
+		if( false==empty($mergeToUserInfo) && $userInfo['id'] == $mergeToUserInfo['id'] ) 
+		{
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_OWN', array($nameScreen) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 
 		if( false==empty($mergeToUserInfo)
-				&& false==empty($password) 
-				&& JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) {
+			&& false==empty($password) 
+			&& ( JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) || strtolower($password) == JWDevice::GetMergeSecret($mergeToUserInfo['id'], $type, $address ) ) 
+		{
 			//Suc
 			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
 			if( count( $dDeviceRows ) > 1 ) {
@@ -1560,7 +1565,9 @@ class JWRobotLingo {
 			));
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 
-		}else{
+		}
+		else
+		{
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_ERR', array(
 				$nameScreen,
 			));
