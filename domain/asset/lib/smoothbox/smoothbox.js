@@ -314,7 +314,7 @@ function TB_remove() {
 	window.onscroll=null;
 	window.onresize=null;	
 	
-	$('TB_HideSelect').remove();
+	if($('TB_HideSelect')) $('TB_HideSelect').remove();
 	TB_init();
 	TB_doneOnce = 0;
 
