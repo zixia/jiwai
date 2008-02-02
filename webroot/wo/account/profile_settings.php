@@ -1,4 +1,7 @@
 <?php
+
+
+
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
@@ -94,8 +97,7 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 //die(var_dump($ui));
 	$ui->Save();
 
-	header('Location: ' . $_SERVER['SCRIPT_URI']);
-	exit(0);
+	JWTemplate::RedirectToUrl($_SERVER['REQUEST_URI']);
 }
 else
 {
@@ -120,7 +122,9 @@ else
 <head>
 
 <?php 
-JWTemplate::html_head();
+JWTemplate::html_head(array(
+	'version_css_jiwai_screen' => 'v1',
+)); 
 
 
 $asset_url_moorainbow_img_path	= JWTemplate::GetAssetUrl('/lib/mooRainbow/images/', false);
@@ -136,11 +140,11 @@ _HTML_;
 $color_ids = array 
 ( 
 	 'user_profile_background_color'
-	,'user_profile_text_color'
+	/*,'user_profile_text_color'
 	,'user_profile_name_color'
 	,'user_profile_link_color'
 	,'user_profile_sidebar_fill_color'
-	,'user_profile_sidebar_border_color'
+	,'user_profile_sidebar_border_color'*/
 );
 
 echo <<<_HTML_
@@ -178,6 +182,7 @@ try {
 			$('$color_id').setStyle('background-color'	, color.hex);
 			$('$color_id').setStyle('color'				, (new Color(color.hex)).invert());
 			$('$color_id').value = color.hex;
+			$('$color_id'+'_val').innerHTML = color.hex;
 		}
 /*
 		,onComplete: function(color)
@@ -206,7 +211,6 @@ _HTML_;
 
 </head>
 
-
 <body class="account" id="settings">
 
 <?php JWTemplate::accessibility() ?>
@@ -214,30 +218,27 @@ _HTML_;
 <?php JWTemplate::header() ?>
 <?php JWTemplate::ShowActionResultTipsMain() ?>
 
-<div id="container" class="subpage">
-<?php JWTemplate::SettingTab('/wo/account/profile_settings'); ?>
-
-<div class="tabbody">
-<h2>设计你自己de叽歪档案</h2>
-<div style="width:500px; margin:30px auto; font-size:14px;">
-
-<!-- p>
-	下面是你当前叽歪档案的设计方案，<br />
-	你可以随时修改、预览、保存设计方案，也可以非常容易的将其缺省值。
-</p -->
-
-<form id="f" action="/wo/account/profile_settings" enctype="multipart/form-data" method="post">
-	<fieldset>
-		<table width="100%" cellspacing="3">
-			<tr>
-				<td>背景颜色：</td>
-				<td width="390"><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="<?php echo $user['profile_background_color']?>" /></td>
-			    <td class="note"></td>
-			</tr>
-			<tr>
-				<td>背景图片：</td>
-				<td>
-					<input style="display:inline;border:0px;width:20px;" <?php 
+<div id="container">
+<p class="top">设置</p>
+<div id="wtMainBlock">
+<div class="leftdiv">
+<ul class="leftmenu">
+<li><a href="/wo/account/settings">基本资料</a></li>
+<li><a href="/wo/privacy/">保护设置</a></li>
+<li><a href="/wo/devices/sms">绑定设置</a></li>
+<li><a href="/wo/notification/email">系统通知</a></li>
+<li><a href="/wo/account/profile_settings" class="now">个性化界面</a></li>
+<li><a href="/wo/openid/">Open ID</a></li>
+</ul>
+</div><!-- leftdiv -->
+<div class="rightdiv">
+<div class="lookfriend">
+<form id="f" action="" method="post" name="f">
+<input type="hidden" name="commit_x" value="1"/>
+       <div class="protection">
+	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="#<?php echo $user['profile_background_color']?>" class="personalized_bc"/>
+		&nbsp;&nbsp;<span class="black12" id="user_profile_background_color_val">#<?php echo $user['profile_background_color'];?></span>
+	    <p><span class="black15bold">背景图片:</span><input class="checkbox" <?php 
 						$picture_name 	= '无';
 						$picture_id		= 0;
 						if ( $user['profile_use_background_image'] )
@@ -252,33 +253,28 @@ _HTML_;
 							}
 						}
 					?> id="user_profile_use_background_image" name="user[profile_use_background_image]" type="checkbox" value="<?php echo $picture_id?>" />
-					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" />
+					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" class="inputStyle2"/>
 					<br />
-			    	<input id="user_profile_background_tile" style="display:inline;border:0;width:20px;"<?php
-						if ( $user['profile_background_tile'] ) echo 'checked="checked" ';
-					?> name="user[profile_background_tile]" type="checkbox" value="1" />
-					<label for="user_profile_background_tile">平铺</label>
-                    <span class="note" style="padding-left:5px;">最大可以上传 2M 大小的图片</span>
-					<br />
-					当前背景图片：<small>(<?php echo $picture_name?>)</small>
-				</td>
-			    <td>
-				</td>
-			</tr>
-		</table>
-		<input id="siv" name="siv" type="hidden" value="4fb7e754a2db9aa5b100da3b9c9e6de6" />
-  
-	</fieldset>
-    <div style=" padding:20px 0 0 5px; height:50px;margin-left:50px;">
-		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
-    </div>
-	<a href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a>
-
-</form>
-
+		<div class="personalized">
+		<p class=" personalizedText">最大可以上传 2M 大小的图片</p>
+        <p><input type="radio" name="user[profile_background_tile]" value="1" <?php if ( $user['profile_background_tile'] ) echo 'checked="checked" ';?>/><span class="pad3">平铺</span>
+        <input type="radio" name="user[profile_background_tile]" value="0" <?php if ( !$user['profile_background_tile'] ) echo
+		     'checked="checked" ';?>/><span class="pad3">拉伸</span></p>
+	    <p>当前背景图片：<?php echo $picture_name?></p>
+	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
+	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>
+	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
+	<p><a class="orange12" href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></p>
+	   </div>
+	   </div>
+	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
+  </form>
+</div><!-- lookfriend -->
+<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
 </div>
-</div>
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+<!-- rightdiv -->
+</div><!-- #wtMainBlock -->
+<?php JWTemplate::container_ending(); ?>
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>

@@ -97,15 +97,19 @@ class JWFormValidate
 		{
 			if ( preg_match('/^\d+$/', $name_url ) ) 
 			{
-				return "主页地址 不能完全是数字";
+				return "不能完全是数字";
 			}
 			else if ( strlen( $name_url ) < 4 ) 
 			{
-				return "主页地址 不能短于 4 个字符";
+				return "不能短于 4 个字符";
+			}
+			else if ( strlen( $name_url ) > 20 )
+			{
+				return "不能长于 20 个字符";
 			}
 			else
 			{
-				return "主页地址 含有非法字符";
+				return "包含有非法字符";
 			}
 		}
 
@@ -115,7 +119,7 @@ class JWFormValidate
 			return true;
 		}
 
-		return "主页地址 已经被使用";
+		return "已经被使用";
 	}
 
 	static public function ValidateNameFull($name_full)

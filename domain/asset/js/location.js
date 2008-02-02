@@ -12,7 +12,7 @@ var JWLocation = {
 			return;
 
 		if( ep.options.length == 0 ){
-			ep.options.add( new Option('',0,false,false) );
+			ep.options.add( new Option('请选择',0,false,false) );
 			for( var k in JWLocation.o ){
 				var v = JWLocation.o[k][0];
 				ep.options.add( new Option( v , k, (pid && k==pid), (pid && k==pid) ) );
@@ -22,7 +22,7 @@ var JWLocation = {
 		ec.options.length = 0;
 		var p = JWLocation.o[pid];
 		if( p ) {
-			ec.options.add( new Option('',0,false,false) );
+			ec.options.add( new Option('请选择',0,false,false) );
 			for(var i=0; i<p[1].length; i++){
 				var k = p[1][i][0];
 				var v = p[1][i][1];

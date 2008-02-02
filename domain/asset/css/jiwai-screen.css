@@ -735,30 +735,41 @@ a.normLink:hover {color:#FF830B!important; text-decoration:underline!important;}
 #wtTimelineLaunch .Concern a:hover {font-size:12px; color:white; line-height:22px; background-color:#FF9900; text-decoration:none; clear:both;}
 
 /* The wtLightbox start*/
-#wtLightbox {width:310px; background-color:#FFFFFF; font-size:14px;}
+#wtLightbox {background-color:#FFFFFF;}
 #wtLightbox p {padding:10px 0 0 10px; clear:both;}
 #wtLightbox a:link,a:visited {text-decoration:none; color:#FF6000;}
 #wtLightbox a:hover {text-decoration:underline; color:#FF6000;}
-#wtLightbox .top {padding:10px 0 0 10px; clear:both; background-color:#F5F5F5;}
+#wtLightbox .top { padding:10px 0 0 10px; clear:both; background-color:#F5F5F5;}
 #wtLightbox .head {float:left; width:56px; overflow:hidden; height:55px;}
-#wtLightbox ul {margin:0; padding:0;}
-#wtLightbox li {float:left; list-style:none;}
-#wtLightbox .invitationdiv {margin:30px 0 0 0; overflow:hidden;}
-#wtLightbox .box1 {width:35px; text-align:right; line-height:24px;}
-#wtLightbox .box2 {width:255px; text-align:left; padding:0 0 0 5px; font-size:12px; color:#333333; line-height:24px;}
-#wtLightbox .box3 {width:92px; text-align:right; line-height:26px;}
-#wtLightbox .box4 {width:200px; text-align:left; padding:0 0 0 5px; font-size:12px; color:#333333; line-height:26px;}
-#wtLightbox .box5 {width:255px; text-align:left; padding:0 0 30px 5px; color:#000; line-height:26px;}
-#wtLightbox h2 {margin:15px 6px 15px 13px;}
-#wtLightbox .red {font-size:14px; color:#FF0000; font-weight:bold; padding:0 6px 0 6px;}
-#wtLightbox .pad {font-size:15px; color:#333333; font-weight:bold; margin-left:60px; padding:20px 0 25px 2px;}
-#wtLightbox .pad1 {font-size:14px; color:#000000; line-height:20px; padding:20px 10px 10px 15px;}
-#wtLightbox .pad2 {font-size:12px; color:#333333; line-height:35px; padding:0 10px 5px 15px;}
-#wtLightbox .butt {padding:2px 0 20px 75px;}
-#wtLightbox .lightbox_login {margin:0 0 15px 0; padding:0 20px;}
-#wtLightbox .po {padding:0 5px 8px 75px;}
-#wtLightbox .inputStyle {padding:3px 0 0 5px; color:#666; border-right:#CFCFCF 1px solid; border-left:#CFCFCF 1px solid; border-bottom:#E4E4E4 1px solid; border-top:#929292 1px solid; width:200px; height:18px;}
-#wtLightbox .mar {margin:0 0 0 1em;}
+#wtLightbox .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
+#wtLightbox ul { margin: 0;padding: 0;}
+#wtLightbox li { float: left;list-style: none;}
+#wtLightbox .invitationdiv { margin:30px 0 0 0;overflow: hidden;}
+#wtLightbox .box1 { width: 35px;height: 26px;text-align: right;}
+#wtLightbox .box2 { width: 255px;text-align: left;padding: 0 0 0 5px;font-size:12px; color:#333333;line-height:26px;}
+#wtLightbox .box3 { width: 92px;text-align: right;}
+#wtLightbox .box4 { width: 200px;text-align: left;padding: 0 0 0 5px;font-size:12px; color:#333333;line-height:26px;}
+#wtLightbox .box5{ width: 255px;text-align: left;padding: 0 0 30px 5px;color:#000;line-height:26px;}
+#wtLightbox h1 {border-top: #C2C2C2 1px solid;}
+#wtLightbox h2 {margin: 15px 6px 15px 13px;}
+#wtLightbox .red {font-size: 14px; color:#FF0000; font-weight:bold; padding:0 6px 0 6px;}
+#wtLightbox .entry { padding:5px 0 0 5px; clear:both; background-color:#F5F5F5;}
+#wtLightbox .pad { font-size:15px; color:#333333; font-weight:bold; margin-left:60px; padding:20px 0 25px 2px;}
+#wtLightbox .pad1 { font-size:14px; color:#000000;line-height:20px;padding:22px 10px 10px 15px;}
+#wtLightbox .pad2 { font-size:12px; color:#333333;line-height:36px;padding:0 10px 5px 15px;}
+#wtLightbox .pad3 { font-size:12px; color:#D05D02;line-height:20px;padding:5px 10px 5px 10px;}
+#wtLightbox .butt { padding:2px 0 20px 75px;}
+#wtLightbox .lightbox_login { margin: 0 0 15px 0;padding: 0 20px;}
+#wtLightbox .po { padding: 0 5px 8px 75px;}
+#wtLightbox .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 200px;height:18px;}
+#wtLightbox .mar { margin: 0 0 0 1em;}
+#wtLightbox .inputStyle2 { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 160px;height:18px;}
+#wtLightbox .mar2 { margin: 0 0 0 2em;}
+#wtLightbox .box42 { padding:0 0 0 5px;width: 150px;text-align: left; font-size:12px; color:#333333; height: 20px;}
+#wtLightbox .box32 { width: 114px; text-align: right; height: 20px; clear: both;}
+#wtLightbox .butt2 { padding:2px 0 20px 97px;}
+#wtLightbox .mar3 { margin: 0 0 0 0.5em;}
+#wtLightbox .pic {float:right;}
 /* The wtLightbox end*/
 
 /* for feedback start */

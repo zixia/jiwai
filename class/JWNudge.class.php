@@ -176,13 +176,20 @@ class JWNudge {
 
 		if( false == isset( $deviceRows[ $deviceSendVia ] ) )
 			return null;
+
+		$deviceRow = $deviceRows[ $deviceSendVia ];
+		$user_info = JWDB_Cache_User::GetUserInfo( $deviceRow['idUser'] );
+		$online = JWIMOnline::GetDbRowByAddressType( $deviceRow['address'] , $deviceSendVia );
+		if( false == empty( $online ) && 'OFFLINE' == $online['onlineStatus'] && 'N' == $user_info['isReceiveOffline'])
+			return null;
 		
-		if( $deviceSendVia == 'qq' ) {
+		/*if( $deviceSendVia == 'qq' ) {
 			$deviceRow = $deviceRows['qq'];
 			$online = JWIMOnline::GetDbRowByAddressType( $deviceRow['address'] , $deviceSendVia );
 			if( false == empty( $online ) && $online['onlineStatus'] == 'OFFLINE' )
 				return null;
-		}
+		}*/
+
 		return $deviceSendVia;
 	}
 	

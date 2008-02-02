@@ -6,32 +6,9 @@ JWLogin::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 
-?>
-<html>
-
-<head>
-<?php JWTemplate::html_head() ?>
-</head>
-
-
-<body class="account" id="settings">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTipsMain(); ?>
-
-<div id="container" class="subpage">
-<?php JWTemplate::SettingTab('/wo/openid/'); ?>
-
-<div class="tabbody">
-<h2>设置OpenID</h2>
-
-<?php
-
 $openid_id		= JWOpenid::GetIdByUserId($user_info['idUser']);
 
-if ( isset($_REQUEST['commit']) )
+if ( isset($_REQUEST['save']) )
 {
 	// 用户输入了自己的  openid，需要去验证
 	$openid_url = $_REQUEST['user']['openid'];
@@ -46,82 +23,104 @@ if ( isset($_REQUEST['commit']) )
 		$error_html = <<<_HTML_
 你输入的 OpenID：$openid_url 有误，请查证后重试。
 _HTML_;
-		JWSession::SetInfo('error', $error_html);
+		JWSession::SetInfo('notice', $error_html);
+		JWTemplate::RedirectToUrl();
 	}
 }
 
 ?>
+<html>
+
+<head>
+<?php 
+JWTemplate::html_head(array(
+	'version_css_jiwai_screen' => 'v1',
+)); 
+?>
+</head>
+
+
+<body class="account" id="settings">
+
+<?php JWTemplate::accessibility() ?>
+
+<?php JWTemplate::header() ?>
+<?php JWTemplate::ShowActionResultTipsMain(); ?>
+<div id="container">
+<p class="top">设置</p>
+<div id="wtMainBlock">
+<div class="leftdiv">
+<ul class="leftmenu">
+<li><a href="/wo/account/settings">基本资料</a></li>
+<li><a href="/wo/privacy/">保护设置</a></li>
+<li><a href="/wo/devices/sms">绑定设置</a></li>
+<li><a href="/wo/notification/email">系统通知</a></li>
+<li><a href="/wo/account/profile_settings">个性化界面</a></li>
+<li><a href="/wo/openid/" class="now">Open ID</a></li>
+</ul>
+</div><!-- leftdiv -->
+<div class="rightdiv">
+<div class="lookfriend">
+<form id="f" action="" method="post" name="f">
+   <div class="protection">
+	<div id="wtRegist" style="margin:30px 0 0 0; width:520px">
+        <ul>
 
 <?php
-if ( isset($_REQUEST['set']) )
-{
-	// 用户进行设置自己的 openid
-	echo <<<_SET_OPENID_
-<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">
-		<form action="/wo/openid/" method="POST">
-			<fieldset>
-				<label for="user_openid">OpenID 地址：</label>
-				<input id="user_openid" name="user[openid]" size="30" type="text" class="input"/>
-				<input name="commit" type="submit" value="保存"  class="submitbutton"/>
-			</fieldset>
-		</form>
-</h3>
-<!-- tricky unclosed ul tag -->
-<ul class="list_ji">
-_SET_OPENID_;
-}
-else if ( $openid_id )
+if ( true )
 {
 	// 用户自己的 openid
 	$openid_db_row 	= JWOpenid::GetDbRowById($openid_id);
-	$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
+	if(empty($openid_db_row))
+	{
+		$openid_url = JW_SRVNAME . "/${user_info['nameUrl']}/";
+	}
+	else
+	{
+		$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
+	}
 	echo <<<_USER_OPENID_
-		<h3 style="padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">你的 OpenID 为：<strong>$openid_url</strong></h3>
-		<ul class="list_ji"><li><a href="/wo/openid/destroy/$openid_id">使用叽歪de OpenID ?</a></li>
-<!-- tricky unclosed ul tag -->
+	    <li class="openIDbox">你现在的OpenID为：</li>
+		<li class="openIDbox1">&nbsp;$openid_url</li>
+		<li class="box9"></li>
+		<li class="openIDbox"><label for="user_openid">设置你自己的OpenID：</label></li>
+		<li class="openIDbox1"><input id="user_openid" name="user[openid]" size="30" type="text" class="inputStyle"/></li>
+		<li class="box9"></li>
+		<li class="openIDbox2"><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></li>
+		<li class="box9"></li>
+		</ul>
 _USER_OPENID_;
-
 }
-else
-{
-	
-	// 用户使用 jiwai de openid
-	echo <<<_JIWAI_OPENID_
-<h3 style=" padding-left:150px; line-height:70px; margin-top:20px; font-size:14px;">您的 OpenID 为：
-	<input name="textfield" type="text" value="http://jiwai.de/$user_info[nameScreen]/" class="input" readonly="readonly" />
-</h3>
-<ul class="list_ji">
-<li><a href="?set" >绑定你自己的 OpenID ?</a></li>
-<!-- tricky unclosed ul tag -->
-_JIWAI_OPENID_;
-}
-?>
-
-<?php
 
 $trusted_site_ids 		= JWOpenid_TrustSite::GetIdsByUserId($user_info['id']);
 $trusted_site_db_rows 	= JWOpenid_TrustSite::GetDbRowsByIds($trusted_site_ids);
 
-if ( count($trusted_site_ids) )
+if ( true)
 {
 	echo <<<_HTML_
-<h4>你当前允许在以下网站登录你的 OpenID</h4>
+<p class="accountLine black15bold">当前允许的网站</p>
 _HTML_;
 foreach ( $trusted_site_ids as $trusted_site_id )
 {
 	$db_row = $trusted_site_db_rows[$trusted_site_id];
 	echo <<<_HTML_
-<a href="/wo/trustsite/destroy/$db_row[id]">删除</a> <a href="$db_row[urlTrusted]" target="_blank"><strong>$db_row[urlTrusted]</strong></a><br />
+<p><a href="/wo/trustsite/destroy/$db_row[id]">删除</a> <a href="$db_row[urlTrusted]" target="_blank"><strong>$db_row[urlTrusted]</strong></a></p>
 _HTML_;
 }
 }
 ?>
-    <li><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a></li>
-    <li><a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></li>
-  </ul>
-  <!-- end of tricky part -->
+    <p class="orange12"><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a>
+    <a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></p>
+       </div><!-- wtRegist -->
+	   </div>
+	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
+  </form>
+</div><!-- lookfriend -->
+<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
 </div>
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>
+<!-- rightdiv -->
+</div><!-- #wtMainBlock -->
+<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
 </div><!-- #container -->
 
 <?php JWTemplate::footer() ?>

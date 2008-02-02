@@ -61,7 +61,7 @@ var JWValidator = {
 		}
 
 		i.innerHTML = v;
-		i.style.display = (v=='') ? 'none' : 'block';
+		i.style.display = (v=='') ? 'none' : 'inline';
 	},
 
 	attr: function(o, name){

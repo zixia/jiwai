@@ -11,14 +11,14 @@ JWLogin::MustLogined();
 
 
 $user_info = JWUser::GetCurrentUserInfo();
-$new_user_info = @$_REQUEST['user'];
+$new_user_info = @$_POST['user'];
 
 $is_reset_password = JWSession::GetInfo('reset_password', false);
 $is_web_user = JWUser::IsWebUser($user_info['idUser']);
 
 $outInfo = $user_info;
 
-if ( isset($new_user_info) && $_REQUEST['commit_u'] )
+if ( isset($new_user_info) && $_POST['commit_u'] )
 {
 	$nameScreen	= trim(@$new_user_info['nameScreen']);
 	$email		= trim(@$new_user_info['email']);
@@ -70,6 +70,13 @@ _HTML_;
 		}
 	}
 
+	$nameUrl = $_POST['nameUrl'];
+	$oldNameUrl = $user_info['nameUrl'];
+	if( $nameUrl && ('N'==$user_info['isUrlFixed'] ))
+	{
+		$arr_changed['nameUrl'] = $nameUrl;
+		$arr_changed['isUrlFixed'] = 'Y';
+	}
 
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
@@ -84,113 +91,22 @@ _HTML_;
 		JWSession::SetInfo('error', $error_html);
 	}
 
-	header ( "Location: /wo/account/settings" );
-}
-
-/** check if reset_password */
-
-if ( $is_web_user && !$is_reset_password )
-{
-	$verify_corrent_password = true;
-}
-else
-{
-	$verify_corrent_password = false;
-}
-
-if ( isset($_REQUEST['commit_p']) ) {
-	if ( isset($_REQUEST['password']) )
-	{
-		$current_password 		= trim( @$_REQUEST['current_password'] );
-		$password 				= trim( @$_REQUEST['password'] );
-		$password_confirmation 	= trim( @$_REQUEST['password_confirmation'] );
-
-		if ( $verify_corrent_password
-				&& (	empty($current_password) 
-					|| empty($password)
-					|| empty($password_confirmation) 
-				   ) )
-		{
-			$error_html = <<<_HTML_
-				<li>请完整填写三处密码输入框</li>
-_HTML_;
-		}
-
-		if ( $password !== $password_confirmation )
-		{
-			$error_html .= <<<_HTML_
-				<li>两次输入密码不一致！请重新输入</li>
-_HTML_;
-		}
-
-		if ( $verify_corrent_password &&
-				! JWUser::VerifyPassword($user_info['id'], $current_password) )
-		{
-			$error_html .= <<<_HTML_
-				<li>当前密码输入错误，清除新输入</li>
-_HTML_;
-		}
-	}
-
-	/*
-	 * Update User Databse
-	 */
-	if ( empty($error_html) )
-	{
-		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
-		{
-			JWSession::SetInfo('error', '密码修改失败，请稍后再试。');
-		}
-		else
-		{
-			if ( !$is_web_user )
-				JWUser::SetWebUser($user_info['idUser']);
-
-			// 重设密码成功，现在清理掉重设密码的标志
-			if ( $is_reset_password	)
-				JWSession::GetInfo('reset_password');
-
-			JWSession::SetInfo('notice', '密码修改成功！');
-		}
-
-	}
-
-	header ( "Location: /wo/account/settings" );
-}
-
-if( isset( $_REQUEST['commit_w'] ) ) {
-	$nameUrl = $_REQUEST['nameUrl'];
-	$oldNameUrl = $user_info['nameUrl'];
-	if( true || $nameUrl != $oldNameUrl ) 
-	{
-
-		$uArray = array(
-			'nameUrl' => $nameUrl,
-			'isUrlFixed' => 'Y',
-		);
-
-		if ( false == JWUser::IsExistUrl( $nameUrl ) )
-		{
-			JWDB::UpdateTableRow( 'User', $user_info['id'], $uArray );
-			JWSession::SetInfo('notice', '修改个人主页地址成功');
-		}
-		else
-		{
-			JWSession::SetInfo('notice', '主页地址 /'.$nameUrl.'/ 已经被使用');
-		}
-		header ( "Location: /wo/account/settings" );
-	}
+	JWTemplate::RedirectToUrl();
 }
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<?php JWTemplate::html_head() ?>
+<?php 
+JWTemplate::html_head(array(
+	'version_css_jiwai_screen' => 'v1',
+)); 
+?>
 </head>
 
 
-<body class="account" id="settings">
+<body class="account">
 
 <?php JWTemplate::accessibility() ?>
 
@@ -208,103 +124,69 @@ echo $error_html;
 
 
 <div id="container">
-<?php JWTemplate::SettingTab() ;?>
-
-<div class="tabbody">
-
-<?php if (false == $is_reset_password ) { ?>
-	<h2>修改帐号资料</h2>
-	<form id="f" action="/wo/account/settings" method="post">
-	<input type="hidden" name="commit_u" value="1"/>
-	<fieldset>
-	<table width="100%" cellspacing="3">
-		<tr>
-			<th valign="top">用户名：</th>
-			<td width="250">
-				<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名"/><i></i>
-			</td>
-			<td class="note">用来登陆叽歪de（4个字符以上字母数字下划线）</td>
-		</tr>
-		<tr>
-			<th>Email：</th>
-			<td><input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" ajax="email" alt="Email"/><i></i></td>
-			<td class="note">用于找回密码和接收通知</td>
-		</tr>
-	</table>
-	</fieldset>
-
-	<div style=" padding:20px 0 0 160px; height:50px;">
-		<input onclick="if(JWValidator.validate('f'))$('f').submit();return false;" type="button" class="submitbutton" value="保存"/>
-	</div>
-
-	</form>
-
-<? } ?>
-
-	<h2>修改帐号密码</h2>
-	<form action="/wo/account/settings" method="post" id="f1">
-		<input type="hidden" name="commit_p" value="1"/>
-		<fieldset>
-		<table width="100%" cellspacing="3">
-			<tr>
-				<th>当前密码：</th>
-				<td width="250"><input id="current_password" name="current_password" type="password" <?php echo $verify_corrent_password ? 'check="null"' : '' ?> alt="当前密码" /></td>
-				<td class="note">至少6个字符，建议使用数字、符号、字母组合的复杂密码</td>
-			</tr>
-			<tr>
-				<th>新密码：</th>
-				<td><input id="password" name="password" type="password" alt="新密码"/></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<th>重复输入新密码：</th>
-				<td><input id="password_confirmation" name="password_confirmation" type="password" compare="password" alt="确认密码" minlength="6" /></td>
-				<td>&nbsp;</td>
-			</tr>
-		</table>
-		</fieldset>
-		<div style=" padding:20px 0 0 160px; height:50px;">
-		<input onclick="if(JWValidator.validate('f1'))$('f1').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存"/>
-		</div>			
-	</form>
-
-	<h2>你的URL地址</h2>
-	<h3 style="margin:0 0 0 30px; padding:0px;">你的叽歪的个人主页是：<a href="/<?echo $user_info['nameUrl'];?>/">http://JiWai.de/<?php echo $user_info['nameUrl'];?>/</a></h3>
-
-<?php if( $user_info['isUrlFixed'] == 'N'  ) { ?>
-
-	<div style="padding:10px; margin:-10px 30px 10px 30px; background-color:#FFF999; width:560px;">
-		<span style="font-size:13px;line-height:140%;">
-			你可以设置个性URL地址，但是<Strong>只能修改一次，以后不能修改！</Strong><br/>
-			这样作的原因是避免别人链接到你的主页时产生坏的链接。如果现在你不确定你想要的名字，可以暂时维持现状，等以后再说。
-		</span>
-	<form action="/wo/account/settings" method="post" id="f2" style="width:500px;">
-		<input type="hidden" name="commit_w" value="1"/>
-		<fieldset>
-		<table cellspacing="3">
-			<tr>
-				<td valign="top">永久地址：</td>
-				<td valign="top">http://JiWai.de/</td>
-				<td valign="top"><input id="nameUrl" name="nameUrl" type="text" value="<?php echo $user_info['nameUrl'];?>" style="width:140px;" ajax="nameUrl" minlength="4" alt="主页地址"/><i></i></td>
-			</tr>
-		</table>
-		</fieldset>
-		<div style="padding:10px 0 0 130px; height:40px;">
-		<input onclick="if(JWValidator.validate('f2'))$('f2').submit();return false;" type="button" class="submitbutton" href="javascript:void(0);" value="保存" style="margin-left:-4px;"/>
-		</div>			
-	</form>
-	</div>
-<? } ?>
-
+<p class="top">设置</p>
+<div id="wtMainBlock">
+<div class="leftdiv">
+<ul class="leftmenu">
+<li><a href="/wo/account/settings" class="now">基本资料</a></li>
+<li><a href="/wo/privacy/">保护设置</a></li>
+<li><a href="/wo/devices/sms">绑定设置</a></li>
+<li><a href="/wo/notification/email">系统通知</a></li>
+<li><a href="/wo/account/profile_settings">个性化界面</a></li>
+<li><a href="/wo/openid/">Open ID</a></li>
+</ul>
+</div><!-- leftdiv -->
+<div class="rightdiv">
+<div class="lookfriend">
+<form id="f" action="" method="post" name="f">
+<input type="hidden" name="commit_u" value="1"/>
+<p class="right14"><a href="/wo/account/settings" class="now">帐户信息</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/account/password">修改密码</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/account/photos">头像</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/account/profile">个人资料</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/account/interest">兴趣爱好</a></p>
+	<div id="wtRegist" style="margin:30px 0 0 0;width:520px">
+        <ul>
+	    <li class="box5">用户名</li>
+		<li class="box6">
+		<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名" class="inputStyle"/><i></i>
+		<li class="box7">用来登陆叽歪de（4个字符以上）</li>
+		<li class="box5">邮<span class="mar">箱</span></li>
+		<li class="box6">
+		<input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" ajax="email" alt="Email" class="inputStyle"/><i></i>
+		<li class="box7">用于找回密码和接收通知</li>
+		</ul>
+		<?php if( $user_info['isUrlFixed'] == 'Y'  ) { ?>
+        <ul>
+		<li class="box5">你的URL</li>
+		<li class="box8"><a href="<?echo JW_SRVNAME .'/' .$user_info['nameUrl'] .'/';?>"><?echo JW_SRVNAME .'/' .$user_info['nameUrl'] ;?></a></li>
+		</ul>
+		<?php } else{ ?>
+		<div class="account">
+        <ul>
+		<li class="box5">你的URL</li>
+		<li class="box8"><a href="<?echo JW_SRVNAME .'/' .$user_info['nameUrl'] .'/';?>"><?echo JW_SRVNAME .'/' .$user_info['nameUrl'] ;?></a></li>
+		<li class="box7">你可以设置个性URL地址，但是只能修改一次，以后不能修改！这样做的原因是避免别人链接到你的主页时产生坏的链接。如果现在你不确定你想要的名字，可以暂时维持现状，等以后再说。 </li>
+		<li class="box5">永久地址</li>
+		<li class="box8"><?echo JW_SRVNAME .'/';?><input id="nameUrl" name="nameUrl" type="text" value="" style="width:80px;" ajax="nameUrl" null="true" alt="主页地址" class="inputStyle"/><i></i></li>
+		</ul>
+		</div><!-- line -->
+		<?php } ?>
+      <div style="overflow: hidden; clear: both;line-height:30px;"></div>
+		<ul>
+		<li><div style="overflow: hidden; clear: both;line-height:30px;"></div></li>
+		<li class="box7"><input type="submit" id="reg" class="submitbutton" value="保存" /></li>
+	   </ul>
+       </div><!-- wtRegist -->
+      <div style="overflow: hidden; clear: both;line-height:30px;"></div>
+</form>
+</div><!-- lookfriend -->
+<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
 </div>
-
-<div style="clear:both; height:7px; overflow:hidden; line-height:1px; font-size:1px;"></div>		  
-</div>
-<!-- #container -->
+<!-- rightdiv -->
+</div><!-- #wtMainBlock -->
+<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
+</div><!-- #container -->
 
 <?php JWTemplate::footer() ?>
 <script defer="true">
-	JWValidator.init('f','f1','f2');
+	JWValidator.init('f');
 </script>
 </body>
 </html>

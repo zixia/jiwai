@@ -1,6 +1,6 @@
 /* The overall pattern start */
-body { font:12px/120% verdana, Arial, Helvetica, simsun,sans-serif;}
-body,form,ul,p{ margin:0; padding:0;}
+body { font:12px/120% verdana, Arial, Helvetica,sans-serif;}
+body,form,ul,p{ margin:0 auto; padding:0;}
 a:link,a:visited{text-decoration:none;color:#FF6000;}
 a:hover{text-decoration:underline;color:#FF6000;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
@@ -10,21 +10,22 @@ em{font-style:normal;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
 input:focus textarea:focus {background-color:#F4FFE4;}
+label{cursor:pointer;}
 fieldset.user_search {margin-bottom:3px;}
 fieldset.user_search .friend {border:2px solid red;}
 fieldset.user_search img {vertical-align: middle;}
 fieldset th {font-weight:normal;text-align:right;width:11em;font-size:14px;line-height:16px;}
-fieldset th,fieldset td, {word-break:break-all;}
-input, button, select { font-size:12px; vertical-align:middle; padding:0 5px 0 0}
-button.submitbutton,input.submitbutton{ height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+fieldset th,fieldset td { word-break:break-all; }
+input,button, select{ font-size:12px;vertical-align:middle;padding: 3px 0 0 5px;}
+inputstyle{padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width:200px;height:18px;}
+button.submitbutton,input.submitbutton{ font-size:12px;height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 button.submitbutton,input.submitbutton:focus { border-color:#000;}
-button.closebutton, input.closebutton { height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#F9F8F9 #666666 #666666 #F9F8F9; background:#F2F2F2;color:#000;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+button.closebutton, input.closebutton { font-size:12px;height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#F9F8F9 #666666 #666666 #F9F8F9; background:#F2F2F2;color:#000;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 button.closebutton:focus,input.closebutton:focus { border-color:#000;}
 .jwselect { padding:0; font-size:12px; width:138px; height:18px;}
 .ctrlenter {margin:0;font-size:12px;color:#999;text-align: right;float: right;font-weight: 100;padding: 9px 0 0 0;}
 blockquote {margin:1.5em 0;padding:0 1.5em;}
-i{color:red;font-size:12px;margin:5px 0 8px 0;font-style:normal;float:none;}
-.copytips {color:#F97B00; display:none;}
+i{color:#FF0000;font-size:12px;margin-left:5px;font-style:normal;}
 /* The overall pattern end */
 
 /* The header start */
@@ -81,7 +82,6 @@ html>body #navigation ul  {margin-top:45px;}
 #container { margin:0 auto; width:776px; background-color:#FFFFFF;}
 #container .top { color:#000000; font-size:26px; font-weight:bold; border-bottom:#D3D3D5 1px solid;padding:18px 10px 5px 10px; margin:0 10px 0 10px;line-height:30px;}
 .account #container { border:1px solid #D3D3D5; margin:8px auto; width:774px;}
-#settings #container { border:1px solid #D3D3D5; margin:8px auto; width:774px; background-color:#F2F2F2; }
 #content {width:534px; float:left; margin:10px 13px 0 0; overflow:hidden;  }
 #content #wrapper { }
 #content ul {margin:0;padding:0 1.5em;}
@@ -321,10 +321,19 @@ a.darkLink:hover { color:#999999!important; text-decoration:underline!important;
 a.normLink { color:#D05D02!important; text-decoration:none!important; }
 a.normLink:hover { color:#FF830B!important; text-decoration:underline!important; }
 
-/* The wtLightbox start */
+/* The wtLightbox start*/
 #wtLightbox {background-color:#FFFFFF;}
+#wtLightbox .top { padding:10px 0 0 10px; clear:both; background-color:#F5F5F5;}
 #wtLightbox .head {float:left; width:56px; overflow:hidden; height:55px;}
 #wtLightbox .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
+#wtLightbox ul { margin: 0;padding: 0;}
+#wtLightbox li { float: left;list-style: none;}
+#wtLightbox .invitationdiv { margin:30px 0 0 0;overflow: hidden;}
+#wtLightbox .box1 { width: 35px;height: 26px;text-align: right;}
+#wtLightbox .box2 { width: 255px;text-align: left;padding: 0 0 0 5px;font-size:12px; color:#333333;line-height:26px;}
+#wtLightbox .box3 { width: 92px;text-align: right;}
+#wtLightbox .box4 { width: 200px;text-align: left;padding: 0 0 0 5px;font-size:12px; color:#333333;line-height:26px;}
+#wtLightbox .box5{ width: 255px;text-align: left;padding: 0 0 30px 5px;color:#000;line-height:26px;}
 #wtLightbox h1 {border-top: #C2C2C2 1px solid;}
 #wtLightbox h2 {margin: 13px 6px 8px 13px;}
 #wtLightbox .red {font-size: 12px; color:#FF0000; font-weight:bold; padding:0 6px 0 6px;}
@@ -338,13 +347,19 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtLightbox .po { padding: 0 5px 15px 67px;}
 #wtLightbox .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 215px;height:18px;}
 #wtLightbox .mar { margin: 0 0 0 1em;}
+#wtLightbox .inputStyle2 { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 160px;height:18px;}
+#wtLightbox .mar2 { margin: 0 0 0 2em;}
+#wtLightbox .box42 { padding:0 0 0 5px;width: 150px;text-align: left; font-size:12px; color:#333333; height: 20px;}
+#wtLightbox .box32 { width: 114px; text-align: right; height: 20px; clear: both;}
+#wtLightbox .butt2 { padding:2px 0 20px 97px;}
+#wtLightbox .mar3 { margin: 0 0 0 0.5em;}
 #wtLightbox .pic {float:right;}
-/* The wtLightbox end */
+/* The wtLightbox end*/
 
 /* The wtchannel start */
 #wtchannel { margin-bottom:6px;}
-#wtchannel .cha_tit0 {padding:10px 0 0 0px; font-weight:bold;font-size:26px; font-family:sans-serif,mono ;}
-#wtchannel .cha_tit {padding:17px 0 0 12px; border:1px solid #D3D3D5; background-color:#F2F2F2; height:27px;font-weight:bold;font-size:26px; font-family:sans-serif,mono ;}
+#wtchannel .cha_tit0 {padding:10px 0 0 0px; font-weight:bold;font-size:26px;}
+#wtchannel .cha_tit {padding:17px 0 0 12px; border:1px solid #D3D3D5; background-color:#F2F2F2; height:27px;font-weight:bold;font-size:26px;}
 #wtchannel .pad { float:right; line-height:22px; font-size:12px; font-weight:normal; color:#F87A01;text-decoration:none; padding-right:10px;}
 #wtchannel a.pad:hover { color:#515151; text-decoration:none;}
 #wtchannel .pad1 { float:right; line-height:22px; font-size:12px; font-weight:normal; color:#F87A01;text-decoration:none;}
@@ -355,6 +370,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtchannelsidebar {width:229px; float:right; overflow:hidden;}
 #wtchannelsidebar .sidediv {border:1px solid #D3D3D5;background-color:#F2F2F2;padding:3px;margin-top:10px;height: 1%;overflow: hidden;}
 #wtchannelsidebar .forul {font-size:14px; font-weight:bold; line-height:20px; background:url(../images/org-icon-dot.gif) #f2f2f2 no-repeat 10px 18px; text-indent:15px; padding:16px 0 0 10px;}
+#wtchannelsidebar .title {font-size:14px; font-weight:bold; line-height:20px;padding:16px 0 0 10px;}
 #wtchannelsidebar .clouddiv { margin:10px 3px 0 8px; clear:both;line-height:22px; font-family:Arial, Helvetica, sans-serif;}
 #wtchannelsidebar .clouddiv a {margin: 0 0.5em 0 0;}
 #wtchannelsidebar .cloud1 { font-size:12px;color:#F87A01;line-height:22px;text-decoration:none;}
@@ -379,8 +395,11 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtchannelsidebar .list li a span:hover  { text-align:center;font-size:12px; color:#F87A01;}
 #wtchannelsidebar .sec { float:right; line-height:22px; font-size:12px; padding:15px 10px 8px 0; clear:both; font-weight:normal; color:#000000;text-decoration:none;}
 #wtchannelsidebar a.sec:hover { color:#000000; text-decoration:none;}
-#wtchannelsidebar .sidediv2 {border:1px solid #D3D3D5;width:196px; margin: 0 0 5px 6px; font-weight:bold;padding:5px;}
-#wtchannelsidebar .pad{font-size:12px; color:#555555;text-decoration:none;}
+#wtchannelsidebar .sidediv2 {border:1px solid #D3D3D5;width:196px; margin: 0 0 5px 6px; color:#666666;font-weight:bold;padding:5px;}
+#wtchannelsidebar .sidediv3 { padding:8px 0 0 0;text-align:center;}
+#wtchannelsidebar .sidediv4 { padding:10px;line-height:22px;}
+#wtchannelsidebar .gray12 { color:#555555; font-size:12px;font-weight:bold;line-height:22px;}
+#wtchannelsidebar .pad{ font-size:12px; color:#555555;text-decoration:none;}
 #wtchannelsidebar a.pad:hover {font-size:12px; color:#000000;text-decoration:none;}
 #wtchannelsidebar .pad1 { line-height:22px; font-size:15px; font-weight:bold;  color:#F87A01;text-decoration:none;}
 #wtchannelsidebar a.pad1:hover { color:#F87A01; font-weight:bold; text-decoration:underline;}
@@ -389,12 +408,12 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtchannelsidebar .pad3 { line-height:22px; font-size:14px;color:#F87A01;text-decoration:none;}
 #wtchannelsidebar a.pad3:hover { color:#F87A01;  text-decoration:underline;}
 #wtchannelsidebar .content {line-height:20px; height:100%; overflow:hidden; margin:10px 8px 0 8px;}
-#wtchannelsidebar .rsshim { display:block; background:url(../images/channel-rss-bg.gif) #f2f2f2 no-repeat center; height:27px;text-align:left;text-indent:0px;margin:0 auto; padding:10px 0 10px 30px; color:#F87A01; font-weight:bold; font-size:12px; text-decoration:none;}
 #wtchannelsidebar .title {font-size:14px; font-weight:bold; line-height:20px;padding:16px 0 0 10px;}
 #wtchannelsidebar .sidediv3 { padding:8px 0 0 0;text-align:center;}
 #wtchannelsidebar .sidediv4 { padding:10px;line-height:22px;}
 #wtchannelsidebar .gray12 { color:#555555; font-size:12px;font-weight:bold;line-height:22px;}
 #wtchannelsidebar .inputStyle { margin: 11px 0 5px 10px;padding: 3px 0 0 5px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 192px;height:18px;}
+#wtchannelsidebar .rsshim { display:block; background:url(../images/channel-rss-bg.gif) #f2f2f2 no-repeat center; height:27px;text-align:left;text-indent:0px;margin:0 auto; padding:10px 0 10px 30px; color:#F87A01; font-weight:bold; font-size:12px; text-decoration:none;}
 /* The wtchannelsidebar end */
 
 /* The wtAvatar start */
@@ -422,67 +441,131 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtTimelineLaunch a:hover {color:#FF830B; text-decoration:underline;}
 #wtTimelineLaunch .meta {color:#929292; font-size:12px; display:block; float:right;padding:0 8px 0 0;}
 #wtTimelineLaunch .meta a:link,#wtTimelineLaunch .meta a:visited {color:#D05D02;text-decoration:none;}
-#wtTimelineLaunch .meta a:hover,#wtTimelineLaunch .meta a.active {color:#009BC7;text-decoration:underline;}
+#wtTimelineLaunch .meta a:hover,#wtTimelineLaunch .meta a:active {color:#009BC7;text-decoration:underline;}
 #wtTimelineLaunch .reply {color:#009BC7; font-size:12px;}
 #wtTimelineLaunch .reply a:link,#wtTimeline .reply a:visited {color:#009BC7;text-decoration:underline;}
-#wtTimelineLaunch .reply a:hover,#wtTimeline .reply a.active {color:#009BC7;text-decoration:none;}
+#wtTimelineLaunch .reply a:hover,#wtTimeline .reply a:active {color:#009BC7;text-decoration:none;}
 #wtTimelineLaunch .Concerndiv { margin:10px; clear:both;}
 #wtTimelineLaunch .Concern {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none;clear:both;}
 #wtTimelineLaunch .Concern a:link {font-size:12px;color:#FF9900;line-height:22px;text-decoration:none; clear:both;}
 #wtTimelineLaunch .Concern a:hover {font-size:12px;color:white; line-height:22px;background-color:#FF9900;text-decoration:none;clear:both;}
 /* The wtTimelineLaunch end */
 
+/*copy tips*/
+.copytips {color:#F97B00;display:none;margin-left:5px;}
+
 /* The wtMainBlock start */
-#wtMainBlock { margin:0 auto; width:756px;}
+#wtMainBlock { margin:0 auto; width:756px;font-family: Arial, Helvetica;}
 #wtMainBlock p { margin:15px 0 0 0;}
-#wtMainBlock .leftdiv { float:left;background-color:#fff; width:130px;font-size:12px; line-height:22px;height: 1%;overflow: hidden;padding:15px 0 15px 15px;}
 #wtMainBlock a { color:#FF6000;text-decoration:none;}
 #wtMainBlock a:hover { color:#FF6000;text-decoration:underline;}
+#wtMainBlock textarea {font-size:12px;padding: 3px 0 0 5px;font-family: Arial;color:#666666;width:470px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
+#wtMainBlock .position{text-align:left;margin:0 0 0 8px;width:365px; height:50px}
+#wtMainBlock .leftdiv { float:left;background-color:#fff; width:130px;font-size:12px; line-height:22px;height: 1%;overflow: hidden;padding:18px 0 15px 15px;}
 #wtMainBlock .bluebold16 { color:#0078FF; font-size:16px;font-weight:bold; font-family:Arial;}
+#wtMainBlock .right14 a:hover{ font-size:14px; color:#fff;background-color:#FF6000;text-decoration:none;}
+#wtMainBlock .right14 a.now,#wtMainBlock .right14 a.now:hover{ text-align: right; color:#0078FF;background-color:#FFF;font-size:14px;clear:both;text-decoration:none;}
 #wtMainBlock .orange12 { color:#FF6000; font-size:12px;}
 #wtMainBlock .black14 { color:#000; font-size:14px;}
 #wtMainBlock .orange14 {color:#FF6000; font-size:14px;}
 #wtMainBlock .black15bold { color:#000; font-size:15px; font-weight:bold; }
 #wtMainBlock .black12 { color:#000; font-size:12px;text-align: right;}
 #wtMainBlock .title{ padding:5px 15px 5px 0;text-align: right; clear:both;}
+#wtMainBlock .gadget li { float:left;width:70px;padding: 5px 8px 10px 0;font-size:12px;text-align: center;font-family: Arial;}
+#wtMainBlock .gadget li a img {width:30px; height:30px;}
+#wtMainBlock .gadget li p { margin:3px 0 0 0;}
+#wtMainBlock .gadgetFlash { width: 545px;border:1px solid #CECECE; padding:1px;background-color:#FFF;color:#333333; font-size:12px;}
+#wtMainBlock .gadgetimage { margin:3px 0 0 0; clear:both;}
 #wtMainBlock .leftmenu li { padding:5px 15px 5px 0;text-align: right;clear:both;}
 #wtMainBlock .leftmenu a{ font-size:14px; color:#FF6000;text-decoration:none;}
-#wtMainBlock .leftmenu a:hover {font-size:16px; color:#fff; font-weight:bold; background-color:#FF6000;text-decoration:none;}
-#wtMainBlock .leftmenu a.now,#wtMainBlock .leftmenu a.now:hover { text-align: right; color:#0078FF; background-color:#FFF;font-size:16px; font-weight:bold; clear:both;text-decoration:none;}
-#wtMainBlock .orange14 {color:#FF6000; font-size:14px;}
-#wtMainBlock .rightdiv { float:left;font-size:14px; color:#555555;margin:0 0 10px 15px;border-left: #DEDEDE 1px solid;}
-#wtMainBlock textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:470px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
-#wtMainBlock .lookfriend{ font-size: 14px; padding:10px 0 0 30px;}
-#wtMainBlock .inputStyle { padding: 3px 0 0 5px; margin:0 0 0 8px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 200px;height:18px;}
-#wtMainBlock .inputStyle1 { padding: 3px 0 0 5px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 215px;height:18px;}
-#wtMainBlock .inputStyle2 { padding: 3px 0 0 5px; margin:0 0 0 8px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 270px;height:23px;}
-#wtMainBlock .box1 { width: 305px;color:#555555; font-size:12px;text-align: right;} 
+#wtMainBlock .leftmenu a:hover{ font-size:16px; color:#fff; font-weight:bold; background-color:#FF6000;text-decoration:none;}
+#wtMainBlock .leftmenu a.now,#wtMainBlock .leftmenu a.now:hover{ text-align: right; color:#0078FF; background-color:#FFF;font-size:16px; font-weight:bold; clear:both;text-decoration:none;}
+#wtMainBlock .rightdiv { width: 585px;float:left;font-size:14px; color:#555555;margin:0 0 10px 15px;border-left: #DEDEDE 1px solid;}
+#wtMainBlock .lookfriend{ font-size: 14px; padding:11px 0 0 30px;}
+#wtMainBlock .select { font-size:12px;border: #A7A6AA 1px solid;color:#666666;font-size:12px; width:58px; height:18px; padding:0;}
+#wtMainBlock .inputStyle { padding: 3px 0 0 5px; font-size:12px;margin:0 0 0 8px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 200px;height:18px;}
+#wtMainBlock .inputStyle1 { padding: 3px 0 0 5px;font-size:12px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 215px;height:18px;}
+#wtMainBlock .inputStyle2 { padding: 3px 0 0 5px;font-size:12px; margin:0 0 0 8px;color:#666666;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 270px;height:23px;}
+#wtMainBlock .inputStyle3 { padding: 3px 0 0 5px; font-size:12px;color:#333333;background-color:#BBBBBB;border: 0;width:40px;height:16px;}
+#wtMainBlock .box1 { width: 305px;color:#555555; font-size:12px;text-align: right;}
 #wtMainBlock .box2 { width: 545px;color:#555555; font-size:12px;text-align: right;padding:0 0 10px 0;}
 #wtMainBlock .box3 { width: 485px;}
 #wtMainBlock .box4 { width: 455px;}
+#wtMainBlock .box5 { width: 133px;font-size: 14px; color:#000;text-align: right;line-height:26px;}
+#wtMainBlock .box6 { width: 367px;line-height:26px;text-align:left;}
+#wtMainBlock .box7 { width: 367px;text-align: left;padding: 0 0 10px 141px;color: #989898;font-size: 12px;line-height: 26px;margin:0;}
+#wtMainBlock .box8 { width: 367px;height: 26px;text-align: left;padding: 0 0 0 10px;line-height:26px;}
+#wtMainBlock .box9 { width: 460px;text-align:left;height:15px;}
+#wtMainBlock .box10 { width: 367px;text-align: left;padding: 0 0 0 143px;color: #989898;font-size: 12px;height:18px;margin:0;}
+#wtMainBlock .Interesting { width: 550px;color: #666666;line-height:26px;margin:23px 0 0 0;}
+#wtMainBlock .openIDbox { width: 160px;font-size: 14px; color:#000;text-align: right;line-height:26px;}
+#wtMainBlock .openIDbox1 { width: 335px;line-height:26px;text-align:left;}
+#wtMainBlock .openIDbox2 { width:328px;text-align:left;padding:0 0 0 167px;}
+#wtMainBlock .accountLine { border-bottom:1px solid #EDEDED;margin:30px 0 0 0;padding:0 0 5px 0;width:550px; clear:both; overflow:hidden;}
+#wtMainBlock .seWidth {width:208px;margin:0 0 0 8px;}
+#wtMainBlock .Width80 {width:80px;margin:0 0 0 8px;}
+#wtMainBlock .Width135 {width:135px;}
+#wtMainBlock .Width56 {width:60px;margin:0 0 0 8px;}
+#wtMainBlock .checkbox {margin:0 0 0 8px;}
+#wtMainBlock .protection { margin:40px 0 0 0;}
+#wtMainBlock .sysUpdate { padding:0 0 0 28px;}
+#wtMainBlock .personalized { padding:0 0 0 80px;margin:0 0 0 8px;}
+#wtMainBlock .twitter { padding:0 0 0 54px;}
+#wtMainBlock .twitterButt { padding:0 0 0 86px;}
+#wtMainBlock .twitterCheckbox { margin:5px 0 0 86px!important;margin:10px 0 0 86px;color:#666666;font-size:12px;}
+#wtMainBlock .personalized_bc { margin:0 0 0 8px; background-color:#99CC00;width:39px;height:16px;border: #000 1px solid;cursor:auto;}
+#wtMainBlock .personalizedText { color:#989898;font-size:12px;}
+#wtMainBlock .personalizedTextred { color:#ff0000;font-size:12px;}
+#wtMainBlock .binding { margin:20px 0 0 0;line-height:26px;}
+#wtMainBlock .bindingbox{ width:360px;text-align: left;padding:5px 0 10px 92px;color: #989898;font-size: 12px;line-height: 26px;margin:0;}
+#wtMainBlock .bindingblack { width: 525px;text-align: left;padding:8px 0 0 0;color:#000000;font-size:12px;margin:0;line-height: 24px;}
+#wtMainBlock .bindingbox1 { width: 105px;font-size: 14px; color:#000;text-align: right;line-height:26px;}
+#wtMainBlock .bindingbox2 { width: 367px;text-align: left;padding: 10px 0 5px 110px;line-height: 26px;}
+#wtMainBlock .bindingbox3 { width: 367px;text-align: left;padding: 0px 0 15px 113px;color: #989898;font-size: 12px;line-height: 26px;margin:0;}
+#wtMainBlock .bindingbox4{ width:360px;text-align: left;padding:5px 0 0 64px;color: #989898;font-size: 12px;line-height: 26px;margin:0;}
+#wtMainBlock .bindinggray { width: 525px;text-align: left;padding:3px 0 0 0;color:#989898;font-size:12px;margin:0;line-height: 18px;}
+#wtMainBlock .bindinggray12 { width: 525px;text-align: left;padding:8px 0 0 0;color:#989898;font-size:12px;margin:0;line-height: 24px;}
+#wtMainBlock .bindingicon { padding:4px 0 0 0;float: right;}
+#wtMainBlock .bindingfloat { float:right;padding:0 200px 0 0;}
+#wtMainBlock .bindingMobile { width:530px; background-color:#F2F2F2;padding:0 10px 10px 10px;margin:0 0 10px 0;clear:both; overflow:hidden;}
+#wtMainBlock .bindingIM { width: 550px;padding:25px 0 0 0; clear:both;border-bottom:2px solid #DDDDDD;margin:0;}
+#wtMainBlock .bindingIMbox { width:530px; background-color:#F2F2F2;margin:10px 0 0 0; clear:both;padding:0 10px 10px 10px;clear:both;overflow:hidden;}
+#wtMainBlock .bindingIMedit { width: 300px;margin:8px 0 5px 0;clear:both;}
+#wtMainBlock .bindingIMeditCancel { width: 300px;margin:5px 0 0 3px;clear:both;}
+#wtMainBlock .bindingOtheredit { width: 500px;margin:8px 0 0 0;clear:both;}
+#wtMainBlock .account { width:550px; background-color:#F2F2F2;margin:0 0 15px 0;padding: 10px 0 10px 0;clear:both; overflow:hidden;}
+#wtMainBlock .accountBox { width: 465px;color:#333333;font-size:12px;padding:30px 0 5px 0;}
+#wtMainBlock .accountHead { float:left; width:96px; overflow:hidden; height:96px; border:1px solid #D3D3D5; padding:1px;}
+#wtMainBlock .accountCont { width:350px;padding:0 0 0 15px;float:left;}
 #wtMainBlock .list { width: 545px;border:1px solid #CECECE; background-color:#FFF;color:#333333; font-size:12px;}
 #wtMainBlock .Emaildiv { width: 465px;border:1px solid #CECECE; background-color:#FFF;color:#333333;overflow:hidden;height:1%;padding:10px;font-size:12px; margin:10px 0 0 0;}
 #wtMainBlock .Emailcontentbox { width: 465px;color:#333333;font-size:12px;}
 #wtMainBlock .Emailhead { float:left; width:96px; overflow:hidden; height:96px; border:1px solid #D3D3D5; padding:1px;}
 #wtMainBlock .boxleft { float:right;width:100px;text-align: center;line-height:22px; margin-top:10px;}
-#wtMainBlock .boxright { float:right;width:353px;width:355px;!important;text-align: left;line-height:23px;padding:0 0 0 12px; padding:0 0 0 10px;!important;font-size:12px;margin-top:10px;}
+#wtMainBlock .boxright { float:right;width:353px;width:355px !important; text-align: left;line-height:23px;padding:0 0 0 12px; padding:0 0 0 10px!important;font-size:12px;margin-top:10px;}
 #wtMainBlock .Emailorange14 {color:#FF6000; font-size:14px; font-weight:bold; padding:0 0 5px 0;}
 #wtMainBlock .Emailcont { line-height:36px; height:100%; overflow:hidden;padding:2px 0 5px 10px;}
 #wtMainBlock .pad { color:#000; font-size:12px; background-color:#EEEEEE; border-bottom:1px solid #CECECE; line-height:20px; padding:5px 0 0 10px;}
 #wtMainBlock .pad1 { color:#000; font-size:12px;line-height:20px; padding-left:5px;} 
 #wtMainBlock .pad2 { color:#9E9E9E; font-size:12px; float:right;}
+#wtMainBlock .pad3 { color:#000; font-size:12px;padding-left:5px;}
 #wtMainBlock .lineheight { line-height:30px;width: 465px;} 
 #wtMainBlock .po { padding: 0 0 10px 97px;}
 #wtMainBlock .file { padding: 0 0 0 90px;}
 #wtMainBlock .checkbox { height:12px;}
+#wtMainBlock .checkboxText { padding:0 0 0 28px; margin:5px 0 0 0;color:#989898;font-size:12px;}
 #wtMainBlock .gray12 { color:#555555; font-size:12px;}
+#wtMainBlock .smallblack12 { color:#000; font-size:12px;}
+#wtMainBlock .smallblack { color:#000; font-size:12px;}
+#wtMainBlock .smallblack:hover { color:#000; font-size:12px;text-decoration:underline;}
 #wtMainBlock .gray12bold { color:#555555; font-size:12px;font-weight:bold;}
-#wtMainBlock .gadget12 { color:#000000; font-size:12px;margin-top:20px;}
-#wtMainBlock .entry { padding:10px 10px 0px 5px; clear:both;border-bottom:1px solid #EFEFEF;margin:0 6px 0 6px;}
+#wtMainBlock .gadget12 { color:#000000; font-size:12px;margin-top:30px;}
+#wtMainBlock .entry { padding:10px 10px 0px 5px; clear:both;border-bottom:1px solid #EFEFEF;margin:0 6px 0 0;}
 #wtMainBlock .head { float:left; width:55px; overflow:hidden; height:55px; padding-left:5px;}
 #wtMainBlock .content {font-size:14px; line-height:22px; height:100%; overflow:hidden;padding:2px 0 5px 1px; background-color:#ffffff;}
+#wtMainBlock .contentOther {font-size:14px; line-height:22px; height:100%; overflow:hidden;padding:2px 0 5px 32px!important;padding:2px 0 5px 35px; background-color:#ffffff;}
 #wtMainBlock .content .bg { background: url(../images/org-con-bg.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
-#wtMainBlock .floatleft { float:left; padding:18px 5px 0 0;}
+#wtMainBlock .floatleft { float:left; padding:10px 5px 0 0;}
 #wtMainBlock .floatleft1 { float:left; padding:8px 5px 0 0;}
 #wtMainBlock .floatright { float:right;}
 #wtMainBlock .meta {color:#333333; font-size:12px; display:block; margin-top:5px;}
@@ -490,20 +573,31 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .mar { margin: 0 0 0 1em;}
 #wtMainBlock .po { padding:0 0 0 45px; font-size:12px; color:#666666;} 
 
+#wtMainBlock .gadget li { float:left;width:70px;padding: 5px 8px 10px 0;font-size:12px;text-align: center;font-family: Arial,sans-serif;}
 #wtMainBlock .gadget { width:550px; }
-#wtMainBlock .gadget li { float:left;width:70px;padding: 5px 8px 10px 0;font-size:12px;text-align: center;font-family: Arial, sans-serif;}
 #wtMainBlock .gadget li a img {width:30px; height:30px;}
-#wtMainBlock .gadget li p { margin:3px 0 0 0;} 
-#wtMainBlock .gadgetFlash { width: 545px;margin: 15px 0 0 0;height:1%;overflow:hidden; }
+#wtMainBlock .gadget li p { margin:3px 0 0 0;}
+#wtMainBlock .gadgetFlash { width: 545px;border:1px solid #CECECE; padding:1px;background-color:#FFF;color:#333333; font-size:12px;}
 #wtMainBlock .gadgetimage { margin:3px 0 0 0; clear:both;}
 /* The wtMainBlock end */
 
+/* The wtFollow start */
+#wtFollow { margin:10px 0 0 0; width:532px;border:1px solid #D3D3D5;height:100%;background-color:#FFFFFF;float:left;font-family: Arial;}
+#wtFollow p { margin:15px 0 0 0;}
+#wtFollow a { color:#FF6000;text-decoration:none;}
+#wtFollow a:hover { color:#FF6000;text-decoration:underline;}
+#wtFollow .title { color:#000; font-size:26px; font-weight:bold;padding:8px 20px 10px 15px;}
+#wtFollow .follow { padding:0 0 0 15px;}
+#wtFollow .followlist li { overflow:hidden;float:left;width:48px; height:48px;padding: 5px 20px 35px 5px;font-size:12px;text-align: center;font-family: Arial;}
+#wtFollow .followlist li a img {display:block;width:48px; height:48px;}
+/* The wtFollow end */
+
 /* The wtRegist start */
-#wtRegist { width: 360px;font-size: 14px; margin:10px 0 0 40px;}
-#wtRegist ul { margin: 0;padding: 0;}
-#wtRegist li { float: left;list-style: none;}
-#wtRegist .box1 { width: 60px; height: 26px;text-align: right; line-height: 25px;}
-#wtRegist .box2 { width: 290px; text-align: left;padding: 0 0 0 10px;}
+#wtRegist { width: 360px;font-size: 14px;margin:32px 0 0 40px;}
+#wtRegist ul { margin:0;padding: 0;}
+#wtRegist li { float:left;list-style:none;}
+#wtRegist .box1 { width: 60px;height: 26px;font-size: 14px; color:#000;text-align: right;line-height: 25px;}
+#wtRegist .box2 { width: 290px;height: 26px;text-align: left;padding: 0 0 0 10px;}
 #wtRegist .box2 input { padding: 3px 0 0 5px;border-top: #929292 1px solid;border-left: #CFCFCF 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;width: 270px;height:18px;}
 #wtRegist .box2 select { font-size:12px;border: #A7A6AA 1px solid;width:110px; height:18px; padding:0;}
 #wtRegist .box3 { width: 290px;height: 30px;text-align: left;padding: 0 0 0 70px;color: #989898;font-size: 12px;line-height: 25px;}
@@ -511,7 +605,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 /* The wtRegist end */
 
 /* The wtLightbox start*/
-#wtLightbox { width:310px;background-color:#FFFFFF;font-size:14px;}
+#wtLightbox { width:310px;background-color:#FFFFFF; border:2px solid #000;font-size:14px;}
 #wtLightbox .top { padding:10px 0 0 10px; clear:both; background-color:#F5F5F5;}
 #wtLightbox .head {float:left; width:56px; overflow:hidden; height:55px;}
 #wtLightbox .head img {border:1px solid #CCCCCC; padding:1px; background-color:#ffffff;}
@@ -534,16 +628,5 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtLightbox .inputStyle { padding: 3px 0 0 5px;color:#666;border-right: #CFCFCF 1px solid;border-left: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-top: #929292 1px solid;width: 200px;height:18px;}
 #wtLightbox .mar { margin: 0 0 0 1em;}
 /* The wtLightbox end*/
-
-/* The wtFollow start */
-#wtFollow { margin:10px 0 0 0; width:532px;border:1px solid #D3D3D5;height:100%;background-color:#FFFFFF;float:left;font-family:Arial,Helvetica,sans-serif;}
-#wtFollow p { margin:15px 0 0 0;}
-#wtFollow a { color:#FF6000;text-decoration:none;}
-#wtFollow a:hover { color:#FF6000;text-decoration:underline;}
-#wtFollow .title { color:#000; font-size:26px; font-weight:bold;padding:8px 20px 10px 15px;}
-#wtFollow .follow { padding:0 0 0 15px;}
-#wtFollow .followlist li { overflow:hidden;float:left;width:48px; height:48px;padding: 5px 20px 35px 5px;font-size:12px;text-align: center;font-family: Arial,sans-serif;}
-#wtFollow .followlist li a img {display:block;width:48px; height:48px;}
-/* The wtFollow end */
-
 .tipnote {clear:both; background-color:#FFF996; line-height:21px; border:1px solid #C2C2C2; margin:8px auto; text-indent:20px;} 
+.tipnote-red {clear:both; background-color:#FF0000; line-height:21px; border:1px solid #C2C2C2; margin:8px auto; text-indent:20px;} 

@@ -1,6 +1,9 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWLogin::Logout();
+if ( false==JWLogin::IsAnonymousLogined() )
+{
+	JWLogin::Logout();
+}
 
 $user = array();
 if ( $_POST ) 

@@ -40,7 +40,7 @@ echo "<script>var count_select_now=$friends_rows_count;</script>";
 <div id="wtMainBlock">
 <div class="leftdiv">
 <ul class="leftmenu">
-		<li><a id="tab_import" href="invite" class="now">寻找好友</a></li>
+		<li><a id="tab_import" href="invite_not_reg" class="now">寻找好友</a></li>
 		<li><a id="tab_email" href="email" class="">Email邀请</a></li>
 		<li><a id="tab_sms" href="sms" class="">短信邀请</a></li>
 </ul>
@@ -59,7 +59,7 @@ echo "<script>var count_select_now=$friends_rows_count;</script>";
   <div class="list">
   <div class="pad">
   <input type="checkbox" name="checkbox" id="not_reg_check" value="checkbox" checked="true" onclick="selectAll();"/>
-  <span class="pad1">邀请选择的好友</span>
+  <label class="pad1" for="not_reg_check">选择所有好友</label>
   </div><!-- pad -->
 <?php
 foreach($friends_rows  as $idFriend => $friends_row)
@@ -71,7 +71,7 @@ foreach($friends_rows  as $idFriend => $friends_row)
 	<div class="floatleft"><input onclick="selectOne(this);" type="checkbox" name="friends_emails[]" checked="true" value="<?php echo $idFriend; ?>" /></div>
 	  <div class="content">
 		<div class="meta">
-		<span class="floatright" title="<?php echo $friends_array[1];?>"><?php echo mb_substr($friends_array[1], 0, 20,'UTF-8');?></span>< <?php echo $friends_array[0];?> >
+		<span class="floatright" title="<?php echo $friends_array[0];?>"><&nbsp;<?php echo mb_substr($friends_array[0], 0, 22,'UTF-8');?>&nbsp;></span><span title="<?php echo $friends_array[1];?>"><?php echo mb_substr($friends_array[1], 0, 18,'UTF-8');?>
 		</div><!-- meta -->
 		</div><!-- content -->
 	</div><!-- entry -->

@@ -38,12 +38,6 @@ var JiWai =
 	Yft		: function (selector, hideSecs) 
 	{
 		return;
-/*
-(function(){alert(1);return this;}).delay(1000);
-
-alert('ok');
-//.chain(function(){alert(2)}).chain(function(){alert(3)}).chain(function(){alert(4)});
-*/
 
 		$$(selector).each( function(yft_element) 
 		{
@@ -116,6 +110,7 @@ alert('ok');
 			onSuccess: function() {
 				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
 				el.title = action=='create' ? '不收藏' : '收藏它';
+				el.alt = el.title;
  /*               el_text.innerText = el.alt;
                 el_text.textContent = el.alt;
 				el_text.title = el.alt; */
@@ -159,7 +154,13 @@ alert('ok');
 		new Ajax( '/wo/devices/enable/'+id, {
 			method: 'post',
 			headers: {'AJAX':true},
-			data: postdata
+			data: postdata,
+			onSuccess: function(html) {
+				var el = $('tips_' + id );		
+				if(el) 
+					el.innerHTML = html;
+					(function(){el.innerHTML='';}).delay(3000);
+			}
 		}).request();
 	},
 	Refresh: function() {
@@ -311,7 +312,9 @@ alert('ok');
 
         txt=obj.value;
 	$$('.copytips').each(function(item){item.style.display="none";});
-        $(obj.id + "_tip").style.display="inline";
+        tip=$(obj.id + "_tip");
+	tip.style.display="inline";
+	(function(){tip.style.display="none";}).delay(3000);
         if(window.clipboardData) 
         {    
             window.clipboardData.clearData();    
@@ -323,7 +326,7 @@ alert('ok');
         }
         else if (window.netscape) 
         {    
-            $(obj.id + "_tip").style.display="none";
+            tip.style.display="none";
         }    
     },
 

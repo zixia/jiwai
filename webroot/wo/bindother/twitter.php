@@ -4,8 +4,8 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-$service = 'fanfou';
-$service_name = '饭否';
+$service = 'twitter';
+$service_name = 'Twitter';
 
 $user_info = JWUser::GetCurrentUserInfo();
 
