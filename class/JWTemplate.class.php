@@ -556,11 +556,11 @@ _HTML_;
 				<p>
                     <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
                     <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
-					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83)){$('updaterForm').submit();return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
+					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if(this.value.length>0 && ((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83))){JWAction.updateStatus(); return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
-					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="return JWAction.updateStatus();" value="叽歪一下" title="叽歪一下"/>
+					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" value="叽歪一下" title="叽歪一下"/>
 				</p>	
 			<?php
 				if(false == empty($options['sendtips']))
