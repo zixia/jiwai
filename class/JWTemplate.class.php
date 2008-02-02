@@ -1782,13 +1782,17 @@ _HTML_;
 											. " target='_blank' "
 											. ">" . htmlspecialchars($show_url) . "</a></li>\n";
 			}
+			if ( JWUser::IsAnonymous($aUserInfo['id']) )
+			{
+				$aUserInfo['bio'] = '这是一个IP漂流瓶用户。他是由很多匿名用户组成的，因为他们都有着共同的IP段，于是便汇聚在了一起，你看到的是这个瓶子里所有人的叽歪。';
+			}
 			if ( !empty($aUserInfo['bio']) )
 			{
-				$bio_plus = JWUser::IsAnonymous($aUserInfo['id'])
-					? '[<a href="http://help.jiwai.de/SeagoingBottles" target="_blank">' 
-						. '查看详情</a>]' 
-					: null;
-				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . $bio_plus ."</li>\n";
+				$bio_plus = JWUser::IsAnonymous($aUserInfo['id']) ?
+					'[<a href="http://help.jiwai.de/SeagoingBottles" target="_blank">查看详情</a>]'
+					:
+					null;
+				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . $bio_plus . "</li>\n";
 			}
 ?>
 		</ul>
