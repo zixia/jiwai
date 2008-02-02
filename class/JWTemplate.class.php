@@ -488,6 +488,7 @@ _HTML_;
 			</div>       
 
 <?php
+		JWTemplate::GoogleAnalytics();
 	}
 
 	static public function GoogleAnalytics()
