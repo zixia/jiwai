@@ -82,6 +82,11 @@ function getFriendsWithStatus($idUser)
 	foreach($friendIds as $f )
 	{
 		$user_row = $friends[$f];
+		
+		/* friend not publish any status */
+		if ( false==isset( $statusIds[$f] ) )
+			continue;
+
 		$status_row = $statuses[ $statusIds[$f] ];
 		$user_row['idPicture'] = ($status_row['idPicture'] && $status_row['isMms']=='N') 
 			? $status_row['idPicture'] : $user_row['idPicture'];
