@@ -4,6 +4,8 @@ require_once("../../../jiwai.inc.php");
 define ('SP_IP', '211.157.106.111');
 define ('ZX_IP', '211.99.222.55');
 
+error_log( var_export( $_REQUEST , true ), 3, '/tmp/requestsms' );
+
 $debug = false;
 if ( false == $debug )
 {
@@ -151,7 +153,7 @@ function mop_mo()
 			}
 		}
 
-		$arg_msg = iconv('GBK','UTF-8', $arg_msg );
+		$arg_msg = iconv('GBK//IGNORE','UTF-8//IGNORE', $arg_msg );
 		if( $arg_gid == JWSms::GID_CHINAMOBILE ) {
 			$arg_linkid = rand(100000000,999999999);
 		}
