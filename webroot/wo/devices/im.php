@@ -111,7 +111,11 @@ _HTML_
 ?>
 		 <div style="cursor:pointer;" onclick="var ds=$('device_<? echo $device_row['id'];?>');var es=$('edit_<? echo $device_row['id'];?>');ds.style.display='none'==ds.style.display?'block':'none';es.innerHTML='none'==ds.style.display?'编辑':'隐藏';return false;"><span class="floatright orange12" id="edit_<? echo $device_row['id'];?>">编辑</span><span class="smallblack"><? echo $address;?></div>
 		</span><div style="display:none;" id="device_<? echo $device_row['id'];?>">
+
+<?php if (in_array($type, array('qq','msn','skype','gtalk'))) { ?>
         <p class="bindingIMedit smallblack12"><input style="width:14px; display:inline; border:none;" type="checkbox" value="<? echo $device_row['isSignatureRecord'];?>" id="notify_<?php echo $type;?>_sig" <?php if($device_row['isSignatureRecord']=='Y') echo "checked"; ?> onClick="this.value=(this.value=='Y' ? 'N' : 'Y'); JiWai.EnableDevice(<?php echo $device_row['id'];?>, 'isSignatureRecord='+this.value);"/> <label for="notify_<?php echo $type;?>_sig">将我的签名更新发布到叽歪</label><span class="copytips" style="display:inline;" id="tips_<? echo $device_row['id'];?>"></span></p>
+<?php } ?>
+
 		<p class="bindingIMeditCancel"><a class="orange12" href="/wo/devices/destroy/<?php echo $device_row['id']; ?>" onClick="if (confirm('你真的要删除 <?echo $typename;?> 绑定吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m); f.submit(); }; return false;">删除并重设</a></p></div>
 <?
 				echo <<<_HTML_
