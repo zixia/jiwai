@@ -75,6 +75,7 @@ _HTML_;
 		$asset_url_js_validator	= self::GetAssetUrl('/js/validator.js' );
 		$asset_url_js_action 	= self::GetAssetUrl('/js/action.js' );
 		$asset_url_js_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.js' );
+		$asset_url_js_ac_content = self::GetAssetUrl('/js/AC_RunActiveContent.js');
 
 		$title = '叽歪de / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
@@ -131,7 +132,7 @@ _HTML_;
 			$options['ui_user_id'] = JWLogin::GetCurrentUserId();
 
 		$current_user_id = JWLogin::GetCurrentUserId();
-		$current_anonymouse_user = JWUser::IsAnonymous($current_user_id) ? 'true' : 'false';
+		$current_anonymous_user = JWUser::IsAnonymous($current_user_id) ? 'true' : 'false';
 
 		/*
 		 *	强制不使用自定义界面，设置为 false 即可
@@ -173,28 +174,33 @@ $rss_html
 $refresh_html
 $openid_html
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
-	<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript">window.ServerTime=$time;</script>
-	<script type="text/javascript" src="$asset_url_js_moo"></script>
-	<script type="text/javascript" src="$asset_url_js_jiwai"></script>
-	<script type="text/javascript" src="$asset_url_js_buddy"></script>
-	<script type="text/javascript" src="$asset_url_js_location"></script>
-	<script type="text/javascript" src="$asset_url_js_validator"></script>
-	<script type="text/javascript" src="$asset_url_js_box"></script>
-	<script type="text/javascript" src="$asset_url_js_action"></script>
 	<script>var current_user_id = '$current_user_id';</script>
-	<script>var current_anonymouse_user = $current_anonymouse_user;</script>
+	<script>var current_anonymous_user = $current_anonymous_user;</script>
+_HTML_;
+		if(empty($options['is_load_all']))
+			echo <<<_HTML_
+				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<script type="text/javascript" src="$asset_url_js_moo"></script>
+				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+				<script type="text/javascript" src="$asset_url_js_buddy"></script>
+				<script type="text/javascript" src="$asset_url_js_location"></script>
+				<script type="text/javascript" src="$asset_url_js_validator"></script>
+				<script type="text/javascript" src="$asset_url_js_box"></script>
+				<script type="text/javascript" src="$asset_url_js_action"></script>
+_HTML_;
+		else
+			echo "<script language=\"javascript\">AC_FL_RunContent = 0;</script><script type=\"text/javascript\" src=\"$asset_url_js_ac_content\"></script>";
+		?>
 
 	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪de" />
 	<meta name="copyright" content="copyright 2007 http://jiwai.de" />
 	<meta name="robots" content="all" />
-	$ui_css
-
-_HTML_;
-
+<?php
+	echo $ui_css;
 	}
 
 
@@ -223,11 +229,13 @@ _HTML_;
 	static public function header($highlight=null)
 	{
 		$userInfo = JWUser::GetCurrentUserInfo();
+		$is_anonymous = false==empty($userInfo) && JWUser::IsAnonymous($userInfo['id']);
 		$nameScreen = @$userInfo['nameScreen'];
 		$nameUrl = @$userInfo['nameUrl'];
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
+				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
 				'http://help.jiwai.de/' => '帮助'
@@ -240,6 +248,15 @@ _HTML_;
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
+			);
+		}
+		if ( $is_anonymous )
+		{
+			$nav = array(
+				'/wo/' => '首页',
+				'/public_timeline/' => '逛逛',
+				'/wo/account/create' => '注册',
+				'http://help.jiwai.de/' => '帮助',
 			);
 		}
 
@@ -279,9 +296,12 @@ _HTML_;
 			}
 		}
 
-		if( empty( $userInfo ) ) {
+		if( empty( $userInfo ) ) 
+		{
 			$msgString = '';
-		}else{
+		}
+		else
+		{
 			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
 			$msgString = '<a style="padding-left:0px;" href="/wo/direct_messages/">';
 			$msgString .= (0==$msgCount) ? '<img style="margin-bottom:-4px;" src="'.self::GetAssetUrl('/images/icon_unread_bw.gif').'">' : '<img style="margin-bottom:-4px;" src="'.self::GetAssetUrl('/images/icon_unread.gif').'">('.$msgCount.')';
@@ -295,7 +315,18 @@ _HTML_;
 		<div id="navtip" class="navtip">
 		<form id='f3' action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>" style="display:inline;">
 		<table class="navtip_table"><tr>
-			<td valign="middle">你好，<a class="normLink" href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a><?php echo $msgString; ?><?php if($nameUrl != 'public_timeline') echo '|<a class="normLink" href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a class="normLink" href="'.JW_SRVNAME.'/wo/logout">退出</a>'; ?>
+			<td valign="middle">你好，<a class="normLink" href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>"><?php echo $nameScreen;?></a>
+			<?php 
+			if ( $is_anonymous )
+			{
+				echo '|<a class="normLink" href="'.JW_SRVNAME.'/wo/login">登录</a>|<a class="normLink" href="'.JW_SRVNAME.'/wo/logout">退出</a>';
+			}
+			else
+			{
+				echo $msgString;
+				if($nameUrl != 'public_timeline') echo '|<a class="normLink" href="'.JW_SRVNAME.'/wo/account/settings/">设置</a>|<a class="normLink" href="'.JW_SRVNAME.'/wo/logout">退出</a>'; 
+				}
+			?>
 			</td>
 			<td valign="middle"><input type="text" name="q" value="QQ、Email、姓名" onClick="if(this.value=='QQ、Email、姓名')this.value=''" onBlur="if(this.value=='')this.value='QQ、Email、姓名';" class="input"/></td>
 			<td valign="middle"><input type="button" value="找朋友" class="submit" onClick="$('f3').submit();"/></td>
@@ -441,7 +472,24 @@ _HTML_;
 
 	}
 
-	
+	static public function footer2()
+	{    
+?>
+			<div id="footer">
+			<h3>Footer</h3>
+			<span >&copy; 2007-2008 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a>
+			<a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a>
+			<a href="http://blog.jiwai.de/" target="_blank">Blog</a>
+			<a href="http://help.jiwai.de/Api" target="_blank">API</a>
+			<a href="http://help.jiwai.de/" target="_blank">帮助</a>
+			<a href="http://help.jiwai.de/Links" target="_blank">友情链接</a>
+			<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>
+			</div>       
+
+<?php
+	}
+
 	static public function GoogleAnalytics()
 	{
 		echo <<<_HTML_
@@ -797,7 +845,7 @@ _HTML_;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 		$is_admin = JWUser::IsAdmin($current_user_id);
-		$is_anonymouse = JWUser::IsAnonymous($current_user_id);
+		$is_anonymous = JWUser::IsAnonymous($current_user_id);
 
 		if ( !isset($options['pagination']) )
 			$options['pagination'] 	= false;
@@ -838,7 +886,7 @@ _HTML_;
 			$user_id 	= $statusRows[$status_id]['idUser'];
 			$conference_id = $statusRows[$status_id]['idConference'];
 
-			$can_delete = ($is_admin || $user_id==$current_user_id) && false==$is_anonymouse;
+			$can_delete = ($is_admin || $user_id==$current_user_id) && false==$is_anonymous;
 			$is_favourited = $is_favourited_array[$status_id];
 
 			if ( JWSns::IsProtectedStatus( $statusRows[$status_id], $current_user_id ) )
@@ -1528,7 +1576,7 @@ _HTML_;
 	function sidebar_invite() {
 ?>
 		<div class="featured" id="invite" style="line-height:30px;">
-			<p><a href="/wo/invitations/invite">邀请好友加入JiWai</a></p>
+			<p><a href="/wo/invitations/invite">邀请好友加入叽歪网</a></p>
 		</div>
 
 <?php
@@ -1643,7 +1691,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/followings/nudge/$arr_user_info[id]">挠挠此人</a>
+				<a href="/wo/followings/nudge/$arr_user_info[id]" onClick="return JWAction.redirect(this);">挠挠此人</a>
 			</li>
 _HTML_;
 		}
@@ -1652,7 +1700,7 @@ _HTML_;
 		{
 			echo <<<_HTML_
 			<li>
-				<a href="/wo/direct_messages/create/$arr_user_info[id]">发送悄悄话</a>
+				<a href="/wo/direct_messages/create/$arr_user_info[id]" onClick="return JWAction.redirect(this);">发送悄悄话</a>
 			</li>
 _HTML_;
 		}
@@ -1734,7 +1782,13 @@ _HTML_;
 											. ">" . htmlspecialchars($show_url) . "</a></li>\n";
 			}
 			if ( !empty($aUserInfo['bio']) )
-				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . "</li>\n";
+			{
+				$bio_plus = JWUser::IsAnonymous($aUserInfo['id'])
+					? '[<a href="http://help.jiwai.de/SeagoingBottles" target="_blank">' 
+						. '查看详情</a>]' 
+					: null;
+				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . $bio_plus ."</li>\n";
+			}
 ?>
 		</ul>
 <?php
@@ -1928,12 +1982,18 @@ _HTML_;
 
 	static function sidebar_count( $countInfo=null, $userInfo=null )
 	{
-		if ( empty($userInfo) ) {
+		if ( empty($userInfo) ) 
+		{
 			$user = 'wo';
-		} else {
+			$current_user_id = JWLogin::GetCurrentUserId();
+			$is_anonymous = $current_user_id && JWUser::IsAnonymous($current_user_id);
+		}
+		else
+		{
 			$user = $userInfo['nameUrl'];
 			$name_full = $userInfo['nameFull'];
 			$name_screen = $userInfo['nameScreen'];
+			$is_anonymous = JWUser::IsAnonymous($userInfo['id']);
 		}
 
 		$userInSession = JWUser::GetUserInfo(JWLogin::GetCurrentUserId());
@@ -1952,18 +2012,18 @@ _HTML_;
  		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
  		{
  		echo <<<_HTML_
- 			<li id="friend_count"><a href="/wo/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+ 			<li id="friend_count"><a href="/wo/followings/" onClick="return JWAction.redirect(this);">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
 _HTML_;
  		}else{
  			echo <<<_HTML_
- 			<li id="friend_count"><a href="/$user/followings/">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
+ 			<li id="friend_count"><a href="/$user/followings/" onClick="return JWAction.redirect(this);">关注&nbsp;$countInfo[following]&nbsp;人</a></li>
 _HTML_;
  		}
 
 		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] ) 
 		{    
 			echo <<<_HTML_
-				<li id="follower_count"><a href="/wo/followers/">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
+				<li id="follower_count"><a href="/wo/followers/" onClick="return JWAction.redirect(this);">被&nbsp;$countInfo[follower]&nbsp;人关注</a></li>
 _HTML_;
 		}else{
 			echo <<<_HTML_
@@ -1971,7 +2031,7 @@ _HTML_;
 _HTML_;
 		}   
 
-		if ( 'wo'==$user || $user === @$userInSession['nameUrl'] )
+		if ( ('wo'==$user || $user === @$userInSession['nameUrl']) && false==$is_anonymous )
 		{
 			$msg_count = JWMessage::GetMessageStatusNum($userInSession['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
 			$msg_string = ( $msg_count == 0 ) ? '' : "&nbsp;(&nbsp;${msg_count}&nbsp;条新&nbsp;)";
@@ -1982,7 +2042,7 @@ _HTML_;
 
 		$archive = ( $user == 'wo' ) ? 'archive/' : null;
 		echo <<<_HTML_
- 			<li id="favourite_count"><a href="/$user/favourites/">$countInfo[fav]&nbsp;条收藏</a><img border="0" src="$asset_star_url" /></li>
+ 			<li id="favourite_count"><a href="/$user/favourites/" onClick="return JWAction.redirect(this);">$countInfo[fav]&nbsp;条收藏</a><img border="0" src="$asset_star_url" /></li>
  			<li id="status_count"><a href="/$user/">$countInfo[status]&nbsp;条叽歪</a></li>
 _HTML_;
  
@@ -2021,8 +2081,14 @@ _HTML_;
 			<a href="/wo/account/profile"><img src="<?php echo $photo_url; ?>" title="<?php echo $userInfo['nameFull'];?>" width="48" height="48" align="middle" /></a>欢迎你 <?php echo $userInfo['nameFull'];?>
 			<br />
 			<?php
+			if ( JWUser::IsAnonymous($userInfo['id'] ) )
+			{
+				echo '<p style="margin-top:10px; line-height:140%;">　　你现在是一个IP漂流瓶用户，你看到的是所有和你同一个ip段的朋友的叽歪哦。我们只为漂流瓶用户提供了基本的功能，如果你想使用更强大的其他功能，就请（<a href="/wo/login">登录</a>）或者（<a href="/wo/account/create">注册</a>）吧。[<a href="http://help.jiwai.de/SeagoingBottles" target="_blank">查看详情</a>]<p>';
+			}
+			?>
+			<?php
 			
-				if(false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
+				if( false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
 				{
 					echo '<a class="sendtips" style="margin-left:0" href="/wo/account/profile">上传头像 ↑ </a>';
 				}
@@ -2263,7 +2329,7 @@ _HTML_;
 		if ( empty(self::$msJWConst) )
 		{
 			self::$msJWConst = array (
-				'UrlContactUs' => 'http://help.jiwai.de/ContactUs',
+				'UrlContactUs' => '/t/帮助留言板/',
 				'UrlRegister' => '/wo/account/create',
 				'UrlLogin' => '/wo/login',
 				'UrlResetPassword' => 'http://jiwai.de/wo/account/confirm_password_reset',

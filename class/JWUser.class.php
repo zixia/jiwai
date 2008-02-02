@@ -674,6 +674,8 @@ _SQL_;
 		return array ( 	 'auto_nudge_me'	=> $user_info['noticeAutoNudge']
 						,'send_new_friend_email'	=> $user_info['noticeNewFriend']
 						,'send_new_direct_text_email'	=> $user_info['noticeNewMessage']
+						,'allow_system_mail'	=> $user_info['allowSystemMail']
+						,'is_receive_offline'	=> $user_info['isReceiveOffline']
 					);
 	}
 
@@ -693,6 +695,8 @@ _SQL_;
 		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? 'Y':'N';
 		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? 'Y':'N';
 		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? 'Y':'N';
+		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? 'Y':'N';
+		$noticeSettings['is_receive_offline']	= isset($noticeSettings['is_receive_offline']) 	? 'Y':'N';
 
 		if ( $user_info['noticeAutoNudge']!=$noticeSettings['auto_nudge_me'] )
 				$db_change_set['noticeAutoNudge'] = $noticeSettings['auto_nudge_me'];
@@ -703,6 +707,12 @@ _SQL_;
 
 		if ( $user_info['noticeNewMessage']!=$noticeSettings['send_new_direct_text_email'] )
 				$db_change_set['noticeNewMessage'] = $noticeSettings['send_new_direct_text_email'];
+
+		if ( $user_info['allowSystemMail']!=$noticeSettings['allow_system_mail'] )
+				$db_change_set['allowSystemMail'] = $noticeSettings['allow_system_mail'];
+
+		if ( $user_info['isReceiveOffline']!=$noticeSettings['is_receive_offline'] )
+				$db_change_set['isReceiveOffline'] = $noticeSettings['is_receive_offline'];
 
 		if ( !count($db_change_set) )
 			return true;
@@ -955,6 +965,7 @@ _SQL_;
 		$admin_user_db_row = self::GetUserInfo('adm');
 
 		if ( 		1==$idUser	// zixia
+				|| 32834==$idUser	// wqsemc
 				|| 89==$idUser	// seek
 				|| 863==$idUser	// lecause
 				|| $admin_user_db_row['idUser']==$idUser )
@@ -1002,6 +1013,7 @@ _SQL_;
 			'nameUrl' => $ipName,
 			'pass' => JWDevice::GenSecret(8),
 			'isWebUser' => 'Y',
+			'idPicture' => 27304,
 			'srcRegister' => 'ANONYMOUS',
 		);
 

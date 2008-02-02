@@ -12,27 +12,61 @@ var JWAction =
 
 	isLogined : function(callback, allow_anonymous)
 	{
-		if ( allow_anonymous == undefined )
-			allow_anonymous = true;
-		else if ( allow_anonymous == false )
-			allow_anonymous = (current_anonymouse_user==false);
+		if ( allow_anonymous == undefined || null==allow_anonymous )
+			allow_anonymous = false;
 
-		if ( current_user_id > 0 && allow_anonymous==true )
+		if ( 0 < current_user_id 
+			&& ( false==current_anonymous_user 
+				|| true==allow_anonymous && true==current_anonymous_user ) )
 			return true;
 
 		JWAction.callback = callback;
 
-		var caption='登录叽歪';
-		var url ='/wo/lightbox/login';
-		var rel='';
-		var options = {
-			height : 240,
-			width : 310,
-			focus : 'username_or_email'
-		};
+		if ( false==allow_anonymous )
+		{
+			var caption = '登录叽歪';
+			var url = '/wo/lightbox/login_or_register';
+			var rel = '';
+			var options = {
+				height : 260,
+				width : 600,
+				focus : 'username_or_email'
+			};
+		}
+		else
+		{
+			var caption = '登录叽歪';
+			var url = '/wo/lightbox/ip_driftbottle';
+			var rel = '';
+			var options = {
+				height : 260,
+				width : 600
+			};
+		}
 
 		TB_show(caption, url, rel, options);
 		return false;
+	},
+
+	anonymous : function()
+	{
+		var callback = JWAction.callback;
+		new Ajax( '/wo/ajax/get_anonymous_user_id', {
+			method: 'POST',
+			headers: { 'AJAX' : true },
+			data : '',
+			onSuccess: function(responseText, x)
+			{
+				var flag = responseText.substring(0,1);
+				if ( '+' == flag )
+				{
+					try{
+						current_user_id = responseText.substring(1);
+						callback();
+					}catch(e){}
+				}
+			}
+		}).request();
 	},
 
 	login: function(username, password)
@@ -66,6 +100,39 @@ var JWAction =
 		return false;
 	},
 
+	register: function(username, password_one, password_confirm)
+	{
+		username = ( username == null ) ? $('username').value : username ;
+		password_one = ( password_one == null ) ? $('password_one').value : password_one ;
+		password_confirm = ( password_confirm == null ) ? $('password_confirm').value : password_confirm ;
+
+		var callback = JWAction.callback;
+
+		new Ajax( '/wo/ajax/register', {
+			method: 'POST',
+			headers: { 'AJAX' : true },
+			data: 'username='+username+'&password_one='+password_one+'&password_confirm='+password_confirm,
+			onSuccess: function(responseText, x) 
+			{
+				var flag = responseText.substring(0,1);
+				if ( '+' == flag )
+				{
+					try{
+						current_user_id = responseText.substring(1);
+						callback();
+					}catch(e){}
+				}
+				else
+				{
+					if( $('registerTips') )
+						$('registerTips').innerHTML = responseText.substring(1);
+				}
+			}
+		}).request();
+
+		return false;
+	},
+
 	updateStatus : function()
 	{
 		var callback = function()
@@ -78,7 +145,7 @@ var JWAction =
 			return false;
 		};
 
-		return this.isLogined( callback ) ? callback() : false;
+		return this.isLogined( callback, true ) ? callback() : false;
 	},
 
 	updateThread: function()
@@ -96,7 +163,7 @@ var JWAction =
 			return false;
 		};
 
-		return this.isLogined( callback ) ? callback() : false;
+		return this.isLogined( callback, true ) ? callback() : false;
 	},
 
 	redirect : function( o )

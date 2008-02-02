@@ -106,7 +106,16 @@ class JWLogin {
 
 		$_SESSION['login_redirect_url'] = $_SERVER['SCRIPT_URI'];
 
-		header ("Location: /wo/login"); 
+		if ( isset($_SESSION['logout_redirect_url']) 
+			&& $_SESSION['logout_redirect_url']=$_SESSION['login_redirect_url'])
+		{
+			unset($_SESSION['logout_redirect_url']);
+			header("Location: /");
+		}
+		else
+		{
+			header ("Location: /wo/login"); 
+		}
 		exit(0);
 	}
 
