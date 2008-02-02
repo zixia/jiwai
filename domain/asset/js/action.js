@@ -292,5 +292,15 @@ var JWAction =
 		};
 
 		return this.isLogined( callback, false ) ? callback() : false;
+	},
+
+	onEnterSubmit : function( event, o )
+	{
+		if( event.keyCode==13 )
+		{
+			var mission = $(o).getProperty('mission');
+			return eval( mission );
+		}
+		return false;
 	}
 };

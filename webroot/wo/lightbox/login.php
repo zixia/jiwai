@@ -60,8 +60,8 @@ if ( array_key_exists('username_or_email',$_POST) )
 <div id="wtLightbox">
 <h2 class="red" id="loginTips">您还没有登录，请先登录</h2>
 <form id="f" method="POST" action="/wo/lightbox/login">
-	<p class="lightbox_login">用户名：<input name="username_or_email" id="username_or_email" type="text" class="inputStyle" /></p>
-	<p class="lightbox_login">密<span class="mar">码</span>：<input name="password" type="password" id="password" class="inputStyle" onkeydown="if(event.keyCode==13) return JWAction.login();"/></p>
+	<p class="lightbox_login">用户名：<input name="username_or_email" id="username_or_email" type="text" class="inputStyle" mission="JWAction.register();" onKeyDown="JWAction.onEnterSubmit(event,this);" /></p>
+	<p class="lightbox_login">密<span class="mar">码</span>：<input name="password" type="password" id="password" class="inputStyle" mission="JWAction.register();" onKeyDown="JWAction.onEnterSubmit(event,this);" /></p>
 
 	<p class="po"><a href="/wo/account/create">新用户注册</a></p>
 
