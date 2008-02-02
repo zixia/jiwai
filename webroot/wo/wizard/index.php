@@ -57,7 +57,7 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 0-
 <body>
 <div id="IndexContainer">
     <div class="containerL">
-	    <a href="<?php echo JW_SRVNAME;?>"><img src="<?php echo JWTemplate::GetAssetUrl('/images/logo.gif');?>" alt="叽歪网" title="叽歪网" width="138" height="57" /></a>
+    	<div id="jiwaiLogo"><a href="http://JiWai.de/">叽歪网</a></div>
 	</div>
 		<div class="containerTopR"><img src="<?php echo JWTemplate::GetAssetUrl('/images/tour_03.gif');?>" alt="随时随地记录与分享" title="随时随地记录与分享" width="238" height="39" />
 </div>
