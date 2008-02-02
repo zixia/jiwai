@@ -9,9 +9,9 @@ $new_user_info = @$_POST['user'];
 $birthday_info = @$_POST['birthday'];
 $outInfo = $user_info;
 $birthday_array = explode("-", $outInfo['birthday'], 3);
-$birthday_year = $birthday_array[0];
-$birthday_month = $birthday_array[1];
-$birthday_day = $birthday_array[2];
+$birthday_year = @$birthday_array[0];
+$birthday_month = @$birthday_array[1];
+$birthday_day = @$birthday_array[2];
 
 if ( $new_user_info )
 {

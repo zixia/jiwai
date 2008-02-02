@@ -178,7 +178,7 @@ class JWNudge {
 			return null;
 
 		$deviceRow = $deviceRows[ $deviceSendVia ];
-		$user_info = JWDB_Cache_User::GetUserInfo( $deviceRow['idUser'] );
+		$user_info = JWUser::GetUserInfo( $deviceRow['idUser'] );
 		$online = JWIMOnline::GetDbRowByAddressType( $deviceRow['address'] , $deviceSendVia );
 		if( false == empty( $online ) && 'OFFLINE' == $online['onlineStatus'] && 'N' == $user_info['isReceiveOffline'])
 			return null;
