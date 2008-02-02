@@ -1,7 +1,4 @@
 <?php
-
-
-
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
@@ -40,10 +37,10 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 
 		if ( move_uploaded_file($file_info['tmp_name'], $user_named_file) )
 		{
-			$idPicture	= JWPicture::SaveBg($user_info['id'], $user_named_file);
-			if ( $idPicture )
+			$picture_id = JWPicture::SaveBg($user_info['id'], $user_named_file);
+			if ( $picture_id )
 			{
-				$user['profile_use_background_image'] = $idPicture;
+				$user['profile_use_background_image'] = $picture_id;
 			}
 			else
 			{
@@ -231,28 +228,26 @@ _HTML_;
 <li><a href="/wo/openid/">Open ID</a></li>
 </ul>
 </div><!-- leftdiv -->
+<?php
+$ui->GetUseBackgroundImage($picture_id);
+$picture_name = '无';
+if ( $picture_id )
+{
+	$pic_db_row = JWPicture::GetDbRowById($picture_id);
+	if ( false==empty($pic_db_row) )
+	{
+		$picture_name = $pic_db_row['fileName'] . '.' . $pic_db_row['fileExt'];
+	}
+}
+?>
 <div class="rightdiv">
 <div class="lookfriend">
-<form id="f" action="" method="post" name="f">
+<form id="f" action="" method="post" name="f" enctype="multipart/form-data">
 <input type="hidden" name="commit_x" value="1"/>
        <div class="protection">
-	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" name="user[profile_background_color]" size="30" type="text" value="#<?php echo $user['profile_background_color']?>" class="personalized_bc"/>
+	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" name="user[profile_background_color]" style="width:48px;" size="30" type="text" value="#<?php echo $user['profile_background_color']?>" class="personalized_bc"/>
 		&nbsp;&nbsp;<span class="black12" id="user_profile_background_color_val">#<?php echo $user['profile_background_color'];?></span>
-	    <p><span class="black15bold">背景图片:</span><input class="checkbox" <?php 
-						$picture_name 	= '无';
-						$picture_id		= 0;
-						if ( $user['profile_use_background_image'] )
-						{
-							$pic_db_row = JWPicture::GetDbRowById($user['profile_use_background_image']);
-							
-							if ( !empty($pic_db_row) )
-							{
-								echo ' checked="checked" ';
-								$picture_name 	= $pic_db_row['fileName'] . '.' . $pic_db_row['fileExt'];
-								$picture_id		= $pic_db_row['idPicture'];
-							}
-						}
-					?> id="user_profile_use_background_image" name="user[profile_use_background_image]" type="checkbox" value="<?php echo $picture_id?>" />
+	    <p><span class="black15bold">背景图片:</span><input class="checkbox" id="user_profile_use_background_image" name="user[profile_use_background_image]" <?php if($picture_id) echo "checked";?> type="checkbox" value="checked" />
 					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" class="inputStyle2"/>
 					<br />
 		<div class="personalized">
