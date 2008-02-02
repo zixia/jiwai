@@ -1034,7 +1034,7 @@ _SQL_;
 			}
 
 
-			if ( $jsLink )
+			if ( $jsLink && false )
 			{
 				$url_str = <<<_HTML_
 					<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$url_domain$url_path');return false;">http://$url_domain/...</a>
@@ -1044,11 +1044,11 @@ _HTML_;
 			{
 				if( $urchin ) {
 					$url_str = <<<_HTML_
-						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
+						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain$url_path</a>
 _HTML_;
 				}else{
 					$url_str = <<<_HTML_
-						<a class="extlink" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
+						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/$url_path</a>
 _HTML_;
 				}
 			}

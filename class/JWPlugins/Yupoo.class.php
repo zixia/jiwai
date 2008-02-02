@@ -22,7 +22,7 @@ class JWPlugins_Yupoo{
 			$href = $string;
 			return array(
 				'type' => 'html',
-				'html' => '<a href="' .$href. '" target="_blank"><img src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
+				'html' => '<a href="' .$href. '" target="_blank" rel="nofollow"><img src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
 			);
 		}
 		return null;
