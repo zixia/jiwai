@@ -484,6 +484,7 @@ _SQL_;
 			'nameUrl' => @$userInfo['nameUrl'],
 			'location' => @$userInfo['location'],
 			'protected' => $userInfo['protected'],
+			'idPicture' => @$userInfo['idPicture'],
 			'isWebUser' => $userInfo['isWebUser'],
 			'ipRegister' => @ip2long($userInfo['ip']),
 			'srcRegister' => @$userInfo['srcRegister'],
