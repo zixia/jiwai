@@ -70,7 +70,7 @@ _HTML_;
 		}
 	}
 
-	$nameUrl = $_POST['nameUrl'];
+	$nameUrl = isset($_POST['nameUrl']) ? $_POST['nameUrl'] : null;
 	$oldNameUrl = $user_info['nameUrl'];
 	if( $nameUrl && ('N'==$user_info['isUrlFixed'] ))
 	{

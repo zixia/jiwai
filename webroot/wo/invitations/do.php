@@ -153,7 +153,7 @@ function do_invite_friend_with_email( $emails, $user, $subject=null )
 		'template_file' => 'html/Invitation.html',
 	);
 
-	$friends_emails = $_POST['friends_emails'];
+	$friends_emails = isset($_POST['friends_emails']) ? $_POST['friends_emails'] : array();
 	$subject = ($subject==null)
 		? "你的朋友 $user[nameScreen]($user[nameFull]) 邀请你加入叽歪"
 		: $subject;
