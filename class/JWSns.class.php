@@ -726,11 +726,11 @@ class JWSns {
 	/*
 	 * 完成邀请用户注册 
 	 */
-	static public function FinishInvite($idUser, $idInviter)
+	static public function FinishInvite($user_id, $invite_user_id)
 	{
-		$idUser = JWDB::CheckInt( $idUser );
-		$idInviter = JWDB::CheckInt( $idInviter );
-		JWSns::CreateFollowers  ( $idUser, array($idInviter), true );
+		$user_id = JWDB::CheckInt( $user_id );
+		$invite_user_id = JWDB::CheckInt( $invite_user_id );
+		JWSns::CreateFollowers  ( $invite_user_id, array($user_id), true );
 
 		return true;
 	}
