@@ -1076,7 +1076,7 @@ _HTML_;
 
 			$reply_to_user_name_url = $reply_to_user['nameUrl'];
 			$reply_to_user_name_screen = $reply_to_user['nameScreen'];
-			$status = "@<a href='/$reply_to_user_name_url/'>$reply_to_user_name_screen</a> $status";
+			$status = '@<a href="/'.$reply_to_user_name_url.'/" rel="contact">'.$reply_to_user_name_screen.'</a> '.$status;
 		}else
 		{
 			$reply_to_user_name_url = null;
@@ -1095,7 +1095,7 @@ _HTML_;
 			}
 			if( false == empty( $tag_row ) )
 			{
-				$status = "[<a href='/t/$tag_row[name]/'>$tag_row[name]</a>] $status";
+				$status = '[<a href="/t/'.$tag_row['name'].'/" rel="tag">'.$tag_row['name'].'</a>] '.$status;
 			}
 		}
 

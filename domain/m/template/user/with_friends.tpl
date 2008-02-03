@@ -13,7 +13,7 @@
 	}-->
 	<!--{if (false == $protected)}-->
 		<li>
-			<a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
+			<a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}" rel="contact">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
 			<span class="stamp">
 			${JWStatus::GetTimeDesc($status['timeCreate'])}
 			通过

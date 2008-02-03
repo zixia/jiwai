@@ -948,7 +948,7 @@ _HTML_;
 
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_url;?>/"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $name_url;?>/" rel="contact"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont">
 		<div class="bg"></div><?php echo $status; ?><br/>
 		<?php
@@ -1777,10 +1777,7 @@ _HTML_;
 				else
 					$show_url = $url;
 
-				echo "<li>网站:  <a href='" . htmlspecialchars($url) . "'"
-											. " rel='" . htmlspecialchars($aUserInfo['nameFull']) . "'"
-											. " target='_blank' "
-											. ">" . htmlspecialchars($show_url) . "</a></li>\n";
+				echo '<li>网站:  <a href="'.htmlspecialchars($url).'" rel="me" target="_blank">'.htmlspecialchars($show_url).'</a></li>';
 			}
 			if ( JWUser::IsAnonymous($aUserInfo['id']) )
 			{

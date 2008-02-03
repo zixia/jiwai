@@ -78,7 +78,7 @@ JWTemplate::html_head(array(
 			<li>请点击这里<strong>接受邀请</strong>，注册后直接开始关注&nbsp;<?php echo $current_user_info['nameScreen']; ?>&nbsp;</li>
 			<li><a href="http://jiwai.de/wo/invitations/i/<?php echo $idInvited; ?>">http://jiwai.de/wo/invitations/i/<?php echo $idInvited; ?></a></li>
 			<li>你也可以在这里关注&nbsp;<?php echo $current_user_info['nameScreen']; ?>(<?php echo $current_user_info['nameFull']; ?>)&nbsp;的<strong>最新动态</strong></li>
-			<li><a href="http://jiwai.de/<?php echo $current_user_info['nameUrl']; ?>/">http://jiwai.de/<?php echo $current_user_info['nameUrl']; ?>/</a></li>
+			<li><a href="http://jiwai.de/<?php echo $current_user_info['nameUrl']; ?>/" rel="contact">http://jiwai.de/<?php echo $current_user_info['nameUrl']; ?>/</a></li>
 		</ul>
 		</div>
 		<!-- boxright -->

@@ -139,7 +139,7 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 	}
 ?>
         <div class="odd" id="status_<?php echo $message_row['id']; ?>">
-        <div class="head"><a href="/<?php echo $user_db_row['nameUrl']; ?>/"><img icon="<?php echo $user_db_row['id']; ?>" class="buddy_icon" width="48" height="48" title="<?php echo $user_db_row['nameScreen']; ?>" src="<?php echo $photo_url; ?>"/></a></div>
+        <div class="head"><a href="/<?php echo $user_db_row['nameUrl']; ?>/" rel="contact"><img icon="<?php echo $user_db_row['id']; ?>" class="buddy_icon" width="48" height="48" title="<?php echo $user_db_row['nameScreen']; ?>" src="<?php echo $photo_url; ?>"/></a></div>
     <div class="<?php echo $content_class_name;?>">
         <div class="bg"></div>
 

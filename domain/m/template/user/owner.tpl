@@ -6,7 +6,7 @@
 <!--{if $showProtected}-->
 <!--{foreach $statuses as $status}-->
 <li>
-	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
+	<!--{if $userInfo['idConference']}--><a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}" rel="contact">${getDisplayName($users[$status['idUser']])}</a>：<!--{/if}-->{$status['status']}
 	<span class="stamp">
 	${JWStatus::GetTimeDesc($status['timeCreate'])}
 	通过
