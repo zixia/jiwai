@@ -48,7 +48,7 @@ if ( $_POST )
 	<p style="font-size:14px;">我是&nbsp;<input type="text" name="signature" style="width:230px; height:18px; border:1px solid #999;" value="<?php echo $signature; ?>"/>,<br/>
 	<p style="font-size:14px;">我在叽歪网上发现了关于[冻灾]的一个网友新闻集合，直接回复短信就可以直接播报你的所见所闻了(免费)
 	<p>
-	  <input id="jwbutton" name="jwbutton" type="submit" class="submitbutton" value="发送" onclick="$('followForm').submit(); return false;"/>&nbsp;&nbsp;<input type="button" class="closebutton" value="取消" onclick="TB_remove();"/>
+	  <input id="jwbutton" name="jwbutton" type="submit" class="submitbutton" value="发送"/>&nbsp;&nbsp;<input type="button" class="closebutton" value="取消" onclick="TB_remove();"/>
 	</p>
 </div><!-- wtLightbox -->
 </form>
