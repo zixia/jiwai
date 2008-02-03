@@ -235,6 +235,7 @@ _HTML_;
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
+				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
@@ -245,6 +246,7 @@ _HTML_;
 		} else {
 			$nav = array(
 				'/wo/' => '首页',
+				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -254,6 +256,7 @@ _HTML_;
 		{
 			$nav = array(
 				'/wo/' => '首页',
+				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',

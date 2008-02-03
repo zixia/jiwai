@@ -1,5 +1,11 @@
   <div id="wtchannelsidebar">
   <div class="sidediv">
+  <?php 
+  	/* add for dongzai */
+  	if( 9259 == $tag_row['id'] )
+		echo '<a href="/wo/followings/followchannel/9259" onClick="return JWAction.redirect(this);"><img src="'. JWTemplate::GetAssetUrl('/images/topic/dongzai.gif'). '"/></a>';
+	/* end dongzai */
+  ?>
       <h2 class="forul">最近加入关注</h2>
 	  <div class="com" id="friend">
 	  <?php
@@ -17,7 +23,7 @@
 
 		  if( $n % 4==0 ) echo '<ul class="list">';
 				 ?>
-		<li><a href="/<?php echo $follower_info['nameScreen']?>/" title="<?php echo $follower_info['nameFull']?>" rel="contact"><img src="<?php echo $picture_url;?>" title="<?php echo $follower_info['nameFull']; ?>" border="0" /><span><?php echo $follower_info['nameScreen'];?></span></a></li>
+		<li><a href="/<?php echo $follower_info['nameScreen']?>/" title="<?php echo $follower_info['nameFull']?>" rel="contact"><img src="<?php echo $picture_url;?>" title="<?php echo $follower_info['nameFull']; ?>" icon="<?php echo $follower_info['id'];?>" class="buddy_icon" border="0" /><span><?php echo $follower_info['nameScreen'];?></span></a></li>
 	<?php  
 	if( $n % 4 == 3 ) echo '</ul>';
 				 if( $n >= $follower_show_num ) 

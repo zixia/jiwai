@@ -157,6 +157,9 @@ class JWRobotLingoBase {
 		/** 拦击 FOLLOW | F | LEAVE | L | DELETE **/
 		JWRobotLingoIntercept::Intercept_FollowOrLeave($robot_msg);
 
+		/** 拦击冻灾 */
+		JWRobotLingoIntercept::Intercept_TagDongZai($robot_msg);
+
 		$body = $robot_msg->GetBody();
 		$server_address = $robot_msg->GetServerAddress();
 		$type = $robot_msg->GetType();

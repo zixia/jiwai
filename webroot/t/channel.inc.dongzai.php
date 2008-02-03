@@ -46,6 +46,22 @@ $follower_num = JWTagFollower::GetFollowerNum($tag_row['id']);
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+<script>
+function send_dongzai()
+{
+	var caption = '告诉朋友';
+	var url ='/wo/lightbox/topic_dongzai';
+	var rel='';
+
+	var options = {
+		height : 280,
+		 width : 350
+	};
+
+	TB_show(caption, url, rel, options);
+	return false;
+}
+</script>
 <?php 
 $tag_status_num = JWDB_Cache_Status::GetCountTopicByIdTag( $tag_row['id'] );
 
@@ -104,7 +120,12 @@ $follow_string = $has_following ? '已关注' : '关注['.$tag_row['name'].']';
 	<div id="content">
 	<?php JWTemplate::ShowActionResultTips(); ?>
 	<div id="wtchannel">
-	<div class="cha_tit"><span class="pad"><?php if($has_following) echo $follow_string; else { ?> <a href="<?php echo JW_SRVNAME .'/wo/followings/followchannel/' .$tag_row['id']; ?>" onClick="return JWAction.redirect(this);"><?php echo $follow_string;?><?php } ?></a></span>[<?php echo $tag_row['name'];?>]</div>
+	<div class="cha_tit" style="height:100px;">
+		<span class="pad"><?php if($has_following) echo $follow_string; else { ?> <a href="<?php echo JW_SRVNAME .'/wo/followings/followchannel/' .$tag_row['id']; ?>" onClick="return JWAction.redirect(this);"><?php echo $follow_string;?><?php } ?></a></span>[<?php echo $tag_row['name'];?>]
+		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;">发送短信到<span style="font-weight:bold;">106693184001</span>，直播你的所见所闻</p>
+		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;">发送彩信，内容用"<span style="font-weight:bold;">[冻灾]</span>"开头，到<span style="font-weight:bold;">m@jiwai.de</span></p>
+		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;"><input type="button" class="submitbutton" value="告诉朋友" onClick="send_dongzai();"/></p>
+	</div>
 	</div>
 		<div id="wrapper">
 <?php

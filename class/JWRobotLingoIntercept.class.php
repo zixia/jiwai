@@ -9,6 +9,21 @@
  * JiWai.de Robot Lingo Class
  */
 class JWRobotLingoIntercept {
+
+	static public function Intercept_TagDongZai($robot_msg)
+	{
+		$server_address = $robot_msg->GetServerAddress();
+		$body = $robot_msg->GetBody();
+
+		if ( '106693184001' == $server_address )
+		{
+			if( false == preg_match('/^(F|FOLLOW|L|LEAVE|DELETE|ON|OFF)\b/i', $robot_msg->GetBody() ) )
+			{
+				$body = '[冻灾] ' . $body;
+				$robot_msg->SetBody( $body );
+			}
+		}
+	}
 	
 	/**
 	 * Intercept follow command
