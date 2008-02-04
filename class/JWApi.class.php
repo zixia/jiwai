@@ -68,7 +68,7 @@ class JWApi{
 		}
 		if( isset( $_SERVER['PHP_AUTH_USER'] ) )
 		{
-			$username_or_email = mb_convert_encoding($_SERVER['PHP_AUTH_USER'],'UTF-8','GB2312');
+			$username_or_email = mb_convert_encoding($_SERVER['PHP_AUTH_USER'],'UTF-8','UTF-8,GB2312');
 			$password = $_SERVER['PHP_AUTH_PW'];
 			return JWUser::GetUserFromPassword( $username_or_email, $password );
 		}

@@ -19,10 +19,11 @@ if( !$status ) {
 }
 $status = mb_convert_encoding( $status, "UTF-8", "GB2312,UTF-8");
 
-$idUser = JWApi::GetAuthedUserId();
-if( ! $idUser ){
-	JWApi::RenderAuth(JWApi::AUTH_HTTP);
+$idUser = mb_convert_encoding($idUser, 'UTF-8', 'GB2312,UTF-8');
+if( !$idUser && !($idUser=JWApi::GetAuthedUserId()) ){
+	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
+
 
 $device = 'api';
 $timeCreate = date("Y-m-d H:i:s");

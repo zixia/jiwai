@@ -9,7 +9,7 @@ $current_user_id    = $current_user_info['id'];
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
-$follower_show_num = 12;
+$follower_show_num = 36;
 
 //jiwai sth
 if( isset($_REQUEST['jw_status']))
