@@ -6,6 +6,7 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 
 $status = null;
 $idPartner = null;
+$idUser = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 

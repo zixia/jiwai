@@ -17,7 +17,7 @@ if( empty( $follower_user_row ) )
 	JWTemplate::RedirectToUrl('/');
 }
 
-if ( $_POST )
+if ( $_POST && isset($_POST['notification']) )
 {
 	if ( $current_user_id && $follower_user_id)
 	{
