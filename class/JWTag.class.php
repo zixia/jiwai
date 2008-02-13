@@ -13,7 +13,7 @@ class JWTag {
 
 	static public function IsValidTagName( $tag_name ) 
 	{
-		if( mb_strlen( $tag_name ) < 2 || mb_strlen( $tag_name ) > 20 ) 
+		if( strlen( $tag_name ) < 2 || mb_strlen( $tag_name ) > 20 ) 
 			return false;
 		if( false !== strpos( $tag_name, '#' ) )
 			return false;
