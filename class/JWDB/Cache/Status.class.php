@@ -192,6 +192,66 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		return $status_info;
 	}
 
+	/*
+	 * For JWStatus::GetStatusIdsFromSelfNReplies($idUser, $num, $start);
+	 */
+	static public function GetStatusIdsFromSelfNReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$max_num	= $start + $num;
+		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
+
+		// call back function & param
+		$ds_function 	= array('JWStatus','GetStatusIdsFromSelfNReplies');
+		$ds_param		= array($idUser,$mc_max_num);
+		// param to make memcache key
+		$mc_param		= array($idUser);
+
+
+		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction	($ds_function,$mc_param);
+
+		/**
+		 *	这个无法通过逻辑过期（性能问题），但是对实时性要求不高，所以 cache 1 min
+		 */
+		$expire_time	= 60;
+
+		$status_info	= JWDB_Cache::GetCachedValueByKey(
+									 $mc_key
+									,$ds_function
+									,$ds_param
+									,$expire_time
+								);
+
+		/**
+		 *	存在可能：由于以前 cache 了 $num 较小数字时候的返回结果，导致直接取回了数量不足的结果集
+		 *	所以对结果集的总数进行比对，如果数据不足，则删除数据，重新进行数据库查询
+		 *
+		 *	比如：1分钟前，有一次 GetStatusIdsFromReplies($num=100,$start=0)，则会 cache 住前 100 条数据
+					现在，我们调用 GetStatusIdsFromReplies($num=20,$start=100)，则会获取到刚刚 cache 的 100 条数据，不足
+					所以需要重新进行数据库查询，获取足够的数据：增加 $forceReload=true 的参数
+		 *
+		 */
+
+		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		{
+			$status_info	= JWDB_Cache::GetCachedValueByKey(
+										 $mc_key
+										,$ds_function
+										,$ds_param
+										,$expire_time
+										,true
+									);
+		}
+
+		if ( !empty($status_info['status_ids']) )
+		{
+			$status_info['status_ids'] = array_slice(	 $status_info['status_ids']
+														,$start,$num
+													);
+		}
+
+		return $status_info;
+	}
+
 	/**
 	 *	FIXME: not support idSince & $timeScince param.
 	 */
@@ -558,6 +618,33 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	}
 	
 
+	static public function GetStatusNumFromConference($idConference)
+	{
+		// call back function & param
+		$ds_function 	= array('JWStatus','GetStatusNumFromConference');
+		$ds_param		= array($idConference);
+		// param to make memcache key
+		$mc_param		= $ds_param;
+
+
+		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction	($ds_function,$mc_param);
+
+
+		/**
+		 *	这个无法通过逻辑过期（性能问题），但是对实时性要求不高，所以 cache 1 min
+		 */
+		$expire_time	= 60;
+
+		return JWDB_Cache::GetCachedValueByKey(
+									 $mc_key
+									,$ds_function
+									,$ds_param
+									,$expire_time
+								);
+
+
+	}
+
 	static public function GetStatusNumFromFriends($idUser)
 	{
 		// call back function & param
@@ -900,6 +987,66 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		);
 
 		return JWDB_Cache::UpdateTableRow( 'Status', $status_id, $up_array );
+	}
+
+	/**
+	 *	FIXME: not support idSince & $timeScince param.
+	 */
+	static public function GetStatusIdsFromPublic($num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$max_num		= $start + $num;
+		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
+
+		// call back function & param
+		$ds_function 	= array('JWStatus','GetStatusIdsFromPublic');
+		$ds_param		= array($mc_max_num);
+		// param to make memcache key
+		$mc_param		= array();
+
+
+		$mc_key 	= JWDB_Cache::GetCacheKeyByFunction	($ds_function,$mc_param);
+
+		/**
+		 *	这个无法通过逻辑过期（性能问题），但是对实时性要求不高，所以 cache 1 min
+		 */
+		$expire_time	= 60;
+
+		$status_info	= JWDB_Cache::GetCachedValueByKey(
+									 $mc_key
+									,$ds_function
+									,$ds_param
+									,$expire_time
+								);
+
+		/**
+		 *	存在可能：由于以前 cache 了 $num 较小数字时候的返回结果，导致直接取回了数量不足的结果集
+		 *	所以对结果集的总数进行比对，如果数据不足，则删除数据，重新进行数据库查询
+		 *
+		 *	比如：1分钟前，有一次 GetStatusIdsFromReplies($num=100,$start=0)，则会 cache 住前 100 条数据
+					现在，我们调用 GetStatusIdsFromReplies($num=20,$start=100)，则会获取到刚刚 cache 的 100 条数据，不足
+					所以需要重新进行数据库查询，获取足够的数据：增加 $forceReload=true 的参数
+		 *
+		 */
+
+		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		{
+			$status_info	= JWDB_Cache::GetCachedValueByKey(
+										 $mc_key
+										,$ds_function
+										,$ds_param
+										,$expire_time
+										,true
+									);
+		}
+
+		if ( !empty($status_info['status_ids']) )
+		{
+			$status_info['status_ids'] = array_slice(	 $status_info['status_ids']
+														,$start,$num
+													);
+		}
+
+		return $status_info;
 	}
 }
 ?>

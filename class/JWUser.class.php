@@ -693,11 +693,11 @@ _SQL_;
 		$user_info	= self::GetUserInfo($idUser);
 
 		
-		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? 'Y':'N';
-		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? 'Y':'N';
-		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? 'Y':'N';
-		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? 'Y':'N';
-		$noticeSettings['is_receive_offline']	= isset($noticeSettings['is_receive_offline']) 	? 'Y':'N';
+		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? $noticeSettings['auto_nudge_me']:'N';
+		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? $noticeSettings['send_new_friend_email']:'N';
+		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? $noticeSettings['send_new_direct_text_email']:'N';
+		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? $noticeSettings['allow_system_mail']:'N';
+		$noticeSettings['is_receive_offline']	= isset($noticeSettings['is_receive_offline']) 	? $noticeSettings['is_receive_offline']:'N';
 
 		if ( $user_info['noticeAutoNudge']!=$noticeSettings['auto_nudge_me'] )
 				$db_change_set['noticeAutoNudge'] = $noticeSettings['auto_nudge_me'];

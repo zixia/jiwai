@@ -9,14 +9,13 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 $user_setting	= JWUser::GetNotification($user_info['id']);
 
-
-//echo "<pre>";(var_dump($user_setting));
 if ( isset($_REQUEST['commit_x']) )
 {
-	$user_new_setting	= $_REQUEST['user'];
+	$user_new_setting	= $_POST['user'];
+	$user_setting['send_new_direct_text_email'] = !empty($user_new_setting['send_new_direct_text_email']) ? 'Y' : 'N';
+	$user_setting['allow_system_mail'] = !empty($user_new_setting['allow_system_mail']) ? 'Y' : 'N';
 
-
-	if ( ! JWUser::SetNotification($user_info['id'], $user_new_setting) )
+	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
 	{
 		JWSession::SetInfo('error', '通知设置由于系统故障未能保存成功，请稍后再试。');
 	}

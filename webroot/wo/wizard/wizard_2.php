@@ -65,11 +65,11 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 2-
 <div id="wizardFrame" class="wizardFrame">
 	<div id="wizardNav" class="wizardNav">
 		<ul>
-			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/";?>">叽歪网简介</a></li>
-			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_1";?>">1.手机博客</a></li>
-			<li class="navOn">2.QQ与MSN聊天</a></li>
-			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_3";?>">3.群发短信</a></li>
-			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_4";?>">4.叽歪大屏幕</a></li>
+			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/";?>"><span class="num">&</span>叽歪网简介</a></li>
+			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_1";?>"><span class="num">1</span>手机博客</a></li>
+			<li class="navOn"><span class="num">2</span>QQ与MSN聊天</li>
+			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_3";?>"><span class="num">3</span>群发短信</a></li>
+			<li class="navOff"><a href="<?php echo JW_SRVNAME ."/wo/wizard/wizard_4";?>"><span class="num">4</span>叽歪大屏幕</a></li>
 		</ul>
 	</div>
 	<div id="wizardContent">

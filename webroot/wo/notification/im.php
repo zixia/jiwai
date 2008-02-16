@@ -9,12 +9,13 @@
  
  $user_setting   = JWUser::GetNotification($user_info['id']);
  
- //echo "<pre>";(var_dump($user_setting));
  if ( isset($_REQUEST['commit_x']) )
  {
-     $user_new_setting   = $_REQUEST['user'];
+	$user_new_setting	= $_POST['user'];
+	$user_setting['auto_nudge_me'] = !empty($user_new_setting['auto_nudge_me']) ? 'Y' : 'N';
+	$user_setting['is_receive_offline'] = !empty($user_new_setting['is_receive_offline']) ? 'Y' : 'N';
  
-	if ( ! JWUser::SetNotification($user_info['id'], $user_new_setting) )
+	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
 	{
 		JWSession::SetInfo('error', '通知设置由于系统故障未能保存成功，请稍后再试。');
 	}

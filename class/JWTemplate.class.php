@@ -77,26 +77,26 @@ _HTML_;
 		$asset_url_js_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.js' );
 		$asset_url_js_ac_content = self::GetAssetUrl('/js/AC_RunActiveContent.js');
 
-		$title = '叽歪de / ';
+		$title = '叽歪 / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';
 		else								$title .= $options['title'];
 
 		if ( empty($options['keywords']) )	$keywords = <<<_STR_
 叽叽歪歪,唧唧歪歪,叽歪网,歪歪,唧唧,叽叽,唧歪网,矶歪de,唧歪de,唧歪的,微博客,迷你博客,碎碎念,絮絮叨叨,絮叨,jiwai,jiwaide,tiny blog,im nick
 _STR_;
-		else								$keywords = "叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽," . $options['keywords'];
+		else								$keywords = "叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽," . htmlspecialchars($options['keywords']);
 
 		if ( empty($options['description']) )	$description = <<<_STR_
-叽歪de - 通过手机短信、聊天软件（QQ/MSN/GTalk/Skype）和Web，进行组建好友社区并实时与朋友分享的微博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
+叽歪网 - 通过手机短信、聊天软件（QQ/MSN/GTalk/Skype）和Web，进行组建好友社区并实时与朋友分享的微博客服务。快来加入我们，踏上唧唧歪歪、叽叽歪歪的路途吧！
 _STR_;
-		else									$description = $options['description'] . ",叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽" ;
+		else									$description = htmlspecialchars($options['description']) . ",叽叽歪歪,唧唧歪歪,歪歪,唧唧,叽叽" ;
 
-		if ( empty($options['author']) )	$author = htmlspecialchars('叽歪de <wo@jiwai.de>');
-		else								$author = $options['author'];
+		if ( empty($options['author']) )	$author = htmlspecialchars('叽歪网 <wo@jiwai.de>');
+		else								$author = htmlspecialchars($options['author']);
 
 
 		$rss_html = <<<_HTML_
-	<link rel="alternate"  type="application/rss+xml" title="叽歪de - [RSS]" href="http://feed.blog.jiwai.de" />
+	<link rel="alternate"  type="application/rss+xml" title="叽歪网 - [RSS]" href="http://feed.blog.jiwai.de" />
 _HTML_;
 
 		if ( !empty($options['rss']) )	
@@ -194,10 +194,10 @@ _HTML_;
 			echo "<script language=\"javascript\">AC_FL_RunContent = 0;</script><script type=\"text/javascript\" src=\"$asset_url_js_ac_content\"></script>";
 		?>
 
-	<link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
+	<link rel="start" href="<?php echo JW_SRVNAME;?>" title="叽歪网首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
-	<meta name="DC.title" content="叽歪de" />
-	<meta name="copyright" content="copyright 2007 http://jiwai.de" />
+	<meta name="DC.title" content="叽歪网" />
+	<meta name="copyright" content="copyright 2007-2008 <?php echo JW_SRVNAME;?>" />
 	<meta name="robots" content="all" />
 <?php
 	echo $ui_css;
@@ -314,7 +314,7 @@ _HTML_;
 ?>
 <div id="header">
 	<div id="navigation">
-		<h2><a class="header" href="<?php echo JW_SRVNAME;?>">叽歪de</a></h2>
+		<h2><a class="header" href="<?php echo JW_SRVNAME;?>">叽歪网</a></h2>
 		<div id="navtip" class="navtip">
 		<form id='f3' action="<?php echo JW_SRVNAME . '/wo/search/users'; ?>" style="display:inline;">
 		<table class="navtip_table"><tr>
@@ -454,7 +454,7 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007 叽歪de</li>
+		<li class="first">&copy; 2007 叽歪网</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a></li>
 		<li><a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a></li>
@@ -476,19 +476,19 @@ _HTML_;
 	}
 
 	static public function footer2()
-	{    
+	{
 ?>
-			<div id="footer">
-			<h3>Footer</h3>
-			<span >&copy; 2007-2008 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-			<a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a>
-			<a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a>
-			<a href="http://blog.jiwai.de/" target="_blank">Blog</a>
-			<a href="http://help.jiwai.de/Api" target="_blank">API</a>
-			<a href="http://help.jiwai.de/" target="_blank">帮助</a>
-			<a href="http://help.jiwai.de/Links" target="_blank">友情链接</a>
-			<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>
-			</div>       
+<div id="footer">
+	<h3>Footer</h3>
+		<span >&copy; 2007-2008 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a>
+		<a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a>
+		<a href="http://blog.jiwai.de/" target="_blank">Blog</a>
+		<a href="http://help.jiwai.de/Api" target="_blank">API</a>
+		<a href="http://help.jiwai.de/" target="_blank">帮助</a>
+		<a href="http://help.jiwai.de/Links" target="_blank">友情链接</a>
+		<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>
+</div>
 
 <?php
 		JWTemplate::GoogleAnalytics();
@@ -689,7 +689,7 @@ _TAB_;
 		$isMms = false;
 
 		if ( $noneStatus )
-			$status = "迄今为止还没有叽歪过！";
+			$status = "到目前为止还没有叽歪过！";
 		else if ( $protected ) 
 			$status = '我只和我关注的人分享我的叽歪。';
 
@@ -1763,6 +1763,11 @@ _HTML_;
 		<ul class="about">
 <?php
 			echo "<li>名字: " . htmlspecialchars($aUserInfo['nameFull']) . "</li>\n";
+			if ( !empty($aUserInfo['gender']) && 'secret'!=$aUserInfo['gender'] ) {
+				echo "<li>性别: ";
+				echo 'male'==$aUserInfo['gender']?"男":"女";
+				echo "</li>\n";
+			}
 			if ( !empty($aUserInfo['location']) ) {
 				$location = JWLocation::GetLocationName( $aUserInfo['location'] );
 				echo "<li>位置: $location</li>\n";
@@ -1837,9 +1842,9 @@ _HTML_;
 			if ( isset($aDeviceInfo_rows[$key]) && empty($aDeviceInfo_rows[$key]['secret']) )
 			{
 				$imicoUrlHref = $isUserLogined ?
-					( $key=='sms' ? $imicoUrlSms : $imicoUrlIm ) 
+					( $key!='sms' ? $imicoUrlIm : $imicoUrlSms ) 
 					: 
-					( $key=='sms' ? $imicoUrlHelpSms : $imicoUrlHelpIm );
+					( $key!='sms' ? $imicoUrlHelpIm : $imicoUrlHelpSms );
 				echo <<<_HTML_
 					<a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-${key}.gif title="$bindTip" title="$bindTip" /></a>
 _HTML_;
@@ -2051,7 +2056,7 @@ _HTML_;
  			<li id="status_count"><a href="/$user/">$countInfo[status]&nbsp;条叽歪</a></li>
 _HTML_;
  
- 		if ( 'wo'!=$user && @$countInfo['mms'] )
+ 		if ( @$countInfo['mms'] )
  		{
  			echo <<<_HTML_
  			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
@@ -2209,7 +2214,7 @@ _HTML_;
 
 	static public function sidebar_rss ( $type, $id , $forceName=null)
 	{
-   		$rss_url = "http://api.jiwai.de/statuses/";
+   		$rss_url = "http://api.".JW_HOSTNAME."/statuses/";
 
 		if( is_numeric($id) || $id == 'help' ) {
 			$idNumber = $id;
@@ -2301,7 +2306,7 @@ _HTML_;
 	 */
 	static public function rss ( $type, $id )
 	{
-   		$rss_url = "http://api.jiwai.de/statuses/";
+   		$rss_url = "http://api.".JW_HOSTNAME."/statuses/";
 
 		switch ( $type )
 		{
@@ -2337,7 +2342,7 @@ _HTML_;
 				'UrlContactUs' => '/t/帮助留言板/',
 				'UrlRegister' => '/wo/account/create',
 				'UrlLogin' => '/wo/login',
-				'UrlResetPassword' => 'http://jiwai.de/wo/account/confirm_password_reset',
+				'UrlResetPassword' => '/wo/account/confirm_password_reset',
 				'UrlPublicTimeline' => '/public_timeline/',
 				'UrlTermOfService' => 'http://help.jiwai.de/TOS',
 				'UrlFaq' => 'http://help.jiwai.de/FAQs',
@@ -2480,7 +2485,7 @@ _HTML_;
 			case 'alpha':
 				$msg = <<<_MSG_
 <p>
-这里是叽歪de(<strong>Alpha</strong>)测试系统。Alpha测试的定义为：在有开发者关注下对系统进行使用测试。如果你想试用最新的，还在开发中的功能，那么可以在这里继续访问。但是需要注意的是，系统也许会经常的工作不正常，甚至出错，所以我们建议你至少使用<a href='http://beta.$domain_url'>Beta系统</a>。
+这里是叽歪网(<strong>Alpha</strong>)测试系统。Alpha测试的定义为：在有开发者关注下对系统进行使用测试。如果你想试用最新的，还在开发中的功能，那么可以在这里继续访问。但是需要注意的是，系统也许会经常的工作不正常，甚至出错，所以我们建议你至少使用<a href='http://beta.$domain_url'>Beta系统</a>。
 </p>
 _MSG_;
 				break;
@@ -2488,7 +2493,7 @@ _MSG_;
 			case 'beta':
 				$msg = <<<_MSG_
 <p>
-这里是叽歪de(<strong>Beta</strong>)测试系统。如果你想试用最新的，正在准备升级的功能时，欢迎在这里继续访问。最新的系统功能可能有不稳定的情况，欢迎向我们<a href='mailto:wo@jiwai.de'>报告BUG</a>。如果你希望使用最为稳定的版本，请来正式运行的网站：<a href='http://$domain_url'>叽歪de</a>。
+这里是叽歪网(<strong>Beta</strong>)测试系统。如果你想试用最新的，正在准备升级的功能时，欢迎在这里继续访问。最新的系统功能可能有不稳定的情况，欢迎向我们<a href='mailto:wo@jiwai.de'>报告BUG</a>。如果你希望使用最为稳定的版本，请来正式运行的网站：<a href='http://$domain_url'>叽歪网</a>。
 </p>
 _MSG_;
 				break;
@@ -2599,8 +2604,8 @@ _HTML_;
 				$list_user_icon_url = $picture_url_row[$list_user_picture_id];
 
 			$odd_even = ($n++ % 2) ? 'odd' : 'even';
-			$statusNum = JWStatus::GetStatusNum( $list_user_id );
-			$mmsNum = JWStatus::GetStatusMmsNum( $list_user_id );
+			$statusNum = JWDB_Cache_Status::GetStatusNum( $list_user_id );
+			$mmsNum = JWDB_Cache_Status::GetStatusMmsNum( $list_user_id );
 		
 			$timeUpdate = $list_user_row['timeStamp'];
 

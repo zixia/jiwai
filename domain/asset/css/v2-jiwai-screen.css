@@ -9,7 +9,7 @@ ul { list-style: none;}
 a img, form, fieldset {border:0;}
 em{font-style:normal;}
 button {cursor:pointer;}
-.imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
+.imagb {border:1px solid #CDCBCC; background-color:#FFFFFF; padding:1px;}
 input:focus, .focus, textarea:focus{font-size:12px;color:#666666; background-color:#FFF7E7;}
 fieldset.user_search {margin-bottom:3px;}
 fieldset.user_search .friend {border:2px solid red;}
@@ -18,8 +18,8 @@ fieldset th {font-weight:normal;text-align:right;width:11em;font-size:14px;line-
 fieldset th,fieldset td {word-break:break-all;}
 input,button, select{ font-size:12px;vertical-align:middle;padding: 3px 0 0 5px;font-family:verdana,Arial,Helvetica,sans-serif;}
 label{cursor:pointer;}
-.inputstyle{padding: 5px 0 0 5px;color:#666;border-top: #333333 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-left: #333333 1px solid;height:17px;}
-button.submitbutton,input.submitbutton{ font-size:12px;height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#ff6000;color:#fff;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
+.inputstyle{padding: 5px 0 0 5px;color:#060606;border-top: #333333 1px solid;border-right: #CFCFCF 1px solid;border-bottom: #E4E4E4 1px solid;border-left: #333333 1px solid;height:17px;}
+button.submitbutton,input.submitbutton{ font-size:12px;height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#FFEBD7 #993200 #993200 #FFEBD7; background:#FF6000;color:#FFFFFF;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 button.submitbutton,input.submitbutton:focus { border-color:#000;}
 button.closebutton, input.closebutton { font-size:12px;height:23px; padding:0px 7px 1px 11px; border:1px solid; border-color:#F9F8F9 #666666 #666666 #F9F8F9; background:#F2F2F2;color:#000;cursor:pointer; line-height:21px; letter-spacing: 0.2em; }
 button.closebutton:focus,input.closebutton:focus { border-color:#000;}
@@ -38,10 +38,10 @@ html>body #jiwaiLogo {background:url(../images/org-logo.png); no-repeat;}
 
 /*containerL*/
 .left {float: left;}
-#IndexContainer {width: 780px;margin: 0 auto;height: 1%;overflow: hidden;}
+#IndexContainer {width: 780px;margin: 0 auto;height: 1%;overflow: hidden;background-color:#FFFFFF;}
 #IndexContainer .containerL {float: left;width: 520px;padding: 15px 0 0 0;text-align: left;}
 #IndexContainer .containerL img {margin:0 0 5px 6px !important;margin: 0 0 3px 6px;}
-#IndexContainer .containerTopR {float: right;width: 238px;padding: 30px 0 0 0;text-align: left;}
+#IndexContainer .containerTopR {float: right;width: 238px;padding: 30px 7px 0 0;text-align: left;}
 #IndexContainer .containerL #flash {width: 520px;background: url(../images/bg.gif) repeat-x 0 0;line-height: 0;}
 #IndexContainer .containerL ul {margin: 7px 7px 0 0;}
 #IndexContainer .containerL li {height: 49px;padding: 17px 0 0 85px;list-style: none;text-align: left;line-height: 20px;}
@@ -78,10 +78,10 @@ html>body #jiwaiLogo {background:url(../images/org-logo.png); no-repeat;}
 #IndexContainer #footer h3 {position:absolute; left:-88888px; overflow:hidden;}
 
 /*wizardNav-------------*/
-#wizardNav{width: 780px;height: 36px;font-family: Arial, Helvetica, sans-serif;}
+#wizardNav{width: 770px;height: 36px;font-family: Arial, Helvetica, sans-serif;}
 .wizardNav {padding-left: 10px; text-align: center; background-color: #F9F9F9;}
-#wizardNav .navOn{width:135px;height: 25px;color:#FF9900;margin: 11px 3px 0px 2px; background-color: #ffffff; font-weight: bold; line-height: 24px;}
-#wizardNav .navOn1{width:135px;height: 25px;color:#FF9900;margin: 11px 3px 0px 2px; background-color: #ffffff;line-height: 24px;}
+#wizardNav .navOn{width:135px;height: 25px;color:#FF9900;margin: 11px 3px 0px 2px; background-color: #FFFFFF; font-weight: bold; line-height: 24px;}
+#wizardNav .navOn1{width:135px;height: 25px;color:#FF9900;margin: 11px 3px 0px 2px; background-color: #FFFFFF;line-height: 24px;}
 #wizardNav .navOff{width: 135px;height:24px; margin: 11px 3px 1px 2px;line-height: 24px;}
 #wizardNav .num{ font-size:19px;color: #ff9900;padding:0 8px 0 0;}
 #wizardNav a.num:link{color:#999999;text-decoration:none;}
@@ -99,13 +99,13 @@ html>body #jiwaiLogo {background:url(../images/org-logo.png); no-repeat;}
 /**/
 
 /*  jiwai wizard  08-01-11*/
-#wizardFrame{width: 780px;margin: 0px auto;text-align: left;font-family: Arial, Helvetica, sans-serif;}
+#wizardFrame{width: 780px;margin: 0px auto;text-align: left;font-family: Arial, Helvetica, sans-serif;background-color:#FFFFFF;}
 .wizardFrame {font-size: 14px; line-height:20px;}
 
-#wizardContent{width: 780px;}
+#wizardContent{width: 780px;background-color:#FFFFFF;}
 #wizardContent .gray{ font-size: 12px; color: #999999;text-indent: 0em;}
 
-#wizardText{width:360px;float: left;margin:0 0 0 10px;background-color: #ffffff;font-family: Arial, Helvetica, sans-serif;}
+#wizardText{width:360px;float: left;margin:0 0 0 10px;background-color: #FFFFFF;font-family: Arial, Helvetica, sans-serif;}
 .winzardText {color: #333333;}
 #wizardText .Intro {width:360px;float: left;padding:25px 0 8px 0; clear:both;}
 #wizardText .IntroTitle {margin:0 0 5px 0!important; margin:0 0 15px 0;font-size: 25px;font-weight: bold;font-family: Arial, Helvetica, sans-serif; line-height: 40px;text-indent: 0em;}
@@ -146,7 +146,7 @@ html>body #jiwaiLogo {background:url(../images/org-logo.png); no-repeat;}
 #wizardPic{width: 399px;float: right; margin:30px 0 0 0;}
 .wizardPic{text-align: center; vertical-align: top;}
 
-#wizardScreen{width:740px;float: left;margin:0 10px 0 10px;background-color: #ffffff;font-family: Arial, Helvetica, sans-serif; }
+#wizardScreen{width:740px;float: left;margin:0 10px 0 10px;background-color: #FFFFFF;font-family: Arial, Helvetica, sans-serif; }
 .wizardScreen{ color: #333333;}
 #wizardScreen p{margin-bottom: 15px;}
 #wizardScreen .title{height: 50px; margin:0 0 0 0;font-size: 25px;font-weight: bold;line-height: 40px;}
