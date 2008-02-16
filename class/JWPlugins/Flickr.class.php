@@ -78,18 +78,16 @@ class JWPlugins_Flickr
 
         $rsp = file_get_contents( $rpc_url );
 
-        $rsp_obj = unserialize( $rsp );
+        $rsp_obj = @unserialize( $rsp );
 
-        $info_rows = array(
+	if ( null==$rsp_obj )
+		return array();
+
+        return array(
             'photo_server' => $rsp_obj['photo']['server'],
             'photo_id'  => $rsp_obj['photo']['id'],
             'photo_secret' => $rsp_obj['photo']['secret'],
-        
         );
-
-        return $info_rows;
-        
-
     }
 
     static public function BuildPhotoUrl( $photo_info )
