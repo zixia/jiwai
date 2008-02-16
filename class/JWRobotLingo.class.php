@@ -1062,7 +1062,7 @@ class JWRobotLingo {
 		 * Temporary limit to send message
 		 */
 		if( $friend_row['messageFriendOnly']=='Y' 
-			&& false == JWFollower::IsFollower( $friend_id, $address_user_id ) )
+			&& false == JWFollower::IsFollower( $address_user_id, $friend_id ) )
 		{
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_NOPERM', array(
 				$friend_row['nameScreen'],
