@@ -1061,14 +1061,15 @@ class JWRobotLingo {
 		/**
 		 * Temporary limit to send message
 		 */
-		$address_user = JWDB_Cache_User::GetDbRowById( $address_user_id );
-		if( $address_user['messageFriendOnly']=='Y' 
-			&& false == JWFollower::IsFollower( $address_user_id, $friend_id ) )
+		if( $friend_row['messageFriendOnly']=='Y' 
+			&& false == JWFollower::IsFollower( $friend_id, $address_user_id ) )
 		{
-			return null;
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_D_NOPERM', array(
+				$friend_row['nameScreen'],
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}
 		/** End Temporary **/
-
 
 		if ( JWSns::CreateMessage($address_user_id, $friend_id, $message_text, $type) ) {
 			if( false == in_array( $type, array('sms', 'api') ) ) {
