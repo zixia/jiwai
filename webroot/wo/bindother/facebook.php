@@ -51,13 +51,13 @@ JWTemplate::html_head(array(
 		$bind_login_name = JWFacebook::GetName($device_row['address']);
 				echo <<<_HTML_
 	   <p><span class="black15bold">已绑定你的${type}帐号${bind_login_name}</span> （<a  href="/wo/devices/destroy/${device_row[id]}" onClick="if ( confirm('你真的要删除 ${type} 绑定吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m); f.submit(); }; return false;">删除并重设</a>）</p>
-	   <p>在<a href="http://apps.facebook.com/jiwaide/?verify">叽歪de Facebook Application</a>上即可更新你的信息</p>
+	   <p>在<a href="http://apps.facebook.com/jiwaide/?verify" target="_blank">叽歪de Facebook Application</a>上即可更新你的信息</p>
 _HTML_;
 }
 			else if (!empty($device_row['secret']))
 				echo <<<_HTML_
 	   <p class="black15bold">绑定facebook</p>
-	   <p class="bindingblack">1. 请访问 <a href="http://apps.facebook.com/jiwaide/?verify">叽歪de Facebook Application</a> 并安装</p>
+	   <p class="bindingblack">1. 请访问 <a href="http://apps.facebook.com/jiwaide/?verify" target="_blank">叽歪de Facebook Application</a> 并安装</p>
 	   <p class="bindingblack">2. 输入你的叽歪网用户名和以下验证码</p>
        <p class="bindingblack">&nbsp;&nbsp;&nbsp;&nbsp;验证码：<input id="secret_${type}" type="text" value="${device_row['secret']}" readonly class="inputStyle3" onclick="JiWai.copyToClipboard(this);"/><span class="copytips" id="secret_${type}_tip">验证码复制成功</span></p>
 	   <p class="bindingblack">3. 点击“关联”确定</p>

@@ -9,7 +9,7 @@
  
  $user_setting   = JWUser::GetNotification($user_info['id']);
  
- if ( isset($_REQUEST['commit_x']) )
+ if ( isset($_REQUEST['commit_x']) && isset($_POST['user'] ))
  {
 	$user_new_setting	= $_POST['user'];
 	$user_setting['auto_nudge_me'] = !empty($user_new_setting['auto_nudge_me']) ? 'Y' : 'N';
