@@ -203,6 +203,7 @@ class JWNotify{
 				'not_reply' => null==$receiver_user,
 				'not_conference' => null==$conference,
 				'bind' => $bindOther,
+				'sender' => $status_row['idUser'],
 			);
 
 			$queue_instance = JWPubSub::Instance('spread://localhost/');

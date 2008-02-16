@@ -6,10 +6,13 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 	public function OnData($channel, $data)
 	{
 		$device = $data['device'];
-		$bindother = $data['bind'];
+		$sender = $data['sender'];
 
-		if ( 'api' == $device && JWCredit::IsCreditIdUser($bindother['idUser'], JWCredit::CREDIT_HONOR, JWCredit::OP_NOTLESSTHAN))
+		if ( 'api' == $device 
+			&& JWCredit::IsCreditIdUser($sender, JWCredit::CREDIT_HONOR, JWCredit::OP_NOTLESSTHAN))
+		{
 			return;
+		}
 
 		$message = $data['message'];
 		$not_reply = $data['not_reply'];
