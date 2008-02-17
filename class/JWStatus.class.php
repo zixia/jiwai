@@ -56,6 +56,7 @@ class JWStatus {
 		$user_id = isset( $options['idUserReplyTo'] ) ? $options['idUserReplyTo'] : null;
 		$status_id = isset( $options['idStatusReplyTo'] ) ? $options['idStatusReplyTo'] : null;
 		$conference_id = isset( $options['idConference'] ) ? $options['idConference'] : null;
+		$geocode_id = isset( $options['idGeocode'] ) ? $options['idGeocode'] : null;
 
 		// not extends tag_id || if extends 
 		if( $is_extends_tag == false ) $tag_id = null;
@@ -67,6 +68,7 @@ class JWStatus {
 			'thread_id' => $thread_id,
 			'status' => $status,
 			'conference_id' => $conference_id,
+			'geocode_id' => $geocode_id,
 		);
 
 		if( empty( $status ) )
@@ -216,6 +218,7 @@ class JWStatus {
 		$rtn_array['user_id'] = $user_id;
 		$rtn_array['status_id'] = $status_id;
 		$rtn_array['conference_id'] = $conference_id;
+		$rtn_array['geocode_id'] = $geocode_id;
 
 		return $rtn_array;
 	}
@@ -308,6 +311,7 @@ class JWStatus {
 		//options about thread tag
 		$idThread = isset( $options['idThread'] ) ? $options['idThread'] : null;
 		$idTag = isset( $options['idTag'] ) ? $options['idTag'] : null;
+		$idGeocode = isset( $options['idGeocode'] ) ? $options['idGeocode'] : null;
 
 		/** ReplyInfo */
 		$idUserReplyTo = null;
@@ -323,6 +327,7 @@ class JWStatus {
 				$idStatusReplyTo = $reply_info['status_id'];
 				$idThread = $reply_info['thread_id'];
 				$idTag = $reply_info['tag_id'];
+				$idGeocode = $reply_info['geocode_id'];
 				$status = $reply_info['status'];
 			}
 		}
@@ -351,6 +356,7 @@ class JWStatus {
 			'isMms' => $isMms,
 			'idThread' => $idThread,
 			'idTag' => $idTag,
+			'idGeocode' => $idGeocode,
 		));
 	}
 

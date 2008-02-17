@@ -505,6 +505,7 @@ class JWSns {
 		$idUserReplyTo = $reply_info['user_id'];
 		$idStatusReplyTo = $reply_info['status_id'];
 		$idConference = $reply_info['conference_id'];
+		$idGeocode = $reply_info['geocode_id'];
 
 		//过滤处理
 		$conference = ( $idConference ) ? JWConference::GetDbRowById( $idConference ) : null;
@@ -533,6 +534,7 @@ class JWSns {
 			'timeCreate' => $timeCreate,
 			'idThread' => $idThread,
 			'idTag' => $idTag,
+			'idGeocode' => $idGeocode,
 		);
 
 		$acceptKeys = array( 'idPicture', 'isMms', 'idPartner' );
