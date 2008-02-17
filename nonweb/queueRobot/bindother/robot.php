@@ -9,11 +9,12 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 		$sender = $data['sender'];
 
 		if ( 'api' == $device 
-			&& JWCredit::IsCreditIdUser($sender, JWCredit::CREDIT_HONOR, JWCredit::OP_NOTLESSTHAN))
+			&& JWCredit::IsCreditIdUser($sender, JWCredit::CREDIT_HONOR, JWCredit::OP_LESSTHAN))
 		{
 			return;
 		}
 
+		$bindother = $data['bind'];
 		$message = $data['message'];
 		$not_reply = $data['not_reply'];
 		$not_conference = $data['not_conference'];
