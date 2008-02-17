@@ -178,7 +178,7 @@ try {
 		{
 			$('$color_id').setStyle('background-color'	, color.hex);
 			$('$color_id').setStyle('color'				, (new Color(color.hex)).invert());
-			$('$color_id').value = color.hex;
+			$('$color_id'+'_value').value = color.hex;
 			$('$color_id'+'_val').innerHTML = color.hex;
 		}
 /*
@@ -244,17 +244,18 @@ if ( $picture_id )
 <div class="lookfriend">
 <form id="f" action="" method="post" name="f" enctype="multipart/form-data">
 <input type="hidden" name="commit_x" value="1"/>
+<input type="hidden" id="user_profile_background_color_value" name="user[profile_background_color]" value="#<?php echo $user['profile_background_color']?>" />
        <div class="protection">
-	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" name="user[profile_background_color]" style="width:48px;" size="30" type="text" value="#<?php echo $user['profile_background_color']?>" class="personalized_bc"/>
+	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" size="30" type="text" class="personalized_bc"/>
 		&nbsp;&nbsp;<span class="black12" id="user_profile_background_color_val">#<?php echo $user['profile_background_color'];?></span>
 	    <p><span class="black15bold">背景图片:</span><input class="checkbox" id="user_profile_use_background_image" name="user[profile_use_background_image]" <?php if($picture_id) echo "checked";?> type="checkbox" value="checked" />
 					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" class="inputStyle2"/>
 					<br />
 		<div class="personalized">
 		<p class=" personalizedText">最大可以上传 2M 大小的图片</p>
-        <p><input type="radio" name="user[profile_background_tile]" value="1" <?php if ( $user['profile_background_tile'] ) echo 'checked="checked" ';?>/><span class="pad3">平铺</span>
-        <input type="radio" name="user[profile_background_tile]" value="0" <?php if ( !$user['profile_background_tile'] ) echo
-		     'checked="checked" ';?>/><span class="pad3">拉伸</span></p>
+        <p><label for="user_profile_background_tile1"><input type="radio" id="user_profile_background_tile1" name="user[profile_background_tile]" value="1" <?php if ( $user['profile_background_tile'] ) echo 'checked="checked" ';?>/><span class="pad3">平铺&nbsp;&nbsp;</span></label>
+        <label for="user_profile_background_tile2"><input type="radio" id="user_profile_background_tile2" name="user[profile_background_tile]" value="0" <?php if ( !$user['profile_background_tile'] ) echo
+		     'checked="checked" ';?>/><span class="pad3">不平铺</span></label></p>
 	    <p>当前背景图片：<?php echo $picture_name?></p>
 	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
 	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>

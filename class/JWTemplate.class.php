@@ -197,7 +197,7 @@ _HTML_;
 	<link rel="start" href="<?php echo JW_SRVNAME;?>" title="叽歪网首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪网" />
-	<meta name="copyright" content="copyright 2007-2008 <?php echo JW_SRVNAME;?>" />
+	<meta name="copyright" content="copyright 2007-2008 叽歪网 <?php echo JW_SRVNAME;?>" />
 	<meta name="robots" content="all" />
 <?php
 	echo $ui_css;
@@ -454,7 +454,7 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007 叽歪网</li>
+		<li class="first">&copy; 2007-2008 叽歪网</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a></li>
 		<li><a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a></li>

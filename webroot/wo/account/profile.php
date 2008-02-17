@@ -155,7 +155,7 @@ window.jiwai_init_hook_location_setting = function()
 		<input type="radio" id="user_gender0" name="user[gender]" value="female" <?php echo 'female'==$outInfo['gender']?'checked':'';?>><label for="user_gender0">女&nbsp;&nbsp;</label>
 		<input type="radio" id="user_gender2" name="user[gender]" value="secret" <?php echo 'secret'==$outInfo['gender']?'checked':'';?>><label for="user_gender2">保密</label>*/ ?>
 	<select id="user_gender" name="user[gender]" size="1" class="select seWidth">
-		  <option value="" selected></option>
+		  <option value="" selected>请选择</option>
 		  <option value="male" <?php echo 'male'==$outInfo['gender']?'selected':'';?>>男</option>
 		  <option value="female" <?php echo ('female'==$outInfo['gender'])?'selected':'';?>>女</option>
 		</select>

@@ -59,11 +59,11 @@ class JWDesign {
 
 	function InitDefaultColor()
 	{
-		$this->mBackgroundColor = '000000';
+		$this->mBackgroundColor = 'FFFFFF';
 		$this->mUseBackgroundImage = null;
 		$this->mBackgroundTile = false;
 		$this->mTextColor = '333333';
-		$this->mNameColor = '000000';
+		$this->mNameColor = 'FFFFFF';
 		$this->mLinkColor = '669900';
 		$this->mSidebarFillColor = 'C3E169';
 		$this->mSidebarBorderColor = '87BC44';

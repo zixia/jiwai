@@ -506,14 +506,13 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .Width80 {width:80px;margin:0 0 0 8px;}
 #wtMainBlock .Width135 {width:135px;}
 #wtMainBlock .Width56 {width:60px;margin:0 0 0 8px;}
-#wtMainBlock .checkbox {margin:0 0 0 8px;}
 #wtMainBlock .protection { margin:40px 0 0 0;}
 #wtMainBlock .sysUpdate { padding:0 0 0 28px;}
 #wtMainBlock .personalized { padding:0 0 0 80px;margin:0 0 0 8px;}
 #wtMainBlock .twitter { padding:0 0 0 54px;}
 #wtMainBlock .twitterButt { padding:0 0 0 86px;}
 #wtMainBlock .twitterCheckbox { margin:5px 0 0 86px!important;margin:10px 0 0 86px;color:#666666;font-size:12px;}
-#wtMainBlock .personalized_bc { margin:0 0 0 8px; background-color:#99CC00;width:39px;height:16px;border: #000 1px solid;cursor:auto;}
+#wtMainBlock .personalized_bc { margin:0 0 0 8px; background-color:#FFFFFF;width:18px;height:16px;border: #000 1px solid;cursor:auto;}
 #wtMainBlock .personalizedText { color:#989898;font-size:12px;}
 #wtMainBlock .personalizedTextred { color:#ff0000;font-size:12px;}
 #wtMainBlock .binding { margin:20px 0 0 0;line-height:26px;}
@@ -552,7 +551,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .lineheight { line-height:30px;width: 465px;} 
 #wtMainBlock .po { padding: 0 0 10px 97px;}
 #wtMainBlock .file { padding: 0 0 0 90px;}
-#wtMainBlock .checkbox { height:12px;}
+#wtMainBlock .checkbox {margin:0 0 0 8px;}
 #wtMainBlock .checkboxText { padding:0 0 0 28px; margin:5px 0 0 0;color:#989898;font-size:12px;}
 #wtMainBlock .gray12 { color:#555555; font-size:12px;}
 #wtMainBlock .smallblack12 { color:#000; font-size:12px;}
