@@ -10,6 +10,7 @@ class
   const String storeUsername  = "login.username";
   const String storePassword  = "login.password";
   const String storeTortoise  = "mode.tortoise";
+  const String storeCamera    = "mode.camera";
 
   const int    CMD_OPEN     = 1;
   const int    CMD_BACK     = 2;
@@ -30,6 +31,8 @@ class
   const int    CMD_UNFOLLOW = 16;
   const int    CMD_CAPTURE  = 17;
   const int    CMD_LINGO    = 18;
+  const int    CMD_BLOG     = 19;
+  const int    CMD_SAVE     = 20;
 
   const int    MAX_CMD_ID   = 24;
 
@@ -42,6 +45,7 @@ class
 
 // BEGIN const strings
 
+  const String FacilityBlog = "jiwaide_blog";
   const String FacilityPub  = "public_timeline";
   const String FacilityUser = "user_timeline";
   const String FacilityFri  = "friends_timeline";
@@ -67,6 +71,7 @@ class
   MenuItem  MenuLogout  = new MenuItem(CMD_LOGOUT,  @CmdLogout);
   MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   @CmdLogin);
   MenuItem  MenuBack    = new MenuItem(CMD_BACK,    @CmdBack);
+  MenuItem  MenuSave    = new MenuItem(CMD_SAVE,    @CmdSave);
   MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  @CmdCancel);
   MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  @CmdUpdateLite);
   MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   @CmdReply);
@@ -93,11 +98,13 @@ class
   int progressCurrent;
 
   boolean anonymousMode = true;
-  boolean tortoiseMode = false;
+  boolean tortoiseMode  = false;
+  boolean cameraHighMode= false;
 
   Component tobeFocused;
   Prompt prompt;
   Camera camera;
+  ByteArray imageData;
 
   Shell timelineListShell;
   Shell tempShell;
@@ -110,6 +117,7 @@ class
 
 // facility => Value
   Value timelineList  = [
+    FacilityBlog  => [],
     FacilityPub   => [],
     FacilityUser  => [],
     FacilityFri   => [],
@@ -119,6 +127,7 @@ class
   ];
 
   Value timelineViewed= [
+    FacilityBlog  => STATUS_UNVIEWED,
     FacilityPub   => STATUS_UNVIEWED,
     FacilityUser  => STATUS_UNVIEWED,
     FacilityFri   => STATUS_UNVIEWED,
@@ -141,8 +150,8 @@ class
 
   void createTimelineListMenu() {
     MENU = new Menu()
-      .add(CMD_RELOAD, "*." + @CmdReload)
-      .add(CMD_READALL,"#." + @CmdReadall)
+      .add(CMD_RELOAD, @CmdReload)
+      .add(CMD_READALL,@CmdReadall)
       .add(CMD_HELP ,  @CmdHelp)
       .add(CMD_CAPTURE,@CmdCapture)
       .add(CMD_LOGOUT, @CmdLogout)
@@ -151,8 +160,8 @@ class
 
   void createTimelineViewMenu () {
     MENU = new Menu()
-      .add(CMD_RELOAD, "*." + @CmdReload)
-      .add(CMD_READALL,"#." + @CmdReadall)
+      .add(CMD_RELOAD, @CmdReload)
+      .add(CMD_READALL,@CmdReadall)
       .add(CMD_HELP ,  @CmdHelp)
       .add(CMD_CAPTURE,@CmdCapture);
   }
@@ -201,6 +210,10 @@ class
           ],
         ["name"    => "6." + @ListFeatures,
         "fname"    => FacilityFeatures,
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => "7." + @FacilityBlog,
+        "fname"    => FacilityBlog,
         "viewed"   => STATUS_UNVIEWED
           ]
       ];
@@ -263,7 +276,7 @@ class
         updateInput.edit(doUpdateStatus);
       }
 
-      if (code > '0' && code < '7') { animatePopShell(shell); }
+      if (code > '0' && code < '8') { animatePopShell(shell); }
       switch (code) {
         case '1':
           timelineViewed[FacilityPub] = [];
@@ -288,6 +301,10 @@ class
         case '6':
           timelineViewed[FacilityFeatures] = [];
           animatePushShell(createTimelineView(FacilityFeatures, @ListFeatures));
+          break;
+        case '7':
+          timelineViewed[FacilityBlog] = [];
+          animatePushShell(createTimelineView(FacilityBlog, @TimelinePub));
           break;
       }
       return false;
@@ -345,19 +362,27 @@ class
   }
 
   Shell createCaptureView() {
-    List encTypes = new List()
-      .add("encoding=jpeg&width=320&height=240")
-      .add("encoding=jpeg");
+    List encTypes = new List();
+    if (cameraHighMode) {
+      encTypes.add("encoding=jpeg&width=640&height=480")
+        .add("encoding=jpeg");
+    } else {
+      encTypes.add("encoding=jpeg&width=320&height=240")
+        .add("encoding=jpeg");
+    }
 
     camera = new Camera(getStyle("mini"));
     camera.setFlags(VISIBLE|LINEFEED);
-    camera.setPreferredSize(-100,-100);
+    camera.setPreferredSize(-100, -100);
+
+    final Input mmsDesc = new Input(getStyle("default"), @HintUpdate, "", ANY);
 
     Flow flow = new Flow(getStyle("default"));
     flow.setPreferredSize(-100, -100);
     flow.add(camera);
+    flow.add(mmsDesc);
 
-    final Shell shell = new Shell(flow);
+    final Shell shell = new Popup(flow);
     shell.setSoftKeyHandler(mySoftKeyHandler);
     shell.setActionHandler(myActionHandler);
 
@@ -374,10 +399,14 @@ class
     void myActionHandler(Shell shell, Component source, int action)
     {
       if (action == CMD_BACK) {
-        popShell(shell);
+        if (null != camera) {
+          camera.close();
+          camera = null;
+        }
+        animatePopShell(shell);
       } else if (action == CMD_CAPTURE) {
         flow.clear();
-        ByteArray imageData = camera.capture(encTypes);
+        imageData = camera.capture(encTypes);
         if (imageData == null) {
           alertError("Image capturing failed");
         }
@@ -385,23 +414,12 @@ class
         camera = null;
 
         Image image = getImage(imageData);
-        Picture picture = new Picture(getStyle("default"), image);
+        Picture picture = new Picture(getStyle("mini"), image);
         picture.setPreferredSize(-100, -100);
         flow.add(picture);
+        mmsDesc.edit(doUpdateMms);
 
-        final Value params = [
-          "status"    => "mms via api",
-          "mms_file"  => ["image/jpeg", imageData],
-          "idPartner" => "10038"
-            ];
-        Value arg = [
-          "url"   => createAuthedUrl(mmsUrl),
-          "params"=> params
-            ];
-        call(shell, "mms", "post", arg, mmsok, mmsnok);
-
-        shell.updateMenu();
-        flushScreen(true);
+        animatePopShell(shell);
       }
     }
 
@@ -435,6 +453,9 @@ class
     } else if (topic.equals(FacilityFeatures)) {
       view.add(createBodyText("::" +@ListFeatures));
       view.add(createBodyText(@HelpListFeatures));
+    } else if (topic.equals(FacilityBlog)) {
+      view.add(createBodyText("::" +@TimelineBlog));
+      view.add(createBodyText(@HelpTimelineBlog));
     }
 
     return getViewShell(view);
@@ -535,6 +556,7 @@ class
 
       return false;
     }
+
     MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
     {
       if (key == SOFTKEY_BACK) {
@@ -598,7 +620,9 @@ class
     if (facility.equals(FacilityPub)
     || facility.equals(FacilityUser)
     || facility.equals(FacilityFri)
-    || facility.equals(FacilityDr)) {
+    || facility.equals(FacilityDr)
+    || facility.equals(FacilityBlog)
+    ) {
         final Calendar cal = new Calendar();
         cal.setMillis(status.created);
         created = cal.format(FORMAT_DATETIME);
@@ -616,7 +640,7 @@ class
     
     view.add(createHeaderText(""));
     view.add(createSubHeaderText(created));
-    if (facility.equals(FacilityDr)) {
+    if (facility.equals(FacilityDr) || facility.equals(FacilityBlog)) {
       view.add(createBodyText(status.title));
       view.add(createBodyText(status.content.val));
     } else if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
@@ -717,10 +741,14 @@ class
     view.setPreferredSize(-100, -100);
 
     view.add(createHeaderText(""));
-    view.add(createSubHeaderText(@InfoTortoise));
 
-    Choice choiceTortoise = createFormChoice();
+    view.add(createSubHeaderText(@InfoTortoise));
+    Choice choiceTortoise = createFormChoice(tortoiseMode);
     view.add(choiceTortoise);
+
+    view.add(createSubHeaderText(@InfoHighCamera));
+    Choice choiceCamera = createFormChoice(cameraHighMode);
+    view.add(choiceCamera);
 
     final Shell shell = new Shell(view);
     shell.setStyle(getStyle("maxi"));
@@ -730,7 +758,9 @@ class
     MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
     {
       if (key == SOFTKEY_BACK) {
-        return MenuBack;
+        return MenuCancel;
+      } else if (key == SOFTKEY_OK) {
+        return MenuSave;
       }
       return null;
     }
@@ -738,9 +768,8 @@ class
     void myActionHandler(final Shell shell, final Component source, final int action) 
     {
       Store store = getStore();
-      if (action == CMD_BACK) {
-        Choice tortoiseChoice = source;
-        if (0 == tortoiseChoice.getSelected()) {
+      if (action == CMD_SAVE) {
+        if (0 == choiceTortoise.getSelected()) {
           // Enable
           tortoiseMode = true;
           store.put(storeTortoise, "Y");
@@ -748,6 +777,17 @@ class
           tortoiseMode = false;
           store.put(storeTortoise, "N");
         }
+
+        if (0 == choiceCamera.getSelected()) {
+          // Enable
+          cameraHighMode = true;
+          store.put(storeCamera, "Y");
+        } else {
+          cameraHighMode = false;
+          store.put(storeCamera, "N");
+        }
+        animatePopShell(shell);
+      } else if (action == CMD_CANCEL) {
         animatePopShell(shell);
       }
     }
@@ -863,13 +903,19 @@ class
     inputPassword.setPreferredWidth(-100);
     loginForm.add(inputPassword);
   
-    Label labelWander = new Label(getStyle("form.link"), @InfoWander);
+    Label labelWander = new Label(getStyle("form.linkHead"), @InfoWander);
     labelWander.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     labelWander.setPreferredWidth(-100);
     labelWander.setAction(CMD_WANDER);
     loginForm.add(labelWander);
 
-    Label labelRegister = new Label(getStyle("form.link2"), @InfoRegister);
+    Label labelBlog = new Label(getStyle("form.link"), @TimelineBlog);
+    labelBlog.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+    labelBlog.setPreferredWidth(-100);
+    labelBlog.setAction(CMD_BLOG);
+    loginForm.add(labelBlog);
+
+    Label labelRegister = new Label(getStyle("form.linkTail"), @InfoRegister);
     labelRegister.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     labelRegister.setPreferredWidth(-100);
     labelRegister.setAction(CMD_REGISTER);
@@ -915,6 +961,13 @@ class
           "refresh" => true
         ];
         call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
+      } else if (action == CMD_BLOG) {
+        Value arg = [
+          "ts"  => 0,
+          "max" => STATUS_COUNTS,
+          "refresh" => true
+        ];
+        call(FacilityBlog, FacilityBlog, "getItems", arg, blogok, blognok);
       } else if (action == CMD_REGISTER) {
         animatePushShell(createRegisterView());
         animatePopShell(shell);
@@ -975,6 +1028,22 @@ class
       "params"=> params
     ];
     call(shell, "lingo", "post", arg, lingook, lingonok);
+  }
+
+  void doUpdateMms(final Shell shell, final Component source, final int action) 
+  {
+    if (action == ITEM_CANCEL) return;
+    Input mmsDesc = Input(source);
+    final Value params = [
+      "status"    => mmsDesc.getText(),
+      "mms_file"  => ["image/jpeg", imageData],
+      "idPartner" => "10038"
+        ];
+    Value arg = [
+      "url"   => createAuthedUrl(mmsUrl),
+      "params"=> params
+        ];
+    call(shell, "mms", "post", arg, mmsok, mmsnok);
   }
 
   void doUpdateStatus(final Shell shell, final Component source, final int action) 
@@ -1057,6 +1126,10 @@ class
   {
     if (++progressCurrent == progressTotal) {
       closePrompt();
+      popShell(tempShell);
+      timelineListShell = createTimelineList();
+      pushShell(timelineListShell);
+      tempShell = timelineListShell;
     }
     alertError(@InfoSyndFail + ": "+error);
   }
@@ -1070,6 +1143,19 @@ class
   }
 
   void wandernok(Object state, String error)
+  {
+    alertError(@InfoSyndFail + ": "+error);
+  }
+
+  void blogok(Object state, Value ret)
+  {
+    createValueFromTimeline(state, ret);
+    timelineViewed[state] = STATUS_UNVIEWED;
+    popShell(tempShell);
+    pushShell(createTimelineView(FacilityBlog, FacilityBlog));
+  }
+
+  void blognok(Object state, String error)
   {
     alertError(@InfoSyndFail + ": "+error);
   }
@@ -1143,11 +1229,13 @@ class
 
   void mmsok(Object state, Value ret)
   {
+    imageData = null;
     alertError(@InfoUpdateSuc);
   }
 
   void mmsnok(Object state, String error)
   {
+    imageData = null;
     alertError(@InfoUpdateFail +error);
   }
 
@@ -1188,7 +1276,7 @@ class
   }
 
   void bulkFetch() {
-    progressTotal = 6;
+    progressTotal = 7;
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
     fetchTimeline(FacilityPub);
@@ -1197,6 +1285,7 @@ class
     fetchTimeline(FacilityDr);
     fetchList(FacilityFriends);
     fetchList(FacilityFeatures);
+    fetchTimeline(FacilityBlog);
   }
 
   void fetchOnce(String facility) {
@@ -1229,10 +1318,13 @@ class
   }
 
   void bulkReadall() {
+    doReadall(FacilityBlog);
     doReadall(FacilityPub);
     doReadall(FacilityUser);
     doReadall(FacilityFri);
     doReadall(FacilityDr);
+    doReadall(FacilityFriends);
+    doReadall(FacilityFeatures);
   }
 
   Label createFormStatic(String name)
@@ -1259,7 +1351,7 @@ class
     return retLabel;
   }
 
-  Choice createFormChoice()
+  Choice createFormChoice(boolean selected)
   {
     Choice retChoice = new Choice(getStyle("form.choice.display"), getStyle("form.choice.list"));
     List choices = new List();
@@ -1267,7 +1359,7 @@ class
     choices.add(createChoiceLabel(@ChoiceDisabled));
     retChoice.setChoices(choices, 1);
 
-    if (tortoiseMode) {retChoice.setSelected(0);}
+    if (selected) {retChoice.setSelected(0);}
 
     retChoice.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     retChoice.setPreferredWidth(-100);
@@ -1292,7 +1384,7 @@ class
 
   Text createUpdateText(String name)
   {
-    Text text = new Text(getStyle("timeline.update"), "0." + name);
+    Text text = new Text(getStyle("timeline.update"), name);
     text.setPreferredWidth(-100);
     text.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
     return text;

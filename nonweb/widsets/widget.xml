@@ -36,6 +36,9 @@
     <parameter type="url" visible="false" name="register" editable="false" method="post">
       <value>http://api.jiwai.de/account/new.json</value>
     </parameter>
+    <parameter type="url" visible="false" name="jiwaide_blog" editable="false">
+      <value>http://blog.jiwai.de/rss.xml</value>
+    </parameter>
     <parameter type="url" visible="false" name="public_timeline" editable="false">
       <value>http://api.jiwai.de/statuses/public_timeline.rss</value>
     </parameter>
@@ -190,18 +193,29 @@
       color: #000000;
       font: small underlined;
       border-type: none;
-      padding: 4 0 2 10;
+      padding: 1 0 1 10;
       focused {
       color: #d05d02;
       font: small plain;
       }
       }
 
-      form.link2 : form.base {
+      form.linkHead : form.base {
       color: #000000;
       font: small underlined;
       border-type: none;
-      padding: 5 0 10 10;
+      padding: 4 0 1 10;
+      focused {
+      color: #d05d02;
+      font: small plain;
+      }
+      }
+
+      form.linkTail : form.base {
+      color: #000000;
+      font: small underlined;
+      border-type: none;
+      padding: 1 0 4 10;
       focused {
       color: #d05d02;
       font: small plain;
@@ -260,9 +274,8 @@
 
       <!-- List -->
       list.bg {
-      padding: 1 5 1 5;
-      border: 1 0 1 0;
-      vspacing: 5;
+      padding: 0 5 1 5;
+      border: 0 0 0 0;
       hspacing: 5;
       background: solid white;
       color: #000000;
@@ -300,9 +313,8 @@
 
       <!-- Timeline List -->
       timeline.list {
-      padding: 1 5 1 5;
-      border: 1 0 1 0;
-      <!--vspacing: 5;-->
+      padding: 0 5 1 5;
+      border: 0 0 0 0;
       hspacing: 5;
       background: solid white;
       color: #000000;
@@ -315,14 +327,14 @@
       }
 
       timeline.update {
-      padding: 2 10 2 10;
-      margin: 4 5 3 5;
+      padding: 2 10 1 10;
+      margin: 2 5 1 5;
       align: hcenter vcenter;
       font: small plain;
-      background: grid9 "butt_bg.png" 8 8 8 8;
+      background: grid9 "butt_bg.png" 6 6 6 6;
       color: #000000;
       focused {
-      background: grid9 "butt_hover_bg.png" 8 8 8 8;
+      background: grid9 "butt_hover_bg.png" 6 6 6 6;
       color: #ffffff;
       }
       }
