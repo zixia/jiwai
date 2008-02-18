@@ -901,10 +901,34 @@ _SQL_;
 	 * @param	int
 	 * @return	bool
 	 */
-	static public function Destroy ($idStatus)
+	static public function Destroy ($status_id)
 	{
-		$idStatus = JWDB_Cache::CheckInt($idStatus);
-		return JWDB_Cache::DelTableRow('Status', array ('id' => $idStatus ));
+		$status_id = JWDB_Cache::CheckInt($status_id);
+			
+		/* for new delete mechanism */
+
+		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
+
+		if ( null===$status_row['idThread'] 
+			&& 0 < JWDB_Cache_Status::GetCountReply( $status_id )
+			&& $jiwaixiaodi = JWUser::GetUserInfo('叽歪小弟') )
+		{
+			$status_user_id = $status_row['idUser'];
+			$status_user = ( $status_user_id ) ? JWUser::GetUserInfo($status_user_id) : array();
+
+			$status_author = empty($status_user) ? "帖子主人" : "@$status_user[nameScreen] ";
+			$status_content = "本条叽歪已经被 $status_author 删除。";
+
+			$update_array = array(
+					'idUser' => $jiwaixiaodi['idUser'],
+					'idPicture' => $jiwaixiaodi['idPicture'],
+					'status' => $status_content, 
+					);
+			return JWDB_Cache::UpdateTableRow( 'Status', $status_id, $update_array );
+		}
+		/* end */
+		
+		return JWDB_Cache::DelTableRow('Status', array ('id' => $status_id ));
 	}
 
 
