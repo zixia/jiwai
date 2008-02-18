@@ -235,7 +235,6 @@ _HTML_;
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
-				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
@@ -246,7 +245,6 @@ _HTML_;
 		} else {
 			$nav = array(
 				'/wo/' => '首页',
-				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -256,7 +254,6 @@ _HTML_;
 		{
 			$nav = array(
 				'/wo/' => '首页',
-				'/t/冻灾/' => '冻灾',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',
@@ -2058,8 +2055,14 @@ _HTML_;
  
  		if ( @$countInfo['mms'] )
  		{
+			$mms_user = $user;
+			if ( 'wo' == $user )
+			{    
+				$current_user_info = JWUser::GetCurrentUserInfo();
+				$mms_user = urlEncode( $current_user_info['nameUrl'] );
+			} 
  			echo <<<_HTML_
- 			<li id="mms_count"><a href="/$user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
+ 			<li id="mms_count"><a href="/$mms_user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
 _HTML_;
 		}
 
