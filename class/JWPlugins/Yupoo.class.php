@@ -18,12 +18,25 @@ class JWPlugins_Yupoo{
 		$info = self::GetPluginInfo( $string );
 		if ( $info )
 		{
-			$src = self::BuildPhotoUrl( $info );
+			$src_small = 'http://photo'.$info['host'].'.yupoo.com/'.$info['dir'].'/'.$info['filename'].'/small/';
+			$src_size = ""; 
+			$src_small_info = array();
+			if("gif"!=$info['originalformat'])
+				$src = $src_small;
+			else
+			{   
+				$src = self::BuildPhotoUrl( $info );
+				$src_small_info = getimagesize( $src_small );
+			}   
+
+			if( !empty($src_small_info) )
+				$src_size = ' width="'.$src_small_info[0].'" height="'.$src_small_info[1].'"';
+
 			$href = $string;
 			return array(
-				'type' => 'html',
-				'html' => '<a href="' .$href. '" target="_blank" rel="nofollow"><img src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
-			);
+					'type' => 'html',
+					'html' => '<a href="' .$href. '" target="_blank"><img'.$src_size.' src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
+			);  
 		}
 		return null;
 	}
@@ -125,7 +138,7 @@ class JWPlugins_Yupoo{
 	static public function BuildPhotoUrl( $photoInfo ) 
 	{
 		if ( false == empty($photoInfo) )
-			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'/small/';
+			return 'http://photo'.$photoInfo['host'].'.yupoo.com/'.$photoInfo['dir'].'/'.$photoInfo['filename'].'/medium/';
 		else
 			return null;
 	}
