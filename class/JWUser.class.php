@@ -905,6 +905,7 @@ _SQL_;
 
 	static public function GetSearchNameUserIds($key, $limit=100, $offset=0){
 
+		$key	= JWDB::EscapeString($key);
 		$sql = <<<_SQL_
 SELECT id as idUser
 FROM User 
@@ -929,6 +930,7 @@ _SQL_;
 	static public function GetSearchEmailUserIds($key, $limit=100, $offset=0){
 		$email = strtolower($key);
 		$userEmail = strrev( $email );
+		$userEmail	= JWDB::EscapeString($userEmail);
 
 		$sql = <<<_SQL_
 SELECT id as idUser
