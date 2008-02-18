@@ -49,16 +49,10 @@ class JWUrlMap
 
 	static public function GetDbRowByDescUrl( $url )
 	{
-		$sql = <<<_SQL_
-SELECT 
-	*
-	FROM 
-		UrlMap
-	WHERE 
-		destUrl='$url'
-_SQL_;
-
-		$row = JWDB::GetQueryResult( $sql );
+		$condition = array(
+			'destUrl' => $url,
+		);
+		$row = JWDB::GetTableRow( 'UrlMap', $condition, 1 );
 
 		if ( true==empty($row) )
 			return array();

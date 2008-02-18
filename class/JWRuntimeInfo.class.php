@@ -17,10 +17,10 @@ class JWRuntimeInfo {
 		
 		$name = JWDB::EscapeString( strval($name) );
 
-		$sql = <<<_SQL_
-SELECT value FROM RuntimeInfo WHERE name = '$name'
-_SQL_;
-		$row = JWDB::GetQueryResult( $sql, false );
+		$condition = array(
+			'name' => $name,
+		);
+		$row = JWDB::GetTableRow( 'RuntimeInfo', $condition, 1 );
 
 		if( empty( $row ) )
 			return false;

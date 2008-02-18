@@ -45,8 +45,10 @@ class JWTag {
 		if( null == $tag_name )
 			return false;
 
-		$sql = "SELECT * FROM Tag WHERE name='$tag_name'";
-		$row = JWDB::GetQueryResult( $sql );
+		$condition = array(
+			'name' => $tag_name,
+		);
+		$row = JWDB::GetTableRow( 'Tag', $condition, 1 );
 
 		if( empty($row) )
 			return array();
@@ -81,8 +83,11 @@ class JWTag {
 		$description = trim( $description );
 		if ( null == $description )
 			return false;
-		$sql = "SELECT * FROM Tag WHERE description='$description'";
-		$row = JWDB::GetQueryResult( $sql );
+
+		$condition = array(
+			'description' => $description,
+		);
+		$row = JWDB::GetTableRow( 'Tag', $condition, 1 );
 
 		if( empty($row) )
 		{
