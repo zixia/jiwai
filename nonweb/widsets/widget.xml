@@ -24,8 +24,14 @@
       <option value="zh_TW">Taiwan Chinese</option>
     </parameter>
 
+    <parameter type="url" visible="false" name="lingo" editable="false" method="post">
+      <value>http://${username}:${password}@api.jiwai.de/extend/lingo.xml</value>
+    </parameter>
+    <parameter type="url" visible="false" name="mms" editable="false" method="post">
+      <value>http://${username}:${password}@api.jiwai.de/extend/upmms.json</value>
+    </parameter>
     <parameter type="url" visible="false" name="update" editable="false" method="post">
-      <value>http://${username}:${password}@api.jiwai.de/statuses/update.xml</value>
+      <value>http://${username}:${password}@api.jiwai.de/statuses/update.json</value>
     </parameter>
     <parameter type="url" visible="false" name="register" editable="false" method="post">
       <value>http://api.jiwai.de/account/new.json</value>
@@ -48,6 +54,8 @@
     <service type="http" id="login" />
     <service type="http" id="logout" />
     <service type="http" id="update" />
+    <service type="http" id="lingo" />
+    <service type="http" id="mms" />
     <service type="http" id="register" />
     <service type="http" id="follow" />
     <service type="http" id="unfollow" />

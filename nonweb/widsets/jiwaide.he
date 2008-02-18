@@ -15,7 +15,7 @@ class
   const int    CMD_BACK     = 2;
   const int    CMD_CANCEL   = 3;
   const int    CMD_SHOW     = 4;
-  const int    CMD_ABOUT    = 5;
+  const int    CMD_HELP     = 5;
   const int    CMD_RELOAD   = 6;
   const int    CMD_LOGOUT   = 7;
   const int    CMD_UPDATE   = 8;
@@ -28,6 +28,8 @@ class
   const int    CMD_REGISTER = 15;
   const int    CMD_FOLLOW   = 16;
   const int    CMD_UNFOLLOW = 16;
+  const int    CMD_CAPTURE  = 17;
+  const int    CMD_LINGO    = 18;
 
   const int    MAX_CMD_ID   = 24;
 
@@ -50,6 +52,8 @@ class
   const String loginUrl = "api.jiwai.de/account/verify_credentials.json";
   const String logoutUrl= "api.jiwai.de/account/end_session.json";
   const String updateUrl= "api.jiwai.de/statuses/update.json";
+  const String mmsUrl   = "api.jiwai.de/extend/upmms.json";
+  const String lingoUrl = "api.jiwai.de/extend/lingo.xml";
   const String drmsgUrl = "api.jiwai.de/direct_messages/new.json";
   const String signupUrl= "http://api.jiwai.de/account/new.json";
   const String signupKey= "0e4a4c24954f22cecea6b06b33efbfd7";
@@ -58,7 +62,7 @@ class
   
 // BEGIN menu
 
-  MenuItem  MenuAbout   = new MenuItem(CMD_ABOUT,   @CmdAbout);
+  MenuItem  MenuHelp    = new MenuItem(CMD_HELP,    @CmdHelp);
   MenuItem  MenuReload  = new MenuItem(CMD_RELOAD,  @CmdReload);
   MenuItem  MenuLogout  = new MenuItem(CMD_LOGOUT,  @CmdLogout);
   MenuItem  MenuLogin   = new MenuItem(CMD_LOGIN,   @CmdLogin);
@@ -73,6 +77,8 @@ class
   MenuItem  MenuReadall = new MenuItem(CMD_READALL, @CmdReadall);
   MenuItem  MenuSetting = new MenuItem(CMD_SETTING, @CmdSetting);
   MenuItem  MenuRegister= new MenuItem(CMD_REGISTER,@CmdRegister);
+  MenuItem  MenuCapture = new MenuItem(CMD_CAPTURE ,@CmdCapture);
+  MenuItem  MenuLingo   = new MenuItem(CMD_LINGO,   @CmdLingo);
 
   Menu MENU = new Menu().add(OPEN_MENU, @CmdMenu);
 
@@ -91,6 +97,7 @@ class
 
   Component tobeFocused;
   Prompt prompt;
+  Camera camera;
 
   Shell timelineListShell;
   Shell tempShell;
@@ -117,7 +124,7 @@ class
     FacilityFri   => STATUS_UNVIEWED,
     FacilityDr    => STATUS_UNVIEWED,
     FacilityFriends   => STATUS_UNVIEWED,
-    FacilityFeatures => STATUS_UNVIEWED
+    FacilityFeatures  => STATUS_UNVIEWED
   ];
 
 // END Variables
@@ -134,18 +141,20 @@ class
 
   void createTimelineListMenu() {
     MENU = new Menu()
-      .add(CMD_RELOAD, @CmdReload)
-      .add(CMD_READALL,@CmdReadall)
-      .add(CMD_ABOUT,  @CmdAbout)
+      .add(CMD_RELOAD, "*." + @CmdReload)
+      .add(CMD_READALL,"#." + @CmdReadall)
+      .add(CMD_HELP ,  @CmdHelp)
+      .add(CMD_CAPTURE,@CmdCapture)
       .add(CMD_LOGOUT, @CmdLogout)
       .add(CMD_SETTING,@CmdSetting);
   }
 
   void createTimelineViewMenu () {
     MENU = new Menu()
-      .add(CMD_RELOAD, @CmdReload)
-      .add(CMD_READALL,@CmdReadall)
-      .add(CMD_ABOUT,  @CmdAbout);
+      .add(CMD_RELOAD, "*." + @CmdReload)
+      .add(CMD_READALL,"#." + @CmdReadall)
+      .add(CMD_HELP ,  @CmdHelp)
+      .add(CMD_CAPTURE,@CmdCapture);
   }
 
 // END createMenus
@@ -164,32 +173,33 @@ class
     final Shell shell = new Shell(flow);
     shell.setFocused(tobeFocused);
     shell.setStyle(getStyle("maxi"));
+    shell.setKeyHandler(myKeyHandler);
     shell.setSoftKeyHandler(mySoftKeyHandler);
     shell.setActionHandler(myActionHandler);
 
     Flow getTimelineListFlow () {
       Value data = [
-        ["name"    => @TimelinePub,
+        ["name"    => "1." + @TimelinePub,
         "fname"    => FacilityPub,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @TimelineUser,
+        ["name"    => "2." + @TimelineUser,
         "fname"    => FacilityUser, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @TimelineFri,
+        ["name"    => "3." + @TimelineFri,
         "fname"    => FacilityFri, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @TimelineDr,
+        ["name"    => "4." + @TimelineDr,
         "fname"    => FacilityDr,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @ListFriends,
+        ["name"    => "5." + @ListFriends,
         "fname"    => FacilityFriends,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @ListFeatures,
+        ["name"    => "6." + @ListFeatures,
         "fname"    => FacilityFeatures,
         "viewed"   => STATUS_UNVIEWED
           ]
@@ -240,6 +250,49 @@ class
       return content;
     }
 
+    boolean myKeyHandler(Component source, int op, int code)
+    {
+      if (code == '*') {
+        tempShell = shell;
+        bulkFetch();
+      } else if (code == '#') {
+        bulkReadall();
+        animatePopShell(shell);
+        animatePushShell(createTimelineList());
+      } else if (code == '0' ) {
+        updateInput.edit(doUpdateStatus);
+      }
+
+      if (code > '0' && code < '7') { animatePopShell(shell); }
+      switch (code) {
+        case '1':
+          timelineViewed[FacilityPub] = [];
+          animatePushShell(createTimelineView(FacilityPub, @TimelinePub));
+          break;
+        case '2':
+          timelineViewed[FacilityUser] = [];
+          animatePushShell(createTimelineView(FacilityUser, @TimelineUser));
+          break;
+        case '3':
+          timelineViewed[FacilityFri] = [];
+          animatePushShell(createTimelineView(FacilityFri, @TimelineFri));
+          break;
+        case '4':
+          timelineViewed[FacilityDr] = [];
+          animatePushShell(createTimelineView(FacilityDr, @TimelineDr));
+          break;
+        case '5':
+          timelineViewed[FacilityFriends] = [];
+          animatePushShell(createTimelineView(FacilityFriends, @ListFriends));
+          break;
+        case '6':
+          timelineViewed[FacilityFeatures] = [];
+          animatePushShell(createTimelineView(FacilityFeatures, @ListFeatures));
+          break;
+      }
+      return false;
+    }
+  
     MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
     {
       if (key == SOFTKEY_BACK) {
@@ -263,8 +316,8 @@ class
       } else if (action == CMD_RELOAD) {
         tempShell = shell;
         bulkFetch();
-      } else if (action == CMD_ABOUT) {
-        animatePushShell(createAboutView());
+      } else if (action == CMD_HELP ) {
+        animatePushShell(createHelpView("main"));
       } else if (action == CMD_LOGOUT) {
         Value arg = [
           "url"   => createAuthedUrl(logoutUrl)
@@ -278,6 +331,8 @@ class
         animatePushShell(createTimelineList());
       } else if (action == CMD_SETTING) {
         animatePushShell(createSettingView());
+      } else if (action == CMD_CAPTURE) {
+        animatePushShell(createCaptureView());
       }
     }
 
@@ -285,29 +340,102 @@ class
   }
 
   void pushExclusiveView(String info) {
-/*
-    Flow view = new Flow(getStyle("default"));
-    view.setPreferredSize(-100, 30);
-    view.add(createUpdateText(info));
-    exclusiveShell = new Popup(view);
-    exclusiveShell.setStyle(getStyle("popup"));
-    exclusiveShell.setSoftKeyHandler(nilSoftKeyHandler);
-    animatePushShell(exclusiveShell);
-    MENU.reset();
-    flushScreen(false);
-*/
     prompt = new Prompt(null, info, null, MenuCancel);
     prompt.push();
   }
 
-  Shell createAboutView() {
+  Shell createCaptureView() {
+    List encTypes = new List()
+      .add("encoding=jpeg&width=320&height=240")
+      .add("encoding=jpeg");
+
+    camera = new Camera(getStyle("mini"));
+    camera.setFlags(VISIBLE|LINEFEED);
+    camera.setPreferredSize(-100,-100);
+
+    Flow flow = new Flow(getStyle("default"));
+    flow.setPreferredSize(-100, -100);
+    flow.add(camera);
+
+    final Shell shell = new Shell(flow);
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(Shell shell, Component focused, int key)
+    {
+      if (key == SOFTKEY_OK && camera != null) {
+        return MenuCapture;
+      } else if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      }
+      return null;
+    }
+
+    void myActionHandler(Shell shell, Component source, int action)
+    {
+      if (action == CMD_BACK) {
+        popShell(shell);
+      } else if (action == CMD_CAPTURE) {
+        flow.clear();
+        ByteArray imageData = camera.capture(encTypes);
+        if (imageData == null) {
+          alertError("Image capturing failed");
+        }
+        camera.close();
+        camera = null;
+
+        Image image = getImage(imageData);
+        Picture picture = new Picture(getStyle("default"), image);
+        picture.setPreferredSize(-100, -100);
+        flow.add(picture);
+
+        final Value params = [
+          "status"    => "mms via api",
+          "mms_file"  => ["image/jpeg", imageData],
+          "idPartner" => "10038"
+            ];
+        Value arg = [
+          "url"   => createAuthedUrl(mmsUrl),
+          "params"=> params
+            ];
+        call(shell, "mms", "post", arg, mmsok, mmsnok);
+
+        shell.updateMenu();
+        flushScreen(true);
+      }
+    }
+
+    return shell;
+  }
+
+  Shell createHelpView(String topic) {
     Flow view = new Flow(getStyle("default"));
     view.setPreferredSize(-100, -100);
     view.add(createHeaderText(@TitleAbout));
+    view.add(createSubHeaderText (@InfoHelpCenter));
 
-    view.add(createSubHeaderText (@InfoAbout));
-    view.add(createBodyText(@InfoAbout1));
-    view.add(createBodyText(@InfoAbout2));
+    if (topic.equals("main")) {
+      view.add(createBodyText("::" +@InfoHelpCenter));
+      view.add(createBodyText(@HelpMain));
+    } else if (topic.equals(FacilityPub)) {
+      view.add(createBodyText("::" +@TimelinePub));
+      view.add(createBodyText(@HelpTimelinePublic));
+    } else if (topic.equals(FacilityUser)) {
+      view.add(createBodyText("::" +@TimelineUser));
+      view.add(createBodyText(@HelpTimelineUser));
+    } else if (topic.equals(FacilityFri)) {
+      view.add(createBodyText("::" +@TimelineFri));
+      view.add(createBodyText(@HelpTimelineFriends));
+    } else if (topic.equals(FacilityDr)) {
+      view.add(createBodyText("::" +@TimelineDr));
+      view.add(createBodyText(@HelpTimelineDr));
+    } else if (topic.equals(FacilityFriends)) {
+      view.add(createBodyText("::" +@ListFriends));
+      view.add(createBodyText(@HelpListFriends));
+    } else if (topic.equals(FacilityFeatures)) {
+      view.add(createBodyText("::" +@ListFeatures));
+      view.add(createBodyText(@HelpListFeatures));
+    }
 
     return getViewShell(view);
   }
@@ -379,9 +507,34 @@ class
     final Shell shell = new Shell(content);
     shell.setStyle(getStyle("maxi"));
     shell.setFocused(tobeFocused);
+    shell.setKeyHandler(myKeyHandler);
     shell.setSoftKeyHandler(mySoftKeyHandler);
     shell.setActionHandler(myActionHandler);
 
+    boolean myKeyHandler(Component source, int op, int code)
+    {
+      if (code == '*') {
+        tempShell = shell;
+        if (anonymousMode) {
+          Value arg = [
+            "ts"  => 0,
+            "max" => STATUS_COUNTS,
+            "refresh" => true
+          ];
+          call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
+        } else {
+          fetchAndRefresh(new List().add(facility));
+        }
+      } else if (code == '#') {
+        doReadall(facility);
+        animatePopShell(shell);
+        animatePushShell(createTimelineView(facility, title));
+      } else if (code == '0') {
+        updateInput.edit(doUpdateStatus);
+      }
+
+      return false;
+    }
     MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
     {
       if (key == SOFTKEY_BACK) {
@@ -418,8 +571,8 @@ class
         } else {
           fetchAndRefresh(new List().add(facility));
         }
-      } else if (action == CMD_ABOUT) {
-        animatePushShell(createAboutView());
+      } else if (action == CMD_HELP) {
+        animatePushShell(createHelpView(facility));
       } else if (action == CMD_UPDATE) {
         updateInput.edit(doUpdateStatus);
       } else if (action == CMD_READALL) {
@@ -428,6 +581,8 @@ class
         animatePushShell(createTimelineView(facility, title));
       } else if (action == CMD_LOGIN) {
         animatePopShell(shell);
+      } else if (action == CMD_CAPTURE) {
+        animatePushShell(createCaptureView());
       }
     }
 
@@ -807,6 +962,21 @@ class
     }
   }
 
+  void doRobotLingo(final Shell shell, final Component source, final int action) 
+  {
+    if (action == ITEM_CANCEL) { return; }
+    Input lingoInput = Input(source);
+    final Value params = [
+      "lingo"=> lingoInput.getText(),
+      "idPartner"=> "10038"
+    ];
+    Value arg = [
+      "url"   => createAuthedUrl(lingoUrl),
+      "params"=> params
+    ];
+    call(shell, "lingo", "post", arg, lingook, lingonok);
+  }
+
   void doUpdateStatus(final Shell shell, final Component source, final int action) 
   {
     if (action == ITEM_CANCEL) { return; }
@@ -961,6 +1131,26 @@ class
     alertError(@InfoUpdateFail +error);
   }
 
+  void lingook(Object state, Value ret)
+  {
+    alertError(@InfoUpdateSuc);
+  }
+
+  void lingonok(Object state, String error)
+  {
+    alertError(@InfoUpdateFail +error);
+  }
+
+  void mmsok(Object state, Value ret)
+  {
+    alertError(@InfoUpdateSuc);
+  }
+
+  void mmsnok(Object state, String error)
+  {
+    alertError(@InfoUpdateFail +error);
+  }
+
   void drok(Object state, Value ret)
   {
     alertError(@InfoUpdateSuc);
@@ -1102,7 +1292,7 @@ class
 
   Text createUpdateText(String name)
   {
-    Text text = new Text(getStyle("timeline.update"), name);
+    Text text = new Text(getStyle("timeline.update"), "0." + name);
     text.setPreferredWidth(-100);
     text.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
     return text;
@@ -1184,7 +1374,7 @@ class
 
     return shell;
   }
-  
+
   MenuItem defaultSoftKeyHandler(final Shell shell, final Component focused, final int key) 
   {
     if (key == SOFTKEY_BACK) {
@@ -1286,6 +1476,10 @@ class
       store.put(FacilityUser, timelineList[FacilityUser]);
       store.put(FacilityFri,  timelineList[FacilityFri]);
       store.put(FacilityDr,   timelineList[FacilityDr]);
+    }
+    if (camera != null) {
+      camera.close();
+      camera = null;
     }
   }
 
