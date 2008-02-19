@@ -97,8 +97,11 @@ class
   int progressTotal;
   int progressCurrent;
 
+  int currentPage;
+
   boolean anonymousMode = true;
   boolean tortoiseMode  = false;
+  boolean hasCamera     = false;
   boolean cameraHighMode= false;
 
   Component tobeFocused;
@@ -211,10 +214,6 @@ class
         ["name"    => "6." + @ListFeatures,
         "fname"    => FacilityFeatures,
         "viewed"   => STATUS_UNVIEWED
-          ],
-        ["name"    => "7." + @FacilityBlog,
-        "fname"    => FacilityBlog,
-        "viewed"   => STATUS_UNVIEWED
           ]
       ];
 
@@ -274,9 +273,17 @@ class
         animatePushShell(createTimelineList());
       } else if (code == '0' ) {
         updateInput.edit(doUpdateStatus);
+      } else if (code == '9') {
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
+      } else if (code == '7') {
+        animatePushShell(createConsoleView());
       }
 
-      if (code > '0' && code < '8') { animatePopShell(shell); }
+      if (code > '0' && code < '7') { animatePopShell(shell); }
       switch (code) {
         case '1':
           timelineViewed[FacilityPub] = [];
@@ -302,10 +309,10 @@ class
           timelineViewed[FacilityFeatures] = [];
           animatePushShell(createTimelineView(FacilityFeatures, @ListFeatures));
           break;
-        case '7':
+        /*case '7':
           timelineViewed[FacilityBlog] = [];
           animatePushShell(createTimelineView(FacilityBlog, @TimelinePub));
-          break;
+          break;*/
       }
       return false;
     }
@@ -349,7 +356,11 @@ class
       } else if (action == CMD_SETTING) {
         animatePushShell(createSettingView());
       } else if (action == CMD_CAPTURE) {
-        animatePushShell(createCaptureView());
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
       }
     }
 
@@ -361,7 +372,89 @@ class
     prompt.push();
   }
 
+  Shell createConsoleView() {
+    Flow flow = new Flow(getStyle("mini"));
+    flow.setPreferredSize(-100, -100);
+
+    Text standardOut = new Text(getStyle("block"), "");
+    standardOut.setPreferredSize(-100, -90);
+    standardOut.setFlags(VISIBLE|LINEFEED|WRAP);
+    flow.add(standardOut);
+
+    final Input standardIn =  new Input(getStyle("block"), @HintUpdate, "get cctv5", ANY);
+    standardIn.setPreferredSize(-100, -10);
+    standardIn.setFlags(VISIBLE|FOCUSABLE);
+    flow.add(standardIn);
+
+    final Shell shell = new Popup(flow);
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    MenuItem mySoftKeyHandler(Shell shell, Component focused, int key)
+    {
+      if (key == SOFTKEY_OK) {
+        return MenuLingo;
+      } else if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      }
+      return null;
+    }
+
+    void myActionHandler(Shell shell, Component source, int action)
+    {
+      if (action == CMD_BACK) {
+        animatePopShell(shell);
+      } else if (action == CMD_LINGO) {
+        String lingo = standardIn.getText().toLowerCase();
+        final Value params = [
+          "status"=> lingo
+            ];
+        Value arg = [
+          "url"   => createAuthedUrl(lingoUrl),
+          "params"=> params
+            ];
+        standardOut.appendText(">");
+        standardOut.appendText(lingo);
+        if (myLingoTrap(lingo)) {
+          call(shell, "lingo", "post", arg, lingook, lingonok);
+        }
+      }
+    }
+
+    void lingook(Object state, Value ret)
+    {
+      String replyLingo = ret;
+      standardOut.appendText(replyLingo);
+      standardOut.appendText("\n");
+    }
+
+    void lingonok(Object state, String error)
+    {
+      alertError(@InfoUpdateFail +error);
+    }
+
+    boolean myLingoTrap(String lingo)
+    {
+      if (lingo.equals("clear")) {
+        standardOut.setText("");
+        return false;
+      } else if (0 == lingo.indexOf("quit", 0)
+          || 0 == lingo.indexOf("exit", 0)
+          || 0 == lingo.indexOf("bye", 0)) {
+        animatePopShell(shell);
+        return false;
+      }
+      return true;
+    }
+    
+    return shell;
+  }
+
   Shell createCaptureView() {
+    if (!hasCamera) {
+      alertError(@InfoNoCamera);
+      return null;
+    }
     List encTypes = new List();
     if (cameraHighMode) {
       encTypes.add("encoding=jpeg&width=640&height=480")
@@ -372,6 +465,9 @@ class
     }
 
     camera = new Camera(getStyle("mini"));
+    if (!camera.isAvailable()) {
+      return null;
+    }
     camera.setFlags(VISIBLE|LINEFEED);
     camera.setPreferredSize(-100, -100);
 
@@ -552,6 +648,14 @@ class
         animatePushShell(createTimelineView(facility, title));
       } else if (code == '0') {
         updateInput.edit(doUpdateStatus);
+      } else if (code == '9') {
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
+      } else if (code == '7') {
+        animatePopShell(createConsoleView());
       }
 
       return false;
@@ -604,7 +708,11 @@ class
       } else if (action == CMD_LOGIN) {
         animatePopShell(shell);
       } else if (action == CMD_CAPTURE) {
-        animatePushShell(createCaptureView());
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
       }
     }
 
@@ -650,7 +758,7 @@ class
       view.add(createBodyText(status.title));
     }
 
-    if (tortoiseMode) {
+    if (tortoiseMode && !facility.equals(FacilityBlog)) {
       call(null, "avatar" , "get",
           ["url" => createAuthedUrl("api.jiwai.de/users/show/" + status.author + ".xml")],
           picok, picnok);
@@ -670,8 +778,24 @@ class
 
     final Shell shell = new Shell(view);
     shell.setStyle(getStyle("maxi"));
+    shell.setKeyHandler(myKeyHandler);
     shell.setSoftKeyHandler(mySoftKeyHandler);
     shell.setActionHandler(myActionHandler);
+
+    boolean myKeyHandler(Component source, int op, int code)
+    {
+      if (code == '9') {
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
+      } else if (code == '7') {
+        animatePushShell(createConsoleView());
+      }
+
+      return false;
+    }
 
     MenuItem mySoftKeyHandler(final Shell shell, final Component focused, final int key)
     {
@@ -746,9 +870,11 @@ class
     Choice choiceTortoise = createFormChoice(tortoiseMode);
     view.add(choiceTortoise);
 
-    view.add(createSubHeaderText(@InfoHighCamera));
     Choice choiceCamera = createFormChoice(cameraHighMode);
-    view.add(choiceCamera);
+    if (hasCamera) {
+      view.add(createSubHeaderText(@InfoHighCamera));
+      view.add(choiceCamera);
+    }
 
     final Shell shell = new Shell(view);
     shell.setStyle(getStyle("maxi"));
@@ -778,13 +904,15 @@ class
           store.put(storeTortoise, "N");
         }
 
-        if (0 == choiceCamera.getSelected()) {
-          // Enable
-          cameraHighMode = true;
-          store.put(storeCamera, "Y");
-        } else {
-          cameraHighMode = false;
-          store.put(storeCamera, "N");
+        if (hasCamera) {
+          if (0 == choiceCamera.getSelected()) {
+            // Enable
+            cameraHighMode = true;
+            store.put(storeCamera, "Y");
+          } else {
+            cameraHighMode = false;
+            store.put(storeCamera, "N");
+          }
         }
         animatePopShell(shell);
       } else if (action == CMD_CANCEL) {
@@ -1015,21 +1143,6 @@ class
     }
   }
 
-  void doRobotLingo(final Shell shell, final Component source, final int action) 
-  {
-    if (action == ITEM_CANCEL) { return; }
-    Input lingoInput = Input(source);
-    final Value params = [
-      "lingo"=> lingoInput.getText(),
-      "idPartner"=> "10038"
-    ];
-    Value arg = [
-      "url"   => createAuthedUrl(lingoUrl),
-      "params"=> params
-    ];
-    call(shell, "lingo", "post", arg, lingook, lingonok);
-  }
-
   void doUpdateMms(final Shell shell, final Component source, final int action) 
   {
     if (action == ITEM_CANCEL) return;
@@ -1213,16 +1326,6 @@ class
   }
 
   void updatenok(Object state, String error)
-  {
-    alertError(@InfoUpdateFail +error);
-  }
-
-  void lingook(Object state, Value ret)
-  {
-    alertError(@InfoUpdateSuc);
-  }
-
-  void lingonok(Object state, String error)
   {
     alertError(@InfoUpdateFail +error);
   }
@@ -1495,6 +1598,16 @@ class
     setBubble(null, error);
   }
 
+  boolean isPageable(String facility)
+  {
+    if (facility.equals(FacilityUser)
+        || facility.equals(FacilityFri)
+        || facility.equals(FacilityDr)) {
+      return true;
+    }
+    return false;
+  }
+
   String createAuthedUrl(String raw) {
     if (anonymousMode) {
       return "http://" + raw;
@@ -1505,6 +1618,12 @@ class
       + password
       + "@"
       + raw;
+  }
+
+  String createPagedUrl(String raw, int page) {
+    return (-1 == raw.indexOf("?", 0))
+      ? raw + "?page=" + page
+      : raw + "&page=" + page;
   }
 
   void setAuthedParameters() {
@@ -1556,6 +1675,13 @@ class
 
     Value arg = [ "url"   => createAuthedUrl(loginUrl) ];
     call(null, "login", "get", arg, initok, initnok);
+
+    camera = new Camera(getStyle("mini"));
+    if (camera.isAvailable()) {
+      hasCamera = true;
+      camera.close();
+    }
+    camera = null;
 
     return null;
   }

@@ -159,6 +159,10 @@
       align: hcenter vcenter;
       }
 
+      block {
+      font: proportional small plain;
+      }
+
       popup {
       border-type: none;
       background: none;
@@ -327,14 +331,14 @@
       }
 
       timeline.update {
-      padding: 2 10 1 10;
-      margin: 2 5 1 5;
+      padding: 2 10 4 10;
+      margin: 2 5 2 5;
       align: hcenter vcenter;
       font: small plain;
-      background: grid9 "butt_bg.png" 6 6 6 6;
+      background: grid9 "butt_bg.png" 8 8 8 8;
       color: #000000;
       focused {
-      background: grid9 "butt_hover_bg.png" 6 6 6 6;
+      background: grid9 "butt_hover_bg.png" 8 8 8 8;
       color: #ffffff;
       }
       }
