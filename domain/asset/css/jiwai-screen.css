@@ -106,10 +106,11 @@ a:hover {color:#F87A01;}
 .floatright {float:right;}
 #permalink .odd .head {float:left; width:110px; overflow:hidden; height:104px;}
 #permalink .t-text {padding:5px 5px 0 5px;}
+#permalink .t-text a{font-size:14px;}
 #permalink .odd .head img {border:1px solid #FF9936; padding:2px; background-color:#ffffff;}
 #permalink .odd .cont .bg {background:url(../images/org-con-bg-big.gif) no-repeat left; width:10px; height:13px; position:absolute; margin-left:-14px;}
 #permalink .odd .cont {border:2px solid #FFCFA8; padding:6px;}
-#permalink .odd .cont a {font-size:12px;}
+#permalink .odd .cont .meta a {font-size:12px;}
 #permalink .odd .cont h3 {font-weight:bold; padding:5px 0 0 5px;}
 #permalink .meta {color:#929292; font-size:12px; padding:5px 0 8px 5px; display: block;}
 #permalink .meta a:link, #permalink .meta a:visited {color:#D05D02; text-decoration:none;}
