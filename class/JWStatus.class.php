@@ -910,7 +910,7 @@ _SQL_;
 		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
 
 		if ( null===$status_row['idThread'] 
-			&& 0 < JWDB_Cache_Status::GetCountReply( $status_id )
+			&& 0 < JWDB_Cache_Status::GetCountReply( $status_row['id'] )
 			&& $jiwaixiaodi = JWUser::GetUserInfo('叽歪小弟') )
 		{
 			$status_user_id = $status_row['idUser'];
