@@ -61,8 +61,15 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null)
 	JWTemplate::html_doctype();
 
 	$status_info    = JWDB_Cache_Status::GetDbRowById( $idStatus );
-	if( empty( $status_info) || $status_info['idUser'] != $page_user_id ) {
+	if ( empty( $status_info) ) 
+	{
 		JWTemplate::RedirectTo404NotFound();
+	}
+	else if ($status_info['idUser'] != $page_user_id ) 
+	{
+		$status_user_info = JWUser::GetUserInfo( $status_info['idUser'] );
+		$redirect_to = "/".urlEncode($status_user_info['nameUrl'])."/thread/$idStatus";
+		JWTemplate::RedirectToUrl( $redirect_to );
 	}
 
 	$user_row = JWDB_Cache_User::GetDbRowById( $status_info['idUser'] );
