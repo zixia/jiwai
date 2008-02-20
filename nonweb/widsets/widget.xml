@@ -43,13 +43,13 @@
       <value>http://api.jiwai.de/statuses/public_timeline.rss</value>
     </parameter>
     <parameter type="url" visible="false" name="user_timeline" editable="false">
-      <value>http://${username}:${password}@api.jiwai.de/statuses/user_timeline.rss</value>
+        <value>http://${username}:${password}@api.jiwai.de/statuses/user_timeline.rss</value>
     </parameter>
     <parameter type="url" visible="false" name="friends_timeline" editable="false">
-      <value>http://${username}:${password}@api.jiwai.de/statuses/friends_timeline.rss</value>
+        <value>http://${username}:${password}@api.jiwai.de/statuses/friends_timeline.rss</value>
     </parameter>
     <parameter type="url" visible="false" name="direct_messages" editable="false">
-      <value>http://${username}:${password}@api.jiwai.de/direct_messages.rss</value>
+        <value>http://${username}:${password}@api.jiwai.de/direct_messages.rss</value>
     </parameter>
   </parameters>
 
@@ -161,12 +161,14 @@
 
       block {
       font: proportional small plain;
+      background: solid black;
+      color: white;
       }
 
       popup {
-      border-type: none;
-      background: none;
-      align: hcenter vcenter;
+      font: proportional small plain;
+      background: solid white;
+      color: black;
       }
 
       header {
