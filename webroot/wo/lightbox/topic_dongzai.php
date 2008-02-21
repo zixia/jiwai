@@ -1,6 +1,6 @@
 <?php
-require_once ('../../../jiwai.inc.php');
 header('Content-Type: text/html;charset=UTF-8');
+require_once ('../../../jiwai.inc.php');
 
 $current_user_info = JWUser::GetCurrentUserInfo();
 $signature = empty($current_user_info) ? 

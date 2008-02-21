@@ -1,3 +1,6 @@
+<?php
+header('Content-Type: text/html;charset=UTF-8');
+?>
 <div id="wtLightbox" style="width:600px; ">
 	<div style="width:298px; float:left;  border-right:1px solid #cccccc; ">
 		<h2 class="red" id="loginTips">您还没有登录，请先登录</h2>

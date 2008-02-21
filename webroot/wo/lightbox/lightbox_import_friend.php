@@ -1,4 +1,7 @@
-<?php require_once(dirname(__FILE__) . '/../../../jiwai.inc.php'); ?>
+<?php 
+header('Content-Type: text/html;charset=UTF-8');
+require_once(dirname(__FILE__) . '/../../../jiwai.inc.php'); 
+?>
 
 <div id="wtLightbox">
 <div class="invitationdiv">

@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html;charset=UTF-8');
 require_once('../../../jiwai.inc.php');
 
 if ( array_key_exists('username_or_email',$_POST) )
