@@ -9,7 +9,7 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 $user_setting	= JWUser::GetNotification($user_info['id']);
 
-if ( isset($_REQUEST['commit_x']) )
+if ( isset($_REQUEST['commit_x']) && isset($_POST['user']) )
 {
 	$user_new_setting	= $_POST['user'];
 	$user_setting['send_new_direct_text_email'] = !empty($user_new_setting['send_new_direct_text_email']) ? 'Y' : 'N';
