@@ -51,7 +51,7 @@ function user_status($page_user_id, $idStatus, $idStatusReply = null, $idTag = n
 
 	$status_info    = JWStatus::GetDbRowById( $idStatus );
 	//$idTag = $status_info['idTag'];
-	$sideInfo = JWStatus::GetStatusByIdTagAndIdStatus($idTag, $idStatus,0,20 );
+	$sideInfo = JWStatus::GetStatusByIdTagAndIdStatus($idTag, $idStatus,0,10 );
 
 	$countPost = JWDB_Cache_Status::GetCountPostByIdTag( $idTag );
 
@@ -225,11 +225,13 @@ if( !empty($idStatusReply) )
     {
         $user_info = JWUser::GetUserInfo($value['idUser']);
 ?>
-<div class="content"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name'], '/thread/'. $value['id']. '/'.$value['id']; ?>" class="pad3"><?php echo  mb_substr($value['status'],0,14 ); ?>...</a>
-<div><?php echo $user_info['nameScreen']; ?></div></div>
+<div class="content" style="margin:10px 8px 0 15px;"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name'], '/thread/'. $value['id']. '/'.$value['id']; ?>" class="pad3"><?php echo  mb_substr($value['status'],0,15 ); ?>...</a>
+<div class="pad4"><?php echo $user_info['nameScreen']; ?>&nbsp;通过&nbsp;<?php echo JWDevice::GetNameFromType($value['device']);?><img8 src="<?php echo JWTemplate::GetAssetUrl('/images/jiwai-'.$value['device'].'.gif');?>"/>&nbsp;发布</div></div>
 <?php
     }
 ?>
+<div class="line2"><div></div></div>
+<a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅[<?php echo $tag_row['name'];  ?>]的消息</a>
 
 </div><!-- sidediv -->
 </div><!-- wtsidebar -->

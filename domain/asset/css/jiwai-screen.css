@@ -241,7 +241,7 @@ html>body .odd .cont .bg {margin-top:4px;}
 .front .odd .cont .bg {display:none;}
 .normal .odd .head {}
 .normal #content .line {background-color:#ffffff;}
-.odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color:white;}
+.wq .odd .cont {font-size:14px; line-height:22px; height:100%; overflow:hidden; background-color:white;}
 .odd a:hover {color:#FF830B; text-decoration:underline;}
 .odd .meta a:link {color:#666666; text-decoration:underline;}
 .odd .meta a:hover {color:#009BC7; text-decoration:underline;}
@@ -593,11 +593,11 @@ i {color:red; font-size:12px; display:block; margin:0px; font-style:normal;}
 #wtTimeline .graybg{ font-size:12px;color:#666666;background-color:#F2F2F2;padding:8px 3px 6px 10px; margin-top:5px;line-height:20px;}
 
 /*Table Menu*/
-#wtTableMenu {width:534px; height:46px; border:0px; text-align:center; background-color:#FFF; margin:0; clear:both;}
+#wtTableMenu {width:534px; height:46px; border:0px; text-align:center; margin:0; clear:both;}
 #wtTableMenu h2 {font-size:15px; color:#FFEFC8; font-weight:bold; text-indent:15px; line-height:18px; padding:12px 0 0 0px; margin-top:0px; margin:0px;} 
-#wtTableMenu .left {float:left; width:2px; height:46px; padding:0 0 0 0; background:url(../images/org-tit-l.gif) no-repeat right bottom; background-color:#FFF;}
+#wtTableMenu .left {float:left; width:2px; height:46px; padding:0 0 0 0; background:url(../images/org-tit-l.gif) no-repeat right bottom;}
 #wtTableMenu .middle {float:left; width:530px; height:46px; text-align:left; font-size:12px; background:url(../images/org-tit-bg.gif) repeat-x right bottom; background-color:#FFF; margin:0 0 0 0;}
-#wtTableMenu .right {float:right; width:2px; height:46px; padding:0 0 0 0; background:url(../images/org-tit-r.gif) no-repeat right bottom; background-color:#FFF;} 
+#wtTableMenu .right {float:right; width:2px; height:46px; padding:0 0 0 0; background:url(../images/org-tit-r.gif) no-repeat right bottom;}
 #wtTableMenu a,#wtTableMenu a:link, #wtTableMenu a:visited {float:right; width:73px; height:21px; display:block; background:url(../images/org-tab-on.gif) no-repeat 0 0; text-align:center; line-height:18px; color:#FFF; font-size:14px; font-weight:bold; padding:9px 0 0 0; margin:7px 5px 0 0; text-decoration:none;} 
 #wtTableMenu a:hover, #wtTableMenu a:active {width:73px; height:21px; background:url(../images/org-tab-off.gif) no-repeat 0 0; color:#000000; padding:9px 0 0 0; margin:7px 5px 0 0; text-decoration:none;}
 #wtTableMenu a.active, #wtTableMenu a.active:link, #wtTableMenu a.active:visited, #wtTableMenu a.active:hover, #wtTableMenu a.active:active {width:73px; height:21px; background:url(../images/org-tab-off.gif) no-repeat 0 0; color:#000000; padding:9px 0 0 0; margin:7px 5px 0 0; text-decoration:none;} 
@@ -696,8 +696,9 @@ a.normLink:hover {color:#FF830B!important; text-decoration:underline!important;}
 #wtchannelsidebar a.pad1:hover {color:#F87A01; font-weight:bold; text-decoration:underline;}
 #wtchannelsidebar .pad2 {line-height:22px; font-size:15px; font-weight:bold; color:#F87A01; text-decoration:none;}
 #wtchannelsidebar a.pad2:hover {color:#F87A01; font-weight:bold; text-decoration:underline;}
-#wtchannelsidebar .pad3 {line-height:22px; font-size:14px; color:#F87A01; text-decoration:none;}
+#wtchannelsidebar .pad3 {line-height:21px; font-size:12px; color:#F87A01; text-decoration:none;}
 #wtchannelsidebar a.pad3:hover {color:#F87A01; text-decoration:underline;}
+#wtchannelsidebar .pad4 {color:#666666;}
 #wtchannelsidebar .content {line-height:20px; height:100%; overflow:hidden; margin:10px 8px 0 8px;}
 
 #wtchannelsidebar .rsshim {display:block; background:url(../images/channel-rss-bg.gif) #f2f2f2 no-repeat center; height:27px; text-align:left; text-indent:0px; margin:0 auto; padding:10px 0 10px 30px; color:#F87A01; font-weight:bold; font-size:12px; text-decoration:none;}

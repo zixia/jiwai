@@ -79,7 +79,7 @@ html>body #navigation ul  {margin-top:45px;}
 /* The update end */
 
 /* The container start */
-#container { margin:0 auto; width:776px; background-color:#FFFFFF;}
+#container { margin:0 auto; width:776px;}
 #container .top { color:#000000; font-size:26px; font-weight:bold; border-bottom:#D3D3D5 1px solid;padding:18px 10px 5px 10px; margin:0 10px 0 10px;line-height:30px;}
 .account #container { border:1px solid #D3D3D5; margin:8px auto; width:774px;}
 #content {width:534px; float:left; margin:10px 13px 0 0; overflow:hidden;  }
@@ -406,7 +406,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtchannelsidebar a.pad1:hover { color:#F87A01; font-weight:bold; text-decoration:underline;}
 #wtchannelsidebar .pad2 { line-height:22px; font-size:15px; font-weight:bold;  color:#F87A01;text-decoration:none;}
 #wtchannelsidebar a.pad2:hover { color:#F87A01; font-weight:bold; text-decoration:underline;}
-#wtchannelsidebar .pad3 { line-height:22px; font-size:14px;color:#F87A01;text-decoration:none;}
+#wtchannelsidebar .pad3 { line-height:21px; font-size:12px;color:#F87A01;text-decoration:none;}
 #wtchannelsidebar a.pad3:hover { color:#F87A01;  text-decoration:underline;}
 #wtchannelsidebar .content {line-height:20px; height:100%; overflow:hidden; margin:10px 8px 0 8px;}
 #wtchannelsidebar .title {font-size:14px; font-weight:bold; line-height:20px;padding:16px 0 0 10px;}

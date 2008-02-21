@@ -9,7 +9,7 @@
       <h2 class="forul">最近加入关注</h2>
 	  <div class="com" id="friend">
 	  <?php
-	  $current_num = 1;
+	  $current_num = 0;
 
 	  $n = 0;
 	  foreach($follower_ids as $follower_id ){
@@ -23,12 +23,12 @@
 
 		  if( $n % 4==0 ) echo '<ul class="list">';
 				 ?>
-		<li><a href="/<?php echo $follower_info['nameUrl']?>/" title="<?php echo $follower_info['nameFull']?>" rel="contact"><img src="<?php echo $picture_url;?>" title="<?php echo $follower_info['nameFull']; ?>" icon="<?php echo $follower_info['id'];?>" class="buddy_icon" border="0" /><span><?php echo $follower_info['nameScreen'];?></span></a></li>
+		<li><a style="overflow:hidden;" href="/<?php echo $follower_info['nameUrl']?>/" title="<?php echo $follower_info['nameScreen']?>" rel="contact"><img src="<?php echo $picture_url;?>" alt="<?php echo $follower_info['nameFull']; ?>" title="<?php echo $follower_info['nameFull']; ?>" icon="<?php echo $follower_info['id'];?>" class="buddy_icon" border="0" /><span style="overflow:hidden;"><?php echo mb_substr($follower_info['nameScreen'], 0, 5);?></span></a></li>
 	<?php  
 	if( $n % 4 == 3 ) echo '</ul>';
+				 $n++;
 				 if( $n >= $follower_show_num ) 
 					 break;
-				 $n++;
 	}
 	  if( $n % 4!=1 ) echo "</ul>";
 	?>		
@@ -58,7 +58,7 @@
 		<div class="line"><div></div></div>
 
 <?php if ( $current_user_id ) { ?>
-        <a href="<?php echo JW_SRVNAME .'/' .$current_user_info['nameScreen'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在这里的叽歪</a>
+        <a href="<?php echo JW_SRVNAME .'/' .$current_user_info['nameUrl'] .'/t/' .$tag_row['name'].'/';?>" class="pad" style="margin-left:12px;">我在这里的叽歪</a>
 <?php } ?>
 
 <a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅[<?php echo $tag_row['name'];  ?>]的消息</a>

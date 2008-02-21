@@ -99,6 +99,10 @@ class JWFormValidate
 			{
 				return "不能完全是数字";
 			}
+			else if ( empty( $name_url ) ) 
+			{
+				return "";//"不能为空";
+			}
 			else if ( strlen( $name_url ) < 4 ) 
 			{
 				return "不能短于 4 个字符";

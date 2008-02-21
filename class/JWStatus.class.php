@@ -1125,7 +1125,7 @@ _HTML_;
 			}
 			if( false == empty( $tag_row ) )
 			{
-				$status = '[<a href="/t/'.$tag_row['name'].'/" rel="tag">'.$tag_row['name'].'</a>] '.$status;
+				$status = '[<a href="/t/'.$tag_row['name'].'/" rel="tag" style="font-size:14px;">'.$tag_row['name'].'</a>] '.$status;
 			}
 		}
 

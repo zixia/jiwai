@@ -2149,10 +2149,10 @@ _HTML_;
 
 			接收通知方式：
 			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'">
-				<li class="slect" onmouseover="style.backgroundColor='#FF830B';" onmouseout="style.backgroundColor='#F97B00'"><?php echo $viaDevName; ?></li>
+				<li class="slect" onmouseover="style.backgroundColor='#F97B00';" onmouseout="style.backgroundColor='#F97B00'"><?php echo $viaDevName; ?></li>
 <?php
 		foreach ($otherDev as $d => $n) if ($d!='facebook') echo <<<__HTML__
-				<li onmouseover="style.backgroundColor='#FF830B';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');">$n</li>
+				<li onmouseover="style.backgroundColor='#FF8D1D';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');">$n</li>
 
 __HTML__;
 ?>
