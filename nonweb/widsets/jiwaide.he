@@ -116,13 +116,35 @@ class
   ];
 
 // facility => Value
+  void initValue() {
+    timelineList  = [
+      FacilityBlog  => [],
+      FacilityPub   => [],
+      FacilityUser  => [],
+      FacilityFri   => [],
+      FacilityDr    => [],
+      FacilityFriends   => [],
+      FacilityFeatures  => []
+    ];
+
+    timelineViewed= [
+      FacilityBlog  => STATUS_UNVIEWED,
+      FacilityPub   => STATUS_UNVIEWED,
+      FacilityUser  => STATUS_UNVIEWED,
+      FacilityFri   => STATUS_UNVIEWED,
+      FacilityDr    => STATUS_UNVIEWED,
+      FacilityFriends   => STATUS_UNVIEWED,
+      FacilityFeatures  => STATUS_UNVIEWED
+    ];
+  }
+
   Value timelineList  = [
     FacilityBlog  => [],
     FacilityPub   => [],
     FacilityUser  => [],
     FacilityFri   => [],
     FacilityDr    => [],
-    FacilityFriends   => [],
+    FacilityFriends  => [],
     FacilityFeatures => []
   ];
 
@@ -150,20 +172,20 @@ class
 
   void createTimelineListMenu() {
     MENU = new Menu()
-      .add(CMD_RELOAD, @CmdReload)
-      .add(CMD_READALL,@CmdReadall)
-      .add(CMD_HELP ,  @CmdHelp)
-      .add(CMD_CAPTURE,@CmdCapture)
-      .add(CMD_LOGOUT, @CmdLogout)
-      .add(CMD_SETTING,@CmdSetting);
+      .add(CMD_RELOAD, "* " + @CmdReload)
+      .add(CMD_READALL,"# " + @CmdReadall)
+      .add(CMD_HELP ,  "1 " + @CmdHelp)
+      .add(CMD_SETTING,"3 " + @CmdSetting)
+      .add(CMD_CAPTURE,"9 " + @CmdCapture)
+      .add(CMD_LOGOUT, @CmdLogout);
   }
 
   void createTimelineViewMenu () {
     MENU = new Menu()
-      .add(CMD_RELOAD, @CmdReload)
-      .add(CMD_READALL,@CmdReadall)
-      .add(CMD_HELP ,  @CmdHelp)
-      .add(CMD_CAPTURE,@CmdCapture);
+      .add(CMD_RELOAD, "* " + @CmdReload)
+      .add(CMD_READALL,"# " + @CmdReadall)
+      .add(CMD_HELP ,  "1 " + @CmdHelp)
+      .add(CMD_CAPTURE,"9 " + @CmdCapture);
   }
 
 // END createMenus
@@ -188,28 +210,32 @@ class
 
     Flow getTimelineListFlow () {
       Value data = [
-        ["name"    => "1." + @TimelinePub,
+        ["name"    => @TimelinePub,
         "fname"    => FacilityPub,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => "2." + @TimelineUser,
+        ["name"    => @TimelineUser,
         "fname"    => FacilityUser, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => "3." + @TimelineFri,
+        ["name"    => @TimelineFri,
         "fname"    => FacilityFri, 
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => "4." + @TimelineDr,
+        ["name"    => @TimelineDr,
         "fname"    => FacilityDr,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => "5." + @ListFriends,
+        ["name"    => @ListFriends,
         "fname"    => FacilityFriends,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => "6." + @ListFeatures,
+        ["name"    => @ListFeatures,
         "fname"    => FacilityFeatures,
+        "viewed"   => STATUS_UNVIEWED
+          ],
+        ["name"    => @TimelineBlog,
+        "fname"    => FacilityBlog,
         "viewed"   => STATUS_UNVIEWED
           ]
       ];
@@ -278,34 +304,10 @@ class
         }
       } else if (code == '7') {
         animatePushShell(createConsoleView());
-      }
-
-      if (code > '0' && code < '7') { animatePopShell(shell); }
-      switch (code) {
-        case '1':
-          timelineViewed[FacilityPub] = [];
-          animatePushShell(createTimelineView(FacilityPub, @TimelinePub));
-          break;
-        case '2':
-          timelineViewed[FacilityUser] = [];
-          animatePushShell(createTimelineView(FacilityUser, @TimelineUser));
-          break;
-        case '3':
-          timelineViewed[FacilityFri] = [];
-          animatePushShell(createTimelineView(FacilityFri, @TimelineFri));
-          break;
-        case '4':
-          timelineViewed[FacilityDr] = [];
-          animatePushShell(createTimelineView(FacilityDr, @TimelineDr));
-          break;
-        case '5':
-          timelineViewed[FacilityFriends] = [];
-          animatePushShell(createTimelineView(FacilityFriends, @ListFriends));
-          break;
-        case '6':
-          timelineViewed[FacilityFeatures] = [];
-          animatePushShell(createTimelineView(FacilityFeatures, @ListFeatures));
-          break;
+      } else if (code == '1') {
+        animatePushShell(createHelpView("main"));
+      } else if (code == '3') {
+        animatePushShell(createSettingView());
       }
       return false;
     }
@@ -547,6 +549,7 @@ class
     {
       imageData = null;
       alertError(@InfoUpdateSuc);
+      rawFetchAndRefresh(new List().add(FacilityUser).add(FacilityFri));
     }
 
     void mmsnok(Object state, String error)
@@ -706,6 +709,10 @@ class
         }
       } else if (code == '7') {
         animatePushShell(createConsoleView());
+      } else if (code == '1') {
+        animatePushShell(createHelpView(facility));
+      } else if (code == '3') {
+        animatePushShell(createSettingView());
       }
 
       return false;
@@ -1147,7 +1154,7 @@ class
         Value arg = [
           "ts"  => 0,
           "max" => STATUS_COUNTS,
-          "refresh" => true
+          "refresh" => false
         ];
         call(FacilityBlog, FacilityBlog, "getItems", arg, blogok, blognok);
       } else if (action == CMD_REGISTER) {
@@ -1163,12 +1170,12 @@ class
 
 // BEGIN fetchMethods
 
-  void fetchTimeline(String facility)
+  void fetchTimeline(String facility, boolean refresh)
   {
     Value arg = [
       "ts"  => 0,
       "max" => STATUS_COUNTS,
-      "refresh" => true
+      "refresh" => refresh
     ];
     call(facility, facility, "getItems", arg, fetchok, fetchnok);
   }
@@ -1186,7 +1193,7 @@ class
       "max" => STATUS_COUNTS,
       "refresh" => true
     ];
-    call(facility, facility, "getItems", arg, rawfetchok, fetchnok);
+    call(facility, facility, "getItems", arg, rawfetchok, null);
   }
 
   void doReadall(String facility)
@@ -1263,16 +1270,6 @@ class
     }
   }
 
-  void rawfetchok(Object state, Value ret)
-  {
-    createValueFromTimeline(state, ret);
-    timelineViewed[state] = STATUS_UNVIEWED;
-
-    if (++progressCurrent == progressTotal) {
-      closePrompt();
-    }
-  }
-
   void fetchnok(Object state, String error)
   {
     if (++progressCurrent == progressTotal) {
@@ -1283,6 +1280,11 @@ class
       tempShell = timelineListShell;
     }
     alertError(@InfoSyndFail + ": "+error);
+  }
+
+  void rawfetchok(Object state, Value ret)
+  {
+    createValueFromTimeline(state, ret);
   }
 
   void wanderok(Object state, Value ret)
@@ -1319,6 +1321,7 @@ class
     store.remove(storeUsername);
     store.remove(storePassword);
     anonymousMode = true;
+    initValue();
     animatePushShell(createLoginForm());
   }
 
@@ -1344,6 +1347,7 @@ class
     store.put(storeUsername, Value(username));
     store.put(storePassword, Value(password));
     setAuthedParameters();
+    initValue();
     bulkFetch();
   }
 
@@ -1407,13 +1411,14 @@ class
   }
 
   void bulkFetch() {
-    progressTotal = 6;
+    progressTotal = 7;
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
-    fetchTimeline(FacilityPub);
-    fetchTimeline(FacilityUser);
-    fetchTimeline(FacilityFri);
-    fetchTimeline(FacilityDr);
+    fetchTimeline(FacilityPub, true);
+    fetchTimeline(FacilityUser, false);
+    fetchTimeline(FacilityFri, true);
+    fetchTimeline(FacilityDr, true);
+    fetchTimeline(FacilityBlog, false);
     fetchList(FacilityFriends);
     fetchList(FacilityFeatures);
   }
@@ -1422,7 +1427,7 @@ class
     progressTotal = 1;
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
-    fetchTimeline(facility);
+    fetchTimeline(facility, true);
   }
 
   void fetchAndRefresh(List facilities) {
@@ -1433,15 +1438,12 @@ class
       if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
         fetchList(facility);
       } else {
-        fetchTimeline(facility);
+        fetchTimeline(facility, true);
       }
     }
   }
 
   void rawFetchAndRefresh(List facilities) {
-    progressTotal = facilities.size();
-    progressCurrent = 0;
-    pushExclusiveView(@InfoInUpdating);
     foreach (String facility : facilities) {
       rawFetchTimeline(facility);
     }
@@ -1626,15 +1628,18 @@ class
   }
 
   String createAuthedUrl(String raw) {
+    String retUrl = "";
     if (anonymousMode) {
-      return "http://" + raw;
+      retUrl = "http://" + raw;
+    } else {
+      retUrl = "http://"
+        + encodeURL(username)
+        + ":"
+        + password
+        + "@"
+        + raw;
     }
-    return "http://"
-      + username
-      + ":"
-      + password
-      + "@"
-      + raw;
+    return retUrl;
   }
 
   void setAuthedParameters() {
