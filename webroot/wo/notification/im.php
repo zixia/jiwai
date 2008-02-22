@@ -9,11 +9,11 @@
  
  $user_setting   = JWUser::GetNotification($user_info['id']);
  
- if ( isset($_REQUEST['commit_x']) && isset($_POST['user'] ))
+ if ( isset($_REQUEST['commit_x']) )
  {
-	$user_new_setting	= $_POST['user'];
-	$user_setting['auto_nudge_me'] = !empty($user_new_setting['auto_nudge_me']) ? 'Y' : 'N';
-	$user_setting['is_receive_offline'] = !empty($user_new_setting['is_receive_offline']) ? 'Y' : 'N';
+	$user_new_setting = isset($_POST['user']);
+	$user_setting['auto_nudge_me'] = isset($user_new_setting['auto_nudge_me']) ? $user_new_setting['auto_nudge_me'] : 'N';
+	$user_setting['is_receive_offline'] = isset($user_new_setting['is_receive_offline']) ? $user_new_setting['is_receive_offline'] : 'N';
  
 	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
 	{
