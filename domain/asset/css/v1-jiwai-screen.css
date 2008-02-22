@@ -81,7 +81,7 @@ html>body #navigation ul  {margin-top:45px;}
 /* The container start */
 #container { margin:0 auto; width:776px;}
 #container .top { color:#000000; font-size:26px; font-weight:bold; border-bottom:#D3D3D5 1px solid;padding:18px 10px 5px 10px; margin:0 10px 0 10px;line-height:30px;}
-.account #container { border:1px solid #D3D3D5; margin:8px auto; width:774px;}
+.account #container { border:1px solid #D3D3D5; margin:8px auto; width:774px;background-color:#FFFFFF;}
 #content {width:534px; float:left; margin:10px 13px 0 0; overflow:hidden;  }
 #content #wrapper { }
 #content ul {margin:0;padding:0 1.5em;}

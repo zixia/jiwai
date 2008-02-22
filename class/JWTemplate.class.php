@@ -2103,7 +2103,7 @@ _HTML_;
 			
 				if( false == JWTemplate::IsUserUploadPic(JWLogin::GetCurrentUserId()))
 				{
-					echo '<a class="sendtips" style="margin-left:0" href="/wo/account/profile">上传头像 ↑ </a>';
+					echo '<a class="sendtips" style="margin-left:0" href="/wo/account/photos">上传头像 ↑ </a>';
 				}
 			?>
 		</div>

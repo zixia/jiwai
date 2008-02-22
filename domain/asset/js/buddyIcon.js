@@ -162,7 +162,7 @@ var JWBuddyIcon =
 		var src = target.getProperty('src');
 		var pos = target.getPosition();
 		var uid = target.getProperty('icon');
-		return JWBuddyIcon.createInitDiv(target) || JWBuddyIcon.cache[uid];
+		return JWBuddyIcon.cache[uid] || JWBuddyIcon.createInitDiv(target) ;
 	},
 
 	setAvatarContent: function(uid)
