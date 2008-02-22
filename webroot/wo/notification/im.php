@@ -11,7 +11,7 @@
  
  if ( isset($_REQUEST['commit_x']) )
  {
-	$user_new_setting = isset($_POST['user']);
+	$user_new_setting = isset($_POST['user']) ? $_POST['user'] : array();
 	$user_setting['auto_nudge_me'] = isset($user_new_setting['auto_nudge_me']) ? $user_new_setting['auto_nudge_me'] : 'N';
 	$user_setting['is_receive_offline'] = isset($user_new_setting['is_receive_offline']) ? $user_new_setting['is_receive_offline'] : 'N';
  
