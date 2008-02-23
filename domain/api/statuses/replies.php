@@ -118,7 +118,7 @@ function getStatusesWithUser($idUser, $needReBuild=true)
 			continue;
 
 		$oInfo = $needReBuild ? JWApi::ReBuildStatus( $status_row ) : $status_row;
-		if( false === isset( $userTemp[$s['idUser']] ) )
+		if( false === isset( $userTemp[$status_row['idUser']] ) )
 		{
 			$user_row = JWUser::GetUserInfo($status_row['idUser']);
 			$userTemp[$status_row['idUser']] = $user_row;
