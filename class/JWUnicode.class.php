@@ -56,7 +56,7 @@ class JWUnicode {
     static function unifyName(&$s) {
 	$s = preg_replace('/(['.self::$blocks_n[0].'])['.self::$blocks_n[0].']+/', '$1', $s); //去掉连续的特殊符号。
 	$s = preg_replace('/^['.self::$blocks_n[0].']/', '', $s); //去掉开头的特殊符号。
-	if (strpos(self::$blocks_n[0], mb_substr($s, -1, 1))!==false) $s = substr($s, 0, -1); //去掉结尾的特殊符号。
+	if (strlen($s)&&strpos(self::$blocks_n[0], mb_substr($s, -1, 1))!==false) $s = substr($s, 0, -1); //去掉结尾的特殊符号。
 //return true;
         return self::unify($s, self::$blocks_n);
     }
