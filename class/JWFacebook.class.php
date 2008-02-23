@@ -41,7 +41,7 @@ class JWFacebook extends Facebook {
 				'link_status'=>'http://jiwai.de/'.$name_url.'/statuses/'.$status_id,
 				'status'=>$status, 'via'=>$via));
 			self::instance()->api_client->feed_publishTemplatizedAction($fbid,
-				'{actor} posted a message on <a href="{link_user}">JiWai</a> via {via}', $s,
+				'{actor}通过{via}<a href="{link_user}">叽歪</a>道: ', $s,
 				'<a href="{link_status}">{status}</a>', $s,
 				'', $img, $img_link);
 		} catch (Exception $e) {
