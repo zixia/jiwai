@@ -188,12 +188,11 @@ class JWDB implements JWDB_Interface
 				$sql .= " AND ";
 
 			if ( is_int($v) )
-				$sql .= " $k=$v ";
+				$sql .= " `$k`=$v ";
 			else if ( is_null($v) )
-				$sql .= " $k IS NULL ";
+				$sql .= " `$k` IS NULL ";
 			else
-				$sql .= " $k='" . self::EscapeString($v) . "' ";
-
+				$sql .= " `$k`='" . self::EscapeString($v) . "' ";
 			if ( $first )
 				$first = false;
 		}
@@ -244,7 +243,7 @@ class JWDB implements JWDB_Interface
 				$val_list .= ",";
 			}
 
-			$col_list .= "$k";
+			$col_list .= "`$k`";
 
 			if ( is_int($v) )
 				$val_list .= "$v";
@@ -331,11 +330,11 @@ class JWDB implements JWDB_Interface
 				$sql .= " , ";
 
 			if ( is_null($v) )
-				$sql .= "$k=NULL";
+				$sql .= "`$k` IS NULL";
 			else if ( is_int($v) )
-				$sql .= "$k=$v";
+				$sql .= "`$k`=$v";
 			else
-				$sql .= "$k='" . self::EscapeString($v) . "'";
+				$sql .= "`$k`='" . self::EscapeString($v) . "'";
 
 			if ( $first)
 				$first = false;
@@ -374,7 +373,7 @@ class JWDB implements JWDB_Interface
 				$where_condition .= " AND ";
 			}
 
-			$where_condition .= "$k=";
+			$where_condition .= "`$k`=";
 
 			if ( is_int($v) )
 				$where_condition .= "$v";
@@ -583,8 +582,8 @@ class JWDB implements JWDB_Interface
 			if ( $first )	$first = false;
 			else 			$sql .= " AND ";
 
-			if ( is_int($v) )	$sql .= " $k=$v ";
-			else				$sql .= " $k='" . self::EscapeString($v) . "' ";
+			if ( is_int($v) )	$sql .= " `$k`=$v ";
+			else				$sql .= " `$k`='" . self::EscapeString($v) . "' ";
 		}
 		// " WHERE $field='$value' AND field2=value2 ");
 
