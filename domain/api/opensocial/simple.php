@@ -2,7 +2,7 @@
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
 ?>
 <Module>
-<ModulePrefs title="叽歪de"
+<ModulePrefs title="叽歪"
 		title_url="http://jiwai.de"
 		thumbnail="http://asset.jiwai.de/gadget/opensocial/simple_thumbnail.png"
 		screenshot="http://asset.jiwai.de/gadget/opensocial/simple_screenshot.png"
@@ -41,14 +41,17 @@ if (numDisplay<1) numDisplay = 1;
 if (numDisplay>20) numDisplay = 20;
 function onInit() {
 	if (screenName == null || screenName == '') {
-		_gel("content").innerHTML = '<p class="alert"><b>请先设置你的叽歪登录名</b></p>';
+		_gel("content").innerHTML = '<p class="alert"><b>请先设置你的叽歪登录名</b><br />还没有叽歪帐号？<a href="http://jiwai.de/wo/account/create" target="_blank">这里注册</a></p>';
 	} else {
 		var uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + screenName + '.json?count='+numDisplay;
 		_IG_FetchContent(uri, onFetch, 10);
 	}
 }
-function formatDate(d) {
-	return (d.toLocaleDateString() == (new Date).toLocaleDateString()) ? d.toLocaleTimeString() : d.toLocaleDateString();
+function formatDate(s) {
+	var d = new Date(s.replace(/(\w+)\s+(\w+)\s+(\w+)\s+([\w:]+)\s+([\w+-]+)\s+(\w+)/, '$1 $2 $3 $6 $4 $5'));
+	return (d.toLocaleDateString() == (new Date).toLocaleDateString()) 
+		? d.toLocaleTimeString().replace(/(\d+):(\d+):(\d+)/, '$1:$2') 
+		: d.toLocaleDateString();
 }
 function onFetch(response) {
 	try {
@@ -70,7 +73,7 @@ function onFetch(response) {
 		+ '<span><img style="float:right" src="'+o.user.profile_image_url //align="right"
 		+ (withFriends ? '"/></span><span>' + o.user.screen_name + ': ' : '"/>')
 		+ '</span><span>' + o.text
-		+ '</span> <span style="color:grey">' + formatDate(new Date(o.created_at))
+		+ '</span> <span style="color:grey">' + formatDate(o.created_at)
 		+ '</span></div>';
 		} catch (e) {
 		}
