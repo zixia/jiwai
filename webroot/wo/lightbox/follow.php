@@ -70,7 +70,7 @@ $need_request = ( $follower_user_row['protected'] == 'Y'
 
 <?php if( $need_request ) { ?>
 	<p class="pad1">输入你的请求附言：</p>
-	<p class="pad2" style="padding-top:0px;"><textarea id="request_follow" name="request_follow" class="requestFriend" mission="$('followForm').submit(); return false;" onKeyDown="JWAction.onEnterSubmit(event,this);" ></textarea></p>
+	<p class="pad2" style="padding-top:0px;"><textarea id="request_follow" style="border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3; overflow:hidden; font-size:12px; width:275px; height:110px; " name="request_follow" class="requestFriend" mission="$('followForm').submit(); return false;" onKeyDown="JWAction.onEnterSubmit(event,this);" ></textarea></p>
 <? } else { ?>
 	<p class="pad1">是否同时打开通知呢？</p>
 	<ul>
