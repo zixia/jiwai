@@ -7,8 +7,8 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
-<meta name="description" content="叽歪窗可贴 for UWA (SOW and etc)" />
-<meta name="version" content="1.0" />
+<meta name="description" content="叽歪窗可贴 for UWA (Netvibes, SOW and etc)" />
+<meta name="version" content="1.0.1" />
 <meta name="keyword" content="叽歪 JiWai widget" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
 <meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
@@ -21,8 +21,11 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 </widget:preferences>
 <script type="text/javascript">
 <![CDATA[
-function formatDate(d) {
-	return (d.toLocaleDateString() == (new Date).toLocaleDateString()) ? d.toLocaleTimeString() : d.toLocaleDateString();
+function formatDate(s) {
+	var d = new Date(s.replace(/(\w+)\s+(\w+)\s+(\w+)\s+([\w:]+)\s+([\w+-]+)\s+(\w+)/, '$1 $2 $3 $6 $4 $5'));
+	return (d.toLocaleDateString() == (new Date).toLocaleDateString()) 
+		? d.toLocaleTimeString().replace(/(\d+):(\d+):(\d+)/, '$1:$2') 
+		: d.toLocaleDateString();
 }
 widget.onLoad = function() {
 	var screenName = widget.getValue("screenName");
@@ -50,7 +53,7 @@ widget.onLoad = function() {
 				+ '<span><img style="float:right;width:24px;height:24px;" src="'+o.user.profile_image_url //align="right"
 				+ (withFriends ? '"/></span><span>' + o.user.screen_name + ': ' : '"/>')
 				+ '</span><span>' + o.text
-				+ '</span> <span style="color:grey">' + formatDate(new Date(o.created_at))
+				+ '</span> <span style="color:grey">' + formatDate(o.created_at)
 				+ '</span></div>';
 			} catch(e) {
 				//just ignore exceptions since some crap func stay in the object.
