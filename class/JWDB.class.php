@@ -330,7 +330,7 @@ class JWDB implements JWDB_Interface
 				$sql .= " , ";
 
 			if ( is_null($v) )
-				$sql .= "`$k` IS NULL";
+				$sql .= "`$k`=NULL";
 			else if ( is_int($v) )
 				$sql .= "`$k`=$v";
 			else
