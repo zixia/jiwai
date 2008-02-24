@@ -578,18 +578,24 @@ class JWDB implements JWDB_Interface
 		$sql = "SELECT MAX(id) as idMax  FROM $table WHERE ";
 		
 		$first = true;
-		foreach ( $condition as $k => $v ){
-			if ( $first )	$first = false;
-			else 			$sql .= " AND ";
+		foreach ( $condition as $k => $v )
+		{
+			if ( $first )
+				$first = false;
+			else 
+				$sql .= " AND ";
 
-			if ( is_int($v) )	$sql .= " `$k`=$v ";
-			else				$sql .= " `$k`='" . self::EscapeString($v) . "' ";
+			if ( is_int($v) )
+				$sql .= " `$k`=$v ";
+			else
+				$sql .= " `$k`='" . self::EscapeString($v) . "' ";
 		}
 		// " WHERE $field='$value' AND field2=value2 ");
 
 		$result = $db->query ($sql);
 
-		if ( !$result ){
+		if ( !$result )
+		{
 			JWDB::Close();
 			throw new JWException ("DB Error: " . $db->error);
 			return false;
@@ -654,7 +660,7 @@ class JWDB implements JWDB_Interface
         {
             $sql=<<<_SQL_
 UPDATE $table 
-    SET $column = $column + $value
+    SET `$column` = `$column` + $value
     WHERE id = $idPK;
 _SQL_;
         }
@@ -662,7 +668,7 @@ _SQL_;
         {
             $sql=<<<_SQL_
 UPDATE $table 
-    SET $column = $value
+    SET `$column` = $value
     WHERE id = $idPK;
 _SQL_;
         }
