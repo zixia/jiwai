@@ -14,37 +14,53 @@ if( !$idUser ){
 /**
   * Get Message Information from db
   */
-$idMessage = $type = null;
-@list($idMessage, $type)= explode('.', trim( $pathParam, '/' ));
+$message_id = $type = null;
+@list($message_id, $type)= explode('.', trim( $pathParam, '/' ));
 if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
 }
 
-if( !$idMessage ) {
+if( !$message_id ) {
 	JWApi::OutHeader(400, true);
 }
-$unMessage = JWMessage::GetMessageDbRowById( $idMessage );
-if( !$unMessage ) {
+$un_message = JWMessage::GetMessageDbRowById( $message_id );
+if( !$un_message ) {
 	JWApi::OutHeader(404, true);
 }
 
 /**
   * message's owner check 
   */
-if( $unMessage['idUserReceiver'] != $idUser ) {
+if( $un_message['idUserReceiver'] != $idUser
+	&& $un_message['idUserSender'] != $idUser ) 
+{
 	JWApi::OutHeader(403, true);
 }
 
 /**
   * Destroy direct message by Id
   */
-if( JWMessage::Destroy($idMessage) ){
+$flag = true;
+if ( $un_message['idUserSender'] == $idUser )
+{
+	$flag &= JWMessage::SetMessageStatus( $message_id, JWMessage::OUTBOX, JWMessage::MESSAGE_DELETE );
+}
+if ( $un_message['idUserReceiver'] == $idUser )
+{
+	$flag &= JWMessage::SetMessageStatus( $message_id, JWMessage::INBOX, JWMessage::MESSAGE_DELETE );
+}
+
+/**
+ * out infomation
+ */
+if( $flag )
+{
 	switch($type){
 		case 'xml':
-			renderXmlReturn($unMessage);
+			renderXmlReturn($un_message);
 		break;
 		case 'json':
-			renderJsonReturn($unMessage);
+			renderJsonReturn($un_message);
 		break;
 		default:
 			JWApi::OutHeader(400, true);

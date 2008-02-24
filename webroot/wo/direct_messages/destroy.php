@@ -22,11 +22,11 @@ if ( preg_match('/^\/(\d+)$/',$param,$match) )
 	$flag = true;
 	if( $flag && $message_row['idUserSender'] == $current_user_id ) 
 	{
-        $flag &= JWMessage::Destroy($message_id);
+		$flag &= JWMessage::SetMessageStatus($message_id, JWMessage::OUTBOX, JWMessage::MESSAGE_DELETE);
 	}
 	if( $flag && $message_row['idUserReceiver'] == $current_user_id ) 
 	{
-        $flag &= JWMessage::Destroy($message_id);
+		$flag &= JWMessage::SetMessageStatus($message_id, JWMessage::INBOX, JWMessage::MESSAGE_DELETE);
 	}
 
 	if ( $flag ) 
