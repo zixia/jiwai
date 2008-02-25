@@ -6,7 +6,6 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 
 $status = null;
 $idPartner = null;
-$idUser = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
@@ -20,11 +19,9 @@ if( !$status ) {
 }
 $status = mb_convert_encoding( $status, "UTF-8", "GB2312,UTF-8");
 
-$idUser = mb_convert_encoding($idUser, 'UTF-8', 'GB2312,UTF-8');
-if( !$idUser && !($idUser=JWApi::GetAuthedUserId()) ){
+if( ! $idUser=JWApi::GetAuthedUserId() ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
-
 
 $device = 'api';
 $timeCreate = date("Y-m-d H:i:s");
