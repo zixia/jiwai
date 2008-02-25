@@ -23,7 +23,7 @@
 
 		  if( $n % 4==0 ) echo '<ul class="list">';
 				 ?>
-		<li><a style="overflow:hidden;" href="/<?php echo $follower_info['nameUrl']?>/" title="<?php echo $follower_info['nameScreen']?>" rel="contact"><img src="<?php echo $picture_url;?>" alt="<?php echo $follower_info['nameFull']; ?>" title="<?php echo $follower_info['nameFull']; ?>" icon="<?php echo $follower_info['id'];?>" class="buddy_icon" border="0" /><span style="overflow:hidden;"><?php echo mb_substr($follower_info['nameScreen'], 0, 5);?></span></a></li>
+		<li><a style="overflow:hidden;" href="/<?php echo $follower_info['nameUrl']?>/" title="<?php echo $follower_info['nameScreen']?>" rel="contact"><img src="<?php echo $picture_url;?>" alt="<?php echo $follower_info['nameFull']; ?>" title="<?php echo $follower_info['nameFull']; ?>" icon="<?php echo $follower_info['id'];?>" class="buddy_icon" border="0" /><span style="overflow:hidden;"><?php echo mb_substr($follower_info['nameScreen'], 0, 4);?></span></a></li>
 	<?php  
 	if( $n % 4 == 3 ) echo '</ul>';
 				 $n++;

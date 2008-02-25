@@ -129,7 +129,9 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 
         $asset_trash_url = JWTemplate::GetAssetUrl("/img/icon_trash.gif");
 
-        $time_desc = JWStatus::GetTimeDesc( $message_row['timeCreate'] );
+	$timeCreate = $message_row['timeCreate'];
+        $time_desc = JWStatus::GetTimeDesc( $timeCreate );
+	$deviceName = JWDevice::GetNameFromType($message_row['device']);
 
 	$content_class_name = 'cont';
 	if ( JWMessage::INBOX==$message_box_type && JWMessage::MESSAGE_NOTREAD==$message_row['messageStatusReceiver'] )
@@ -152,7 +154,7 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 <a href="/wo/direct_messages/destroy/<?php echo $message_row['id'] ?>" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');" title="删除"><img border="0" src="<?php echo $asset_trash_url;?>" /></a>
                     </span>
                 </span>
-                <a class="normLink" href="<?php echo JW_SRVNAME.'/'. $user_db_row['nameUrl']; ?>"><?php echo $user_db_row['nameScreen']; ?></a>&nbsp;<?php echo $time_desc; ?> 
+                <a class="normLink" href="<?php echo JW_SRVNAME.'/'. $user_db_row['nameUrl']; ?>"><?php echo $user_db_row['nameScreen']; ?></a>&nbsp;<span title="<?php echo $timeCreate;?>"><?php echo $time_desc; ?></span>&nbsp;通过&nbsp;<?php echo "$deviceName"?>
             </span><!-- meta -->
 
 <?php 
