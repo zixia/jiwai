@@ -75,7 +75,7 @@ class JWImageCanvas {
 	public function getFontHeight() {
 		return $this->textFontHeight;
 	}
-	public function setFont($size=10, $file='../fonts/wqy-bsong.ttf', $lineSpacing=2) { //
+	public function setFont($size=10, $file='../fonts/DroidSansFallback.ttf', $lineSpacing=2) { //
 		$this->textFontName = $file;
 		$this->textFontSize = $size;
 		$b = self::box($this->textFontName, $this->textFontSize, '我');
@@ -92,7 +92,7 @@ class JWImageCanvas {
 		$this->textCursorTop += $y;
 	}
 	public function color($input = '000000', $default = '000000') {
-		if ($input==='' || $input===null) return imagecolortransparent($this->image, imagecolorallocatealpha($this->image, 222, 2, 222, 0));
+		if ($input==='' || $input===null) return imagecolortransparent($this->image, imagecolorallocatealpha($this->image, 254, 254, 254, 0));
 		$hex = (eregi('^[0-9a-f]{6}$', $input)) ? $input : $default;
 		$c = array( 'r' => hexdec(substr($hex, 0, 2)), // 1st pair of digits
 			'g' => hexdec(substr($hex, 2, 2)), // 2nd pair

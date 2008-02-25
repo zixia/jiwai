@@ -28,7 +28,7 @@ $height = isset($_GET['height']) ? (int)$_GET['height'] : $height_def[$mode];
 if ($height<$height_min[$mode]) $height = $height_min[$mode];
 if ($height>$height_max[$mode]) $height = $height_max[$mode];
 
-$colors_def = array('FFF3DA', 'aaaaaa', '515151', '929292', '', '', 'ffffff', 'eeeeee'); //bg border body from via time gradient inner-border
+$colors_def = array('FFF3DA', 'aaaaaa', '515151', 'd05d00', '', '', 'ffffff', 'eeeeee'); //bg border body from via time gradient inner-border
 for($i=0;$i<8;$i++) {
 	$v = 'color'.$i;
 	$$v = isset($_GET[$v]) ? color_check($_GET[$v]) : $colors_def[$i];
@@ -71,10 +71,12 @@ function color_check($s, $default = '000000') {
 }
 
 //error_reporting(E_ALL ^ E_NOTICE);
+/*
 header('Last-Modified: '.date(DATE_RFC822));
 header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
 header('Pragma: public');
 header("cache-control: max-age=259200");
+*/
 
 switch($mode) {
 	case 0:
@@ -181,6 +183,8 @@ switch($mode) {
 				$h = $a[1] - $v->getFontHeight();
 			}
 			//$v->outputGIF(); die();
+			$v->outputPNG();
+			die();
 			$m = new JWImageCanvas($width, $h+$margin+$margin, $color0);
 			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0);
 			if ($bgimage) $m->tileImage($bg, $bgmode);

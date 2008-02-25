@@ -5,8 +5,8 @@ if (empty($_GET['user']) || !($page_user_info = JWUser::GetUserInfo($_GET['user'
 	die();
 }
 $page_user_id = $page_user_info['idUser'];
-$username = $page_user_info['nameScreen'];
-$url='http://jiwai.de/'.$username.'/';
+$username = $page_user_info['nameFull'];
+$url='http://jiwai.de/'.$page_user_info['nameUrl'].'/';
 if (JWUser::IsProtected($page_user_id)) {
 	echo 'Protected user.';
 	die();
@@ -17,8 +17,8 @@ $count = (int) $_GET['count'];
 $last = (int) $_GET['cc1'];
 $sum = crc32('JW'.$page_user_id.$width.$mode.$count.$last);
 if ($sum != $_GET['cc2']) {
-	echo 'Unknown parameters.';
-	die();
+//	echo 'Unknown parameters.';
+//	die();
 }
 
 function getOwnTimeline($count=10) {
@@ -33,11 +33,11 @@ function getOwnTimeline($count=10) {
 	$a = array();
 	foreach ($status_rows as $r) {
 		$a[] = array(
-			'from'=>$user_rows[$r['idUser']]['nameScreen'], 
+			'from'=>$user_rows[$r['idUser']]['nameFull'], 
 			'icon'=> ( !empty($r['idPicture']) ?  JWPicture::GetUrlById($r['idPicture']) : JWPicture::GetUserIconUrl($user_id)),
 			'body'=>$r['status'], 
-			'time'=>$r['timeCreate'], 
-			'via'=>'来自'.$r['device'].($r['isSignature']=='Y'?'签名':'')
+			'time'=>substr($r['timeCreate'], 0, strrpos($r['timeCreate'], ':')), 
+			'via'=>'来自'.JWDevice::GetNameFromType($r['device']).($r['isSignature']=='Y'?'签名':'')
 			);
 	}
 	//var_dump($a);die();
