@@ -18,27 +18,49 @@ class JWImageCanvas {
 	protected $textAreaTop;
 	protected $textAreaWidth;
 	protected $textCursorLeft;
-	protected $textCursorTop;
+	public $textCursorTop;
 	protected $textLineSpacing;
 	public function __construct($w=32000, $h=32000, $bg=false) {
-	    if (is_string($w)) {
-	        $this->loadFromFile($w);
-	    } else {
-    		$this->width = $w;
-    		$this->height = $h;
-    		$this->image = imagecreatetruecolor($this->width, $this->height);
-    		if ($bg!==false) $this->clear($bg);
-    	}
+		if (is_string($w)) {
+			$this->loadFromFile($w);
+		} else {
+			$this->width = $w;
+			$this->height = $h;
+			$this->image = imagecreatetruecolor($this->width, $this->height);
+			if ($bg!==false) $this->clear($bg);
+		}
 		$this->setFont();
 		$this->setTextArea();
 	}
 	public function border($color=null) {
-		imagerectangle($this->image, 0, 0, $this->width-1, $this->height-1, $this->color($color));
+		$n = $this->color(null);
+		$c = $this->color($color);
+		imagerectangle($this->image, 0, 0, $this->width-1, $this->height-1, $c);
+		imagesetpixel($this->image, 0, 0, $n);
+		imagesetpixel($this->image, 1, 0, $n);
+		imagesetpixel($this->image, 0, 1, $n);
+		imagesetpixel($this->image, 1, 1, $c);
+		imagesetpixel($this->image, $this->width-1, 0, $n);
+		imagesetpixel($this->image, $this->width-2, 0, $n);
+		imagesetpixel($this->image, $this->width-1, 1, $n);
+		imagesetpixel($this->image, $this->width-2, 1, $c);
+		imagesetpixel($this->image, 0, $this->height-1, $n);
+		imagesetpixel($this->image, 1, $this->height-1, $n);
+		imagesetpixel($this->image, 0, $this->height-2, $n);
+		imagesetpixel($this->image, 1, $this->height-2, $c);
+		imagesetpixel($this->image, $this->width-1, $this->height-1, $n);
+		imagesetpixel($this->image, $this->width-1, $this->height-2, $n);
+		imagesetpixel($this->image, $this->width-2, $this->height-1, $n);
+		imagesetpixel($this->image, $this->width-2, $this->height-2, $c);
 	}
 	public function rect($l, $t, $w, $h, $c){
 		imagerectangle($this->image, $l, $t, $l+$w-1, $t+$h-1, $this->color($c));
 	}
-	public function gradient($f_c,$s_c){
+	public function hline($y, $c){
+		imageline($this->image, 0, $y, $this->width, $y, $this->color($c));
+	}
+	public function gradient($f_c, $s_c, $h=0){
+		if ($h==0) $h = $this->height;
 		sscanf($f_c, "%2x%2x%2x", $red, $green, $blue);
 		$f_c = array($red,$green,$blue);
 		sscanf($s_c, "%2x%2x%2x", $red, $green, $blue);
@@ -46,13 +68,13 @@ class JWImageCanvas {
 		if($f_c[0]>$s_c[0]) $r_range=$f_c[0]-$s_c[0]; else $r_range=$s_c[0]-$f_c[0];
 		if($f_c[1]>$s_c[1]) $g_range=$f_c[1]-$s_c[1]; else $g_range=$s_c[1]-$f_c[1];
 		if($f_c[2]>$s_c[2]) $b_range=$f_c[2]-$s_c[2]; else $b_range=$s_c[2]-$f_c[2];
-		$r_px=$r_range/$this->height;
-		$g_px=$g_range/$this->height;
-		$b_px=$b_range/$this->height;
+		$r_px=$r_range/$h;
+		$g_px=$g_range/$h;
+		$b_px=$b_range/$h;
 		$r=$f_c[0];
 		$g=$f_c[1];
 		$b=$f_c[2];
-		for($i=0;$i<=$this->height;$i++){
+		for($i=0;$i<=$h;$i++){
 			$col=imagecolorallocate($this->image,round($r),round($g),round($b));
 			imageline($this->image,0,$i,$this->width-1,$i,$col);
 			if($f_c[0]<$s_c[0]) $r+=$r_px; else $r-=$r_px;
@@ -64,10 +86,9 @@ class JWImageCanvas {
 		imagefilledrectangle($this->image, 0, 0, $this->width-1, $this->height-1, $this->color($color));
 	}
 	public function setTextArea($left=0, $top=0, $width=0) {
-		if ($width==0) $width = $this->width - $left;
 		$this->textAreaLeft = $left;
 		$this->textAreaTop = $top;
-		$this->textAreaWidth = $width;
+		$this->textAreaWidth = $width==0 ? $this->width - $left : ($width<0 ? $this->width - $left + $width : $width);
 	}
 	public function getWrittenArea() {
 		return array($this->textCursorTop ? $this->textAreaWidth : $this->textCursorLeft, $this->textCursorTop+$this->textFontHeight);
@@ -122,28 +143,28 @@ class JWImageCanvas {
 		}
 		$this->textCursorLeft += $b[0]<-1 ? abs($b[2])+abs($b[0])-1 : abs($b[2]-$b[0])+1;
 	}
-    public function putImage($im, $x=0, $y=0, $w=0, $h=0) {
-        //imagecopy($this->image, $im->image, $x, $y, 0, 0, ($w ? $w : $im->width), ($h ? $h : $im->height));
-        imagecopymerge($this->image, $im->image, $x, $y, 0, 0, ($w ? $w : $im->width), ($h ? $h : $im->height),100);
-    }
-    const TILE_REPEATX = 1;
-    const TILE_REPEATY = 2;
-    public function tileImage($im, $mode=3) {
-        $y = 0;
-        while ($y<$this->height) {
-            $x = 0;
-            while ($x<$this->width) {
-                $this->putImage($im, $x, $y);
-                if ($mode & self::TILE_REPEATX) $x += $im->width; else break;
-            }
-            if ($mode & self::TILE_REPEATY) $y += $im->height; else break;
-        }
-    }
+	public function putImage($im, $x=0, $y=0, $w=0, $h=0, $merge=true) {
+		if (!$merge) imagecopy($this->image, $im->image, $x, $y, 0, 0, ($w ? $w : $im->width), ($h ? $h : $im->height));
+		else imagecopymerge($this->image, $im->image, $x, $y, 0, 0, ($w ? $w : $im->width), ($h ? $h : $im->height),100);
+	}
+	const TILE_REPEATX = 1;
+	const TILE_REPEATY = 2;
+	public function tileImage($im, $mode=3) {
+		$y = 0;
+		while ($y<$this->height) {
+			$x = 0;
+			while ($x<$this->width) {
+				$this->putImage($im, $x, $y);
+				if ($mode & self::TILE_REPEATX) $x += $im->width; else break;
+			}
+			if ($mode & self::TILE_REPEATY) $y += $im->height; else break;
+		}
+	}
 	
 	protected function loadFromFile($f) {
-	    $this->image = imagecreatefromstring(file_get_contents($f)); //FIXME: mem costy!
-	    $this->width = imagesx($this->image);
-	    $this->height = imagesy($this->image);
+		$this->image = imagecreatefromstring(file_get_contents($f)); //FIXME: mem costy!
+		$this->width = imagesx($this->image);
+		$this->height = imagesy($this->image);
 	}
 	protected static function box($font, $size, $text) {
 		$bbox = imageftbbox($size, 0, $font, $text, array());
@@ -189,10 +210,10 @@ class JWImageCanvas {
 			$last = mb_substr($s1, -1, 1);
 			$first = mb_substr($s, 0, 1);
 			while ($i<5 && $first && $last && (mb_strpos(self::prefix, $last)!=false || mb_strpos(self::postfix, $first)!=false)) {
-			    $s1 = mb_substr($s1, 0, -1);
-			    $s = $last.$s;
-			    $first = $last;
-			    $last = mb_substr($s1, -1, 1);
+				$s1 = mb_substr($s1, 0, -1);
+				$s = $last.$s;
+				$first = $last;
+				$last = mb_substr($s1, -1, 1);
 				$i++;
 				//echo $first;
 			}

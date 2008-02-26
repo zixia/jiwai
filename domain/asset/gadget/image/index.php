@@ -1,5 +1,4 @@
 <?php
-require_once 'data.php';
 
 $source = isset($_GET['source']) ? (int)$_GET['source'] : 0;
 
@@ -28,7 +27,7 @@ $height = isset($_GET['height']) ? (int)$_GET['height'] : $height_def[$mode];
 if ($height<$height_min[$mode]) $height = $height_min[$mode];
 if ($height>$height_max[$mode]) $height = $height_max[$mode];
 
-$colors_def = array('FFF3DA', 'aaaaaa', '515151', 'd05d00', '', '', 'ffffff', 'eeeeee'); //bg border body from via time gradient inner-border
+$colors_def = array('FFFFFF', 'D05D00', '333333', 'd05d00', '', '', 'FFCC54', 'FFB121'); //bg border body from via time gradient inner-border
 for($i=0;$i<8;$i++) {
 	$v = 'color'.$i;
 	$$v = isset($_GET[$v]) ? color_check($_GET[$v]) : $colors_def[$i];
@@ -38,7 +37,7 @@ if (!$color3) $color3 = $color2;
 if (!$color4) $color4 = $color3;
 if (!$color5) $color5 = $color4;
 
-$margin_def = 6;
+$margin_def = 8;
 $margin_min = 0;
 $margin_max = 20;
 $margin = isset($_GET['margin']) ? (int)$_GET['margin'] : $margin_def;
@@ -55,9 +54,11 @@ if ($padding>$padding_max) $padding = $padding_max;
 $bgimage = isset($_GET['bgimage']) ? $_GET['bgimage'] : '';
 
 ////////////////////////////////////////////////////////////////////////////
-$font_size = 10;
-$icon_size = 48;
-$data = $mode==1 ? getOwnTimeline(1) : ($source ? getFriendsTimeline($count) : getOwnTimeline($count));
+$font_size = 11;
+$icon_size = $mode==1 ? 96 : 48;
+$grad_size = $mode==1 ? 100 : 66;
+require_once 'data.php';
+$data = $mode==1 ? getOwnTimeline(1, 96) : ($source ? getFriendsTimeline($count) : getOwnTimeline($count));
 $color00 = $color0;
 if ($color6 && $color6!=$color0) $color00 = null;
 if ($bgimage) {
@@ -114,39 +115,47 @@ switch($mode) {
 			imagecopymerge($m->image, $v->image, $dx, $y, $sx, 0, $cw, $h, 100);
 			if ($color1) $m->border($color1);
 			$gif->addFrame($m->image);
-			$x -= $font_size;
+			$x -= $font_size*1;
 		}
-		//echo count($frames); die();
+		//echo strlen($gif->finish());die();
 		header('Content-type: image/gif');
-		//imagegif($im2); die();
+		//imagegif($m); die();
 		echo $gif->finish();
 		break;
 	case 1:
 		$d = $data[0];
 		$w = $width - $margin - 2 - $icon_size - 2 - $padding - $margin;
-		$v = new JWImageCanvas($w, round(strlen(serialize($data))*8/($w-$icon_size)*40), $color00);
+		$h = round(strlen(serialize($data))*8/($w-$icon_size)*20);
+		if ($h>1024) $h=1024;
+		$v = new JWImageCanvas($w, $h, $color00);
 		$v->text($d['body'].' ', $color2);
 		$v->text($d['time'].' ', $color5);
 		$v->text($d['via'], $color4);
 		$a = $v->getWrittenArea();
 		$h = $a[1];
-		$m = new JWImageCanvas($width, max($h+$padding+16, 2+$icon_size+2)+$margin+$margin, $color0);
-		if ($color6 && $color6!=$color0) $m->gradient($color6, $color0);
+		$b = new JWImageCanvas('../../images/gadget-banner.png');
+		$m = new JWImageCanvas($width, max($h+$padding+32, 2+$icon_size+2)+$margin*4+$b->height, $color0);
+		if ($color6 && $color6!=$color0) $m->gradient($color6, $color0, $grad_size);
 		if ($bgimage) $m->tileImage($bg, $bgmode);
-		$m->setTextArea($margin+2+$icon_size+2+$padding, $margin);
-		$m->setFont(12);
-		//$m->text($d['from'].' ', $color2);
-		//$m->moveCursor(0, 2);
-		$m->setFont(9);
+		$m->setTextArea($margin+2+$icon_size+2+$padding, $margin*2, -$margin);
+		$m->setFont(14);//, '../fonts/msyh.ttf');
+		$m->text($d['from'].' ', $color2);
+		$m->newLine();
+		$m->moveCursor(0, 2);
+		$m->setFont(9);//, '../fonts/msyh.ttf');
 		$m->text($url, $color2);
-		$m->putImage($v, $margin+2+$icon_size+2+$padding, $margin+16+$padding, $w, $h);
-		$m->rect($margin, $margin, $icon_size+4, $icon_size+4, $color7);
+		//$m->newLine();
+		$a = $m->getWrittenArea();
+		$a = $a[1];
+		$m->putImage($b, $m->width - $b->width - $margin, $m->height - $b->height - $margin);
+		$m->putImage($v, $margin+2+$icon_size+2+$padding, $a+$margin*3, $w, $h);
+		$m->rect($margin, $margin, $icon_size+4, $icon_size+4, $color1);
 		$m->putImage(new JWImageCanvas($d['icon']), $margin+2, $margin+2);
 		if ($color1) $m->border($color1);
 		$m->outputPNG();
 		break;
 	case 2:
-		if ($source) {
+		if ($source) {/*
 			$w = $width - $margin - $margin;
 			$v = new JWImageCanvas($w, round(strlen(serialize($data))*8/($w-$icon_size)*40), $color00); //guess the height
 			$v->setFont($font_size);
@@ -155,8 +164,8 @@ switch($mode) {
 			$h = -999;
 			foreach ($data as $d) {
 				if ($lines++) {
-				    $v->newLine();
-				    $v->moveCursor(0, $padding);
+					$v->newLine();
+					$v->moveCursor(0, $padding);
 				}
 				$a = $v->getWrittenArea();
 				$last = $h;
@@ -167,7 +176,7 @@ switch($mode) {
 					$h = $a[1] - $v->getFontHeight();
 				}
 				$a = $v->getWrittenArea();
-				$v->rect(0, $a[1] - $v->getFontHeight(), $icon_size+4, $icon_size+4, $color7);
+				$v->rect(0, $a[1] - $v->getFontHeight(), $icon_size+4, $icon_size+4, $color1);
 				$v->putImage(new JWImageCanvas($d['icon']), 2, 2 + $a[1] - $v->getFontHeight());
 				$v->text($d['from'].': ', $color3);
 				$v->text($d['body'].' ', $color2);
@@ -183,43 +192,58 @@ switch($mode) {
 				$h = $a[1] - $v->getFontHeight();
 			}
 			//$v->outputGIF(); die();
-			$v->outputPNG();
-			die();
 			$m = new JWImageCanvas($width, $h+$margin+$margin, $color0);
-			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0);
+			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0, $grad_size);
 			if ($bgimage) $m->tileImage($bg, $bgmode);
 			$m->putImage($v, $margin, $margin);
 			if ($color2) $m->border($color2);
-			$m->outputPNG();
+			$m->outputPNG();*/
 		} else {
 			$w = $width - $margin - $margin;
-			$v = new JWImageCanvas($w, round(strlen(serialize($data))*8/$w*40), $color00); //guess the height
+			$h = round(strlen(serialize($data))*8/($w-$margin*2)*16);
+			if ($h>4096) $h = 4096;
+			$v = new JWImageCanvas($w, $h, $color00); //guess the height
+			$v->setTextArea($padding, 0, $w - $padding * 2);
 			$v->setFont($font_size);
 			$lines = 0;
 			foreach ($data as $d) {
 				if ($lines++) {
-				    $v->newLine();
-				    $v->moveCursor(0, $padding);
+					$v->newLine();
+					$v->moveCursor(0, $padding);
 				}
+				$wa = $v->textCursorTop;
+				$v->moveCursor(0, $padding);
 				$v->text($d['body'].' ', $color2);
 				$v->text($d['time'].' ', $color5);
 				$v->text($d['via'], $color4);
+				$v->moveCursor(0, $padding);
+				$wb = $v->getWrittenArea();
+				$wb = $wb[1];
+				$v->rect(0, $wa, $w, $wb-$wa, $color7);
 			}
 			$a = $v->getWrittenArea();
 			$h = $a[1];
-			//$v->outputGIF(); die();
-			$m = new JWImageCanvas($width, $margin+$h+$padding+2+$icon_size+2+$margin, $color0);
-			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0);
+			//$v->outputPNG(); die();
+			$b = new JWImageCanvas('../../images/gadget-banner.png');
+			$m = new JWImageCanvas($width, $margin+$h+$padding*2+2+$icon_size+2+$margin*2 + $b->height, $color0);
+			if ($color6 && $color6!=$color0) $m->gradient($color6, $color0, $grad_size);
 			if ($bgimage) $m->tileImage($bg, $bgmode);
-			$m->rect($margin, $margin, $icon_size+4, $icon_size+4, $color7);
-			$m->putImage(new JWImageCanvas($d['icon']), $margin+2, $margin+2);
-			$m->setTextArea($margin+2+$icon_size+2+$padding, $margin);
-			$m->setFont(12);
+			$m->rect($margin, $margin, $icon_size+2, $icon_size+2, $color1);
+			$m->putImage(new JWImageCanvas($d['icon']), $margin+1, $margin+1);
+			$m->setTextArea($margin+2+$icon_size+2+$padding, $margin+4, -$margin);
+			$m->setFont(12);//, '../fonts/msyh.ttf');
 			$m->text($d['from'], $color2);
 			$m->newLine();
-			$m->setFont(9);
+			//$m->moveCursor(0, 4);
+			$m->setFont(9);//, '../fonts/msyh.ttf');
 			$m->text($url, $color2);
-			$m->putImage($v, $margin, $margin+2+$icon_size+2+$padding, $w, $h);
+			$a = $m->getWrittenArea();
+			$hh = $a[1] + $margin*2;
+			$a = $margin+2+$icon_size+2+$padding;
+			if ($hh<$a) $hh = $a;
+			$m->hline($hh, $color1);
+			$m->putImage($b, ($m->width - $b->width)/2, $m->height-$b->height-$margin);
+			$m->putImage($v, $margin, $hh + $margin, $w, $h, true);
 			if ($color1) $m->border($color1);
 			$m->outputPNG();
 		}
