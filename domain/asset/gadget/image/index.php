@@ -27,7 +27,7 @@ $height = isset($_GET['height']) ? (int)$_GET['height'] : $height_def[$mode];
 if ($height<$height_min[$mode]) $height = $height_min[$mode];
 if ($height>$height_max[$mode]) $height = $height_max[$mode];
 
-$colors_def = array('FFFFFF', 'D05D00', '333333', 'd05d00', '', '', 'FFCC54', 'FFB121'); //bg border body from via time gradient inner-border
+$colors_def = array('FFFFFF', 'D05D00', '000000', 'd05d00', '', '', 'FFCC54', 'FFB121'); //bg border body from via time gradient inner-border
 for($i=0;$i<8;$i++) {
 	$v = 'color'.$i;
 	$$v = isset($_GET[$v]) ? color_check($_GET[$v]) : $colors_def[$i];
@@ -54,7 +54,7 @@ if ($padding>$padding_max) $padding = $padding_max;
 $bgimage = isset($_GET['bgimage']) ? $_GET['bgimage'] : '';
 
 ////////////////////////////////////////////////////////////////////////////
-$font_size = 11;
+$font_size = 9;
 $icon_size = $mode==1 ? 96 : 48;
 $grad_size = $mode==1 ? 100 : 66;
 require_once 'data.php';
@@ -72,12 +72,10 @@ function color_check($s, $default = '000000') {
 }
 
 //error_reporting(E_ALL ^ E_NOTICE);
-/*
 header('Last-Modified: '.date(DATE_RFC822));
 header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
 header('Pragma: public');
 header("cache-control: max-age=259200");
-*/
 
 switch($mode) {
 	case 0:

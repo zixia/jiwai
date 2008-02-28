@@ -6,7 +6,7 @@ if (empty($_GET['user']) || !($page_user_info = JWUser::GetUserInfo($_GET['user'
 }
 $page_user_id = $page_user_info['idUser'];
 $username = $page_user_info['nameFull'];
-$url='http://jiwai.de/'.$page_user_info['nameUrl'].'/';
+$url='http://jiwai.de/'.$page_user_info['nameUrl'];
 if (JWUser::IsProtected($page_user_id)) {
 	echo 'Protected user.';
 	die();
