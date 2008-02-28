@@ -54,9 +54,13 @@ JWTemplate::html_head(array(
 <div class="lookfriend">
 <p class="right14"><a href="/wo/devices/sms">手机</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/devices/im" class="now">聊天软件</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/bindother/">其他网站</a></p>
        <div class="binding">
+<? $count_bind = 0;
+foreach($supported_devices as $type)
+	if(isset($device_rows[$type])) $count_bind++;
+if($count_bind!=count($supported_devices)) {?>       
 	   <p>通过QQ、MSN、GTalk、飞信等聊天软件就可以接收和更新你的叽歪，现在就来绑定吧。</p>
 <form id="f" action="/wo/devices/create" method="post" class="validator">
-	   <p>输入帐号<input type="text" name="device[address]" check="null" alt="帐号" value="" class="inputStyle"/>&nbsp;<select name="device[type]" size="1" class="select Width80">
+	   <p style="margin-bottom:25px;">输入帐号<input type="text" name="device[address]" check="null" alt="帐号" value="" class="inputStyle"/>&nbsp;<select name="device[type]" size="1" class="select Width80">
 		  <option selected="selected" alt="帐号类型" value="">请选择</option>
 <? foreach($supported_devices as $type){
 if(isset($device_rows[$type])) continue;
@@ -66,12 +70,10 @@ echo  "<option value=\"$type\">$typename</option>";
 ?>
 		</select>&nbsp;&nbsp;<input type="submit" class="submitbutton" value="绑定" />
   </form>
-
+<? } ?>
 <?php
 		if(!empty($notice)) echo $notice;
-		//$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($current_user_id);
 		foreach( $supported_devices as $type ) {
-		//foreach( $aDeviceInfo_rows as $aDeviceInfo_row ) {
 			if( isset($device_rows[$type]) && !empty($device_rows[$type]['secret'])) 
 			{
 				$device_row = $device_rows[$type];

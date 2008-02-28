@@ -528,7 +528,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .bindingicon { padding:4px 0 0 0;float: right;}
 #wtMainBlock .bindingfloat { float:right;padding:0 200px 0 0;}
 #wtMainBlock .bindingMobile { width:530px; background-color:#F2F2F2;padding:0 10px 10px 10px;margin:0 0 10px 0;clear:both; overflow:hidden;}
-#wtMainBlock .bindingIM { width: 550px;padding:25px 0 0 0; clear:both;border-bottom:2px solid #DDDDDD;margin:0;}
+#wtMainBlock .bindingIM { width: 550px;padding:0; clear:both;border-bottom:2px solid #DDDDDD;margin:0;}
 #wtMainBlock .bindingIMbox { width:530px; background-color:#F2F2F2;margin:10px 0 0 0; clear:both;padding:0 10px 10px 10px;clear:both;overflow:hidden;}
 #wtMainBlock .bindingIMedit { width: 300px;margin:8px 0 5px 0;clear:both;}
 #wtMainBlock .bindingIMeditCancel { width: 300px;margin:5px 0 0 3px;clear:both;}
