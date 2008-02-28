@@ -12,6 +12,8 @@ class JWApi{
 	static private $msInstance;
 
 	const AUTH_HTTP = 1;
+	const AUTH_BASIC = 1;
+	const AUTH_OAUTH = 2;
 	
 	/**
 	  * HttpCode
@@ -94,6 +96,7 @@ class JWApi{
 	  */
 	static function RenderAuthHttp(){
 		header('WWW-Authenticate: Basic realm="JiWai API"');
+		//header('WWW-Authenticate: OAuth realm="JiWai API"');
 		header('HTTP/1.0 401 Unauthorized');
 		exit;
 	}
@@ -109,6 +112,7 @@ class JWApi{
 		$user_info['id'] = $user['id'];
 		$user_info['name'] = $user['nameFull'];
 		$user_info['screen_name'] = $user['nameScreen'];
+		$user_info['profile_url'] = 'http://jiwai.de/'.$user['nameUrl'].'/';
 		$user_info['description'] = $user['bio'];
 		$user_info['location'] = JWLocation::GetLocationName( $user['location'] );
 		$user_info['url'] = $user['url'];
