@@ -70,7 +70,7 @@ function draw()
     //alert( $('pic_url') );
     var url = "http://api.jiwai.de/g/i/<?php echo $user_id;  ?>/c" + $("c").value 
         + "/w"+ $("w").value 
-        + "/m" + $("m").value + "/gadget.png";
+        + "/m" + $("m").value + "/g.png";
     $('pic_url').value=url; 
     $('ubb_url').value="[url=http://jiwai.de/<?php echo $name_url;  ?>/][img]" + url + " [/img][/url]";
     $('html_url').value='<a href="http://jiwai.de/<?php echo $name_url; ?>/" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
@@ -80,15 +80,15 @@ function draw()
                 </form>
                 <p><input name="Submit" type="button" class="submitbutton" onclick="draw();" value="预览并更新代码" /></p>
                 <p class="black15bold">预览：</p>
-                <p><img id="o" title="叽歪" alt="叽歪" src="http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/gadget.png"/>    </p>
+                <p><img id="o" title="叽歪" alt="叽歪" src="http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png"/>    </p>
                 <p class="black15bold">代码：</p>
                 <p class="black14">图片网址<span class="copytips" id="pic_url_tip" style="margin-left:15px">图片网址复制成功</span></p>
-                <p class="gadgetimage"><textarea id="pic_url" rows="1" class="textarea" readonly="readonly"  style="width:525px; height:18px" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/gadget.png</textarea></p>
+                <p class="gadgetimage"><textarea id="pic_url" rows="1" class="textarea" readonly="readonly"  style="width:525px; height:18px" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png</textarea></p>
 
                 <p class="black14">UBB代码（论坛专用代码）<span class="copytips" id="ubb_url_tip" style="margin-left:15px">UBB代码复制成功</span></p>
-                <p class="gadgetimage"><textarea id="ubb_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);" >[url=http://jiwai.de/<?php echo $name_url;  ?>/][img]http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/gadget.png[/img][/url]</textarea></p>
+                <p class="gadgetimage"><textarea id="ubb_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);" >[url=http://jiwai.de/<?php echo $name_url;  ?>/][img]http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png[/img][/url]</textarea></p>
                 <p class="black14">XHTML代码<span class="copytips" id="html_url_tip" style="margin-left:15px">XHTML代码复制成功</span></p>
-                <p class="gadgetimage"><textarea id="html_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);"><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $name_url; ?>/" target="_blank"><img src="http://api.jiwai.de/g/i/<?php echo $user_id;  ?>/c5/w300/m2/gadget.png" /></a></textarea></p>
+                <p class="gadgetimage"><textarea id="html_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);"><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $name_url; ?>/" target="_blank"><img src="http://api.jiwai.de/g/i/<?php echo $user_id;  ?>/c5/w300/m2/g.png" /></a></textarea></p>
 
 
             </div><!-- lookfriend -->
