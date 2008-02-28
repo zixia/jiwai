@@ -32,15 +32,57 @@ $options = array(
                 'idPartner' => $idPartner,
             );
 
-if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) ){
-	if( $insertedId === true ) {
+
+/**
+ * Support limited robot lingo in API update
+ * array('D', 'GET', 'FOLLOW', 'LEAVE')
+ */
+$supported_lingo = array( 'D', 'GET', 'FOLLOW', 'LEAVE' );
+if ( preg_match('/^(\w+)\s+.*$/i', $status, $matches)
+	&& in_array( strtoupper($matches[1]), $supported_lingo ) )
+{
+	$robot_msg = new JWRobotMsg();
+	$robot_msg->Set( $idUser, 'api', $status, 'api.jiwai.de' );
+
+	$reply_msg = JWRobotLogic::ProcessMo( $robot_msg );
+	
+	if ( false===$reply_msg )
+	{
+		JWApi::OutHeader(406, true);
+	}
+	
+	$out_message = array(
+		'reply_message' => $reply_msg->GetBody(),
+	);
+
+	switch ($type)
+	{
+		case 'xml':
+			header('Content-Type: application/xml; charset=utf-8');
+			echo <<<_XML_
+<?xml version="1.0" encoding="UTF-8"?>
+<reply_message>$out_message[reply_message]</reply_message>
+_XML_;
+			exit;
+		case 'json':
+			echo json_encode( $out_message );
+			exit;
+	}
+}
+//end
+
+if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) )
+{
+	if( $insertedId === true ) 
+	{
 		$insertedId = JWDB::GetInsertedId();
 	}
 	$status = JWDB_Cache_Status::GetDbRowById( $insertedId );
 	if (empty($status))
 		JWApi::OutHeader(406, true);
 
-	switch($type){
+	switch($type)
+	{
 		case 'xml':
 			renderXmlReturn($status);
 		break;
@@ -50,7 +92,9 @@ if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $is
 		default:
 			JWApi::OutHeader(406, true);
 	}	
-}else{
+}
+else
+{
 	JWApi::OutHeader(500, true);
 }
 
