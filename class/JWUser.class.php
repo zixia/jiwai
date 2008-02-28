@@ -677,6 +677,11 @@ _SQL_;
 						,'send_new_direct_text_email'	=> $user_info['noticeNewMessage']
 						,'allow_system_mail'	=> $user_info['allowSystemMail']
 						,'is_receive_offline'	=> $user_info['isReceiveOffline']
+						,'allowSystemSms' => $user_info['allowSystemSms']
+						,'allowReplyType' => $user_info['allowReplyType']
+						,'notReceiveTime1' => $user_info['notReceiveTime1']
+						,'notReceiveTime2' => $user_info['notReceiveTime2']
+						,'isNotReceiveNight' => $user_info['isNotReceiveNight']
 					);
 	}
 
@@ -693,11 +698,16 @@ _SQL_;
 		$user_info	= self::GetUserInfo($idUser);
 
 		
-		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? $noticeSettings['auto_nudge_me']:'N';
-		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? $noticeSettings['send_new_friend_email']:'N';
-		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? $noticeSettings['send_new_direct_text_email']:'N';
-		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? $noticeSettings['allow_system_mail']:'N';
+		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? $noticeSettings['auto_nudge_me']:'Y';
+		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? $noticeSettings['send_new_friend_email']:'Y';
+		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? $noticeSettings['send_new_direct_text_email']:'Y';
+		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? $noticeSettings['allow_system_mail']:'Y';
 		$noticeSettings['is_receive_offline']	= isset($noticeSettings['is_receive_offline']) 	? $noticeSettings['is_receive_offline']:'N';
+		$noticeSettings['allowSystemSms']	= isset($noticeSettings['allowSystemSms']) 	? $noticeSettings['allowSystemSms']:'Y';
+		$noticeSettings['allowReplyType']	= isset($noticeSettings['allowReplyType']) 	? $noticeSettings['allowReplyType']:'everyone';
+		$noticeSettings['isNotReceiveNight']	= isset($noticeSettings['isNotReceiveNight']) 	? $noticeSettings['isNotReceiveNight']:'N';
+		$noticeSettings['notReceiveTime1']	= isset($noticeSettings['notReceiveTime1']) 	? $noticeSettings['notReceiveTime1']:'00:00:00';
+		$noticeSettings['notReceiveTime2']	= isset($noticeSettings['notReceiveTime2']) 	? $noticeSettings['notReceiveTime2']:'06:00:00';
 
 		if ( $user_info['noticeAutoNudge']!=$noticeSettings['auto_nudge_me'] )
 				$db_change_set['noticeAutoNudge'] = $noticeSettings['auto_nudge_me'];
@@ -714,6 +724,21 @@ _SQL_;
 
 		if ( $user_info['isReceiveOffline']!=$noticeSettings['is_receive_offline'] )
 				$db_change_set['isReceiveOffline'] = $noticeSettings['is_receive_offline'];
+
+		if ( $user_info['allowSystemSms']!=$noticeSettings['allowSystemSms'] )
+				$db_change_set['allowSystemSms'] = $noticeSettings['allowSystemSms'];
+
+		if ( $user_info['allowReplyType']!=$noticeSettings['allowReplyType'] )
+				$db_change_set['allowReplyType'] = $noticeSettings['allowReplyType'];
+
+		if ( $user_info['isNotReceiveNight']!=$noticeSettings['isNotReceiveNight'] )
+				$db_change_set['isNotReceiveNight'] = $noticeSettings['isNotReceiveNight'];
+
+		if ( $user_info['notReceiveTime1']!=$noticeSettings['notReceiveTime1'])
+				$db_change_set['notReceiveTime1'] = $noticeSettings['notReceiveTime1'];
+
+		if ( $user_info['notReceiveTime2']!=$noticeSettings['notReceiveTime2'])
+				$db_change_set['notReceiveTime2'] = $noticeSettings['notReceiveTime2'];
 
 		if ( !count($db_change_set) )
 			return true;
@@ -1032,6 +1057,41 @@ _SQL_;
 		}
 
 		return false;
+	}
+
+	static public function InTimeChip( $user_id, $type='SLEEP', $default=false )
+	{
+		$user_id = JWDB::CheckInt($user_id);
+
+		$user = self::GetUserInfo( $user_id );
+		if ( empty($user) )
+			return $default;
+
+		$time_1 = time();
+		$time_now = time();
+		$time_2 = time();
+		$activate = false;
+
+		switch ( $type )
+		{
+			case 'SLEEP':
+				$time_1 = null==@$user['notReceiveTime1'] 
+					? strtotime('00:00:00') : strtotime($user['notReceiveTime1']);
+				$time_2 = null==@$user['notReceiveTime2'] 
+					? strtotime('00:00:00') : strtotime($user['notReceiveTime2']);
+				$activate = $user['isNotReceiveNight'] == 'Y' ;
+			break;
+		}
+
+		if ( $activate )
+		{
+			if ( $time_1 > $time_2 ) 
+				$time_1 -= 86400;
+
+			return $time_now > $time_1 && $time_2 > $time_now;
+		}
+
+		return $default;
 	}
 
 	static public function GetPossibleName($nameInput, $email=null, $type=null)

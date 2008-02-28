@@ -73,6 +73,7 @@ class JWNudge {
 		$conference = ( $idConference == null ) ? null : JWConference::GetDbRowById( $idConference );
 		$user = ( $conference == null ) ? null : JWUser::GetUserInfo( $conference['idUser'] );
 		$user = ( $user == null ) ? ( $status == null ? null : JWUser::GetUserInfo($status['idUser']) ) : $user;
+		$receiver_user = isset($options['receiver_id']) ? JWUser::GetUserInfo($options['receiver_id']) : null;
 
 		$nudgeOptions = array(
 			'conference' => $conference,
@@ -80,10 +81,38 @@ class JWNudge {
 			'user' => $user,
 		);
 
-		foreach( $idUsers as $idUser ){
+		foreach( $idUsers as $idUser )
+		{
 			$userTo = JWUser::GetUserInfo( $idUser );
 			if( empty( $userTo ) )
 				continue;
+			
+			// sleep time constrains
+			if ( JWUser::InTimeChip( $idUser, 'SLEEP' ) )
+				continue;
+
+			// allow reply type constrains
+			if ( false==empty($receiver_user) )
+			{
+				if ( 'none' == $userTo['allowReplyType'] )
+					continue;
+				else if ( 'mime' == $userTo['allowReplyType'] )
+				{
+					if ( $idUser != $receiver_user['id'] )
+						continue;
+				}
+				else if ( 'each' == $userTo['allowReplyType'] )
+				{
+					if ( $idUser != $receiver_user['id'] 
+						&& false==JWFollower::IsFollower( $receiver_user['id'], $idUser ) )
+						continue;
+				}
+				else if ( 'everyone' == $userTo['allowReplyType'] )
+				{
+					;
+				}
+			}
+			// end allow reply
 
 			$deviceRows= JWDevice::GetDeviceRowByUserId( $idUser );
 			if( empty( $deviceRows ) )

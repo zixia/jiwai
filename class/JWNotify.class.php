@@ -189,6 +189,10 @@ class JWNotify{
 		{
 			$message['im'] = "@$receiver_user[nameScreen] $message[im]";
 			$message['sms'] = "@$receiver_user[nameScreen] $message[sms]";
+
+			/* reply options */
+			$options['receiver_id'] = $receiver_user['id'];
+			/* end */
 		}
 
 		/**
@@ -295,11 +299,14 @@ class JWNotify{
 			$to_ids = self::GetAvailableFollowerIds( $sender_user['id'] );
 			
 			/* only follow both sender and receiver can got message */
+			// Delete this Constains for Ticket #379 seek@jiwai.com 2008-02-28
 			if ( $receiver_user && false==($receiver_user['id']==$sender_user['id']) )
 			{
 				$receiver_user_follower_ids = self::GetAvailableFollowerIds( $receiver_user['id'] );
 				$to_ids = array_diff( $to_ids, array_diff($to_ids, $receiver_user_follower_ids) );
 			}
+			// end delete
+
 			$to_ids = array_diff( $to_ids, $have_send_ids );
 
 			$message_send = array(
