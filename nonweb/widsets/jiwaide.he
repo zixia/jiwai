@@ -98,7 +98,7 @@ class
   int progressCurrent;
 
   boolean anonymousMode = true;
-  boolean tortoiseMode  = false;
+  boolean tortoiseMode  = true;
   boolean hasCamera     = false;
   boolean cameraHighMode= false;
 
@@ -472,6 +472,7 @@ class
         .add("encoding=jpeg");
     }
 
+    boolean hasCaptured = false;
     Flow flow = new Flow(getStyle("block"));
     flow.setPreferredSize(-100, -100);
 
@@ -495,8 +496,8 @@ class
 
     MenuItem mySoftKeyHandler(Shell shell, Component focused, int key)
     {
-      if (key == SOFTKEY_OK && camera != null) {
-        return MenuCapture;
+      if (key == SOFTKEY_OK) {
+        return hasCaptured ? MenuUpdate : MenuCapture;
       } else if (key == SOFTKEY_BACK) {
         return MenuBack;
       }
@@ -510,6 +511,7 @@ class
           camera.close();
           camera = null;
         }
+        imageData = null;
         animatePopShell(shell);
       } else if (action == CMD_CAPTURE) {
         flow.clear();
@@ -519,14 +521,19 @@ class
         }
         camera.close();
         camera = null;
+        hasCaptured = true;
+        shell.updateMenu();
 
         Image image = getImage(imageData);
         Picture picture = new Picture(getStyle("mini"), image);
         picture.setPreferredSize(-100, -100);
         flow.add(picture);
-        mmsDesc.edit(doUpdateMms);
 
-        animatePopShell(shell);
+        flushScreen(true);
+        shell.repaint(false);
+      } else if (action == CMD_UPDATE) {
+        mmsDesc.edit(doUpdateMms);
+        hasCaptured = true;
       }
     }
 
@@ -547,14 +554,12 @@ class
 
     void mmsok(Object state, Value ret)
     {
-      imageData = null;
       alertError(@InfoUpdateSuc);
       rawFetchAndRefresh(new List().add(FacilityUser).add(FacilityFri));
     }
 
     void mmsnok(Object state, String error)
     {
-      imageData = null;
       alertError(@InfoUpdateFail +error);
     }
 
@@ -816,17 +821,62 @@ class
     }
 
     if (tortoiseMode && !facility.equals(FacilityBlog)) {
-      call(null, "avatar" , "get",
-          ["url" => createAuthedUrl("api.jiwai.de/users/show/" + status.author + ".xml")],
-          picok, picnok);
+      if (isMmsCapable(facility)) {
+        String statusId = fetchStatusId(status.link);
+        if (null != statusId && statusId.length() > 0) {
+          call(null, "avatarByStatus" , "get",
+              ["url" => createAuthedUrl("api.jiwai.de/statuses/show/" + statusId + ".xml")],
+              picok, picnok);
+        }
+      } else {
+        call(null, "avatarByUser" , "get",
+            ["url" => createAuthedUrl("api.jiwai.de/users/show/" + status.author + ".xml")],
+            picoklite, picnok);
+      }
     }
 
-    void picok(Object state, Value ret) {
+    boolean isMmsCapable(String f) {
+      if (f.equals(FacilityPub)
+          || f.equals(FacilityUser)
+          || f.equals(FacilityFri)) {
+        return true;
+      }
+      return false;
+    }
+
+    String fetchStatusId(String guid) {
+      if (guid.length() == 0) return null;
+      int endIndex = guid.length();
+      int beginIndex = guid.lastIndexOf('/', endIndex); 
+      return (beginIndex >0 && endIndex > beginIndex) 
+        ? guid.substring(beginIndex + 1, endIndex)
+        : null;
+    }
+
+    void picoklite(Object state, Value ret) {
       Picture pict = getPicture(String(ret));
       Flow pictFlow = new Flow(getStyle("avatar"));
       pictFlow.setFlags(VISIBLE|LINEFEED);
       pictFlow.add(pict);
       view.insert(3, pictFlow);
+      shell.repaint(true);
+    }
+
+    void picok(Object state, Value ret) {
+      Picture pict = getPicture(String(ret.avatar));
+      Flow pictFlow = new Flow(getStyle("avatar"));
+      pictFlow.setFlags(VISIBLE|LINEFEED);
+      pictFlow.add(pict);
+      view.insert(3, pictFlow);
+      shell.repaint(true);
+
+      if (ret.mms.size() > 0) {
+        Picture mms = getPicture(String(ret.mms));
+        Flow mmsFlow = new Flow(getStyle("avatar"));
+        mmsFlow.setFlags(VISIBLE|LINEFEED);
+        mmsFlow.add(mms);
+        view.add(mmsFlow);
+      }
     }
 
     void picnok(Object state, String error) {
@@ -1414,10 +1464,10 @@ class
     progressTotal = 7;
     progressCurrent = 0;
     pushExclusiveView(@InfoInUpdating);
-    fetchTimeline(FacilityPub, true);
-    fetchTimeline(FacilityUser, false);
-    fetchTimeline(FacilityFri, true);
-    fetchTimeline(FacilityDr, true);
+    fetchTimeline(FacilityPub,  true);
+    fetchTimeline(FacilityUser, true);
+    fetchTimeline(FacilityFri,  true);
+    fetchTimeline(FacilityDr,   true);
     fetchTimeline(FacilityBlog, false);
     fetchList(FacilityFriends);
     fetchList(FacilityFeatures);
@@ -1685,7 +1735,7 @@ class
       ? String(store.getValue(storeTortoise)).equals("Y")
       ? true
       : false
-      : false;
+      : true;
     username = store.has(storeUsername)? String(store.getValue(storeUsername)) : "";
     password = store.has(storePassword)? String(store.getValue(storePassword)) : "";
 

@@ -77,8 +77,11 @@
     <service type="syndication" id="direct_messages">
       <reference from="direct_messages" to="feedurl"/>
     </service>
-    <service type="http" id="avatar">
-      <filter id="avatarFilter"/>
+    <service type="http" id="avatarByStatus">
+      <filter id="avatarFilterByStatus"/>
+    </service>
+    <service type="http" id="avatarByUser">
+      <filter id="avatarFilterByUser"/>
     </service>
     <service type="http" id="friends">
       <filter id="usersFilter"/>
@@ -92,10 +95,21 @@
   </services>
 
   <filters>
-    <filter id="avatarFilter">
+    <filter id="avatarFilterByStatus">
+      <xpath>/status/user</xpath>
+      <list>
+        <item name="avatar">
+          <xpath>profile_image_url/text()</xpath>
+        </item>
+        <item name="mms">
+          <xpath>mms_image_url/text()</xpath>
+        </item>
+      </list>
+    </filter>
+    <filter id="avatarFilterByUser">
       <item>
         <strcat>
-          <xpath>/user/profile_image_url/text()</xpath>
+            <xpath>/user/profile_image_url/text()</xpath>
         </strcat>
       </item>
     </filter>
