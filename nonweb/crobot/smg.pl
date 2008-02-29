@@ -5,46 +5,37 @@ use Data::Dumper;
 use Text::Iconv;
 
 my %channelMap = (
-    'CCTV1'     => '中央电视台综合频道',
-    'CCTV2'     => '中央电视台经济频道',
-    'CCTV3'     => '中央电视台综艺频道',
-    'CCTV4'     => '中央电视台中文国际频道',
-    'CCTV5'     => '中央电视台奥运频道',
-    'CCTV6'     => '中央电视台电影频道',
-    'CCTV7'     => '中央电视台军事农业频道',
-    'CCTV8'     => '中央电视台电视剧频道',
-    'CCTV9'     => '中央电视台英文频道',
-    'CCTV10'    => '中央电视台科教频道',
-    'CCTV11'    => '中央电视台戏曲频道',
-    'CCTV12'    => '中央电视台法制频道',
-    'CCTV13'    => '中央电视台新闻频道',
-    'CCTV15'    => '中央电视台少儿频道',
-    'CCTV16'    => '中央电视台音乐频道',
+    'SHHAI1'    => '上海电视台新闻频道',
+    'SHHAI2'    => '上海电视台第一财经频道',
+    'SHHAI3'    => '上海电视台生活时尚频道',
+    'SHHAI4'    => '上海电视台电视剧频道',
+    'SHHAI5'    => '上海电视台体育频道',
+    'SHHAI6'    => '上海电视台纪实频道',
+    'SHHAI7'    => '上海电视台娱乐频道',
+    'SHHAI8'    => '上海电视台艺术人文频道',
+    'SHHAI9'    => '上海电视台外语频道',
+    'SHHAI10'   => '上海电视台戏剧频道',
+    'SHHAI11'   => '上海电视台哈哈少儿频道',
 );
 
 my %userMap = (
-    'CCTV1'     => 'cctv1',
-    'CCTV2'     => 'cctv2',
-    'CCTV3'     => 'cctv3',
-    'CCTV4'     => 'cctv4',
-    'CCTV5'     => 'cctv5',
-    'CCTV6'     => 'cctv6',
-    'CCTV7'     => 'cctv7',
-    'CCTV8'     => 'cctv8',
-    'CCTV9'     => 'cctv9',
-    'CCTV10'    => 'cctv10',
-    'CCTV11'    => 'cctv11',
-    'CCTV12'    => 'cctv12',
-    'CCTV13'    => 'cctv13',
-    'CCTV15'    => 'cctv15',
-    'CCTV16'    => 'cctv16',
+    'SHHAI1'    => 'smg1',
+    'SHHAI2'    => 'smg2',
+    'SHHAI3'    => 'smg3',
+    'SHHAI4'    => 'smg4',
+    'SHHAI5'    => 'smg5',
+    'SHHAI6'    => 'smg6',
+    'SHHAI7'    => 'smg7',
+    'SHHAI8'    => 'smg8',
+    'SHHAI9'    => 'smg9',
+    'SHHAI10'   => 'smg10',
+    'SHHAI11'   => 'smg11',
 );
 
 sub getTVGuideCacheByChannel {
     my $channel = shift;
-    my $timestamp = `date +%Y%m%d -d "4 hours ago"`; chomp $timestamp;
-
-    return "/tmp/cctv/$channel.$timestamp.cache";
+    my $timestamp = `date +%Y%m%d -d "6 hours ago"`; chomp $timestamp;
+    return "/tmp/smg/$channel.$timestamp.cache";
 }
 
 sub getTVGuideByChannel {
@@ -66,12 +57,14 @@ sub getTVGuideByChannel {
         chomp;
         if (m#<div\s+id="pg">#i) {$roi = 1;}
         next if ($roi eq 0);
-        $_ =~ s#<a\s+href=\".*?\">##i;
-        $_ =~ s#<\/a>##i;
-        if (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>\s+<div.*?>([^<>]*?)\s+#i) {
+        $_ =~ s#<a\s+href=.*?>##gi;
+        $_ =~ s#<\/a>##gi;
+        $_ =~ s#<img\s+.*?>##gi;
+        $_ =~ s#<div\s+style.*?>##gi;
+        if (m#<div\s+id="pgrow">.*?<font.*?>([^<> ]+)<\/font>.*?([^<>]*?)\s+<\/div>#i) {
             ($time, $show) = ($1, $2);
             ($hourNow) = split(":", $1);
-        } elsif (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>.*?([^<>]*?)\s+<\/div>#i) {
+        } elsif (m#<div\s+id="pgrow">.*?<font.*?>([^<> ]+)<\/font>\s+<div.*?>([^<>]*?)\s+#i) {
             ($time, $show) = ($1, $2);
             ($hourNow) = split(":", $1);
         }
@@ -96,13 +89,8 @@ sub getTVGuideUrlByChannel {
     my $channel = shift;
     die "no channel specified" unless defined $channel;
 
-=pod
-    http://epg.tvsou.com/programys/TV_1/Channel_%Channel%/W%indexOfWeek%.htm
-    my $retstr = 'http://epg.tvsou.com/programys/TV_1/Channel_0Channel0/W0indexOfWeek0.htm';
-=cut
-
-    ##http://www.tvmao.com/program/CCTV-CCTV1-w3.html
-    my $retstr = 'http://www.tvmao.com/program/CCTV-0Channel0-w0indexOfWeek0.html';
+    ##http://www.tvmao.com/program/SHHAI-SHHAI1-w4.html
+    my $retstr = 'http://www.tvmao.com/program/SHHAI-0Channel0-w0indexOfWeek0.html';
     my $indexOfWeek = `date +%u`; chomp $indexOfWeek;
     $indexOfWeek = 7 if ($indexOfWeek eq 0);
 
@@ -174,6 +162,15 @@ sub postTVGuide {
     writeCache($channel, @guide);
 }
 
-for my $channel (keys %userMap) {
+sub createAccountByChannel {
+    my $channel = shift;
+    die "no channel specified" unless defined $channel;
+
+    my ($username, $password) = ($userMap{$channel}, $userMap{$channel} . 'epgdem1ma');
+
+    `curl -s -Fname_screen=$username -Fpass=$password -Femail=$username\@jiwai.de -Fapikey=4107f1349979cc9ed2951fb82b6105d4 http://api.jiwai.de/account/new.json`;
+}
+
+for my $channel (keys %channelMap) {
     postTVGuide($channel);
 }

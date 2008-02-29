@@ -90,7 +90,8 @@ http://weather.news.qq.com/inc/dc252.htm
 =cut
 sub getWeatherUrlByCity {
     my ($city) = @_;
-    my $prefix = 'http://weather.news.qq.com/inc/07_ss';
+    ##my $prefix = 'http://weather.news.qq.com/inc/07_ss';
+    my $prefix = 'http://weather.news.qq.com/inc/dc';
     my $suffix = '.htm';
     my $code = $cityMap{$city};
 
@@ -109,24 +110,22 @@ sub getWeatherReportByCity {
     my $converted = $converter->convert($raw);
 
     open HTTP, "<", \$converted;
-    my $roi = 0;
+    my ($roi, $day) = (0, -1);
 
     while (<HTTP>) {
-        if (m/<td height="77" class="wht2 lk37">/si) {
+        if (m/72小时天气预报/si) {
             $roi = 1;
         }
         next if ($roi eq 0);
 
-        if (m/^<div\s+class="txbd">(.*?)<\/div>(.*?)$/si) {
-            $weather{'desc'} = $1;
-            $weather{'temp'} = $2;
-        } elsif (m/风力：([^<]+)/si) {
-            $weather{'wind'} = $1;
-        } elsif (m/紫外线强度：([^<]+)/si) {
-            $weather{'ultraviolet'} = $1;
-        } elsif (m/空气质量：([^<]+)$/si) {
-            $weather{'air'} = $1;
-            chomp $weather{'air'};
+        if (m#text_nbg1.gif.*?>([^>+])#si) {
+            ++$day;
+        } elsif(m#^<tr><td height="20" align="center">(.*?)</td></tr>#si) {
+            $weather{$day}{'desc'} = $1; chomp $weather{$day}{'desc'};
+        } elsif(m#text_nbg3.gif.*?>([^>]+)#si) {
+            $weather{$day}{'temp'} = $1; chomp $weather{$day}{'temp'};
+        } elsif (m/text_nbg4.gif.*?>([^<]+)/si) {
+            $weather{$day}{'wind'} = $1; chomp $weather{$day}{'wind'};
         }
     }
 
@@ -135,25 +134,38 @@ sub getWeatherReportByCity {
 }
 
 sub weatherReportFactory {
-    my $city = shift;
+    my ($city, $f) = @_;
     die "no city specified" unless defined $city;
 
     my %weather = getWeatherReportByCity($city);
+    my $retstr = '';
 
     my $today = `date +%m月%d日`; chomp $today;
     my $tomorrow = `date +%m月%d日 -d tomorrow`; chomp $tomorrow;
+    my $dayAfterTomorrow = `date +%m月%d日 -d "+2 days"`; chomp $dayAfterTomorrow;
     my $dayInWeek = `date +%u`; chomp $dayInWeek;
+    my $dayInWeekTomorrow = `date +%u -d tomorrow`; chomp $dayInWeekTomorrow;
     my @weekday = (
     '星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日', 
     );
     $dayInWeek = $weekday[$dayInWeek];
+    $dayInWeekTomorrow = $weekday[$dayInWeekTomorrow];
 
-    my $retstr = join(" ", ("今天", $city,
-    $today ."-". $tomorrow,
-    $dayInWeek,
-    $weather{'desc'},
-    $weather{'temp'},
-    $weather{'wind'}));
+    if (defined $f) {
+        $retstr = join(" ", ("明天", $city,
+        $tomorrow ."-". $dayAfterTomorrow,
+        $dayInWeekTomorrow,
+        $weather{1}{'desc'},
+        $weather{1}{'temp'},
+        $weather{1}{'wind'}));
+    } else {
+        $retstr = join(" ", ("今天", $city,
+        $today ."-". $tomorrow,
+        $dayInWeek,
+        $weather{0}{'desc'},
+        $weather{0}{'temp'},
+        $weather{0}{'wind'}));
+    }
 
     return $retstr;
 }
@@ -163,12 +175,19 @@ sub postWeatherReport {
     die "no city specified" unless defined $city;
     die "no city founded" unless defined $userMap{$city};
 
-    my $weather = weatherReportFactory($city);
+    my $hourNow = `date +%H`; chomp $hourNow;
+    my $weather = '';
+
+    if ($hourNow > 15) {
+        $weather = weatherReportFactory($city, 1);  ## tomorrow
+    } else {
+        $weather = weatherReportFactory($city); ## today
+    }
+    print $weather, "\n";
     warn "no weather founded" unless $weather;
 
     my ($username, $password) = ($city . '天气', $userMap{$city} . 'weatherdem1ma');
-
-    `curl -u "$username:$password" -Fstatus="$weather" http://api.jiwai.de/statuses/update.json`;
+    `curl -s -u "$username:$password" -Fstatus="$weather" http://api.jiwai.de/statuses/update.json`;
 }
 
 for my $city (keys %userMap) {
