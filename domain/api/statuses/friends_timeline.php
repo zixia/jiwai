@@ -140,10 +140,10 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 	$user_info = JWUser::GetUserInfo($options['idUser']);//$status_data2=array();
 	if ( null == $user_info['idConference'])
 	{
-		$status_data = JWStatus::GetStatusIdsFromFriends( $options['idUser'], $count, $start, $options['since_id'], $timeSince);
+		$status_data = JWStatus::GetStatusIdsFromFriends( $options['idUser'], $count*2, $start, $options['since_id'], $timeSince);
 	} else
 	{
-		$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $options['idUser'] , $count, $start);
+		$status_data = JWStatus::GetStatusIdsFromFriendsConfrence( $options['idUser'] , $count*2, $start);
 	}
  
 	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
@@ -175,6 +175,8 @@ function getFriendsTimelineStatuses($options, $needReBuild=false){
 			JWApi::ReBuildUser($user_row) : $user_row;
 		$statusInfo['user'] = $userInfo;
 		$statuses[] = $statusInfo;
+		$count--;
+		if (!$count) break;
 	}
 
 	return $statuses;
