@@ -1757,9 +1757,9 @@ _HTML_;
 	static function sidebar_user_info($aUserInfo)
 	{
 ?>
-		<ul class="about">
+		<ul class="about vcard">
 <?php
-			echo "<li>名字: " . htmlspecialchars($aUserInfo['nameFull']) . "</li>\n";
+			echo '<li>名字: <span class="fn">' . htmlspecialchars($aUserInfo['nameFull']) . "</span></li>\n";
 			if ( !empty($aUserInfo['gender']) && 'secret'!=$aUserInfo['gender'] ) {
 				echo "<li>性别: ";
 				echo 'male'==$aUserInfo['gender']?"男":"女";
@@ -1767,7 +1767,7 @@ _HTML_;
 			}
 			if ( !empty($aUserInfo['location']) ) {
 				$location = JWLocation::GetLocationName( $aUserInfo['location'] );
-				echo "<li>位置: $location</li>\n";
+				echo "<li>位置: <span class=\"adr\"><span class=\"region\">$location</span></span></li>\n";
 			}
 			if ( !empty($aUserInfo['url']) )
 			{
@@ -1782,7 +1782,7 @@ _HTML_;
 				else
 					$show_url = $url;
 
-				echo '<li>网站:  <a href="'.htmlspecialchars($url).'" rel="me" target="_blank">'.htmlspecialchars($show_url).'</a></li>';
+				echo '<li>网站:  <a href="'.htmlspecialchars($url).'" rel="me" class="url" target="_blank">'.htmlspecialchars($show_url).'</a></li>';
 			}
 			if ( JWUser::IsAnonymous($aUserInfo['id']) )
 			{
@@ -1794,7 +1794,7 @@ _HTML_;
 					'[<a href="http://help.jiwai.de/SeagoingBottles" target="_blank">查看详情</a>]'
 					:
 					null;
-				echo "<li>自述: " . htmlspecialchars($aUserInfo['bio']) . $bio_plus . "</li>\n";
+				echo "<li>自述: <span class=\"bio\">" . htmlspecialchars($aUserInfo['bio']) . $bio_plus . "</span></li>\n";
 			}
 ?>
 		</ul>
