@@ -28,13 +28,28 @@ $idTag = mb_convert_encoding($idTag, 'UTF-8', 'GB2312,UTF-8');
 if( false==($idUser=JWApi::GetAuthedUserId()) ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
 }
-$tag_row = JWDB_Cache_Tag::GetDbRowById( $idTag );
+if ( preg_match('/^\d+$/', $idTag ) )
+{
+	$tag_row = JWDB_Cache_Tag::GetDbRowById( $idTag );
+}
+else
+{
+	$tag_row = JWDB_Cache_Tag::GetDbRowByName( $idTag );
+}
+
+if ( empty($tag_row) )
+{
+	JWApi::OutHeader(404, true);
+}
+
 $user = JWUser::GetUserInfo( $idUser );
 
 if( !$user ){
 	JWApi::OutHeader(404, true);
 }
+
 $idUser = $user['id'];
+$idTag = $tag_row['id'];
 
 /**
   * Friend check
