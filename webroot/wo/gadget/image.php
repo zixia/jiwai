@@ -43,6 +43,8 @@ if( $user_info['protected'] == 'Y')
         <div class="rightdiv">
             <div class="lookfriend">
                 <form method="post" id="f">
+                <p><span class="black15bold">版本：</span><input id="v2" type="radio" name="ver" value="2" checked /><span class="pad3">第二版</span>
+                <input type="radio" name="ver" value="1" /><span class="pad3">第一版</span></p>
                 <p><input type="hidden" id="m" value="2" />
                 <span class="black15bold">样式：</span><input type="radio" name="mode" value="2" onclick="$('c').disabled=false; $('m').value=2;" checked /><span class="pad3">侧栏型</span>
                 <input type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true; $('m').value=1" /><span class="pad3">签名型</span>
@@ -68,7 +70,7 @@ if( $user_info['protected'] == 'Y')
 function draw() 
 {
     //alert( $('pic_url') );
-    var url = "http://api.jiwai.de/g/i/<?php echo $user_id;  ?>/c" + $("c").value 
+    var url = "http://api.jiwai.de" + ($("v2").checked ? "/g/i/" : "/gadget/image/") + "<?php echo $user_id;  ?>/c" + $("c").value 
         + "/w"+ $("w").value 
         + "/m" + $("m").value + "/g.png";
     $('pic_url').value=url; 

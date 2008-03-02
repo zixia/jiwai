@@ -31,8 +31,9 @@ $count = intval($c);
 
 $last = JWStatus::GetStatusNum($idUser);
 $sum = crc32('JW'.$idUser.$width.$mode.$count.$last);
+$legacy = substr($_SERVER['REQUEST_URI'], 0, 5) == '/g/i/' ? '' : '&legacy=1';
 
-$url = "http://asset.jiwai.de/gadget/image/?user=$idUser&mode=$mode&width=$width&count=$count&cc1=$last&cc2=$sum";
+$url = "http://asset.jiwai.de/gadget/image/?user=$idUser&mode=$mode&width=$width&count=$count&cc1=$last&cc2=$sum$legacy";
 header('Location: '.$url);
 
 ?>
