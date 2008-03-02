@@ -60,10 +60,10 @@ function verify() {
 	if (!$idUser) {
 ?>
 		<fb:editor action="?bind">
-			<fb:editor-text label="登录名" name="username" value=""/>
-			<fb:editor-text label="验证码" name="code" value=""/>
+			<fb:editor-text label="<?php echo mb_convert_encoding("登录名","HTML-ENTITIES","UTF-8")?>" name="username" value=""/>
+			<fb:editor-text label="<?php echo mb_convert_encoding("验证码","HTML-ENTITIES","UTF-8")?>" name="code" value=""/>
 			<fb:editor-buttonset>
-				<fb:editor-button value="关联叽歪帐号"/>
+				<fb:editor-button value="<?php echo mb_convert_encoding("关联叽歪帐号","HTML-ENTITIES","UTF-8")?>"/>
 			</fb:editor-buttonset>
 		</fb:editor>
 <?php
@@ -173,9 +173,11 @@ if (isset($_POST['code'])) {
 <div>
 <fb:if-is-app-user>
 <form>
+
 <table class="doing">
+    <input type="hidden" name="fb_sig_locale" value="utf-8"/>
 	<tr><td><textarea class="status_area" name="status" /></td></tr>
-	<tr><td><center><input class="send" type="submit" value="叽歪一下" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
+	<tr><td><center><input class="send" type="submit" value="<?php echo mb_convert_encoding("叽歪一下","HTML-ENTITIES","UTF-8")?>" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
 </table>
 </form>
 <div id="statuses">
