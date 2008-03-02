@@ -1,0 +1,115 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Sys::Syslog;
+use Net::Telnet;
+
+sub genRraPath {
+    my $robot   = shift;
+    my $rraPath = '/opt/rra/';
+
+    my %rraMoMt = (
+        'gtalk' => 'robot_mo_609.rrd',
+        'msn'   => 'robot_mo_611.rrd',
+        'qq'    => 'robot_mo_613.rrd',
+        'skype' => 'robot_mo_615.rrd',
+        'sms'   => 'robot_mo_617.rrd',
+        'fetion'=> 'robot_mo_619.rrd',
+    );
+
+    return ($rraMoMt{$robot}) ? $rraPath . $rraMoMt{$robot} : undef;
+}
+
+sub fetchCountFromRra {
+    my ($rraFile, $interval) = @_;
+    my ($mo, $mt)   = (0, 0);
+
+    open FD, "rrdtool fetch --start='-" . $interval ."' $rraFile AVERAGE |" or die "$!";
+
+    while (<FD>) {
+        chomp;
+        if (m/^\d+:\s+(\d.*?)\s+(\d.*?)$/si) {
+            if (int($1) > 10 or int($2) > 10) {
+                next;
+            }
+            $mo += int($1 * 300 + .5);
+            $mt += int($2 * 300 + .5);
+        }
+    }
+
+    close FD;
+
+    return ($mo, $mt);
+}
+
+## @return 1 if online, 0 otherwise
+sub detect_robot {
+    my ($robot, $threshold, $port) = @_;
+    my $interval = 60 * 30;
+    my $rra = genRraPath($robot);
+    my ($mo, $mt) = fetchCountFromRra($rra, $interval);
+
+    if (defined $ENV{'MON_DEBUG'} and $ENV{'MON_DEBUG'} eq '1') {
+        print join(":", ($robot, $mo, $mt)), "\n";
+    }
+    if ($mo <= $threshold) {
+        robot_relogin($port);
+    }
+    1;
+}
+
+## alert
+sub telnet_and_send {
+    my ($host, $port, $line) = @_;
+    my $obj = new Net::Telnet();
+    $obj->open(Host => $host, Port => $port);
+    $obj->print($line);
+}
+
+sub send_alert {
+    my ($host, $port) = ('60.28.194.36', 50020);
+    my ($robot, $reason) = @_;
+
+    die "no robot specified" unless defined $robot;
+    die "no reason given" unless defined $reason;
+
+    telnet_and_send($host, $port, "GET /alert/$robot/$reason");
+}
+
+sub robot_relogin {
+    my $host = '10.1.40.10';
+    my $port = shift;
+
+    telnet_and_send($host, $port, "Relogin");
+}
+
+my ($threshold, $retstr) = (0, '');
+my ($silentStart, $silentStop) = (-1, 7);
+my $hourNow = `date +%H`; chomp $hourNow;
+if ($hourNow > $silentStart and $hourNow < $silentStop) {
+    return 0;
+}
+
+=pod
+my @robots = ('gtalk', 'qq', 'msn', 'fetion', 'sms');
+=cut
+my @robots = ('fetion');
+my %portMap = (
+    'gtalk' => 55010,
+    'qq'    => 55020,
+    'msn'   => 55030,
+    'fetion'=> 55080,
+);
+
+## BEGIN CHECK ROBOTS
+for my $robot (@robots) {
+    if (detect_robot($robot, $threshold, $portMap{$robot}) eq 0) {
+        if (length($retstr)) {$retstr .= ';';}
+        $retstr .= "$robot:Offline";
+    }
+}
+## END ROBOTS
+
+print $retstr;
+
+0;
