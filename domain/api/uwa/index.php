@@ -11,7 +11,7 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 <meta name="website" content="http://jiwai.de" />
 <meta name="description" content="在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。" />
 <meta name="version" content="1.1.1" />
-<meta name="keyword" content="叽歪 JiWai widget" />
+<meta name="keyword" content="叽歪 JiWai 彩信 微博客 miniblog twitter 推客 饭否 fanfou" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
 <meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
 <meta name="debugMode" content="false" />
