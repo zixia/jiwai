@@ -9,7 +9,7 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
-<meta name="description" content="叽歪窗可贴 for UWA (Netvibes, Sohu Blog and etc)" />
+<meta name="description" content="在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。" />
 <meta name="version" content="1.1.1" />
 <meta name="keyword" content="叽歪 JiWai widget" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
@@ -71,7 +71,7 @@ widget.onLoad = function() {
 				+ '</span><span>' + formatStatus(o.text)
 				+ '</span> <span style="color:lightgrey">' + formatDate(o.created_at)
 				+ '</span>' + (o.mms_image_url ? '<br /><a href="'+o.user.profile_url+'mms/'+o.id+'" target="_blank"><img src="'+o.mms_image_url+'" width="120" align="bottom"/></a>' : '')
-				+ '<span id="r_' + o.id + '" style="position:absolute;right:0px;display:none;"><a style="background:#eee" target="_blank" href="'+o.user.profile_url+'thread/'+o.id+'">回复</a></span></div>';
+				+ '<span id="r_' + o.id + '" style="position:absolute;right:0px;display:none;"><a style="background:#eee" target="_blank" href="'+o.user.profile_url+'thread/'+o.id+'/'+o.id+'">回复</a></span></div>';
 			} catch(e) {
 				//just ignore exceptions since some crap func stay in the object.
 			}
