@@ -1,4 +1,6 @@
 <?php
+require('Mail/mimeDecode.php');
+
 /**
  * @package		JiWai.de
  * @copyright	AKA Inc.
@@ -21,6 +23,9 @@ class JWRobotMsg {
 	private $mBody		= null;
 	private $mFile		= null;
 	private $mCreateTime	= null;
+
+	private $mAttachments = array();
+	private $mBoundary = null;
 	
 	/**
 	  * idUserConference; not need check
@@ -74,25 +79,10 @@ class JWRobotMsg {
 			return false;
 		}
 
-		$body = null;
-		$lines = explode("\n", $raw_msg_content );
-		$contentBegin = false;
-
-		foreach( $lines as $line ){
-			if( true==$contentBegin ){
-				$body .= "$line\n";
-				continue;
-			}
-			if( ! $line ) {
-				$contentBegin = true ;
-			}else{
-				$this->_SetHeadTagByLine($line);
-			}
-		}
-
-		$this->mBody		= $this->_StripBody( $body ); // 去掉末尾行的\n
 		$this->mFile		= $fileName;
 		$this->mCreateTime	= filemtime($fileName);
+		$this->decodeMessage( $raw_msg_content );
+
 		if( !$this->_SetPropertiesByTagHeads() ){
 			JWRobot::QuarantineMsg($this);
 			//throw new JWException('Essential properties[address/device] not given');
@@ -108,6 +98,93 @@ class JWRobotMsg {
 		return $this->IsValid(true);
 	}
 
+	public function decodeMessage($content=null)
+	{
+		$params = array(
+			'include_bodies' => true,
+			'decode_bodies' => true,
+			'decode_headers' => true,
+			'input' => $content,
+		);
+
+		$output = Mail_mimeDecode::decode($params); 
+		$headers = $output->headers;
+		
+		//Set head tag;
+		foreach( $headers AS $name => $value )
+		{
+			$this->_SetHeadTagByPair($name, $value);
+		}
+
+		//parse body
+		if ( false==isset($output->parts) )
+		{
+			// encoded body
+			if ( isset($output->ctype_parameters) )
+			{
+				$charset = isset($output->ctype_parameters['charset']) 
+					? strtoupper($output->ctype_parameters['charset']) : null;
+				if ( $charset && 'UTF-8' != $charset )
+					$body = mb_convert_encoding($output->body, 'UTF-8', $charset);
+
+				$this->mBody = $this->_StripBody( $body );
+			}
+			//Maybe normal robot_msg -- Comptiable with OLD RobotMsg DATA
+			else
+			{   
+				$body = mb_convert_encoding($output->body, 'UTF-8', 'GB2312,UTF-8');
+				$this->mBody = $this->_StripBody( $body );
+			}   
+		}
+		else
+		{
+			$parts = $output->parts;
+			$this->mBoundary = $output->ctype_parameters['boundary'];
+
+			foreach ( $parts AS $part )
+			{   
+				//Alternative Body
+				if ( $part->ctype_secondary == 'alternative' )
+				{   
+					$part = $part->parts[0]; 
+				}
+
+				//Attachment
+				if( isset($part->disposition) && 'attachment' == $part->disposition )
+				{
+					$file_name = $part->ctype_parameters['name'];
+					$file_content = $part->body;
+					$file_type = $part->ctype_primary.'/'.$part->ctype_secondary;
+					$disposition = $part->disposition;
+
+					$this->mAttachments[ $file_name ] = array(
+						'content_type' => $file_type,
+						'file_content' => $file_content,
+					);
+				}
+
+				//Text-body
+				else
+				{
+					if ( $part->ctype_secondary == "plain" )
+					{
+						$body = mb_convert_encoding($part->body, 'UTF-8', 'GB2312,UTF-8');
+						$this->mBody = $this->_StripBody( $body );
+					}
+					if ( $part->ctype_secondary == 'html' )
+					{
+						$body = mb_convert_encoding($part->body, 'UTF-8', 'GB2312,UTF-8');
+						$this->mBody = $this->_StripBody( $body );
+					}
+				}
+			}
+		}
+
+		if ( null==$this->mBody )
+		{
+			$this->mBody = mb_convert_encoding( $this->_GetHeadTag('Subject'), 'UTF-8', 'GB2312,UTF-8' );
+		}
+	}
 
 	public function IsValid($forceCheck=false)
 	{
