@@ -15,6 +15,7 @@ sub genRraPath {
         'skype' => 'robot_mo_615.rrd',
         'sms'   => 'robot_mo_617.rrd',
         'fetion'=> 'robot_mo_619.rrd',
+        'yahoo' => 'robot_mo_621.rrd',
     );
 
     return ($rraMoMt{$robot}) ? $rraPath . $rraMoMt{$robot} : undef;
@@ -93,11 +94,13 @@ if ($hourNow > $silentStart and $hourNow < $silentStop) {
 =pod
 my @robots = ('gtalk', 'qq', 'msn', 'fetion', 'sms');
 =cut
-my @robots = ('fetion');
+my @robots = ('fetion', 'qq', 'gtalk', 'msn');
 my %portMap = (
     'gtalk' => 55010,
     'qq'    => 55020,
     'msn'   => 55030,
+    'skype' => 55040,
+    'yahoo' => 55060,
     'fetion'=> 55080,
 );
 
@@ -105,7 +108,7 @@ my %portMap = (
 for my $robot (@robots) {
     if (detect_robot($robot, $threshold, $portMap{$robot}) eq 0) {
         if (length($retstr)) {$retstr .= ';';}
-        $retstr .= "$robot:Offline";
+        $retstr .= "$robot:NilMo";
     }
 }
 ## END ROBOTS
