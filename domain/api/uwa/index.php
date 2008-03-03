@@ -50,7 +50,7 @@ widget.onLoad = function() {
 	} else {
 		widget.setTitle(screenName+(withFriends ? '和朋友们' : '')+'的叽歪');
 		uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + screenName + '.json?count='+numDisplay;
-		jw_footer = updateBox ? '<form style="text-align:center;" action="http://jiwai.de/wo/status/update" method="post" onsubmit="var s=document.getElementById(\'jw_status\'); if (s.value==\'\') return false; else s.value=\'@'+screenName+' \'+s.value;"><textarea id="jw_status" name="jw_status" rows="3"></textarea><br /><input style="border:1px;" type="submit" value="留言"/><a target="_blank" href="http://jiwai.de/wo/account/create">注册叽歪</a></form>' : '';
+		jw_footer = updateBox ? '<form target="_blank" style="text-align:center;" action="http://jiwai.de/wo/status/update" method="post" onsubmit="var s=this.getElementsByName(\'jw_status\')[0]; if (s.value==\'\') return false; else s.value=\'@'+screenName+' \'+s.value;"><textarea name="jw_status" rows="3"></textarea><br /><input style="border:1px;" type="submit" value="留言"/> <a target="_blank" href="http://jiwai.de/wo/account/create">注册叽歪</a><input type="hidden" value="'+screenName+'" name="idUserReplyTo"/></form>' : '';
 	}
 	UWA.Data.getJson(uri, function(response){
 		if (response == null) {
@@ -63,7 +63,7 @@ widget.onLoad = function() {
 			var o = response[i];
 			l++;
 			try{
-				html += '<div style="padding-bottom:4px;margin-top:4px;border-bottom:solid 1px #eee;position:relative;" onmouseover="UWA.$element(document.getElementById(\'r_' + o.id + '\')).show();" onmouseout="UWA.$element(document.getElementById(\'r_' + o.id + '\')).hide();">'
+				html += '<div style="padding-bottom:4px;margin-top:4px;border-bottom:solid 1px #eee;position:relative;" onmouseover="var e=this.getElementsByTagName(\'span\'); e=e[e.length-1]; UWA.$element(e).show();" onmouseout="var e=this.getElementsByTagName(\'span\'); e=e[e.length-1]; UWA.$element(e).hide();">'
 				+ '<span><a target="_blank" href="'
 				+ o.user.profile_url + '"><img style="float:right;width:24px;height:24px;" src="'
 				+ o.user.profile_image_url + '"/></a>' //align="right"
@@ -71,7 +71,7 @@ widget.onLoad = function() {
 				+ '</span><span>' + formatStatus(o.text)
 				+ '</span> <span style="color:lightgrey">' + formatDate(o.created_at)
 				+ '</span>' + (o.mms_image_url ? '<br /><a href="'+o.user.profile_url+'mms/'+o.id+'" target="_blank"><img src="'+o.mms_image_url+'" width="120" align="bottom"/></a>' : '')
-				+ '<span id="r_' + o.id + '" style="position:absolute;right:0px;display:none;"><a style="background:#eee" target="_blank" href="'+o.user.profile_url+'thread/'+o.id+'/'+o.id+'">回复</a></span></div>';
+				+ '<span style="position:absolute;right:0px;display:none;"><a style="background:#eee" target="_blank" href="'+o.user.profile_url+'thread/'+o.id+'/'+o.id+'">回复</a></span><hr style="height:0px;border:0px;clear:both;"/></div>';
 			} catch(e) {
 				//just ignore exceptions since some crap func stay in the object.
 			}
@@ -83,7 +83,7 @@ widget.onRefresh = widget.onLoad;
 ]]></script>
 </head>
 <body>
-<div id="content"><p class="alert">正在加载……</p></div>
+<div><p class="alert">正在加载……</p></div>
 </body>
 </html>
 
