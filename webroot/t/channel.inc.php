@@ -87,6 +87,13 @@ $options = array (
 	'ui_user_id' => $current_user_id,
 	'keywords' => $keywords,
 	'description' => $description,
+	'rss' => array(
+		array(
+			'type' => 'rss',
+			'title' => '频道：'.$tag_row['name'],
+			'url' => 'http://api.jiwai.de/statuses/channel_timeline/'.$tag_row['id'].'.rss',
+		),
+	),
 );
 JWTemplate::html_head($options);
 ?>

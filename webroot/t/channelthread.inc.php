@@ -122,6 +122,13 @@ $head_options = array(
 	'ui_user_id' => $page_user_id,
 	'keywords' => $keywords,
 	'description' => $description,
+	'rss' => array(
+		array(
+			'type' => 'rss',
+			'title' => '频道：'.$tag_row['name'],
+			'url' => 'http://api.jiwai.de/statuses/channel_timeline/'.$tag_row['id'].'.rss',
+		),
+	),
 );
 JWTemplate::html_head($head_options);
 ?>
@@ -226,7 +233,7 @@ if( !empty($idStatusReply) )
         $user_info = JWUser::GetUserInfo($value['idUser']);
 ?>
 <div class="content" style="margin:10px 8px 0 15px;"><a href="<?php echo JW_SRVNAME .'/t/' .$tag_row['name'], '/thread/'. $value['id']. '/'.$value['id']; ?>" class="pad3"><?php echo  mb_substr($value['status'],0,15 ); ?>...</a>
-<div class="pad4"><?php echo $user_info['nameScreen']; ?>&nbsp;通过&nbsp;<?php echo JWDevice::GetNameFromType($value['device']);?><img8 src="<?php echo JWTemplate::GetAssetUrl('/images/jiwai-'.$value['device'].'.gif');?>"/>&nbsp;发布</div></div>
+<div class="pad4"><?php echo $user_info['nameScreen']; ?>&nbsp;通过&nbsp;<?php echo JWDevice::GetNameFromType($value['device']);?>&nbsp;发布</div></div>
 <?php
     }
 ?>
