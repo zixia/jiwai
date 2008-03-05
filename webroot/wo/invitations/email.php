@@ -67,7 +67,7 @@ JWTemplate::html_head(array(
 		<div class="Emailhead"><a href="http://jiwai.de/<?php echo $current_user_info['nameUrl']; ?>/"><img width="96" height="96" title="<?php echo $current_user_info['nameFull']; ?>" src="<?php echo $photo_url; ?>"/></a></div>
 		<div class="Emailcont">
 			<p class="black15bold">你的朋友&nbsp;<?php echo $current_user_info['nameScreen']; ?>(<?php echo $current_user_info['nameFull']; ?>)&nbsp;邀请你加入叽歪</p>
-			<p class="meta">叽歪de能让你用一句话建立自己的博客，用只言片语记录生活轨迹</p>
+			<p class="meta">叽歪网能让你用一句话建立自己的博客，用只言片语记录生活轨迹</p>
 			<!-- meta -->
 		</div><!-- Emailcont -->
 	</div><!-- Emailcontentbox -->

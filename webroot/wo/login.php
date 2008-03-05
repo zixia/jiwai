@@ -78,13 +78,13 @@ if ( array_key_exists('username_or_email',$_REQUEST) )
 <?php JWTemplate::ShowActionResultTipsMain(); ?>
 
 <div id="container">
-    <p class="top">登录到叽歪de</p>
+    <p class="top">登录到叽歪网</p>
     <div id="wtMainBlock">
         <div class="leftdiv">
             <span class="bluebold16">是否已经用手机、MSN、QQ或Gtalk叽歪过了呢？</span>
             <p>如果是，请发送<span class="orange12">gm+空格+想要用户名</span>，到相应的短信号码或者机器人上来设置用户名<br />例如：gm 阿朱</p>
 
-            <p>再发送<span class="orange12">pass+空格+密码</span>，来设置密码<br />例如：pass abc123 </p>
+            <p>再发送<span class="orange12">mima+空格+密码</span>，来设置密码<br />例如：mima abc123 </p>
         </div><!-- leftdiv -->
         <div class="rightdiv">
             <div class="login">

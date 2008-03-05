@@ -9,7 +9,7 @@ $status_data 	= JWStatus::GetStatusIdsFromPublic(100);
 $status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 $user_rows		= JWDB_Cache_User::GetDbRowsByIds	($status_data['user_ids']);
 
-$keywords 		= '叽歪de广场 ';
+$keywords 		= '叽歪网广场 ';
 $user_showed 	= array();
 foreach ( $user_rows  as $user_id=>$user_row )
 {
@@ -21,7 +21,7 @@ foreach ( $user_rows  as $user_id=>$user_row )
 	$keywords .= "$user_row[nameScreen]($user_row[nameFull]) ";
 }
 
-$description = '叽歪de广场 ';
+$description = '叽歪网广场 ';
 foreach ( $status_data['status_ids'] as $status_id )
 {
 	$description .= $status_rows[$status_id]['status'];
@@ -37,7 +37,7 @@ $options = array(	 'title'		=> '叽歪广场'
 					,'description'	=> htmlspecialchars($description)
 					,'author'		=> htmlspecialchars($keywords)
 					,'rss_url'		=> 'http://api.jiwai.de/status/public_timeline.rss'
-					,'rss_title'	=> '叽歪de - 叽歪广场 [RSS]'
+					,'rss_title'	=> '叽歪网 - 叽歪广场 [RSS]'
 					,'refresh_time'	=> '120'
 					,'refresh_url'	=> ''
 			);
@@ -96,12 +96,12 @@ $newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
 $newest_options['view']			= 'list';
 
 $blog_options['user_name']	= 'blog';
-$blog_options['title']		= '叽歪de博客最新主题';
+$blog_options['title']		= '叽歪网博客最新主题';
 
 $announce_options['user_name']	= 'team';
 $announce_options['title']		= '公告';
 
-$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds(12) );
+$featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds(8) );
 
 $arr_menu = array(	
 					array ('announce'		, array($announce_options) )

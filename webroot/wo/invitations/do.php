@@ -30,7 +30,7 @@ if ( isset($_POST['invite_sms_x'] ) )
 	$smss = $_POST['sms_addresses'];
 	$nick = $_POST['sms_nickname'];
 
-	$body = "我是${nick}，我在叽歪de建立了我的碎碎念平台，你可以回复任何想说的话，开始你的碎碎念，回复 F 关注我（可以随时停止关注）";
+	$body = "我是${nick}，我在叽歪网建立了我的碎碎念平台，你可以回复任何想说的话，开始你的碎碎念，回复 F 关注我（可以随时停止关注）";
 
 	$count = 0;
 	foreach ( $smss as $sms ) 

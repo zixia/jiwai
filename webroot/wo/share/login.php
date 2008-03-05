@@ -32,7 +32,7 @@ JWTemplate::html_doctype();
 
 <body style="margin:0;">
 <div id="wtCollectionMain">
-<h1>登录到叽歪de</h1>
+<h1>登录到叽歪网</h1>
 <div id="tips">
 	<p style="margin-top:-14px;"><a target="_blank" href="/wo/account/create"><img src="<?php echo JWTemplate::GetAssetUrl('/images/org-frist.gif'); ?>" width="156" height="68" border="0" class="regnow" tabindex="6"/></a></p>
 </div>

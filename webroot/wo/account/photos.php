@@ -95,7 +95,7 @@ if ( $has_photo )
 }
 else
 {
-    $photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
+    $photo_url = JWTemplate::GetAssetUrl('/images/org-nobody-96-96.gif');
 }
 ?>
 

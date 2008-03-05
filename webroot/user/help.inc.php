@@ -111,7 +111,7 @@ _HTML_;
 <?php 
 //取消登录权限检测
 //if( false == empty( $logined_user_info ) ) {
-    $options = array ( 'title' => '这一刻，你想对叽歪de说些什么？' );
+    $options = array ( 'title' => '这一刻，你想对叽歪网说些什么？' );
     JWTemplate::updater($options) ;
 //}
 ?>
@@ -125,7 +125,7 @@ $menu_list = array (
 	'archive_n_replies'	=> array('active'=>true	,'name'=>'留言板', 'url'=>"/help/")
 );
 
-JWTemplate::tab_menu($menu_list, '这一刻，大家都想告诉叽歪de什么呢？') ;
+JWTemplate::tab_menu($menu_list, '这一刻，大家都想告诉叽歪网什么呢？') ;
 ?>
 
 			<div class="tab">
@@ -194,7 +194,7 @@ $arr_menu = array(
 	array ('count', array($arr_count_param)),
 	array ('friend', array($arr_friend_list)),
     */
-	array ('rss', array('user', 'help', '叽歪de留言板')),
+	array ('rss', array('user', 'help', '叽歪网留言板')),
 );
 	
 JWTemplate::sidebar( $arr_menu );

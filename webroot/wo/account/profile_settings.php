@@ -260,7 +260,7 @@ if ( $picture_id )
 	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
 	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>
 	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
-	<p><a class="orange12" href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪de缺省设计方案？');">恢复叽歪de缺省配色方案</a></p>
+	<p><a class="orange12" href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪网缺省设计方案？');">恢复叽歪网缺省配色方案</a></p>
 	   </div>
 	   </div>
 	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>

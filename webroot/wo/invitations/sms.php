@@ -55,7 +55,7 @@ JWTemplate::html_head(array(
 	<p><input name="sms_addresses[]" type="text" class="inputStyle1" />&nbsp;&nbsp;<input name="sms_addresses[]" type="text" class="inputStyle1" /></p>
 	<p><input name="sms_addresses[]" type="text" class="inputStyle1" />&nbsp;&nbsp;<input name="sms_addresses[]" type="text" class="inputStyle1" /></p>
 	<p class="black15bold">短信内容</p>
-	<p class="lineheight black14">我是<input name="sms_nickname" type="text" class="inputStyle1" style="width:180px;" value="<?php echo "$current_user_info[nameScreen]($current_user_info[nameFull])"; ?>"/>，我在叽歪de建立了我的碎碎念平台，你可以回复任何想说的话，开始你的碎碎念，回复 F 关注我（可以随时停止关注）</p>
+	<p class="lineheight black14">我是<input name="sms_nickname" type="text" class="inputStyle1" style="width:180px;" value="<?php echo "$current_user_info[nameScreen]($current_user_info[nameFull])"; ?>"/>，我在叽歪网建立了我的碎碎念平台，你可以回复任何想说的话，开始你的碎碎念，回复 F 关注我（可以随时停止关注）</p>
 	<p><center><input name="invite_sms_x" type="submit" class="submitbutton" value="发送邀请" /></center></p>
 </form>
 </div>

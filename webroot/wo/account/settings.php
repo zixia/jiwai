@@ -146,7 +146,7 @@ echo $error_html;
 	    <li class="box5">用户名</li>
 		<li class="box6">
 		<input name="user[nameScreen]" type="text" id="user_nameScreen" value="<?php echo $outInfo['nameScreen'];?>" ajax="nameScreen" alt="用户名" class="inputStyle"/><i></i>
-		<li class="box7">用来登陆叽歪de（4个字符以上）</li>
+		<li class="box7">用来登陆叽歪网（4个字符以上）</li>
 		<li class="box5">邮<span class="mar">箱</span></li>
 		<li class="box6">
 		<input id="user_email" name="user[email]" type="text" value="<?php echo $outInfo['email']; ?>" ajax="email" alt="Email" class="inputStyle"/><i></i>
