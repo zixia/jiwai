@@ -15,8 +15,13 @@ if ( preg_match('/^\d+$/',$nameOrId) )
 		$nameScreen = 'gp' . $nameOrId;
 		$page_user_id = JWUser::GetUserInfo($nameScreen, 'id', 'nameScreen');
 	}else{
-		$page_user_id = $nameOrId;
-		$nameScreen	= JWUser::GetUserInfo($page_user_id,'nameScreen');
+        $page_user_id = $nameOrId;
+        $page_user_info = JWUser::GetUserInfo($page_user_id);
+        if(!empty($page_user_info))
+        {   
+            JWTemplate::RedirectToUrl("/${page_user_info['nameUrl']}".$pathParam);
+            $nameScreen = $page_user_info['nameScreen'];
+        }
 	}
 }
 else
