@@ -66,7 +66,7 @@ if ( $_POST )
 				JWTemplate::RedirectToUrl( $rediret_url );
 			}
 
-			JWTemplate::RedirectToUrl( '/wo/' );
+			JWTemplate::RedirectToUrl( '/wo/account/regok' );
 		}
 		else
 		{

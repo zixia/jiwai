@@ -457,7 +457,7 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 
 /* The wtMainBlock start */
 #wtMainBlock { margin:0 auto; width:756px;font-family: Arial, Helvetica;}
-#wtMainBlock p { margin:15px 0 0 0;}
+#wtMainBlock p { margin:15px 0 0 0;color:#000000;}
 #wtMainBlock a { color:#FF6000;text-decoration:none;}
 #wtMainBlock a:hover { color:#FF6000;text-decoration:underline;}
 #wtMainBlock textarea {font-size:12px;padding: 3px 0 0 5px;font-family: Arial;color:#666666;width:470px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
@@ -580,6 +580,17 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .gadgetFlash { width: 545px;border:1px solid #CECECE; padding:1px;background-color:#FFF;color:#333333; font-size:12px;}
 #wtMainBlock .gadgetimage { margin:3px 0 0 0; clear:both;}
 /* The wtMainBlock end */
+
+/* The wtRegok start */
+#wtRegok { margin:10px 0 0 0; width:560px;height:100%;background-color:#FFFFFF;float:left;font-family: Arial;}
+#wtRegok p { margin:15px 0 0 0;}
+#wtRegok a { color:#FF6000;text-decoration:none;}
+#wtRegok a:hover { color:#FF6000;text-decoration:underline;}
+#wtRegok .title { color:#000; font-size:26px; font-weight:bold;padding:8px 20px 10px 15px;}
+#wtRegok .follow { padding:0;}
+#wtRegok .followlist li { overflow:hidden;float:left;width:48px; height:48px;padding: 5px 22px 20px 0;font-size:12px;text-align: center;font-family: Arial;}
+#wtRegok .followlist li a img {display:block;width:48px; height:48px;}
+/* The wtRegok end */
 
 /* The wtFollow start */
 #wtFollow { margin:10px 0 0 0; width:532px;border:1px solid #D3D3D5;height:100%;background-color:#FFFFFF;float:left;font-family: Arial;}
