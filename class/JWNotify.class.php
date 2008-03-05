@@ -300,11 +300,13 @@ class JWNotify{
 			
 			/* only follow both sender and receiver can got message */
 			// Delete this Constains for Ticket #379 seek@jiwai.com 2008-02-28
+			/*
 			if ( $receiver_user && false==($receiver_user['id']==$sender_user['id']) )
 			{
 				$receiver_user_follower_ids = self::GetAvailableFollowerIds( $receiver_user['id'] );
 				$to_ids = array_diff( $to_ids, array_diff($to_ids, $receiver_user_follower_ids) );
 			}
+			*/
 			// end delete
 
 			$to_ids = array_diff( $to_ids, $have_send_ids );

@@ -96,7 +96,7 @@ class JWNudge {
 			{
 				if ( 'none' == $userTo['allowReplyType'] )
 					continue;
-				else if ( 'mime' == $userTo['allowReplyType'] )
+				else if ( 'mine' == $userTo['allowReplyType'] )
 				{
 					if ( $idUser != $receiver_user['id'] )
 						continue;
