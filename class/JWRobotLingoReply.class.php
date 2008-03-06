@@ -167,6 +167,9 @@ class JWRobotLingoReply {
 			'REPLY_MERGE_ERR' => '你提供的合并用户名 {0} 和你提供的密码不匹配，无法完成操作',
 			'REPLY_MERGE_WEBREQ' => '你好，合并帐户的请求只能从 (MSN/QQ/Skype/GTalk/Yahoo!/SMS) 端发起',
 			'REPLY_MERGE_TIPS' => '{0}用法：{0}+空格+web账户名+空格+web账户密码',
+
+			//Update Status
+			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，本条叽歪已经被我们藏起来了！',
 		);
 
 	/**

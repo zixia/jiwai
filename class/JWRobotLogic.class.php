@@ -198,7 +198,7 @@ class JWRobotLogic {
 			}
 
 			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );
-			if( $ret ) 
+			if( $ret > 0 ) 
 			{
 				$name_screen = JWUser::GetUserInfo( $device_row['idUser'], 'nameScreen' );
 
@@ -221,6 +221,14 @@ class JWRobotLogic {
 				}else {
 					return null;
 				}
+			}
+			else if ( -1 == $ret ) //Filtered
+			{
+				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_FILTERED');
+
+				if( $reply )
+					return self::ReplyMsg( $robotMsg, $reply );
+				return null;
 			}
 			else
 			{
