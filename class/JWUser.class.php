@@ -889,6 +889,7 @@ SELECT	id as idUser
 FROM	User
 WHERE	idPicture IS NOT NULL
 		AND protected<>'Y'
+		AND ((srcRegister IS NULL) or (srcRegister<>'ANONYMOUS'))
 		ORDER BY timeCreate desc
 LIMIT	$max
 _SQL_;

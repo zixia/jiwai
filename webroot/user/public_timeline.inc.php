@@ -92,8 +92,8 @@ JWTemplate::Timeline($status_data['status_ids'], $user_rows, $status_rows, $opti
 <?php 
 
 $newest_options['title']		= '看看新来的';
-$newest_options['user_ids']		= JWUser::GetNewestUserIds(5);
-$newest_options['view']			= 'list';
+$newest_options['user_ids']		= JWUser::GetNewestUserIds(8);
+$newest_options['view']			= 'view';
 
 $blog_options['user_name']	= 'blog';
 $blog_options['title']		= '叽歪网博客最新主题';
