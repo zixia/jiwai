@@ -293,6 +293,18 @@ _SQL_;
 		}
 	}
 
+	static public function FireStatus($quarantine_id)
+	{
+		$quarantine = self::GetDbRowById( $quarantine_id );
+		$callback = array('JWSns', 'UpdateStatus');
+
+		self::DealQueue( $quarantine_id, self::DEAL_DELE );
+
+		call_user_func_array( $callback, $quarantine['metaInfo'] );
+
+		return true;
+	}
+
 	/**
 	 * fireConference/Status by Id
 	 */
