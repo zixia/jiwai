@@ -29,17 +29,16 @@ function ons(){
 			<th width="50">idUser</th>
 			<th width="30">Device</th>
 			<th>叽歪</th>
-			<th width="120">禁忌词汇</th>
 			<th width="100">时间</th>
 		</tr>
 		<!--{foreach $statusQuarantine as $one}-->
+		<!--${ $u = JWUser::GetUserInfo( $one['metaInfo'][0] ); }-->
 		<tr>
-			<td><input type="checkbox" name="cb[]" value="{$one['id']}"/></td>
-			<td>{$one['idUser']}</td>
-			<td>{$one['device']}</td>
-			<td style="text-align:left;padding:10px;">{$one['status']}</td>
-			<td>(<font color="RED">${implode(',',$dictFilter->GetFilterWords($one['status']))}</font>)</td>
-			<td>{$one['timeCreate']}</td>
+			<td width="20"><input type="checkbox" name="cb[]" value="{$one['id']}"/></td>
+			<td width="100" ><A href="http://JiWai.de/{$u['nameUrl']}/">{$u['nameScreen']}</a></td>
+			<td width="20">{$one['metaInfo'][2]}</td>
+			<td style="text-align:left;padding:10px;">{$one['metaInfo'][1]}</td>
+			<td width="100">${date('Y-m-d H:i:s',$one['metaInfo'][3])}</td>
 		</tr>
 		<!--{/foreach}-->
 	</table>
