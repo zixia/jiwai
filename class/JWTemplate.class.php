@@ -592,7 +592,7 @@ _HTML_;
 			$('status-field-char-counter').innerHTML = len_max - value.length;
 		} else {
 			$('status-field-char-counter').innerHTML = 0;
-			/*
+			<?php /*
 			var ov = $('status').value;
 			var nv = ov.substring(0, len_max);
 			if( len_max == 70 ) {
@@ -603,7 +603,7 @@ _HTML_;
 				}
 			}
 			//$('status').value = nv;  //not cut for bug
-			*/
+			*/?>
 		}
 	};
 </script>
@@ -2165,7 +2165,7 @@ __HTML__;
 	{
 		if ( empty($idVistors) )
 			return;
-		
+		echo '<div class="line"><div></div></div>';	
 		#$title = preg_match( '#/wo/#', $_SERVER['REQUEST_URI'] ) ? '有朋自远方来' : '邻踪侠影' ;
 		$title = '最近有谁来过<span style="font-weight:normal;display:none;">(共 88888 人)</span>';
 		self::sidebar_featured(array(
@@ -2181,6 +2181,7 @@ __HTML__;
 		if ( empty($friendIds) )
 			return;
 
+		echo '<div class="line"><div></div></div>';	
 		self::sidebar_featured(array('user_ids'=>$friendIds, 'title'=>'最近上线的人', 'id'=>'friend'));
 
 		return;

@@ -81,7 +81,6 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
   ["profile_sidebar_border_color"]=>
 */
 
-//die(var_dump($user));
 	$ui->SetBackgroundColor	($user['profile_background_color']);
 	$ui->SetUseBackgroundImage($user['profile_use_background_image']);
 	$ui->SetBackgroundTile	($user['profile_background_tile']);
@@ -91,14 +90,12 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 	$ui->SetSidebarFillColor($user['profile_sidebar_fill_color']);
 	$ui->SetSidebarBorderColor($user['profile_sidebar_border_color']);
 */
-//die(var_dump($ui));
 	$ui->Save();
 
 	JWTemplate::RedirectToUrl($_SERVER['REQUEST_URI']);
 }
 else
 {
-//die(var_dump($ui));
 	$ui->GetBackgroundColor	($user['profile_background_color']);
 	$ui->GetUseBackgroundImage($user['profile_use_background_image']);
 	$ui->GetBackgroundTile	($user['profile_background_tile']);
@@ -108,9 +105,6 @@ else
 	$ui->GetSidebarFillColor($user['profile_sidebar_fill_color']);
 	$ui->GetSidebarBorderColor($user['profile_sidebar_border_color']);
 }
-
-
-//die(var_dump($user));
 
 ?>
 <html>

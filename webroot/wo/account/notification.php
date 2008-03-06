@@ -9,8 +9,6 @@ $user_info		= JWUser::GetCurrentUserInfo();
 
 $user_setting	= JWUser::GetNotification($user_info['id']);
 
-
-//echo "<pre>";(var_dump($user_setting));
 if ( isset($_REQUEST['commit_x']) )
 {
 	$user_new_setting = isset($_REQUEST['user']) ? $_REQUEST['user'] : array();

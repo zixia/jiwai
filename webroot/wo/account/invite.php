@@ -10,8 +10,6 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-//var_dump($_REQUEST);
-
 $user_info = JWUser::GetCurrentUserInfo();
 $has_photo = !empty($user_info['idPicture']);
 $protected = $user_info['protected'] == 'Y';
@@ -24,8 +22,6 @@ if ( $has_photo ){
 	// we have no photo
 	$photo_url = JWTemplate::GetAssetUrl('/img/stranger.gif');
 }
-//echo "<pre>"; die(var_dump($user_info));
-//var_dump($file_info);
 if ( isset($_POST['invite_email_x'] ) ) {
 	$emails = $_POST['email_addresses'];
 	$subject = $_POST['subject'];

@@ -59,13 +59,6 @@ if ( $_POST )
 				JWSns::FinishInvite($user_id, $inviter_id);
 			/* end invitation */
 
-			if ( isset($_SESSION['login_redirect_url']) )
-			{
-				$rediret_url = $_SESSION['login_redirect_url'];
-				unset($_SESSION['login_redirect_url']);
-				JWTemplate::RedirectToUrl( $rediret_url );
-			}
-
 			JWTemplate::RedirectToUrl( '/wo/account/regok' );
 		}
 		else

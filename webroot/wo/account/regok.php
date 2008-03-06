@@ -10,8 +10,6 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-//var_dump($_REQUEST);
-
 $user_info		= JWUser::GetCurrentUserInfo();
 $has_photo		= !empty($user_info['idPicture']);
 $protected	= $user_info['protected'] == 'Y';
@@ -24,9 +22,6 @@ $protected	= $user_info['protected'] == 'Y';
     $photo_url = JWTemplate::GetAssetUrl('/images/org-nobody-96-96.gif');
 }
 
-//echo "<pre>"; die(var_dump($user_info));
-//var_dump($file_info);
-//var_dump($_POST);
 if ( isset($_POST['save_x'] ) ) 
 {
     if(!empty($_POST['skip']))

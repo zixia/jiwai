@@ -10,14 +10,10 @@ JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
 
-//var_dump($_REQUEST);
-
 $user_info		= JWUser::GetCurrentUserInfo();
 
 $has_photo		= !empty($user_info['idPicture']);
 
-//echo "<pre>"; die(var_dump($user_info));
-//var_dump($file_info);
 if ( isset($_REQUEST['save'] ) )
 {
 	$file_info = @$_FILES['profile_image'];
