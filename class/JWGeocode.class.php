@@ -13,67 +13,205 @@
 class JWGeocode {
 
     /**
-     * const credit type
+     * Geocoding via Google Location
      */
-    const GEOCODING_GOOG    = 1;   // Google Inc. (Public, NASDAQ:GOOG) 
-    const GEOCODING_GOOGAPI = 2;   // Google Inc. (Public, NASDAQ:GOOG) 
-    const GEOCODING_YHOOAPI = 3;   // Yahoo! Inc. (Public, NASDAQ:YHOO) 
-    const GEOCODING_MSFTAPI = 4;   // Microsoft Inc. (Public, NASDAQ:MSFT) 
+    const GEOCODING_GOOGLOC = 1;
 
     /**
-     * Reverse geocoding: Get geocode info from latitude/longitude
+     * Geocoding via Google API
+     */
+    const GEOCODING_GOOGAPI = 2;
+
+    /**
+     * Geocoding via Yahoo! API
+     */
+    const GEOCODING_YHOOAPI = 3;
+
+    /**
+     * Get Geocode By CellId
+     */
+    const GEOCODING_FUNC_CELL   = 'cell';
+
+    /**
+     * Get Geocode By IP
+     */
+    const GEOCODING_FUNC_IP     = 'ip';
+
+    /**
+     * Get Geocode By WapId
+     */
+    const GEOCODING_FUNC_WAP    = 'wap';
+
+    /**
+     * Get Db Row by (latitude, longitude)
      *
-     * @param int
-     * @param int
+     * @param int latitude
+     * @param int longitude
      * @return array
      */
-    static public function ReverseGeocoding($latitude, $longitude, $coding) {
-        $row = array(
-                'latitude'  => $latitude,
-                'longitude' => $longitude,
-                );
-        switch ($coding) {
-            case self::GEOCODING_YHOOAPI:
-                $row = JWGeocode_Yahoo::ReverseGeocoding($latitude, $longitude);
-                break;
-            default:
-                break;
-        }
-        return $row;
+    static public function GetDbRowByGeocode($latitude, $longitude) {
+        $conditions = array (
+            'latitude'  => $latitude,
+            'longitude' => $longitude
+            );
+        return JWDB_Cache::GetTableRow('Geocode', $conditions);
     }
 
     /**
-     * Geocoding: Get latitude/longitude from address info
+     * Get Db Row by (codingBy, codingId)
      *
-     * @param int
-     * @param array
+     * @param string codingBy
+     * @param string codingId
      * @return array
      */
-    static public function Geocoding($coding, $options) {
-        if (!is_array($options) || empty($options)) {
-            return false;
+    static public function GetDbRowByCoding($codingBy, $codingId) {
+        $conditions = array (
+                'codingBy'  => $codingBy,
+                'codingId'  => $codingId,
+                );
+        return JWDB_Cache::GetTableRow('Geocode', $conditions);
+    }
+
+    /**
+     * Wrapper, private use
+     *
+     * @param array
+     * @return int idGeocode
+     */
+    static private function Create($options = array()) {
+        return JWDB::SaveTableRow( 'Geocode', array(
+                    'latitude'  => @$options['latitude'],
+                    'longitude' => @$options['longitude'],
+                    'country'   => @$options['country'],
+                    'state'     => @$options['state'],
+                    'city'      => @$options['city'],
+                    'address'   => @$options['address'],
+                    'zip'       => @$options['zip'],
+                    'codingBy'  => @$options['codingBy'],
+                    'codingId'  => @$options['codingId'],
+                    ));
+    }
+
+    /**
+     * Generate codingId field
+     *
+     * @param string codingBy
+     * @param array options
+     * @return int
+     */
+    static private function GetCodingId($codingBy, $options = array()) {
+        $codingId = null;
+
+        switch ($codingBy) {
+            case self::GEOCODING_FUNC_CELL :
+                $codingId = implode(',', array(
+                            @$options['cid'],
+                            @$options['lac'],
+                            @$options['mcc'],
+                            @$options['mnc']));
+                break;
+            case self::GEOCODING_FUNC_IP :
+                $codingId = @$options['ip'];
+                if (!is_long($codingId))
+                    $codingId = ip2long($codingId);
+                break;
+            case self::GEOCODING_FUNC_WAP :
+                $codingId = @$options['wap'];
+                if (!is_int($codingId))
+                    $codingId = intval($codingId);
+                break;
+            default :
+                break;
         }
 
-        $geocode = array();
+        return $codingId;
+    }
 
-        switch ($coding) {
-            case self::GEOCODING_GOOG:
-                $geocode = self::GeocodingByCellcode(
-                        @$options['cid'],
-                        @$options['lac'],
-                        @$options['mnc'],
-                        @$options['mcc'] );
-                break;
-            case self::GEOCODING_YHOOAPI:
-                $geocode = JWGeocode_Yahoo::Geocoding($options);
-                break;
-            case self::GEOCODING_GOOGAPI:
-            case self::GEOCODING_MSFTAPI:
-            default:
-                break;
+    /**
+     * Get idGeocode by coding, create if non-exist
+     *
+     * @param string codingBy
+     * @param array codingOptions
+     * @return int idGeocode
+     */
+    static public function GetGeocode($codingBy, $options = array()) {
+        $idGeocode = false;
+        $codingId = self::GetCodingId($codingBy, $options);
+
+        if ($geo = self::GetDbRowByCoding($codingBy, $codingId)) {
+            return $geo['id'];
         }
 
-        return $geocode;
+        if (is_array($options)) {
+            switch ($codingBy) {
+                case self::GEOCODING_FUNC_CELL :
+                    $cid = @$options['cid'];
+                    $lac = @$options['lac'];
+                    $mcc = @$options['mcc'];
+                    $mnc = @$options['mnc'];
+                    $geo = self::GeocodingByCellcode($cid, $lac, $mcc, $mnc);
+                    if (empty($geo)) break;
+                    $idGeocode = self::Create( array(
+                                'latitude'  => $geo['latitude'],
+                                'longitude' => $geo['longitude'],
+                                'codingBy'  => $codingBy,
+                                'codingId'  => $codingId,
+                                ));
+                    break;
+                case self::GEOCODING_FUNC_IP :
+                    $geo = self::GeocodingByIp($codingId);
+                    if (empty($geo)) break;
+                    $idGeocode = self::Create( array(
+                                'latitude'  => $geo['latitude'],
+                                'longitude' => $geo['longitude'],
+                                'codingBy'  => $codingBy,
+                                'codingId'  => $codingId,
+                                ));
+                    break;
+                case self::GEOCODING_FUNC_WAP :
+                    // TODO Rolead pushes country/state/city/street
+                    $geo = self::GeocodingByWap($codingId);
+                    if (empty($geo)) break;
+                    $idGeocode = self::Create( array(
+                                'latitude'  => $geo['latitude'],
+                                'longitude' => $geo['longitude'],
+                                'codingBy'  => $codingBy,
+                                'codingId'  => $codingId,
+                                ));
+                default :
+                    break;
+            }
+        }
+
+        return $idGeocode;
+    }
+
+    /**
+     * Get latitude/longitude info from ip
+     *
+     * @param string
+     * @return array
+     */
+    static private function GeocodingByIp($ip) {
+        // TODO ip2location
+        return array(
+                'latitude'  => 1234567,
+                'longitude' => 7654321,
+                );
+    }
+
+    /**
+     * Get latitude/longitude info from address
+     *
+     * @param string
+     * @return array
+     */
+    static private function GeocodingByApi($address = array()) {
+        // TODO Geocoding by Address
+        return array(
+                'latitude'  => 1122334455,
+                'longitude' => 5544332211,
+                );
     }
 
     /**
@@ -85,7 +223,7 @@ class JWGeocode {
      * @param int
      * @return array
      */
-    static private function GeocodingByCellcode($cid, $lac, $mnc = 460, $mcc = 0) {
+    static private function GeocodingByCellcode($cid, $lac, $mcc = 460, $mnc = 0) {
         /**
          * short usage
          *
@@ -155,99 +293,5 @@ class JWGeocode {
         }
     }
 
-    static public function Create($options = array()) {
-        $country = isset( $options['country'] ) ? strtolower($options['country']) : 'china';
-        $mcc = isset( $options['mcc'] ) ? intval( $options['mcc'] ) : 460;
-        $mnc = isset( $options['mnc'] ) ? intval( $options['mnc'] ) : 0;
-        return JWDB::SaveTableRow( 'Geocode', array(
-                    'latitude'  => @$options['latitude'],
-                    'longitude' => @$options['longitude'],
-                    'country'   => $country,
-                    'state'     => @$options['state'],
-                    'city'      => @$options['city'],
-                    'address'   => @$options['address'],
-                    'zip'       => @$options['zip'],
-                    'mcc'       => $mcc,
-                    'mnc'       => $mnc,
-                    'cid'       => @$options['cid'],
-                    'lac'       => @$options['lac'],
-                    ));
-    }
-
-    static public function GetDbRowByGeocode($latitude, $longitude) {
-        $conditions = array(
-                'latitude'  => $latitude,
-                'longitude' => $longitude);
-
-        return JWDB::GetTableRow( 'Geocode', $conditions);
-    }
-
-    static public function GetDbRowByCondition($options) {
-        if (!is_array($options) || empty($options))
-            return false;
-        return JWDB::GetTableRow( 'Geocode', $options);
-    }
-
-    /**
-     * Get idGeocode
-     *
-     * @param int
-     * @param int
-     * @param int
-     * @param int
-     * @return int
-     */
-    static public function GetGeocodeByCellcode($mcc, $mnc, $cid, $lac) {
-        $idGeocode = null;
-        $row = self::GetDbRowByCondition( array(
-                    'cid' => $cid,
-                    'lac' => $lac) );
-        if (empty( $row )) {
-            $idGeocode = self::Create( array(
-                        'mcc'   => $mcc,
-                        'mnc'   => $mnc,
-                        'cid'   => $cid,
-                        'lac'   => $lac) );
-        } else {
-            return $row['id'];
-        }
-        $geo = self::Geocoding(self::GEOCODING_GOOG , array(
-                    'mcc'   => $mcc,
-                    'mnc'   => $mnc,
-                    'cid'   => $cid,
-                    'lac'   => $lac,
-                    ));
-        if (false == empty($geo)) {
-            JWDB::UpdateTableRow( 'Geocode', $idGeocode, array(
-                        'latitude'  => $geo['latitude'],
-                        'longitude' => $geo['longitude'],
-                        ));
-        }
-        return $idGeocode;
-    }
-
-    /**
-     * Get idGeocode
-     *
-     * @param string
-     * @return int
-     */
-    static public function GetGeocodeByAddress($address) {
-        $idGeocode = $latitude = $longitude = null;
-        $row = self::GetDbRowByCondition( array(
-                    'address'   => $address
-                    ));
-        if (empty( $row )) {
-            //TODO Geocoding API
-            $geo = self::Geocoding(self::GEOCODING_YHOOAPI, array(
-                        'address'   => $address,
-                        ));
-            $idGeocode = self::Create( $geo );
-        } else {
-            $idGeocode = $row['id'];
-        }
-
-        return $idGeocode;
-    }
 }
 ?>

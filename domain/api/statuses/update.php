@@ -6,6 +6,11 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 
 $status = null;
 $idPartner = null;
+// geocode
+$mcc = null;
+$mnc = null;
+$cid = null;
+$lac = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
@@ -70,6 +75,18 @@ _XML_;
 	}
 }
 //end
+
+if ( null != $cid ) {
+    // geocoding by cid/lac
+    $options['idGeocode'] = JWGeocode::GetGeocode(
+            JWGeocode::GEOCODING_FUNC_CELL,
+            array(
+                'mcc' => $mcc,
+                'mnc' => $mnc,
+                'cid' => $cid,
+                'lac' => $lac
+                ));
+}
 
 if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) )
 {
