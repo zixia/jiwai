@@ -49,7 +49,7 @@ widget.onLoad = function() {
 		withFriends = true;
 	} else {
 		widget.setTitle(screenName+(withFriends ? '和朋友们' : '')+'的叽歪');
-		uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + screenName + '.json?count='+numDisplay;
+		uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + encodeURIComponent(screenName) + '.json?count='+numDisplay;
 		jw_footer = updateBox ? '<form target="_blank" style="text-align:center;" action="http://jiwai.de/wo/status/update" method="post" onsubmit="var s=this.getElementsByName(\'jw_status\')[0]; if (s.value==\'\') return false; else s.value=\'@'+screenName+' \'+s.value;"><textarea name="jw_status" rows="3"></textarea><br /><input style="border:1px;" type="submit" value="留言"/> <a target="_blank" href="http://jiwai.de/wo/account/create">注册叽歪</a><input type="hidden" value="'+screenName+'" name="idUserReplyTo"/></form>' : '';
 	}
 	UWA.Data.getJson(uri, function(response){
