@@ -937,6 +937,14 @@ _SQL_;
 
 	static public function GetMergeSecret($user_id, $type='msn', $address=null)
 	{
+		if('sms'==$type)
+		{
+			$secret = $user_info['id'].'-'.$user_info['pass'].'-'.strtolower($type).'-'.strtolower($address);
+			$secret = substr(md5($secret), 0, 4);
+			$secret = substr(hexdec($secret), 0, 4);
+			return "0000"!=$secret ? $secret : "2007";
+		}
+
 		$user_id = JWDB::CheckInt( $user_id );
 		$user_info = JWUser::GetUserInfo( $user_id );
 
