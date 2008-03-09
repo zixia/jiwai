@@ -70,6 +70,11 @@ function renderXmlStatuses($id)
 function getMessage($id, &$status, &$user)
 {
 	$status = JWDB_Cache_Status::GetDbRowById($id);
+
+    $current_user_id = JWApi::GetAuthedUserId();
+    if (JWSns::IsProtectedStatus($status, $current_user_id))
+        return false;
+
 	if( $status )
 	{
 		$user = JWDB_Cache_User::GetDbRowById($status['idUser']);
