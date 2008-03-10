@@ -31,6 +31,10 @@ if ( isset($mms_file_info)
 	&& preg_match('/image/',$mms_file_info['type']) 
    )   
 { 
+    /* work around with widsets */
+    if ($mms_file_info['name'] === 'mms_file') {
+        $mms_file_info['name'] = 'mms' . time(). '.jpg';
+    }
 	$user_named_file = '/tmp/' . $mms_file_info['name'];
 
 	if ( move_uploaded_file($mms_file_info['tmp_name'], $user_named_file) )
