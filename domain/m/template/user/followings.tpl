@@ -4,7 +4,7 @@
 <ul>
 <!--{foreach $followings as $following}-->
 <li>
-    <a href="/{$following['nameUrl']}/" rel="contact"><img width="48" height="48" src="${JWPicture::GetUserIconUrl($following['id'],'thumb48')}" title="{$following['nameScreen']}" alt="{$following['nameScreen']}" />
+    <a href="/{$following['nameUrl']}/" rel="contact"><img width="48" height="48" src="${JWPicture::GetUserIconUrl($following['id'],'thumb48s')}" title="{$following['nameScreen']}" alt="{$following['nameScreen']}" />
     ${htmlSpecialChars($following['nameScreen'])}</a>
 </li>
 <!--{/foreach}-->

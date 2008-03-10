@@ -495,6 +495,8 @@ convert $srcFile	 \\
   -gravity center	 \\
   -crop 96x96+0+0	 \\
   +repage			 \\
+  - | convert -		 \\
+  -thumbnail 96x96   \\
   $dstFile
 _CMD_;
 
@@ -540,6 +542,8 @@ convert $srcFile	 \\
   -gravity center	 \\
   -crop 48x48+0+0	 \\
   +repage			 \\
+  - | convert -		 \\
+  -thumbnail 48x48   \\
   $dstFile
 _CMD_;
 
