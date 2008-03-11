@@ -1,5 +1,7 @@
 <?php
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
+$rev = '{$Rev 0$}';
+$rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
@@ -10,7 +12,7 @@ echo '<?xml version="1.0" encoding="UTF-8" ?>';
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
 <meta name="description" content="在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。" />
-<meta name="version" content="1.1.1" />
+<meta name="version" content="1.1.2.<?php echo $rev; ?>" />
 <meta name="keyword" content="叽歪 JiWai 彩信 微博客 miniblog twitter 推客 饭否 fanfou" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
 <meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
