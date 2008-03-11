@@ -491,11 +491,19 @@ class JWSns {
 	 */
 	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $isSignature='N', $serverAddress=null, $options=array() )
 	{
+		/** deal filter **/
+		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
+		$quarantine_array = array($idUser, $status, $device, $timeCreate, $isSignature, $serverAddress, $options);
+		if ( false==isset($options['filter']) || $options['filter'] == true )
+		{
+			if (self::FilterStatus( $status, $quarantine_array ) )
+				return -1;
+		}
+		/** end filter **/
+
 		//滤除换行 并 检查签名改变
 		if( null == ( $status = self::StripStatusAndCheckSignature($idUser, $status, $device, $isSignature ) ) )
 			return true;
-
-		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
 
 		$reply_info = JWStatus::GetReplyInfo( $status, $options );
 		
@@ -928,6 +936,21 @@ class JWSns {
 		{
 			JWDB_Cache_Status::SetIdPicture( $status_id, $picture_id );
 		}
+	}
+
+	static public function FilterStatus( $status, $extra_info=array() )
+	{
+		JWFilterConfig::Normal();
+		if ( JWFilterRule::IsNeedFilter( $status ) )
+		{
+			$type = JWQuarantineQueue::T_STATUS;
+			$user_id = $extra_info[0];
+			$extra_info[6]['filter'] = false;
+			$receiver_id = null;
+			JWQuarantineQueue::Create( $user_id, $receiver_id, $type, $extra_info );
+			return true;
+		}
+		return false;
 	}
 }
 ?>
