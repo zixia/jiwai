@@ -1,6 +1,7 @@
 <h2>用户管理</h2>
 <ul>
 	<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/userquery.php">用户信息查询</a></li>
+	<li ${$menu_nav=='imquery'?'class="selected"':''}><a href="/imquery.php">IM设备查询</a></li>
 	<li ${$menu_nav=='usersetting'?'class="selected"':''}><a href="/usersetting.php">修改用户设置</a></li>
 	<li ${$menu_nav=='userurl'?'class="selected"':''}><a href="/userurl.php">允许用户修改URL</a></li>
 </ul>
@@ -34,11 +35,11 @@
 	<li ${$menu_nav=='statusexamed'?'class="selected"':''}><a href="/statusexamed.php">已审核JiWai更新</a></li>
 </ul>
 
-<h2>运营数据</h2>
+<h2>系统运营</h2>
 <ul>
 	<li ${$menu_nav=='statuscreate'?'class="selected"':''}><a href="/statuscreate.php">用户更新量汇总</a></li>
 	<li ${$menu_nav=='userregistered'?'class="selected"':''}><a href="/userregistered.php">注册用户量汇总</a></li>
-	<li ${$menu_nav=='imquery'?'class="selected"':''}><a href="/imquery.php">IM设备查询</a></li>
+	<li ${$menu_nav=='confgroupsms'?'class="selected"':''}><a href="/confgroupsms.php">群发会议短信</a></li>
 </ul>
 
 <hr style="height:1px;"/>
