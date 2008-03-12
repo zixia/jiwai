@@ -34,61 +34,50 @@ if ( isset($new_user_info) && $_POST['commit_u'] )
 	if ( isset($nameScreen) && $nameScreen!=$user_info['nameScreen'] )
 	{
 		$arr_changed['nameScreen'] = $nameScreen;
-		$outInfo['nameScreen'] = $nameScreen;
-
-		if ( !JWUser::IsValidName($nameScreen) )
-		{
-			$error_html .= <<<_HTML_
-<li>用户名 <strong>$nameScreen</strong> 由最短为5位的字母、数字、下划线和小数点组成，且不能以数字开头。</li>
-_HTML_;
-		}
-
-		if ( JWUser::IsExistName($nameScreen) )
-		{
-			$error_html .= <<<_HTML_
-<li>用户名 <strong>$nameScreen</strong> 已经被使用。</li>
-_HTML_;
-		}
 	}
 	
 	if ( isset($email) && $email!=$user_info['email'] )
 	{
 		$arr_changed['email'] = $email;
-	
-		if ( !JWUser::IsValidEmail($email,true) )
-		{
-			$error_html .= <<<_HTML_
-<li><strong>$email</strong> 不正确。请输入正确的、可以工作的Email地址</li>
-_HTML_;
-		}
-
-		if ( JWUser::IsExistEmail($email) )
-		{
-			$error_html .= <<<_HTML_
-<li>Email <strong>$email</strong> 已经被使用。</li>
-_HTML_;
-		}
 	}
-
+	
 	$nameUrl = isset($_POST['nameUrl']) ? $_POST['nameUrl'] : null;
-	$oldNameUrl = $user_info['nameUrl'];
-	if( $nameUrl && ('N'==$user_info['isUrlFixed'] ))
+	if ( !empty($nameUrl) && $nameUrl!=$user_info['nameUrl'] && 'N'==$user_info['isUrlFixed'])
 	{
 		$arr_changed['nameUrl'] = $nameUrl;
 		$arr_changed['isUrlFixed'] = 'Y';
 	}
 
+	$validate_item = array(
+		array( 'Email', $email),
+		array( 'NameScreen', $nameScreen ),
+		array( 'NameUrl', $nameUrl ),
+	);
+
+	$validate_result = JWFormValidate::Validate($validate_item);
+
+	if ( is_array($validate_result) )
+	{
+		foreach ($validate_result AS $item)
+		{
+			$error_string .= "<LI>$item</LI>";
+		}
+	}
+
+	if ( $error_string )
+		$error_html = "<B>提交表单时发生以下错误：</B><OL>$error_string</OL>" ;
+
 	if ( empty($error_html) && false == empty($arr_changed) )
 	{
 		if ( ! JWUser::Modify($user_info['id'],$arr_changed) )
 		{
-			JWSession::SetInfo('error', '用户信息更新失败，请稍后再试。');
+			JWSession::SetInfo('notice', '用户信息更新失败，请稍后再试。');
 		}
 
 		JWSession::SetInfo('notice', '用户信息修改成功！');
 
 	}else{
-		JWSession::SetInfo('error', $error_html);
+		JWSession::SetInfo('notice', $error_html);
 	}
 
 	JWTemplate::RedirectToUrl();
