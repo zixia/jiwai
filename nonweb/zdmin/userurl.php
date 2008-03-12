@@ -1,7 +1,7 @@
 <?php
 require_once('./function.php');
 
-$n = null;
+$n = $url = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 
 if($n) {
@@ -9,8 +9,9 @@ if($n) {
 	if( $u ) {
 		$uArray = array(
 			'isUrlFixed' => 'N',
+			'nameUrl' => $url,
 		);
-		JWDB::UpdateTableRow('User', $u['id'], $uArray );
+		JWDB_Cache::UpdateTableRow('User', $u['id'], $uArray );
 		setTips( "允许 $n 再次修改 URL 成功。");
 	}
 	Header('Location: '. $_SERVER['REQUEST_URI'] );

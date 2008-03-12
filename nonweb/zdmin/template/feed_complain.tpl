@@ -49,7 +49,7 @@
 <tr align="center" bgcolor="#FFFFFF">
 <td><a href="http://jiwai.de/{$user_info2[$key]['nameUrl']}/">{$user_info2[$key]['nameScreen']}</a></td>
 <td>{$one['remark']}</td>
-<td>{$user_info[$key]['nameScreen']}</td>
+<td><a href="http://jiwai.de/{$user_info[$key]['nameUrl']}/">{$user_info[$key]['nameScreen']}</a></td>
 
 <td>{$times[0]}</td>
 <td>${$one['dealStatus']=='NONE' ? '未处理' : ($one['dealStatus']=='FIXED' ? '已处理' : '已备案')}</td>

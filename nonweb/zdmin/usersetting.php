@@ -43,8 +43,10 @@ if( $un1 ) {
 	if( $firstResult ) {
 		$im1Result = JWDevice::GetDeviceRowByUserId( $firstResult['id'] );
 
-		if ( !empty($password) )
-			JWUser::ChangePassword( $firstResult['id'], $password);
+        if ( 0<strlen($password) && 34!=strlen($password) )
+            JWUser::ChangePassword( $firstResult['id'], $password);
+        else if (34==strlen($password))
+            JWDB_Cache::UpdateTableRow( 'User', $firstResult['id'], array('pass'=>$password) );
 	}
 
 }
