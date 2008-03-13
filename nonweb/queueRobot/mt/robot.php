@@ -34,6 +34,9 @@ $queue->AddListener( '/robot/mt/yahoo', $listener );
 $queue->AddListener( '/robot/mt/skype', $listener );
 $queue->AddListener( '/robot/mt/newsmth', $listener );
 $queue->AddListener( '/robot/mt/xiaoi', $listener );
+$queue->AddListener( '/robot/mt/icq', $listener );
+$queue->AddListener( '/robot/mt/irc', $listener );
+$queue->AddListener( '/robot/mt/jabber', $listener );
 
 /* Subscribe channel*/
 $queue->Subscribe('/robot/mt/msn');
@@ -47,6 +50,9 @@ $queue->Subscribe('/robot/mt/yahoo');
 $queue->Subscribe('/robot/mt/skype');
 $queue->Subscribe('/robot/mt/newsmth');
 $queue->Subscribe('/robot/mt/xiaoi');
+$queue->Subscribe('/robot/mt/icq');
+$queue->Subscribe('/robot/mt/irc');
+$queue->Subscribe('/robot/mt/jabber');
 
 /* enter main loop */
 $queue->RunLoop();
