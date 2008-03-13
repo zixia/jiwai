@@ -3,12 +3,12 @@ require_once( dirname(__FILE__) . '/function.php');
 
 $allow_user = array(1, 863, 37340); //Zixia, Lecause, ShenQQ
 
-$content = $number = $date_begin = $date_end = null;
+$content = $name_screen = $date_begin = $date_end = $use_number = null;
 extract( $_POST, EXTR_IF_EXISTS );
 
-if ( $content && $number !== '' && $date_end && $date_begin )
+if ( $content && $name_screen && $date_end && $date_begin )
 {
-	DoPost( $number, $content, $date_begin, $date_end );
+	DoPost( $name_screen, $content, $date_begin, $date_end, $use_number );
 	Header("Location: confgroupsms.php");
 }
 else if ( $_POST )
@@ -22,7 +22,7 @@ $date_end = date('Y-m-d', strtotime("tomorrow") );
 $content = " [叽歪网]";
 }
 
-function DoPost( $number, $content, $date_begin, $date_end )
+function DoPost( $name_screen, $content, $date_begin, $date_end, $use_number=false )
 {
 	global $allow_user;
 	if ( false == in_array($_SESSION['idUser'] , $allow_user ) )
@@ -32,7 +32,11 @@ function DoPost( $number, $content, $date_begin, $date_end )
 		exit;
 	}
 
-	$conference = JWConference::GetDbRowFromNumber( $number );
+	$conference_user = JWUser::GetUserInfo( $name_screen );
+	if ( empty( $conference_user ) )
+		return 0;
+
+	$conference = JWConference::GetDbRowFromUser( $conference_user['id'] );
 	if ( empty( $conference ) )
 		return 0;
 	
@@ -47,7 +51,14 @@ function DoPost( $number, $content, $date_begin, $date_end )
 		if ( empty($one) )
 			continue;
 
-		$server_address = $code['code'] . $code['func'] . $code['funcPlus'] . '10' . $number ;
+		$server_address = $code['code'] . $code['func'] . $code['funcPlus'];
+
+		if ( $use_number ) 
+		{
+			$server_address .= ($conference_user['idConference']==null)
+				? '11' . $conference_user['id'] : '10' . $conference['number'] ;
+		}
+
 		JWRobot::SendMtRawQueue($one['address'], 'sms', $content, $server_address, null);
 		$count++;
 	}
