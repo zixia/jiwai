@@ -72,6 +72,8 @@ class JWRequest {
 				return 7;
 			case 'fetion':
 				return 8;
+			case 'jabber':
+				return 9;
 			default:
 				return self::GetClientIp();
 		}

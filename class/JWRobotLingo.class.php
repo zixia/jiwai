@@ -1058,6 +1058,18 @@ class JWRobotLingo {
 
 		$friend_id = $friend_row['idUser'];
 		
+        /**
+         * Temporary walk around for ccb
+         */
+        if ($friend_row['nameScreen'] == 'ccb') {
+            $message_text_int = intval($message_text);
+            $reply = ($message_text_int % 2 == 0)
+                ? '建设银行信用卡办理中心核实结果：身份证号' . $message_text_int .'以前没有办理过信用卡，是新用户！'
+                : '建设银行信用卡办理中心核实结果：身份证号' . $message_text_int .'已经是信用卡老用户！';
+            return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+        }
+        /* End Temporary 20080307 */
+
 		/**
 		 * Temporary limit to send message
 		 */
@@ -1477,7 +1489,7 @@ class JWRobotLingo {
 		if ( empty($device_db_row) ) 
 			return null;
 
-		if( false == in_array( $type, array('qq','msn','gtalk','skype','aol','yahoo','sms','fetion') ) ){
+		if( false == in_array( $type, array('qq','msn','gtalk','skype','aol','yahoo','sms','fetion','newsmth','jabber') ) ){
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MSG_WEBREQ' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}

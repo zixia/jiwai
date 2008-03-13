@@ -75,6 +75,7 @@ class JWDevice {
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
+            case 'icq':
 			case 'yahoo':
 				// Yahoo! supports both EMail and Username like account name
 				// Strip the yahoo.com(|.(cn|hk|tw|...)) suffix
@@ -82,6 +83,7 @@ class JWDevice {
 					list($address) = split('@', $address);
 				}
 				return preg_match('/^[\w\.\-_]+$/', $address);
+            case 'irc':
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'aol':
@@ -752,6 +754,7 @@ _SQL_;
 			case 'yahoo':
 				$name='jiwai001';
 				break;
+			case 'jabber' :
 			case 'gtalk' :
 				$name='wo@jiwai.de';
 				break;
@@ -884,7 +887,7 @@ _SQL_;
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'fetion', 'newsmth', 'facebook', 'yahoo' );
+		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'fetion', 'newsmth', 'facebook', 'yahoo', 'jabber' );
 	}
 
 	static public function IsHistorySignature($idUser, $signature){
@@ -926,6 +929,7 @@ _SQL_;
 			case 'skype':
             case 'aol':
             case 'fetion' :
+            case 'jabber':
 			case 'yahoo':
 				return 'im';
 			case 'sms':

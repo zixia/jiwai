@@ -237,7 +237,7 @@ class JWNudge {
 		
 		$originOrder = $deviceSendVia;
 		//$nudgeOrder = explode( ',' , $deviceSendVia );
-		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'yahoo','aol', 'sms', 'fetion' );
+		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'yahoo','aol', 'sms', 'fetion', 'jabber');
 
 		$shortcutArray = array();	
 		foreach( $deviceRow as $type=>$row ){

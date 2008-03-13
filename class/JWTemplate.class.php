@@ -1824,6 +1824,7 @@ _HTML_;
 
 		$pArray = array( 
 				'sms' => '已绑定 手机', 
+				'jabber' => '已绑定 Jabber',
 				'gtalk' => '已绑定 GTalk', 
 				'msn' => '已绑定 MSN',
 				'qq' => '已绑定 QQ',

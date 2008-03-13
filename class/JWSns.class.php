@@ -297,6 +297,8 @@ class JWSns {
 			case 'msn':
 			case 'gtalk':
 			case 'jabber':
+            case 'icq':
+            case 'irc':
 				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
 			case 'email':
 				/* 发完消息，再发邮件 :-D */
