@@ -6,6 +6,8 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 
 $status = null;
 $idPartner = null;
+$idStatusReplyTo = null;
+$idUserReplyTo = null;
 // geocode
 $mcc = null;
 $mnc = null;
@@ -13,6 +15,8 @@ $cid = null;
 $lac = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
+$idStatusReplyTo = intval($idStatusReplyTo);
+$idUserReplyTo = intval($idUserReplyTo);
 
 $type = trim( $pathParam, '.' );
 if( !in_array( $type, array('json','xml') )){
@@ -35,6 +39,8 @@ $isSignature = 'N';
 $serverAddress = null;
 $options = array(
                 'idPartner' => $idPartner,
+		'idStatusReplyTo' => $idStatusReplyTo ? $idStatusReplyTo : null,
+		'idUserReplyTo' => $idUserReplyTo ? $idUserReplyTo : null,
             );
 
 
