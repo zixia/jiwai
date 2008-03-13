@@ -23,9 +23,8 @@ switch($action){
 		$_SESSION['id_status_reply_to'] = $value;
 		$status_row = JWDB_Cache_Status::GetDbRowById( $value );
 		$reply_user_info = JWUser::GetUserInfo($status_row['idUser']);
-		$_SESSION['name_screen_reply_to'] = "@${reply_user_info['nameScreen']} ";
+		$_SESSION['name_screen_reply_to'] = "@$reply_user_info[nameScreen] ";
 		JWTemplate::RedirectToUrl("/wo/");
-		//JWTemplate::RedirectBackToLastUrl();
 	break;
 	case 'update':
 		update( $loginedUserInfo['id'], trim($status) );
@@ -96,6 +95,7 @@ function destroy( $idUser, $value ){
 function update($idUser, $status) {
 
 	$isHelp = false;
+	global $status_reply;
 
 	if( $status ){ 
 
