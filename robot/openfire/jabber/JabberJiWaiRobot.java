@@ -39,6 +39,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
     public static String mStatus = null;
     public static String mAddress = null;
     public static String mResource = null;
+    public static String mDomain = null;
     public static String mOnlineScript = null;
     
     public static MoMtWorker worker = null;
@@ -60,6 +61,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
 
         mServer = config.getProperty("jabber.server", System.getProperty("jabber.server") );
         mAccount = config.getProperty("jabber.account", System.getProperty("jabber.account") );
+        mDomain = config.getProperty("jabber.domain", System.getProperty("jabber.domain") );
         mPassword = config.getProperty("jabber.password", System.getProperty("jabber.password") );
         mResource = config.getProperty("jabber.resource", System.getProperty("jabber.resource") );
         mStatus = config.getProperty("jabber.status", _mStatus );
@@ -72,7 +74,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
         }catch(Exception e){
         }
         
-        mAddress = mAccount + "@" + mServer;
+        mAddress = mAccount + "@" + mDomain;
         if( null== mServer ||  null==mAccount || null==mPassword || null==mQueuePath) {
             Logger.logError("Please given server|password|account|queuepath");
             System.exit(1);
@@ -154,12 +156,28 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
     }
     
     public void processPacket(Packet p) {
-        Logger.log("Recv Packet::" + p.toXML());
         if( p instanceof Presence ){
             processOnlineStatus((Presence) p);
             processPresence((Presence) p);
         }else if( p instanceof Message ){
             processMessage((Message) p);
+        }else if( p instanceof RosterPacket ){
+            processRoster((RosterPacket) p);
+        }
+    }
+
+    /**
+     * Process Roster Package, especially subscribe
+     * @param p
+     */
+    private void processRoster(RosterPacket p){
+        for (RosterPacket.Item item : p.getRosterItems()) {
+            if(RosterPacket.ItemType.from == item.getItemType()) {
+                Presence presence = new Presence(Presence.Type.subscribe);
+                presence.setFrom(mAddress);
+                presence.setTo(item.getUser());
+                con.sendPacket(presence);
+            }
         }
     }
     
