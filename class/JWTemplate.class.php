@@ -630,6 +630,15 @@ _TAB_;
 			$url 		= $options['url'];
 			$is_active	= $options['active'];
 
+			/* custom menu */
+			if('joke'===$menu) {
+				echo "<a href = '$url' style='color:#0000FF;' class='active'>$name</a>";continue;
+			}
+			if('contribute'===$menu) {
+				echo "<a href = '$url' style='color:#FF0000;' class='active'>$name</a>";continue;
+			}
+			/* custom menu end */
+
 			if ( $is_active )
 				echo "<a href = '$url' class = 'active' ";
 			else
@@ -841,8 +850,7 @@ _HTML_;
 	static public function Timeline($statusIds, $userRows, $statusRows, $options=array() )
 	{
 		
-		if ( empty($statusIds) || empty($userRows) || empty($statusRows) )
-			return;
+		if ( empty($statusIds) || empty($userRows) || empty($statusRows) ) ;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 		$is_admin = JWUser::IsAdmin($current_user_id);
