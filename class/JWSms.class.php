@@ -153,6 +153,12 @@ class JWSms {
 	{
 		self::Instance();
 
+		/* check null robotmsg */
+		if ( null==$smsMsg && false==JWDevice::IsExist($mobileNo, 'sms', false) )
+		{
+			$smsMsg = '第一次叽歪，请大家多多关照。';
+		}
+
 		$now = strftime("%Y-%m-%d %H:%M:%S",time());
 
 		JWLog::Instance()->Log(LOG_INFO, "$now ReceiveMo: msg [$smsMsg]"
