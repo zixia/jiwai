@@ -46,26 +46,7 @@ class JWNudge {
 		settype( $idUsers, 'array' );
 		$idUsers = array_unique( $idUsers );
 
-		/** 
-		 * we use spread, and no need this mechanism
-		 * by seek@jiwai.com 2007-12-22
-		 */
-		/**
-		if( false == in_array( $source, array('bot','msn','gtalk','sms','qq','skype','aol','yahoo','fetion') ) ) {
-			if( JWDevice::IsAllowedNonRobotDevice($source) ) { 
-				$metaInfo = array(
-					'idUsers' => $idUsers,
-					'message' => $message,
-					'messageType' => $messageType,
-					'source' => 'bot',
-					'options' => $options,
-				);
-				return JWNotifyQueue::Create( null, null, JWNotifyQueue::T_WEBNUDGE, $metaInfo );
-			}
-			return true;
-		}
-		*/
-
+		/* other important infomation retrieve */
 		$idConference = isset( $options['idConference'] ) ? intval( $options['idConference'] ) : null;
 		$idStatus = isset( $options['idStatus'] ) ? intval( $options['idStatus'] ) : null;
 
@@ -236,8 +217,7 @@ class JWNudge {
 		return $deviceSendVia;
 		
 		$originOrder = $deviceSendVia;
-		//$nudgeOrder = explode( ',' , $deviceSendVia );
-		$nudgeOrder = array( 'msn', 'gtalk', 'skype', 'qq', 'yahoo','aol', 'sms', 'fetion', 'jabber');
+		$nudgeOrder = JWDevice::$nudgeOrderArray;
 
 		$shortcutArray = array();	
 		foreach( $deviceRow as $type=>$row ){

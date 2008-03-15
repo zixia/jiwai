@@ -33,6 +33,33 @@ class JWDevice {
 	const SP_UNICOM		= 2;
 	const SP_PAS		= 3;
 
+	/* device array */
+	static public $allArray =
+	array('web','api','wap','email','sms','msn','qq','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
+
+	static public $emailArray = 
+	array('msn','gtalk','aol','email','jabber','newsmth');
+	
+	static public $imArray = 
+	array('jabber','msn','qq','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
+
+	static public $smsArray = 
+	array('sms');
+
+	static public $webArray =
+	array('web','wap','api');
+
+	static public $cmdAllowArray = 
+	array('web','api','wap');
+
+	static public $signatureRecordArray = 
+	array('msn','gtalk','skype','qq');
+
+	static public $htmlTagAllowArray =
+	array('gtalk','jabber','msn','yahoo','aim','fetion');
+
+	static public $nudgeOrderArray = 
+	array('msn','gtalk','skype','qq','yahoo','aol','sms','fetion','jabber');
 	/**
 	 * Instance of this singleton class
 	 *
@@ -875,19 +902,19 @@ _SQL_;
 	 * 允许执行指令的非Robot设备
 	 */
 	static public function IsAllowedNonRobotDevice($type='web'){
-		return in_array( $type, array( 'web', 'wap', 'api' ) );	
+		return in_array( $type, self::$cmdAllowArray );
 	}
 
 	/*
 	 * 允许记录签名的设备
 	 */
 	static public function IsSignatureRecordDevice($type='msn'){
-		return in_array( $type, array( 'msn', 'gtalk', 'qq', 'skype' ) );	
+		return in_array( $type, self::$signatureRecordArray );
 	}
 
 	static public function GetSupportedDeviceTypes()
 	{
-		return array ( 'sms', 'qq' ,'msn' ,'gtalk', 'skype', 'aol', 'fetion', 'newsmth', 'facebook', 'yahoo', 'jabber' );
+		return self::$allArray;
 	}
 
 	static public function IsHistorySignature($idUser, $signature){
@@ -927,9 +954,9 @@ _SQL_;
 			case 'gtalk':
 			case 'qq':
 			case 'skype':
-            case 'aol':
-            case 'fetion' :
-            case 'jabber':
+			case 'aol':
+			case 'fetion' :
+			case 'jabber':
 			case 'yahoo':
 				return 'im';
 			case 'sms':

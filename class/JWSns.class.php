@@ -292,37 +292,27 @@ class JWSns {
 		$user_rows 	= JWDB_Cache_User::GetDbRowsByIds(array($idUser));
 		$user_row	= $user_rows[$idUser];
 
-		switch ( $type )
+		if ( in_array($type, JWDevice::$emailArray) )
 		{
-			case 'msn':
-			case 'gtalk':
-			case 'jabber':
-            case 'icq':
-            case 'irc':
-				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
-			case 'email':
-				/* 发完消息，再发邮件 :-D */
-				JWMail::SendMailInvitation($user_row, $address, $email_message, array());
-				break;
-
-			case 'newsmth':
-			case 'skype':
-			case 'aol':
-			case 'fetion':
-			case 'yahoo':
-			case 'qq':
-				JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
-				break;
-
-			case 'sms':
-				JWSns::SmsInvite( $idUser, $address, $sms_message );
-				break;
-			default:
-				JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
-				throw new JWException("unsupport type $type");
+			JWMail::SendMailInvitation($user_row, $address, $email_message, array());
 		}
 
-		return $id_invite;
+		if ( in_array($type, JWDevice::$smsArray ) )
+		{
+			JWSns::SmsInvite( $idUser, $address, $sms_message );
+			return $id_invite;
+		}
+
+		if ( in_array($type, JWDevice::$imArray ) )
+		{
+			JWRobot::SendMtRawQueue( $address, $type, $im_message, null );
+			return $id_invite;
+		}
+
+		JWLog::Log(LOG_CRIT, "JWSns::Invite($idUser, $address, $type,...) not support now");
+		throw new JWException("unsupport type $type");
+
+		return false;
 	}
 	
 	static public function GetTagAction($user_id, $tag_id)

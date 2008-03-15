@@ -1489,7 +1489,8 @@ class JWRobotLingo {
 		if ( empty($device_db_row) ) 
 			return null;
 
-		if( false == in_array( $type, array('qq','msn','gtalk','skype','aol','yahoo','sms','fetion','newsmth','jabber') ) ){
+		if( in_array( $type, JWDevice::$webArray ) )
+		{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MSG_WEBREQ' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}

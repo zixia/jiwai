@@ -107,12 +107,7 @@ class JWTextFormat {
 		);
 		
 		/* allow gtalk|msn send html tag */
-		if (false===('gtalk'==$type
-			|| 'jabber'==$type
-			|| 'msn'==$type
-			|| 'yahoo'==$type
-			|| 'aim'==$type
-			|| 'fetion'==$type))
+		if (false===(in_array($type, JWDevice::$htmlTagAllowArray)) )
 		{
 			array_push( $search, '@<[\/\!]*?[^<>]*?>@si' );
 		}

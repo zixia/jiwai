@@ -477,7 +477,8 @@ class JWNotify{
 		switch( $type )
 		{
 			case 'IM':
-				$condition = "deviceSendVia IN ('msn','gtalk','skype','aol','qq','yahoo','fetion','jabber')";
+				$condition_in_device = JWDB_Cache::GetInConditionFromArray(JWDevice::$imArray, 'char');
+				$condition = "deviceSendVia IN ($condition_in_device)";
 			break;
 			case 'Y':
 			case 'ALL':
@@ -486,8 +487,8 @@ class JWNotify{
 				return array();
 		}
 		
-		$condition_string = implode(',', $follower_ids);
-		$sql = "SELECT id FROM User WHERE $condition AND id IN ($condition_string)";
+		$condition_in_id = JWDB_Cache::GetInConditionFromArray($follower_ids);
+		$sql = "SELECT id FROM User WHERE $condition AND id IN ($condition_in_id)";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if ( empty($rows) )

@@ -249,7 +249,7 @@ class JWFormValidate
 		$userId_row = JWUser::GetUserInfo($name_screen, 'idUser');
 		$IsExistNameScreen = empty($userId_row) ? false : true;
 
-		$deviceUserId_rows = JWUser::GetSearchDeviceUserIds($device_no, array('sms', 'qq', 'msn', 'skype', 'newsmth', 'facebook', 'yahoo'));
+		$deviceUserId_rows = JWUser::GetSearchDeviceUserIds($device_no, JWDevice::$allArray);
 		$IsExistDeviceNo = empty($deviceUserId_rows) ? false : true;
 
 		if ( !$IsExistNameScreen && !$IsExistDeviceNo )
