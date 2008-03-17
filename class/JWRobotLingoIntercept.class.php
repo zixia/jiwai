@@ -67,7 +67,7 @@ class JWRobotLingoIntercept {
 			case JWFuncCode::PRE_STOCK_CODE:
 			case JWFuncCode::PRE_REG_INVITE:
 				if( $preAndId['pre'] == JWFuncCode::PRE_STOCK_CODE ) {
-					$userInfo = JWUser::GetUserInfo( 'gp'.$preAndId['id'] );
+					$userInfo = JWUser::GetUserInfo( $preAndId['id'], null, 'nameScreen');
 				}else{
 					$userInfo = JWUser::GetUserInfo( $preAndId['id'] );
 				}
@@ -84,7 +84,7 @@ class JWRobotLingoIntercept {
 	}
 
 	static private function BodyForStock($body){
-		return preg_replace( '/\b(\d{6})\b/', "gp\\1", $body );
+		return preg_replace( '/\b(\d{6})\b/', "\\1", $body );
 	}
 
 	static private function BodyForSmsFollow( $body ){

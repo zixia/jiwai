@@ -593,7 +593,7 @@ _SQL_;
 		if ( in_array(strtolower($nameScreen) , self::$msReservedNames ) )
 			return true;
 
-		if ( preg_match( '/^gp\d+$/i', $nameScreen ) )   //股票相关用户不允许用户直接注册
+		if ( preg_match( '/^J\d{6}$/i', $nameScreen ) )   //股票相关用户不允许用户直接注册
 			return true;
 
 		return JWDB::ExistTableRow('User',array('nameScreen'=>$nameScreen));
@@ -618,7 +618,7 @@ _SQL_;
 		if ( in_array(strtolower($nameUrl) , self::$msReservedNames ) )
 			return true;
 
-		if ( preg_match( '/^gp\d+$/i', $nameUrl ) )   //股票相关用户不允许用户直接注册
+		if ( preg_match( '/^J\d+$/i', $nameUrl ) )   //股票相关用户不允许用户直接注册
 			return true;
 
 		return JWDB::ExistTableRow('User',array('nameUrl'=>$nameUrl));

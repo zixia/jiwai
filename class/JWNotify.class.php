@@ -516,12 +516,12 @@ class JWNotify{
 		if ( empty( $conference ) || empty($user) )
 			return $code['code'] . $code['func'] . $code['funcPlus'];
 
-		if ( preg_match( '/^gp(\d{6})$/i', $user['nameScreen'], $matches ) ) 
+		if ( preg_match( '/^J?(\d{6})$/i', $user['nameScreen'], $matches ) ) 
 		{
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CODE . $matches[1];
 		}
 
-		if ( preg_match( '/^gp(\d{3})$/i', $user['nameScreen'], $matches ) ) 
+		if ( preg_match( '/^J(\d{3})$/i', $user['nameScreen'], $matches ) ) 
 		{
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_STOCK_CATE . $matches[1];
 		}
