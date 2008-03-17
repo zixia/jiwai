@@ -227,7 +227,14 @@ class JWRobotLogic {
 				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_FILTERED');
 
 				if( $reply )
+				{
+					/**
+				 	 * Send a D message plus from 叽歪小弟
+					 */
+					$xiaodi = JWUser::GetUserInfo('叽歪小弟');
+					JWMessage::Create( $xiaodi['id'], $idUser, $reply );	
 					return self::ReplyMsg( $robotMsg, $reply );
+				}
 				return null;
 			}
 			else
