@@ -9,22 +9,10 @@ $pathParam 	= @$_REQUEST['pathParam'];
 
 // $pathParam is like: "/statuses/123"
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
-if ( preg_match('/^\d+$/',$nameOrId) )
-{
-	if( strlen( $nameOrId ) == 6 ) {
-		$nameScreen = 'gp' . $nameOrId;
-		$page_user_id = JWUser::GetUserInfo($nameScreen, 'id', 'nameScreen');
-	}else{
-        $page_user_id = $nameOrId;
-        $page_user_info = JWUser::GetUserInfo($page_user_id);
-        if(!empty($page_user_info))
-        {   
-            JWTemplate::RedirectToUrl("/${page_user_info['nameUrl']}".$pathParam);
-            $nameScreen = $page_user_info['nameScreen'];
-        }
-	}
-}
-else
+/**
+ * url location order ( nameUrl, nameScreen, id )
+ */
+if ( true )
 {
 	$nameScreen = $nameOrId;
 	if (!JWUnicode::unifyName($nameScreen)) { 
@@ -45,6 +33,18 @@ else
 		{
 			$need_redirect = true;
 			JWTemplate::RedirectToUserPage( $page_user_info['nameUrl'] );
+		}
+		else
+		{
+			/**
+			 * maybe we really need get user info from idUser? (such as require of map.swf)
+			 * add by seek@jiwai.com 2008-03-17 
+			 */
+			if ( preg_match('/^\d+$/', $nameOrId ) 
+				&& $page_user_info = JWUser::GetUserInfo($nameOrId) )
+			{
+				JWTemplate::RedirectToUrl("/$page_user_info[nameUrl]" . $pathParam);
+			}
 		}
 	}
 
