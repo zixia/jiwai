@@ -273,7 +273,7 @@ _SQL_;
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static public function GetUserInfo( $value=null, $one_item=null , $by_what=null)
+	static public function GetUserInfo( $value=null, $one_item=null , $by_what=null, $guess_id=false)
 	{
 		if ( $by_what == null )
 		{
@@ -300,6 +300,10 @@ _SQL_;
 
 			case 'nameScreen':
 				$user_info = JWDB_Cache_User::GetDbRowByNameScreen($value);
+				if ( empty($user_info) && true==$guess_id && preg_match('/^\d+$/', $value) )
+				{
+					$user_info = JWDB_Cache_User::GetDbRowById($value);
+				}
 				break;
 
 			case 'nameUrl':

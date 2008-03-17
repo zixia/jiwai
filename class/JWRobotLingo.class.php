@@ -219,7 +219,7 @@ class JWRobotLingo {
 			}
 			
 			//notice User
-			$userInfoFollower= JWUser::GetUserInfo( $followe );
+			$userInfoFollower= JWUser::GetUserInfo( $followe, null, 'nameScreen', true );
 			if ( empty($userInfoFollower) ) {
 				continue;
 			}
@@ -322,7 +322,7 @@ class JWRobotLingo {
 			}
 			
 			//Leave user
-			$userInfoFollower= JWUser::GetUserInfo( $followe );
+			$userInfoFollower= JWUser::GetUserInfo( $followe, null, 'nameScreen', true );
 			if ( empty($userInfoFollower) ) {
 				continue;
 			}
@@ -530,7 +530,7 @@ class JWRobotLingo {
 		}
 
 		//Follow User
-		$follower = JWUser::GetUserInfo( $followe );
+		$follower = JWUser::GetUserInfo( $followe, null, 'nameScreen', true );
 		if( empty( $follower ) ) 
 		{
 			if ( preg_match( '#^([^/]+)://(.+)$#', $invitee_address, $matches )
@@ -628,7 +628,7 @@ class JWRobotLingo {
 		/*
 		 *	获取被删除者的用户信息
 		 */
-		$friend_user_row = JWUser::GetUserInfo( $friend_name );
+		$friend_user_row = JWUser::GetUserInfo( $friend_name, null, 'nameScreen', true );
 
 		if ( empty($friend_user_row) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DELETE_NOUSER', array( $friend_name,));
@@ -681,7 +681,7 @@ class JWRobotLingo {
 		/*
 		 *	获取被订阅者的用户信息
 		 */
-		$friend_user_db_row = JWUser::GetUserInfo( $friend_name );
+		$friend_user_db_row = JWUser::GetUserInfo( $friend_name, null, 'nameScreen', true );
 
 		if ( empty($friend_user_db_row) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOUSER', array($friend_name,) );
@@ -784,7 +784,7 @@ class JWRobotLingo {
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply );
 		}
 
-		$friend_user_db_row = JWUser::GetUserInfo($friend_name);
+		$friend_user_db_row = JWUser::GetUserInfo($friend_name, null, 'nameScreen', true);
 
 		if ( empty($friend_user_db_row) ) {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NOUSER', array($friend_name,) );
@@ -839,7 +839,7 @@ class JWRobotLingo {
 		}
 
 		$friend_name 		= $matches[1];
-		$friend_user_row	= JWUser::GetUserInfo($friend_name);
+		$friend_user_row	= JWUser::GetUserInfo($friend_name, null, 'nameScreen', true);
 
 		if ( empty($friend_user_row['idUser']) ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_NOUSER', array($friend_name,) );
@@ -891,7 +891,7 @@ class JWRobotLingo {
 
 		$device_user_id = $device_db_row['idUser'];
 		$inviter_name 		= $matches[1];
-		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name, null, 'nameScreen', true );
 		$device_user_row = JWUser::GetUserInfo( $device_user_id );
 
 		if ( empty($inviter_user_row) )
@@ -949,7 +949,7 @@ class JWRobotLingo {
 
 		$device_user_id = $device_db_row['idUser'];
 		$inviter_name 		= $matches[1];
-		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name, null, 'nameScreen', true );
 
 		if ( empty($inviter_user_row) )
 		{
@@ -996,7 +996,7 @@ class JWRobotLingo {
 
 		$device_user_id = $device_db_row['idUser'];
 		$inviter_name 		= $matches[1];
-		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name );
+		$inviter_user_row 	= JWUser::GetUserInfo( $inviter_name, null, 'nameScreen', true );
 
 		if ( empty($inviter_user_row) )
 		{
@@ -1048,7 +1048,7 @@ class JWRobotLingo {
 		$friend_name = $matches[1];
 		$message_text = $matches[2];
 
-		$friend_row = JWUser::GetUserInfo($friend_name);
+		$friend_row = JWUser::GetUserInfo($friend_name, null, 'nameScreen', true);
 
 		if ( empty($friend_row) )
 		{
@@ -1379,7 +1379,7 @@ class JWRobotLingo {
 		
 		$nameScreens = null;
 		foreach( $param_array as $p ) {
-			$u = JWUser::GetUserInfo( $p );
+			$u = JWUser::GetUserInfo( $p, null, 'nameScreen', true );
 			if(false == empty( $u ) ){
 				JWSns::Block( $device_db_row['idUser'], $u['id'] );
 				$nameScreens .= $u['nameScreen'].', ';
@@ -1421,7 +1421,7 @@ class JWRobotLingo {
 		
 		$nameScreens = null;
 		foreach( $param_array as $p ) {
-			$u = JWUser::GetUserInfo( $p );
+			$u = JWUser::GetUserInfo( $p, null, 'nameScreen', true );
 			if(false == empty( $u ) ){
 				JWSns::UnBlock( $device_db_row['idUser'], $u['id'] );
 				$nameScreens .= $u['nameScreen'].', ';
@@ -1513,7 +1513,7 @@ class JWRobotLingo {
 		$password = @array_shift( $param_array );
 
 		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
-		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen );
+		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen, null, 'nameScreen', true );
 
 		if( $userInfo['isWebUser'] == 'Y' ) 
 		{
