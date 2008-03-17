@@ -877,9 +877,11 @@ _SQL_;
 		}else if ( $duration > 3600 ){ // > 1 hour
 			$duration = intval($duration/3600);
 			return "$duration 小时前";
-		}else if ( $duration > 60 ){ // > 1 min
+		}else if ( $duration >= 60 ){ // > 1 min
 			$duration = intval($duration/60);
 			return "$duration 分钟前";
+		}else if ( 0 > $duration){// < 1 second
+			return "0 秒前";
 		}else{ // < 1 min
 			return "$duration 秒前";
 /*			if ( $duration > 30 ){
@@ -1016,6 +1018,7 @@ _SQL_;
 			$reply_to_user_id = $status['idUserReplyTo'];
 			$reply_to_status_id = $status['idStatusReplyTo'];
 			$tag_id = $status['idTag'];
+			$conf_id = $status['idConference'];
 			$device = $status['device'];
 
 			$status = $status['status'];
@@ -1132,6 +1135,16 @@ _HTML_;
 		// Add @ Link For other User
 		$status = preg_replace(	 '/@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ,"@<a href='/\\1/' rel='contact'>\\1</a>\\2" ,$status );
 		$status = preg_replace(	 "/\[\s*([^<>@#\]\[]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/' rel='tag'>\\1</a>]\\2" ,$status );
+
+		if( $conf_id ) 
+		{
+			$reply_to_conf = JWConference::GetDbRowById( $conf_id );
+			$reply_to_user = JWDB_Cache_User::GetDbRowById( $reply_to_conf['idUser'] );
+
+			$reply_to_user_name_url = $reply_to_user['nameUrl'];
+			$reply_to_user_name_screen = $reply_to_user['nameScreen'];
+			$status = '$<a href="/'.$reply_to_user_name_url.'/" rel="conference">'.$reply_to_user_name_screen.'</a> '.$status;
+		}
 
 		return array ( 
 			'status' => $status, 
@@ -1989,6 +2002,107 @@ _SQL_;
 
         if( empty($row) )
             return array();
+        return $row;
+    }
+
+	static public function GetTypeById( $status_id)
+	{
+		$plugin_names_all = array(
+			'picture' => array('Yupoo','Flickr'),
+			'music' => array('Box', 'Yobo'),
+			'video' => array('Video'),
+		);
+		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
+		$status = $status_row['status'];
+
+		if( 'Y' == $status_row['isMms'] ) 
+			return 'picture';
+		else if ( preg_match(	'#'
+					// head_str
+					. '^(.*?)'
+					. 'http://'
+					// url_domain
+					. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
+					// url_path
+					. '([' . '\x00-\x09' ./*\x0a(\n)*/ '\x0B-\x0C' ./*\x0d(\r)*/ '\x0E-\x1F' ./*' '*/ '\x21-\x7F' . ']*)'
+					// tail_str
+					. '(.*)$#is'
+					, $status
+					, $matches 
+		) )
+		{
+			$head_str = htmlspecialchars($matches[1]);
+			$url_domain = htmlspecialchars($matches[2]);
+			$url_path = htmlspecialchars($matches[3]);
+			$tail_str = htmlspecialchars($matches[4]);
+
+			/*
+			 *	检查 url path 是否为真正的 url path
+			 */
+			if (!empty($url_path) && preg_match('#[^/:]#', $url_path[0]) )
+			{
+				$tail_str = $url_path . $tail_str;
+				$url_path = '';
+			}
+
+			$url = 'http://' .$url_domain . $url_path;
+
+			foreach( $plugin_names_all as $plugin_type => $plugin_names ) 
+			{
+				foreach( $plugin_names as $plugin_name )
+				{
+					$callback = array('JWPlugins_' . $plugin_name , 'GetPluginResult');
+					if ( is_callable( $callback ) ) 
+					{
+						$result = call_user_func( $callback, $url );
+						if ( $result ) 
+							return $plugin_type;
+					}
+				}
+			}
+		}
+
+		return 'normal';
+	}
+
+    static public function GetCacheKeyDaRenIds($device)
+    {
+        $mc_key = JWDB_Cache::GetCacheKeyByFunction(array('JWStatus', 'GetCacheKeyDaRenIds'), array($device));
+        return $mc_key;
+    }
+
+    static public function GetDaRenIdsByDeviceTotal($device, $limit=null)
+    {
+        $memcache = JWMemcache::Instance();
+        $mc_key = self::GetCacheKeyDaRenIds($device);
+        $v = $memcache->Get($mc_key);
+
+        if( !$v)
+        {
+            $v = self::GetDaRenIdsByDevice($device, $limit);
+        }
+
+        return $v;
+    }
+
+    static public function GetDaRenIdsByDevice($device, $limit=null)
+    {
+        $month = date("m");
+        $day = date("d");
+        $year = date("Y");
+        $yesterday = date("Y-m-d", mktime (0, 0, 0, $month, $day-1, $year));
+        $today = "$year-$month-$day";
+
+        $sql ="Select idUser,count(1) as count from Status force index(IDX__Status__timeCreate) where timeCreate>='$yesterday' and timeCreate <'$today' and device ='$device' group by idUser order by count desc";
+        if(!empty($limit)) $sql .= " limit $limit";
+        $row = JWDB_Cache::GetQueryResult($sql, true);
+
+        if(empty($row))
+            $row = array();
+        $memcache = JWMemcache::Instance();
+        $mc_key = self::GetCacheKeyDaRenIds($device);
+        $memcache->Set($mc_key, $row);
+        
         return $row;
     }
     
