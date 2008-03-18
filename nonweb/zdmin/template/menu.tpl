@@ -40,6 +40,7 @@
 	<li ${$menu_nav=='statuscreate'?'class="selected"':''}><a href="/statuscreate.php">用户更新量汇总</a></li>
 	<li ${$menu_nav=='userregistered'?'class="selected"':''}><a href="/userregistered.php">注册用户量汇总</a></li>
 	<li ${$menu_nav=='confgroupsms'?'class="selected"':''}><a href="/confgroupsms.php">群发会议短信</a></li>
+	<li ${$menu_nav=='mobilebind'?'class="selected"':''}><a href="/mobilebind.php">手机绑定列表</a></li>
 </ul>
 
 <hr style="height:1px;"/>
