@@ -169,7 +169,7 @@ class JWRobotLingoReply {
 			'REPLY_MERGE_TIPS' => '{0}用法：{0}+空格+web账户名+空格+web账户密码',
 
 			//Update Status
-			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，本条叽歪已经被我们藏起来了！',
+			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，你发送的叽歪被我们暂时藏起来了！',
 		);
 
 	/**

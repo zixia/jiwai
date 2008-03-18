@@ -16,28 +16,40 @@ if( $_POST )
 {
 		backToGet();
 	}
-	foreach ( $cb AS $i )
+	foreach ( array_values($cb) AS $i )
 	{
 		
 		if ( $delete )
 		{
 			JWQuarantineQueue::DealQueue( $i, JWQuarantineQueue::DEAL_DELE ); 	
-			backToGet("删除成功～");
 		}
 
 		if ( $allow )
 		{
 			JWQuarantineQueue::FireStatus( $i ); 	
-			backToGet("审核通过～");
 		}
 	}
+
+	if ( $cb )
+	{
+		if ( $delete )
+		{
+			backToGet("删除成功～");
+		}
+		else if ( $allow )
+		{
+			backToGet("审核通过～");
+		}
+	}	
 }
 
 $statusQuarantine = JWQuarantineQueue::GetQuarantineQueue(JWQuarantineQueue::T_STATUS, null, 0, 20 );
 
+$dict_filter = JWFilterConfig::GetDictFilter();
 $render = new JWHtmlRender();
 $render->display("statusexam", array(
 			'menu_nav' => 'statusexam',
 			'statusQuarantine' => $statusQuarantine,
+			'dict_filter' => $dict_filter,
 			));
 ?>

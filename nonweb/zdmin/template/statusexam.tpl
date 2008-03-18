@@ -29,6 +29,7 @@ function ons(){
 			<th width="50">idUser</th>
 			<th width="30">Device</th>
 			<th>叽歪</th>
+			<th>屏蔽词</th>
 			<th width="100">时间</th>
 		</tr>
 		<!--{foreach $statusQuarantine as $one}-->
@@ -38,6 +39,7 @@ function ons(){
 			<td width="100" ><A href="http://JiWai.de/{$u['nameUrl']}/">{$u['nameScreen']}</a></td>
 			<td width="20">{$one['metaInfo'][2]}</td>
 			<td style="text-align:left;padding:10px;">{$one['metaInfo'][1]}</td>
+			<td width="100" style="color:red">${implode(',', $dict_filter->GetFilterWords($one['metaInfo'][1]))}</td>
 			<td width="100">${date('Y-m-d H:i:s',$one['metaInfo'][3])}</td>
 		</tr>
 		<!--{/foreach}-->
