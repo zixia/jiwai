@@ -35,6 +35,18 @@ class JWFuncCode {
 	 */
 	const PRE_REG_INVITE = '30';
 
+
+	/**
+	 * D and Reply
+	 */
+	const PRE_MESSAGE_D = '40';
+	const PRE_USER_RE = '50';
+
+	/**
+	 * mycaifu stock cooperation
+	 */
+	const PRE_MYCAIFU_CODE = '08';
+
 	/**
 	 * pre_len
 	 */
@@ -138,6 +150,8 @@ class JWFuncCode {
 						case self::PRE_CONF_CUSTOM:
 						case self::PRE_STOCK_CODE:
 						case self::PRE_STOCK_CATE:
+						case self::PRE_MESSAGE_D:
+						case self::PRE_USER_RE:
 						{
 							return array( 'pre' => $matches[1], 'id' => $matches[2], );
 						}

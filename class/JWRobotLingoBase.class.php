@@ -160,6 +160,8 @@ class JWRobotLingoBase {
 		/** 拦击冻灾 */
 		JWRobotLingoIntercept::Intercept_TagDongZai($robot_msg);
 
+		JWRobotLingoIntercept::Intercept_PreAndId($robot_msg);
+
 		$body = $robot_msg->GetBody();
 		$server_address = $robot_msg->GetServerAddress();
 		$type = $robot_msg->GetType();

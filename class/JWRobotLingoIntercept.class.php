@@ -10,6 +10,54 @@
  */
 class JWRobotLingoIntercept {
 
+	static public function Intercept_PreAndId($robot_msg)
+	{
+		$server_address = $robot_msg->GetServerAddress();
+		$address = $robot_msg->GetAddress();
+		$type = $robot_msg->GetType();
+		$body = $robot_msg->GetBody();
+
+		if ( 'sms' == $type )
+		{
+			$pre_and_id = JWFuncCode::FetchPreAndId( $server_address, $address );
+			if ( false==empty($pre_and_id) )
+			{
+				switch( $pre_and_id['pre'] )
+				{
+					case JWFuncCode::PRE_MESSAGE_D:
+						$user = JWUser::GetUserInfo($pre_and_id['id']);
+						if ( $user )
+						{
+							$robot_msg->SetBody( "D $user[nameScreen] $body" );
+						}
+					break;
+					case JWFuncCode::PRE_USER_RE:
+						$user = JWUser::GetUserInfo($pre_and_id['id']);
+						if ( $user )
+						{
+							$robot_msg->SetBody( "@$user[nameScreen] $body" );
+						}
+					break;
+					case JWFuncCode::PRE_MYCAIFU_CODE:
+						$id = $pre_and_id['id'];
+						if ( false == preg_match('/^\d{6}$/', $body ) )
+						{
+							break;
+						}
+						if ( $id == '8' ) //stock
+						{
+							$robot_msg->SetBody( "ON $body" );
+						}
+						else if ( $id == '9' ) //fund
+						{
+							$robot_msg->SetBody( "ON J${body}" );
+						}
+					break;
+				}
+			}
+		}
+	}
+
 	static public function Intercept_TagDongZai($robot_msg)
 	{
 		$server_address = $robot_msg->GetServerAddress();
