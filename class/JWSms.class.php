@@ -483,7 +483,7 @@ class JWSms {
 	{
 		$rpc_url = "http://211.99.200.90:8080/synd/mt_service";
 
-		$toipc = substr($server_address, 8);
+		$toicp = substr($server_address, 8);
 
 		$data = <<<_XML_
 <?xml version="1.0" encoding="GBK"?>
@@ -496,7 +496,7 @@ class JWSms {
 	<tomobile>$address</tomobile>
 	<channel/>
 	<spid>cmcc-2000</spid>
-	<toipc>$toipc</toipc>
+	<toicp>$toicp</toicp>
 	<feecategory>FREE</feecategory>
 	<url/>
 </request>
