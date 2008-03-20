@@ -1643,6 +1643,15 @@ class JWRobotLingo {
 			'srcRegister' => $srcRegister,
 		);
 
+		if ( 'CO-' == substr($srcRegister,0,3) )
+		{
+			$conference_user = JWUser::GetUserInfo( substr($srcRegister, 3) );
+			if ( $conference_user ) 
+			{
+				$uArray['idPicture'] = $conference_user['idPicture'];
+			}
+		}
+
 		$idUser =  JWSns::CreateUser($uArray);
 		if( $idUser ) {
 
