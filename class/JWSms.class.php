@@ -292,7 +292,7 @@ class JWSms {
 					self::LogSentResult($ret, $serverAddress, $dst, 'ShiJiZhongKai');
 					break;
 				case '10662000':
-					$ret = self::SendSmsViaSJZK( $m, $dst, $serverAddress );
+					$ret = self::SendSmsViaLinkTone( $m, $dst, $serverAddress );
 					self::LogSentResult($ret, $serverAddress, $dst, 'ZhangShangLingTong');
 					break;
 			}
