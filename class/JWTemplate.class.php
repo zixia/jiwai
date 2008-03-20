@@ -197,7 +197,7 @@ _HTML_;
 	<link rel="start" href="<?php echo JW_SRVNAME;?>" title="叽歪网首页" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪网" />
-	<meta name="copyright" content="copyright 2007-2008 叽歪网 <?php echo JW_SRVNAME;?>" />
+	<meta name="copyright" content="copyright 2007-<? echo date("Y");?> 叽歪网 <?php echo JW_SRVNAME;?>" />
 	<meta name="robots" content="all" />
 <?php
 	echo $ui_css;
@@ -451,7 +451,7 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 	<ul>
-		<li class="first">&copy; 2007-2008 叽歪网</li>
+		<li class="first">&copy; 2007-<? echo date("Y");?> 叽歪网</li>
 
 		<li><a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a></li>
 		<li><a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a></li>
@@ -477,7 +477,7 @@ _HTML_;
 ?>
 <div id="footer">
 	<h3>Footer</h3>
-		<span >&copy; 2007-2008 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<span >&copy; 2007-<? echo date("Y");?> 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		<a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a>
 		<a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a>
 		<a href="http://blog.jiwai.de/" target="_blank">Blog</a>
@@ -1045,6 +1045,7 @@ __HTML__;
 		$owner_user_screen = $owner_user['nameScreen'];
 
 		$status_id = $status_row['id'];
+		$conf_id = $status_row['idConference'];
 		$reply_status_id = $status_row['idStatusReplyTo'];
 		$pre_reply_status_id = $reply_status_id;
 		$reply_user_id = $status_row['idUserReplyTo'];
@@ -1060,6 +1061,15 @@ __HTML__;
 		$reply_name_screen = null;
 
 		$reply_count = $thread_id ? 0 : JWDB_Cache_Status::GetCountReply( $status_id );
+
+		$conf_link_string = '';
+		if( $conf_id )
+		{
+			$conf_info = JWConference::GetDbRowById( $conf_id );
+			$conf_user_info = JWDB_Cache_User::GetDbRowById( $conf_info['idUser'] );
+			$conf_link = "/$conf_user_info[nameUrl]/";
+			$conf_link_string = "在$conf_user_info[nameScreen]";
+		}
 
 		if( $reply_user_id ) 
 		{
@@ -1166,7 +1176,7 @@ __HTML__;
 						<?php echo $action_string;?>
 					</span>
 				</span>
-				<?php echo $owner_string;?><a class="darkLink" title="<?php echo $timeCreate;?>" href="/<?php echo $owner_user_url;?>/statuses/<?php echo $status_id;?>"><?php echo $yuString;?><?php echo $timeDesc?></a>&nbsp;通过&nbsp;<?php echo "$deviceName$sign"?>&nbsp;<?php echo $reply_name_screen ? "<a href='$pre_reply_link' class='darkLink'>$pre_reply_link_string</a>" : '';?>
+				<?php echo $owner_string;?><a class="darkLink" title="<?php echo $timeCreate;?>" href="/<?php echo $owner_user_url;?>/statuses/<?php echo $status_id;?>"><?php echo $yuString;?><?php echo $timeDesc?></a>&nbsp;通过&nbsp;<?php echo "$deviceName$sign"?>&nbsp;<?php echo $reply_name_screen ? "<a href='$pre_reply_link' class='darkLink'>$pre_reply_link_string</a>" : '';?>&nbsp;<? echo $conf_id ? "<a href='$conf_link' class='darkLink'>$conf_link_string</a>" : '';?>
 			</span><!-- meta -->
 <?php
 	}
