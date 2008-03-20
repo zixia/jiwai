@@ -217,5 +217,38 @@ _SQL_;
 
 		return $rows;
 	} 
+
+	static public function GetDeviceAllowConditionIn( $idConference )
+	{
+		$conf_info = JWConference::GetDbRowById( $idConference );
+		$device_allow = $conf_info['deviceAllow'];
+		$deviceAllow_array = explode(',', $device_allow);
+		$device_allow_str = '';
+		if(in_array('sms', $deviceAllow_array))
+			$device_allow_str .= "'sms',";
+		if(in_array('web', $deviceAllow_array))
+			$device_allow_str .= "'web','wap',";
+		if(in_array('im', $deviceAllow_array))
+			$device_allow_str .= "'qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email',";
+		$device_allow_str = substr($device_allow_str, 0, strlen($device_allow_str)-1);
+
+		return $device_allow_str;
+	}
+
+	static public function GetDeviceAllowConditionArray( $idConference )
+	{
+		$conf_info = JWConference::GetDbRowById( $idConference );
+		$device_allow = $conf_info['deviceAllow'];
+		$deviceAllow_array = explode(',', $device_allow);
+		$device_allow_array = array();
+		if(in_array('sms', $deviceAllow_array))
+			array_merge($device_allow_array, array('sms'));
+		if(in_array('web', $deviceAllow_array))
+			array_merge($device_allow_array,  array('web','wap'));
+		if(in_array('im', $deviceAllow_array))
+			array_merge($device_allow_array, array('qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email'));
+
+		return $device_allow_array;
+	}
 }
 ?>

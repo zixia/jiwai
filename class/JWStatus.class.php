@@ -307,6 +307,12 @@ class JWStatus {
 		$idPicture = isset( $options['idPicture'] ) ? $options['idPicture'] : $userInfo['idPicture'];
 		$idConference = ( isset( $options['idConference'] ) && $options['idConference'] ) ? 
 			$options['idConference'] : $userInfo['idConference'];
+		if( $idConference)	
+		{
+			$device_allow_array = JWConference::GetDeviceAllowConditionArray($idConference);
+			if(!in_array($device, $device_allow_array))
+				$idConference = null;
+		}
 
 		//options about thread tag
 		$idThread = isset( $options['idThread'] ) ? $options['idThread'] : null;
@@ -1143,7 +1149,7 @@ _HTML_;
 
 			$reply_to_user_name_url = $reply_to_user['nameUrl'];
 			$reply_to_user_name_screen = $reply_to_user['nameScreen'];
-			$status = '$<a href="/'.$reply_to_user_name_url.'/" rel="conference">'.$reply_to_user_name_screen.'</a> '.$status;
+			//$status = '$<a href="/'.$reply_to_user_name_url.'/" rel="conference">'.$reply_to_user_name_screen.'</a> '.$status;
 		}
 
 		return array ( 
