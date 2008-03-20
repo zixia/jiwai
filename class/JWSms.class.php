@@ -484,6 +484,7 @@ class JWSms {
 		$rpc_url = "http://211.99.200.90:8080/synd/mt_service";
 
 		$toicp = substr($server_address, 8);
+		$message = mb_convert_encoding($message, 'GBK', 'UTF-8,GBK');
 
 		$data = <<<_XML_
 <?xml version="1.0" encoding="GBK"?>
