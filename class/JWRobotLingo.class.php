@@ -1645,11 +1645,9 @@ class JWRobotLingo {
 
 		if ( 'CO-' == substr($srcRegister,0,3) )
 		{
-			$conference_user = JWUser::GetUserInfo( substr($srcRegister, 3) );
-			if ( $conference_user ) 
-			{
-				$uArray['idPicture'] = $conference_user['idPicture'];
-			}
+			$conference = JWConference::GetDbRowById( substr($srcRegister, 3) );
+			$conference_user = JWUser::GetUserInfo( $conference['idUser'] );
+			$uArray['idPicture'] = $conference_user['idPicture'];
 		}
 
 		$idUser =  JWSns::CreateUser($uArray);
