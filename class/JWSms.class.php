@@ -233,6 +233,17 @@ class JWSms {
 			return true;
 		}
 
+		/**
+		 * for 1065055
+		 */
+		if ( 0===strpos($code['code'], '1065055') )
+		{
+			$server_address = ( $serverAddress==null) ? 
+				$code['code'] . $code['func'] . $code['funcPlus'] : $serverAddress;
+
+			return JWRobot::SendMtRawQueue($mobileNo, 'mobiz', $smsMsg, $server_address);
+		}
+
 		$func = ( null == $serverAddress || 0 == $serverAddress ) ? 
 			$code['func'] . $code['funcPlus'] : substr( $serverAddress, strlen( $code['code']) );
 		$gid = $code['gid'];
@@ -268,6 +279,30 @@ class JWSms {
 
 		list($msg,$msgfmt) = self::FormatSms($smsMsg, $dst);
 
+		/**
+		 * Other SMS send via
+		 */
+		foreach ( $msg as $m )
+		{
+			$ret = null;
+			switch( $code['code'] )
+			{
+				case '10605328':
+					$ret = self::SendSmsViaSJZK( $m, $dst, $serverAddress );
+					self::LogSentResult($ret, $serverAddress, $dst, 'ShiJiZhongKai');
+					break;
+				case '10662000':
+					$ret = self::SendSmsViaSJZK( $m, $dst, $serverAddress );
+					self::LogSentResult($ret, $serverAddress, $dst, 'ZhangShangLingTong');
+					break;
+			}
+			if ( is_bool( $ret ) )
+				return $ret;
+		}
+		/**
+		 * End send via
+		 */
+
 		$pid = 0;
 		if( $gid == self::GID_UNICOM ) {
 			if( $func == 456 ) 
@@ -301,7 +336,8 @@ class JWSms {
 			if ( isset($msgfmt) )
 				$rpc_url .= "&msgfmt=$msgfmt";
 
-			$ret =  $ret && self::SendSmsViaUrl( $rpc_url ) ;
+			$ret =  self::SendSmsViaUrl( $rpc_url ) ;
+			self::LogSentResult($ret, $serverAddress, $dst, 'QianXiang');
 
 			if( $ret == false )
 				return false;
@@ -318,8 +354,6 @@ class JWSms {
 			$v = intval( JWRuntimeInfo::Get('ROBOT_COUNT_SMS_MT') );
 			JWRuntimeInfo::Set( 'ROBOT_COUNT_SMS_MT', ++$v );
 		}
-
-		error_log( $rpc_url );
 
 		JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt Calling: [$rpc_url]");
 
@@ -417,5 +451,73 @@ class JWSms {
 
 		return array( $smsMsg );
 	}
+
+	static function SendSmsViaSJZK($message, $address, $server_address)
+	{
+		$sn = 'SDK-BBX-010-01953';
+		$pwd = '649707';
+
+		$message = mb_convert_encoding($message, 'GBK', 'UTF-8,GBK');
+		$message = urlEncode( $message );
+		$url = "http://211.157.113.148:8060/z_send.aspx?sn=$sn&pwd=$pwd&mobile=$address&content=$message&ext=";
+	
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);  
+		$return_content = trim(curl_exec($ch));
+		curl_close($ch);
+
+		if ( '1' == $return_content )
+		{
+			JWLog::Instance()->Log(LOG_INFO,"JWSms::SendMt succ. returns: $return_content");
+			return true;
+		}
+		else
+		{
+			error_log( var_export( $return_content , true ) );
+			JWLog::Instance()->Log(LOG_ERR,"JWSms::SendMt fail. returns: $return_content");
+			return false;
+		}
+	}
+
+	static function SendSmsViaLinkTone($message, $address, $server_address, $linkid=null)
+	{
+		$rpc_url = "http://211.99.200.90:8080/synd/mt_service";
+
+		$toipc = substr($server_address, 8);
+
+		$data = <<<_XML_
+<?xml version="1.0" encoding="GBK"?>
+<request>
+	<coopid>jiwainet</coopid>
+	<linkid/>
+	<product>jiwainet</product>
+	<msgtype>TEXT</msgtype>
+	<content>$message</content>
+	<tomobile>$address</tomobile>
+	<channel/>
+	<spid>cmcc-2000</spid>
+	<toipc>$toipc</toipc>
+	<feecategory>FREE</feecategory>
+	<url/>
+</request>
+_XML_;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $rpc_url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$return = curl_exec($ch);
+		curl_close($ch);
+
+		return preg_match( '/>ok</', $return ) && preg_match( '/>0</', $return );
+
+	}
+
+	static function LogSentResult($bool=true, $server_address, $mobile_no, $supportor="QianXiang")
+	{
+		$result =  $bool ? 'SUCC' : 'FAIL';
+		error_log( "[$result]:\tsms://$server_address\t=>\tsms://$mobile_no\t[$supportor]" );
+	}
+
 }
 ?>

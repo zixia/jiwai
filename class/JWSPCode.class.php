@@ -2,7 +2,7 @@
 /**
  * @package		JiWai.de
  * @copyright	AKA Inc.
- * @author	  	zixia@zixia.net
+ * @author	  	seek@jiwai.com
  * @version		$Id$
  */
 
@@ -21,12 +21,20 @@ class JWSPCode {
 
 	static private $codeBase = array(
 		self::SP_MOBILE => array(
+			// QianXiang 10669318-4
 			array( 
 				'code' => '10669318', 
 				'gid' => 85, 
 				'func' => 4,
 				'funcPlus' => '',
 				'default' => true,
+			),
+			array(
+				'code' => '1065055',
+				'gid' => null,
+				'func' => '16889',
+				'funcPlus' => '',
+				'default' => false,
 			),
 			array( 
 				'code' => '10669911', 
@@ -35,24 +43,26 @@ class JWSPCode {
 				'funcPlus' => '',
 				'default' => false,
 			),
-			array( 
-				'code' => '50136', 
-				'gid' => 85, 
-				'func' => '9',
-				'funcPlus' => '99',
-				'default' => true,
-			),
-			array( 
-				'code' => '9911',
-				'gid' => 1, 
-				'func' => '8816',
-				'funcPlus' => '', 
-				'default' => false,
-			),
 			array(
 				'code' => '10669500',
 				'gid' => 111,
 				'func' => '',
+				'funcPlus' => '',
+				'default' => false,
+			),
+			// ShiJiZongKai 10605328 
+			array(
+				'code' => '10605328',
+				'gid' => '',
+				'func' => '',
+				'funcPlus' => '',
+				'default' => false,
+			),
+			// LinkTone 
+			array(
+				'code' => '10662000',
+				'gid' => '',
+				'func' => '123',
 				'funcPlus' => '',
 				'default' => false,
 			),
@@ -65,24 +75,17 @@ class JWSPCode {
 				'funcPlus' => '',
 				'default' => true,
 			),
-			array( 
-				'code' => '10661518',
-				'gid' => 45, 
-				'func' => '4567',
+			array(
+				'code' => '10605328',
+				'gid' => '',
+				'func' => '',
 				'funcPlus' => '',
 				'default' => false,
 			),
 			array( 
-				'code' => '9501',
+				'code' => '10661518',
 				'gid' => 45, 
 				'func' => '4567',
-				'funcPlus' => '',
-				'default' => true,
-			),
-			array( 
-				'code' => '9318',
-				'gid' => 3, 
-				'func' => '8816',
 				'funcPlus' => '',
 				'default' => false,
 			),
@@ -93,19 +96,28 @@ class JWSPCode {
 				'funcPlus' => '',
 				'default' => false,
 			),
+			// LinkTone 
+			array(
+				'code' => '10662000',
+				'gid' => '',
+				'func' => '123',
+				'funcPlus' => '',
+				'default' => false,
+			),
 		),
 		self::SP_PAS => array(
-			array( 
-				'code' => '99318',
-				'gid' => 52, 
-				'func' => '456',
-				'funcPlus' => '',
-				'default' => true,
-			),
 			array(
 				'code' => '10669500',
 				'gid' => 113,
 				'func' => '',
+				'funcPlus' => '',
+				'default' => false,
+			),
+			// LinkTone 
+			array(
+				'code' => '10662000',
+				'gid' => '',
+				'func' => '123',
 				'funcPlus' => '',
 				'default' => false,
 			),
