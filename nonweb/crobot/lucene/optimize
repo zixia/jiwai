@@ -1,6 +1,10 @@
 #!/bin/bash
+PWD=/opt/jiwai.de/nonweb/crobot/lucene
+PATH=/bin:/usr/bin:/usr/java/jdk/bin
+
 JAVALIB=/opt/jiwai.de/javaLib
 INDEXPATH=/opt/lucene/index
+
 NOW=`date +%s`
 INDEX=$1
 
@@ -14,7 +18,8 @@ SEARCHDIR=${INDEXPATH}/${INDEX}s
 TEMPDIR=${INDEXPATH}/${INDEX}.${NOW}
 TEMPDIRS=${TEMPDIR}s
 
-# CP
+#C
+cd ${PWD}
 cp -R ${INDEXDIR} ${TEMPDIR}
 
 java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Optimize ${TEMPDIR}
