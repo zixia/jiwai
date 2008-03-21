@@ -1,0 +1,25 @@
+#!/bin/bash
+JAVALIB=/opt/jiwai.de/javaLib
+INDEXPATH=/opt/lucene/index
+NOW=`date +%s`
+INDEX=$1
+
+if [ ! $INDEX ]; then
+    exit;
+fi
+
+INDEXDIR=${INDEXPATH}/${INDEX}
+SEARCHDIR=${INDEXPATH}/${INDEX}s
+
+TEMPDIR=${INDEXPATH}/${INDEX}.${NOW}
+TEMPDIRS=${TEMPDIR}s
+
+# CP
+cp -R ${INDEXDIR} ${TEMPDIR}
+
+java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Optimize ${TEMPDIR}
+
+# CP BACK
+mv ${SEARCHDIR} ${TEMPDIRS}
+mv ${TEMPDIR} ${SEARCHDIR}
+rm -rf ${TEMPDIRS}

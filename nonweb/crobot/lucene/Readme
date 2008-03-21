@@ -1,0 +1,10 @@
+make user:
+    will create new user index
+make status:
+    will create new status index
+make Optimize.class:
+    javac Optimize class
+
+optimize.sh
+    ./optimize user
+    ./optimize status
