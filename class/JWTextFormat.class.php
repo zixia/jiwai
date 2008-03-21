@@ -90,7 +90,7 @@ class JWTextFormat {
 		$text = preg_replace( '/\xE2\x80\xAE/U', '', $text );	
 		
 		// trim control
-		$text = trim( $text, "\x00..\x1F" );
+		$text = trim( $text, "\x00..\x1F　" );
 
 		return $text;
 	}

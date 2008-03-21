@@ -970,6 +970,7 @@ _SQL_;
 	{
 		if('sms'==$type)
 		{
+			$user_info = JWUser::GetUserInfo( $user_id );
 			$secret = $user_info['id'].'-'.$user_info['pass'].'-'.strtolower($type).'-'.strtolower($address);
 			$secret = substr(md5($secret), 0, 4);
 			$secret = substr(hexdec($secret), 0, 4);
