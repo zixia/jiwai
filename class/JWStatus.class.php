@@ -307,12 +307,6 @@ class JWStatus {
 		$idPicture = isset( $options['idPicture'] ) ? $options['idPicture'] : $userInfo['idPicture'];
 		$idConference = ( isset( $options['idConference'] ) && $options['idConference'] ) ? 
 			$options['idConference'] : $userInfo['idConference'];
-		if( $idConference)	
-		{
-			$device_allow_array = JWConference::GetDeviceAllowConditionArray($idConference);
-			if(!in_array($device, $device_allow_array))
-				$idConference = null;
-		}
 
 		//options about thread tag
 		$idThread = isset( $options['idThread'] ) ? $options['idThread'] : null;

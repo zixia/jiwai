@@ -507,21 +507,11 @@ class JWSns {
 		$idConference = $reply_info['conference_id'];
 		$idGeocode = $reply_info['geocode_id'];
 
-		//过滤处理
+		//Conference Protected And 过滤处理
+		$idConference = JWConference::IsAllowJoin( $idConference, $idUser, $device ) ? $idConference : null;
 		$conference = ( $idConference ) ? JWConference::GetDbRowById( $idConference ) : null;
 		if( false == isset( $options['filterConference'] ) ){
 			$options['filterConference'] = ( $conference ) ? ( $conference['filter'] == 'Y' ) : false;
-		}
-
-		/* For conference Protected setting */
-		if ( $conference )
-		{
-			$conference_user = JWDB_Cache_User::GetDbRowById( $conference['idUser'] );
-			if ( $conference['friendOnly'] == 'Y' )
-			{
-				if ( false == JWFollower::IsFollower( $idUser, $conference_user['id'] ) )
-					$idConference = null;
-			}
 		}
 
 		/**

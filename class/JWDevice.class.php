@@ -35,31 +35,31 @@ class JWDevice {
 
 	/* device array */
 	static public $allArray =
-	array('web','api','wap','email','sms','msn','qq','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
+		array('web','api','wap','email','sms','msn','qq','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
 
 	static public $emailArray = 
-	array('msn','gtalk','aol','email','jabber','newsmth');
-	
+		array('msn','gtalk','aol','email','jabber','newsmth');
+
 	static public $imArray = 
-	array('jabber','msn','qq','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
+		array('jabber','msn','qq','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
 
 	static public $smsArray = 
-	array('sms');
+		array('sms');
 
 	static public $webArray =
-	array('web','wap','api');
+		array('web','wap','api');
 
 	static public $cmdAllowArray = 
-	array('web','api','wap');
+		array('web','api','wap');
 
 	static public $signatureRecordArray = 
-	array('msn','gtalk','skype','qq');
+		array('msn','gtalk','skype','qq');
 
 	static public $htmlTagAllowArray =
-	array('gtalk','jabber','msn','yahoo','aim','fetion');
+		array('gtalk','jabber','msn','yahoo','aim','fetion');
 
 	static public $nudgeOrderArray = 
-	array('msn','gtalk','skype','qq','yahoo','aol','sms','fetion','jabber');
+		array('msn','gtalk','skype','qq','yahoo','aol','sms','fetion','jabber');
 	/**
 	 * Instance of this singleton class
 	 *
@@ -92,7 +92,7 @@ class JWDevice {
 		}
 
 		switch ( $type )
-        {
+		{
 			case 'mobiz':
 				return preg_match('/^\d{9,}$/',$address);
 			case 'sms':
@@ -102,7 +102,7 @@ class JWDevice {
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
 				return preg_match('/^\w+@newsmth.net$/'	,$address);
-            case 'icq':
+			case 'icq':
 			case 'yahoo':
 				// Yahoo! supports both EMail and Username like account name
 				// Strip the yahoo.com(|.(cn|hk|tw|...)) suffix
@@ -110,7 +110,7 @@ class JWDevice {
 					list($address) = split('@', $address);
 				}
 				return preg_match('/^[\w\.\-_]+$/', $address);
-            case 'irc':
+			case 'irc':
 			case 'skype':
 				return preg_match('/^[\w\.\-_]+$/', $address);
 			case 'aol':
@@ -183,17 +183,17 @@ class JWDevice {
 
 		if( self::IsAllowedNonRobotDevice($type) ) {
 			return array(
-				'idUser' => $address,
-				'secret' => '',
-				'type' => $type,
-				'idDevice' => 0,
-			);
+					'idUser' => $address,
+					'secret' => '',
+					'type' => $type,
+					'idDevice' => 0,
+				    );
 		}
 
 		$device_ids = JWDevice::GetDeviceIdsByAddresses(	
-								array( 
-									array('address'=>$address,'type'=>$type ),
-								));
+				array( 
+					array('address'=>$address,'type'=>$type ),
+				     ));
 
 		$device_db_row 	= array();
 
@@ -211,11 +211,11 @@ class JWDevice {
 	 *	批量处理用户的 device 信息，返回一个较为复杂结构的数组，结构如下
 	 *	@return 	device_info
 	 *					[$idUser][$type]
-										[idDevice]	int
+	 [idDevice]	int
 	 *									[address]	string
 	 *									[secret]	string
 	 *									[verified]	bool
-										[enabledFor]	string
+	 [enabledFor]	string
 	 */
 	static public function GetDeviceRowsByUserIds( $idUsers )
 	{
@@ -228,9 +228,12 @@ class JWDevice {
 		$condition_in = JWDB::GetInConditionFromArray($idUsers, 'int');
 
 		$sql = <<<_SQL_
-SELECT	*,id as idDevice
-FROM	Device
-WHERE	idUser IN ( $condition_in )
+SELECT	
+	*,id as idDevice
+FROM	
+	Device
+WHERE
+	idUser IN ( $condition_in )
 _SQL_;
 
 		if ( ! $db_rows = JWDB::GetQueryResult ($sql, true) ){
@@ -256,13 +259,13 @@ _SQL_;
 	}
 
 
-	/*
-	 *	@return 	device_info
-	 *					[type][idDevice]
-	 *					[type][address]
-	 *					[type][secret]
-	 *					[type][verified]
-						[type][enabledFor]
+	/**
+	 * @return device_info
+	 * [type][idDevice]
+	 * [type][address]
+	 * [type][secret]
+	 * [type][verified]
+	 * [type][enabledFor]
 	 */
 	static public function GetDeviceRowByUserId( $idUser )
 	{
@@ -281,12 +284,12 @@ _SQL_;
 		return JWDB::DelTableRow("Device", array('id'=>$idDevice));
 	}
 
-	/*
-	 *	建立用户的 Device 信息，并设置激活码
+	/**
+	 * 建立用户的 Device 信息，并设置激活码
 	 * @return 
-			int(>0): 成功, 为新建立的 device_id
-			false: 已经被占用 
-			null: 非法address/type
+	 * int(>0): 成功, 为新建立的 device_id
+	 * false: 已经被占用 
+	 * null: 非法address/type
 	 */
 	static public function Create( $idUser, $address, $type, $isVerified=false, $options=array() )
 	{
@@ -300,10 +303,10 @@ _SQL_;
 		}
 
 		$isSignatureRecord = isset( $options['isSignatureRecord'] ) ? $options['isSignatureRecord'] : 'N';
-		
+
 		// 建立的时候可以指定免验证
 		if ( $isVerified ) {
-		 	$secret = '';
+			$secret = '';
 		} else {
 			switch ($type)
 			{
@@ -371,10 +374,9 @@ _SQL_;
 	}
 
 
-	/*
-	 *
-		FIXME: 不应该返回 idUser，应该返回 idDevice
-	 *	@return 	int	idUser	成功返回 idUser，失败返回 false;
+	/**
+	 * FIXME: 不应该返回 idUser，应该返回 idDevice
+	 * @return int idUser 成功返回 idUser，失败返回 false;
 	 */
 	static function Verify($address, $type, $secret, $idUser=0)
 	{
@@ -397,9 +399,9 @@ _SQL_;
 		if ( !empty($device_row) ) // Verify PASS
 		{
 			$ret = JWDB::UpdateTableRow('Device', intval($device_row['id']), array(
-										'secret' => '',
-										'address' => $address,
-										));
+						'secret' => '',
+						'address' => $address,
+						));
 
 		}
 		else // Verify FAIL
@@ -416,16 +418,16 @@ _SQL_;
 		return $device_row['idUser'];
 	}
 
-	
-	/*
-	 * @param	string	Mobile NO
-	 * @return	int		SP Name
+
+	/**
+	 * @param string Mobile NO
+	 * @return int SP Name
 	 */
 	static function GetMobileSP($mobileNo)
 	{
 		if ( preg_match('/^13[4-9]\d{8}$/',$mobileNo ) 
 				|| preg_match('/^15[0-9]\d{8}$/',$mobileNo)
-				)
+		   )
 			return self::SP_CHINAMOBILE;
 
 		if ( preg_match('/^13[0-3]\d{8}$/',$mobileNo ) )
@@ -437,38 +439,38 @@ _SQL_;
 		return self::SP_UNKNOWN;
 	}
 
-	/*
-	 * @param	string	Mobile No
-	 * @return 	string	SP No
+	/**
+	 * @param string Mobile No
+	 * @return string SP No
 	 */
 	static function GetMobileSpNo($mobileNo)
 	{
 		switch ( JWDevice::GetMobileSP($mobileNo) )
 		{
 			case self::SP_CHINAMOBILE: 	
-			{
-				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'] . $code['funcPlus'];
+				{
+					$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+					if( false == empty( $code ) ){
+						return $code['code'] . $code['func'] . $code['funcPlus'];
+					}
+					return '99118816';
 				}
-				return '99118816';
-			}
 			case self::SP_UNICOM:
-			{
-				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'] . $code['funcPlus'];
+				{
+					$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+					if( false == empty( $code ) ){
+						return $code['code'] . $code['func'] . $code['funcPlus'];
+					}
+					return '95014567';
 				}
-				return '95014567';
-			}
 			case self::SP_PAS:
-			{
-				$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
-				if( false == empty( $code ) ){
-					return $code['code'] . $code['func'] . $code['funcPlus'];
+				{
+					$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+					if( false == empty( $code ) ){
+						return $code['code'] . $code['func'] . $code['funcPlus'];
+					}
+					return '99318456';
 				}
-				return '99318456';
-			}
 			case self::SP_UNKNOWN: 
 			default:
 				return '99118816(移动) / 95014567(联通) / 99318456(小灵通)';
@@ -481,8 +483,8 @@ _SQL_;
 	 *
 	 *	@param	string	$type		Device 的 type - 查找 Device 表
 	 *	@param	bool	$isActive	true	只查找已经被激活的
-									false	查找所有
-		@return	bool	$isExist	是否存在
+	 false	查找所有
+	 @return	bool	$isExist	是否存在
 	 */
 	static function IsExist($address, $type, $isActive=true)
 	{
@@ -530,7 +532,7 @@ _SQL_;
 			return 'nothing';
 
 		$enabled_for	= $device_rows['enabledFor'];
-			
+
 		if ( empty($enabled_for) )
 			$enabled_for = 'nothing';
 
@@ -541,7 +543,7 @@ _SQL_;
 	static public function SetDeviceEnabledFor($idDevice, $enabledFor, $isSignatureRecord=null)
 	{
 		$idDevice	= JWDB::CheckInt($idDevice);
-        $device_row	= JWDevice::GetDeviceDbRowById($idDevice);
+		$device_row	= JWDevice::GetDeviceDbRowById($idDevice);
 
 		switch ( $enabledFor )
 		{
@@ -565,14 +567,14 @@ _SQL_;
 				break;
 		}
 
-        $updateRow = array();
-        if( false == empty( $isSignatureRecord ) )
-            $updateRow['isSignatureRecord']  = $isSignatureRecord;
-        if( false == empty( $enabledFor ) )
-            $updateRow['enabledFor']  = $enabledFor;
+		$updateRow = array();
+		if( false == empty( $isSignatureRecord ) )
+			$updateRow['isSignatureRecord']  = $isSignatureRecord;
+		if( false == empty( $enabledFor ) )
+			$updateRow['enabledFor']  = $enabledFor;
 
-        if( empty( $updateRow ) )
-            return true;
+		if( empty( $updateRow ) )
+			return true;
 
 		return JWDB::UpdateTableRow('Device', $idDevice, $updateRow );
 	}
@@ -595,9 +597,12 @@ _SQL_;
 		$condition_in = JWDB::GetInConditionFromArray($idDevices);
 
 		$sql = <<<_SQL_
-SELECT	*, id as idDevice
-FROM	Device
-WHERE	id IN ($condition_in)
+SELECT	
+	*, id as idDevice
+FROM
+	Device
+WHERE
+	id IN ($condition_in)
 _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
@@ -625,12 +630,12 @@ _SQL_;
 		return $device_rows[$idDevice];
 	}
 
-	/*
-	 *	根据 array(array('address'=>'','type'=>''),...) 获取 DeviceRow
+	/**
+	 * 根据 array(array('address'=>'','type'=>''),...) 获取 DeviceRow
 	 *
-	 *	@param	array		$addresses	array(array('address'=>'','type'=>''),...) 
+	 * @param array	$addresses array(array('address'=>'','type'=>''),...) 
 	 *
-	 *	@return	array		$device_ids
+	 * @return array $device_ids
 	 */
 	static public function GetDeviceIdsByAddresses( $addresses )
 	{
@@ -643,9 +648,12 @@ _SQL_;
 		$condition_in = JWDB::GetInConditionFromArrayOfArray($addresses, array('address','type'), 'char');
 
 		$sql = <<<_SQL_
-SELECT	id as idDevice
-FROM	Device
-WHERE	(address,type) IN ($condition_in)
+SELECT	
+	id as idDevice
+FROM	
+	Device
+WHERE	
+	(address,type) IN ($condition_in)
 _SQL_;
 
 		try {
@@ -668,10 +676,10 @@ _SQL_;
 		return $device_ids;
 	}
 
-	/*
-	 *	@param	array	$address	array('address'=>'','type'=>'');
+	/**
+	 * @param array $address array('address'=>'','type'=>'');
 	 *
-	 *	@return	array	$device_ids
+	 * @return array $device_ids
 	 */
 	static public function GetDeviceIdByAddress($address)
 	{
@@ -683,15 +691,14 @@ _SQL_;
 		return array_pop($device_ids);
 	}
 
-	/*
-	 *	根据 idDevices 获取 以 type->address 方式哈希的 device_row 数组
+	/**
+	 * 根据 idDevices 获取 以 type->address 方式哈希的 device_row 数组
 	 *
-	 *	@param	array		$Ids	idDevices
+	 * @param array $Ids idDevices
 	 *
-	 *	@return	array		$device_rows_by_address	ie. $device_row = $device_rows_by_address['msn']['zixia@zixia.net']
-								type
-									address
-										device_row
+	 * @return array $device_rows_by_address 
+	 * ie. $device_row = $device_rows_by_address['msn']['zixia@zixia.net']
+	 * type * address * device_row
 	 */
 	static public function GetDeviceAddressRowsByIds( $idDevices )
 	{
@@ -708,7 +715,7 @@ _SQL_;
 		foreach ( $device_rows as $device_row )
 			$device_address_rows[$device_row['type']][$device_row['address']] = $device_row;
 
-		
+
 		return $device_address_rows;
 	}
 
@@ -717,9 +724,12 @@ _SQL_;
 		$in_type_string = implode("','", $type);
 
 		$sql = <<<_SQL_
-SELECT *
-FROM Device
-WHERE address='$key' and type in ('$in_type_string');
+SELECT 
+	*
+FROM 
+	Device
+WHERE 
+	address='$key' and type in ('$in_type_string');
 _SQL_;
 
 		$rows = JWDB::GetQueryResult($sql,true);
@@ -741,8 +751,8 @@ _SQL_;
 	}
 
 
-	/*
-	 *	根据 Device Type 返回机器人帐号
+	/**
+	 * 根据 Device Type 返回机器人帐号
 	 */
 	static public function GetRobotFromType($type, $address=null)
 	{
@@ -808,8 +818,8 @@ _SQL_;
 	}
 
 
-	/*
-	 *	根据 Device Type 返回好看的字符串
+	/**
+	 * 根据 Device Type 返回好看的字符串
 	 */
 	static public function GetNameFromType($type, $idPartner=null)
 	{
@@ -860,10 +870,10 @@ _SQL_;
 
 		return $name;
 	}
-	
+
 	/**
-	  * 检查签名是否一次合法需被记录的更新
-	  */
+	 * 检查签名是否一次合法需被记录的更新
+	 */
 	static public function IsSignatureChanged($idUser, $device, $status){
 		//Sinature logic
 		if( self::IsSignatureRecordDevice($device) ){
@@ -889,8 +899,8 @@ _SQL_;
 		return false;
 	}
 
-	/*
-	 *	检查 device 是否已经由用户验证激活
+	/**
+	 * 检查 device 是否已经由用户验证激活
 	 */
 	static public function IsActived($idDevice)
 	{
@@ -898,14 +908,14 @@ _SQL_;
 		return empty($device_db_row['secret']);
 	}
 
-	/*
+	/**
 	 * 允许执行指令的非Robot设备
 	 */
 	static public function IsAllowedNonRobotDevice($type='web'){
 		return in_array( $type, self::$cmdAllowArray );
 	}
 
-	/*
+	/**
 	 * 允许记录签名的设备
 	 */
 	static public function IsSignatureRecordDevice($type='msn'){
@@ -925,7 +935,7 @@ _SQL_;
 		$sigKey = JWDB_Cache::GetCacheKeyByFunction( array( 'JWDevice', 'IsHistorySignature'), array($idUser) );
 		$memcache = JWMemcache::Instance();
 		$result = $memcache->Get( $sigKey );
-		
+
 		$isHistory = false;
 		if( false == $result ) {
 			$row = array( $md5Value );
@@ -942,28 +952,21 @@ _SQL_;
 		return $isHistory;
 	}
 
-	/*
+	/**
 	 * 获取设备分类 [ Conference 用 ]
 	 */
-	static public function GetDeviceCategory( $type='sms' ) {
-		switch( strtolower($type) ) {
-			case 'web':
-			case 'wap':
-				return 'web';
-			case 'msn':
-			case 'gtalk':
-			case 'qq':
-			case 'skype':
-			case 'aol':
-			case 'fetion' :
-			case 'jabber':
-			case 'yahoo':
-				return 'im';
-			case 'sms':
-				return 'sms';
-			default:
-				return 'other';
-		}
+	static public function GetDeviceCategory( $type='sms' ) 
+	{
+		if ( in_array( $type, self::$smsArray ) )
+			return 'sms';
+
+		if ( in_array( $type, self::$webArray ) )
+			return 'web';
+
+		if ( in_array( $type, self::$imArray ) )
+			return 'im';
+
+		return 'other';
 	}
 
 	static public function GetMergeSecret($user_id, $type='msn', $address=null)
@@ -982,7 +985,7 @@ _SQL_;
 
 		if ( false==empty($user_info['pass']) )
 			return strrev(substr($user_info['pass'], 3, 6));
-		
+
 		$secret = $user_info['id'].'-'.$user_info['pass'].'-'.strtolower($type).'-'.strtolower($address);
 		$secret = md5($secret);
 		$secret = preg_replace( '/^\d+/', '', $secret );

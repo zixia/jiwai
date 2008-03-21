@@ -33,9 +33,13 @@ class JWConference {
 
 	/**
 	 * Get idConference from idUser,idUserReplyTo --- 这个只能从 回复的ID中分析，
-	 * 对于特服号码相关的 会议号分析 请使用 JWFuncCode::FetchConference(serverAddress, mobileNo)方法
+	 * 对于特服号码相关的 会议号分析 
+	 * 请使用 JWFuncCode::FetchConference(serverAddress, mobileNo)方法
+	 *
+	 * Deprecated by seek@jiwai.com 2008-03-22
 	 */
-	static public function FetchConference( $idSender,$idReceiver=null , $device='sms' ) {
+	static public function FetchConference( $idSender,$idReceiver=null , $device='sms' ) 
+	{
 		$idSender = JWDB::CheckInt( $idSender );
 	
 		//发送者是开启了会议模式用户	
@@ -52,7 +56,8 @@ class JWConference {
 		$userInfo = $conference = null;
 
 		//从特服号中分析不出，分析 idUserReplyTo 
-		if( $idReceiver && ( empty($userInfo) || empty($conference) ) ) {
+		if( $idReceiver && ( empty($userInfo) || empty($conference) ) ) 
+		{
 			$userInfo = JWUser::GetUserInfo( $idReceiver );
 			if( false == empty( $userInfo ) && $userInfo['idConference'] ) {
 				$conference = self::GetDbRowById( $userInfo['idConference'] );
@@ -60,7 +65,8 @@ class JWConference {
 		}
 
 		//分析 设备类型，好友允许设置
-		if( false == empty( $userInfo ) && false == empty( $conference ) ) {
+		if( false == empty( $userInfo ) && false == empty( $conference ) ) 
+		{
 			$deviceCategory = JWDevice::GetDeviceCategory( $device );
 			$allowedDevice = $conference['deviceAllow'];
 			if( in_array( $deviceCategory, explode(',', $allowedDevice) ) ){
@@ -88,8 +94,12 @@ class JWConference {
 	static public function GetDbRowById($idConference){
 		$idConference = JWDB::CheckInt( $idConference );
 		$sql = <<<_SQL_
-SELECT * FROM Conference
-	WHERE id = $idConference
+SELECT 
+	* 
+FROM 
+	Conference
+WHERE 
+	id = $idConference
 _SQL_;
 
 		$row = JWDB::GetQueryResult( $sql, false );
@@ -103,10 +113,13 @@ _SQL_;
 	static public function GetDbRowFromUser($idUser){
 		$idUser = JWDB::CheckInt( $idUser );
 		$sql = <<<_SQL_
-SELECT * FROM Conference
-	WHERE
-		idUser = $idUser
-	LIMIT 1
+SELECT 
+	*
+FROM
+	Conference
+WHERE
+	idUser = $idUser
+LIMIT 1
 _SQL_;
 
 		$row = JWDB::GetQueryResult( $sql, false );
@@ -122,10 +135,13 @@ _SQL_;
 			return array();
 
 		$sql = <<<_SQL_
-SELECT * FROM Conference
-	WHERE
-		`number` = '$number'
-	LIMIT 1
+SELECT 
+	*
+FROM
+	Conference
+WHERE
+	`number` = '$number'
+LIMIT 1
 _SQL_;
 
 		$row = JWDB::GetQueryResult( $sql, false );
@@ -218,37 +234,35 @@ _SQL_;
 		return $rows;
 	} 
 
-	static public function GetDeviceAllowConditionIn( $idConference )
+	static public function IsAllowJoin($conference_id, $sender_id=1, $device='sms')
 	{
-		$conf_info = JWConference::GetDbRowById( $idConference );
-		$device_allow = $conf_info['deviceAllow'];
-		$deviceAllow_array = explode(',', $device_allow);
-		$device_allow_str = '';
-		if(in_array('sms', $deviceAllow_array))
-			$device_allow_str .= "'sms',";
-		if(in_array('web', $deviceAllow_array))
-			$device_allow_str .= "'web','wap',";
-		if(in_array('im', $deviceAllow_array))
-			$device_allow_str .= "'qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email',";
-		$device_allow_str = substr($device_allow_str, 0, strlen($device_allow_str)-1);
+		if ( null == $conference_id )
+			return false;
 
-		return $device_allow_str;
+		$conference_id = JWDB::CheckInt($conference_id);
+		$conference = self::GetDbRowById( $conference_id );
+
+		if ( $sender_id == $conference['idUser'] )
+			return true;
+
+		if ( empty($conference) || null==$conference['idUser'] )
+			return false;
+
+		$device_category = JWDevice::GetDeviceCategory( $device );
+
+		$device_allowed = $conference['deviceAllow'];
+	
+		if( in_array( $device_category, explode(',', $device_allowed ) ) )
+		{
+			if( $conference['friendOnly'] == 'N' 
+				|| JWFollower::IsFollower($sender_id, $conference['idUser']) ) 
+			{
+					return true;
+			}
+		}
+
+		return false;
 	}
 
-	static public function GetDeviceAllowConditionArray( $idConference )
-	{
-		$conf_info = JWConference::GetDbRowById( $idConference );
-		$device_allow = $conf_info['deviceAllow'];
-		$deviceAllow_array = explode(',', $device_allow);var_dump($deviceAllow_array);
-		$device_allow_array = array('sms');
-		if(in_array('sms', $deviceAllow_array))
-			$device_allow_array = array_merge($device_allow_array, array('sms'));
-		if(in_array('web', $deviceAllow_array))
-			$device_allow_array = array_merge($device_allow_array,  array('web','wap'));
-		if(in_array('im', $deviceAllow_array))
-			$device_allow_array = array_merge($device_allow_array, array('qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email'));
-
-		return $device_allow_array;
-	}
 }
 ?>
