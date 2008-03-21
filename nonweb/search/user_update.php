@@ -1,26 +1,25 @@
 <?php
 import de.jiwai.lucene.*;
 import de.jiwai.dao.*;
-
+error_reporting(0);
 $user_index = '/opt/lucene/index/user';
-
-echo "<pre>";
 
 $id = intval($_GET['id']);
 
 if ( $id )
 {
 	$record = Execute::GetOnePK( 'User', $id );
+	$key_field = "id";
+	$key_value = $id;
+
+	$lucene_index = new LuceneIndex( $user_index );
+
 	if ( $record ) 
 	{
-
 		/** 
 		 * need utf8-encode for display;,
 		 * for lucene index , no need any operation
 		 */
-		$lucene_index = new LuceneIndex( $user_index );
-		$key_field = "id";
-		$key_value = $record->get("id");
 
 		$token = array( false, false, false, false, true );
 		$other_field = array("nameScreen", "email", "birthday", "gender", "bio");
@@ -32,21 +31,29 @@ if ( $id )
 			$record->get("bio"),
 		);
 
-		var_dump( $other_field );
-		var_dump( $other_value );
-		var_dump( $key_value );
-		var_dump( $token );
+		try {
+			$lucene_index->update( $key_field, $key_value, $other_field, $other_value, $token );
+			$lucene_index->flush();
+			$lucene_index->close();
+		}catch(Execute $e){
+			die( '{"error":1,"action":"update"}' );
+		}
 
-		$lucene_index->update( $key_field, $key_value, $other_field, $other_value, $token );
-		//$lucene_index->delete( $key_field, $key_value );
-		$lucene_index->flush();
-		$lucene_index->close();
+		die ('{"error":0,"action":"update"}') ;
+	}
+	else
+	{
+		try {
+			$lucene_index->delete( $key_field, $key_value );
+			$lucene_index->flush();
+			$lucene_index->close();
+		}catch(Execute $e){
+			die( '{"error":1,"action":"delete"}' );
+		}
 
-		echo '{"error":0}';
-		exit;
+		die ('{"error":0,"action":"delete"}') ;
 	}
 }
 
-echo '{"error":1}';
-exit;
+die ('{"error":1,"action":"none"}') ;
 ?>
