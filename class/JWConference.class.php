@@ -239,14 +239,14 @@ _SQL_;
 	{
 		$conf_info = JWConference::GetDbRowById( $idConference );
 		$device_allow = $conf_info['deviceAllow'];
-		$deviceAllow_array = explode(',', $device_allow);
-		$device_allow_array = array();
+		$deviceAllow_array = explode(',', $device_allow);var_dump($deviceAllow_array);
+		$device_allow_array = array('sms');
 		if(in_array('sms', $deviceAllow_array))
-			array_merge($device_allow_array, array('sms'));
+			$device_allow_array = array_merge($device_allow_array, array('sms'));
 		if(in_array('web', $deviceAllow_array))
-			array_merge($device_allow_array,  array('web','wap'));
+			$device_allow_array = array_merge($device_allow_array,  array('web','wap'));
 		if(in_array('im', $deviceAllow_array))
-			array_merge($device_allow_array, array('qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email'));
+			$device_allow_array = array_merge($device_allow_array, array('qq','msn','gtalk','fetion','newsmth','skype','facebook','api','yahoo','jabber','icq','irc','aol','email'));
 
 		return $device_allow_array;
 	}
