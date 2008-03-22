@@ -7,17 +7,22 @@ import java.util.Hashtable;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smackx.*;
+import org.jivesoftware.smackx.packet.*;
+import org.jivesoftware.smackx.filetransfer.*;
 
 import de.jiwai.robot.*;
 import de.jiwai.util.*;
 import java.io.*;
 
-public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProcessor {
+public class JabberJiWaiRobot implements FileTransferListener, PacketListener, PacketFilter, MoMtProcessor {
 
     public static final String TALK_SERVER = "lb-02.jw";
     public static final int TALK_PORT = 5222;
@@ -25,6 +30,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
     
     public static int onlinePort = 55130;
     public static XMPPConnection con = null;
+    public static FileTransferManager fman = null;
 
     public static Roster roster = null;
 
@@ -45,7 +51,10 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
     public static MoMtWorker worker = null;
     
     private static DirContext context;
+    // domain->{gtalk,jabber}
     private static Hashtable<String, String> domainCache;
+    // avatar->hashcode
+    private static Hashtable<String, String> avatarCache;
 
     static {
         Logger.initialize(DEVICE);
@@ -81,6 +90,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
         }
 
         domainCache = new Hashtable<String, String>();
+        avatarCache = new Hashtable<String, String>();
     }
 
     private static String getDomainFromEmail(String email) {
@@ -171,6 +181,7 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
      * @param p
      */
     private void processRoster(RosterPacket p){
+        Logger.log("Roster::" + p);
         for (RosterPacket.Item item : p.getRosterItems()) {
             if(RosterPacket.ItemType.from == item.getItemType()) {
                 Presence presence = new Presence(Presence.Type.subscribe);
@@ -239,7 +250,81 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
         msg.setMsgtype(MoMtMessage.TYPE_SIG);
         msg.setBody(status);
         worker.saveMoMessage(msg);
+        // VCard
+        VCard vCard = new VCard();
+        try{
+            vCard.load(con, email);
+            String vCardHash = vCard.getAvatarHash();
+            if (null != vCardHash
+                && avatarCache.containsKey(email)
+                && avatarCache.get(email).equals(vCardHash)) {
+                Logger.log("Duplicated::" + email);
+            } else {
+                processAvatar(device, mAddress, email, vCard.getAvatar());
+                avatarCache.put(email, vCardHash);
+            }
+        }catch (Exception e){
+            //e.printStackTrace();
+            Logger.logError("Avatar::" + email);
+        }
+        // End VCard
     }
+
+    /**
+     * Process Avatar
+     * @param device  gtalk or jabber
+     * @param robot   Server Address
+     * @param buddy   Email Account
+     * @param raw     Raw Bytes of Image
+     */
+    private static void processAvatar(String device, String robot, String buddy, byte[] raw) {
+        if (null == raw || raw.length <= 0) return;
+        MoMtMessage msg = new MoMtMessage(device);
+        msg.setAddress(buddy);
+        msg.setServerAddress(robot);
+        msg.setMsgtype(MoMtMessage.TYPE_SIG);
+        String avatarInBase64 = Base64.encodeBytes(raw, false); // no break lines
+        String avatarMimeType = "image/jpeg";
+        msg.addMimePart(avatarMimeType, avatarInBase64);
+        worker.saveMoMessage(msg);
+        Logger.log("Save Avatar::" + buddy);
+    }
+
+    // Interface of FileTransferListener
+    public void fileTransferRequest(FileTransferRequest request) {
+        if (request.getMimeType().startsWith("image/")
+                && request.getFileSize() < 2000000) {
+            Logger.log("Name::" + request.getFileName());
+            Logger.log("Mime::" + request.getMimeType());
+            Logger.log("Size::" + request.getFileSize());
+            Logger.log("User::" + request.getRequestor());
+        } else {
+            Logger.log("Reject::" + request.getFileName());
+        }
+        request.reject();
+        return;
+        /*    request.reject();
+            return;
+        }
+        try {
+            IncomingFileTransfer ift = request.accept();
+            String email = getFromEmail(request.getRequestor());
+            String device = getDeviceFromEmail(email);
+            //InputStream is = ift.recieveFile();
+            StringBuilder sb = new StringBuilder("/tmp/bot/");
+            sb.append(device);
+            sb.append("/");
+            sb.append(device);
+            sb.append("__");
+            sb.append(email);
+            sb.append("__");
+            sb.append(request.getFileName());
+            ift.recieveFile(new File(sb.toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+    }
+    // End FileTransferListener
 
     public static void main(String args[]) {
         jabber_robot = new JabberJiWaiRobot();
@@ -276,6 +361,8 @@ public class JabberJiWaiRobot implements PacketListener, PacketFilter, MoMtProce
             roster = con.getRoster();
 
             con.addPacketListener(jabber_robot , jabber_robot);
+            fman = new FileTransferManager(con);
+            fman.addFileTransferListener(jabber_robot);
 
             worker.startProcessor();
         }catch(Exception e ){
