@@ -30,7 +30,7 @@ if (!$token) {
 	JWSession::SetInfo('error', '无效的请求令牌');
 	JWTemplate::RedirectToUrl('/wo/oauth/');
 }
-$consumer = JWOAuth::GetConsumer($token['consumer_key']);
+$consumer = JWOAuth::GetConsumer($token->consumer_key);
 ?>
 <html>
 
@@ -72,7 +72,7 @@ JWTemplate::html_head(array(
 确认吗？
 <form method="post" action="authorize">
 <input type="hidden" name="token" value="<?php echo htmlentities($_GET['oauth_token']); ?>" />
-<input type="hidden" name="callback" value="<?php echo htmlentities($_GET['oauth_callback']); ?>" />
+<input type="hidden" name="callback" value="<?php echo empty($_GET['oauth_callback']) ? '' : htmlentities($_GET['oauth_callback']); ?>" />
 	<p class="po2">
 <input type="submit" name="grant" class="submitbutton" value="是"/>
 <input type="submit" name="revoke" class="submitbutton" value="否" onClick="window"/>

@@ -6,8 +6,8 @@ try {
   $token = $server->fetch_access_token($req);
   print $token;
 } catch (OAuthException $e) {
-  print($e->getMessage() . "\n<hr />\n");
-  print_r($req);
-  die();
+  header('HTTP/1.1 400 '.$e->getMessage());
+  print $e->getMessage() . "\n<hr />\n";
+  //print_r($req);
 }
 ?>

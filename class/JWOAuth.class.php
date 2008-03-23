@@ -34,29 +34,35 @@ class JWOAuth {
 		return JWDB::GetTableRow('OAuthConsumer', array('idUser'=>$idUser), self::MAX_APP_PER_USER);
 	}
 	static public function ListToken($idUser) {
-		return JWDB::GetTableRow('OAuthToken', array('idUser'=>$idUser, 'type'=>'access'), 100);
+		return JWDB::GetTableRow('OAuthToken', array('idUser'=>$idUser), 100);
 	}
 	static public function RevokeToken($idUser, $token_key) {
 		return JWDB::DelTableRow('OAuthToken', array('idUser'=>$idUser, 'key'=>$token_key));
 	}
 	static public function AuthorizeToken($idUser, $token_key) {
-		$token_key = JWDB::EscapeString($token_key);
-		JWDB::Execute("UPDATE OAuthToken SET authorized = true WHERE idUser = $idUser AND `key` = '$token_key'");
+			$token = JWMemcache::Instance('oauth')->Get('rt'.$token_key);
+			$token->authorized = true;
+			$token->idUser = $idUser;
+			$token = JWMemcache::Instance('oauth')->Set('rt'.$token_key, $token, 86400);
 	}
-    static function GetConsumer($consumer_key) {/*{{{*/
-	$consumer_key = JWDB::EscapeString($consumer_key);
-	$sql = "SELECT * FROM OAuthConsumer WHERE `key` = '$consumer_key'";
-	$arr = JWDB::GetQueryResult($sql);
-	if ( ! $arr ) return NULL;
-	return $arr;
-    }/*}}}*/
-    static function GetToken($key) {/*{{{*/
-	$key = JWDB::EscapeString($key);
-	$sql = "SELECT * FROM OAuthToken WHERE `key` = '$key'";
-	$arr = JWDB::GetQueryResult($sql);
-	if ( ! $arr ) return NULL;
-	return $arr;
-    }/*}}}*/
+	static function GetConsumer($consumer_key) {/*{{{*/
+		$consumer_key = JWDB::EscapeString($consumer_key);
+		$sql = "SELECT * FROM OAuthConsumer WHERE `key` = '$consumer_key'";
+		$arr = JWDB::GetQueryResult($sql);
+		if ( ! $arr ) return NULL;
+		return $arr;
+	}/*}}}*/
+	static function GetToken($key) {/*{{{*/
+		$token = JWMemcache::Instance('oauth')->Get('rt'.$key);
+		return $token;
+	}/*}}}*/
+	static function CheckToken($consumer_key, $token_key) {/*{{{*/
+		$key = JWDB::EscapeString($key);
+		$sql = "SELECT idUser FROM OAuthToken WHERE `key` = '$token_key' AND consumer_key = '$consumer_key'";
+		$arr = JWDB::GetQueryResult($sql);
+		if ( ! $arr ) return NULL;
+		return $arr['idUser'];
+	}/*}}}*/
 }
 
 ?>
