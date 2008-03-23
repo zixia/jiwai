@@ -61,18 +61,18 @@ class JWTextFormat {
 			'［' => '[', '］' => ']',
 	    	);
 
-		$convert_keys = array_keys( $corner );
-		$cornert_values = array_values( $corner );
-		if ( false == empty( $keys ) ) 
+		$text = preg_replace('/\xa3([\xa1-\xfe])/e', 'chr(ord(\1)-0x80)', $text);
+
+		$keys = empty($keys) ? array_keys( $corner ) : array_unique($keys);
+		$convert_values = array();
+		$convert_keys = array();
+		foreach( $keys AS $k )
 		{
-			$convert_keys = array_diff( $convert_keys, array_diff( $convert_keys, $keys ) );
-			$convert_values = array();
-			foreach( $convert_keys AS $k )
-			{
-				array_push( $convert_values, $corner[ $k ] );
-			}
+			array_push( $convert_values, $corner[ $k ] );
+			array_push( $convert_keys, '/'.$k.'/');
 		}
-		return str_replace( array_keys($corner), array_values($corner), $text );
+
+		return trim(preg_replace( $convert_keys, $convert_values, "$text\r\n"));
 	}
 
 	/**
@@ -84,13 +84,16 @@ class JWTextFormat {
 		$text = preg_replace( '/[\n\r]/', ' ', $text);
 
 		// invalid character in XML
-		$text = preg_replace( '/[\x00-\x09\x0b\x0c\x0e-\x19]/U', "", $text ); 
+		$text = preg_replace( '/[\x00-\x09\x0b\x0c\x0e-\x19]/U', '', $text ); 
 
 		// utf-8 line-reverse
 		$text = preg_replace( '/\xE2\x80\xAE/U', '', $text );	
 		
 		// trim control
-		$text = trim( $text, "\x00..\x1F　" );
+		$text = trim( $text, "\x00..\x1F" );
+
+		// trim Corner Space
+		$text = preg_replace('/(^　)+|(　$)/', '', $text);
 
 		return $text;
 	}
