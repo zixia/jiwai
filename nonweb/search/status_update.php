@@ -22,9 +22,16 @@ if ( $id )
 		 */
 
 
-		$token = array( true, );
-		$other_field = array( "status", );
-		$other_value = array( $record->get("status"), );
+		$token = array( true, false, false, false, false);
+		$user = Execute::GetOnePK('User', $record->get("idUser"));
+		$other_field = array( "status", "user", "device", "mms", "signature" );
+		$other_value = array( 
+			$record->get("status"),
+			empty($user) ? '' : $user->get("nameScreen"),
+			$record->get("device"),
+			$record->get("isMms"),
+			$record->get("isSignature"),
+		);
 
 		try {
 			$lucene_index->update( $key_field, $key_value, $other_field, $other_value, $token );

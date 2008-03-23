@@ -4,6 +4,8 @@ INDEXPATH=/opt/lucene/index
 all: 
 	@exit;
 
+class: IndexUser.class IndexStatus.class Optimize.class SearchUser.class
+
 user: IndexUser.class
 	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexUser ${INDEXPATH}/user
 

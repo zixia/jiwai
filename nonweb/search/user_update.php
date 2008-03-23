@@ -21,13 +21,21 @@ if ( $id )
 		 * for lucene index , no need any operation
 		 */
 
-		$token = array( false, false, false, false, true );
-		$other_field = array("nameScreen", "email", "birthday", "gender", "bio");
+		$devices = Execute::GetArray("SELECT address FROM Device WHERE idUser=$id AND secret=''");
+		$devices_value = strrev($record->get("email"));
+		foreach( $devices AS $one )
+		{
+			$devices_value .= ' '.$one['address'];
+		}
+
+		$token = array( false, false, false, false, true, true );
+		$other_field = array("nameScreen", "nameFull", "birthday", "gender", "devices", "bio");
 		$other_value = array(
 			$record->get("nameScreen"),
-			strrev($record->get("email")),
+			$record->get("nameFull"),
 			$record->get("birthday"),
 			$record->get("gender"),
+			$devices_value,
 			$record->get("bio"),
 		);
 

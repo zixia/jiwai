@@ -25,7 +25,7 @@ public class IndexUser
 		for( int i=0; i<step; i++ )
 		{
 			clause = "id < " + ((i+1)*stepLen);
-			a = Execute.getArray("SELECT id,nameScreen,email,birthday,gender,bio FROM User ORDER BY ID ASC", i*1000, 1000);
+			a = Execute.getArray("SELECT id,nameScreen,nameFull,email,birthday,gender,bio FROM User ORDER BY ID ASC", i*1000, 1000);
 
 
 			for( int j=0; j<a.length; j++)
@@ -34,18 +34,24 @@ public class IndexUser
 				String keyValue = a[j].get("id");
 
 //		System.out.println( keyValue + ":" + a[j].get("bio") );
+				Table[] devices = Execute.getArray("SELECT address FROM Device WHERE idUser=" + keyValue + " AND secret=''" );
+				String devicesValue = new StringBuffer(a[j].get("email")).reverse().toString();
+				for( int m=0; m<devices.length; m++ )
+				{
+					devicesValue += " " + devices[m].get("address");
+				}
 
-
-				String[] otherField = {"nameScreen", "email", "birthday", "gender", "bio" };
+				String[] otherField = {"nameScreen","nameFull", "birthday", "gender", "devices", "bio" };
 				String[] otherValue = {
 					a[j].get("nameScreen")
-						, new StringBuffer(a[j].get("email")).reverse().toString()
-                        , a[j].get("birthday")
+						, a[j].get("nameFull")
+						, a[j].get("birthday")
 						, a[j].get("gender")
+						, devicesValue
 						, a[j].get("bio")
 				};
 
-				boolean token[] = { false, false, false, false, true };
+				boolean token[] = { false, false, false, false, true, true };
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}

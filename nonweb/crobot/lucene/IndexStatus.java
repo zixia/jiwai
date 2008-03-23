@@ -22,20 +22,23 @@ public class IndexStatus
 		for( int i=0; i<step; i++ )
 		{
 			clause = "id < " + ((i+1)*1000);
-			a = Execute.getArray("SELECT id,status From Status ORDER BY id ASC", i*stepLen, stepLen);
-
+			a = Execute.getArray("SELECT s.id AS id,u.nameScreen as user, status,device,isSignature,isMms From Status s,User u WHERE s.idUser=u.id ORDER BY s.id ASC", i*stepLen, stepLen);
 
 			for( int j=0; j<a.length; j++)
 			{
 				String keyField = "id";
 				String keyValue = a[j].get("id");
 
-				String[] otherField = {"status" };
+				String[] otherField = { "device", "user", "signature", "mms", "status" };
 				String[] otherValue = {
-						a[j].get("status")
+                        a[j].get("device")
+                        , a[j].get("user")
+                        , a[j].get("isSignature")
+                        , a[j].get("isMms")
+						, a[j].get("status")
 				};
 
-				boolean token[] = { true };
+				boolean token[] = { false, false, false, false, true };
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}
