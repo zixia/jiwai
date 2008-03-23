@@ -61,18 +61,16 @@ class JWTextFormat {
 			'［' => '[', '］' => ']',
 	    	);
 
-		$text = preg_replace('/\xa3([\xa1-\xfe])/e', 'chr(ord(\1)-0x80)', $text);
-
 		$keys = empty($keys) ? array_keys( $corner ) : array_unique($keys);
 		$convert_values = array();
 		$convert_keys = array();
 		foreach( $keys AS $k )
 		{
 			array_push( $convert_values, $corner[ $k ] );
-			array_push( $convert_keys, '/'.$k.'/');
+			array_push( $convert_keys, $k );
 		}
 
-		return trim(preg_replace( $convert_keys, $convert_values, "$text\r\n"));
+		return str_replace( $convert_keys, $convert_values, $text );
 	}
 
 	/**
