@@ -58,16 +58,14 @@ class JWTextFormat {
 			'Ｔ' => 'T', 'Ｕ' => 'U', 'Ｖ' => 'V', 'Ｗ' => 'W', 'Ｘ' => 'X',
 			'Ｙ' => 'Y', 'Ｚ' => 'Z', '＠' => '@', '＃' => '#', '＄' => '$',
 			'！' => '!', '％' => '%', '【' => '[', '】' => ']', '　' => ' ',
-			'［' => '[', '］' => ']',
+			'［' => '[', '］' => ']', '，' => ',', '：' => ':',
 	    	);
 
-		$keys = empty($keys) ? array_keys( $corner ) : array_unique($keys);
+		$convert_keys = empty($keys) ? array_keys( $corner ) : array_unique($keys);
 		$convert_values = array();
-		$convert_keys = array();
-		foreach( $keys AS $k )
+		foreach( $convert_keys AS $k )
 		{
 			array_push( $convert_values, $corner[ $k ] );
-			array_push( $convert_keys, $k );
 		}
 
 		return str_replace( $convert_keys, $convert_values, $text );
