@@ -47,6 +47,8 @@ class JWFuncCode {
 	 */
 	const PRE_MYCAIFU_CODE = '08';
 
+	static public $all_pre_id = array( '08', '10','11', '20','30', '40','50', '86','88' );
+
 	/**
 	 * pre_len
 	 */
@@ -141,21 +143,13 @@ class JWFuncCode {
 		if( 0 === strpos( $serverAddress, $preCode ) )
 		{
 			$funcCode = substr( $serverAddress, strlen($preCode) );
-			if( strlen($funcCode) > self::CONST_PRE_LEN ){
-				if( preg_match('/^([\d]{'.self::CONST_PRE_LEN.'})(\d+)$/', $funcCode, $matches ) ){
-					switch( $matches[1] ) {
-						case self::PRE_REG_INVITE:
-						case self::PRE_MMS_NOTIFY:
-						case self::PRE_CONF_IDUSER:
-						case self::PRE_CONF_CUSTOM:
-						case self::PRE_STOCK_CODE:
-						case self::PRE_STOCK_CATE:
-						case self::PRE_MESSAGE_D:
-						case self::PRE_USER_RE:
-						{
-							return array( 'pre' => $matches[1], 'id' => $matches[2], );
-						}
-						break;
+			if( strlen($funcCode) > self::CONST_PRE_LEN )
+			{
+				if( preg_match('/^([\d]{'.self::CONST_PRE_LEN.'})(\d+)$/', $funcCode, $matches ) )
+				{
+					if ( in_array( $matches[1], self::$all_pre_id ) )
+					{
+						return array( 'pre' => $matches[1], 'id' => $matches[2], );
 					}
 				}
 			}
@@ -176,15 +170,15 @@ class JWFuncCode {
 			case self::PRE_STOCK_CODE:
 			case self::PRE_STOCK_CATE:
 			case self::PRE_CONF_IDUSER:
-			{
-				$idUser = $preAndId['id'];
-				$userInfo = array();
-				if( $preAndId['pre'] == self::PRE_STOCK_CODE 
-						|| $preAndId['pre'] == self::PRE_STOCK_CATE ) {
-					$userInfo = JWUser::GetUserInfo($preAndId['id'], null, 'nameScreen');
-				}
-				else
 				{
+					$idUser = $preAndId['id'];
+					$userInfo = array();
+					if( $preAndId['pre'] == self::PRE_STOCK_CODE 
+							|| $preAndId['pre'] == self::PRE_STOCK_CATE ) {
+						$userInfo = JWUser::GetUserInfo($preAndId['id'], null, 'nameScreen');
+					}
+					else
+					{
 					$userInfo = JWUser::GetUserInfo($idUser);
 				}
 
