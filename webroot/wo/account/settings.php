@@ -41,7 +41,7 @@ if ( isset($new_user_info) && $_POST['commit_u'] )
 		$arr_changed['email'] = $email;
 	}
 	
-	$nameUrl = isset($_POST['nameUrl']) ? $_POST['nameUrl'] : null;
+	$nameUrl = isset($_POST['nameUrl']) ? $_POST['nameUrl'] : $user_info['nameUrl'];
 	if ( !empty($nameUrl) && $nameUrl!=$user_info['nameUrl'] && 'N'==$user_info['isUrlFixed'])
 	{
 		$arr_changed['nameUrl'] = $nameUrl;
@@ -56,6 +56,7 @@ if ( isset($new_user_info) && $_POST['commit_u'] )
 
 	$validate_result = JWFormValidate::Validate($validate_item);
 
+	$error_string = null;
 	if ( is_array($validate_result) )
 	{
 		foreach ($validate_result AS $item)
