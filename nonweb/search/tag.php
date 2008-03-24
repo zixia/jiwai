@@ -1,12 +1,12 @@
 <?php
 import de.jiwai.lucene.*;
 error_reporting(0);
-$user_index = '/opt/lucene/index/users';
+$tag_index = '/opt/lucene/index/tags';
 $key_field = 'id';
 $order_field = null;
 
 $query_info_demo = array(
-	'query_string' => '精华',
+	'query_string' => '笑话',
 	'current_page' => 1,
 	'page_size' => 20, 
 	'order' => true,
@@ -32,19 +32,12 @@ if ( $demo )
 	var_dump( $query_info_demo );
 }
 
-$searcher = new LuceneSearch( $user_index );
+$searcher = new LuceneSearch( $tag_index );
 
-$query1 = $searcher->parseQuery( $query_string, 'bio' );
-$query2 = $searcher->parseQuery( $query_string.'*', 'nameScreen' );
-$query3 = $searcher->parseQuery( $query_string, 'nameFull' );
-$query = array($query1, $query2, $query3);
+$query1 = $searcher->parseQuery( $query_string, 'name' );
+$query2 = $searcher->parseQuery( $query_string, 'description' );
+$query = array($query1, $query2);
 
-// search from devices 
-if( preg_match('/@/', $query_string) || is_numeric($query_string) )
-{
-	$query4 = $searcher->parseQuery( $query_string, 'devices');
-	$query = array( $query1, $query2, $query3, $query4 );
-}
 $query = $searcher->mergeShouldQuery( $query );
 
 try{

@@ -18,14 +18,17 @@ public class IndexUser
 		Table t = Execute.getOnePK("User", 89);
 		System.out.println( t.get("nameScreen") );
 
+		boolean force_create = false;
+
+		if ( argv.length > 1 && "true".equals( argv[1] ) )
+			force_create = true;
+
 		LuceneIndex indexer = new LuceneIndex( argv[0] );
 
 		Table[] a = null;
-		String clause = null;
 		for( int i=0; i<step; i++ )
 		{
-			clause = "id < " + ((i+1)*stepLen);
-			a = Execute.getArray("SELECT id,nameScreen,nameFull,email,birthday,gender,bio FROM User ORDER BY ID ASC", i*1000, 1000);
+			a = Execute.getArray("SELECT id,nameScreen,nameFull,email,birthday,gender,bio FROM User ORDER BY ID ASC", i*stepLen, stepLen);
 
 
 			for( int j=0; j<a.length; j++)
@@ -33,7 +36,6 @@ public class IndexUser
 				String keyField = "id";
 				String keyValue = a[j].get("id");
 
-//		System.out.println( keyValue + ":" + a[j].get("bio") );
 				Table[] devices = Execute.getArray("SELECT address FROM Device WHERE idUser=" + keyValue + " AND secret=''" );
 				String devicesValue = new StringBuffer(a[j].get("email")).reverse().toString();
 				for( int m=0; m<devices.length; m++ )
@@ -55,14 +57,12 @@ public class IndexUser
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}
-			
-			System.out.println( "Step: " + (stepLen*(i+1) ) );
 
-//			break;
+			System.out.println( "Step: " + (stepLen*(i+1)) );
 		}
 
 		indexer.flush();
-        indexer.close();
+		indexer.close();
 
 	}
 }

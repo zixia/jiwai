@@ -1,13 +1,13 @@
 import de.jiwai.lucene.*;
 import de.jiwai.dao.*;
 
-public class IndexStatus
+public class IndexTag
 {
 	public static void main(String[] argv){
 		//Table t = Execute.getOnePK("User", 89);
 		//System.out.println( t.get("nameScreen")) ;
 
-		int count = Execute.getCount("Status", "1");
+		int count = Execute.getCount("Tag", "1");
 		int stepLen = 10000;
 		int step = ( count + stepLen - 1) / stepLen;
 		if ( argv.length < 1 )
@@ -20,28 +20,25 @@ public class IndexStatus
 		if ( argv.length > 1 && "true".equals( argv[1] ) )
 			force_create = true;
 
-		LuceneIndex indexer = new LuceneIndex( argv[0] );
+		LuceneIndex indexer = new LuceneIndex( argv[0], force_create );
 
 		Table[] a = null;
 		for( int i=0; i<step; i++ )
 		{
-			a = Execute.getArray("SELECT s.id AS id,u.nameScreen as user, status,device,isSignature,isMms From Status s,User u WHERE s.idUser=u.id ORDER BY s.id ASC", i*stepLen, stepLen);
+			a = Execute.getArray("SELECT id,name,description From Tag ORDER BY id ASC", i*stepLen, stepLen);
 
 			for( int j=0; j<a.length; j++)
 			{
 				String keyField = "id";
 				String keyValue = a[j].get("id");
 
-				String[] otherField = { "device", "user", "signature", "mms", "status" };
+				String[] otherField = { "name", "description" };
 				String[] otherValue = {
-					a[j].get("device")
-						, a[j].get("user")
-						, a[j].get("isSignature")
-						, a[j].get("isMms")
-						, a[j].get("status")
+					a[j].get("name")
+						, a[j].get("description")
 				};
 
-				boolean token[] = { false, false, false, false, true };
+				boolean token[] = { true, true };
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}
