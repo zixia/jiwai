@@ -909,6 +909,9 @@ _HTML_;
 				continue;
 			else
 				@$user_showed[$user_id] += 1;
+
+			if ( false == isset($userRows[$user_id]) )
+				$userRows[$user_id] = JWUser::GetUserInfo( $user_id );
 				
 			$name_screen = $userRows[$user_id]['nameScreen'];
 			$name_url = $userRows[$user_id]['nameUrl'];
@@ -991,8 +994,8 @@ _HTML_;
 			if ($options['search']) {
 				global $q;
 ?>
-<div class="search">
-	<form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '输入关键词';?>" onclick='this.value=""' /><button onClick='$("search_status").submit();'>搜</button></form>
+<div class="search" style="width:300px;">
+	<form action="/wo/search/statuses" method="GET" id="search_status"><input type="text" name="q" value="<?php echo (isset($q)) ? $q : '输入关键词';?>" onclick='this.value=(this.value=="输入关键词")?"":this.value;' style="width:200px;"/><button onClick='$("search_status").submit();'>搜</button></form>
 </div>
 <?php
 			}
