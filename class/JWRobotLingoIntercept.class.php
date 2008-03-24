@@ -101,15 +101,14 @@ class JWRobotLingoIntercept {
 			return;
 		
 		$userInfo = null;
-		switch( $preAndId['pre'] ){
+		switch( $preAndId['pre'] )
+		{
 			case JWFuncCode::PRE_STOCK_CATE: // Must > 100 < 999
 			case JWFuncCode::PRE_CONF_CUSTOM: // Must be 0 - 99
 				$conference = JWConference::GetDbRowFromNumber( $preAndId['id'] );
 				if( empty($conference) )
 					return;
 				$userInfo = JWUser::GetUserInfo( $conference['idUser'] );
-				if( empty($userInfo) )
-					return;
 			break;
 			case JWFuncCode::PRE_CONF_IDUSER:
 			case JWFuncCode::PRE_STOCK_CODE:
@@ -119,10 +118,20 @@ class JWRobotLingoIntercept {
 				}else{
 					$userInfo = JWUser::GetUserInfo( $preAndId['id'] );
 				}
-				if( empty($userInfo) )
-					return;
+			break;
+			case JWFuncCode::PRE_REG_INVITE_13:
+			case JWFuncCode::PRE_REG_INVITE_15:
+				$mobile_no = $preAndId['pre'] . $preAndId['id'];
+				$device_row = JWDevice::GetDeviceDbRowByAddress($mobile_no, 'sms');
+				if ( false==empty($device_row) && $device_row['idUser'] )
+				{
+					$userInfo = JWUser::GetUserInfo( $device_row['idUser'] );
+				}	
 			break;
 		}
+
+		if ( empty($userInfo) )
+			return;
 		
 		/*
 		 * Intecept for sms follow

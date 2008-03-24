@@ -34,6 +34,8 @@ class JWFuncCode {
 	 * Sms Invitation
 	 */
 	const PRE_REG_INVITE = '30';
+	const PRE_REG_INVITE_13 = '13'; //for sms invite
+	const PRE_REG_INVITE_15 = '15'; //for sms invite
 
 
 	/**
@@ -47,7 +49,7 @@ class JWFuncCode {
 	 */
 	const PRE_MYCAIFU_CODE = '08';
 
-	static public $all_pre_id = array( '08', '10','11', '20','30', '40','50', '86','88' );
+	static public $all_pre_id = array( '08', '10','11', '13','15','20','30', '40','50', '86','88' );
 
 	/**
 	 * pre_len
@@ -96,6 +98,21 @@ class JWFuncCode {
 		return self::GetCodeFunc( $mobileNo, $idStatus, self::PRE_MMS_NOTIFY );
 	}
 
+	static public function GetSmsInviteFunc($mobile_no, $user_id) {
+		$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+
+		$code_pre = $code['code'] . $code['func'];
+
+		$user_device = JWDevice::GetDeviceRowByUserId( $user_id );
+		if ( false==empty($user_device) && isset($user_device['sms']) )
+		{
+			if ( 9 >= strlen($code_pre) )
+				return $code_pre . $user_device['sms']['address'];
+		}
+
+		return $code_pre . self::PRE_REG_INVITE . $user_id;
+	}
+
 	static public function FetchFuncId( $serverAddress, $mobileNo, $pre=self::PRE_MMS_NOTIFY ){
 
 		if( isset( self::$serverAddressAlias[ $serverAddress ] ) )
@@ -124,7 +141,28 @@ class JWFuncCode {
 	}
 
 	static public function FetchRegIdUser($serverAddress, $mobileNo){
-		return self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_REG_INVITE );
+		$user_id = self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_REG_INVITE );
+		if ( $user_id ) 
+			return $user_id;
+
+		$id = self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_REG_INVITE_13 );
+		if ( $id )
+		{
+			$sender_mobile = '13' . $id;
+			$device_row = JWDevice::GetDeviceDbRowByAddress($sender_mobile, 'sms');
+			if ( false==empty($device_row) )
+				return $device_row['idUser'];
+		}
+
+		$id = self::FetchFuncId( $serverAddress, $mobileNo, self::PRE_REG_INVITE_15 );
+		if ( $id )
+		{
+			$sender_mobile = '15' . $id;
+			$device_row = JWDevice::GetDeviceDbRowByAddress($sender_mobile, 'sms');
+			if ( false==empty($device_row) )
+				return $device_row['idUser'];
+		}
+		return null;
 	}
 
 

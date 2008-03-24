@@ -60,7 +60,7 @@ class JWNotify{
 
 		if ( empty( $conference ) ) 
 		{
-			$serverAddress = JWFuncCode::GetCodeFunc( $addressTo, $idUserFrom, JWFuncCode::PRE_REG_INVITE );
+			$serverAddress = JWFuncCode::GetSmsInviteFunc( $addressTo, $idUserFrom );
 		}
 		else
 		{

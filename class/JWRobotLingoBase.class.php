@@ -256,6 +256,8 @@ class JWRobotLingoBase {
 		switch ($pre_and_id['pre'])
 		{
 			case JWFuncCode::PRE_REG_INVITE:
+			case JWFuncCode::PRE_REG_INVITE_13:
+			case JWFuncCode::PRE_REG_INVITE_15:
 			{
 				$lingo['F'] =  array( 
 					'class'=>'JWRobotLingo_Add', 
