@@ -110,21 +110,11 @@ switch ( $active_tab )
 		break;
 	case 'search':
 		//搜索所有用户的Status更新
-		$searchStatus = new JWSearchStatus();
-		$searchStatus->setPageNo( $page );
+		$searched_result = JWSearch::SearchStatus($q, $page);
 
-		$searchStatus->setInSite("jiwai.de/$in_user/statuses/");
-		$searchStatus->execute($eq);
+		$pagination = new JWPagination($searched_result['count'], $page);
 
-		$user_status_num = $searchStatus->getTotalSize();
-		$pagination	= new JWPagination($user_status_num, $page);
-
-		$user_ids = $searchStatus->getUserIds();
-		if( !empty($user_ids) )
-			$user_ids = JWUser::GetUserIdsByNameScreens( $user_ids );
-		$status_ids = $searchStatus->getStatusIds();
-
-		$status_data = array('user_ids'=>$user_ids, 'status_ids'=>$status_ids);
+		$status_data = array('user_ids'=>array(), 'status_ids'=>$searched_result['list']);
 		break;
 
 	default:

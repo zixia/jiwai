@@ -17,13 +17,13 @@ class JWSearch {
 	 */
 	static private $msInstance = null;
 
-	/**
-	 * Search TYPE
-	 */
-	const SEARCH_NAME = 1;
-	const SEARCH_EMAIL = 2;
-	const SEARCH_MOBILE = 3;
-	const SEARCH_QQ = 4;
+	const SEARCH_URL_USER = 'http://10.1.50.10:8080/user.php';
+	const SEARCH_URL_STATUS = 'http://10.1.50.10:8080/status.php';
+	const SEARCH_URL_TAG = 'http://10.1.50.10:8080/tag.php';
+
+	const UPDATE_URL_USER = 'http://10.1.50.10:8080/user_update.php';
+	const UPDATE_URL_STATUS = 'http://10.1.50.10:8080/status_update.php';
+	const UPDATE_URL_TAG = 'http://10.1.50.10:8080/tag_update.php';
 
 	/**
 	 * Instance of this singleton class
@@ -49,40 +49,146 @@ class JWSearch {
 	}
 
 	/**
-	 *
+	 * Search User
 	 */
-	static function GetSearchUserIds($q,$limit=100,$offset=0){
+	static public function SearchUser($q, $current_page=1, $page_size=100)
+	{
 		$q = strtolower( trim($q) );
-		$searchType = self::GetSearchObjectType($q);
-		switch($searchType){
-			case self::SEARCH_EMAIL:
-				return JWUser::GetSearchEmailUserIds($q,$limit,$offset);
-			case self::SEARCH_NAME:
-				return JWUser::GetSearchNameUserIds($q,$limit,$offset);
-			case self::SEARCH_MOBILE:
-				return JWUser::GetSearchDeviceUserIds($q,array('sms'),$limit,$offset);
-			case self::SEARCH_QQ:
-				return JWUser::GetSearchDeviceUserIds($q,array('qq'),$limit,$offset);
-		}
-		return array();
+
+		$query_info = array(
+			'query_string' => $q,
+			'order' => true,
+			'current_page' => $current_page,
+			'page_size' => $page_size,
+		);
+
+		return self::LuceneSearch( self::SEARCH_URL_USER, $query_info );
 	}
 
 	/**
-	 * Get Search type
-	 * @param string @key
-	 * @return int searchType
+	 * Search Tag
 	 */
-	static function GetSearchObjectType($key){
-		if( false !== strpos($key, '@') ) {
-			return self::SEARCH_EMAIL;
+	static public function SearchTag($q, $current_page=1, $page_size=100)
+	{
+		$q = strtolower( trim($q) );
+
+		$query_info = array(
+			'query_string' => $q,
+			'order' => true,
+			'current_page' => $current_page,
+			'page_size' => $page_size,
+		);
+
+		return self::LuceneSearch( self::SEARCH_URL_TAG, $query_info );
+	}
+
+	/**
+	 * Search Status
+	 */
+	static public function SearchStatus($q, $current_page=1, $page_size=20)
+	{
+		$q = strtolower( trim($q) );
+
+		/** advance analyze */
+		//in:user
+		if ( preg_match("/\s+in\s*:\s*([\S]+)\s*?/", $q, $matches) ){
+			$in_user = $matches[1];
+			$q = preg_replace("/\s+in\s*:\s*([\S]+)/","",$q);
 		}
-		if( is_numeric( $key ) ){
-			if( strlen($key)==11 && ( 0===strpos($key,'13') || 0===strpos($key,'15') || 0===strpos($key,'0') )){
-				return self::SEARCH_MOBILE;
-			}
-			return self::SEARCH_QQ;
-		}		
-		return self::SEARCH_NAME;
+		//device:msn
+		if ( preg_match("/\s+device\s*:\s*([\w]+)\s*?/", $q, $matches) ){
+			$in_device = $matches[1];
+			$q = preg_replace("/\s+device\s*:\s*([\w]+)/","",$q);
+		}
+		//type:mms
+		if ( preg_match("/\s+type\s*:\s*([\w]+)\s*?/", $q, $matches) ){
+			$in_type = $matches[1];
+			$q = preg_replace("/\s+type\s*:\s*([\w]+)/","",$q);
+		}
+
+		$query_info = array(
+			'query_string' => $q,
+			'order' => true,
+			'current_page' => $current_page,
+			'page_size' => $page_size,
+		);
+
+		if ( isset($in_user) ) 
+			$query_info['user'] = $in_user;
+		if ( isset($in_device) ) 
+			$query_info['device'] = $in_device;
+		if ( isset($in_type) ) 
+			$query_info['type'] = $in_type;
+
+		return self::LuceneSearch( self::SEARCH_URL_STATUS, $query_info );
+	}
+
+	static private function LuceneSearch($search_url, $query_info=array() )
+	{
+		$encoded_query_info = base64_Encode( json_encode( $query_info ) );
+		$post_data = 'q=' . $encoded_query_info;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $search_url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data); 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$return = curl_exec($ch);
+
+		$error = json_decode( $return, true );
+
+		if ( $error['error'] )
+			return array('count'=>0, 'list'=>array(),);
+
+		return $error;
+	}
+
+	/**
+	 * update Lucene index
+	 * @param bool call , whether call rpc_url directly
+	 */
+	static public function LuceneUpdate($index='user', $id, $call=true)
+	{
+		$index = strtolower($index);
+		if ( false==in_array($index, array('user','status','tag')) )
+			return false;
+
+		if ( false===$call )
+		{
+			JWPubSub::Instance('spread://localhost/')->Publish('/lucene/update', array(
+				'id' => $id,
+				'index' => $index,
+			));
+			return true;
+		}
+
+		switch ( $index )
+		{
+			case 'user':
+				$rpc_url = self::UPDATE_URL_USER . '?id=' . $id;
+				break;
+			case 'status':
+				$rpc_url = self::UPDATE_URL_STATUS . '?id=' . $id;
+				break;
+			case 'tag':
+				$rpc_url = self::UPDATE_URL_TAG . '?id=' . $id;
+				break;
+		}
+
+		if ( false==isset($rpc_url) )
+			return false;
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $rpc_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$return = curl_exec($ch);
+
+		$error = json_decode( $return, true );
+
+		if ( $error['error'] )
+			return false;
+
+		return true;
 	}
 }
 ?>

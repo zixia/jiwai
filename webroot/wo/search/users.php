@@ -13,7 +13,8 @@ $head_options = array(
 
 $page_user_info		= $current_user_info;
 
-$searched_ids		= JWSearch::GetSearchUserIds($q);
+$searched_result = JWSearch::SearchUser($q);
+$searched_ids = $searched_result['list'];
 $searched_num		= count( $searched_ids );
 $searched_user_rows	= JWDB_Cache_User::GetDbRowsByIds($searched_ids);
 
