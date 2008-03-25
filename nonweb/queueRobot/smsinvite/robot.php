@@ -19,7 +19,7 @@ class JWPubSub_Listener_SmsInvite implements JWPubSub_Listener
 		}
 		$message .= (false===strpos($message, ' F ')) ? ' 请回复 F 确定' : '';
 
-		$server_address = JWFuncCode::GetCodeFunc($address, $user_id, JWFuncCode::PRE_REG_INVITE);
+		$server_address = JWFuncCode::GetSmsInviteFunc($address, $user_id);
 		
 		JWPubSub::Instance('spread://localhost/')->Publish( '/robot/mt/sms', array(
 			'type' => $type,

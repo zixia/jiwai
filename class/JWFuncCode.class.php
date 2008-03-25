@@ -99,15 +99,17 @@ class JWFuncCode {
 	}
 
 	static public function GetSmsInviteFunc($mobile_no, $user_id) {
-		$code = JWSPCode::GetCodeByMobileNo( $mobileNo );
+		$code = JWSPCode::GetCodeByMobileNo( $mobile_no );
 
 		$code_pre = $code['code'] . $code['func'];
+
+		if ( 9 < strlen($code_pre) )
+			return $code_pre . self::PRE_REG_INVITE . $user_id;
 
 		$user_device = JWDevice::GetDeviceRowByUserId( $user_id );
 		if ( false==empty($user_device) && isset($user_device['sms']) )
 		{
-			if ( 9 >= strlen($code_pre) )
-				return $code_pre . $user_device['sms']['address'];
+			return $code_pre . $user_device['sms']['address'];
 		}
 
 		return $code_pre . self::PRE_REG_INVITE . $user_id;
