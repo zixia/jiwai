@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+﻿#!/usr/bin/perl -w
 
 use XML::RSS::Parser;
 use FileHandle;
@@ -54,7 +54,7 @@ sub _getRedirectUrl {
 sub getFeedItemsFromName {
     my ($name, $options) = @_;
     my %options = %$options;
-    my ($filter, $version, $redirect) = ($options{'filter'}, $options{'version'}, $options{'redirect'});
+    my ($filter, $version, $redirect, $roi) = ($options{'filter'}, $options{'version'}, $options{'redirect'}, $options{'roi'});
     die "no name specifed" unless defined $name;
 
     my %feedItems = ();
@@ -66,7 +66,18 @@ sub getFeedItemsFromName {
         my $feed = XML::FeedPP->new( $feedn);
         foreach my $item ( $feed->get_item() ) {
             my ($title, $link) = ($item->title(), $item->link());
+
+            if (defined $roi) {
+                my $line = $item->description();
+                $line =~ s/<[^>]+>//gi;
+                $line =~ s/[\n]//gi;
+                $line =~ s/<[^>]+>//gi;
+                ($line) = split("。", $line);
+                $title .= " $line";
+            }
+
             $title =~ s/,/，/gi;
+
             if (defined $filter) {
                 eval '$link=~'.$filter;
             }

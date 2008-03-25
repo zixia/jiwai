@@ -57,9 +57,12 @@ sub getTVGuideByChannel {
         chomp;
         if (m#<div\s+id="pg">#i) {$roi = 1;}
         next if ($roi eq 0);
-        $_ =~ s#<a\s+href=.*?>##gi;
+        #$_ =~ s#<a\s+href=.*?>##gi;
+        #$_ =~ s#<\/a>##gi;
+        #$_ =~ s#<img\s+.*?>##gi;
+        $_ =~ s#<img[^>]+>##gi;
+        $_ =~ s#<a[^>]+>##gi;
         $_ =~ s#<\/a>##gi;
-        $_ =~ s#<img\s+.*?>##gi;
         $_ =~ s#<div\s+style.*?>##gi;
         if (m#<div\s+id="pgrow">.*?<font.*?>([^<> ]+)<\/font>.*?([^<>]*?)\s+<\/div>#i) {
             ($time, $show) = ($1, $2);

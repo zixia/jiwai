@@ -128,9 +128,9 @@ sub getItems {
 
         my ($roi, $pattern) = ($_, qr/<a\s+href=\"(.*?)\"\s+target=\"_blank\">([^<]+)/);
         while ($roi =~ m/$pattern/) {
-            my $link = $1;
-            $link =~ s/,/，/gi;
-            $items{$link} = $2;
+            my ($link, $title) = ($1, $2);
+            $title =~ s/,/，/gi;
+            $items{$link} = $title;
             $roi =~ s/$pattern//i;
         }
     }
@@ -180,7 +180,7 @@ sub _loadCache {
 }
 
 my $cache = '/tmp/feed/nba.cache';
-my $sleep = 10;
+my $sleep = 2;
 my %cachedItems = _loadCache($cache);
 open CACHE, ">>$cache" or die "failed write: $!";
 
