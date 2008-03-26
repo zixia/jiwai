@@ -45,6 +45,7 @@ function ons(){
 		<!--{/foreach}-->
 	</table>
 	</form>
+	{$page_string}
 <!--{else}-->
 <h3>没有需要审核的更新</h3>
 <!--{/if}-->
