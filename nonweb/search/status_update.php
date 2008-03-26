@@ -22,14 +22,17 @@ if ( $id )
 		 */
 
 
-		$token = array( true, false, false, false, false);
+		$token = array( true, false, false, false, false, false, false);
 		$user = Execute::GetOnePK('User', $record->get("idUser"));
-		$other_field = array( "status", "user", "device", "mms", "signature" );
+		$tag = Execute::GetOnePK('Tag', $record->get("idTag"));
+		$other_field = array( "status", "user", "device", "mms", "tag", "time", "signature" );
 		$other_value = array( 
 			$record->get("status"),
 			empty($user) ? '' : $user->get("nameScreen"),
 			$record->get("device"),
 			$record->get("isMms"),
+			empty($tag) ? '' : $tag->get("name"),
+			strtotime($record->get("timeCreate")),
 			$record->get("isSignature"),
 		);
 

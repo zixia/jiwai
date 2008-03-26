@@ -85,24 +85,25 @@ class JWSearch {
 	/**
 	 * Search Status
 	 */
-	static public function SearchStatus($q, $current_page=1, $page_size=20)
+	static public function SearchStatus($q, $current_page=1, $page_size=20, $extra=array())
 	{
 		$q = strtolower( trim($q) );
+		$in_user = $in_device = $in_type = $in_tag = null;
 
 		/** advance analyze */
 		//in:user
 		if ( preg_match("/\s+in\s*:\s*([\S]+)\s*?/", $q, $matches) ){
-			$in_user = $matches[1];
+			$in_user = strtolower($matches[1]);
 			$q = preg_replace("/\s+in\s*:\s*([\S]+)/","",$q);
 		}
 		//device:msn
 		if ( preg_match("/\s+device\s*:\s*([\w]+)\s*?/", $q, $matches) ){
-			$in_device = $matches[1];
+			$in_device = strtolower($matches[1]);
 			$q = preg_replace("/\s+device\s*:\s*([\w]+)/","",$q);
 		}
 		//type:mms
 		if ( preg_match("/\s+type\s*:\s*([\w]+)\s*?/", $q, $matches) ){
-			$in_type = $matches[1];
+			$in_type = strtolower($matches[1]);
 			$q = preg_replace("/\s+type\s*:\s*([\w]+)/","",$q);
 		}
 
@@ -113,12 +114,37 @@ class JWSearch {
 			'page_size' => $page_size,
 		);
 
-		if ( isset($in_user) ) 
-			$query_info['user'] = $in_user;
-		if ( isset($in_device) ) 
-			$query_info['device'] = $in_device;
-		if ( isset($in_type) ) 
-			$query_info['type'] = $in_type;
+		/**
+		 * deal extra info
+		 */
+		$in_user .= ' ' . isset($extra['in_user']) ? $extra['in_user'] : null;
+		$in_device .= ' ' . isset($extra['in_device']) ? $extra['in_device'] : null;
+		$in_type .= ' ' . isset($extra['in_type']) ? $extra['in_type'] : null;
+		$in_tag .= ' ' . isset($extra['in_tag']) ? $extra['in_tag'] : null;
+
+		/**
+		 * consider search syntax
+		 */
+
+		$in_user_array = array_unique(preg_split('/\s|,/', strtolower($in_user), -1, PREG_SPLIT_NO_EMPTY));
+		$in_device_array = array_unique(preg_split('/\s|,/', strtolower($in_device), -1, PREG_SPLIT_NO_EMPTY));
+		$in_type_array = array_unique(preg_split('/\s|,/', strtolower($in_type), -1, PREG_SPLIT_NO_EMPTY));
+		$in_tag_array = array_unique(preg_split('/\s|,/', strtolower($in_tag), -1, PREG_SPLIT_NO_EMPTY));
+
+		/**
+		 * set query_info
+		 */
+		if ( false==empty($in_user_array) ) 
+			$query_info['user'] = $in_user_array;
+
+		if ( false==empty($in_device_array) ) 
+			$query_info['device'] = $in_device_array;
+
+		if ( false==empty($in_type_array) ) 
+			$query_info['type'] = $in_type_array;
+
+		if ( false==empty($in_tag_array) ) 
+			$query_info['tag'] = $in_tag_array;
 
 		return self::LuceneSearch( self::SEARCH_URL_STATUS, $query_info );
 	}

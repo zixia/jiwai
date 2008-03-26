@@ -25,23 +25,25 @@ public class IndexStatus
 		Table[] a = null;
 		for( int i=0; i<step; i++ )
 		{
-			a = Execute.getArray("SELECT s.id AS id,u.nameScreen as user, status,device,isSignature,isMms From Status s,User u WHERE s.idUser=u.id ORDER BY s.id ASC", i*stepLen, stepLen);
+			a = Execute.getArray("SELECT s.id AS id,u.nameScreen as user,t.name AS tag,status,device,isSignature,isMms,unix_timestamp(s.timeCreate) AS time From Status s LEFT JOIN User u ON u.id=s.idUser LEFT JOIN Tag t ON t.id=s.idTag ORDER BY s.id ASC", i*stepLen, stepLen);
 
 			for( int j=0; j<a.length; j++)
 			{
 				String keyField = "id";
 				String keyValue = a[j].get("id");
 
-				String[] otherField = { "device", "user", "signature", "mms", "status" };
+				String[] otherField = { "device", "user", "signature", "mms", "tag", "time", "status" };
 				String[] otherValue = {
 					a[j].get("device")
 						, a[j].get("user")
 						, a[j].get("isSignature")
 						, a[j].get("isMms")
+						, a[j].get("tag")
+						, a[j].get("time")
 						, a[j].get("status")
 				};
 
-				boolean token[] = { false, false, false, false, true };
+				boolean token[] = { false, false, false, false, false, false, true };
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}

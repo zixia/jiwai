@@ -36,7 +36,7 @@ $searcher = new LuceneSearch( $user_index );
 
 $query1 = $searcher->parseQuery( $query_string, 'bio' );
 $query2 = $searcher->parseQuery( $query_string.'*', 'nameScreen' );
-$query3 = $searcher->parseQuery( $query_string, 'nameFull' );
+$query3 = $searcher->termQuery( $query_string, 'nameFull' );
 $query = array($query1, $query2, $query3);
 
 // search from devices 

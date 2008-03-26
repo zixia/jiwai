@@ -6,7 +6,9 @@ $key_field = 'id';
 $order_field = null;
 
 $query_info_demo = array(
-	'query_string' => '叽歪',
+	'query_string' => '网页',
+	'user' => array(0=>'coven'),
+//	'tag' => array('叽歪','seek','zixia'),
 	'current_page' => 1,
 	'page_size' => 20, 
 	'order' => true,
@@ -35,21 +37,53 @@ if ( $demo )
 $searcher = new LuceneSearch( $status_index );
 
 $query = $searcher->parseQuery( $query_string, "status" );
+
 /**
- * advance search
+ * advance search [type, device, user, tag] limitations;
  */
-if ( isset($query_info['type'] ) )
+
+/**
+ * search in types( type1,  type2, ... ) '
+ * should clause'
+ */
+if ( isset($query_info['type']) )
 {
-	if( 'signature' == $query_info['type'] )
+	if ( count($query_info['type']) == 1 )
 	{
-		$one_query = $searcher->termQuery( 'Y', 'signature');
-		$query = $searcher->mergeMustQuery( array($query, $one_query) );
+		$one_query = $searcher->termQuery( 'Y', array_shift($query_info['type']) );
 	}
-	if( 'mms' == $query_info['type'] )
+	else
 	{
-		$one_query = $searcher->termQuery( 'Y', 'mms');
-		$query = $searcher->mergeMustQuery( array($query, $one_query) );
+		$one_query = array();
+		foreach ( $query_info['device'] AS $one )
+		{
+			array_push( $one_query, $searcher->termQuery( 'Y', $one ) );
+		}
+		$one_query = $searcher->mergeShouldQuery( $one_query );
 	}
+	$query = $searcher->mergeMustQuery( array($query, $one_query) );
+}
+
+/**
+ * search in users( devices1,  device2, ... ) '
+ * should clause'
+ */
+if ( isset($query_info['device']) )
+{
+	if ( count($query_info['device']) == 1 )
+	{
+		$one_query = $searcher->termQuery( array_shift($query_info['device']), 'device');
+	}
+	else
+	{
+		$one_query = array();
+		foreach ( $query_info['device'] AS $one)
+		{
+			array_push( $one_query, $searcher->termQuery( $one, 'device' ) );
+		}
+		$one_query = $searcher->mergeShouldQuery( $one_query );
+	}
+	$query = $searcher->mergeMustQuery( array($query, $one_query) );
 }
 
 if ( isset($query_info['device']) )
@@ -58,9 +92,47 @@ if ( isset($query_info['device']) )
 	$query = $searcher->mergeMustQuery( array($query, $one_query) );
 }
 
+/**
+ * search in users( user1,  user2, ... ) '
+ * should clause'
+ */
 if ( isset($query_info['user']) )
 {
-	$one_query = $searcher->termQuery( $query_info['user'], 'user');
+	if ( count($query_info['user']) == 1 )
+	{
+		$one_query = $searcher->termQuery( array_shift($query_info['user']), 'user');
+	}
+	else
+	{
+		$one_query = array();
+		foreach ( $query_info['user'] AS $one )
+		{
+			array_push( $one_query, $searcher->termQuery( $one, 'user' ) );
+		}
+		$one_query = $searcher->mergeShouldQuery( $one_query );
+	}
+	$query = $searcher->mergeMustQuery( array($query, $one_query) );
+}
+
+/**
+ * search in tags( tag1,  tag2, ... ) '
+ * should clause'
+ */
+if ( isset($query_info['tag']) )
+{
+	if ( count($query_info['tag']) == 1 )
+	{
+		$one_query = $searcher->termQuery( array_shift($query_info['tag']), 'tag');
+	}
+	else
+	{
+		$one_query = array();
+		foreach ( $query_info['tag'] AS $one)
+		{
+			array_push( $one_query, $searcher->termQuery( $one, 'tag' ) );
+		}
+		$one_query = $searcher->mergeShouldQuery( $one_query );
+	}
 	$query = $searcher->mergeMustQuery( array($query, $one_query) );
 }
 // end advance
