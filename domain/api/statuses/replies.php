@@ -82,7 +82,7 @@ function renderFeedStatuses($idUser, $feedType) {
 		$feed->AddItem(array( 
 				'title'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
 				'desc'	=> $status['user']['nameScreen'] . ' - ' . JWApi::RemoveInvalidChar($status['status']) , 
-				'date'	=> $status['timeCreate'] , 
+				'date'	=> strtotime($status['timeCreate']) , 
 				'author'=> $status['user']['nameScreen'] , 
 				'guid'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 
 				'url'	=> "http://JiWai.de/" . $status['user']['nameUrl'] . "/statuses/" . $status['idStatus'] , 

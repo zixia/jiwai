@@ -89,7 +89,7 @@ function renderFeedReturn( $messages, $idUser, $feedType=JWFeed::RSS20 ){
 				'title'	=> $userSender['nameScreen'] . '给'. $userReceiver['nameScreen'].'的悄悄话',
 				'desc'	=> JWApi::RemoveInvalidChar($m['message']) , 
 				'author' => $userSender['nameScreen'],
-				'date'	=> $m['timeCreate'], 
+				'date'	=> strtotime($m['timeCreate']), 
 				'guid'	=> "http://JiWai.de/direct_messages/" . $m['idMessage'],
 				'url'	=> "http://JiWai.de/direct_messages/" . $m['idMessage'],
 				));
