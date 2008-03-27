@@ -52,8 +52,7 @@ class JWTemplate {
 	static public function html_doctype( $options=null )
 	{
 		echo <<<_HTML_
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 _HTML_;
 	}
 
@@ -173,7 +172,6 @@ _HTML_;
 $rss_html
 $refresh_html
 $openid_html
-	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 	<link rel="shortcut icon" href="$asset_url_favicon" type="image/icon" />
 	<script type="text/javascript">window.ServerTime=$time;</script>
 	<script>var current_user_id = '$current_user_id';</script>
@@ -181,6 +179,7 @@ $openid_html
 _HTML_;
 		if(empty($options['is_load_all']))
 			echo <<<_HTML_
+	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
 				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
 				<script type="text/javascript" src="$asset_url_js_moo"></script>
 				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
@@ -190,8 +189,25 @@ _HTML_;
 				<script type="text/javascript" src="$asset_url_js_box"></script>
 				<script type="text/javascript" src="$asset_url_js_action"></script>
 _HTML_;
-		else
-			echo "<script language=\"javascript\">AC_FL_RunContent = 0;</script><script type=\"text/javascript\" src=\"$asset_url_js_ac_content\"></script>";
+		else if('false'==$options['is_load_all'])
+		{
+			echo <<<_HTML_
+	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<script language="javascript">AC_FL_RunContent = 0;</script><script type="text/javascript" src="$asset_url_js_ac_content"></script>
+_HTML_;
+//			echo "<script language=\"javascript\">AC_FL_RunContent = 0;</script><script type=\"text/javascript\" src=\"$asset_url_js_ac_content\"></script>";
+		}
+		else if('g'==$options['is_load_all'])
+		{
+			$asset_css_index = JWTemplate::GetAssetUrl('/css/index.css');
+			$asset_css_main = JWTemplate::GetAssetUrl('/css/main.css');
+			$asset_js_index = JWTemplate::GetAssetUrl('/js/index.js');
+			echo <<<_HTML_
+	<link href="$asset_css_index" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
+	<script type="text/javascript" src="$asset_js_index"></script>
+_HTML_;
+		}
 		?>
 
 	<link rel="start" href="<?php echo JW_SRVNAME;?>" title="叽歪网首页" />
@@ -452,15 +468,14 @@ _HTML_;
 	<h3>Footer</h3>
 	<ul>
 		<li class="first">&copy; 2007-<? echo date("Y");?> 叽歪网</li>
-
-		<li><a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a></li>
-		<li><a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a></li>
+		<li><a href="<? echo JW_SRVNAME;?>/wo/about/jiwai" target="_blank">关于我们</a></li>
+		<li><a href="<? echo JW_SRVNAME;?>/wo/about/joinus" target="_blank">加入我们</a></li>
 		<li><a href="http://help.jiwai.de/MediaComments" target="_blank">媒体和掌声</a></li>
 		<li><a href="http://blog.jiwai.de/" target="_blank">Blog</a></li>
 		<li><a href="http://help.jiwai.de/Api" target="_blank">API</a></li>
 		<li><a href="http://help.jiwai.de/" target="_blank">帮助</a></li>
 		<li><a href="http://jiwai.de/wo/feedback/" onClick="return JWAction.redirect(this);" target="_blank">反馈</a></li>
-		<li><a href="http://help.jiwai.de/Links" target="_blank">友情链接</a></li>
+		<li><a href="<? echo JW_SRVNAME;?>/wo/about/partner" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
 		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
@@ -478,13 +493,24 @@ _HTML_;
 <div id="footer">
 	<h3>Footer</h3>
 		<span >&copy; 2007-<? echo date("Y");?> 叽歪网&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<a href="http://help.jiwai.de/AboutUs" target="_blank">关于我们</a>
-		<a href="http://help.jiwai.de/WeAreHiring" target="_blank">加入我们</a>
+		<a href="<? echo JW_SRVNAME;?>/wo/about/jiwai" target="_blank">关于我们</a>
+		<a href="<? echo JW_SRVNAME;?>/wo/about/joinus" target="_blank">加入我们</a>
 		<a href="http://blog.jiwai.de/" target="_blank">Blog</a>
 		<a href="http://help.jiwai.de/Api" target="_blank">API</a>
 		<a href="http://help.jiwai.de/" target="_blank">帮助</a>
-		<a href="http://help.jiwai.de/Links" target="_blank">友情链接</a>
+		<a href="<? echo JW_SRVNAME;?>/wo/about/partner" target="_blank">友情链接</a>
 		<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>
+</div>
+
+<?php
+		JWTemplate::GoogleAnalytics();
+	}
+
+	static public function footer3()
+	{
+?>
+<div class="footer">
+		<span >&copy; 2007-<? echo date("Y");?>&nbsp;叽歪网版权所有</span><a href="http://www.miibeian.gov.cn" target="_blank" title="京ICP备07024804号" class="grey">京ICP备07024804号</a>
 </div>
 
 <?php
@@ -1621,6 +1647,12 @@ _HTML_;
 <?php
 	}
 
+    function sidebar_asus()
+	    {    
+			        $src = JWTemplate::GetAssetUrl('/images/adonjiwai.gif');
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a href="/asus2008/"><img src="'.$src.'" title="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)" alt="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)".></img></a></div>';
+		}
+
 	/*
 	 * Sidebar menu
 	 *	@param array	item list	array ( array('user_notice'	, array(param1=>val1,param2=>val2))
@@ -1628,7 +1660,7 @@ _HTML_;
 										);
 	 *
 	 */
-	static public function sidebar( $menuList=array(), $idUser=null )
+	static public function sidebar( $menuList=array(), $idUser=null, $pageName='' )
 	{
 		if ( empty($idUser) ){
 			$idUser = JWLogin::GetCurrentUserId();
@@ -1681,6 +1713,7 @@ if ($menuList[0][0] == 'login') {
 
 ?>
 	</div><!-- sidediv -->
+<? if('public_timeline'==$pageName)            self::sidebar_asus();?>	
 </div><!-- sidebar -->
 
 <?php
@@ -2484,6 +2517,9 @@ _HTML_;
 		// 同一个文件，总会被分配到同一个 n 上。
 		$n = sprintf('%u',crc32($absUrlPath));
 		$n %= $asset_num_max;
+
+		if('/' != mb_substr($absUrlPath, 0, 1))
+			$absUrlPath ="/$absUrlPath";
 
 		if ( !$mtime )
 			return "http://asset${n}.$domain$absUrlPath";

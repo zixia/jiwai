@@ -1,0 +1,320 @@
+﻿*{
+margin:0px;
+padding:0px;
+}
+
+img {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px;margin:0px;padding:0px;
+}
+div {
+	BORDER-TOP-WIDTH: 0px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+body {
+width:877px;font-size:12px;margin:0px auto; PADDING: 0px;COLOR: #000;  FONT-FAMILY: arial,verdana,sans-serif; TEXT-ALIGN:left; 
+}
+
+form {
+	BORDER-TOP-WIDTH: 0px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+
+a:link {
+	COLOR:#FF6600; TEXT-DECORATION: underline;
+}
+a:visited {
+	COLOR:#FF6600; TEXT-DECORATION: underline;
+}
+a:hover {
+	COLOR:#FF6600; TEXT-DECORATION: none;
+}
+a.blno:link {
+	COLOR:#333; TEXT-DECORATION: underline;
+}
+a.blno:visited {
+	COLOR:#333; TEXT-DECORATION: underline;
+}
+a.blno:hover {
+	COLOR:#333; TEXT-DECORATION: none;
+}
+a.grey:link {
+	COLOR:#999; TEXT-DECORATION: none;
+}
+a.grey:visited {
+	COLOR:#999; TEXT-DECORATION: none;
+}
+a.grey:hover {
+	COLOR:#FF6600; TEXT-DECORATION: underline;
+}
+.aboutleft{
+float:left;width:200px;padding-top:17px;
+}
+.aboutleft_img{
+float:left;margin-left:33px;
+}
+.clear{clear:both;}
+.aboutmenu{
+float:left;width:200px;height:251px;padding-top:56px;background:url(../images/aboutbg.jpg) no-repeat;margin-top:8px;
+}
+.aboutmenu ul{
+clear:both;width:180px;padding-left:20px;list-style-type:none;
+}
+.aboutmenu li.one{
+float:left;width:164px;height:30px;line-height:30px;background:url(../images/aboutmenubg_1.jpg) no-repeat 0px 0px;text-indent:48px;font-size:14px;font-weight:bold;margin-top:5px;
+}
+.aboutmenu li.two{
+float:left;width:164px;height:30px;line-height:30px;background:url(../images/dianbg_1.jpg) no-repeat 27px 9px;text-indent:48px;font-size:14px;margin-top:5px;
+}
+.aboutmenu li.one a{
+color:#000;TEXT-DECORATION: none;
+}
+.baodao{
+float:left;width:200px;height:20px;background:url(../images/dianbg_2.jpg) no-repeat 34px 3px;text-indent:61px;font-size:16px;font-weight:bold;
+}
+
+
+
+.forn{
+float:left;width:100%;text-align:right;margin-top:23px;font-size:14px;
+}
+
+.aboutright{
+float:left;width:676px;padding-top:38px;
+}
+.aboutright_top{
+float:left;width:97%;padding-right:3%;text-align:right;color:#555;
+}
+.aboutright_top a{
+margin:0px 5px;
+}
+.aboutrighttop{
+float:left;width:100%;height:34px;background:url(../images/aboutrighttop.jpg) no-repeat left top;margin-top:7px;
+}
+
+
+.aboutrightmiddle{
+float:left;width:595px;padding-left:40px;padding-right:40px;background:url(../images/aboutrightmiddle.jpg) repeat-y;padding-bottom:7px;
+}
+
+.poaboutrightmiddle{
+float:left;width:656px;padding-left:20px;padding-right:0px;background:url(../images/aboutrightmiddle.jpg) repeat-y;padding-bottom:7px;
+}
+
+.aboutrightmiddle h1{
+float:left;width:100%;padding-bottom:8px;font-size:26px;
+}
+.aboutrightmiddle h2{
+float:left;width:100%;padding-bottom:0px!important;padding-bottom:2px;font-size:26px;
+}
+.groupmen{
+float:left;width:100%;
+}
+.groupmen ul{
+float:left;width:313px;height:81px;list-style-type:none;background:url(../images/aboutbg2.jpg) no-repeat;margin-top:12px;margin-right:8px;
+}
+.groupmen li.one{
+float:left;width:22%;text-align:center;padding-top:8px!important;padding-top:8px;
+}
+.groupmen li.one img{
+width:48px;height:48px;border:1px solid #ccc;padding:1px;
+}
+.groupmen li.two{
+float:left;width:73%;padding-left:1%;padding-top:8px!important;padding-top:6px;
+}
+.groupmen li.two h2{
+float:left;width:100%;font-size:14px;padding-top:2px!important;padding-top:4px;
+}
+.groupmen li.two div{
+float:left;width:100%;font-size:14px;padding-top:8px;color:#565656;
+}
+.groupmen li.two p{
+float:left;width:100%;text-align:right;color:#999999;padding-top:3px;
+}
+.aboutrightbottom{
+float:left;width:100%;height:34px;background:url(../images/aboutrightbottom.jpg) no-repeat left top;
+}
+
+
+.xingroupfont {
+float:left;width:97%;padding-left:3%;
+}
+.xingroupfont  h2{
+float:left;width:100%;font-size:14px;;margin-top:20px;padding-bottom:9px!important;padding-bottom:12px;
+}
+.xingroupfont  p{
+float:left;width:100%;color:#555;line-height:22px;
+}
+.xingroupfont  p span{
+color:#000;
+}
+.xingroupfont  p code{
+color:red;
+}
+.xingroupfont  h3{
+float:left;width:100%;font-size:16px;margin-top:9px!important;margin-top:13px;padding-bottom:6px!important;padding-bottom:8px;
+}
+.xingroupfont  h4{
+float:left;width:100%;font-size:16px;margin-top:20px;padding-bottom:6px!important;padding-bottom:10px;
+}
+.xingroupfont  h5{
+float:left;width:100%;font-size:14px;margin-top:20px;padding-bottom:6px!important;padding-bottom:10px;
+}
+.xingroupfont  .joinus{
+float:left;width:100%;font-size:12px;line-height:22px;margin-top:8px!important;margin-top:12px;
+}
+.xingroupfont  .jiwaitos{
+float:left;width:100%;font-size:14px;color:#000;line-height:22px;margin-top:8px!important;margin-top:12px;
+}
+.xingroupfont  .aboutme{
+float:left;width:280px;margin-right:14px;color:#555;line-height:200%;
+}
+.xingroupfont   img{
+float:right;
+}
+
+
+
+
+
+
+.groupfont {
+float:left;width:100%;
+}
+.groupfont  h2{
+float:left;width:100%;font-size:14px;;margin-top:20px;padding-bottom:9px!important;padding-bottom:12px;
+}
+.groupfont  p{
+float:left;width:100%;color:#555;line-height:22px;
+}
+.groupfont  p span{
+color:#000;
+}
+.groupfont  p code{
+color:red;
+}
+.groupfont  h3{
+float:left;width:100%;font-size:16px;margin-top:9px!important;margin-top:13px;padding-bottom:6px!important;padding-bottom:8px;
+}
+.groupfont  h4{
+float:left;width:100%;font-size:16px;margin-top:20px;padding-bottom:6px!important;padding-bottom:10px;
+}
+.groupfont  h5{
+float:left;width:100%;font-size:14px;margin-top:20px;padding-bottom:6px!important;padding-bottom:10px;
+}
+.groupfont  .joinus{
+float:left;width:100%;font-size:12px;line-height:22px;margin-top:8px!important;margin-top:12px;
+}
+.groupfont  .jiwaitos{
+float:left;width:100%;font-size:14px;color:#000;line-height:22px;margin-top:8px!important;margin-top:12px;
+}
+.groupfont  .aboutme{
+float:left;width:280px;margin-right:14px;color:#555;line-height:200%;
+}
+.groupfont   img{
+float:right;
+}
+
+
+
+
+
+
+
+
+.agroupfont {
+float:left;width:100%;
+}
+.agroupfont  h2{
+float:left;width:100%;font-size:14px;margin-top:25px;padding-bottom:8px;
+}
+.agroupfont  p{
+float:left;width:100%;color:#565656;line-height:200%;
+}
+.agroupfont  p span{
+color:#000;
+}
+.agroupfont  p code{
+color:red;
+}
+.agroupfont  h3{
+float:left;width:100%;font-size:16px;margin-top:11px;*margin-top:14px;_margin-top:14px;padding-bottom:8px;
+}
+.agroupfont  .aboutme{
+float:left;width:45%;color:#555;line-height:200%;
+}
+.agroupfont   img{
+float:right;margin-right:15px;
+}
+
+.fontlist{
+float:left;width:100%;
+}
+.fontlist ul{
+float:left;width:100%;list-style-type:none;
+}
+.fontlist li{
+float:left;width:100%;height:14px;line-height:14px;background:url(../images/dian.jpg) no-repeat 0px 3px;text-indent:11px;margin-top:10px;
+}
+
+.groupfonth2{
+float:left;width:100%;margin-top:25px;padding-bottom:8px; clear:both;
+}
+.groupfonth2 span{
+float:left;font-size:14px;font-weight:bold;
+}
+.groupfonth2 a{
+float:right;
+}
+.mecss{
+float:left;width:100%;margin-top:10px; margin-bottom:8px;
+}
+.mecss img{
+float:left;margin-right:2px;
+}
+.logoimg{
+float:left;width:100%;
+}
+.logoimg ul{
+float:left;width:157px;margin-right:5px;list-style-type:none;
+}
+.logoimg li.one{
+float:left;width:155px;border:1px solid #ECECEC;padding:15px 0px;text-align:center;
+}
+.logoimg li.one img{
+text-align:center;float:none;
+}
+.logoimg li.two{
+float:left;width:155px;color:#000;padding-top:5px;text-align:center;
+}
+.friendlink{
+float:left;width:100%;
+}
+.friendlink ul{
+float:left;width:616px;list-style-type:none;border-top:1px solid #ECECEC;border-left:1px solid #ECECEC;border-bottom:1px solid #ECECEC;margin-top:4px;
+}
+.friendlink li{
+float:left;width:154px;background:url(../images/feibg.jpg) repeat-y right;text-align:center;height:79px;*height:79px;_height:84px;
+}
+.friendlink li img{
+width:147px;*width:153px;_width:153px;height:79px;
+}
+
+
+.footer{
+float:left;width:97%;padding-right:3%;text-align:right;color:#999999;margin-top:11px;padding-bottom:15px;
+}
+.footer a{
+margin:0px 10px;
+}
+
+
+.abdle{
+float:left;width:653px;padding-left:23px;background:url(../images/aboutrightmiddle.jpg) repeat-y;padding-bottom:7px;
+}
+
+
+.partnercss{
+float:left;width:605px;padding-left:30px;padding-right:40px;background:url(../images/aboutrightmiddle.jpg) repeat-y;padding-bottom:7px;
+}
+.partnercss  h1{
+float:left;width:100%;margin-bottom:15px!important;margin-bottom:17px;font-size:26px;
+}
+
