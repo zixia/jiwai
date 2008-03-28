@@ -6,6 +6,7 @@ class
 {
 
 // BEGIN consts
+  const boolean debugMode = false;
 
   const String storeUsername  = "login.username";
   const String storePassword  = "login.password";
@@ -28,13 +29,16 @@ class
   const int    CMD_SETTING  = 14;
   const int    CMD_REGISTER = 15;
   const int    CMD_FOLLOW   = 16;
-  const int    CMD_UNFOLLOW = 16;
-  const int    CMD_CAPTURE  = 17;
-  const int    CMD_LINGO    = 18;
-  const int    CMD_BLOG     = 19;
-  const int    CMD_SAVE     = 20;
+  const int    CMD_UNFOLLOW = 17;
+  const int    CMD_CAPTURE  = 18;
+  const int    CMD_LINGO    = 19;
+  const int    CMD_BLOG     = 20;
+  const int    CMD_SAVE     = 21;
+  const int    CMD_AVATAR   = 22;
+  const int    CMD_PAGENEXT = 23;
+  const int    CMD_PAGEPREV = 24;
 
-  const int    MAX_CMD_ID   = 24;
+  const int    MAX_CMD_ID   = 32;
 
   const String STATUS_UNVIEWED= "N";
   const String STATUS_VIEWED  = "Y";
@@ -47,6 +51,7 @@ class
 
   const String FacilityBlog = "jiwaide_blog";
   const String FacilityPub  = "public_timeline";
+  const String FacilityReplies  = "replies_timeline";
   const String FacilityUser = "user_timeline";
   const String FacilityFri  = "friends_timeline";
   const String FacilityDr   = "direct_messages";
@@ -57,6 +62,7 @@ class
   const String logoutUrl= "api.jiwai.de/account/end_session.json";
   const String updateUrl= "api.jiwai.de/statuses/update.json";
   const String mmsUrl   = "api.jiwai.de/extend/upmms.json";
+  const String avatarUrl= "api.jiwai.de/extend/upavatar.json";
   const String lingoUrl = "api.jiwai.de/extend/lingo.xml";
   const String drmsgUrl = "api.jiwai.de/direct_messages/new.json";
   const String signupUrl= "http://api.jiwai.de/account/new.json";
@@ -74,6 +80,7 @@ class
   MenuItem  MenuSave    = new MenuItem(CMD_SAVE,    @CmdSave);
   MenuItem  MenuCancel  = new MenuItem(CMD_CANCEL,  @CmdCancel);
   MenuItem  MenuUpdate  = new MenuItem(CMD_UPDATE,  @CmdUpdateLite);
+  MenuItem  MenuUpload  = new MenuItem(CMD_UPDATE,  @CmdUpload);
   MenuItem  MenuReply   = new MenuItem(CMD_REPLY,   @CmdReply);
   MenuItem  MenuFollow  = new MenuItem(CMD_FOLLOW,  @CmdFollow);
   MenuItem  MenuUnFollow= new MenuItem(CMD_UNFOLLOW,@CmdUnFollow);
@@ -83,6 +90,7 @@ class
   MenuItem  MenuSetting = new MenuItem(CMD_SETTING, @CmdSetting);
   MenuItem  MenuRegister= new MenuItem(CMD_REGISTER,@CmdRegister);
   MenuItem  MenuCapture = new MenuItem(CMD_CAPTURE ,@CmdCapture);
+  MenuItem  MenuAvatar  = new MenuItem(CMD_AVATAR,  @CmdAvatar);
   MenuItem  MenuLingo   = new MenuItem(CMD_LINGO,   @CmdLingo);
 
   Menu MENU = new Menu().add(OPEN_MENU, @CmdMenu);
@@ -100,7 +108,12 @@ class
   boolean anonymousMode = true;
   boolean tortoiseMode  = true;
   boolean hasCamera     = false;
-  boolean cameraHighMode= false;
+  int cameraMode = 1;
+  List encTypesDesc = new List()
+    .add(@CameraSmall)
+    .add(@CameraNormal)
+    .add(@CameraHigh);
+
 
   Component tobeFocused;
   Prompt prompt;
@@ -115,11 +128,66 @@ class
     "status"    => ""
   ];
 
+// local cache
+  int cacheCapacity = 10;
+  int cacheCount = 0;
+  Map cacheHits = new Map();
+
+  Image getFromLocalCache(String key) {
+    Store cacheStore = getStore();
+    if (cacheStore.has(key)) {
+      if (cacheHits.containsKey(key)) {
+        final int hits = parseInt(cacheHits.key, 10);
+        cacheHits.key = String(hits + 1);
+      } else {
+        cacheHits.key = "1";
+      }
+      debug("Cache Hits With::" + cacheStore.get(key));
+      return getImage(cacheStore, key);
+    }
+    debug("Cache Miss::" + key);
+    return null;
+  }
+
+  String getLeastHitsKey() {
+    int minsofar = -1;
+    String ret = null;
+    foreach (String key : cacheHits.keys()) {
+      int hits = parseInt(cacheHits.key, 10);
+      if (minsofar == -1 || hits < minsofar) {
+        minsofar = hits;
+        ret = key;
+      }
+    }
+
+    debug("Cache Dirty::" + ret);
+    return ret;
+  }
+
+  // Ensure calling getFromLocalCache first
+  void addToLocalCache(String key, ByteArray value) {
+    Store cacheStore = getStore();
+    if (cacheCount >= cacheCapacity) {
+      debug("Cache Overflow");
+      String lazy = getLeastHitsKey();
+      if (null != lazy) {
+        cacheStore.remove(lazy);
+      } else {
+        return;
+      }
+    }
+    ++cacheCount;
+    cacheStore.put(key, value);
+    debug("Cache Enqueue::" + key);
+    cacheHits.key = "1";
+  }
+
 // facility => Value
   void initValue() {
     timelineList  = [
       FacilityBlog  => [],
       FacilityPub   => [],
+      FacilityReplies => [],
       FacilityUser  => [],
       FacilityFri   => [],
       FacilityDr    => [],
@@ -130,6 +198,7 @@ class
     timelineViewed= [
       FacilityBlog  => STATUS_UNVIEWED,
       FacilityPub   => STATUS_UNVIEWED,
+      FacilityReplies => STATUS_UNVIEWED,
       FacilityUser  => STATUS_UNVIEWED,
       FacilityFri   => STATUS_UNVIEWED,
       FacilityDr    => STATUS_UNVIEWED,
@@ -141,6 +210,7 @@ class
   Value timelineList  = [
     FacilityBlog  => [],
     FacilityPub   => [],
+    FacilityReplies => [],
     FacilityUser  => [],
     FacilityFri   => [],
     FacilityDr    => [],
@@ -151,6 +221,7 @@ class
   Value timelineViewed= [
     FacilityBlog  => STATUS_UNVIEWED,
     FacilityPub   => STATUS_UNVIEWED,
+    FacilityReplies => STATUS_UNVIEWED,
     FacilityUser  => STATUS_UNVIEWED,
     FacilityFri   => STATUS_UNVIEWED,
     FacilityDr    => STATUS_UNVIEWED,
@@ -177,6 +248,7 @@ class
       .add(CMD_HELP ,  "1 " + @CmdHelp)
       .add(CMD_SETTING,"3 " + @CmdSetting)
       .add(CMD_CAPTURE,"9 " + @CmdCapture)
+      .add(CMD_AVATAR, @CmdAvatar)
       .add(CMD_LOGOUT, @CmdLogout);
   }
 
@@ -186,6 +258,14 @@ class
       .add(CMD_READALL,"# " + @CmdReadall)
       .add(CMD_HELP ,  "1 " + @CmdHelp)
       .add(CMD_CAPTURE,"9 " + @CmdCapture);
+  }
+
+  Menu createStatusViewMenu () {
+    return new Menu()
+      .add(CMD_UPDATE, @CmdUpdateLite)
+      .add(CMD_REPLY,  @CmdReply)
+      .add(CMD_DRMSG,  @CmdDrmsg)
+      .add(CMD_CAPTURE,@CmdCapture);
   }
 
 // END createMenus
@@ -214,8 +294,12 @@ class
         "fname"    => FacilityPub,
         "viewed"   => STATUS_UNVIEWED
           ],
-        ["name"    => @TimelineUser,
-        "fname"    => FacilityUser, 
+        //["name"    => @TimelineUser,
+        //"fname"    => FacilityUser, 
+        //"viewed"   => STATUS_UNVIEWED
+        //  ],
+        ["name"    => @TimelineReplies,
+        "fname"    => FacilityReplies, 
         "viewed"   => STATUS_UNVIEWED
           ],
         ["name"    => @TimelineFri,
@@ -287,27 +371,29 @@ class
 
     boolean myKeyHandler(Component source, int op, int code)
     {
-      if (code == '*') {
-        tempShell = shell;
-        bulkFetch();
-      } else if (code == '#') {
-        bulkReadall();
-        animatePopShell(shell);
-        animatePushShell(createTimelineList());
-      } else if (code == '0' ) {
-        updateInput.edit(doUpdateStatus);
-      } else if (code == '9') {
-        if (hasCamera) {
-          animatePushShell(createCaptureView());
-        } else {
-          alertError(@InfoNoCamera);
+      if (op == KEY_PRESSED) {
+        if (code == '*' || code == 'u') {
+          tempShell = shell;
+          bulkFetch();
+        } else if (code == '#' || code == 'j') {
+          bulkReadall();
+          animatePopShell(shell);
+          animatePushShell(createTimelineList());
+        } else if (code == '0' || code =='m') {
+          updateInput.edit(doUpdateStatus);
+        } else if (code == '9' || code == 'n') {
+          if (hasCamera) {
+            animatePushShell(createCaptureView());
+          } else {
+            alertError(@InfoNoCamera);
+          }
+        } else if (code == '7' || code == 'v') {
+          animatePushShell(createConsoleView());
+        } else if (code == '1' || code == 'r') {
+          animatePushShell(createHelpView("main"));
+        } else if (code == '3' || code == 'y') {
+          animatePushShell(createSettingView());
         }
-      } else if (code == '7') {
-        animatePushShell(createConsoleView());
-      } else if (code == '1') {
-        animatePushShell(createHelpView("main"));
-      } else if (code == '3') {
-        animatePushShell(createSettingView());
       }
       return false;
     }
@@ -353,6 +439,12 @@ class
       } else if (action == CMD_CAPTURE) {
         if (hasCamera) {
           animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
+      } else if (action == CMD_AVATAR) {
+        if (hasCamera) {
+          animatePushShell(createAvatarCaptureView());
         } else {
           alertError(@InfoNoCamera);
         }
@@ -458,20 +550,14 @@ class
     return shell;
   }
 
-  Shell createCaptureView() {
+  Shell createAvatarCaptureView() {
     if (!hasCamera) {
       alertError(@InfoNoCamera);
       return null;
     }
-    List encTypes = new List();
-    if (cameraHighMode) {
-      encTypes.add("encoding=jpeg&width=640&height=480")
-        .add("encoding=jpeg");
-    } else {
-      encTypes.add("encoding=jpeg&width=320&height=240")
-        .add("encoding=jpeg");
-    }
-
+    List encTypes = new List()
+      .add("encoding=jpeg&width=128&height=96")
+      .add("encoding=jpeg");
     boolean hasCaptured = false;
     Flow flow = new Flow(getStyle("block"));
     flow.setPreferredSize(-100, -100);
@@ -484,8 +570,8 @@ class
     camera.setFlags(VISIBLE);
     flow.add(camera);
 
-    Input mmsDesc = new Input(getStyle("block"), @HintUpdate, "", ANY);
-    flow.add(mmsDesc);
+    Input avatarDesc = new Input(getStyle("block"), @HintUpdate, "", ANY);
+    flow.add(avatarDesc);
 
     final Shell shell = new Shell(flow);
     shell.setStyle(getStyle("block"));
@@ -497,7 +583,7 @@ class
     MenuItem mySoftKeyHandler(Shell shell, Component focused, int key)
     {
       if (key == SOFTKEY_OK) {
-        return hasCaptured ? MenuUpdate : MenuCapture;
+        return hasCaptured ? MenuUpload : MenuAvatar;
       } else if (key == SOFTKEY_BACK) {
         return MenuBack;
       }
@@ -513,7 +599,7 @@ class
         }
         imageData = null;
         animatePopShell(shell);
-      } else if (action == CMD_CAPTURE) {
+      } else if (action == CMD_AVATAR) {
         flow.clear();
         imageData = camera.capture(encTypes);
         if (imageData == null) {
@@ -525,8 +611,137 @@ class
         shell.updateMenu();
 
         Image image = getImage(imageData);
-        Picture picture = new Picture(getStyle("mini"), image);
-        picture.setPreferredSize(-100, -100);
+        Picture picture = new Picture(getStyle("avatar"), image);
+        picture.setPreferredSize(-90, -90);
+        flow.add(picture);
+
+        flushScreen(true);
+        shell.repaint(false);
+      } else if (action == CMD_UPDATE) {
+        final Value params = [
+          "avatar_file" => ["image/jpeg", imageData],
+          "idPartner"   => "10038"
+            ];
+        Value arg = [
+          "url"   => createAuthedUrl(avatarUrl),
+          "params"=> params
+            ];
+        call(shell, "avatar", "post", arg, avatarok, avatarnok);
+        hasCaptured = true;
+      }
+    }
+
+    void avatarok(Object state, Value ret)
+    {
+      alertError(@InfoUpdateSuc);
+      rawFetchAndRefresh(new List().add(FacilityUser).add(FacilityFri));
+    }
+
+    void avatarnok(Object state, String error)
+    {
+      alertError(@InfoUpdateFail +error);
+    }
+
+    return shell;
+  }
+
+  Shell createCaptureView() {
+    if (!hasCamera) {
+      alertError(@InfoNoCamera);
+      return null;
+    }
+
+    int encTypesIndex = cameraMode % 3;
+
+    List encTypeSmall = new List()
+      .add("encoding=jpeg&width=240&height=180")
+      .add("encoding=jpeg");
+
+    List encTypeNormal= new List()
+      .add("encoding=jpeg&width=320&height=240")
+      .add("encoding=jpeg");
+
+    List encTypeHigh  = new List()
+      .add("encoding=jpeg&width=640&height=480")
+      .add("encoding=jpeg");
+
+    List encTypes = new List()
+      .add(encTypeSmall)
+      .add(encTypeNormal)
+      .add(encTypeHigh);
+
+    boolean hasCaptured = false;
+    Flow flow = new Flow(getStyle("block"));
+    flow.setPreferredSize(-100, -100);
+
+    camera = new Camera(getStyle("block"));
+    if (!camera.isAvailable()) {
+      return null;
+    }
+    camera.setPreferredWidth(-100);
+    camera.setFlags(VISIBLE|LINEFEED);
+    flow.add(camera);
+
+    Input mmsDesc = new Input(getStyle("block"), @HintUpdate, "", ANY);
+    flow.add(mmsDesc);
+
+    final Shell shell = new Shell(flow);
+    shell.setStyle(getStyle("block"));
+    shell.setSoftKeyHandler(mySoftKeyHandler);
+    shell.setKeyHandler(myKeyHandler);
+    shell.setActionHandler(myActionHandler);
+
+    ByteArray imageData = null;
+
+    MenuItem mySoftKeyHandler(Shell shell, Component focused, int key)
+    {
+      if (key == SOFTKEY_OK) {
+        return hasCaptured ? MenuUpdate : MenuCapture;
+      } else if (key == SOFTKEY_BACK) {
+        return MenuBack;
+      }
+      return null;
+    }
+
+    boolean myKeyHandler(Component source, int op, int code)
+    {
+      if (op == KEY_PRESSED)
+      {
+        if (code == KEY_UP
+            || code == KEY_RIGHT) {
+          encTypesIndex = (encTypesIndex == 2) ? 2 : ++encTypesIndex;
+        } else if (code == KEY_DOWN
+            || code == KEY_LEFT) {
+          encTypesIndex = (encTypesIndex == 0) ? 0 : --encTypesIndex;
+        }
+      }
+      return false;
+    }
+  
+    void myActionHandler(Shell shell, Component source, int action)
+    {
+      if (action == CMD_BACK) {
+        if (null != camera) {
+          camera.close();
+          camera = null;
+        }
+        imageData = null;
+        animatePopShell(shell);
+      } else if (action == CMD_CAPTURE) {
+        flow.clear();
+        imageData = camera.capture(List(encTypes[encTypesIndex]));
+        if (imageData == null) {
+          alertError("Image capturing failed");
+        }
+        camera.close();
+        camera = null;
+        hasCaptured = true;
+        shell.updateMenu();
+
+        Image image = getImage(imageData);
+        Picture picture = new Picture(getStyle("avatar"), image);
+        int x, int y = getScreenSize();
+        picture.setPreferredSize(x, y - 20);
         flow.add(picture);
 
         flushScreen(true);
@@ -584,6 +799,9 @@ class
         view.add(createBodyText("::" +@TimelinePub));
         view.add(createBodyText(@HelpTimelinePublic));
         view.add(createBodyText(@HelpFuncReply));
+      } else if (topic.equals(FacilityReplies)) {
+        view.add(createBodyText("::" +@TimelineReplies));
+        view.add(createBodyText(@HelpTimelineUser));
       } else if (topic.equals(FacilityUser)) {
         view.add(createBodyText("::" +@TimelineUser));
         view.add(createBodyText(@HelpTimelineUser));
@@ -615,7 +833,21 @@ class
     return getViewShell(view);
   }
 
+  boolean hasPageNext(String facility, int pageNow) {
+    int tsize = timelineList[facility].size();
+    return ((pageNow + 1) * STATUS_COUNTS < tsize)
+      ? true
+      : false;
+  }
+
   Shell createTimelineView(String facility, String title) {
+    return createTimelineViewPage(facility, title, 0);
+  }
+
+  Component lastFocusedStatus = null;
+  int lastFocusedStatusIndex = 0;
+
+  Shell createTimelineViewPage(String facility, String title, int page) {
     createTimelineViewMenu();
     Flow content = new Flow(getStyle("default"));
     content.setPreferredSize(-100, -100);
@@ -636,10 +868,17 @@ class
       updateText.setAction(CMD_UPDATE);
     }
     lowerFlow.add(updateText);
+    if (page > 0) lowerFlow.add(createPageNavPrev(@CmdPagePrev));
     
     tobeFocused = null;
+    int cursor = 0;
     foreach (Value status : timelineList[facility])
     {
+      if (cursor < page * STATUS_COUNTS
+          || cursor >= (page + 1) * STATUS_COUNTS) {
+        ++cursor;
+        continue;
+      }
       Flow itemFlow = new Flow(getStyle("list.bg"));
       itemFlow.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
       itemFlow.setPreferredWidth(-100);
@@ -655,28 +894,23 @@ class
           ? getStyle("list.unread")
           : getStyle("list.read");
 
-        String labelText = "";
-        if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
-          if (String(status.content.val).trim().equals("")) {
-            labelText = " - " + @NotEverJiWai;
-          } else {
-            labelText = " - " + status.content.val;
-          }
-        }
-
-        Label name = new Label(labelStyle, status.title + labelText);
+        String labelText = getLabelText(facility, status);
+        Label name = new Label(labelStyle, labelText);
         name.setPreferredWidth(-100);
         name.setFlags(VISIBLE|LINEFEED);
         textFlow.add(name);
         itemFlow.add(textFlow);
+        itemFlow.set("status", name);
 
         if (status.iid.equals(lastFocused.status)) {
           tobeFocused = itemFlow;
         }
       }
       
+      ++cursor;
       lowerFlow.add(itemFlow);
     }
+    if (hasPageNext(facility, page)) lowerFlow.add(createPageNavNext(@CmdPageNext));
     content.add(lowerFlow);
 
     final Shell shell = new Shell(content);
@@ -688,36 +922,74 @@ class
 
     boolean myKeyHandler(Component source, int op, int code)
     {
-      if (code == '*') {
-        tempShell = shell;
-        if (anonymousMode) {
-          Value arg = [
-            "ts"  => 0,
-            "max" => STATUS_COUNTS,
-            "refresh" => true
-          ];
-          call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
-        } else {
-          fetchAndRefresh(new List().add(facility));
+      if (op == KEY_RELEASED) {
+        Component focusedStatus = shell.focused();
+        final Value attached = focusedStatus.getData();
+        final int index = shell.indexOf(focusedStatus);
+        if (null != lastFocusedStatus) {
+          lastFocusedStatus["status"] = new Label(
+              getStyle("list.read"),
+              getLabelText(facility, Value(lastFocusedStatus.getData())) );
+          lastFocusedStatus["status"].setPreferredWidth(-100);
+          lastFocusedStatus["status"].setFlags(VISIBLE|LINEFEED);
         }
-      } else if (code == '#') {
-        doReadall(facility);
-        animatePopShell(shell);
-        animatePushShell(createTimelineView(facility, title));
-      } else if (code == '0') {
-        updateInput.edit(doUpdateStatus);
-      } else if (code == '9') {
-        if (hasCamera) {
-          animatePushShell(createCaptureView());
-        } else {
-          alertError(@InfoNoCamera);
+        if (null != attached && null != attached.iid) {
+          // expand the focused item
+          focusedStatus["status"] = new Text(
+              getStyle("list.read"),
+              getLabelText(facility, attached));
+          focusedStatus["status"].setFlags(VISIBLE|WRAP|FOCUSABLE);
+          focusedStatus["status"].setPreferredWidth(-100);
+          shell.set(index, focusedStatus);
+          shell.setFocused(focusedStatus);
+          shell.repaint(true);
+
+          lastFocusedStatus = focusedStatus;
+          lastFocusedStatusIndex = index;
         }
-      } else if (code == '7') {
-        animatePushShell(createConsoleView());
-      } else if (code == '1') {
-        animatePushShell(createHelpView(facility));
-      } else if (code == '3') {
-        animatePushShell(createSettingView());
+      }
+      if (op == KEY_PRESSED) {
+        if (code == '*' || code == 'u') {
+          tempShell = shell;
+          if (anonymousMode) {
+            Value arg = [
+              "ts"  => 0,
+              "max" => STATUS_COUNTS,
+              "refresh" => true
+                ];
+            call(FacilityPub, FacilityPub, "getItems", arg, wanderok, wandernok);
+          } else {
+            fetchAndRefresh(new List().add(facility));
+          }
+        } else if (code == '#' || code == 'j') {
+          doReadall(facility);
+          animatePopShell(shell);
+          animatePushShell(createTimelineView(facility, title));
+        } else if (code == '0' || code == 'm') {
+          updateInput.edit(doUpdateStatus);
+        } else if (code == '9' || code == 'n') {
+          if (hasCamera) {
+            animatePushShell(createCaptureView());
+          } else {
+            alertError(@InfoNoCamera);
+          }
+        } else if (code == '7' || code == 'v') {
+          animatePushShell(createConsoleView());
+        } else if (code == '1' || code == 'r') {
+          animatePushShell(createHelpView(facility));
+        } else if (code == '3' || code == 'y') {
+          animatePushShell(createSettingView());
+        } else if (code == '2' || code == 't') { // Page Prev
+          if (page > 0) {
+            animatePopShell(shell);
+            animatePushShell(createTimelineViewPage(facility, title, page - 1));
+          }
+        } else if (code == '8' || code == 'b') { // Page Next
+          if (hasPageNext(facility, page)) {
+            animatePopShell(shell);
+            animatePushShell(createTimelineViewPage(facility, title, page + 1));
+          }
+        }
       }
 
       return false;
@@ -745,7 +1017,7 @@ class
         Value status = Value(source.getData());
         status.viewed = [];
         lastFocused.status = status.iid;
-        animatePushShell(createTimelineView(facility, title));
+        animatePushShell(createTimelineViewPage(facility, title, page));
         animatePushShell(createStatusView(status, facility));
       } else if (action == CMD_RELOAD) {
         tempShell = shell;
@@ -766,7 +1038,7 @@ class
       } else if (action == CMD_READALL) {
         doReadall(facility);
         animatePopShell(shell);
-        animatePushShell(createTimelineView(facility, title));
+        animatePushShell(createTimelineViewPage(facility, title, page));
       } else if (action == CMD_LOGIN) {
         animatePopShell(shell);
       } else if (action == CMD_CAPTURE) {
@@ -775,6 +1047,12 @@ class
         } else {
           alertError(@InfoNoCamera);
         }
+      } else if (action == CMD_PAGENEXT) {
+        animatePopShell(shell);
+        animatePushShell(createTimelineViewPage(facility, title, page + 1));
+      } else if (action == CMD_PAGEPREV) {
+        animatePopShell(shell);
+        animatePushShell(createTimelineViewPage(facility, title, page - 1));
       }
     }
 
@@ -788,6 +1066,7 @@ class
 
     String created = status.created;
     if (facility.equals(FacilityPub)
+    || facility.equals(FacilityReplies)
     || facility.equals(FacilityUser)
     || facility.equals(FacilityFri)
     || facility.equals(FacilityDr)
@@ -796,6 +1075,8 @@ class
         final Calendar cal = new Calendar();
         cal.setMillis(status.created);
         created = cal.format(FORMAT_DATETIME);
+    } else {
+      created = formatTimeStamp(created);
     }
 
     String inputTitle = (String(status.author).equals(username))
@@ -805,8 +1086,6 @@ class
         : (facility.equals(FacilityDr))
           ? @HintDrmsg
           : @HintReply;
-    final Input replyInput = new Input(getStyle("default"), inputTitle, "", ANY);
-    view.add(replyInput);
     
     view.add(createHeaderText(""));
     view.add(createSubHeaderText(created));
@@ -837,37 +1116,47 @@ class
 
     boolean isMmsCapable(String f) {
       if (f.equals(FacilityPub)
+          || f.equals(FacilityReplies)
           || f.equals(FacilityUser)
           || f.equals(FacilityFri)) {
         return true;
       }
       return false;
     }
-
-    String fetchStatusId(String guid) {
-      if (guid.length() == 0) return null;
-      int endIndex = guid.length();
-      int beginIndex = guid.lastIndexOf('/', endIndex); 
-      return (beginIndex >0 && endIndex > beginIndex) 
-        ? guid.substring(beginIndex + 1, endIndex)
-        : null;
-    }
-
+    
     void picoklite(Object state, Value ret) {
-      Picture pict = getPicture(String(ret));
+      String key = String(ret);
+      Picture pict = null;//getFromLocalCache(key);
+      Image image = getFromLocalCache(key);
+      if (null == image) {
+        pict = getPicture(key);
+        //addToLocalCache(key, pict.getImage());
+      } else {
+        debug("Cache Hit::" + key);
+        pict = new Picture(getStyle("default"), image);
+      }
       Flow pictFlow = new Flow(getStyle("avatar"));
       pictFlow.setFlags(VISIBLE|LINEFEED);
       pictFlow.add(pict);
-      view.insert(3, pictFlow);
+      view.insert(2, pictFlow);
       shell.repaint(true);
     }
 
     void picok(Object state, Value ret) {
-      Picture pict = getPicture(String(ret.avatar));
+      String key = String(ret.avatar);
+      Picture pict = null; //getFromLocalCache(key);
+      Image image = getFromLocalCache(key);
+      if (null == image) {
+        pict = getPicture(key);
+        //addToLocalCache(key, pict.getImage());
+      } else {
+        debug("Cache Hit::" + key);
+        pict = new Picture(getStyle("default"), image);
+      }
       Flow pictFlow = new Flow(getStyle("avatar"));
       pictFlow.setFlags(VISIBLE|LINEFEED);
       pictFlow.add(pict);
-      view.insert(3, pictFlow);
+      view.insert(2, pictFlow);
       shell.repaint(true);
 
       if (ret.mms.size() > 0) {
@@ -888,17 +1177,34 @@ class
     shell.setKeyHandler(myKeyHandler);
     shell.setSoftKeyHandler(mySoftKeyHandler);
     shell.setActionHandler(myActionHandler);
+    shell.setMenuHandler(myMenuHandler);
+
+    Menu myMenuHandler(Shell shell, Component focused)
+    {
+      if (!facility.equals(FacilityBlog)) {
+        Menu ret = createStatusViewMenu();
+        if (isFollowed(status.author)) {
+          ret.add(CMD_UNFOLLOW, @CmdUnFollow);
+        } else {
+          ret.add(CMD_FOLLOW, @CmdFollow);
+        }
+        return ret;
+      }
+      return new Menu().add(CMD_UPDATE, @CmdUpdateLite);
+    }
 
     boolean myKeyHandler(Component source, int op, int code)
     {
-      if (code == '9') {
-        if (hasCamera) {
-          animatePushShell(createCaptureView());
-        } else {
-          alertError(@InfoNoCamera);
+      if (op == KEY_PRESSED) {
+        if (code == '9' || code == 'n') {
+          if (hasCamera) {
+            animatePushShell(createCaptureView());
+          } else {
+            alertError(@InfoNoCamera);
+          }
+        } else if (code == '7' || code == 'v') {
+          animatePushShell(createConsoleView());
         }
-      } else if (code == '7') {
-        animatePushShell(createConsoleView());
       }
 
       return false;
@@ -911,9 +1217,13 @@ class
       } else if (anonymousMode) {
         return null;
       } else if (key == SOFTKEY_OK) {
+        return MenuOptions;
+      } else if (key == SOFTKEY_MIDDLE) {
         if (String(status.author).equals(username)) {
           return MenuUpdate;
         } else if (facility.equals(FacilityPub)) {
+          return MenuReply;
+        } else if (facility.equals(FacilityReplies)) {
           return MenuReply;
         } else if (facility.equals(FacilityUser)) {
           return MenuUpdate;
@@ -924,7 +1234,7 @@ class
         } else if (facility.equals(FacilityFriends)) {
           return MenuReply;
         } else if (facility.equals(FacilityFeatures)) {
-          return (isFollowed(status.iid)) ? MenuUnFollow : MenuFollow;
+          return (isFollowed(status.author)) ? MenuUnFollow : MenuFollow;
         }
       }
       return null;
@@ -935,13 +1245,23 @@ class
       if (action == CMD_BACK) {
         animatePopShell(shell);
       } else if (action == CMD_REPLY) {
+        final Input replyInput = new Input(getStyle("default"), @HintReply, "", ANY);
         replyInput.setText("@" + status.author + " ");
+        replyInput.setData(status);
         replyInput.edit(doReplyStatus);
       } else if (action == CMD_UPDATE) {
+        final Input replyInput = new Input(getStyle("default"), @HintUpdate, "", ANY);
         replyInput.edit(doUpdateStatus);
       } else if (action == CMD_DRMSG) {
+        final Input replyInput = new Input(getStyle("default"), @HintDrmsg, "", ANY);
         replyInput.setData(status.author);
         replyInput.edit(doDrStatus);
+      } else if (action == CMD_CAPTURE) {
+        if (hasCamera) {
+          animatePushShell(createCaptureView());
+        } else {
+          alertError(@InfoNoCamera);
+        }
       } else if (action == CMD_FOLLOW) {
         // Follow
         call(null, "follow" , "get",
@@ -957,12 +1277,14 @@ class
 
     void followok(Object state, Value ret) {
       alertError(@InfoUpdateSuc);
+      rawFetchAndRefresh(new List().add(FacilityFri).add(FacilityFriends));
     }
 
     void follownok(Object state, String error) {
       alertError(error);
     }
 
+    shell.updateMenu();
     return shell;
   }
     
@@ -977,13 +1299,9 @@ class
     Choice choiceTortoise = createFormChoice(tortoiseMode);
     view.add(choiceTortoise);
 
-/*
-    Choice choiceCamera = createFormChoice(cameraHighMode);
-    if (hasCamera) {
-      view.add(createSubHeaderText(@InfoHighCamera));
-      view.add(choiceCamera);
-    }
-*/
+    view.add(createSubHeaderText(@InfoHighCamera));
+    Choice choiceCamera = createFormChoiceFromList(cameraMode, encTypesDesc);
+    view.add(choiceCamera);
 
     final Shell shell = new Shell(view);
     shell.setStyle(getStyle("maxi"));
@@ -1004,6 +1322,8 @@ class
     {
       Store store = getStore();
       if (action == CMD_SAVE) {
+        cameraMode = choiceCamera.getSelected();
+        store.put(storeCamera, cameraMode);
         if (0 == choiceTortoise.getSelected()) {
           // Enable
           tortoiseMode = true;
@@ -1012,19 +1332,6 @@ class
           tortoiseMode = false;
           store.put(storeTortoise, "N");
         }
-
-/*
-        if (hasCamera) {
-          if (0 == choiceCamera.getSelected()) {
-            // Enable
-            cameraHighMode = true;
-            store.put(storeCamera, "Y");
-          } else {
-            cameraHighMode = false;
-            store.put(storeCamera, "N");
-          }
-        }
-*/
         animatePopShell(shell);
       } else if (action == CMD_CANCEL) {
         animatePopShell(shell);
@@ -1142,7 +1449,7 @@ class
     inputPassword.setPreferredWidth(-100);
     loginForm.add(inputPassword);
   
-    Label labelWander = new Label(getStyle("form.linkHead"), @InfoWander);
+    Label labelWander = new Label(getStyle("form.linkHead"), @TimelinePub);
     labelWander.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
     labelWander.setPreferredWidth(-100);
     labelWander.setAction(CMD_WANDER);
@@ -1246,6 +1553,12 @@ class
     call(facility, facility, "getItems", arg, rawfetchok, null);
   }
 
+  void rawFetchList(String facility)
+  {
+    Value arg = ["url" => createAuthedUrl("api.jiwai.de/statuses/" + facility + ".xml")];
+    call(facility, facility, "get", arg, rawfetchok, null);
+  }
+
   void doReadall(String facility)
   {
     timelineViewed[facility].viewed = []; 
@@ -1271,12 +1584,18 @@ class
 
   void doReplyStatus(final Shell shell, final Component source, final int action) 
   {
-    String replyTo = String(source.getData());
+    Value attached = Value(source.getData());
+    String idUserReplyTo = attached.author;
+    String link = attached.link;
+    String idStatusReplyTo = fetchStatusId(link);
+
     if (action == ITEM_CANCEL) { return; }
     Input replyInput = Input(source);
     final Value params = [
       "status"=> replyInput.getText(),
-      "idPartner"=> "10038"
+      "idPartner"=> "10038",
+      "idUserReplyTo"   => encodeURL(idUserReplyTo),
+      "idStatusReplyTo" => idStatusReplyTo
     ];
     Value arg = [
       "url"   => createAuthedUrl(updateUrl),
@@ -1291,7 +1610,7 @@ class
     if (action == ITEM_CANCEL) { return; }
     Input updateInput = Input(source);
     final Value params = [
-      "user"  => replyTo,
+      "user"  => encodeURL(replyTo),
       "text"  => updateInput.getText(),
       "idPartner"=> "10038"
     ];
@@ -1382,11 +1701,18 @@ class
 
   void initok(Object state, Value ret)
   {
-    animatePushShell(createTimelineList());
+    if (0 == getAllUnviewedSize() && getAllTimelineSize() == 0) {
+      tempShell = createLoginForm();
+      animatePushShell(tempShell);
+      bulkFetch();
+    } else {
+      animatePushShell(createTimelineList());
+    }
   }
 
   void initnok(Object state, String error)
   {
+    anonymousMode = true;
     animatePushShell(createLoginForm());
   }
 
@@ -1396,7 +1722,7 @@ class
     Store store = getStore();
     store.put(storeUsername, Value(username));
     store.put(storePassword, Value(password));
-    setAuthedParameters();
+    setWidgetParameters();
     initValue();
     bulkFetch();
   }
@@ -1436,6 +1762,66 @@ class
 // END callBacks
 
 // BEGIN handies
+
+  String getLabelText(String facility, Value status) {
+    String labelText = "";
+    if (facility.equals(FacilityFriends)
+        || facility.equals(FacilityFeatures)
+        || facility.equals(FacilityDr)) {
+      if (String(status.content.val).trim().equals("")) {
+        labelText = " - " + @NotEverJiWai;
+      } else {
+        labelText = " - " + status.content.val;
+      }
+    }
+    return status.title + labelText;
+  }
+
+  void debug(String msg)
+  {
+    if (debugMode) {
+      printf("[DEBUG]" + msg);
+    }
+  }
+
+  String formatTimeStamp(String raw)
+  {
+// Wed Mar 26 16:34:24 +0800 2008
+    List e = raw.explode(" ");
+    Calendar cal = new Calendar();
+    int year = parseInt(e[5], 10);
+    String m = String(e[1]).toLowerCase();
+    int month = 0;
+    if ("jan".equals(m)) { month = 0; }
+    else if ("feb".equals(m)) { month = 1; }
+    else if ("mar".equals(m)) { month = 2; }
+    else if ("apr".equals(m)) { month = 3; }
+    else if ("may".equals(m)) { month = 4; }
+    else if ("jun".equals(m)) { month = 5; }
+    else if ("jul".equals(m)) { month = 6; }
+    else if ("aug".equals(m)) { month = 7; }
+    else if ("sep".equals(m)) { month = 8; }
+    else if ("oct".equals(m)) { month = 9; }
+    else if ("nov".equals(m)) { month = 10; }
+    else if ("dec".equals(m)) { month = 11; }
+    int day = parseInt(e[2], 10);
+    List f = String(e[3]).explode(":");
+    int hour = parseInt(f[0], 10);
+    int minute = parseInt(f[1], 10);
+    int second = parseInt(f[2], 10);
+    cal.set(year, month, day, hour, minute, second);
+    return cal.format(FORMAT_DATETIME);
+  }
+
+  String fetchStatusId(String guid) {
+    if (guid.length() == 0) return null;
+    int endIndex = guid.length();
+    int beginIndex = guid.lastIndexOf('/', endIndex); 
+    return (beginIndex >0 && endIndex > beginIndex) 
+      ? guid.substring(beginIndex + 1, endIndex)
+      : null;
+  }
+
   void closePrompt()
   {
     if (prompt != null) {
@@ -1461,16 +1847,24 @@ class
   }
 
   void bulkFetch() {
-    progressTotal = 7;
-    progressCurrent = 0;
-    pushExclusiveView(@InfoInUpdating);
-    fetchTimeline(FacilityPub,  true);
-    fetchTimeline(FacilityUser, true);
-    fetchTimeline(FacilityFri,  true);
-    fetchTimeline(FacilityDr,   true);
-    fetchTimeline(FacilityBlog, false);
-    fetchList(FacilityFriends);
-    fetchList(FacilityFeatures);
+    if (debugMode) {
+      progressTotal = 1;
+      progressCurrent = 0;
+      pushExclusiveView(@InfoInUpdating);
+      fetchTimeline(FacilityFri,  true);
+    } else {
+      progressTotal = 7;
+      progressCurrent = 0;
+      pushExclusiveView(@InfoInUpdating);
+      fetchTimeline(FacilityPub,  true);
+      fetchTimeline(FacilityReplies, true);
+      //fetchTimeline(FacilityUser, true);
+      fetchTimeline(FacilityFri,  true);
+      fetchTimeline(FacilityDr,   true);
+      fetchTimeline(FacilityBlog, false);
+      fetchList(FacilityFriends);
+      fetchList(FacilityFeatures);
+    }
   }
 
   void fetchOnce(String facility) {
@@ -1495,13 +1889,18 @@ class
 
   void rawFetchAndRefresh(List facilities) {
     foreach (String facility : facilities) {
-      rawFetchTimeline(facility);
+      if (facility.equals(FacilityFriends) || facility.equals(FacilityFeatures)) {
+        rawFetchList(facility);
+      } else {
+        rawFetchTimeline(facility);
+      }
     }
   }
 
   void bulkReadall() {
     doReadall(FacilityBlog);
     doReadall(FacilityPub);
+    doReadall(FacilityReplies);
     doReadall(FacilityUser);
     doReadall(FacilityFri);
     doReadall(FacilityDr);
@@ -1548,6 +1947,20 @@ class
     return retChoice;
   }
 
+  Choice createFormChoiceFromList(int selected, List options)
+  {
+    Choice retChoice = new Choice(getStyle("form.choice.display"), getStyle("form.choice.list"));
+    List choices = new List();
+    foreach (String option : options) {
+      choices.add(createChoiceLabel(option));
+    }
+    retChoice.setChoices(choices, selected);
+
+    retChoice.setFlags(VISIBLE|FOCUSABLE|LINEFEED);
+    retChoice.setPreferredWidth(-100);
+    return retChoice;
+  }
+
   Text createHeaderText(String name)
   {
     Text text = new Text(getStyle("header"), "");
@@ -1561,6 +1974,24 @@ class
     Text text = new Text(getStyle("text.subheader"), st);
     text.setPreferredWidth(-100);
     text.setFlags(VISIBLE|LINEFEED);
+    return text;
+  }
+
+  Text createPageNavNext(String name)
+  {
+    Text text = new Text(getStyle("pagination"), name);
+    text.setPreferredWidth(-100);
+    text.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
+    text.setAction(CMD_PAGENEXT);
+    return text;
+  }
+
+  Text createPageNavPrev(String name)
+  {
+    Text text = new Text(getStyle("pagination"), name);
+    text.setPreferredWidth(-100);
+    text.setFlags(VISIBLE|LINEFEED|FOCUSABLE);
+    text.setAction(CMD_PAGEPREV);
     return text;
   }
 
@@ -1607,10 +2038,10 @@ class
     }
   }
 
-  boolean isFollowed(String id)
+  boolean isFollowed(String author)
   {
     foreach (Value item: timelineList[FacilityFriends]) {
-      if (String(item.iid).equals(id)) {
+      if (String(item.author).equals(author)) {
         return true;
       }
     }
@@ -1628,10 +2059,30 @@ class
     return unviewed;
   }
 
+  int getTimelineSize(String facility)
+  {
+    return (null == timelineList[facility])
+      ? 0
+      : timelineList[facility].size();
+  }
+
+  int getAllTimelineSize()
+  {
+    int size = 0;
+    size += getTimelineSize(FacilityPub);
+    size += getTimelineSize(FacilityReplies);
+    size += getTimelineSize(FacilityUser);
+    size += getTimelineSize(FacilityFri);
+    size += getTimelineSize(FacilityDr);
+    size += getTimelineSize(FacilityFriends);
+    return size;
+  }
+
   int getAllUnviewedSize()
   {
     int unviewed = 0;
     unviewed += getUnviewedSize(FacilityPub);
+    unviewed += getUnviewedSize(FacilityReplies);
     unviewed += getUnviewedSize(FacilityUser);
     unviewed += getUnviewedSize(FacilityFri);
     unviewed += getUnviewedSize(FacilityDr);
@@ -1692,7 +2143,7 @@ class
     return retUrl;
   }
 
-  void setAuthedParameters() {
+  void setWidgetParameters() {
     setParameters( [ 
       "username"    => username,
       "password"    => password
@@ -1746,6 +2197,7 @@ class
     }
     camera = null;
 
+    anonymousMode = false;
     Value arg = [ "url"   => createAuthedUrl(loginUrl) ];
     call(null, "login", "get", arg, initok, initnok);
 
@@ -1757,6 +2209,7 @@ class
     if (!anonymousMode) {
       Store store = getStore();
       store.put(FacilityPub,  timelineList[FacilityPub]);
+      store.put(FacilityPub,  timelineList[FacilityReplies]);
       store.put(FacilityUser, timelineList[FacilityUser]);
       store.put(FacilityFri,  timelineList[FacilityFri]);
       store.put(FacilityDr,   timelineList[FacilityDr]);

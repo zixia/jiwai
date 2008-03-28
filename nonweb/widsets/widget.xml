@@ -17,6 +17,7 @@
     <parameter name="widgetname">JiWai.de</parameter>
     <parameter name="username" visible="false" editable="false" protected="true"/>
     <parameter name="password" visible="false" editable="false" protected="true"/>
+    <parameter name="items" visible="false" editable="false" protected="true"/>
 
     <parameter name="language" description="Language" editable="true" visible="true">
       <option selected="true" value="zh">Simplified Chinese</option>
@@ -30,6 +31,9 @@
     <parameter type="url" visible="false" name="mms" editable="false" method="post">
       <value>http://${username}:${password}@api.jiwai.de/extend/upmms.json</value>
     </parameter>
+    <parameter type="url" visible="false" name="avatar" editable="false" method="post">
+      <value>http://${username}:${password}@api.jiwai.de/extend/upavatar.json</value>
+    </parameter>
     <parameter type="url" visible="false" name="update" editable="false" method="post">
       <value>http://${username}:${password}@api.jiwai.de/statuses/update.json</value>
     </parameter>
@@ -42,14 +46,17 @@
     <parameter type="url" visible="false" name="public_timeline" editable="false">
       <value>http://api.jiwai.de/statuses/public_timeline.rss</value>
     </parameter>
+    <parameter type="url" visible="false" name="replies_timeline" editable="false">
+      <value>http://${username}:${password}@api.jiwai.de/statuses/replies.rss</value>
+    </parameter>
     <parameter type="url" visible="false" name="user_timeline" editable="false">
-        <value>http://${username}:${password}@api.jiwai.de/statuses/user_timeline.rss</value>
+      <value>http://${username}:${password}@api.jiwai.de/statuses/user_timeline.rss</value>
     </parameter>
     <parameter type="url" visible="false" name="friends_timeline" editable="false">
-        <value>http://${username}:${password}@api.jiwai.de/statuses/friends_timeline.rss</value>
+      <value>http://${username}:${password}@api.jiwai.de/statuses/friends_timeline.rss</value>
     </parameter>
     <parameter type="url" visible="false" name="direct_messages" editable="false">
-        <value>http://${username}:${password}@api.jiwai.de/direct_messages.rss</value>
+      <value>http://${username}:${password}@api.jiwai.de/direct_messages.rss</value>
     </parameter>
   </parameters>
 
@@ -59,6 +66,7 @@
     <service type="http" id="update" />
     <service type="http" id="lingo" />
     <service type="http" id="mms" />
+    <service type="http" id="avatar" />
     <service type="http" id="register" />
     <service type="http" id="follow" />
     <service type="http" id="unfollow" />
@@ -67,6 +75,9 @@
     </service>
     <service type="syndication" id="public_timeline">
       <reference from="public_timeline" to="feedurl"/>
+    </service>
+    <service type="syndication" id="replies_timeline">
+      <reference from="replies_timeline" to="feedurl"/>
     </service>
     <service type="syndication" id="user_timeline">
       <reference from="user_timeline" to="feedurl"/>
@@ -92,18 +103,22 @@
     <service type="http" id="featured">
       <filter id="usersFilter"/>
     </service>
+    <service type="image" id="imageService"/>
   </services>
 
   <filters>
     <filter id="avatarFilterByStatus">
-      <xpath>/status/user</xpath>
+      <xpath>/status</xpath>
       <list>
-        <item name="avatar">
-          <xpath>profile_image_url/text()</xpath>
-        </item>
         <item name="mms">
           <xpath>mms_image_url/text()</xpath>
         </item>
+        <item name="avatar">
+          <xpath>user/profile_image_url/text()</xpath>
+        </item>
+        <!--item name="mms">
+          <xpath>mms_image_url/text()</xpath>
+        </item-->
       </list>
     </filter>
     <filter id="avatarFilterByUser">
@@ -120,7 +135,7 @@
           <xpath>user</xpath>
           <list>
             <item name="iid">
-              <xpath>id/text()</xpath>
+              <xpath>status/id/text()</xpath>
             </item>
             <item name="title">
               <xpath>screen_name/text()</xpath>
@@ -413,6 +428,25 @@
         color: #ffffff;
         }
       }
+
+      camera.img {
+        padding: 3sp 6sp 3sp 0;
+      }
+
+      pagination {
+      padding: 0 5 1 5;
+      border: 0 0 0 0;
+      hspacing: 5;
+      background: solid white;
+      color: #000000;
+      font: small plain;
+      focused
+      {
+      background: solid #9ec500;
+      color: #ffffff;
+      }
+      }
+
     </stylesheet>
   </resources>
 
