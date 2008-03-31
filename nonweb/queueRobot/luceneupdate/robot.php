@@ -1,4 +1,7 @@
 <?php
+/**
+ * Only run this script in LuceneIndex machine.
+ */
 require_once '../../../jiwai.inc.php';
 
 class JWPubSub_Listener_LuceneUpdate implements JWPubSub_Listener
@@ -8,8 +11,8 @@ class JWPubSub_Listener_LuceneUpdate implements JWPubSub_Listener
 		$id = $data['id'];
 		$index = $data['index'];
 
-		JWSearch::LuceneUpdate($index, $id, true);
-
+		$file = "/tmp/update_${index}";
+		error_log( "$id\n", 3, $file );
 		echo "[LuceneUpdate]: $index://$id\n";
 	}   
 }

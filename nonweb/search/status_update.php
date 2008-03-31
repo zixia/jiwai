@@ -1,4 +1,5 @@
 <?php
+exit;
 import de.jiwai.lucene.*;
 import de.jiwai.dao.*;
 error_reporting(0);

@@ -4,28 +4,26 @@ INDEXPATH=/opt/lucene/index
 all: 
 	@exit;
 
-class: IndexUser.class IndexStatus.class IndexTag.class Optimize.class SearchUser.class
+class: index increment Optimize.class SearchUser.class
 
-user: IndexUser.class
+index:
+	javac -encoding UTF-8 -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index.java
+
+increment:
+	javac -encoding UTF-8 -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Increment.java
+
+user: index
 	@rm -rf ${INDEXPATH}/user
-	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexUser ${INDEXPATH}/user true
+	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/user user
 
-status: IndexStatus.class
+status: index
 	@rm -rf ${INDEXPATH}/status
-	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexStatus ${INDEXPATH}/status true
+	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/status status
 
-tag: IndexTag.class
+tag: index
 	@rm -rf ${INDEXPATH}/tag
-	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexTag ${INDEXPATH}/tag true
+	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/tag tag
 
-IndexUser.class:
-	javac -encoding UTF-8 -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexUser.java
-
-IndexStatus.class:
-	javac -encoding UTF-8 -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexStatus.java
-
-IndexTag.class:
-	javac -encoding UTF-8 -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar IndexTag.java
 
 search: SearchUser.class
 	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar SearchUser
