@@ -66,6 +66,8 @@ _HTML_;
 		$asset_url_css_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.css');
 
 		$asset_url_favicon	= self::GetAssetUrl('/img/favicon.ico');
+		$asset_url_os_users	= self::GetAssetUrl('/opensearch/users.xml');
+		$asset_url_os_statuses	= self::GetAssetUrl('/opensearch/statuses.xml');
 
 		$asset_url_js_jiwai	= self::GetAssetUrl('/js/jiwai.js');
 		$asset_url_js_buddy	= self::GetAssetUrl('/js/buddyIcon.js');
@@ -211,6 +213,8 @@ _HTML_;
 		?>
 
 	<link rel="start" href="<?php echo JW_SRVNAME;?>" title="叽歪网首页" />
+	<link rel="search" href="<?php echo $asset_url_os_statuses; ?>" title="叽歪搜索" type="application/opensearchdescription+xml" />
+	<link rel="search" href="<?php echo $asset_url_os_users; ?>" title="叽歪成员搜索" type="application/opensearchdescription+xml" />
 	<meta name="ICBM" content="40.4000, 116.3000" />
 	<meta name="DC.title" content="叽歪网" />
 	<meta name="copyright" content="copyright 2007-<? echo date("Y");?> 叽歪网 <?php echo JW_SRVNAME;?>" />
