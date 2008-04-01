@@ -100,12 +100,12 @@ function profile() {
 	global $idUser, $facebook;
 ?>
 <fb:if-is-own-profile>
-        <fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
+	<fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
 		View your JiWai status
 	</fb:profile-action>
 	<fb:else>
 		<fb:if-is-app-user uid="profileowner">
-                        <fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
+			<fb:profile-action url="http://jiwai.de/<?php echo JWUser::GetUserInfo($idUser, 'nameUrl'); ?>/">
 				View this person's JiWai status
 			</fb:profile-action>
 			<fb:else>
@@ -168,16 +168,70 @@ if (isset($_POST['code'])) {
 .doing {padding: 1em; font-size: 1.2em; line-height: 1.1; width: 100%;}
 .meta {color: #777777;}
 .status_area {width: 96%; font-size: 1.5em; }
-.send {background:transparent url(http://asset.jiwai.de/img/form/button_big.gif) no-repeat scroll left top; border:medium none; color:#FFFFFF; cursor:pointer;  font-weight:bold; height:50px; padding:2px 5px; width:140px;}
+.send {
+background-color:#3B5998;
+border-color:#D9DFEA rgb(14, 31, 91) rgb(14, 31, 91) rgb(217, 223, 234);
+border-style:solid;
+border-width:1px;
+color:#FFFFFF;
+font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+font-size:12px;
+padding:2px 15px 3px;
+text-align:center;
+}
+.asend {background:transparent url(http://asset.jiwai.de/img/form/button_big.gif) no-repeat scroll left top; border:medium none; color:#FFFFFF; cursor:pointer;  font-weight:bold; height:50px; padding:2px 5px; width:140px;}
 </style>
 <div>
 <fb:if-is-app-user>
-<form>
-
+<form onsubmit="return false;">
+<script>
+function update() {
+	var txt = document.getElementById('txt_status');
+	var btn = document.getElementById('btn_update');
+	if (!txt.getValue()) {
+		var d = new Dialog();
+		d.onconfirm = function() {
+			document.getElementById('txt_status').focus();
+		}
+		d.showMessage('叽歪', '说点什么吧~~');
+		return;
+	}
+	btn.setValue('发送中...');
+	btn.setDisabled(true);
+	txt.setReadOnly(true);
+	txt.setDisabled(true);
+	var ajax = new Ajax(); 
+	ajax.responseType = Ajax.FBML;
+	ajax.requireLogin = true;
+	ajax.ondone = function(data) {
+		var txt = document.getElementById('txt_status');
+		var btn = document.getElementById('btn_update');
+		btn.setValue('叽歪一下');
+		btn.setDisabled(false);
+		txt.setReadOnly(false);
+		txt.setDisabled(false);
+		document.getElementById('statuses').setInnerFBML(data);
+		txt.setValue('');
+	}
+	ajax.onerror = function() {
+		var txt = document.getElementById('txt_status');
+		var btn = document.getElementById('btn_update');
+		btn.setValue('叽歪一下');
+		btn.setDisabled(false);
+		txt.setReadOnly(false);
+		txt.setDisabled(false);
+		var d = new Dialog();
+		d.onconfirm = function() {
+			document.getElementById('btn_update').focus();
+		}
+		d.showMessage('叽歪', '发送失败，等会儿再试试？');
+	}
+	ajax.post('http://api.jiwai.de/facebook/?update', {'status': txt.getValue()});
+}
+</script>
 <table class="doing">
-    <input type="hidden" name="fb_sig_locale" value="utf-8"/>
-	<tr><td><textarea class="status_area" name="status" /></td></tr>
-	<tr><td><center><input class="send" type="submit" value="<?php echo mb_convert_encoding("叽歪一下","HTML-ENTITIES","UTF-8")?>" clickrewriteid="statuses" clickrewriteurl="http://api.jiwai.de/facebook/?update" /></center></td></tr>
+	<tr><td><textarea class="status_area" name="status" id="txt_status" /></td></tr>
+	<tr><td><center><input class="send" type="submit" value="<?php echo mb_convert_encoding("叽歪一下","HTML-ENTITIES","UTF-8")?>" id="btn_update" onclick="update();" /></center></td></tr>
 </table>
 </form>
 <div id="statuses">
