@@ -74,6 +74,18 @@ class JWApi{
 			$password = $_SERVER['PHP_AUTH_PW'];
 			return JWUser::GetUserFromPassword( $username_or_email, $password );
 		}
+		if (isset($_REQUEST['oauth_consumer_key'])) {
+			try {
+				$server = JWOAuth::Server();
+				$req = OAuthRequest::from_request();
+				$t = $server->verify_request($req);
+				return $t[1]->idUser;
+			} catch (OAuthException $e) {
+				header('HTTP/1.1 401 Unauthorized');
+				//error_log('OAuth failed');
+				return null;
+			}
+		}
 		return null;
 	}
 	
