@@ -1,9 +1,9 @@
 <?php
 //
 // +---------------------------------------------------------------------------+
-// | Facebook Platform PHP5 client                                 |
+// | Facebook Platform PHP5 client                                             |
 // +---------------------------------------------------------------------------+
-// | Copyright (c) 2007 Facebook, Inc.                                         |
+// | Copyright (c) 2007-2008 Facebook, Inc.                                    |
 // | All rights reserved.                                                      |
 // |                                                                           |
 // | Redistribution and use in source and binary forms, with or without        |
@@ -37,6 +37,12 @@ class FacebookRestClient {
   public $api_key;
   public $friends_list; // to save making the friends.get api call, this will get prepopulated on canvas pages
   public $added;        // to save making the users.isAppAdded api call, this will get prepopulated on canvas pages
+  public $batch_mode;
+  private $batch_queue;
+
+  const BATCH_MODE_DEFAULT = 0;
+  const BATCH_MODE_SERVER_PARALLEL = 0;
+  const BATCH_MODE_SERIAL_ONLY = 2;
 
   /**
    * Create the client.
@@ -45,29 +51,116 @@ class FacebookRestClient {
    *                            directly accessing the $session_key member
    *                            variable.
    */
-  public function __construct($api_key, $secret, $session_key=null) {
+  public function __construct($api_key, $secret, $session_key=null, $server_addr=null) {
     $this->secret       = $secret;
     $this->session_key  = $session_key;
     $this->api_key      = $api_key;
+    $this->batch_mode = FacebookRestClient::BATCH_MODE_DEFAULT;
     $this->last_call_id = 0;
-    $this->server_addr  = Facebook::get_facebook_url('api') . '/restserver.php';
-    if ($GLOBALS['facebook_config']['debug']) {
+    if ($server_addr) {
+      $this->server_addr = $server_addr;
+    } else {
+      $this->server_addr  = Facebook::get_facebook_url('api') . '/restserver.php';
+    }
+    if (!empty($GLOBALS['facebook_config']['debug'])) {
       $this->cur_id = 0;
       ?>
 <script type="text/javascript">
 var types = ['params', 'xml', 'php', 'sxml'];
+function getStyle(elem, style) {
+  if (elem.getStyle) {
+    return elem.getStyle(style);
+  } else {
+    return elem.style[style];
+  }
+}
+function setStyle(elem, style, value) {
+  if (elem.setStyle) {
+    elem.setStyle(style, value);
+  } else {
+    elem.style[style] = value;
+  }
+}
 function toggleDisplay(id, type) {
-  for each (var t in types) {
-    if (t != type || document.getElementById(t + id).style.display == 'block') {
-      document.getElementById(t + id).style.display = 'none';
-    } else {
-      document.getElementById(t + id).style.display = 'block';
+  for (var i = 0; i < types.length; i++) {
+    var t = types[i];
+    var pre = document.getElementById(t + id);
+    if (pre) {
+      if (t != type || getStyle(pre, 'display') == 'block') {
+        setStyle(pre, 'display', 'none');
+      } else {
+        setStyle(pre, 'display', 'block');
+      }
     }
   }
   return false;
 }
 </script>
 <?php
+    }
+  }
+
+
+  /**
+   * Start a batch operation.
+   */
+  public function begin_batch() {
+    if($this->batch_queue !== null)
+    {
+      throw new FacebookRestClientException(FacebookAPIErrorCodes::API_EC_BATCH_ALREADY_STARTED,
+      FacebookAPIErrorCodes::$api_error_descriptions[FacebookAPIErrorCodes::API_EC_BATCH_ALREADY_STARTED]);
+    }
+
+    $this->batch_queue = array();
+  }
+
+  /*
+   * End current batch operation
+   */
+  public function end_batch() {
+    if($this->batch_queue === null) {
+      throw new FacebookRestClientException(FacebookAPIErrorCodes::API_EC_BATCH_NOT_STARTED,
+      FacebookAPIErrorCodes::$api_error_descriptions[FacebookAPIErrorCodes::API_EC_BATCH_NOT_STARTED]);
+    }
+
+    $this->execute_server_side_batch();
+
+    $this->batch_queue = null;
+  }
+
+
+  private function execute_server_side_batch() {
+
+
+    $item_count = count($this->batch_queue);
+    $method_feed = array();
+    foreach($this->batch_queue as $batch_item) {
+      $method_feed[] = $this->create_post_string($batch_item['m'], $batch_item['p']);
+    }
+
+    $method_feed_json = json_encode($method_feed);
+
+    $serial_only = $this->batch_mode == FacebookRestClient::BATCH_MODE_SERIAL_ONLY ;
+    $params = array('method_feed' => $method_feed_json, 'serial_only' => $serial_only);
+
+    $xml = $this->post_request('batch.run', $params);
+
+    $result = $this->convert_xml_to_result($xml, 'batch.run', $params);
+
+
+    if (is_array($result) && isset($result['error_code'])) {
+      throw new FacebookRestClientException($result['error_msg'], $result['error_code']);
+    }
+
+    for($i = 0; $i < $item_count; $i++) {
+      $batch_item = $this->batch_queue[$i];
+      $batch_item_result_xml = $result[$i];
+      $batch_item_result = $this->convert_xml_to_result($batch_item_result_xml, $batch_item['m'], $batch_item['p']);
+
+      if (is_array($batch_item_result) && isset($batch_item_result['error_code'])) {
+        throw new FacebookRestClientException($batch_item_result['error_msg'], $batch_item_result['error_code']);
+      }
+      $batch_item['r'] = $batch_item_result;
     }
   }
 
@@ -78,13 +171,18 @@ function toggleDisplay(id, type) {
    * @return assoc array containing session_key, uid
    */
   public function auth_getSession($auth_token) {
-    $result = $this->call_method('facebook.auth.getSession', array('auth_token'=>$auth_token));
-    $this->session_key = $result['session_key'];
-    if (isset($result['secret']) && $result['secret']) {
-      // desktop apps have a special secret
-      $this->secret = $result['secret'];
+    //Check if we are in batch mode
+    if($this->batch_queue === null) {
+      $result = $this->call_method('facebook.auth.getSession', array('auth_token'=>$auth_token));
+      $this->session_key = $result['session_key'];
+      if (isset($result['secret']) && $result['secret']) {
+        // desktop apps have a special secret
+        $this->secret = $result['secret'];
+      }
+      return $result;
+    } else {
+
     }
-    return $result;
   }
 
   /**
@@ -103,7 +201,7 @@ function toggleDisplay(id, type) {
    *   rsvp status when filtering.
    * @return array of events
    */
-  public function events_get($uid, $eids, $start_time, $end_time, $rsvp_status) {
+  public function &events_get($uid, $eids, $start_time, $end_time, $rsvp_status) {
     return $this->call_method('facebook.events.get',
         array(
         'uid' => $uid,
@@ -119,7 +217,7 @@ function toggleDisplay(id, type) {
    * @return assoc array of four membership lists, with keys 'attending',
    *  'unsure', 'declined', and 'not_replied'
    */
-  public function events_getMembers($eid) {
+  public function &events_getMembers($eid) {
     return $this->call_method('facebook.events.getMembers',
       array('eid' => $eid));
   }
@@ -131,12 +229,12 @@ function toggleDisplay(id, type) {
    * @param string $query the query to evaluate
    * @return generalized array representing the results
    */
-  public function fql_query($query) {
+  public function &fql_query($query) {
     return $this->call_method('facebook.fql.query',
       array('query' => $query));
   }
 
-  public function feed_publishStoryToUser($title, $body,
+  public function &feed_publishStoryToUser($title, $body,
                                           $image_1=null, $image_1_link=null,
                                           $image_2=null, $image_2_link=null,
                                           $image_3=null, $image_3_link=null,
@@ -154,7 +252,7 @@ function toggleDisplay(id, type) {
             'image_4_link' => $image_4_link));
   }
 
-  public function feed_publishActionOfUser($title, $body,
+  public function &feed_publishActionOfUser($title, $body,
                                            $image_1=null, $image_1_link=null,
                                            $image_2=null, $image_2_link=null,
                                            $image_3=null, $image_3_link=null,
@@ -172,16 +270,15 @@ function toggleDisplay(id, type) {
             'image_4_link' => $image_4_link));
   }
 
-  public function feed_publishTemplatizedAction($actor_id, $title_template, $title_data,
+  public function &feed_publishTemplatizedAction($title_template, $title_data,
                                                 $body_template, $body_data, $body_general,
                                                 $image_1=null, $image_1_link=null,
                                                 $image_2=null, $image_2_link=null,
                                                 $image_3=null, $image_3_link=null,
                                                 $image_4=null, $image_4_link=null,
-                                                $target_ids='') {
+                                                $target_ids='', $page_actor_id=null) {
     return $this->call_method('facebook.feed.publishTemplatizedAction',
-      array('actor_id' => $actor_id,
-            'title_template' => $title_template,
+      array('title_template' => $title_template,
             'title_data' => $title_data,
             'body_template' => $body_template,
             'body_data' => $body_data,
@@ -194,7 +291,8 @@ function toggleDisplay(id, type) {
             'image_3_link' => $image_3_link,
             'image_4' => $image_4,
             'image_4_link' => $image_4_link,
-            'target_ids' => $target_ids));
+            'target_ids' => $target_ids,
+            'page_actor_id' => $page_actor_id));
   }
 
   /**
@@ -207,7 +305,7 @@ function toggleDisplay(id, type) {
    *          1 => array('uid1' => id_2, 'uid2' => id_B, 'are_friends' => 0)
    *         ...)
    */
-  public function friends_areFriends($uids1, $uids2) {
+  public function &friends_areFriends($uids1, $uids2) {
     return $this->call_method('facebook.friends.areFriends',
         array('uids1'=>$uids1, 'uids2'=>$uids2));
   }
@@ -216,7 +314,7 @@ function toggleDisplay(id, type) {
    * Returns the friends of the current session user.
    * @return array of friends
    */
-  public function friends_get() {
+  public function &friends_get() {
     if (isset($this->friends_list)) {
       return $this->friends_list;
     }
@@ -228,7 +326,7 @@ function toggleDisplay(id, type) {
    * of the calling application.
    * @return array of friends
    */
-  public function friends_getAppUsers() {
+  public function &friends_getAppUsers() {
     return $this->call_method('facebook.friends.getAppUsers', array());
   }
 
@@ -240,7 +338,7 @@ function toggleDisplay(id, type) {
    *   A null parameter will get all groups for the user.
    * @return array of groups
    */
-  public function groups_get($uid, $gids) {
+  public function &groups_get($uid, $gids) {
     return $this->call_method('facebook.groups.get',
         array(
         'uid' => $uid,
@@ -253,9 +351,43 @@ function toggleDisplay(id, type) {
    * @return assoc array of four membership lists, with keys
    *  'members', 'admins', 'officers', and 'not_replied'
    */
-  public function groups_getMembers($gid) {
+  public function &groups_getMembers($gid) {
     return $this->call_method('facebook.groups.getMembers',
       array('gid' => $gid));
+  }
+
+  /**
+   * Returns cookies according to the filters specified.
+   * @param int $uid Required: User for which the cookies are needed.
+   * @param string $name Optional:
+   *   A null parameter will get all cookies for the user.
+   * @return array of cookies
+   */
+  public function data_getCookies($uid, $name) {
+    return $this->call_method('facebook.data.getCookies',
+        array(
+        'uid' => $uid,
+        'name' => $name));
+  }
+
+  /**
+   * Sets cookies according to the params specified.
+   * @param int $uid Required: User for which the cookies are needed.
+   * @param string $name Required: name of the cookie
+   * @param string $value Optional if expires specified and is in the past
+   * @param int$expires Optional
+   * @param string $path Optional
+   *
+   * @return bool
+   */
+  public function data_setCookie($uid, $name, $value, $expires, $path) {
+    return $this->call_method('facebook.data.setCookie',
+        array(
+        'uid' => $uid,
+        'name' => $name,
+        'value' => $value,
+        'expires' => $expires,
+        'path' => $path));
   }
 
   /**
@@ -265,7 +397,7 @@ function toggleDisplay(id, type) {
    *  a uid list of 'friend_requests', a gid list of 'group_invites',
    *  and an eid list of 'event_invites'
    */
-  public function notifications_get() {
+  public function &notifications_get() {
     return $this->call_method('facebook.notifications.get', array());
   }
 
@@ -273,7 +405,7 @@ function toggleDisplay(id, type) {
    * Sends a notification to the specified users.
    * @return (nothing)
    */
-  public function notifications_send($to_ids, $notification) {
+  public function &notifications_send($to_ids, $notification) {
     return $this->call_method('facebook.notifications.send',
                               array('to_ids' => $to_ids, 'notification' => $notification));
   }
@@ -286,7 +418,7 @@ function toggleDisplay(id, type) {
    * @param string $fbml : fbml markup if you want an html version of the email
    * @return comma separated list of successful recipients
    */
-  public function notifications_sendEmail($recipients, $subject, $text, $fbml) {
+  public function &notifications_sendEmail($recipients, $subject, $text, $fbml) {
     return $this->call_method('facebook.notifications.sendEmail',
                               array('recipients' => $recipients,
                                     'subject' => $subject,
@@ -302,16 +434,16 @@ function toggleDisplay(id, type) {
    * @param string type  limits results to a particular type of page.
    * @return array of pages
    */
-  public function pages_getInfo($page_ids, $fields, $uid, $type) {
+  public function &pages_getInfo($page_ids, $fields, $uid, $type) {
     return $this->call_method('facebook.pages.getInfo', array('page_ids' => $page_ids, 'fields' => $fields, 'uid' => $uid, 'type' => $type));
   }
 
   /**
-   * Returns true if logged in user is an admin for the passed page 
+   * Returns true if logged in user is an admin for the passed page
    * @param int $page_id target page id
    * @return boolean
    */
-  public function pages_isAdmin($page_id) {
+  public function &pages_isAdmin($page_id) {
     return $this->call_method('facebook.pages.isAdmin', array('page_id' => $page_id));
   }
 
@@ -319,7 +451,7 @@ function toggleDisplay(id, type) {
    * Returns whether or not the page corresponding to the current session object has the app installed
    * @return boolean
    */
-  public function pages_isAppAdded() {
+  public function &pages_isAppAdded() {
     if (isset($this->added)) {
       return $this->added;
     }
@@ -327,12 +459,12 @@ function toggleDisplay(id, type) {
   }
 
   /**
-   * Returns true if logged in user is a fan for the passed page 
+   * Returns true if logged in user is a fan for the passed page
    * @param int $page_id target page id
    * @param int $uid user to compare.  If empty, the logged in user.
    * @return bool
    */
-  public function pages_isFan($page_id, $uid) {
+  public function &pages_isFan($page_id, $uid) {
     return $this->call_method('facebook.pages.isFan', array('page_id' => $page_id, 'uid' => $uid));
   }
 
@@ -346,7 +478,7 @@ function toggleDisplay(id, type) {
    * error is returned.
    * @return array of photo objects.
    */
-  public function photos_get($subj_id, $aid, $pids) {
+  public function &photos_get($subj_id, $aid, $pids) {
     return $this->call_method('facebook.photos.get',
       array('subj_id' => $subj_id, 'aid' => $aid, 'pids' => $pids));
   }
@@ -359,7 +491,7 @@ function toggleDisplay(id, type) {
    * Note that at least one of the (uid, aids) parameters must be specified.
    * @returns an array of album objects.
    */
-  public function photos_getAlbums($uid, $aids) {
+  public function &photos_getAlbums($uid, $aids) {
     return $this->call_method('facebook.photos.getAlbums',
       array('uid' => $uid,
             'aids' => $aids));
@@ -371,7 +503,7 @@ function toggleDisplay(id, type) {
    * @return array of photo tag objects, with include pid, subject uid,
    *  and two floating-point numbers (xcoord, ycoord) for tag pixel location
    */
-  public function photos_getTags($pids) {
+  public function &photos_getTags($pids) {
     return $this->call_method('facebook.photos.getTags',
       array('pids' => $pids));
   }
@@ -382,7 +514,7 @@ function toggleDisplay(id, type) {
    * @param array $fields an array of strings describing the info fields desired
    * @return array of users
    */
-  public function users_getInfo($uids, $fields) {
+  public function &users_getInfo($uids, $fields) {
     return $this->call_method('facebook.users.getInfo', array('uids' => $uids, 'fields' => $fields));
   }
 
@@ -390,16 +522,15 @@ function toggleDisplay(id, type) {
    * Returns the user corresponding to the current session object.
    * @return integer uid
    */
-  public function users_getLoggedInUser() {
+  public function &users_getLoggedInUser() {
     return $this->call_method('facebook.users.getLoggedInUser', array());
   }
-
 
   /**
    * Returns whether or not the user corresponding to the current session object has the app installed
    * @return boolean
    */
-  public function users_isAppAdded() {
+  public function &users_isAppAdded() {
     if (isset($this->added)) {
       return $this->added;
     }
@@ -423,19 +554,19 @@ function toggleDisplay(id, type) {
                                                                 'mobile_profile' => $mobile_profile));
   }
 
-  public function profile_getFBML($uid) {
+  public function &profile_getFBML($uid) {
     return $this->call_method('facebook.profile.getFBML', array('uid' => $uid));
   }
 
-  public function fbml_refreshImgSrc($url) {
+  public function &fbml_refreshImgSrc($url) {
     return $this->call_method('facebook.fbml.refreshImgSrc', array('url' => $url));
   }
 
-  public function fbml_refreshRefUrl($url) {
+  public function &fbml_refreshRefUrl($url) {
     return $this->call_method('facebook.fbml.refreshRefUrl', array('url' => $url));
   }
 
-  public function fbml_setRefHandle($handle, $fbml) {
+  public function &fbml_setRefHandle($handle, $fbml) {
     return $this->call_method('facebook.fbml.setRefHandle', array('handle' => $handle, 'fbml' => $fbml));
   }
 
@@ -525,7 +656,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setUserPreference($pref_id, $value) {
+  public function &data_setUserPreference($pref_id, $value) {
     return $this->call_method
       ('facebook.data.setUserPreference',
        array('pref_id' => $pref_id,
@@ -544,7 +675,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setUserPreferences($values, $replace = false) {
+  public function &data_setUserPreferences($values, $replace = false) {
     return $this->call_method
       ('facebook.data.setUserPreferences',
        array('values' => json_encode($values),
@@ -562,7 +693,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getUserPreference($pref_id) {
+  public function &data_getUserPreference($pref_id) {
     return $this->call_method
       ('facebook.data.getUserPreference',
        array('pref_id' => $pref_id));
@@ -577,7 +708,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getUserPreferences() {
+  public function &data_getUserPreferences() {
     return $this->call_method
       ('facebook.data.getUserPreferences',
        array());
@@ -596,7 +727,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_createObjectType($name) {
+  public function &data_createObjectType($name) {
     return $this->call_method
       ('facebook.data.createObjectType',
        array('name' => $name));
@@ -615,7 +746,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_dropObjectType($obj_type) {
+  public function &data_dropObjectType($obj_type) {
     return $this->call_method
       ('facebook.data.dropObjectType',
        array('obj_type' => $obj_type));
@@ -636,7 +767,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_renameObjectType($obj_type, $new_name) {
+  public function &data_renameObjectType($obj_type, $new_name) {
     return $this->call_method
       ('facebook.data.renameObjectType',
        array('obj_type' => $obj_type,
@@ -658,7 +789,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_defineObjectProperty($obj_type, $prop_name, $prop_type) {
+  public function &data_defineObjectProperty($obj_type, $prop_name, $prop_type) {
     return $this->call_method
       ('facebook.data.defineObjectProperty',
        array('obj_type' => $obj_type,
@@ -680,7 +811,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_undefineObjectProperty($obj_type, $prop_name) {
+  public function &data_undefineObjectProperty($obj_type, $prop_name) {
     return $this->call_method
       ('facebook.data.undefineObjectProperty',
        array('obj_type' => $obj_type,
@@ -703,7 +834,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_renameObjectProperty($obj_type, $prop_name,
+  public function &data_renameObjectProperty($obj_type, $prop_name,
                                             $new_name) {
     return $this->call_method
       ('facebook.data.renameObjectProperty',
@@ -722,7 +853,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getObjectTypes() {
+  public function &data_getObjectTypes() {
     return $this->call_method
       ('facebook.data.getObjectTypes',
        array());
@@ -741,7 +872,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getObjectType($obj_type) {
+  public function &data_getObjectType($obj_type) {
     return $this->call_method
       ('facebook.data.getObjectType',
        array('obj_type' => $obj_type));
@@ -761,7 +892,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_createObject($obj_type, $properties = null) {
+  public function &data_createObject($obj_type, $properties = null) {
     return $this->call_method
       ('facebook.data.createObject',
        array('obj_type' => $obj_type,
@@ -783,7 +914,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_updateObject($obj_id, $properties, $replace = false) {
+  public function &data_updateObject($obj_id, $properties, $replace = false) {
     return $this->call_method
       ('facebook.data.updateObject',
        array('obj_id' => $obj_id,
@@ -804,7 +935,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_deleteObject($obj_id) {
+  public function &data_deleteObject($obj_id) {
     return $this->call_method
       ('facebook.data.deleteObject',
        array('obj_id' => $obj_id));
@@ -822,7 +953,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_deleteObjects($obj_ids) {
+  public function &data_deleteObjects($obj_ids) {
     return $this->call_method
       ('facebook.data.deleteObjects',
        array('obj_ids' => json_encode($obj_ids)));
@@ -843,7 +974,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getObjectProperty($obj_id, $prop_name) {
+  public function &data_getObjectProperty($obj_id, $prop_name) {
     return $this->call_method
       ('facebook.data.getObjectProperty',
        array('obj_id' => $obj_id,
@@ -865,7 +996,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getObject($obj_id, $prop_names = null) {
+  public function &data_getObject($obj_id, $prop_names = null) {
     return $this->call_method
       ('facebook.data.getObject',
        array('obj_id' => $obj_id,
@@ -887,7 +1018,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getObjects($obj_ids, $prop_names = null) {
+  public function &data_getObjects($obj_ids, $prop_names = null) {
     return $this->call_method
       ('facebook.data.getObjects',
        array('obj_ids' => json_encode($obj_ids),
@@ -909,7 +1040,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setObjectProperty($obj_id, $prop_name,
+  public function &data_setObjectProperty($obj_id, $prop_name,
                                          $prop_value) {
     return $this->call_method
       ('facebook.data.setObjectProperty',
@@ -933,7 +1064,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getHashValue($obj_type, $key, $prop_name = null) {
+  public function &data_getHashValue($obj_type, $key, $prop_name = null) {
     return $this->call_method
       ('facebook.data.getHashValue',
        array('obj_type' => $obj_type,
@@ -956,7 +1087,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setHashValue($obj_type, $key, $value, $prop_name = null) {
+  public function &data_setHashValue($obj_type, $key, $value, $prop_name = null) {
     return $this->call_method
       ('facebook.data.setHashValue',
        array('obj_type' => $obj_type,
@@ -981,7 +1112,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_incHashValue($obj_type, $key, $prop_name, $increment = 1) {
+  public function &data_incHashValue($obj_type, $key, $prop_name, $increment = 1) {
     return $this->call_method
       ('facebook.data.incHashValue',
        array('obj_type' => $obj_type,
@@ -1003,7 +1134,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_removeHashKey($obj_type, $key) {
+  public function &data_removeHashKey($obj_type, $key) {
     return $this->call_method
       ('facebook.data.removeHashKey',
        array('obj_type' => $obj_type,
@@ -1023,7 +1154,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_removeHashKeys($obj_type, $keys) {
+  public function &data_removeHashKeys($obj_type, $keys) {
     return $this->call_method
       ('facebook.data.removeHashKeys',
        array('obj_type' => $obj_type,
@@ -1048,7 +1179,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_defineAssociation($name, $assoc_type, $assoc_info1,
+  public function &data_defineAssociation($name, $assoc_type, $assoc_info1,
                                          $assoc_info2, $inverse = null) {
     return $this->call_method
       ('facebook.data.defineAssociation',
@@ -1072,7 +1203,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_undefineAssociation($name) {
+  public function &data_undefineAssociation($name) {
     return $this->call_method
       ('facebook.data.undefineAssociation',
        array('name' => $name));
@@ -1095,7 +1226,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_renameAssociation($name, $new_name, $new_alias1 = null,
+  public function &data_renameAssociation($name, $new_name, $new_alias1 = null,
                                          $new_alias2 = null) {
     return $this->call_method
       ('facebook.data.renameAssociation',
@@ -1118,7 +1249,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociationDefinition($name) {
+  public function &data_getAssociationDefinition($name) {
     return $this->call_method
       ('facebook.data.getAssociationDefinition',
        array('name' => $name));
@@ -1134,7 +1265,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociationDefinitions() {
+  public function &data_getAssociationDefinitions() {
     return $this->call_method
       ('facebook.data.getAssociationDefinitions',
        array());
@@ -1156,7 +1287,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setAssociation($name, $obj_id1, $obj_id2, $data = null,
+  public function &data_setAssociation($name, $obj_id1, $obj_id2, $data = null,
                                       $assoc_time = null) {
     return $this->call_method
       ('facebook.data.setAssociation',
@@ -1180,7 +1311,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_setAssociations($assocs, $name = null) {
+  public function &data_setAssociations($assocs, $name = null) {
     return $this->call_method
       ('facebook.data.setAssociations',
        array('assocs' => json_encode($assocs),
@@ -1201,7 +1332,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_removeAssociation($name, $obj_id1, $obj_id2) {
+  public function &data_removeAssociation($name, $obj_id1, $obj_id2) {
     return $this->call_method
       ('facebook.data.removeAssociation',
        array('name' => $name,
@@ -1222,7 +1353,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_removeAssociations($assocs, $name = null) {
+  public function &data_removeAssociations($assocs, $name = null) {
     return $this->call_method
       ('facebook.data.removeAssociations',
        array('assocs' => json_encode($assocs),
@@ -1243,7 +1374,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_removeAssociatedObjects($name, $obj_id) {
+  public function &data_removeAssociatedObjects($name, $obj_id) {
     return $this->call_method
       ('facebook.data.removeAssociatedObjects',
        array('name' => $name,
@@ -1266,7 +1397,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociatedObjects($name, $obj_id, $no_data = true) {
+  public function &data_getAssociatedObjects($name, $obj_id, $no_data = true) {
     return $this->call_method
       ('facebook.data.getAssociatedObjects',
        array('name' => $name,
@@ -1289,7 +1420,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociatedObjectCount($name, $obj_id) {
+  public function &data_getAssociatedObjectCount($name, $obj_id) {
     return $this->call_method
       ('facebook.data.getAssociatedObjectCount',
        array('name' => $name,
@@ -1311,7 +1442,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociatedObjectCounts($name, $obj_ids) {
+  public function &data_getAssociatedObjectCounts($name, $obj_ids) {
     return $this->call_method
       ('facebook.data.getAssociatedObjectCounts',
        array('name' => $name,
@@ -1332,7 +1463,7 @@ function toggleDisplay(id, type) {
    *    API_EC_DATA_QUOTA_EXCEEDED
    *    API_EC_DATA_UNKNOWN_ERROR
    */
-  public function data_getAssociations($obj_id1, $obj_id2, $no_data = true) {
+  public function &data_getAssociations($obj_id1, $obj_id2, $no_data = true) {
     return $this->call_method
       ('facebook.data.getAssociations',
        array('obj_id1' => $obj_id1,
@@ -1340,13 +1471,70 @@ function toggleDisplay(id, type) {
              'no_data' => $no_data));
   }
 
+  /**
+   * Get the properties that you have set for an app.
+   *
+   * @param  properties  list of properties names to fetch
+   * @return             a map from property name to value
+   */
+  public function admin_getAppProperties($properties) {
+    return json_decode($this->call_method
+                       ('facebook.admin.getAppProperties',
+                        array('properties' => json_encode($properties))), true);
+  }
+
+  /**
+   * Set properties for an app.
+   *
+   * @param  properties  a map from property names to  values
+   * @return             true on success
+   */
+  public function admin_setAppProperties($properties) {
+    return $this->call_method
+      ('facebook.admin.setAppProperties',
+       array('properties' => json_encode($properties)));
+  }
+
+  /**
+   * Returns the allocation limit value for a specified integration point name
+   * Integration point names are defined in lib/api/karma/constants.php in the limit_map
+   * @param string $integration_point_name
+   * @return integration point allocation value
+   */
+  public function &admin_getAllocation($integration_point_name) {
+    return $this->call_method('facebook.admin.getAllocation', array('integration_point_name' => $integration_point_name));
+  }
+
+
+
+
   /* UTILITY FUNCTIONS */
 
-  public function call_method($method, $params) {
-    $xml = $this->post_request($method, $params);
+  public function & call_method($method, $params) {
+
+    //Check if we are in batch mode
+    if($this->batch_queue === null) {
+      $xml = $this->post_request($method, $params);
+      $result = $this->convert_xml_to_result($xml, $method, $params);
+      if (is_array($result) && isset($result['error_code'])) {
+        throw new FacebookRestClientException($result['error_msg'], $result['error_code']);
+      }
+    }
+    else {
+      $result = null;
+      $batch_item = array('m' => $method, 'p' => $params, 'r' => & $result);
+      $this->batch_queue[] = $batch_item;
+    }
+
+    return $result;
+  }
+
+  private function convert_xml_to_result($xml, $method, $params) {
     $sxml = simplexml_load_string($xml);
     $result = self::convert_simplexml_to_array($sxml);
-    if ($GLOBALS['facebook_config']['debug']) {
+
+
+    if (!empty($GLOBALS['facebook_config']['debug'])) {
       // output the raw xml and its corresponding php object, for debugging:
       print '<div style="margin: 10px 30px; padding: 5px; border: 2px solid black; background: gray; color: white; font-size: 12px; font-weight: bold;">';
       $this->cur_id++;
@@ -1361,13 +1549,12 @@ function toggleDisplay(id, type) {
       print '<pre id="sxml'.$this->cur_id.'" style="display: none; overflow: auto;">'.print_r($sxml, true).'</pre>';
       print '</div>';
     }
-    if (is_array($result) && isset($result['error_code'])) {
-      throw new FacebookRestClientException($result['error_msg'], $result['error_code']);
-    }
     return $result;
   }
 
-  public function post_request($method, $params) {
+
+
+  private function create_post_string($method, $params) {
     $params['method'] = $method;
     $params['session_key'] = $this->session_key;
     $params['api_key'] = $this->api_key;
@@ -1386,7 +1573,13 @@ function toggleDisplay(id, type) {
     }
     $secret = $this->secret;
     $post_params[] = 'sig='.Facebook::generate_sig($params, $secret);
-    $post_string = implode('&', $post_params);
+    return implode('&', $post_params);
+  }
+
+  public function post_request($method, $params) {
+
+    $post_string = $this->create_post_string($method, $params);
+
 
     if (function_exists('curl_init')) {
       // Use CURL if installed...
@@ -1436,7 +1629,9 @@ function toggleDisplay(id, type) {
       return (string)$sxml;
     }
   }
+
 }
+
 
 class FacebookRestClientException extends Exception {
 }
@@ -1496,6 +1691,14 @@ class FacebookAPIErrorCodes {
   const API_EC_DATA_OBJECT_ALREADY_EXISTS = 804;
   const API_EC_DATA_DATABASE_ERROR = 805;
 
+
+  /*
+   * Batch ERROR
+   */
+  const API_EC_BATCH_ALREADY_STARTED = 900;
+  const API_EC_BATCH_NOT_STARTED = 901;
+  const API_EC_BATCH_METHOD_NOT_ALLOWED_IN_BATCH_MODE = 902;
+
   public static $api_error_descriptions = array(
       API_EC_SUCCESS           => 'Success',
       API_EC_UNKNOWN           => 'An unknown error occurred',
@@ -1528,6 +1731,9 @@ class FacebookAPIErrorCodes {
       API_EC_DATA_OBJECT_NOT_FOUND => 'Specified object cannot be found',
       API_EC_DATA_OBJECT_ALREADY_EXISTS => 'Specified object already exists',
       API_EC_DATA_DATABASE_ERROR => 'A database error occurred. Please try again',
+      API_EC_BATCH_ALREADY_STARTED => 'begin_batch already called, please make sure to call end_batch first',
+      API_EC_BATCH_NOT_STARTED => 'end_batch called before start_batch',
+      API_EC_BATCH_METHOD_NOT_ALLOWED_IN_BATCH_MODE => 'this method is not allowed in batch mode',
   );
 }
 

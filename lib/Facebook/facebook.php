@@ -31,8 +31,8 @@
 // +---------------------------------------------------------------------------+
 //
 
-include_once 'facebookapi_php5_restlib.php';
-
+include_once $_SERVER['PHP_ROOT'].'/lib/api/client/php_1_1/facebookapi_php5_restlib.php';
+define('FACEBOOK_API_VALIDATION_ERROR', 1);
 class Facebook {
   public $api_client;
 
@@ -238,6 +238,52 @@ class Facebook {
   public function verify_signature($fb_params, $expected_sig) {
     return self::generate_sig($fb_params, $this->secret) == $expected_sig;
   }
+
+  public function encode_validationError($summary, $message) {
+    return json_encode(
+               array('errorCode'    => FACEBOOK_API_VALIDATION_ERROR,
+                     'errorTitle'   => $summary,
+                     'errorMessage' => $message));
+  }
+
+  public function encode_multiFeedStory($feed, $next) {
+    return json_encode(
+               array('method'   => 'multiFeedStory',
+                     'content'  =>
+                     array('next' => $next,
+                           'feed' => $feed)));
+  }
+
+  public function encode_feedStory($feed, $next) {
+    return json_encode(
+               array('method'   => 'feedStory',
+                     'content'  =>
+                     array('next' => $next,
+                           'feed' => $feed)));
+  }
+
+  public function create_templatizedFeedStory($title_template, $title_data=array(),
+                                    $body_template='', $body_data = array(), $body_general=null,
+                                    $image_1=null, $image_1_link=null,
+                                    $image_2=null, $image_2_link=null,
+                                    $image_3=null, $image_3_link=null,
+                                    $image_4=null, $image_4_link=null) {
+    return array('title_template'=> $title_template,
+                 'title_data'   => $title_data,
+                 'body_template'=> $body_template,
+                 'body_data'    => $body_data,
+                 'body_general' => $body_general,
+                 'image_1'      => $image_1,
+                 'image_1_link' => $image_1_link,
+                 'image_2'      => $image_2,
+                 'image_2_link' => $image_2_link,
+                 'image_3'      => $image_3,
+                 'image_3_link' => $image_3_link,
+                 'image_4'      => $image_4,
+                 'image_4_link' => $image_4_link);
+  }
+
+
 }
 
 ?>
