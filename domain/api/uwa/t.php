@@ -1,6 +1,6 @@
 <?php
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
-$u = empty($_GET['u']) ? '' : $_GET['u'];
+$t = empty($_GET['t']) ? '' : $_GET['t'];
 $rev = '{$Rev$}';
 $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 ?>
@@ -8,20 +8,19 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>叽歪</title>
+<title>叽歪话题</title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
-<meta name="description" content="在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。" />
+<meta name="description" content="在个人空间和博客上显示叽歪话题，支持彩信图片显示和回复等功能。" />
 <meta name="version" content="1.1.3.<?php echo $rev; ?>" />
 <meta name="keyword" content="叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
 <meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
-<meta name="debugMode" content="false" />
+<meta name="debugMode" content="true" />
 <meta name="autoRefresh" content="300" />
 <widget:preferences>
-	<preference type="text" label="你的叽歪登录名" name="screenName" defaultValue="<?php echo $u; ?>"/>
-	<preference type="boolean" label="显示好友的更新" name="withFriends" defaultValue="true" />
+ 	<preference type="text" label="话题" name="tagName" defaultValue="<?php echo $t; ?>"/>
 	<preference type="range" label="最多显示" name="numDisplay" min="1" max="20" step="1" defaultValue="5" />
 	<preference type="boolean" label="显示留言框" name="updateBox" defaultValue="true" />
 </widget:preferences>
@@ -38,22 +37,22 @@ function formatDate(s) {
 }
 var jw_footer = '';
 widget.onLoad = function() {
-	var screenName = widget.getValue("screenName");
-	var withFriends = widget.getValue("withFriends") == 'true';
+ 	var tagName = widget.getValue("tagName");
 	var numDisplay = widget.getValue("numDisplay");
 	var updateBox = widget.getValue("updateBox") == 'true';
 	var uri;
 	if (numDisplay<1) numDisplay = 1;
 	if (numDisplay>20) numDisplay = 20;
-	if (screenName == null || screenName == '') {
-		jw_footer = '<p class="alert">现在显示的是叽歪广场。设置你的叽歪帐号后就可以在这里显示你和好友的最新消息了。还没有叽歪帐号？<a href="http://jiwai.de/wo/account/create" target="_blank">这里注册</a></p>'
+ 	if (tagName == null || tagName == '') {
+		jw_footer = '<p class="alert">现在显示的是叽歪广场。设置叽歪话题后就可以在这里显示相关话题的新消息了。还没有叽歪帐号？<a href="http://jiwai.de/wo/account/create" target="_blank">这里注册</a></p>'
 		widget.setBody(jw_footer);
 		uri = 'http://api.jiwai.de/statuses/public_timeline.json?count=5';
 		withFriends = true;
 	} else {
-		widget.setTitle(screenName+(withFriends ? '和朋友们' : '')+'的叽歪');
-		uri = 'http://api.jiwai.de/statuses/'+(withFriends ? 'friends' : 'user')+'_timeline/' + encodeURIComponent(screenName) + '.json?count='+numDisplay;
-		jw_footer = updateBox ? '<form target="_blank" style="text-align:center;" action="http://jiwai.de/wo/status/update" method="post" onsubmit="var s=this.getElementsByName(\'jw_status\')[0]; if (s.value==\'\') return false; else s.value=\'@'+screenName+' \'+s.value;"><textarea name="jw_status" rows="3"></textarea><br /><input style="border:1px;" type="submit" value="留言"/> <a target="_blank" href="http://jiwai.de/wo/account/create">注册叽歪</a><input type="hidden" value="'+screenName+'" name="idUserReplyTo"/></form>' : '';
+ 		widget.setTitle(tagName+' - 叽歪话题');
+ 		uri = 'http://api.jiwai.de/statuses/tag_timeline/' + tagName + '.json?count='+numDisplay;
+		withFriends = true;
+		jw_footer = updateBox ? '<form target="_blank" style="text-align:center;" action="http://jiwai.de/wo/status/update" method="post" onsubmit="var s=this.getElementsByName(\'jw_status\')[0]; if (s.value==\'\') return false; else s.value=\'['+tagName+']\'+s.value;"><textarea name="jw_status" rows="3"></textarea><br /><input style="border:1px;" type="submit" value="留言"/> <a target="_blank" href="http://jiwai.de/wo/account/create">注册叽歪</a></form>' : '';
 	}
 	UWA.Data.getJson(uri, function(response){
 		if (response == null) {
