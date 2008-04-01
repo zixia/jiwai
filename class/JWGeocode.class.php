@@ -135,7 +135,7 @@ class JWGeocode {
      * @return int idGeocode
      */
     static public function GetGeocode($codingBy, $options = array()) {
-        $idGeocode = false;
+        $idGeocode = null;
         $codingId = self::GetCodingId($codingBy, $options);
 
         if ($geo = self::GetDbRowByCoding($codingBy, $codingId)) {
@@ -150,40 +150,44 @@ class JWGeocode {
                     $mcc = @$options['mcc'];
                     $mnc = @$options['mnc'];
                     $geo = self::GeocodingByCellcode($cid, $lac, $mcc, $mnc);
-                    if (empty($geo)) break;
-                    $idGeocode = self::Create( array(
-                                'latitude'  => $geo['latitude'],
-                                'longitude' => $geo['longitude'],
-                                'codingBy'  => $codingBy,
-                                'codingId'  => $codingId,
-                                ));
                     break;
                 case self::GEOCODING_FUNC_IP :
                     $geo = self::GeocodingByIp($codingId);
-                    if (empty($geo)) break;
-                    $idGeocode = self::Create( array(
-                                'latitude'  => $geo['latitude'],
-                                'longitude' => $geo['longitude'],
-                                'codingBy'  => $codingBy,
-                                'codingId'  => $codingId,
-                                ));
                     break;
                 case self::GEOCODING_FUNC_WAP :
                     // TODO Rolead pushes country/state/city/street
                     $geo = self::GeocodingByWap($codingId);
-                    if (empty($geo)) break;
-                    $idGeocode = self::Create( array(
-                                'latitude'  => $geo['latitude'],
-                                'longitude' => $geo['longitude'],
-                                'codingBy'  => $codingBy,
-                                'codingId'  => $codingId,
-                                ));
                 default :
-                    break;
+                    return $idGeocode;
             }
         }
 
+        if (empty($geo)) {
+            $geo['latitude'] = null;
+            $geo['longitude'] = null;
+        }
+        $idGeocode = self::Create( array(
+                    'latitude'  => $geo['latitude'],
+                    'longitude' => $geo['longitude'],
+                    'codingBy'  => $codingBy,
+                    'codingId'  => $codingId,
+                    ));
+
         return $idGeocode;
+    }
+
+    /**
+     * Get latitude/longitude info from wap
+     *
+     * @param string
+     * @return array
+     */
+    static private function GeocodingByWap($wapid) {
+        // TODO wap2location
+        return array(
+                'latitude'  => 1234567,
+                'longitude' => 7654321,
+                );
     }
 
     /**
