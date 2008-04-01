@@ -8,7 +8,7 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php echo $t ? $t.' - ' : ''; ?>叽歪话题</title>
+<title><?php echo $t ? $t : '叽歪话题'; ?></title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
@@ -22,12 +22,19 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <widget:preferences>
  	<preference type="text" label="话题" name="tagName" defaultValue="<?php echo $t; ?>"/>
 	<preference type="range" label="最多显示" name="numDisplay" min="1" max="20" step="1" defaultValue="5" />
-	<preference type="boolean" label="显示留言框" name="updateBox" defaultValue="true" />
+	<preference type="boolean" label="显示留言框" name="updateBox" defaultValue="<?php $t ? 'false' : 'true'; ?>" />
 </widget:preferences>
+<style type="text/css">
+a.extlink {
+background:transparent url(http://asset.jiwai.de/images/extlink.gif) no-repeat scroll left center;
+padding-left:16px;
+}
+</style>
 <script type="text/javascript">
 <![CDATA[
 function formatStatus(s) {
-	return s.replace(/\[(.+)\]/, '[<a target="_blank" href="http://jiwai.de/t/$1/">$1</a>]');
+	return s.replace(/http:\/\/([\w\-\.]+)([^\s]+)/, '<a target="_blank" href="http://$1$2" class="extlink">$1</a>')
+			.replace(/\[([^\]]+)\]/, '[<a target="_blank" href="http://jiwai.de/t/$1/">$1</a>]');
 }
 function formatDate(s) {
 	var d = new Date(s.replace(/(\w+)\s+(\w+)\s+(\w+)\s+([\w:]+)\s+([\w+-]+)\s+(\w+)/, '$1 $2 $3 $6 $4 $5'));
