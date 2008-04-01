@@ -48,6 +48,12 @@ class JWRobotMsg {
 	 */
 	private $mIsValid	= null;
 
+	/**
+	 * mIsInterceptable: null(willing to be intercepted), true,false
+	 *
+	 */
+	private $mIsInterceptable = true;
+
 	function __construct ($fileName=null)
 	{
 		if ( empty($fileName) )
@@ -294,6 +300,15 @@ class JWRobotMsg {
 	public function SetIdUserConference( $idUserConference )
 	{
 		$this->mIdUserConference = $idUserConference ;
+	}
+
+	public function GetIsInterceptable()
+	{
+		return (false === $this->mIsInterceptable) ? false : true;
+	}
+	public function SetIsInterceptable( $isInterceptable)
+	{
+		$this->mIsInterceptable = (false === $isInterceptable) ? false : true;
 	}
 
 

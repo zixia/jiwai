@@ -146,6 +146,7 @@ class JWRobotLingoBase {
 	/*
 	 *	判断一个 RobotMsg 是否为 Lingo Msg
 	 *	@param	JWRobotMsg	$robotMsg
+	 *	@param	bool $intercept
 	 *	@return	array		Lingo Msg 的对应处理函数（通过call_user_func调用）
 				false		不是 lingo Msg
 	 */
@@ -154,13 +155,15 @@ class JWRobotLingoBase {
 		if ( empty($robot_msg) )
 			throw new JWException('null param?');
 		
-		/** 拦击 FOLLOW | F | LEAVE | L | DELETE **/
-		JWRobotLingoIntercept::Intercept_FollowOrLeave($robot_msg);
+        if ( $robot_msg->GetIsInterceptable() ) {
+            /** 拦击 FOLLOW | F | LEAVE | L | DELETE **/
+            JWRobotLingoIntercept::Intercept_FollowOrLeave($robot_msg);
 
-		/** 拦击冻灾 */
-		JWRobotLingoIntercept::Intercept_TagDongZai($robot_msg);
+            /** 拦击冻灾 */
+            JWRobotLingoIntercept::Intercept_TagDongZai($robot_msg);
 
-		JWRobotLingoIntercept::Intercept_PreAndId($robot_msg);
+            JWRobotLingoIntercept::Intercept_PreAndId($robot_msg);
+        }
 
 		$body = $robot_msg->GetBody();
 		$server_address = $robot_msg->GetServerAddress();
