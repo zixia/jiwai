@@ -8,7 +8,7 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>叽歪话题</title>
+<title><?php echo $t ? $t.' - ' : ''; ?>叽歪话题</title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
@@ -17,7 +17,7 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <meta name="keyword" content="叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
 <meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
 <meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
-<meta name="debugMode" content="true" />
+<meta name="debugMode" content="false" />
 <meta name="autoRefresh" content="300" />
 <widget:preferences>
  	<preference type="text" label="话题" name="tagName" defaultValue="<?php echo $t; ?>"/>

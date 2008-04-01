@@ -8,7 +8,7 @@ $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>叽歪</title>
+<title><?php echo $u ? $u.' - ' : ''; ?>叽歪</title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
 <meta name="author" content="叽歪" />
 <meta name="website" content="http://jiwai.de" />
