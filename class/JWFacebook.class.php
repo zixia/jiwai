@@ -34,18 +34,21 @@ class JWFacebook extends Facebook {
 		if (!$i) $i = new JWFacebook(true);
 		return $i;
 	}
-	static function PublishAction($fbid, $name_url, $status_id, $status, $via, $img=null, $img_link=null) {
+	function PublishAction($name_url, $status_id, $status, $via, $img=null, $img_link=null) {
 		try {
 			$s = json_encode(array(
 				'link_user'=>'http://jiwai.de/'.$name_url.'/',
 				'link_status'=>'http://jiwai.de/'.$name_url.'/statuses/'.$status_id,
 				'status'=>$status, 'via'=>$via));
 			self::instance()->api_client->feed_publishTemplatizedAction($fbid,
-				'{actor}通过{via}<a href="{link_user}">叽歪</a>道: ', $s,
+				$img==null ? '{actor}通过{via}<a href="{link_user}">叽歪了一下</a>'
+				: '{actor}通过{via}<a href="{link_user}">叽歪了一条彩信</a>', $s,
 				'<a href="{link_status}">{status}</a>', $s,
 				'', $img, $img_link);
+			return true;
 		} catch (Exception $e) {
 		}
+		return false;
 	}
 	function SetStatus($status) {
 		try {

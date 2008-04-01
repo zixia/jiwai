@@ -234,7 +234,7 @@ class JWNotify{
 		}
 		*/
 
-		/** Sync to Facebook **/
+		/** Sync to Facebook - removed - bcz of F8 API change
 		if ( null==$receiver_user && $idFacebook = JWFacebook::GetFBbyUser($sender_user['id']) ) 
 		{
 			JWFacebook::RefreshRef($sender_user['id']);
@@ -245,7 +245,7 @@ class JWNotify{
 			JWFacebook::PublishAction($idFacebook, $sender_user['nameUrl'], $idStatus
 					, $status_row['raw_status'], JWDevice::GetNameFromType($device), $pic, $picUrl );
 		}
-		/* */
+		*/
 		
 		/** have_send_ids */
 		$have_send_ids = array($sender_user['id']);
