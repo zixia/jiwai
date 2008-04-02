@@ -1,22 +1,27 @@
 <?php
+require_once(dirname(__FILE__) . "/../../../jiwai.inc.php");
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
 $u = empty($_GET['u']) ? '' : $_GET['u'];
 $rev = '{$Rev$}';
 $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
+if ($u) {
+$user = JWUser::GetUserInfo($u);
+$u = $user['nameScreen'];
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:widget="http://www.netvibes.com/ns/">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title><?php echo $u ? $u : '叽歪'; ?></title>
+<title><?php echo $u ? $user['nameFull'].'('.$u.')' : '叽歪'; ?></title>
 <link rel="icon" type="image/x-icon" href="http://asset.jiwai.de/img/favicon.ico" />
-<meta name="author" content="叽歪" />
-<meta name="website" content="http://jiwai.de" />
-<meta name="description" content="在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。" />
+<meta name="author" content="叽歪<?php echo $u ? '的'.$u : '网'; ?>" />
+<meta name="website" content="http://jiwai.de/<?php echo $u ? $user['nameUrl'] : ''; ?>" />
+<meta name="description" content="<?php echo $u ? $user['nameFull'].' '.str_replace(array("\r","\n"), ' ', htmlspecialchars($user['bio'])).' - Powered by 叽歪网' : '在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。'; ?>" />
 <meta name="version" content="1.1.3.<?php echo $rev; ?>" />
-<meta name="keyword" content="叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
-<meta name="screenshot" content="http://asset.jiwai.de/gadget/uwa/sow_screenshot.png" />
-<meta name="thumbnail" content="http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png" />
+<meta name="keyword" content="<?php echo $u ? $user['nameFull'].' '.$u : ''; ?>叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
+<meta name="screenshot" content="<?php echo $u ? JWPicture::GetUserIconUrl($user['id'],'picture') : 'http://asset.jiwai.de/gadget/uwa/sow_screenshot.png'; ?>" />
+<meta name="thumbnail" content="<?php echo $u ? JWPicture::GetUserIconUrl($user['id'], 96) : 'http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png'; ?>" />
 <meta name="debugMode" content="false" />
 <meta name="autoRefresh" content="300" />
 <widget:preferences>
