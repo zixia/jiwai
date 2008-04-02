@@ -765,16 +765,15 @@ _SQL_;
 
 		$condition_other = null;
 		if( $idSince > 0 ){
-			$condition_other .= " AND id > $idSince";
+			$condition_other .= " AND Status.id > $idSince";
 		}
 		if( $timeSince ) {
-			$condition_other .= " AND timeCreate > '$timeSince'";
+			$condition_other .= " AND Status.timeCreate > '$timeSince'";
 		}
 
 		//not display CCTV,SMG
-		$condition_other .= " AND (idUser > 52067 OR idUser < 52058)";
-		$condition_other .= " AND (idUser > 51700 OR idUser < 51685)";
-		$condition_other .= " AND (idUser > 51958 OR idUser < 51948)";
+		$condition_other .= " AND (User.srcRegister IS NULL OR User.srcRegister NOT IN ('TV-PREDICT', 'STOCK', 'FUND'))";
+		$condition_other .= " AND (User.id = Status.idUser)";
 
 		$sql = <<<_SQL_
 SELECT		
@@ -782,6 +781,7 @@ SELECT
 			,Status.idUser	as idUser
 FROM		
 			Status force index(IDX__Status__timeCreate)
+            ,User
 WHERE		
 			Status.idPicture IS NOT NULL
 			AND Status.isProtected = 'N'
@@ -1013,8 +1013,9 @@ _SQL_;
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
 	{
 
-		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = null;
-		if( is_array( $status ) ){
+		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = null;
+		if( is_array( $status ) )
+		{
 			$reply_to_user_id = $status['idUserReplyTo'];
 			$reply_to_status_id = $status['idStatusReplyTo'];
 			$tag_id = $status['idTag'];
