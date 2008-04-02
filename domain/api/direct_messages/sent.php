@@ -17,7 +17,7 @@ if( ! $idUser ){
 $since = ($since==null) ? null : ( is_numeric($since) ? date("Y-m-d H:i:s", $since) : $since );
 $timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
 $messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::OUTBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $timeSince);
-$messages = JWMessage::GetMessageDbRowsByIds( $messageIds['message_ids'] );
+$messages = JWMessage::GetDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower(trim($pathParam,'.'));
 if( !in_array( $type, array('json','xml','atom','rss') )){
