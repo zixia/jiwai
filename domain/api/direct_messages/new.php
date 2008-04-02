@@ -37,8 +37,7 @@ if( false == JWFollower::IsFollower($idUserSender, $idUserReceiver) ){
 }
 
 $text = urlDecode( $text );
-if(JWMessage::Create($idUserSender, $idUserReceiver, $text, $device)){
-	$insertedId = JWDB::GetInsertedId();
+if( $insertedId = JWSns::CreateMessage($idUserSender, $idUserReceiver, $text, $device)){
 	$message = JWMessage::GetMessageDbRowById( $insertedId );
 	switch($type){
 		case 'xml':

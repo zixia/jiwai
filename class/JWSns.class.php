@@ -90,7 +90,7 @@ class JWSns {
 
 		JWNudge::NudgeToUsers( array($receiver_id), $message_info, 'direct_messages', $device );
 
-		return true;
+		return $message_id;
 	}
 
 
