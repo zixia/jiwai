@@ -19,7 +19,8 @@ $u = $user['nameScreen'];
 <meta name="website" content="http://jiwai.de/<?php echo $u ? $user['nameUrl'] : ''; ?>" />
 <meta name="description" content="<?php echo $u ? $user['nameFull'].' '.str_replace(array("\r","\n"), ' ', htmlspecialchars($user['bio'])).' - Powered by 叽歪网' : '在个人空间和博客上显示你的叽歪窗可贴，支持彩信图片显示和回复等功能。'; ?>" />
 <meta name="version" content="1.1.3.<?php echo $rev; ?>" />
-<meta name="keyword" content="<?php echo $u ? $user['nameFull'].' '.$u : ''; ?>叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
+<meta name="keyword" content="<?php echo $u ? $user['nameFull'].' '.$u.' ' : ''; ?>叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
+<meta name="keywords" content="<?php echo $u ? $user['nameFull'].' '.$u.' ' : ''; ?>叽歪 JiWai 彩信 微博客 miniblog microblog twitter 推客 饭否 fanfou" />
 <meta name="screenshot" content="<?php echo $u ? JWPicture::GetUserIconUrl($user['id'],'picture') : 'http://asset.jiwai.de/gadget/uwa/sow_screenshot.png'; ?>" />
 <meta name="thumbnail" content="<?php echo $u ? JWPicture::GetUserIconUrl($user['id'], 96) : 'http://asset.jiwai.de/gadget/uwa/sow_thumbnail.png'; ?>" />
 <meta name="debugMode" content="false" />
