@@ -120,7 +120,7 @@ if ( ! JWLogin::IsLogined() ) {
 }
 //array_unshift($arr_menu, array ('head'	, array('JiWai.de <strong>叽歪广场</strong>')));
 
-JWTemplate::sidebar($arr_menu, null);
+JWTemplate::sidebar($arr_menu, null, 'public_timeline');
 JWTemplate::container_ending();
 ?>
 

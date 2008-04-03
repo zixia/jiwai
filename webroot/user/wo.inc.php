@@ -220,6 +220,18 @@ $menu_list = array (
 		'url' => "/$page_user_info[nameUrl]/",
 	),
 );
+if(34459 == $page_user_id)//冷笑话
+	$menu_list['contribute'] = array(
+		'active' => false,
+		'name' => "投稿",
+		'url' => "/t/冷笑话/",
+	);
+if(32834 == $page_user_id)//冷笑话
+	$menu_list['joke'] = array(
+		'active' => false,
+		'name' => "笑话",
+		'url' => "/t/笑话/",
+	);
 
 if( null!==$q ){
 	$menu_list['search'] = array(	
