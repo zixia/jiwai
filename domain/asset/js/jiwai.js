@@ -356,6 +356,21 @@ var JiWai =
 		if ( window.RefreshInterval && location.search && location.search.length>1) 
 			setTimeout(JiWai.Refresh, RefreshInterval*1000);
 	},
+    ShowDiv: function(name, curr, len) {
+        for(var i=1; i<=len; i++)
+        {   
+            if(i!=curr)
+            {   
+                $(name+i).className = ''; 
+                $(name+'_'+i).style.display = 'none';
+            }   
+            else
+            {   
+                $(name+i).className = 'now';
+                $(name+'_'+i).style.display = 'block';
+            }   
+        }   
+    },
 	Init: function() {
 		window.TimeOffset = window.ServerTime ? Math.floor((new Date()).getTime()/1000) - window.ServerTime : 0;
 		window.addEvent('domready', JiWai.onLoad); 

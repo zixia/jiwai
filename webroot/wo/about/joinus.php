@@ -8,9 +8,8 @@
 <link rel="stylesheet" href="<? echo JWTemplate::GetAssetUrl('/css/about.css');?>" type="text/css" media="all"  />
 </head>
 <body>
- <a name="top"></a>
  <div class="aboutleft">
-  <a title="返回叽歪网首页" href="<? echo JW_SRVNAME;?>"><img class="aboutleft_img" alt="返回叽歪网首页" src="<? echo JWTemplate::GetAssetUrl('/images/logo.gif');?>" /></a>
+  <a name="top" title="返回叽歪网首页" href="<? echo JW_SRVNAME;?>"><img class="aboutleft_img" alt="返回叽歪网首页" src="<? echo JWTemplate::GetAssetUrl('/images/logo.gif');?>"/></a>
   <div class="aboutmenu">
     <ul>
       <li class="two"><a title="关于叽歪" href="/wo/about/jiwai">关于叽歪</a></li>
@@ -47,7 +46,7 @@
         <h4>我们有</h4>
         <p>
         <span>舒适的工作环境</span> - 超大办公室、全幅落地窗，让你在工作时也能享受阳光的温暖；<br />
-      <span>  年轻的工作团队 </span>- 迅速、高效，时刻都能碰撞出灵感的火花；。<br />
+      <span>  年轻的工作团队 </span>- 迅速、高效，时刻都能碰撞出灵感的火花；<br />
        <span> 平等的工作氛围 </span>- 宽松的环境、热烈的讨论，每个人的意见都至关重要；<br />
       <span>  丰富的学习机会 </span>- 浓烈的技术氛围、积极的工作态度，叽歪和你共同成长；
         </p>
@@ -63,7 +62,6 @@
          <img alt="关于我们" title="关于我们" src="<? echo JWTemplate::GetAssetUrl('/images/aboutme2.jpg');?>" />
          <img alt="关于我们" title="关于我们" src="<? echo JWTemplate::GetAssetUrl('/images/aboutme3.jpg');?>" />
          <img alt="关于我们" title="关于我们" src="<? echo JWTemplate::GetAssetUrl('/images/aboutme4.jpg');?>" />
-         <img alt="关于我们" title="关于我们" src="<? echo JWTemplate::GetAssetUrl('/images/aboutme5.jpg');?>" />
        </div>
        
         <p>&nbsp;</p>

@@ -101,7 +101,7 @@ class JWFormValidate
 			}
 			else if ( empty( $name_url ) ) 
 			{
-				return "永久地址 不能为空";
+				return true;//"永久地址 不能为空";
 			}
 			else if ( strlen( $name_url ) < 4 ) 
 			{

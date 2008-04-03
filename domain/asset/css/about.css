@@ -110,6 +110,9 @@ float:left;width:100%;
 .groupmen ul{
 float:left;width:313px;height:81px;list-style-type:none;background:url(../images/aboutbg2.jpg) no-repeat;margin-top:12px;margin-right:8px;
 }
+.groupmen ul.one{
+float:left;width:313px;height:81px;list-style-type:none;background:url(../images/aboutbg3.jpg) no-repeat;margin-top:12px;margin-right:8px;
+}
 .groupmen li.one{
 float:left;width:22%;text-align:center;padding-top:8px!important;padding-top:8px;
 }

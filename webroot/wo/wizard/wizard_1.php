@@ -73,7 +73,7 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 1-
 		</ul>
 	</div>
 	<div id="wizardContent">
-	<div id="wizardPic" class="wizardPic"> <img src="<?php echo JWTemplate::GetAssetUrl('/images/mobile.jpg');?>" width="360" height="329" alt="想用手机写博客，发照片？" title="想用手机写博客，发照片？"/></div>
+	<div id="wizardPic" class="wizardPic"> <img src="<?php echo JWTemplate::GetAssetUrl('/images/mobile.jpg');?>" width="360" height="315" alt="想用手机写博客，发照片？" title="想用手机写博客，发照片？"/></div>
 	  <div id="wizardText" class="winzardText">
 	    <div class="Intro"><p class="IntroTitle"><span class="IntroNum">1</span>想用手机写博客，发照片？</p></div>
 			<p>叽歪网可以帮助你通过短信、彩信立即书写你的博客！</p>
@@ -87,7 +87,7 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 1-
 		   <p class="note4">只需三步，就可以随时记录你的话和你的照片，并分享给大家，就是这么简单！<br/>
 		   <span class="gray">﹡发短信给叽歪网，与发短信给普通手机费用完全一样</span></p>
 		</div>
-			<p class="black12 gray"> 你还可在博客中嵌入搞笑的视频，分享美妙的音乐。<a target="_blank" href="http://blog.jiwai.de/2007/12/blog-post.html"><img src="<?php echo JWTemplate::GetAssetUrl('/images/icon.gif');?>" border="0" /></a></p>
+			<p class="black12 gray"> 你还可在博客中嵌入搞笑的视频，分享美妙的音乐。<a target="_blank" href="http://blog.jiwai.de/index.php/archives/25"><img src="<?php echo JWTemplate::GetAssetUrl('/images/icon.gif');?>" border="0" /></a></p>
   	  </div>
 		<div id="wizardPage">
 			<ul>

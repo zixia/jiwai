@@ -267,7 +267,8 @@ class JWRobotLogic {
 		if ( $user_id ) {
 			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_VERIFY_SUC');
 		} else {
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_VERIFY_FAIL', array($secret) );
+			$device = 'sms'==$type ? 'sms' : 'im';
+			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_VERIFY_FAIL', array($secret, $device) );
 		}
 
 		return self::ReplyMsg($robotMsg, $reply);

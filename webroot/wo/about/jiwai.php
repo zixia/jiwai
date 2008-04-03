@@ -75,7 +75,7 @@
         <h5>欢迎下载</h5>
         <p>
           <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪网IM2.0&SMS2.0接入方案" href="<? echo JWTemplate::GetAssetUrl('/js/jiwai_im2_sm2_20080303.pdf');?>"> 叽歪网IM2.0&SMS2.0接入方案</a>
-         </p><p style="margin-top:10px;"> <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪大屏幕介绍" href="<? echo JWTemplate::GetAssetUrl('/js/jiwai_bigscreen_20080314.pdf');?>">叽歪大屏幕介绍</a>
+         </p><p style="margin-top:10px;"> <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪大屏幕介绍" href="<? echo JWTemplate::GetAssetUrl('/js/jiwai_bigscreen_20080327.pdf');?>">叽歪大屏幕介绍</a>
        </p>
          <div class="forn"><a class="blno" href="/wo/about/contactus" title="欢迎联系我们">欢迎联系我们</a></div>	   
         

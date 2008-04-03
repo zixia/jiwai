@@ -260,7 +260,7 @@ var JWAction =
 				}
 				else
 				{
-					$('importTips').innerHTML = '<span style="color:#FF0000;">导入操作已经超时。'
+					$('importTips').innerHTML = '<span style="color:#FF0000;">账户密码不匹配操作超时。'
 							+ '<br/></span>你可以<a href="javascript:void(0);"'
 							+ ' onclick="TB_remove();">关闭</a>后重新试试。';
 				}

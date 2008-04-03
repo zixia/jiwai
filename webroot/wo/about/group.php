@@ -39,9 +39,24 @@
      <h2>团队成员</h2>
 	 </div>
    <div class="abdle">
+	   <?
+	    $user_id = 1;//zixia
+		$user_info = JWDB_Cache_User::GetDbRowById( $user_id );
+		$sql = "select * from Status where idUser=$user_id order by timeCreate desc limit 1";
+		$status_row = JWDB_Cache::GetQueryResult($sql);
+		$pic = JWPicture::GetUrlById( $user_info['idPicture'] );
+		$status_format = JWStatus::FormatStatus($status_row);
+		$status = $status_format['status'];
+		?>
      <div class="groupmen">
-	 <? $user_ids = array(1, 89, 863, 2802, 32834, 37222, 37340, 43000, 42998, 38047);
-	 $user_namescreens = array('zixia', 'seek', 'lecause', 'wanghw', 'wqsemc', 'paopaoyu', '沈浅浅', 'Uranus-shi', 'rannie', 'leoman');
+       <ul class="one" style="width:638px;">
+         <li class="one" style="width:10%;margin-left:2px;"><a href="/<? echo $user_info['nameUrl'];?>/"><img alt="<? echo $user_info['nameFull'];?>" title="<? echo $user_info['nameFull'];?>" src="<? echo $pic;?>" /></a></li>
+         <li class="two" style="width:84%;"><h2><? echo $user_info['nameScreen'];?></h2><div title="<? echo $status_row['status'];?>"><? echo mb_substr($status_row['status'], 0, 38);?></div><p style="text-align:right;margin-left:15px!important;margin-left:5px;"><a class="grey" href="/<? echo $user_info['nameUrl'];?>/statuses/<? echo $status_row['id'];?>" title="<? echo $status_row['timeCreate'];?>"><? echo JWStatus::GetTimeDesc($status_row['timeCreate']);?></a> 通过 <? echo JWDevice::GetNameFromType($status_row['device']);?></p></li>
+       </ul>
+	   </div>
+     <div class="groupmen">
+	 <? $user_ids = array(20, 89, 863, 2802, 32834, 37222, 37340, 43000, 42998, 94479);
+	 $user_namescreens = array('zixia', 'freewizard', 'seek', 'lecause', 'wanghw', 'wqsemc', 'paopaoyu', '沈浅浅', 'Uranus-shi', 'rannie', 'xleoman');
 	 foreach($user_ids as $user_id)
 	 {
 		$user_info = JWDB_Cache_User::GetDbRowById( $user_id );

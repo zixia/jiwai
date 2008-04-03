@@ -39,7 +39,7 @@
 		$action_row = JWSns::GetTagAction( $current_user_id, $tag_row['id'] );
 		if( $action_row['follow'] )
 		{
-			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/followchannel/' . $tag_row['id'].'" class="pad">关注这里</a></div>';
+			echo '<div class="sidediv2"><a href="'.JW_SRVNAME .'/wo/followings/onchannel/' . $tag_row['id'].'" class="pad">关注这里</a></div>';
 		}
 		if( $action_row['leave'] ) 
 		{

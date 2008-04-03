@@ -71,7 +71,7 @@ html>body #navigation ul  {margin-top:45px;}
 #jwupdate h2 select { font-weight:normal;}
 #jwupdate form { position:relative; padding:0 10px;}
 #jwupdate p { margin:.6em 0;}
-#jwupdate textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:496px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:hidden;}
+#jwupdate textarea {padding:.5em .5em 0;font-size:14px;color:#666;width:496px;height:66px;border:1px solid;border-color:#7C7C7C #C3C3C3 #DDDDDD #C3C3C3;overflow:auto;}
 #jwupdate .act {text-align:center;width: 510px;}
 #jwupdate .tip {margin:0;text-align: right;font-size:12px;color:#999;float: right;font-weight: 100;padding: 0 0 0 0;}
 #jwupdate .tip .counter { color:#000; font-weight:bold;}
@@ -225,7 +225,7 @@ input.openid_login { }
 .pages a { float:left; border:1px solid #E3E3E3; padding:2px 5px; background-color:#F7F7F7; color:#C55400; font-family:Verdana, Arial, Helvetica, sans-serif; margin:5px; text-decoration:none;}
 .pages .active {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
 .add {clear:both; padding:10px 0 15px 15px;}
-.search { width:170px; padding-top:10px; height:100%; float:left;}
+.search { width:170px; padding-top:10px; height:100%; }
 .search input {border:1px solid #A23D00; width:96px; height:19px; line-height:18px; margin:0 5px 0 0; text-indent:5px;}
 .search button {width:38px; height:22px; margin:0 5px 0 0;}
 

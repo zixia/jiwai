@@ -35,9 +35,7 @@ $arr_menu = array(
 	array ('jwvia', array($active_options, $via_device)) ,
 	array ('invite'	, array()) ,
 	array ('bookmarklet', array()),
-	array ('separator', array()) ,
 	array ('vistors', array($idUserVistors)) , 
-	array ('separator', array()) ,
 	array ('friend', array($arr_friend_list)) , 
 	array ('listfollowing', array('wo', count($arr_friend_list)>60 )) ,
 );

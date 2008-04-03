@@ -43,7 +43,7 @@ class JWVisitTag
 		if( $v )
 			return false;
 
-		$memcache->Set( $mc_key, 1, 0, 600);
+		$memcache->Set( $mc_key, 1, 0, 1);
 		self::SetCount($idTag);
 
 		return true;
@@ -92,6 +92,7 @@ class JWVisitTag
 			array_push($v2, $idTag);
 			$v2 = array_unique($v2);
 			$memcache->Set($mc_key2, $v2);
+			if(10<=count($v2)) self::Update();
 		}
 
 		$memcache->Set($mc_key, $v+1);
@@ -108,6 +109,7 @@ class JWVisitTag
 		{
 			$mc_key = self::GetCacheKeyByTagId($idTag);
 			$v = $memcache->Get( $mc_key );
+			if(!$v) $v=1;
 
 			$condition = array(
 				'idTag' => $idTag,
@@ -128,7 +130,7 @@ class JWVisitTag
 		$year = date("Y");
 		$yesterday = date("Y-m-d", mktime (0, 0, 0, $month, $day-1, $year));
 		$today = "$year-$month-$day";
-		$sql="select idTag,count(1)as count from VisitTag where timeStamp >='$yesterday' and timeStamp <'$today' group by idTag order by count desc";
+		$sql="select idTag,sum(count)as sum from VisitTag force index(IDX__VisitTag__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' group by idTag order by sum desc";
 		if (!empty($limit)) $sql .= " limit $limit";
 		$row = JWDB_Cache::GetQueryResult($sql, true);
 

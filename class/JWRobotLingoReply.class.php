@@ -106,7 +106,7 @@ class JWRobotLingoReply {
 			'REPLY_ACCEPT_HELP' => 'ACCEPT命令帮助：ACCEPT 帐号。',
 
 			'REPLY_VERIFY_SUC' => '搞定了！你已经通过了验证。回复本消息即可进行更新，耶！',
-			'REPLY_VERIFY_FAIL' => '哎呀！由于你输入的验证码 "{0}" 不正确，本次验证未能成功，请你查证后再重试一下吧。',
+			'REPLY_VERIFY_FAIL' => '你输入的验证码 {0} 不正确，没能成功绑定，请到 http://jiwai.de/wo/devices/{1} 查看正确验证码再试一次吧',
 
 			/**
 			 * 一般回复

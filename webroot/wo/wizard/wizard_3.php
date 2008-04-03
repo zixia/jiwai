@@ -73,7 +73,7 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 3-
 		</ul>
 	</div>
 	<div id="wizardContent">
-	<div id="wizardPic" class="wizardPic"> <img src="<?php echo JWTemplate::GetAssetUrl('/images/sms.jpg');?>" width="360" height="310" alt="想方便的免费群发短消息？" title="想方便的免费群发短消息？"/></div>
+	<div id="wizardPic" class="wizardPic"> <img src="<?php echo JWTemplate::GetAssetUrl('/images/sms.jpg');?>" width="360" height="313" alt="想方便的免费群发短消息？" title="想方便的免费群发短消息？"/></div>
 	  <div id="wizardText" class="winzardText">
 	    <div class="Intro">
 	      <p class="IntroTitle"><span class="IntroNum">3</span>想方便的免费群发短消息？</p>
