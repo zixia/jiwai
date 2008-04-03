@@ -9,19 +9,19 @@ echo date("Y-m-d H:i:s", time()) . "JWVisitTag::Query(100) Start\n";
 JWVisitTag::Query(100);
 echo date("Y-m-d H:i:s", time()) . "JWVisitTag::Query(100) Done\n";
 
-$types = array('normal', 'picture', 'video');
+$types = array('normal', 'mms', 'video');
 foreach($types as $type)
 {
-echo date("Y-m-d H:i:s", time()) . "JWVisitThread::Query("$type",10) Start\n";
+echo date("Y-m-d H:i:s", time()) . "JWVisitThread::Query('$type',10) Start\n";
 JWVisitThread::Query("$type", 10);
-echo date("Y-m-d H:i:s", time()) . "JWVisitThread::Query("$type",10) Done\n";
+echo date("Y-m-d H:i:s", time()) . "JWVisitThread::Query('$type',10) Done\n";
 }
 
-$devices = array('sms','fetion','wap','qq','gtalk','msn');
+$devices = array('sms','fetion','qq','gtalk','msn');
 foreach($devices as $device)
 {
-echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice("$device",10) Start\n";
+echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice('$device',10) Start\n";
 JWStatus::GetDaRenIdsByDevice("$device",10);
-echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice("$device",10) Done\n";
+echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice('$device',10) Done\n";
 }
 ?>
