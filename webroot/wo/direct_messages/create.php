@@ -6,6 +6,7 @@ JWLogin::MustLogined();
 
 $current_user_id = JWLogin::GetCurrentUserId();
 $current_user_info = JWUser::GetUserInfo($current_user_id);
+$pathParam 	= @$_REQUEST['pathParam'];
 
 /*
  *	得到 receiver user id
@@ -18,17 +19,31 @@ if ( preg_match('/^\/(\d+)(\/\d+|\/?)$/',@$_REQUEST['pathParam'] ,$matches) )
 	$reply_message_id = intval(trim($matches[2],'/'));
 	$reply_message_id = $reply_message_id ? $reply_message_id : null;
 }
-else if ( preg_match('/^\/(\S+)\/(\S+)$/',@$_REQUEST['pathParam'] ,$matches) )
-{
-	$receiver_user_id = JWUser::GetUserInfo($matches[1],'idUser');
-}
 else if ( isset($_REQUEST['user']['id']) )
 {
 	$receiver_user_id = $_REQUEST['user']['id'];
 }
 else
 {
+	@list ($dummy,$func, $param) = split('/', $pathParam, 3);
+	if(JWUnicode::unifyName($func))
+		$func=urldecode($func);
+
+	$receiver_user_id = JWUser::GetUserInfo($func,'idUser');
+	if(!$receiver_user_id)
+		JWTemplate::RedirectTo404NotFound();
+	$reply_message_id = (trim($param,'/'));
+	if(!preg_match('/^\/(\d+)$/',$receiver_user_id, $matches))
+		JWTemplate::RedirectTo404NotFound();
+	$reply_message_id = intval($reply_message_id);
+	$reply_message_id = $reply_message_id ? $reply_message_id : null;
+}
+
+$receiver_user_row = JWUser::GetUserInfo($receiver_user_id);
+if ( empty($receiver_user_row) )
+{
 	JWTemplate::RedirectTo404NotFound();
+	exit(0);
 }
 
 $receiver_user_row = JWUser::GetUserInfo($receiver_user_id);

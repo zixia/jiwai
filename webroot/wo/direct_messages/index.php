@@ -148,7 +148,7 @@ foreach ( $message_db_rows as $message_id=>$message_row )
 <?php echo $message_row['message']; ?><br/>
             <span class="meta">
                 <span class="floatright">
-                    <span class="reply"><a  href="/wo/direct_messages/create/<?php echo $user_id;?>/<?php echo $message_row['id']; ?>" >回复</a></span>
+                    <span class="reply"><a href="/wo/direct_messages/create/<?php echo $user_id;?>/<?php echo $message_row['id']; ?>" title="<? echo $message_row['timeCreate'];?>">回复</a></span>
                     <span id="status_actions_<?php echo $message_row['id']; ?>">
 
 <a href="/wo/direct_messages/destroy/<?php echo $message_row['id'] ?>" onclick="return confirm('确认你要删除这条悄悄话吗？删除后将无法恢复！');" title="删除"><img border="0" src="<?php echo $asset_trash_url;?>" /></a>
