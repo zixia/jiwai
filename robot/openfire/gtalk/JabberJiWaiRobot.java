@@ -26,7 +26,7 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
 
     public static final String TALK_SERVER = "lb-02.jw";
     public static final int TALK_PORT = 5222;
-    public static final String DEVICE = "jabber";
+    public static final String DEVICE = "gtalk";
     
     public static int onlinePort = 55130;
     public static XMPPConnection con = null;
