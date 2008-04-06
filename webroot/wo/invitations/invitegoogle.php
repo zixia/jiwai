@@ -1,7 +1,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-$liveauth = JWLiveAuth::Instance(JWLiveAuth::AUTH_LIVE);
+$liveauth = JWLiveAuth::Instance(JWLiveAuth::AUTH_GOOGLE);
 $token = $liveauth->GetToken();
 if ( null == $token )
 {
@@ -13,7 +13,7 @@ $current_user_id = JWLogin::GetCurrentUserId();
 
 $mc_key = $_SESSION['Buddy_Import_Key'] = "Contact_Live_Invite_$current_user_id";
 
-$contact_list = $liveauth->GetContactList(true); //true will make interactive every times
+$contact_list = $liveauth->GetContactList(true); //false will make interactive every times
 
 if ( is_bool( $contact_list ) )
 {

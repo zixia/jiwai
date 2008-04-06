@@ -52,13 +52,8 @@ window.jiwai_init_hook_qqscript = function()
 
 <div class="lookfriend">
 <form class="validator">
-	<p class="black15bold">１寻找GTalk好友</p>
-	<p>输入你的GTalk帐号和密码，寻找你的GTalk好友，很可能他们也在叽歪</p>
-	<div class="box1">
-		<p>你的GTalk帐号<input id="gtalkusername" name="gtalkusername" type="text" value="<?php echo $gtalk_address;?>" class="inputStyle" /><i></i></p>
-		<p>GTalk密码<input id="gtalkpassword" name="gtalkpassword" type="password" class="inputStyle" /><i></i></p>
-	</div>
-	<p class="po"><input type="button" class="submitbutton" value="寻找好友" onclick="JWAction.importFriend('gtalk');"/></p>
+	<p class="black15bold">１寻找Google Talk好友</p>
+	<p><a href="/wo/invitations/invitegoogle">点击这里寻找你的Google Talk联系人</a></p>
 </form>
 </div>
 

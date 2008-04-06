@@ -1,52 +1,79 @@
 <?php
-require_once JW_ROOT.'lib/LiveAuth/windowslivelogin.php';
-
 /**
  * @package	 JiWai.de
  * @copyright   AKA Inc.
  * @author	 seek@jiwai.com
  * @version	 $Id$
- * this class use windows live delegation authentication mechanism;
  */
 class JWLiveAuth {
-	
+
+	const AUTH_GOOGLE = 'GOOGLE';
+	const AUTH_LIVE = 'LIVE';
+
+	static public $mInstance = array();
+
+	private function __construct(){}
+
+	static public function Instance($service=self::AUTH_LIVE)
+	{
+		if ( isset(self::$mInstance[$service]) )
+			return self::$mInstance[$service];
+
+		switch( $service )
+		{
+			case self::AUTH_LIVE:
+				return self::$mInstance[$service] = new JWLiveAuth_Live();
+			case self::AUTH_GOOGLE:
+				return self::$mInstance[$service] = new JWLiveAuth_Google();
+		}
+
+		return null;
+	}
+
+	public function GetConsentUrl() {}
+	public function ProcessRequest() {}
+	public function GetToken($use_once=false) {}
+	public function GetContactList($use_once=false) {}
+}
+
+/**
+ * Windows Live Delegation Authentication for web Application
+ */
+class JWLiveAuth_Live extends JWLiveAuth {
+
 	// Comma-delimited list of offers to be used.
 	const AUTH_OFFERS = 'Contacts.View';
+	const TOKEN_COOKIE = 'Jiwai_de_liveauth_live_token';
 
-	const TOKEN_COOKIE = 'Jiwai_de_delauth_token';
-
-	static public $mWLL = null;
-
-	static private function Init()
+	public $mWLL = null;
+	/**
+	 * construct
+	 */
+	public function __construct()
 	{
-		if ( null == self::$mWLL )
-		{
-			$setting_xml = CONFIG_ROOT . '/invitation/live.xml';
-			self::$mWLL = WindowsLiveLogin::initFromXml($setting_xml);
-		}
+		require_once JW_ROOT.'lib/LiveAuth/windowslivelogin.php';
+		$setting_xml = CONFIG_ROOT . '/invitation/live.xml';
+		$this->mWLL = WindowsLiveLogin::initFromXml($setting_xml);
 	}
 
-	static public function GetConsentUrl()
+	public function GetConsentUrl()
 	{
-		self::Init();
-		return self::$mWLL->getConsentUrl(self::AUTH_OFFERS);
+		return $this->mWLL->getConsentUrl(self::AUTH_OFFERS);
 	}
 
-	static public function ProcessRequest()
+	public function ProcessRequest()
 	{
-		self::Init();
 		$content = null;
 		if ( isset($_REQUEST['action']) && 'delauth' == $_REQUEST['action'] ) 
 		{
-			$consent = self::$mWLL->processConsent($_REQUEST);
+			$consent = $this->mWLL->processConsent($_REQUEST);
 			$token = $consent->getToken();
 			$_SESSION[ self::TOKEN_COOKIE ] = $token;
-			//setcookie( self::TOKEN_COOKIE, $token, time()+86400, '/', JW_HOSTNAME );
 		}
 		return $consent;
 	}
 
-	static public function GetToken($use_once=false)
+	public function GetToken($use_once=false)
 	{
 		$consent_token = @$_SESSION[ self::TOKEN_COOKIE ];
 		if ( null == $consent_token )
@@ -55,11 +82,9 @@ class JWLiveAuth {
 		if ( true==$use_once )
 		{
 			$_SESSION[ self::TOKEN_COOKIE ] = null;
-			//setcookie( self::TOKEN_COOKIE );
 		}
 
-		self::Init();
-		$token = self::$mWLL->processConsentToken($consent_token);	
+		$token = $this->mWLL->processConsentToken($consent_token);	
 		if ( $token && false==$token->IsValid() )
 		{
 			$token = null;
@@ -67,9 +92,9 @@ class JWLiveAuth {
 		return $token;
 	}
 
-	static public function GetContactList($use_once=false)
+	public function GetContactList($use_once=false)
 	{
-		$token = self::GetToken($use_once);
+		$token = $this->GetToken($use_once);
 		if ( null == $token )
 			return array();
 
@@ -109,6 +134,111 @@ class JWLiveAuth {
 				'email' => $email,
 			);          
 		}     
+		return $ret;
+	}
+}
+
+/**
+ * Google AuthSub Authentication for web Application
+ */
+class JWLiveAuth_Google extends JWLiveAuth {
+
+	// Comma-delimited list of offers to be used.
+
+	const TOKEN_COOKIE = 'Jiwai_de_liveauth_google_token';
+
+	/**
+	 * construct
+	 */
+	public function __construct()
+	{
+	}
+
+	public function GetConsentUrl()
+	{
+		$authsub_req = "https://www.google.com/accounts/AuthSubRequest";
+		$next = urlEncode( "http://jiwai.de/wo/liveauth/googlebackend" );
+		$scope = urlEncode( "http://www.google.com/m8/feeds/" );
+		$consent_url = "$authsub_req?scope=$scope&session=1&secure=0&next=$next";
+		return $consent_url;
+	}
+
+	/**
+	 * will store session token
+	 */
+	public function ProcessRequest()
+	{
+		$authsub_session = "https://www.google.com/accounts/AuthSubSessionToken";
+
+		$token = null;
+		if ( isset($_REQUEST['token']) )
+		{
+			$token = $_REQUEST['token'];
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $authsub_session);
+			$header = array(
+			        'Authorization: AuthSub token="'.$token.'"',
+				);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+			$content = curl_exec($ch);
+			curl_close($ch);
+
+			$token = null;
+			if ( preg_match('/Token=(\S+)/i', $content, $matches) )
+			{
+				$token = $matches[1];
+				$_SESSION[ self::TOKEN_COOKIE ] = $token;
+			}
+		}
+		return $token;
+	}
+
+	public function GetToken($use_once=false)
+	{
+		$token = @$_SESSION[ self::TOKEN_COOKIE ];
+
+		if ( true==$use_once )
+		{
+			$_SESSION[ self::TOKEN_COOKIE ] = null;
+		}
+
+		return $token;
+	}
+
+	public function GetContactList($use_once=false)
+	{
+		$token = $this->GetToken($use_once);
+		if ( null == $token )
+			return array();
+
+		$contact_url = "http://www.google.com/m8/feeds/contacts/default/base?max-results=1000&alt=json";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $contact_url);
+		$header = array(
+		        'Authorization: AuthSub token="'.$token.'"',
+		);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		$content = curl_exec($ch);
+		curl_close($ch);
+
+		$response = json_decode( $content, true );
+		if ( empty($response) )
+			return array();
+
+		$ret = array();
+		foreach( $response['feed']['entry'] AS $one )
+		{
+			$email = $one['gd$email'][0]['address'];
+			$title = $one['title']['$t'];
+			$ret[] = array(
+				'nameScreen' => $title ? $title : $email,
+				'email' => $email,
+			);
+		}
 		return $ret;
 	}
 }
