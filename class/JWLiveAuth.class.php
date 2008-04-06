@@ -36,24 +36,27 @@ class JWLiveAuth {
 	{
 		self::Init();
 		$content = null;
-		setcookie( self::TOKEN_COOKIE );
 		if ( isset($_REQUEST['action']) && 'delauth' == $_REQUEST['action'] ) 
 		{
 			$consent = self::$mWLL->processConsent($_REQUEST);
 			$token = $consent->getToken();
-			setcookie( self::TOKEN_COOKIE, $token, time()+86400, '/', JW_HOSTNAME );
+			$_SESSION[ self::TOKEN_COOKIE ] = $token;
+			//setcookie( self::TOKEN_COOKIE, $token, time()+86400, '/', JW_HOSTNAME );
 		}
 		return $consent;
 	}
 
 	static public function GetToken($use_once=false)
 	{
-		$consent_token = @$_COOKIE[ self::TOKEN_COOKIE ];
+		$consent_token = @$_SESSION[ self::TOKEN_COOKIE ];
 		if ( null == $consent_token )
 			return null;
 
 		if ( true==$use_once )
-			setcookie( self::TOKEN_COOKIE );
+		{
+			$_SESSION[ self::TOKEN_COOKIE ] = null;
+			//setcookie( self::TOKEN_COOKIE );
+		}
 
 		self::Init();
 		$token = self::$mWLL->processConsentToken($consent_token);	

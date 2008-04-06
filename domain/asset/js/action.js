@@ -216,6 +216,30 @@ var JWAction =
 		var username = $(type+'username').value;
 		var password = $(type+'password').value;
 
+		if ( 'email' == type )
+		{
+			var domain = $(type+'domain').getValue();
+			if ( !domain) 
+			{
+				username = null;
+			}
+			else
+			{
+				username += '@' + domain; 
+				if ( 'qq.com' == domain )
+				{
+					var ts = ((new Date()).getTime()+'').substring(0,10);
+					password = rsa_qqpass(password, ts) + ts;
+				}
+			}
+		}
+
+		if ( !username || !password )
+		{
+			alert('帐户和密码都是必填项目!');
+			return false;
+		}
+
 		var callback = function()
 		{   
 			var caption = '导入用户';

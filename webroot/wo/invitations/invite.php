@@ -20,6 +20,12 @@ JWTemplate::html_head(array(
 	'version_css_jiwai_screen' => 'v1',
 )) 
 ?>
+<script type="text/javascript">
+window.jiwai_init_hook_qqscript = function()
+{
+	JiWai.AddScript('/js/qqrsa.js');
+}
+</script>
 </head>
 
 <body class="account" id="friends">
@@ -46,7 +52,7 @@ JWTemplate::html_head(array(
 
 <div class="lookfriend">
 <form class="validator">
-	<p class="black15bold">寻找GTalk好友</p>
+	<p class="black15bold">１寻找GTalk好友</p>
 	<p>输入你的GTalk帐号和密码，寻找你的GTalk好友，很可能他们也在叽歪</p>
 	<div class="box1">
 		<p>你的GTalk帐号<input id="gtalkusername" name="gtalkusername" type="text" value="<?php echo $gtalk_address;?>" class="inputStyle" /><i></i></p>
@@ -58,14 +64,38 @@ JWTemplate::html_head(array(
 
 <div class="lookfriend">
 <form class="validator">
-	<p class="black15bold">寻找Windows Live Messenger好友</p>
+	<p class="black15bold">２寻找Windows Live Messenger好友</p>
 	<p><a href="/wo/invitations/invitelive">点击这里寻找你的Windows Live Messenger联系人</a></p>
 </form>
 </div>
 
 <div class="lookfriend">
+<form class="validator">
+	<p class="black15bold">３寻找邮箱联系人中的好友</p>
+	<div class="box1">
+		<p>邮箱帐户<input type="text" name="emailusername" id="emailusername" class="inputStyle" style="width:86px;"/>@<select name="emaildomain" id="emaildomain">
+				<option value="">--选择服务商--</option>
+				<option value="163.com">163.com</option>
+				<option value="126.com">126.com</option>
+				<option value="sina.com">sina.com</option>
+				<option value="sohu.com">sohu.com</option>
+				<!--option value="qq.com">qq.com</option-->
+				<option value="yahoo.com.cn">yahoo.com.cn</option>
+				<option value="yahoo.cn">yahoo.cn</option>
+				<option value="live.cn">live.cn</option>
+				<option value="hotmail.com">hotmail.com</option>
+				<option value="msn.com">msn.com</option>
+				<option value="gmail.com">gmail.com</option>
+				</select><i></i></p>
+		<p>邮箱密码<input id="emailpassword" name="emailpassword" type="password" class="inputStyle"/><i></i></p>
+	</div>
+	<p class="po"><input type="button" class="submitbutton" value="寻找好友" onclick="JWAction.importFriend('email');"/></p>
+</form>
+</div>
+
+<div class="lookfriend">
 <form method="post" action="/wo/invitations/do" enctype="multipart/form-data">
-	<p class="black15bold">寻找通讯录内好友</p>
+	<p class="black15bold">４寻找通讯录内好友</p>
 	<p>上传你的通讯录文件，寻找你通讯录内的好友，很可能他们也在叽歪</p>
 	<p class="file"><input name="friends_lists" type="file" class="inputStyle2" /></p>
 	<p class="po"><input name="uploadfile" type="submit" class="submitbutton" value="上传文件" /></p>
