@@ -58,13 +58,8 @@ JWTemplate::html_head(array(
 
 <div class="lookfriend">
 <form class="validator">
-	<p class="black15bold">寻找MSN好友</p>
-	<p>输入你的MSN帐号和密码，寻找你的MSN好友，很可能他们也在叽歪</p>
-	<div class="box1">
-		<p>你的MSN帐号<input id="msnusername" name="msnusername" type="text" value="<?php echo $msn_address;?>" class="inputStyle" /></p>
-		<p>MSN密码<input id="msnpassword" name="msnpassword" type="password" class="inputStyle" /></p>
-	</div>
-	<p class="po"><input type="button" class="submitbutton" value="寻找好友" onclick="JWAction.importFriend('msn');" /></p>
+	<p class="black15bold">寻找Windows Live Messenger好友</p>
+	<p><a href="/wo/invitations/invitelive">点击这里寻找你的Windows Live Messenger联系人</a></p>
 </form>
 </div>
 

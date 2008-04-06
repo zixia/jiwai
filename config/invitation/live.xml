@@ -1,0 +1,7 @@
+<windowslivelogin>
+  <appid>001600008000AA04</appid>
+  <secret>96d29b86c92c6186fb5b5cb5fac97f55</secret>
+  <securityalgorithm>wsignin1.0</securityalgorithm>
+  <returnurl>http://jiwai.de/wo/liveauth/backend</returnurl>
+  <policyurl>http://jiwai.de/wo/about/jiwaitos</policyurl>
+</windowslivelogin>

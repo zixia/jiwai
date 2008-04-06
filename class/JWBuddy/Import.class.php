@@ -40,11 +40,23 @@ class JWBuddy_Import
 	static public function GetFriendsByIdUserAndRows($idUser, $friends_rows, $type=array('email', 'msn', 'gtalk','newsmth','facebook','yahoo'))
 	{
 		$idUser = JWDB::CheckInt( $idUser );
-		$rows = array();
+		$rows = array(
+			self::HAVE_FOLLOW => array(),
+			self::NOT_FOLLOW => array(),
+			self::NOT_REG => array(),
+		);
+
 		foreach( $friends_rows as $k => $friends_row )
 		{
+			if ( is_array($friends_row) )
+			{
+				$friends_row = $friends_row['email'] . ',' . $friends_row['nameScreen'];
+			}
+
 			$friends_array = explode(',',  $friends_row, 2);
-			$device_row = JWUser::GetSearchDeviceUserIds($friends_array[0], $type, 'idUser');
+			$device_address = $friends_array[0];
+
+			$device_row = JWUser::GetSearchDeviceUserIds($device_address, $type, 'idUser');
 
 			if (!empty($device_row))
 			{
@@ -57,7 +69,7 @@ class JWBuddy_Import
 			}
 			else
 			{
-				$rows[self::NOT_REG][$friends_array[0]] = $friends_row;
+				$rows[self::NOT_REG][$device_address] = $friends_row;
 			}
 		}
 
