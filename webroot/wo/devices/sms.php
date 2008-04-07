@@ -59,7 +59,7 @@ JWTemplate::html_head(array(
 <? } else if( false==$device_row['sms']['verified'] ){ ?>
 	   <div class="bindingMobile">
 	   <p>你想要绑定的<b class="black14">手机号码为&nbsp;<? echo $device_row['sms']['address'];?></b>（<a style="font-size:14px;" href="/wo/devices/destroy/<?php echo $device_row['sms']['idDevice'];?>" onClick="if (true || confirm('你真的要删除 <?echo $typename;?> 绑定吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m); f.submit(); }; return false;">删除</a>），没错吧？那就请按以下步骤操作：</p>
-	   	   <p class="bindingblack">1. 将【叽歪小弟：106693184】 加入你的通讯簿</p>
+	   	   <p class="bindingblack">1. 将【叽歪小弟：<?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']); ?>】 加入你的通讯簿</p>
 		   	   <p class="bindingblack">2. 发送以下验证信息给叽歪小弟，完成绑定</p>
 			          <p class="bindingblack">&nbsp;&nbsp;&nbsp;&nbsp;验证码：<input id="secret_sms" type="text" value="<? echo $device_row['sms']['secret'];?>" readonly class="inputStyle3" onclick="JiWai.copyToClipboard(this);"/><span class="copytips" id="secret_sms_tip">验证码复制成功</span></p>
 					  	   <p class="bindinggray12">用手机发送验证码或发短信给叽歪网，与发短信给普通手机费用完全一样</p>
