@@ -291,7 +291,7 @@ class JWSms {
 					$ret = self::SendSmsViaSJZK( $m, $dst, $serverAddress );
 					self::LogSentResult($ret, $serverAddress, $dst, 'ShiJiZhongKai');
 					break;
-				case '10662000':
+				case '10668088':
 					$ret = self::SendSmsViaLinkTone( $m, $dst, $serverAddress );
 					self::LogSentResult($ret, $serverAddress, $dst, 'ZhangShangLingTong');
 					break;
@@ -496,7 +496,7 @@ class JWSms {
 	<content>$message</content>
 	<tomobile>$address</tomobile>
 	<channel/>
-	<spid>cmcc-2000</spid>
+	<spid>cmcc-8088</spid>
 	<toicp>$toicp</toicp>
 	<feecategory>FREE</feecategory>
 	<url/>

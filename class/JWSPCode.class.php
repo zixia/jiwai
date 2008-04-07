@@ -60,9 +60,9 @@ class JWSPCode {
 			),
 			// LinkTone 
 			array(
-				'code' => '10662000',
+				'code' => '10668088',
 				'gid' => '',
-				'func' => '123',
+				'func' => '66',
 				'funcPlus' => '',
 				'default' => false,
 			),
@@ -98,9 +98,9 @@ class JWSPCode {
 			),
 			// LinkTone 
 			array(
-				'code' => '10662000',
+				'code' => '10668088',
 				'gid' => '',
-				'func' => '123',
+				'func' => '66',
 				'funcPlus' => '',
 				'default' => false,
 			),
@@ -115,9 +115,9 @@ class JWSPCode {
 			),
 			// LinkTone 
 			array(
-				'code' => '10662000',
+				'code' => '10668088',
 				'gid' => '',
-				'func' => '123',
+				'func' => '88',
 				'funcPlus' => '',
 				'default' => false,
 			),
