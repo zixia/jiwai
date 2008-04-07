@@ -117,7 +117,7 @@ class JWSPCode {
 			array(
 				'code' => '10668088',
 				'gid' => '',
-				'func' => '88',
+				'func' => '66',
 				'funcPlus' => '',
 				'default' => false,
 			),
