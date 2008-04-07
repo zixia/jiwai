@@ -713,6 +713,9 @@ _TAB_;
 		if ( false == isset($options['isMyPages']) )
 			$options['isMyPages'] = true;
 
+		if ( false == isset($options['replyLinkClick']) )
+			$options['replyLinkClick'] = true;
+
 		$current_user_id = JWLogin::GetCurrentUserId();
 		$device = 'WEB';
 
@@ -797,8 +800,8 @@ if( false == $protected && false == $noneStatus )
 	else
 		$reply_user_nameScreen_txt = '';
 
-	$replyLinkClick = ( $options['isMyPages'] ? 
-		'' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;' );
+	$replyLinkClick = ( false==$options['replyLinkClick'] || $options['isMyPages'] ) ? 
+		'' : 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$statusRow['idUser']. ';$("idStatusReplyTo").value=' .$statusRow['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;'; 
 
 	self::ShowStatusMetaInfo($statusRow, array(
 		'showPublisher' => false,
