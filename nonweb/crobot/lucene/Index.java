@@ -17,19 +17,19 @@ public class Index
 
 		LuceneIndex indexer = new LuceneIndex( argv[0], true );
 
-        if ( argv[1].equals("status") ) {
-            indexStatus(indexer);
-        }else if( argv[1].equals("user") ){
-            indexUser(indexer);
-        }else if( argv[1].equals("tag") ){
-            indexTag(indexer);
-        }
+		if ( argv[1].equals("status") ) {
+			indexStatus(indexer);
+		}else if( argv[1].equals("user") ){
+			indexUser(indexer);
+		}else if( argv[1].equals("tag") ){
+			indexTag(indexer);
+		}
 
 		indexer.flush();
 		indexer.close();
-    }
+	}
 
-    static public void indexUser(LuceneIndex indexer) {
+	static public void indexUser(LuceneIndex indexer) {
 
 		int count = Execute.getCount("User", "1");
 		int stepLen = 10000;
@@ -73,7 +73,7 @@ public class Index
 
 	}
 
-    static public void indexTag(LuceneIndex indexer){
+	static public void indexTag(LuceneIndex indexer){
 
 		int count = Execute.getCount("Tag", "1");
 		int stepLen = 10000;
@@ -105,7 +105,7 @@ public class Index
 
 	}
 
-    static public void indexStatus(LuceneIndex indexer) {
+	static public void indexStatus(LuceneIndex indexer) {
 
 		int count = Execute.getCount("Status", "1");
 		int stepLen = 10000;

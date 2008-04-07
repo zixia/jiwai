@@ -65,7 +65,7 @@ if ( isset($query_info['type']) )
 }
 
 /**
- * search in users( devices1,  device2, ... ) '
+ * search in devices( devices1,  device2, ... ) '
  * should clause'
  */
 if ( isset($query_info['device']) )
@@ -83,12 +83,6 @@ if ( isset($query_info['device']) )
 		}
 		$one_query = $searcher->mergeShouldQuery( $one_query );
 	}
-	$query = $searcher->mergeMustQuery( array($query, $one_query) );
-}
-
-if ( isset($query_info['device']) )
-{
-	$one_query = $searcher->termQuery( $query_info['device'], 'device');
 	$query = $searcher->mergeMustQuery( array($query, $one_query) );
 }
 
