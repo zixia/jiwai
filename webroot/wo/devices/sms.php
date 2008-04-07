@@ -68,7 +68,7 @@ JWTemplate::html_head(array(
 	   <p>你绑定的<b class="black14">手机号码为&nbsp;<?php echo $device_row['sms']['address']; ?></b>（<a href="/wo/devices/destroy/<?php echo $device_row['sms']['idDevice'];?>" onClick="if(confirm('你真的要删除 <?echo $typename;?> 绑定吗？')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m); f.submit(); }; return false;">删除并重设</a>）</p>
 	   <p class="bindinggray">你可以使用短信发送消息到<span class="black12"><?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']); ?></span>更新你的叽歪，发送<span class="black12">help</span>获得帮助信息。<br/>*发短信给叽歪，与发短信给普通手机费用完全一样</p>
 	   <p><label for="direct"><input id="direct" type="checkbox" value="Y" onclick="var val;val=!this.checked?'everything':'direct_messages';JiWai.EnableDevice(<?php echo $device_row['sms']['id'];?>, 'device[enabled_for]='+val);" <?php if($device_row['sms']['enabledFor']=='direct_messages') echo "checked";?>/>只接收悄悄话&nbsp;&nbsp;</label><span class="copytips" style="display:inline;" id="tips_<? echo $device_row['sms']['id'];?>" ></span></p>
-	   <p class="bindinggray">发送短信<span class="black12">ON</span>或<span class="black12">OFF</span>至<span class="black12">106693184</span>开启或关闭短信接收。</p>
+	   <p class="bindinggray">发送短信<span class="black12">ON</span>或<span class="black12">OFF</span>至<span class="black12"><?php echo JWDevice::GetMobileSpNo($device_row['sms']['address']);?></span>开启或关闭短信接收。</p>
 	   <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
 <? } ?>
 	   </div>
