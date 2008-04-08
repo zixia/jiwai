@@ -15,7 +15,7 @@ class JWBindOther {
 	const AUTH_FANFOU = 'http://api.fanfou.com/private_messages/inbox.xml';
 
 	const POST_TWITTER = 'http://twitter.com/statuses/update.json';
-	const POST_FANFOU = 'http://api.fanfou.com/statuses/update.xml';
+	const POST_FANFOU = 'http://api.fanfou.com/statuses/update.json';
 
 	static public function Create( $user_id, $login_name='name', $login_pass='123456', $service='twitter', $options=array() ) 
 	{
@@ -147,13 +147,13 @@ class JWBindOther {
 
 		switch( $service ) {
 			case 'twitter':
-				self::PostTwitter( $login_name, $login_pass, $message );
+				return self::PostTwitter( $login_name, $login_pass, $message );
 			break;
 			case 'fanfou':
-				self::PostFanfou( $login_name, $login_pass, $message );
+				return self::PostFanfou( $login_name, $login_pass, $message );
 			break;
 		}
-		return true;
+		return false;
 	}
 
 	static public function PostTwitter( $login_name='name', $login_pass='123456', $message=null ){
@@ -176,9 +176,11 @@ class JWBindOther {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 0.010); 
-		curl_exec($ch);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 1); //1s
+		$content = curl_exec($ch);
 		curl_close($ch);
+
+		return preg_match( '/"created_at"/', $content );
 	}
 }
 ?>

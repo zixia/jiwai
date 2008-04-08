@@ -5,6 +5,8 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 {
 	public function OnData($channel, $data)
 	{
+	//	var_dump( $data );
+	//	file_put_contents('/tmp/bindother.log', date('r') . serialize( $data ) . "\n", FILE_APPEND);
 		$device = $data['device'];
 		$sender = $data['sender'];
 
@@ -24,8 +26,14 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 			if ( ('Y'==$bindother['twitter']['syncReply'] || $not_reply)
 				&& ('Y'==$bindother['twitter']['syncConference'] || $not_conference) )
 			{
-				JWBindOther::PostStatus($bindother['twitter'], $message);
-				echo "[SYNC] twitter://".$bindother['twitter']['loginName']."\n";
+				if ( JWBindOther::PostStatus($bindother['twitter'], $message) )
+				{
+					echo "[SYNC] twitter://".$bindother['twitter']['loginName']."\n";
+				}
+				else
+				{
+					$this->FailMessage($bindother['twitter'], $message);
+				}
 			} 
 		}
 
@@ -34,10 +42,25 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 			if ( ('Y'==$bindother['fanfou']['syncReply'] || $not_reply)
 				&& ('Y'==$bindother['fanfou']['syncConference'] || $not_conference) )
 			{
-				JWBindOther::PostStatus($bindother['fanfou'], $message);
-				echo "[SYNC] fanfou://".$bindother['fanfou']['loginName']."\n";
+				if ( JWBindOther::PostStatus($bindother['fanfou'], $message) )
+				{
+					echo "[SYNC] fanfou://".$bindother['fanfou']['loginName']."\n";
+				}
+				else
+				{
+					$this->FailMessage($bindother['fanfou'], $message);
+				}
 			} 	
 		}
+	}
+
+	public function FailMessage($bind=array(), $message) 
+	{
+		echo "[FAIL] $bind[service]://$bind[loginName]\n";
+		$json = json_encode( array('m'=>$message, 'b'=>$bind) );
+		$base = base64_encode($json);
+
+		error_log( "$base\n", 3, '/tmp/fail_bindother' ); 
 	}
 }
 
