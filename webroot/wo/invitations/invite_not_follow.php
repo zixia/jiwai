@@ -12,7 +12,10 @@ $mc_key = $_SESSION['Buddy_Import_Key'] ;
 $friends_rows_all = $memcache->Get( $mc_key );
 $friends_rows_all = JWBuddy_Import::GetFriendsByIdUserAndRows($current_user_id, $friends_rows_all);
 $friends_rows = $friends_rows_all[JWBuddy_Import::NOT_FOLLOW];
+$friends_rows_havefollow = $friends_rows_all[JWBuddy_Import::HAVE_FOLLOW];
 $friends_rows_count = count($friends_rows);
+
+$friends_rows_count_here = $friends_rows_count + count($friends_rows_havefollow);
 
 if (0>=$friends_rows_count)
 	JWTemplate::RedirectToUrl(JW_SRVNAME . "/wo/invitations/invite_not_reg" );
@@ -54,7 +57,7 @@ echo "<script>var count_select_now=$friends_rows_count;</script>";
 <div id="invite_import" style="display:block;">
 <div class="lookfriend">
 <form name="not_follow_form" id="not_follow_form" method="post" action="/wo/invitations/do">
-<p class="black15bold">你共有&nbsp;<?php echo $friends_rows_count;?>&nbsp;个联系人在叽歪上，你可以关注他们</p>
+<p class="black15bold">你共有&nbsp;<?php echo $friends_rows_count_here;?>&nbsp;个联系人在叽歪，未关注&nbsp;<?php echo $friends_rows_count;?>&nbsp;个，你可以关注他们</p>
    <div class="box2">
 	<p><input name="invite_not_follow" type="submit" class="submitbutton" value="关注" />&nbsp;&nbsp;  
 	</div>

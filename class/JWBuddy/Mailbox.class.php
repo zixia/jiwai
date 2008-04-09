@@ -50,7 +50,7 @@ abstract class JWBuddy_Mailbox {
 				$instance = new JWBuddy_Mailbox_Live();
 				break;
 			default: 
-				if (getmxrr($domain, $mxs) && preg_match( '/aspmx.l.google.com/', implode(',',$mxs)))
+				if (getmxrr($domain, $mxs) && preg_match( '/aspmx.l.google.com/i', implode(',',$mxs)))
 				{
 					$instance = new JWBuddy_Mailbox_Google();
 					break;
