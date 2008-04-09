@@ -38,28 +38,33 @@ if( $user_info['protected'] == 'Y')
         </div><!-- leftdiv -->
         <div class="rightdiv">
             <div class="lookfriend">
-                <p class="black15bold">你和你关注的人</p>
+                <p class="black15bold">UWA窗可贴效果图</p>
                 <div class="gadgetUWA">
 <table>
 <tr>
 <td>
-<p><iframe frameborder="0" id="frame_1204426526" src="http://www.netvibes.com/api/uwa/frame/uwa_standalone.php?id=1204426526&moduleUrl=http%3A%2F%2Fapi.jiwai.de%2Fuwa%2Findex.xhtml&commUrl=http://eco.netvibes.com/uwa.html" width="320" height="400" scrolling="no"></iframe></p>
+<p><img src="<? echo JWTemplate::GetAssetUrl('/images/uwa_snap.png');?>" alt="叽歪网UWA窗可贴效果图" title="叽歪网UWA窗可贴效果图"/></p>
+</td>
+<td width="100">
 </td>
 <td valign="top">
-<p><a target="_blank" href="http://eco.netvibes.com/subscribe/230699"><img src="http://eco.netvibes.com/img/add2netvibes.png" width="91" height="17" alt="Add to Netvibes"/></a></p>
-<p><a target="_blank" href="http://blog.sohu.com/manage/module.do?m=preview&url=http%3A%2F%2Fapi.jiwai.de%2Fuwa%2Findex.xhtml"><img src="http://ow.blog.sohu.com/styles/images/btn_add.gif" width="91" alt="Add to Sohu Blog"/></a> 搜狐博客</p>
-<p>也可以用于:
+<p><a target="_blank" title="添加到Netvibes" href="http://eco.netvibes.com/subscribe/230699"><img src="<? echo JWTemplate::GetAssetUrl('/images/btn_netvibes.gif');?>" width="91" height="17" alt="添加到Netvibes"/></a></p>
+<p><a title="添加到搜狐博客" target="_blank" href="http://blog.sohu.com/manage/module.do?m=preview&url=http%3A%2F%2Fapi.jiwai.de%2Fuwa%2Findex.xhtml"><img src="<? echo JWTemplate::GetAssetUrl('/images/btn_add.gif');?>" width="91" alt="添加到搜狐博客"/></a><br/>添加到搜狐博客</p>
+<p>也可以用于
 <ul class="otherinstall autoclear">
-<li><a target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=igoogle" title="Get widget for iGoogle"><img src="http://eco.netvibes.com/style/public_v2/img/install-igoogle.png" width="16" height="16" alt="iGoogle"/> iGoogle</a></li>
-<li><a target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=dashboard" title="Get widget for Apple Dashboard"><img src="http://eco.netvibes.com/style/public_v2/img/install-dashboard.png" width="16" height="16" alt="Apple Dashboard"/> Apple Dashboard</a></li>
-<li><a target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=opera" title="Get widget for Opera"><img src="http://eco.netvibes.com/style/public_v2/img/install-opera.png" width="16" height="16" alt="Opera"/> Opera</a></li>
-<li><a target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=vista" title="Get widget for Windows Vista"><img src="http://eco.netvibes.com/style/public_v2/img/install-vista.png" width="16" height="16" alt="Vista"/> Windows Vista</a> <em class="beta">beta</em></li>
-<li><a target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=live" title="Get widget for Windows Live"><img src="http://eco.netvibes.com/style/public_v2/img/install-live.png" width="16" height="16" alt="Live"/> Windows Live</a> <em class="beta">beta</em></li>
+<li><a title="添加到iGoogle" target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=igoogle"><img src="<? echo JWTemplate::GetAssetUrl('/images/install-igoogle.png');?>" width="16" height="16" alt="添加到iGoogle"/> iGoogle</a></li>
+<li><a title="添加到Apple Dashboard" target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=dashboard"><img src="<? echo JWTemplate::GetAssetUrl('/images/install-dashboard.png');?>" width="16" height="16" alt="添加到Apple Dashboard"/> Apple Dashboard</a></li>
+<li><a title="添加到Opera" target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=opera"><img src="<? echo JWTemplate::GetAssetUrl('/images/install-opera.png');?>" width="16" height="16" alt="添加到Opera"/> Opera</a></li>
+<li><a title="添加到Vista" target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=vista"><img src="<? echo JWTemplate::GetAssetUrl('/images/install-vista.png');?>" width="16" height="16" alt="添加到Vista"/> Windows Vista</a> <em class="beta">beta</em></li>
+<li><a title="添加到Live" target="_blank" href="http://eco.netvibes.com/subscribe/230699?platform=live"><img src="<? echo JWTemplate::GetAssetUrl('/images/install-live.png');?>" width="16" height="16" alt="添加到Live"/> Windows Live</a> <em class="beta">beta</em></li>
 </ul>
 </p>
 </td>
 </tr>
 </table>
+
+<br/><br/>
+<a title="搜狐博客开放平台" target="_blank" href="http://ow.blog.sohu.com"><img src="<? echo JWTemplate::GetAssetUrl('/images/blog_sohu_com.gif');?>"alt="搜狐博客开放平台"/></a>
 		</div><!-- gadgetUWA -->
             </div><!-- lookfriend -->
                 <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>

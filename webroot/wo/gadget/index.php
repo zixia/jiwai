@@ -21,8 +21,8 @@ JWTemplate::html_doctype();
                 <ul class="leftmenu">
                     <li><a href="/wo/gadget/" class="now">窗可贴说明</a></li>
                     <li><a href="/wo/gadget/image/">图片窗可贴</a></li>
-
                     <li><a href="/wo/gadget/flash/">Flash窗可贴</a></li>
+					<li><a href="/wo/gadget/uwa/">UWA窗可贴</a></li>
                     <li><a href="/wo/gadget/javascript/">代码窗可贴</a></li>
                 </ul>
             </div><!-- leftdiv -->
@@ -43,6 +43,8 @@ JWTemplate::html_doctype();
                 		<li><a href="http://help.jiwai.de/NeteaseblogWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_163.gif'); ?>" width="30" height="30" title="网易博客" /><p class="smallblack">网易博客</p></a></li>
                 		<li><a href="http://help.jiwai.de/MopblogWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_maopu.gif'); ?>" width="30" height="30" title="猫扑博客" /><p class="smallblack">猫扑博客</p></a></li>
                 		<li><a href="http://help.jiwai.de/TianhublogWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tianhu.gif'); ?>" width="30" height="30" title="天虎博客" /><p class="smallblack">天虎博客</p></a></li>
+            		</ul>
+            		<ul class="gadget">
                 		<li><a href="http://help.jiwai.de/BlogChineseWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_blogchinese.gif'); ?>" width="30" height="30" title="BlogChinese" /><p class="smallblack">BlogChinese</p></a></li>
 
                 		<li><a href="http://help.jiwai.de/TomblogWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tom.gif'); ?>" width="30" height="30" title="TOM博客" /><p class="smallblack">TOM博客</p></a></li>
@@ -51,6 +53,8 @@ JWTemplate::html_doctype();
                 		<li><a href="http://help.jiwai.de/HexunblogWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_hexun.gif'); ?>" width="30" height="30" title="和讯博客" /><p class="smallblack">和讯博客</p></a></li>
                 		<li><a href="http://help.jiwai.de/BloggerWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_blogger.gif'); ?>" width="30" height="30" title="Blogger" /><p class="smallblack">Blogger</p></a></li>
                 		<li><a href="http://help.jiwai.de/TianyaWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_tianya.gif'); ?>" width="30" height="30" title="天涯博客" /><p class="smallblack">天涯博客</p></a></li>
+					</ul>
+            		<ul class="gadget">
                 		<li><a href="http://help.jiwai.de/YculWidget" class="smallblack" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/gadget_yculblog.gif'); ?>" width="30" height="30" title="歪酷博客" /><p class="smallblack">歪酷博客</p></a></li>
             		</ul>
         		</div><!-- lookfriend -->

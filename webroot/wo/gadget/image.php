@@ -37,6 +37,7 @@ if( $user_info['protected'] == 'Y')
                 <li><a href="/wo/gadget/">窗可贴说明</a></li>
                 <li><a href="/wo/gadget/image/" class="now">图片窗可贴</a></li>
                 <li><a href="/wo/gadget/flash/">Flash窗可贴</a></li>
+                <li><a href="/wo/gadget/uwa/">UWA窗可贴</a></li>
                 <li><a href="/wo/gadget/javascript/">代码窗可贴</a></li>
             </ul>
         </div><!-- leftdiv -->

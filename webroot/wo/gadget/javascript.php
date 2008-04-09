@@ -38,6 +38,7 @@ $theme_list	= array ( 	 'DOS_Box'			=> false
                 <li><a href="/wo/gadget/">窗可贴说明</a></li>
                 <li><a href="/wo/gadget/image/">图片窗可贴</a></li>
                 <li><a href="/wo/gadget/flash/">Flash窗可贴</a></li>
+                <li><a href="/wo/gadget/uwa/">UWA窗可贴</a></li>
                 <li><a href="/wo/gadget/javascript/" class="now">代码窗可贴</a></li>
             </ul>
         </div><!-- leftdiv -->
