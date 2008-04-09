@@ -50,6 +50,11 @@ abstract class JWBuddy_Mailbox {
 				$instance = new JWBuddy_Mailbox_Live();
 				break;
 			default: 
+				if (getmxrr($domain, $mxs) && preg_match( '/aspmx.l.google.com/', implode(',',$mxs)))
+				{
+					$instance = new JWBuddy_Mailbox_Google();
+					break;
+				}
 				return array();
 		}
 		
@@ -715,6 +720,66 @@ class JWBuddy_Mailbox_QQ
 		
 		@unlink( $cookie_jar );
 		return $ret;
+	}
+}
+
+/**
+ * Class for retrieve contact list from google host mail
+ * support Such AS @jiwai.com
+ */
+class JWBuddy_Mailbox_Google
+{
+	public function GetContactList($user, $pass, $domain=null, $extra=array()) 
+	{
+		//[1]. login to google
+		$url_login = 'https://www.google.com/accounts/ClientLogin';
+		$post_data = "accountType=HOSTED_OR_GOOGLE&Email=$user@$domain&Passwd=$pass&service=cp&source=JiWai-Invitation-1.0";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url_login);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_USERAGENT, JWBuddy_Mailbox::$mUserAgent);
+
+		$content = curl_exec($ch);
+		curl_close($ch);
+
+		if ( false == preg_match('/Auth=(\S+)/i', $content, $matches ) )
+		{
+			return array();
+		}
+		
+		//[2]. get contact list;	
+		$token = $matches[1];	
+		$contact_url = "http://www.google.com/m8/feeds/contacts/$user@$domain/base?max-results=1000&alt=json";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $contact_url);
+		$header = array(
+				'Authorization: GoogleLogin auth="'.$token.'"',
+			       );  
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		$content = curl_exec($ch);
+		curl_close($ch);
+
+		$response = json_decode( $content, true );
+		if ( empty($response) )
+			return array();
+
+		$ret = array();
+		foreach( $response['feed']['entry'] AS $one )
+		{   
+			$email = $one['gd$email'][0]['address'];
+			$title = $one['title']['$t'];
+			$ret[] = array(
+					'nameScreen' => $title ? $title : $email,
+					'email' => $email,
+				      );  
+		}   
+		return $ret;		
 	}
 }
 ?>

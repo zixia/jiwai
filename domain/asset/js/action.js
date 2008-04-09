@@ -219,11 +219,12 @@ var JWAction =
 		if ( 'email' == type )
 		{
 			var domain = $(type+'domain').getValue();
-			if ( !domain) 
+			var hasdomain = username.indexOf('@');
+			if ( !domain & -1 == hasdomain ) 
 			{
 				username = null;
 			}
-			else
+			else if ( domain )
 			{
 				username += '@' + domain; 
 				if ( 'qq.com' == domain )
