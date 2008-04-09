@@ -92,6 +92,21 @@ class JWLiveAuth_Live extends JWLiveAuth {
 		return $token;
 	}
 
+	public function HexToDec($hex)
+	{
+		//get signed 64bit integer from javabackend
+		return trim( file_get_contents("http://10.1.50.10:8080/hexdec.php?hex=$hex") );
+	}
+
+	public function HexToDecU($hex)
+	{
+		$cmd = '/usr/bin/printf %u 0x'.$hex;
+		$p = @popen($cmd, 'r');
+		$r = @fgets($p);
+		@pclose($p);
+		return $r;
+	}
+
 	public function GetContactList($use_once=false)
 	{
 		$token = $this->GetToken($use_once);
@@ -99,7 +114,9 @@ class JWLiveAuth_Live extends JWLiveAuth {
 			return array();
 
 		$dat = $token->getDelegationToken();
-		$intlid = hexdec($token->getLocationId());
+		
+		//intlid is a signed 64bit integer, php wont given it from hexdec;
+		$intlid = $this->HexToDec($token->getLocationId());
 
 		$url_contact = "https://livecontacts.services.live.com/users/@C@$intlid/rest/invitationsbyemail";
 		$header = array(

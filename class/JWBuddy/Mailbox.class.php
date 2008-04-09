@@ -201,15 +201,16 @@ class JWBuddy_Mailbox_Sina
 		$effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 		curl_close($ch);
 
-		if ( false == preg_match( '/http:\/\/(.+.sinamail.sina.com.cn)/', $effective_url, $matches ) )
+		if ( false == preg_match( '/http:\/\/(.+.sinamail.sina.com.cn)\/([^\/]+)/', $effective_url, $matches ) )
 		{
 			@unlink( $cookie_jar );
 			return array();	
 		}
 		$mail_host = $matches[1];
+		$mail_cgi = $matches[2];
 
 		//[2]. get_csv_data
-		$url_export = "http://$mail_host/classic/addr_export.php";
+		$url_export = "http://$mail_host/$mail_cgi/addr_export.php";
 		$post_data = "extype=csv";
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url_export);
@@ -225,6 +226,7 @@ class JWBuddy_Mailbox_Sina
 		//[3]. Retrieve Contact List
 		$datas = preg_split("/\r|\n/", $content, -1, PREG_SPLIT_NO_EMPTY);
 		array_shift( $datas );
+
 		$ret = array();
 		foreach( $datas as $one )
 		{

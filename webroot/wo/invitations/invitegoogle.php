@@ -11,7 +11,7 @@ if ( null == $token )
 
 $current_user_id = JWLogin::GetCurrentUserId();
 
-$mc_key = $_SESSION['Buddy_Import_Key'] = "Contact_Live_Invite_$current_user_id";
+$mc_key = $_SESSION['Buddy_Import_Key'] = "Contact_Google_Invite_$current_user_id";
 
 $contact_list = $liveauth->GetContactList(true); //false will make interactive every times
 
