@@ -137,7 +137,8 @@ function update($idUser, $status) {
 		else
 		{
 			$robotMsg = new JWRobotMsg();
-			$robotMsg->Set( $idUser , 'wap', $status, 'wap@jiwai.de' );
+			$robotMsg->Set( $idUser , 'wap', $status);
+			$robotMsg->SetHeader('serverAddress', 'wap@jiwai.de' );
 			$replyMsg = JWRobotLogic::ProcessMo( $robotMsg );
 
 			if( $replyMsg === false ) {

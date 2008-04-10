@@ -34,9 +34,7 @@ function renderLingoOut($lingo, $idUser) {
 
     $robotMsg = new JWRobotMsg();
     $robotMsg->SetBody($lingo);
-    $robotMsgtype = $robotMsg->getMsgtype();
-    $lingo_func = ( null == $robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
-        JWRobotLingoBase::GetLingoFunctionFromMsg($robotMsg) : null;
+    $lingo_func = JWRobotLingoBase::GetLingoFunctionFromMsg($robotMsg);
 
     if ( !empty($lingo_func) )
     {

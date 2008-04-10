@@ -18,7 +18,7 @@ class JWRobotLingo_Stock {
 		$address = $robotMsg->GetAddress();
 		$type 	= $robotMsg->GetType();	
 		$body 	= $robotMsg->GetBody();	
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 		if( false  == empty( $device_db_row ) )

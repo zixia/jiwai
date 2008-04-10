@@ -49,7 +49,7 @@ class JWRobotLingo_Conference {
 		 *	获取发送者的 idUser
 		 */
 		$address 	= $robotMsg->GetAddress();	
-		$serverAddress  = $robotMsg->GetServerAddress();
+		$serverAddress  = $robotMsg->GetHeader('serveraddress');
 		$type 		= $robotMsg->GetType();	
 
 		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);

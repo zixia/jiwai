@@ -173,7 +173,9 @@ class JWSms {
 		}
 
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($mobileNo, 'sms', $smsMsg, $gateNo.$serviceNo, $linkId);
+		$robot_msg->Set($mobileNo, 'sms', $smsMsg);
+		$robot_msg->SetHeader('serveraddress', $gateNo.$serviceNo);
+		$robot_msg->SetHeader('linkid', $linkId);
 
 		$robot_msg->SetFile( self::$msQueuePathMo . $robot_msg->GenFileName() );
 

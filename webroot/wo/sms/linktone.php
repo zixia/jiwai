@@ -45,7 +45,8 @@ function mop_mo($mobile, $server_address, $content)
 
 		JWSms::Instance();
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($mobile, 'sms', $content, $server_address, null);
+		$robot_msg->Set($mobile, 'sms', $content);
+		$robot_msg->SetHeader( 'serveraddress', $server_address );
 		$robot_msg->SetFile( JWSms::$msQueuePathMo . $robot_msg->GenFileName() );
 		return $robot_msg->Save();
 }

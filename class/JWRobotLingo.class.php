@@ -158,7 +158,7 @@ class JWRobotLingo {
 	static function	Lingo_Notice($robotMsg, $on=true)
 	{
 		$address 	= $robotMsg->GetAddress();	
-		$serverAddress  = $robotMsg->GetServerAddress();
+		$serverAddress  = $robotMsg->GetHeader('serveraddress');
 		$type 		= $robotMsg->GetType();	
 		$body = $robotMsg->GetBody();
 
@@ -1215,7 +1215,7 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1267,7 +1267,7 @@ class JWRobotLingo {
 	static function Lingo_Track($robotMsg){
 		$address = $robotMsg->GetAddress();
 		$type = $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1307,7 +1307,7 @@ class JWRobotLingo {
 	static function Lingo_UnTrack($robotMsg){
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
@@ -1340,7 +1340,7 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$body = JWTextFormat::ConvertCorner( $body );
 
@@ -1394,7 +1394,7 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$body = JWTextFormat::ConvertCorner( $body );
 
@@ -1436,7 +1436,7 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$body = JWTextFormat::ConvertCorner( $body );
 
@@ -1476,7 +1476,7 @@ class JWRobotLingo {
 	{
 		$address 	= $robotMsg->GetAddress();
 		$type 		= $robotMsg->GetType();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 		$body = JWTextFormat::ConvertCorner( $body );
 

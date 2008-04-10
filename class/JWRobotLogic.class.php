@@ -66,8 +66,9 @@ class JWRobotLogic {
 		$address	= $robotMsg->GetAddress();
 		$type		= $robotMsg->GetType();
 		$body 		= $robotMsg->GetBody();
-		$serverAddress	= $robotMsg->GetServerAddress();
-		$linkId		= $robotMsg->GetLinkId();
+
+		$serverAddress	= $robotMsg->GetHeader('ServerAddress');
+		$linkId		= $robotMsg->GetHeader('linkid');
 
 		// echo
 		if( false == JWDevice::IsAllowedNonRobotDevice($type) )
@@ -90,7 +91,7 @@ class JWRobotLogic {
 		 *
 		 *
 		 */
-		$robotMsgtype = $robotMsg->getMsgtype();
+		$robotMsgtype = $robotMsg->GetHeader('msgtype');
 		$lingo_func = ( null == $robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
 			JWRobotLingoBase::GetLingoFunctionFromMsg($robotMsg) : null;
 
@@ -136,10 +137,11 @@ class JWRobotLogic {
 	static function ProcessMoStatus($robotMsg)
 	{
 		$address	= $robotMsg->GetAddress();
-		$serverAddress  = $robotMsg->GetServerAddress();
 		$type		= $robotMsg->GetType();
 		$body		= $robotMsg->GetBody();
-		$msgtype	= $robotMsg->GetMsgtype();
+
+		$serverAddress  = $robotMsg->GetHeader('ServerAddress');
+		$msgtype	= $robotMsg->GetHeader('Msgtype');
 
 
 		//Todo 2007-06-26
@@ -278,15 +280,10 @@ class JWRobotLogic {
 	{
 		$robot_reply_msg = new JWRobotMsg();
 
-		$robot_reply_msg->Set( $robotMsg->GetAddress()
-					, $robotMsg->GetType()
-					, $message
-					, $robotMsg->GetServerAddress()
-					, $robotMsg->GetLinkId()
-				);
+		$robot_reply_msg->Set( $robotMsg->GetAddress() , $robotMsg->GetType() , $message );
+		$robot_reply_msg->SetHeaders( $robotMsg->GetHeaders() );
 
 		return $robot_reply_msg;
 	}
-
 }
 ?>

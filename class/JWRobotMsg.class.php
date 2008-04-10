@@ -17,15 +17,17 @@ class JWRobotMsg {
 	 */
 	private $mAddress	= null;
 	private $mType		= null;
-	private $mServerAddress	= null;
-	private $mLinkId	= null;
-	private $mMsgtype	= null;
 	private $mBody		= null;
 	private $mFile		= null;
 	private $mCreateTime	= null;
 
+	private $mFunction	= null;
+	private $mResource	= null;
+
 	private $mAttachments = array();
 	private $mBoundary = null;
+
+	private $mHeader = array();
 	
 	/**
 	  * idUserConference; not need check
@@ -209,6 +211,14 @@ class JWRobotMsg {
 		return $this->mIsValid;
 	}
 
+	public function GetFunction()
+	{
+		return $this->mFunction;
+	}
+	public function SetFunction($function)
+	{
+		$this->mFunction= $function;
+	}
 
 	public function GetAddress()
 	{
@@ -222,24 +232,7 @@ class JWRobotMsg {
 		$this->mAddress = $address;
 		$this->mIsValid = null;
 	}
-	public function GetLinkId()
-	{
-		return $this->mLinkId;
-	}
-	public function SetLinkId($linkId)
-	{
-		$this->mLinkId = $linkId;
-		$this->mIsValid = null;
-	}
-	public function GetMsgtype()
-	{
-		return $this->mMsgtype;
-	}
-	public function SetMsgtype($msgtype)
-	{
-		$this->mMsgtype = $msgtype;
-		$this->mIsValid = null;
-	}
+
 	public function GetType()
 	{
 		return $this->mType;
@@ -252,18 +245,7 @@ class JWRobotMsg {
 		$this->mType = $type;
 		$this->mIsValid = null;
 	}
-	public function GetServerAddress()
-	{
-		return $this->mServerAddress;
-	}
-	public function SetServerAddress($serverAddress)
-	{
-		if ( $this->mReadOnly )
-			throw new JWException('cant modify readonly msg');
 
-		$this->mServerAddress = $serverAddress;
-		$this->mIsValid = null;
-	}
 	public function GetBody()
 	{
 		return $this->mBody;
@@ -277,6 +259,7 @@ class JWRobotMsg {
 		$this->mBody = $this->_StripBody( $body );
 		$this->mIsValid = null;
 	}
+
 	public function GetFile()
 	{
 		return $this->mFile;
@@ -288,6 +271,7 @@ class JWRobotMsg {
 
 		$this->mFile = $file;
 	}
+
 	public function GetCreateTime()
 	{
 		return $this->mCreateTime;
@@ -313,7 +297,7 @@ class JWRobotMsg {
 
 
 
-	public function Set($address, $type, $body, $serverAddress=null, $linkId=null, $file=null)
+	public function Set($address, $type, $body, $file=null)
 	{
 		if ( $this->mReadOnly )
 			throw new JWException('cant modify readonly msg');
@@ -321,8 +305,6 @@ class JWRobotMsg {
 		$this->mAddress	= $address;
 		$this->mType	= $type;
 		$this->mBody	= self::_StripBody( $body );
-		$this->mServerAddress	= $serverAddress;
-		$this->mLinkId	= $linkId;
 		$this->mFile	= $file;
 
 		$this->mIsValid	= $this->IsValid(true);
@@ -340,14 +322,10 @@ class JWRobotMsg {
 			throw new JWException("can't save msg");
 
 		$file_contents =  "ADDRESS: " . $this->mType . "://" . $this->mAddress . "\n";
-		if( $this->mServerAddress != null ) {
-			$file_contents .= "SERVERADDRESS: " . $this->mServerAddress . "\n";
-		}
-		if( $this->mMsgtype != null ) {
-			$file_contents .= "MSGTYPE: " . $this->mMsgtype . "\n";
-		}
-		if( $this->mLinkId != null ) {
-			$file_contents .= "LINKID: " . $this->mLinkId . "\n";
+
+		foreach( $this->mHeader AS $key=>$value )
+		{
+			$file_contents .= "$key: $value\n";
 		}
 
 		$file_contents .= "\n";
@@ -434,19 +412,53 @@ class JWRobotMsg {
 		if( ! $device || ! $address )
 			return false;
 
-		//MSGTYPE
-		$msgtype = $this->_GetHeadTag('MsgType');
-		$serverAddress = $this->_GetHeadTag('ServerAddress');
-		$linkId = $this->_GetHeadTag('LinkId');
-		
-		//Set properties
-		$this->mAddress = $address ;
-		$this->mType	= $device ;
-		$this->mMsgtype = $msgtype ;
-		$this->mServerAddress = $serverAddress ;
-		$this->mLinkId = $linkId;
+		$this->mAddress = $address;
+		$this->mType = $device;
+
+		unset( $this->headTags[ "ADDRESS" ] );
+
+		foreach( $this->headTags AS $key=>$value )
+		{
+			$this->SetHeader( $key, $value );	
+		}
 
 		return true;
+	}
+
+	public function SetHeader($name=null, $value=null)
+	{
+		if ( null==$name )
+			return;
+
+		$name = strtoupper($name);
+		$this->mHeader[ $name ] = $value;
+
+		if ( null===$value )
+		{
+			unset( $this->mHeader[ $name ] );
+		}
+	}
+
+	public function GetHeader($name=null)
+	{
+		$name = strtoupper($name);
+		if ( isset($this->mHeader[ $name ]) )
+			return $this->mHeader[ $name ];
+
+		return null;
+	}
+
+	public function GetHeaders()
+	{
+		return $this->mHeader;
+	}
+
+	public function SetHeaders($headers)
+	{
+		foreach( $headers AS $key=>$value )
+		{
+			$this->SetHeader( $key, $value );
+		}
 	}
 
 	private function _GetHeadTag($tagName=null){

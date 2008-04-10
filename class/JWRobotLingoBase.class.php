@@ -166,7 +166,7 @@ class JWRobotLingoBase {
         }
 
 		$body = $robot_msg->GetBody();
-		$server_address = $robot_msg->GetServerAddress();
+		$server_address = $robot_msg->GetHeader('serveraddress');
 		$type = $robot_msg->GetType();
 		$address = $robot_msg->GetAddress();
 

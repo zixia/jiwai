@@ -1202,7 +1202,7 @@ _SQL_;
 
 		$body = $robotMsg->GetBody();
 		$address = $robotMsg->GetAddress();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$type = $robotMsg->GetType();
 
 		if( $type == 'sms' ) 

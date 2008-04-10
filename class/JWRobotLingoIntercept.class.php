@@ -12,7 +12,7 @@ class JWRobotLingoIntercept {
 
 	static public function Intercept_PreAndId($robot_msg)
 	{
-		$server_address = $robot_msg->GetServerAddress();
+		$server_address = $robot_msg->GetHeader('serveraddress');
 		$address = $robot_msg->GetAddress();
 		$type = $robot_msg->GetType();
 		$body = $robot_msg->GetBody();
@@ -79,7 +79,7 @@ class JWRobotLingoIntercept {
 
 	static public function Intercept_TagDongZai($robot_msg)
 	{
-		$server_address = $robot_msg->GetServerAddress();
+		$server_address = $robot_msg->GetHeader('serveraddress');
 		$body = $robot_msg->GetBody();
 
 		if ( '106693184001' == $server_address )
@@ -97,7 +97,7 @@ class JWRobotLingoIntercept {
 	 */
 	static public function Intercept_FollowOrLeave($robotMsg){
 		
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$type = JWDevice::GetDeviceCategory( $robotMsg->GetType() );
 		$mobileNo = $robotMsg->GetAddress();
 

@@ -134,18 +134,20 @@ class JWRobot {
 			return true;
 
 		$type = $robot_msg->GetType();
-		$server_address = $robot_msg->GetServerAddress();
 		$address = $robot_msg->GetAddress();
 		$message = $robot_msg->GetBody();
-		$link_id = $robot_msg->GetLinkId();
 
-		return self::SendMtRawQueue($address, $type, $message, $server_address, $link_id);
+		$server_address = $robot_msg->GetHeader('serverAddress');
+		$link_id = $robot_msg->GetHeader('linkid');
+		$resource = $robot_msg->GetHeader('resource');
+
+		return self::SendMtRawQueue($address, $type, $message, $server_address, $link_id, $resource);
 	}
 
 	/**
 	 * send robot msg to message queue, then mt robot will got it;
 	 */
-	static public function SendMtRawQueue($address, $type, $message, $server_address=null, $link_id=null)
+	static public function SendMtRawQueue($address, $type, $message, $server_address=null, $link_id=null, $resource=null)
 	{
 		$channel = "/robot/mt/$type";
 
@@ -155,7 +157,8 @@ class JWRobot {
 			'server_address' => $server_address,
 			'message' => $message,
 			'link_id' => $link_id,
-		));
+			'resource' => $resource,
+			));
 
 		return true;
 	}
@@ -215,7 +218,7 @@ class JWRobot {
 	}
 
 
-	static function SendMtRaw ($address, $type, $msg, $serverAddress=null, $linkId=null)
+	static function SendMtRaw ($address, $type, $msg, $serverAddress=null, $linkId=null, $resource=null)
 	{
 		if( trim($msg) == null ) {
 			JWLog::Instance()->Log(LOG_ERR, "Try to send null msg to $type://$address. [dropped.]");
@@ -228,7 +231,11 @@ class JWRobot {
 		} 
 
 		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($address,$type,$msg, $serverAddress, $linkId);
+		$robot_msg->Set( $address, $type, $msg );
+
+		$robot_msg->SetHeader( 'resource', $resource );
+		$robot_msg->SetHeader( 'linkid', $linkId );
+		$robot_msg->SetHeader( 'serveraddress', $serverAddress );
 
 		return self::SendMt($robot_msg);
 	}

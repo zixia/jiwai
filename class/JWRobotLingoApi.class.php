@@ -178,7 +178,7 @@ class JWRobotLingoApi {
 	 */
 	static function	Lingo_Whoami($robotMsg, $idUser)
 	{
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 
 		$address_user_id = intval($idUser);
 

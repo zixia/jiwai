@@ -53,7 +53,8 @@ if ( preg_match('/^(\w+)\s+.*$/i', $status, $matches)
 	&& in_array( strtoupper($matches[1]), $supported_lingo ) )
 {
 	$robot_msg = new JWRobotMsg();
-	$robot_msg->Set( $idUser, 'api', $status, 'api.jiwai.de' );
+	$robot_msg->Set( $idUser, 'api', $status);
+	$robot_msg->SetHeader('serveraddress', 'api.jiwai.de' );
 
 	$reply_msg = JWRobotLogic::ProcessMo( $robot_msg );
 	

@@ -28,7 +28,8 @@ if ( array_key_exists('jw_status', $_REQUEST) ){
         */
 
 		$robotMsg = new JWRobotMsg();
-		$robotMsg->Set( $update_user_id , 'web', $status, 'web@jiwai.de' );
+		$robotMsg->Set( $update_user_id , 'web', $status );
+		$robotMsg->SetHeader( 'serverAddress', 'web@jiwai.de' );
 
 		if ( JWUser::IsAnonymous($update_user_id) )
 		{

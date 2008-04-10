@@ -47,7 +47,7 @@ class JWRobotLingo_Add {
 	{
 		$type = $robotMsg->GetType();
 		$address = $robotMsg->GetAddress();
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$body = $robotMsg->GetBody();
 
 		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
@@ -106,7 +106,7 @@ class JWRobotLingo_Add {
 	 */
 	static function Lingo_F($robotMsg)
 	{
-		$serverAddress = $robotMsg->GetServerAddress();
+		$serverAddress = $robotMsg->GetHeader('serveraddress');
 		$mobileNo = $robotMsg->GetAddress();
 		$type = $robotMsg->GetType();
 
