@@ -77,6 +77,12 @@ class JWRobotMsg {
 			// set file name first, so if any err, 
 			// we can quarantine this file.
 			$this->mFile		= $fileName;
+			$base_name = basename( $fileName );
+			if ( preg_match( '/^(\S+)__(\S+)__(\d+)_(\d+)/U', $base_name, $matches ) )
+			{
+				$this->mType = $matches[1];
+				$this->mAddress= $matches[2];
+			}
 		}
 
 		$raw_msg_content = file_get_contents( $fileName );
@@ -473,7 +479,12 @@ class JWRobotMsg {
 
 	private function _StripBody($body=null){
 		$body = JWTextFormat::PreFormatRobotMsg( $body );
-		return mb_substr( trim($body), 0, 420, 'UTF-8' );
+		$constant_name = 'JW_HARDLEN_' . strtoupper( $this->mType );
+		if ( defined( $constant_name ) )
+			$hardlength = constant( $constant_name );
+		else
+			$hardlength = 420;
+		return mb_substr( trim($body), 0, $hardlength, 'UTF-8' );
 	}
 }
 ?>
