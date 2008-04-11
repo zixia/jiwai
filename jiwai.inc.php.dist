@@ -57,6 +57,12 @@ define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
 define('FRAGMENT_ROOT',	'/opt/fragment/');
 
 /**
+ * JW_HARDLEN_ 
+ * difine for db and other device
+ */
+define('JW_HARDLEN_DB', 420);
+
+/**
  * Mms Storage
  */
 define('MMS_STORAGE_ROOT', '/opt/storage_MMS');

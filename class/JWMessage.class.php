@@ -67,6 +67,12 @@ class JWMessage {
 		/* strip \r\n with \s */
 		$message = preg_replace('[\r\n]',' ',$message);
 
+		// // cut message for JW_HARDLEN_DB
+		if ( defined( 'JW_HARDLEN_DB' ) )
+		{
+			$message = mb_substr($message, 0, JW_HARDLEN_DB, 'UTF-8');
+		}
+
 		return JWDB::SaveTableRow('Message', array(
 			'idUserSender' => $sender_id,
 			'idUserReceiver' => $receiver_id,

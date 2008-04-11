@@ -340,7 +340,13 @@ class JWStatus {
 				$idPartner = $partner['id'];
 			}
 		}
-
+		
+		// cut status for JW_HARDLEN_DB
+		if ( defined( 'JW_HARDLEN_DB' ) ) 
+		{
+			$status = mb_substr($status, 0, JW_HARDLEN_DB, 'UTF-8');
+		}
+		
 		return JWDB_Cache::SaveTableRow('Status', array( 
 			'idUser' => $idUser,
 			'status' => $status,
@@ -1040,7 +1046,7 @@ _SQL_;
 				&& preg_match(	'#'
 						// head_str
 						. '^(.*?)'
-						. 'http://'
+						. '(http|https|ftp|rtsp|mms)?://'
 						// url_domain
 						. '([' . '\x00-\x1F' ./*' '*/ '\x21-\x2B' ./*','*/ '\x2D-\x2E' ./*'/'*/ '\x30-\x39' ./*':'*/ '\x3B-\x7F' . ']+)'
 						// url_path
@@ -1053,9 +1059,9 @@ _SQL_;
 		{
 			//die(var_dump($matches));
 			$head_str = htmlspecialchars($matches[1]);
-			$url_domain = htmlspecialchars($matches[2]);
-			$url_path = htmlspecialchars($matches[3]);
-			$tail_str = htmlspecialchars($matches[4]);
+			$url_domain = htmlspecialchars($matches[3]);
+			$url_path = htmlspecialchars($matches[4]);
+			$tail_str = htmlspecialchars($matches[5]);
 
 
 			/*
@@ -1071,18 +1077,18 @@ _SQL_;
 			if ( $jsLink && false )
 			{
 				$url_str = <<<_HTML_
-					<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$url_domain$url_path');return false;">http://$url_domain/...</a>
+					<a class="extlink" title="指向其它网站的链接" href="#" onclick="JiWai.OpenLink('$matches[2]://$url_domain$url_path');return false;">$matches[2]://$url_domain/...</a>
 _HTML_;
 			}
 			else
 			{
 				if( $urchin ) {
 					$url_str = <<<_HTML_
-						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">http://$url_domain/...</a>
+						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$matches[2]://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">$matches[2]://$url_domain/...</a>
 _HTML_;
 				}else{
 					$url_str = <<<_HTML_
-						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="http://$url_domain$url_path" target="_blank">http://$url_domain/...</a>
+						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$matches[2]://$url_domain$url_path" target="_blank">$matches[2]://$url_domain/...</a>
 _HTML_;
 				}
 			}
@@ -2097,6 +2103,8 @@ _SQL_;
         $sql ="Select idUser,count(1) as count from Status force index(IDX__Status__timeCreate) where timeCreate>='$yesterday' and timeCreate <'$today' and device ='$device' group by idUser order by count desc";
         if(!empty($limit)) $sql .= " limit $limit";
         $row = JWDB_Cache::GetQueryResult($sql, true);
+
+	echo $sql;
 
         if(empty($row))
             $row = array();
