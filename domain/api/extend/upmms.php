@@ -44,8 +44,8 @@ if ( isset($mms_file_info)
 		{
 			
 			$options['idPicture'] = $picture_id;
-			$options['isMms'] = 'Y';
-                	JWSns::UpdateStatus( $current_user_id, $status, $device, $time_create, $is_signature, $server_address, $options );
+			$options['statusType'] = 'MMS';
+                	JWSns::UpdateStatus($current_user_id, $status, $device, $time_create, $server_address, $options);
 			echo '+OK';
 			exit;
 		}

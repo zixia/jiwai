@@ -273,10 +273,9 @@ class JWMmsLogic {
 		}
 
 		$serverAddress = 'm@jiwai.de';
-		$isSignature = 'N';
 		$options = isset( $mmsArray['idPicture'] ) ? array(
 					'idPicture' => $mmsArray['idPicture'],	
-					'isMms' => 'Y',
+					'statusType'=>'MMS',
 					'nofilter' => true,
 				) : array();
 
@@ -284,7 +283,6 @@ class JWMmsLogic {
 						$mmsArray['status'],
 						$device,
 						$timeCreate,
-						$isSignature,
 						$serverAddress,
 					       	$options );	
 	}

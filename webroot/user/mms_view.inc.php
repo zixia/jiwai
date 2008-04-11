@@ -1,6 +1,6 @@
 <?php
 $status = JWDB_Cache_Status::GetDbRowById( $mmsId );
-if( empty( $status ) || $status['isMms'] == 'N' ){
+if( empty( $status ) || 'MMS' != $status['statusType'] ){
 	JWTemplate::RedirectTo404NotFound();
 }
 $picture = JWDB_Cache_Picture::GetDbRowById( $status['idPicture'] );

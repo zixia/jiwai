@@ -287,17 +287,18 @@ class JWStatus {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $isSignature='N', $options=array() )
+	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $options=array() )
 	{
+		$statusType = isset( $options['statusType'] ) ? $options['statusType'] : 'NONE';
+
 		/** signature html encode filter */
-		if( $isSignature == 'Y' ) {
+		if( 'SIG' == $statusType ) {
 			$status = htmlSpecialChars_Decode( $status );
 		}
 		
 		/** timeCreate **/
 		$timeCreate = isset($options['timeCreate']) ? 
 			$options['timeCreate'] : ($timeCreate ? $timeCreate : time());
-		$isMms = ( isset($options['isMms']) && $options['isMms'] == 'Y' ) ? 'Y' : 'N';
 
 		//user info
 		$userInfo  = JWDB_Cache_User::GetDbRowById( $idUser );
@@ -346,7 +347,7 @@ class JWStatus {
 		{
 			$status = mb_substr($status, 0, JW_HARDLEN_DB, 'UTF-8');
 		}
-		
+
 		return JWDB_Cache::SaveTableRow('Status', array( 
 			'idUser' => $idUser,
 			'status' => $status,
@@ -358,11 +359,10 @@ class JWStatus {
 			'idConference' => $idConference,
 			'isProtected' => $isProtected,
 			'idPartner' => $idPartner,
-			'isSignature' => $isSignature,
-			'isMms' => $isMms,
 			'idThread' => $idThread,
 			'idTag' => $idTag,
 			'idGeocode' => $idGeocode,
+			'statusType' => $statusType,
 		));
 	}
 
@@ -479,7 +479,7 @@ SELECT		 id
 			,id as idStatus
 FROM		Status
 WHERE		idUser=$idUser
-		AND isMms = 'Y'
+		AND statusType = 'MMS'
 		$condition_other
 ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
@@ -732,7 +732,7 @@ FROM
 		Status
 WHERE	
 		idUser IN ($condition_in)
-		AND isMms = 'Y'
+		AND statusType = 'MMS'
 		$condition_other
 ORDER BY
 		timeCreate desc
@@ -1193,7 +1193,7 @@ _SQL_;
 SELECT	COUNT(*) as num
 FROM	Status
 WHERE	idUser=$idUser
-	AND isMms = 'Y'
+	AND statusType = 'MMS'
 _SQL_;
 		$row = JWDB_Cache::GetQueryResult($sql);
 
@@ -1314,7 +1314,7 @@ FROM
         Status
 WHERE
         Status.idUser IN ($condition_in)
-	AND isMms = 'Y'
+	AND statusType = 'MMS'
 _SQL_;
 		$row = JWDB_Cache::GetQueryResult($sql);
 
@@ -2022,7 +2022,7 @@ _SQL_;
 		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
 		$status = $status_row['status'];
 
-		if( 'Y' == $status_row['isMms'] ) 
+		if( 'MMS' == $status_row['statusType'] ) 
 			return 'picture';
 		else if ( preg_match(	'#'
 					// head_str

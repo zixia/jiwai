@@ -77,6 +77,7 @@ window.jiwai_init_hook_qqscript = function()
 				<!--option value="qq.com">qq.com</option-->
 				<option value="yahoo.com.cn">yahoo.com.cn</option>
 				<option value="yahoo.cn">yahoo.cn</option>
+				<option value="live.com">live.com</option>
 				<option value="live.cn">live.cn</option>
 				<option value="hotmail.com">hotmail.com</option>
 				<option value="msn.com">msn.com</option>

@@ -71,6 +71,7 @@
 	<a href="http://www.xianguo.com" title="鲜果" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/xianguo8831.gif');?>" alt="鲜果"></a>
 	<a href="http://www.fundodo.com" title="粉嘟嘟" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/fundodo8831.gif');?>" alt="粉嘟嘟"></a>
 	<a href="http://www.inezha.com" title="哪吒网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/inezha8831.gif');?>" alt="哪吒网"></a>
+	<a href="http://ow.blog.sohu.com/" title="搜狐博客开放平台" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/sohublog8831.jpg');?>" alt="搜狐博客开放平台"></a>
 	<p style="float:left;width:100%;text-align:right;margin-top:13px;font-size:1.2em;color:#545454">友情链接排名不分先后</p>
 	 </div>
  </div>

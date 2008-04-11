@@ -75,7 +75,11 @@ class JWRobotLingo_Add {
 
 		
 		$mmsRow = JWStatus::GetDbRowById( $mmsId );
-		if( empty($mmsRow) || $mmsRow['isMms']=='N' || $mmsRow['idPicture']==null || $mmsRow['idUser']==null ){
+		if( empty($mmsRow) 
+			|| $mmsRow['statusType']=='MMS' 
+			|| $mmsRow['idPicture']==null 
+			|| $mmsRow['idUser']==null )
+		{
 			$reply = JWRobotLingo_AddReply::GetReplyString( $robotMsg, 'REPLY_MMS_NOMMS', array($userReceiver['nameFull'] ) );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 		}

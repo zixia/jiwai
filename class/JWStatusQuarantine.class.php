@@ -51,7 +51,7 @@ class JWStatusQuarantine {
 	/*
 	 *	@param	int	$time	unixtime
 	 */
-	static public function Create( $idUser, $status=null, $device='web', $isSignature='N', $options= array() ) {
+	static public function Create( $idUser, $status=null, $device='web', $options= array() ) {
 		$idUser = JWDB::CheckInt( $idUser );
 		$timeCreate = $options['timeCreate'];
 		$idStatusReplyTo = $options['idStatusReplyTo'];
@@ -66,7 +66,6 @@ class JWStatusQuarantine {
 							'timeCreate' => $timeCreate,
 							'idStatusReplyTo' => $idStatusReplyTo,
 							'idUserReplyTo'	=> $idUserReplyTo,
-							'isSignature' => $isSignature,
 						));
 	}
 
@@ -174,7 +173,6 @@ SELECT
 		, idUserReplyTo
 		, idStatusReplyTo
 		, idPicture
-		, isSignature
 FROM	StatusQuarantine
 WHERE	StatusQuarantine.id IN ($condition_in)
 _SQL_;
@@ -309,7 +307,6 @@ __SQL__;
 				$statusRow['status'], 
 				$statusRow['device'], 
 				strtotime($statusRow['timeCreate']), 
-				$statusRow['isSignature'], 
 				null, 
 				$options );
 

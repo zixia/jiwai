@@ -42,7 +42,7 @@
        <div class="aboutme">
 你是否问过或被别人问过"你在做什么"这样的问题？你是否想用两句话记录生活，懒得去写那长篇大论的博客？你是否在街上看到有趣的东西希望马上分享给朋友？<br />
 于是我们设想了这么一个<strong>地方</strong>，你可以在它上面看到朋友们的状态，了解他们此时正在做的事情，感受他们的喜怒哀乐，分享他们的所见所闻。甚至，这些信息能够传送给你手机或QQ上面。直到你也会通过网页，短信，MSN把消息发送到这个<strong>地方</strong>，发送你的生活轨迹。于是这些只言片语便是朋友间联系的纽带。<br />
-这就是叽歪网，我们为你创立的这样一个地方。
+这就是叽歪网，我们为你创立的这样一个<strong>地方</strong>。
        
        </div>
         <img alt="关于叽歪网" src="<? echo JWTemplate::GetAssetUrl('/images/aboutme.jpg');?>" title="关于叽歪网"/>
@@ -51,7 +51,7 @@
         <p>
         叽歪网，是一个通过发送生活中的点滴消息，和朋友、亲人、同事以及陌生人相互交流以及保持联系的网站；<br />
         叽歪网致力于为用户打造通过手机、QQ、MSN等不同终端设备实现随时随地记录与分享的网络平台。<br />
-        你可以从这里<a title="了解叽歪网" href="/wo/wizard/" target="_blank" >了解叽歪网</a>，或者读读<a title="我们的博客" target="_blank" href="http://blog.jiwai.de/">我们的博客</a>
+        你可以从这里<a title="了解叽歪网" href="/wo/wizard/" target="_blank" >了解叽歪网</a>，或者读读<a title="叽歪网的博客" target="_blank" href="http://blog.jiwai.de/">叽歪网的博客</a>
         </p>
         
         <h4>我们的目标</h4>
@@ -74,8 +74,8 @@
        
         <h5>欢迎下载</h5>
         <p>
-          <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪网IM2.0&SMS2.0接入方案" href="<? echo JWTemplate::GetAssetUrl('/js/jiwai_im2_sm2_20080303.pdf');?>"> 叽歪网IM2.0&SMS2.0接入方案</a>
-         </p><p style="margin-top:10px;"> <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪大屏幕介绍" href="<? echo JWTemplate::GetAssetUrl('/js/jiwai_bigscreen_20080327.pdf');?>">叽歪大屏幕介绍</a>
+          <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪网IM2.0&SMS2.0接入方案" href="<? echo JWTemplate::GetAssetUrl('/dl/jiwai_im_sms_platform.pdf');?>"> 叽歪网IM2.0&SMS2.0接入方案</a>
+         </p><p style="margin-top:10px;"> <img style="float:none;margin:0px 6px 0px 0px;" align="absmiddle" src="<? echo JWTemplate::GetAssetUrl('/images/pdf.jpg');?>" /> <a title="叽歪网大屏幕介绍" href="<? echo JWTemplate::GetAssetUrl('/dl/jiwai_screen_intro.pdf');?>">叽歪网大屏幕介绍</a>
        </p>
          <div class="forn"><a class="blno" href="/wo/about/contactus" title="欢迎联系我们">欢迎联系我们</a></div>	   
         

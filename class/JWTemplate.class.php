@@ -698,7 +698,7 @@ _TAB_;
 
 		$noneStatus = empty( $statusRow );
 
-		if ( $noneStatus || null==$statusRow['idPicture'] || 'Y'==$statusRow['isMms'] )
+		if ( $noneStatus || null==$statusRow['idPicture'] || 'MMS'==$statusRow['statusType'] )
 		{
 			$photo_url = JWPicture::GetUserIconUrl($userRow['id'], 'thumb96');
 		}
@@ -737,7 +737,7 @@ _TAB_;
 			$status_id = $statusRow['idStatus'];
 			$status = $statusRow['status'];
 			$timeCreate = $statusRow['timeCreate'];
-			$sign = $statusRow['isSignature'] == 'Y' ? '签名' : '';
+			$sign = $statusRow['statusType'] == 'SIG' ? '签名' : '';
 			$device = $statusRow['device'];
 			$device = JWDevice::GetNameFromType($device, @$statusRow['idPartner']);
 		
@@ -748,7 +748,7 @@ _TAB_;
 			$replyto = $status_result['replyto'];
 			$replytoname = $status_result['replytoname'];
 
-			$isMms = ( @$statusRow['isMms'] == 'Y') ;
+			$isMms = ( @$statusRow['statusType'] == 'MMS') ;
 		}
 
 ?>
@@ -954,13 +954,13 @@ _HTML_;
 			$device = $statusRows[$status_id]['device'];
 			$idPartner = @$statusRows[$status_id]['idPartner'];
 			$reply_id = $statusRows[$status_id]['idStatusReplyTo'];
-			$sign = ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?  '签名' : '';
+			$sign = ( $statusRows[$status_id]['statusType'] == 'SIG' ) ?  '签名' : '';
 		
 			$reply_num = JWDB_Cache_Status::GetCountReply( $status_id );
 
 			$duration = JWStatus::GetTimeDesc($timeCreate);
 
-			if ( $statusRows[$status_id]['isMms'] == 'Y' ) 
+			if ( $statusRows[$status_id]['statusType'] == 'MMS' ) 
 			{
 				$photo_url = JWPicture::GetUserIconUrl( $statusRows[$status_id]['idUser'], 'thumb48' );
 			}
@@ -1137,7 +1137,7 @@ __HTML__;
 		}
 
 		$yuString = $showPublisher ? '' : '';
-		$mmsString = $status_row['isMms'] == 'Y' ?  '拍摄于' : $yuString;
+		$mmsString = $status_row['statusType'] == 'MMS' ?  '拍摄于' : $yuString;
 		
 		$action_string = null;
 		if ( $current_user_id && $status_id )	
@@ -1159,7 +1159,7 @@ __HTML__;
 		$timeCreate = $status_row['timeCreate'];
 		$timeDesc = JWStatus::GetTimeDesc( $timeCreate );
 		$deviceName = JWDevice::GetNameFromType($status_row['device'], @$status_row['idPartner'] );
-		$sign = $status_row['isSignature'] == 'Y' ? '签名' : '';
+		$sign = $status_row['statusType'] == 'SIG' ? '签名' : '';
 
 		$preg_reply_link = null;
 		if( $reply_name_screen ) 
@@ -2400,22 +2400,23 @@ _HTML_;
 
 	static public function GetConst($constName)
 	{
+		$jw_srvname = JW_SRVNAME;
 		self::Instance();
 
 		if ( empty(self::$msJWConst) )
 		{
 			self::$msJWConst = array (
-				'UrlContactUs' => '/t/帮助留言板/',
-				'UrlRegister' => '/wo/account/create',
-				'UrlLogin' => '/wo/login',
-				'UrlResetPassword' => '/wo/account/confirm_password_reset',
-				'UrlPublicTimeline' => '/public_timeline/',
+				'UrlContactUs' => "$jw_srvname/t/帮助留言板/",
+				'UrlRegister' => "$jw_srvname/wo/account/create",
+				'UrlLogin' => "$jw_srvname/wo/login",
+				'UrlResetPassword' => "$jw_srvname/wo/account/confirm_password_reset",
+				'UrlPublicTimeline' => "$jw_srvname/public_timeline/",
 				'UrlTermOfService' => 'http://help.jiwai.de/TOS',
 				'UrlFaq' => 'http://help.jiwai.de/FAQs',
-				'UrlError404' => '/wo/error/404',
-				'UrlError500' => '/wo/error/500',
+				'UrlError404' => "$jw_srvname/wo/error/404",
+				'UrlError500' => "$jw_srvname/wo/error/500",
 				'UrlHelp' => 'http://help.jiwai.de/',
-				'UrlHelpComments' => '/help/',
+				'UrlHelpComments' => "$jw_srvname/help/",
 				'UrlHelpGadget' => 'http://help.jiwai.de/Gadget',
 				'UrlStrangerPicture' => self::GetAssetUrl('/images/org-nobody-96-96.gif'),
 			);

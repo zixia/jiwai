@@ -137,10 +137,10 @@ class JWNotify{
 		}
 		
 		/* mms */
-		if ( $status_row['isMms'] == 'Y' && $status_row['idPicture'] )
+		if ( $status_row['statusType'] == 'MMS' && $status_row['idPicture'] )
 		{
 			$mms = JWDB_Cache_Picture::GetDbRowById( $status_row['idPicture'] );
-			$options['isMms'] = true;
+			$options['statusType'] = 'MMS';
 		}
 
 		/* tag */

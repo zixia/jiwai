@@ -104,18 +104,17 @@ public class Increment
 		}
 
 		try{
-			boolean[] token = {true, false, false, false, false, false, false};
+			boolean[] token = {true, false, false, false, false, false};
 			Table user = Execute.getOnePK("User", record.get("idUser"));
 			Table tag = Execute.getOnePK("Tag", record.get("idTag"));
-			String[] other_field = {"status", "user", "device", "mms", "tag", "time", "signature"};
+			String[] other_field = {"status", "user", "device", "tag", "time", "type"};
 			String[] other_value = { 
 				record.get("status"),
 				null==user ? "" : user.get("nameScreen"),
 				record.get("device"),
-				record.get("isMms"),
 				null==tag ? "" : tag.get("name"),
 				String.valueOf( record.getDate("timeCreate").getTime()/1000 ),
-				record.get("isSignature")
+				record.get("statusType")
 			};
 			indexer.update( "id", id, other_field, other_value, token );
 		}catch(Exception e){

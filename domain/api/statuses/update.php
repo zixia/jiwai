@@ -35,7 +35,6 @@ if( ! $idUser=JWApi::GetAuthedUserId() ){
 $device = 'api';
 $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
-$isSignature = 'N';
 $serverAddress = null;
 $options = array(
                 'idPartner' => $idPartner,
@@ -95,7 +94,7 @@ if ( null != $cid ) {
                 ));
 }
 
-if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) )
+if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $serverAddress, $options) )
 {
 	if( $insertedId === true ) 
 	{

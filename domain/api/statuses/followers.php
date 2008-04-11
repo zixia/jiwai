@@ -73,7 +73,7 @@ function getFollowersWithStatus($idUser)
 	{
 		$user_row = $followers[$f];
 		$status_row = $statuses[ $statusIds[$f] ];
-		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+		$user_row['idPicture'] = ( $status_row['idPicture'] && 'MMS' != $status_row['statusType'] )
 			? $status_row['idPicture'] : $user_row['idPicture'];
 
 		$userInfo = JWApi::ReBuildUser( $user_row );

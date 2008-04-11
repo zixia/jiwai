@@ -51,7 +51,7 @@
 			$timeCreate	= $statusRows[$status_id]['timeCreate'];
 			$device		= $statusRows[$status_id]['device'];
 			$reply_id	= $statusRows[$status_id]['idStatusReplyTo'];
-			$sign		= ( $statusRows[$status_id]['isSignature'] == 'Y' ) ?
+			$sign		= ( $statusRows[$status_id]['statusType'] == 'SIG' ) ?
 						'signature' : '';
 			$name_mix	= $name_screen; //strcasecmp($name_screen, $name_full) ? $name_full.'('.$name_screen.')' : $name_full;
 			

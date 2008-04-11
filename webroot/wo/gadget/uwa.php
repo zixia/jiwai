@@ -64,7 +64,7 @@ if( $user_info['protected'] == 'Y')
 </table>
 
 <br/><br/>
-<a title="搜狐博客开放平台" target="_blank" href="http://ow.blog.sohu.com"><img src="<? echo JWTemplate::GetAssetUrl('/images/blog_sohu_com.gif');?>"alt="搜狐博客开放平台"/></a>
+<a title="叽歪网-搜狐博客开放平台战略合作伙伴" target="_blank" href="http://ow.blog.sohu.com"><img src="<? echo JWTemplate::GetAssetUrl('/images/blog_sohu_com.gif');?>"alt="叽歪网-搜狐博客开放平台战略合作伙伴"/></a>
 		</div><!-- gadgetUWA -->
             </div><!-- lookfriend -->
                 <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>

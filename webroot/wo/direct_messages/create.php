@@ -33,7 +33,7 @@ else
 	if(!$receiver_user_id)
 		JWTemplate::RedirectTo404NotFound();
 	$reply_message_id = (trim($param,'/'));
-	if(!preg_match('/^\/(\d+)$/',$receiver_user_id, $matches))
+	if(!empty($reply_message_id) && !preg_match('/^(\d+)$/',$reply_message_id, $matches))
 		JWTemplate::RedirectTo404NotFound();
 	$reply_message_id = intval($reply_message_id);
 	$reply_message_id = $reply_message_id ? $reply_message_id : null;

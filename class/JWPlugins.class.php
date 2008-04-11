@@ -25,7 +25,7 @@ class JWPlugins
 	{
 		$status = $status_row['status'];
 
-		if( 'Y' == $status_row['isMms'] ) 
+		if( 'MMS' == $status_row['statusType'] ) 
 		{
 
 

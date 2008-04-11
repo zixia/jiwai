@@ -146,7 +146,7 @@ class JWNudge {
 				$user = $options['user'];
 				$conference = $options['conference'];
 				$status = $options['status'];
-				$isMms = ( $status == null ) ? false : ($status['isMms']=='Y');
+				$isMms = ( $status == null ) ? false : ($status['statusType']=='MMS');
 				
 				//fetch from deviceRow
 				$type = $deviceRow['type'];

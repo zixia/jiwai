@@ -71,7 +71,7 @@ function getFriendsWithStatus($idUser)
 	foreach( $friendIds as $f )
 	{
 		$_rs = JWStatus::GetStatusIdsFromUser( $f, 1 );
-		if( false == empty( $_rs ) ) 
+		if( false == empty( $_rs ) && false==empty($_rs['status_ids']) ) 
 		{
 			$statusIds[$f] = $_rs['status_ids'][0];
 		}
@@ -88,7 +88,7 @@ function getFriendsWithStatus($idUser)
 			continue;
 
 		$status_row = $statuses[ $statusIds[$f] ];
-		$user_row['idPicture'] = ($status_row['idPicture'] && $status_row['isMms']=='N') 
+		$user_row['idPicture'] = ($status_row['idPicture'] && 'MMS' != $status_row['statusType']) 
 			? $status_row['idPicture'] : $user_row['idPicture'];
 
 		$statusInfo = JWApi::ReBuildStatus( $status_row );

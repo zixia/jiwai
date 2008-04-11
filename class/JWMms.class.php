@@ -48,7 +48,7 @@ class JWMms {
 
 		$statusRow = JWStatus::GetDbRowById( $mmsId );
 
-		if( empty($statusRow) || empty($statusRow['idPicture']) || $statusRow['isMms']=='N' )
+		if( empty($statusRow) || empty($statusRow['idPicture']) || $statusRow['statusType']=='MMS' )
 			return true;
 
 		$mmsRow = JWPicture::GetDbRowById( $statusRow['idPicture'] );

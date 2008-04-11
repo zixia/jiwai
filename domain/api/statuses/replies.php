@@ -125,7 +125,7 @@ function getStatusesWithUser($idUser, $needReBuild=true)
 		}
 
 		$user_row = $userTemp[$status_row['idUser']];
-		$user_row['idPicture'] = ( $status_row['idPicture'] && $status_row['isMms']=='N' )
+		$user_row['idPicture'] = ( $status_row['idPicture'] && 'MMS' != $status_row['statusType'] )
 			? $status_row['idPicture'] : $user_row['idPicture'];
 
 		$oInfo['user'] = $needReBuild ? JWApi::ReBuildUser($user_row) : $user_row;

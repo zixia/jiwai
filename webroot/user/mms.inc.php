@@ -42,7 +42,7 @@ else
 $head_status_rows = JWDB_Cache_Status::GetDbRowsByIds($head_status_data['status_ids']);
 $head_status_id = @array_shift($head_status_data['status_ids']); 
 $head_status_row = ( $head_status_id ) ? $head_status_rows[$head_status_id] : array();
-$head_status_is_mms = empty($head_status_row) ? false : ($head_status_row['isMms']=='Y');
+$head_status_is_mms = empty($head_status_row) ? false : ($head_status_row['statusType']=='MMS');
 $plus = ( $head_status_is_mms ) ? 1 : 0;
 
 /* active_tab switch */

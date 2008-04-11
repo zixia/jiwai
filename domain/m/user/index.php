@@ -15,6 +15,9 @@ if( empty( $userInfo ) ){
     if( strtolower($nameOrId) === 'public_timeline' ){
         require_once( dirname(__FILE__) . '/public_timeline.inc.php');
         exit(0);
+    } elseif( strtolower($nameOrId) === 'download' ){
+        require_once( dirname(__FILE__) . '/download.inc.php');
+        exit(0);
     }
     redirect_to_404( '/' );
 }else{

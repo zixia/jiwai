@@ -70,6 +70,8 @@ class JWApi{
 		}
 		if( isset( $_SERVER['PHP_AUTH_USER'] ) )
 		{
+            /* work around for WidSets */
+			$_SERVER['PHP_AUTH_USER'] = urldecode($_SERVER['PHP_AUTH_USER']);
 			$username_or_email = mb_convert_encoding($_SERVER['PHP_AUTH_USER'],'UTF-8','UTF-8,GB2312');
 			$password = $_SERVER['PHP_AUTH_PW'];
 			return JWUser::GetUserFromPassword( $username_or_email, $password );
@@ -131,6 +133,9 @@ class JWApi{
 		$user_info['protected'] = $user['protected']=='Y' ? true : false;
 
 		$user_info['profile_image_url'] = JWPicture::GetUrlById( $user['idPicture'],'thumb48s');
+        /* work around for Widsets, wanghw's fault */
+		if ( isset($user['idMmsPicture']) )
+            $user_info['mms_image_url'] = JWPicture::GetUrlById( $user['idMmsPicture'],'thumb96');
 
 		return $user_info;
 	}
@@ -149,6 +154,9 @@ class JWApi{
 		$out_info['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
 		$out_info['text'] = $status['status'];
 		$out_info['id'] = $status['idStatus'];
+        if( isset( $status['idPicture'] ) && $status['statusType'] == 'MMS' ) {
+            $out_info['mms_image_url'] = JWPicture::GetUrlById( $status['idPicture'],'middle');
+        }
 		if( isset( $status['favourite_id'] ) )
 		{
 			$out_info['favourite_id'] = $status['favourite_id'];

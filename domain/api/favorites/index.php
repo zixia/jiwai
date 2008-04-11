@@ -164,7 +164,7 @@ function getFavouriteStatuses($options, $needReBuild=false)
 		}
 
 		$user_row = $user_rows[$user_id];
-		$user_row['idPicture'] = ( $status['idPicture'] && $status['isMms']=='N' )
+		$user_row['idPicture'] = ( $status['idPicture'] && 'MMS' != $status['statusType'] )
 			? $status['idPicture'] : $user_row['idPicture'];
 
 		$userInfo   = ($needReBuild) ?

@@ -13,7 +13,7 @@ if( ! $idUser ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
 
-$result = array( 'authorized' => true, );
+$result = array( 'verify' => array( 'authorized' => true, 'idUser' => $idUser ) );
 
 switch($type){
 	case 'xml':

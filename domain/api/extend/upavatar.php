@@ -10,11 +10,6 @@ if( ! $current_user_id )
 $status = $idPartner = null;
 extract($_POST, EXTR_IF_EXISTS);
 
-if ( null==$status )
-{
-	JWApi::OutHeader(400,true);
-}
-
 /* default setting */
 $device = 'api';
 $time_create = time();

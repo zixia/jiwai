@@ -80,7 +80,7 @@ function getMessage($id, &$status, &$user)
 		$user = JWDB_Cache_User::GetDbRowById($status['idUser']);
 		if ( false==empty($user) )
 		{
-			if ( $status['idPicture'] && $status['isMms']=='N' )
+			if ( $status['idPicture'] && $status['statusType']=='MMS' )
 			{
 				$user['idPicture'] = $status['idPicture'];
 			}

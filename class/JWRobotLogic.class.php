@@ -149,12 +149,17 @@ class JWRobotLogic {
 		if( false == in_array( $msgtype, $status_msgtype ) ){
 			return null; 
 		}
+		
+		//ADD 2008-04-11
+		$statusType = 'NONE';
+		'SIG'==$msgtype && $statusType='SIG';
+		$options=array(
+			'statusType' => $statusType,
+		);
 
-		$isSignature = ( $msgtype=='SIG' ) ? 'Y' : 'N';
-        
 		$device_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
 
-		if( $isSignature == 'Y' && ( empty($device_row ) || false == empty($device_row['secret']) ) ) {
+		if( 'SIG'==$statusType && ( empty($device_row ) || false == empty($device_row['secret']) ) ) {
 			return null;
 		}
 
@@ -175,7 +180,6 @@ class JWRobotLogic {
 			JWLog::Instance()->Log(LOG_INFO,"UPDATE:\t$device_row[idUser] @$type: $body $time");
 			$idUser = $device_row['idUser'];
 
-			$options = array();
 			if( $type == 'sms' ) {
 				$parseInfo = JWFuncCode::FetchConference($serverAddress, $address);
 				if( false == empty( $parseInfo ) ){
@@ -199,7 +203,7 @@ class JWRobotLogic {
 				if( $index3 ) $body = substr( $body, 0, $index3 );
 			}
 
-			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $isSignature, $serverAddress, $options );
+			$ret = JWSns::UpdateStatus($idUser, $body, $type, $time, $serverAddress, $options );
 			if( $ret > 0 ) 
 			{
 				$name_screen = JWUser::GetUserInfo( $device_row['idUser'], 'nameScreen' );

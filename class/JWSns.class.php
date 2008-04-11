@@ -481,11 +481,11 @@ class JWSns {
 	/*
 	 * 更新用户叽歪嘻嘻，并进行广播
 	 */
-	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $isSignature='N', $serverAddress=null, $options=array() )
+	static public function	UpdateStatus( $idUser, $status, $device='web', $timeCreate=null, $serverAddress=null, $options=array() )
 	{
 		/** deal filter **/
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
-		$quarantine_array = array($idUser, $status, $device, $timeCreate, $isSignature, $serverAddress, $options);
+		$quarantine_array = array($idUser, $status, $device, $timeCreate, $serverAddress, $options);
 		if ( false==isset($options['filter']) || $options['filter'] == true )
 		{
 			if (self::FilterStatus( $status, $quarantine_array ) )
@@ -494,7 +494,8 @@ class JWSns {
 		/** end filter **/
 
 		//滤除换行 并 检查签名改变
-		if( null == ( $status = self::StripStatusAndCheckSignature($idUser, $status, $device, $isSignature ) ) )
+		$statusType = isset($options['statusType']) ? $options['statusType'] : 'NONE';
+		if(null==($status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType=='SIG')))
 			return true;
 
 		$reply_info = JWStatus::GetReplyInfo( $status, $options );
@@ -525,9 +526,10 @@ class JWSns {
 			'idThread' => $idThread,
 			'idTag' => $idTag,
 			'idGeocode' => $idGeocode,
+			'statusType' => $statusType,
 		);
 
-		$acceptKeys = array( 'idPicture', 'isMms', 'idPartner' );
+		$acceptKeys = array( 'idPicture', 'statusType', 'idPartner' );
 		foreach( $acceptKeys as $key ) {
 			if( isset( $options[ $key ] ) ) {
 				$createOptions[ $key ] = $options[ $key ];
@@ -560,7 +562,7 @@ class JWSns {
 		}
 
 		//Real Create Status
-		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $isSignature, $createOptions);
+		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $createOptions);
 		if( $idStatus ) {
 
 			$status = JWStatus::SimpleFormat( $status, $idUserReplyTo );	
@@ -571,7 +573,7 @@ class JWSns {
 				'idThread' => $idThread,
 				'idUserConference' => ( $createOptions['idConference'] ) ? $conference['idUser'] : null,
 				'notify' => $options['notify'],
-				'isMms' => isset( $createOptions['isMms'] ) ? $createOptions['isMms'] : false,
+				'statusType' => $statusType,
 			);
 
 			if( $options['notify'] === false ) 
@@ -837,10 +839,10 @@ class JWSns {
 		return $idVistors;
 	}
 
-	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature='N' ) 
+	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature=false ) 
 	{
 		$status = JWTextFormat::PreFormatWebMsg( $status, $device );
-		if( 'Y' == $isSignature ) {
+		if( true === $isSignature ) {
 			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
 				return null;
 			}

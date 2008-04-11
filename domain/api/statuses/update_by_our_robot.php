@@ -45,13 +45,12 @@ if( empty($loginedUserInfo) ) {
 $idUser = $loginedUserInfo['id'];
 $device = 'sms';
 $status = urlDecode( $status );
-$isSignature = 'N';
 $serverAddress = null;
 $options = array(
 		'idConference' => $idConference,
 );
 
-if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options) ){
+if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $serverAddress, $options) ){
 	if( $insertedId === true ) {
 		$insertedId = JWDB::GetInsertedId();
 	}
