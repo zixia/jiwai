@@ -364,6 +364,11 @@ class JWNotify{
 			$to_ids = JWTrackUser::GetIdUsersBySequence( $trackword_sequence_id );
 
 			$to_ids = array_diff( $to_ids, $have_send_ids );
+			foreach($to_ids as $to_id)
+			{
+				if(JWBlock::IsBlocked($to_id, $sender_user['id']))
+					$to_ids = array_diff( $to_ids, array($to_id));
+			}
 
 			if ( false == empty( $to_ids ) )
 			{
