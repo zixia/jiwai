@@ -50,14 +50,14 @@ if ( isset($query_info['type']) )
 {
 	if ( count($query_info['type']) == 1 )
 	{
-		$one_query = $searcher->termQuery( 'Y', array_shift($query_info['type']) );
+		$one_query = $searcher->termQuery( strtoupper(array_shift($query_info['type'])), 'type' );
 	}
 	else
 	{
 		$one_query = array();
-		foreach ( $query_info['device'] AS $one )
+		foreach ( $query_info['type'] AS $one )
 		{
-			array_push( $one_query, $searcher->termQuery( 'Y', $one ) );
+			array_push( $one_query, $searcher->termQuery( strtoupper($one), 'type' ) );
 		}
 		$one_query = $searcher->mergeShouldQuery( $one_query );
 	}
@@ -72,14 +72,14 @@ if ( isset($query_info['device']) )
 {
 	if ( count($query_info['device']) == 1 )
 	{
-		$one_query = $searcher->termQuery( array_shift($query_info['device']), 'device');
+		$one_query = $searcher->termQuery( strtolower(array_shift($query_info['device'])), 'device');
 	}
 	else
 	{
 		$one_query = array();
 		foreach ( $query_info['device'] AS $one)
 		{
-			array_push( $one_query, $searcher->termQuery( $one, 'device' ) );
+			array_push( $one_query, $searcher->termQuery( strtolower($one), 'device' ) );
 		}
 		$one_query = $searcher->mergeShouldQuery( $one_query );
 	}
