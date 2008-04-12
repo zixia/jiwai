@@ -410,7 +410,7 @@ class StockCmdRobot{
 			'notify' => $to,
 		);
 		
-		if( $idStatus = JWSns::UpdateStatus( $meUser['id'], $text, 'web', null, 'N', 'web', $options ) ) {
+		if( $idStatus = JWSns::UpdateStatus( $meUser['id'], $text, 'web', null, 'web', $options ) ) {
 			return "发布股市信息成功，更新的编号：$idStatus , 通知到：$to";
 		}
 

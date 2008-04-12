@@ -27,7 +27,7 @@ if( $_POST )
         $options_info = array(
             'idTag' => $tag_id,
         );
-        $status_id = JWSns::UpdateStatus( $user_info['id'],$status,'web',NULL,'N','web@jiwai.de',$options_info );
+        $status_id = JWSns::UpdateStatus( $user_info['id'],$status,'web',NULL,'web@jiwai.de',$options_info );
         if( $status_id )
         {
             SetNotice( "发布股市信息成功,更新的编号：$status_id，通知到：$tag_id 。" , true);

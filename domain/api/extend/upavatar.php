@@ -13,7 +13,6 @@ extract($_POST, EXTR_IF_EXISTS);
 /* default setting */
 $device = 'api';
 $time_create = time();
-$is_signature = 'N';
 $server_address = 'api.jiwai.de';
 $options = array(
 	'nofilter' => true,
@@ -40,7 +39,7 @@ if ( isset($avatar_file_info)
             $options['idPicture'] = $picture_id;
             JWUser::SetIcon($current_user_id, $picture_id);
             if ($status)
-                JWSns::UpdateStatus( $current_user_id, $status, $device, $time_create, $is_signature, $server_address, $options );
+                JWSns::UpdateStatus( $current_user_id, $status, $device, $time_create, $server_address, $options );
 			echo '+OK';
 			exit;
 		}

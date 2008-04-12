@@ -21,7 +21,7 @@ if( isset($_REQUEST['jw_status']))
 	$options_info = array(
 		'idTag' => $tag_row['id'],
 	);
-	$is_status_id = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'N', 'web@jiwai.de', $options_info);	
+	$is_status_id = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'web@jiwai.de', $options_info);	
 	if( false == $is_status_id )
 		JWSession::SetInfo('error', '对不起，发送失败。');
 	else

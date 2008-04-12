@@ -124,7 +124,7 @@ function update($idUser, $status) {
 				'idStatusReplyTo' => $status_row['id']
 			);
 
-			$is_succ = JWSns::UpdateStatus($idUser, $status, 'wap', null, 'N', 'wap@jiwai.de', $options_info);
+			$is_succ = JWSns::UpdateStatus($idUser, $status, 'wap', null, 'wap@jiwai.de', $options_info);
 			if( false == $is_succ )
 			{
 				JWSession::SetInfo('error', '对不起，回复失败。');
