@@ -53,25 +53,33 @@ class JWRobotLingoIntercept {
 							$robot_msg->SetBody( "ON J${body}" );
 						}
 					break;
-                    case JWFuncCode::PRE_REG_INVITE_13:
-                    case JWFuncCode::PRE_REG_INVITE_15:
-                        $mobileNo = $pre_and_id['pre'] . $pre_and_id['id'];
-                        $deviceInfo = JWDevice::GetDeviceDbRowByAddress($mobileNo, 'sms');
-                        $robotMsgtype = $robot_msg->getMsgtype();
-                        if (!empty($deviceInfo) && $deviceInfo['secret']==='') {
-                            // Cast to PRE_USER_RE
-                            $user = JWUser::GetUserInfo($deviceInfo['idUser']);
-                            $robot_msg->SetIsInterceptable(false);
-                            $lingo_func = ( null == $robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
-                                JWRobotLingoBase::GetLingoFunctionFromMsg($robot_msg) : null;
+					case JWFuncCode::PRE_VOTE_TP:
+						$id = $pre_and_id['id'];
+						if ( preg_match('/^\w+$/', $body ) )
+						{
+							$robot_msg->SetBody( "TP ${id} ${body}" );	
+						}
+					break;
+					case JWFuncCode::PRE_REG_INVITE_13:
+					case JWFuncCode::PRE_REG_INVITE_15:
+						$mobileNo = $pre_and_id['pre'] . $pre_and_id['id'];
+						$deviceInfo = JWDevice::GetDeviceDbRowByAddress($mobileNo, 'sms');
+						$robotMsgtype = $robot_msg->GetHeader('msgtype');
+						if (!empty($deviceInfo) && $deviceInfo['secret']==='') 
+						{
+							// Cast to PRE_USER_RE
+							$user = JWUser::GetUserInfo($deviceInfo['idUser']);
+							$robot_msg->SetIsInterceptable(false);
+							$lingo_func = ( null==$robotMsgtype || 'NORMAL' == $robotMsgtype ) ?
+							JWRobotLingoBase::GetLingoFunctionFromMsg($robot_msg) : null;
 
-                            $robot_msg->SetIsInterceptable(true);
-                            if ( empty($lingo_func) )
-                            {
-                                $robot_msg->SetBody( "@$user[nameScreen] $body" );
-                            }
-                        }
-                    break;
+							$robot_msg->SetIsInterceptable(true);
+							if ( empty($lingo_func) )
+							{
+								$robot_msg->SetBody( "@$user[nameScreen] $body" );
+							}
+						}
+					break;
 				}
 			}
 		}
@@ -168,4 +176,3 @@ class JWRobotLingoIntercept {
 	}
 }
 ?>
-
