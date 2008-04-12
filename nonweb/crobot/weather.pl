@@ -90,7 +90,6 @@ http://weather.news.qq.com/inc/dc252.htm
 =cut
 sub getWeatherUrlByCity {
     my ($city) = @_;
-    ##my $prefix = 'http://weather.news.qq.com/inc/07_ss';
     my $prefix = 'http://weather.news.qq.com/inc/07_dc';
     my $suffix = '.htm';
     my $code = $cityMap{$city};
