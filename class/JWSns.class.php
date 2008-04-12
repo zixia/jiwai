@@ -498,6 +498,14 @@ class JWSns {
 		if( null == ( $status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType) ) )
 			return true;
 
+		/**
+		 * nano format parse
+		 */
+		//parse vote_item
+		if ( 'NONE'==$statusType && 'web'==strtolower($device) && self::ParseVoteItem($status) )
+			$statusType = 'VOTE';
+
+		//parse reply
 		$reply_info = JWStatus::GetReplyInfo( $status, $options );
 		
 		$status = $reply_info['status'];
@@ -531,7 +539,7 @@ class JWSns {
 
 		$acceptKeys = array( 'idPicture', 'statusType', 'idPartner' );
 		foreach( $acceptKeys as $key ) {
-			if( isset( $options[ $key ] ) ) {
+			if( isset( $options[ $key ] ) && false==isset($createOptions[$key]) ) {
 				$createOptions[ $key ] = $options[ $key ];
 			}	
 		}
@@ -937,6 +945,17 @@ class JWSns {
 			return true;
 		}
 		return false;
+	}
+
+	static public function ParseVoteItem( $status )
+	{
+		if ( false == preg_match_all( '/\s*{([^\{\}]+)\}\s*/iU', $status, $matches ) )
+			return false;
+		
+		if ( 1==count($matches[1]) )
+			return false;
+
+		return $matches[1]; 
 	}
 }
 ?>

@@ -170,6 +170,16 @@ class JWRobotLingoReply {
 
 			//Update Status
 			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，你发送的叽歪被我们暂时藏起来了！',
+
+			//VOTE
+			'REPLY_VOTE_SUC' => '你好，你的投票被接受，谢谢参与！',
+			'REPLY_VOTE_SUC_DM' => '你参与了 @{0} 的投票活动，选择了选项 {1} : {2}',
+			'REPLY_VOTE_ERR' => '用法：{0}+空格+投票代码+空格+选项代码 ，请检查投票代码及选项代码是否正确！',
+			'REPLY_VOTE_ERR_NOVOTE' => '对不起，不存在的投票项目，请检查投票代码！',
+			'REPLY_VOTE_ERR_CHOICE' => '对不起，不存在的投票选项，请检查选项代码！',
+			'REPLY_VOTE_ERR_EXPIRE' => '对不起，投票活动已过期！',
+			'REPLY_VOTE_ERR_DEVICE' => '对不起，你当前的设备 {1} 不允许参与此投票！',
+			'REPLY_VOTE_ERR_EXCEED' => '对不起，你在规定时间投票次数已达上限！',
 		);
 
 	/**

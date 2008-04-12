@@ -33,7 +33,7 @@ function reply_status($idStatus)
 			}
 		}
 
-		$is_succ = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'N', 'web@jiwai.de', $options_info);
+		$is_succ = JWSns::UpdateStatus($current_user_id, $message, 'web', null, 'web@jiwai.de', $options_info);
 		if( false == $is_succ )
 		{
 			JWSession::SetInfo('error', '对不起，回复失败。');

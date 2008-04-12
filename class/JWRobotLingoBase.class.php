@@ -61,6 +61,9 @@ class JWRobotLingoBase {
 
 		//Merge
 		'MERGE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Merge', 'param'=>2 ),
+
+		//VOTE
+		'VOTE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Vote', 'param'=>2),
 	);
 
 
@@ -116,6 +119,9 @@ class JWRobotLingoBase {
 
 		//MerGE
 		'HEBING' => 'MERGE',
+
+		//VOTE
+		'TP' => 'VOTE',
 	); 
 
 	/**

@@ -1589,6 +1589,72 @@ class JWRobotLingo {
 		}
 	}
 
+	static public function Lingo_Vote($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();
+		$type 		= $robotMsg->GetType();
+		$body = $robotMsg->GetBody();
+		$body = JWTextFormat::ConvertCorner( $body );
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) )
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) ) 
+			return null;
+	
+		$device_user_id = $device_db_row['idUser'];
+
+		/**
+		 * 参数
+		 */
+		$param_array = preg_split('/\s+/', $body, 3);
+		if( count($param_array) < 3 || 0==intval($param_array[1]) )
+		{
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_ERR', array(
+				strtoupper($param_array[0]),
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$number = $param_array[1];
+		$choice = $param_array[2];
+
+		if ( 0 >= ($flag=JWNanoVote::DoVote( $device_user_id, $number, $choice, $type )) )
+		{
+			$err_string = 'REPLY_VOTE_ERR';
+			JWNanoVote::FAIL_EXCEED == $flag && $err_string = 'REPLY_VOTE_ERR_EXCEED';
+			JWNanoVote::FAIL_EXPIRE == $flag && $err_string = 'REPLY_VOTE_ERR_EXPIRE';
+			JWNanoVote::FAIL_DEVICE == $flag && $err_string = 'REPLY_VOTE_ERR_DEVICE';
+			JWNanoVote::FAIL_CHOICE == $flag && $err_string = 'REPLY_VOTE_ERR_CHOICE';
+			JWNanoVote::FAIL_NOVOTE == $flag && $err_string = 'REPLY_VOTE_ERR_NOVOTE';
+
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, $err_string, array(
+				strtoupper($param_array[0]), strtoupper($type),
+			));
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		/** succ **/
+		$vote_row = JWNanoVote::GetDbRowByNumber( $number );
+		$status_row = JWDB_Cache_Status::GetDbRowById( $vote_row['idStatus'] );
+		$user_row = JWUser::GetUserInfo( $status_row['idUser'] );
+		$items = JWSns::ParseVoteItem( $status_row['status'] );
+		$ochoice = abs(intval($choice)) || $ochoice = abs(strpos('0ABCDEFGHI',strtoupper($choice)));
+		$value = $items[ $ochoice-1 ];
+
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
+			$user_row['nameScreen'], $choice, $value,
+		));
+		$xiaodi = JWUser::GetUserInfo('叽歪小弟');
+		JWMessage::Create( $xiaodi['id'], $device_user_id, $reply );
+
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
+
 	static public function CreateAccount($robotMsg, $pre_name_screen=null, $pre_name_full=null) {
 		
 		$address = $robotMsg->GetAddress();
