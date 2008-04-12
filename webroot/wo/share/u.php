@@ -23,13 +23,12 @@ if( $_POST ) {
 	$device = 'api';
 	$timeCreate = date("Y-m-d H:i:s");
 	$status = urlDecode( $status );
-	$isSignature = 'N';
 	$serverAddress = null;
 	$options = array(
 		'idPartner' => $idPartner,
 	);
 
-	$idStatus = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $isSignature, $serverAddress, $options);
+	$idStatus = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $serverAddress, $options);
 	if( $idStatus > 1 ) JWFavourite::Create($idUser, $idStatus);
 	
 	exit;

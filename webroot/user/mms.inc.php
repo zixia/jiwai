@@ -219,7 +219,6 @@ if ( false == $protected ) {
 					'icon'	=> $g_user_with_friends,
 					'protected'=> $protected, 
                                     	'pagination' => $pagination,
-					'isMms' => true, 
 				 )
 	);
 }

@@ -146,7 +146,7 @@ class JWNudge {
 				$user = $options['user'];
 				$conference = $options['conference'];
 				$status = $options['status'];
-				$isMms = ( $status == null ) ? false : ($status['statusType']=='MMS');
+				$statusType = ( $status == null ) ? 'NONE' : $status['statusType'];
 				
 				//fetch from deviceRow
 				$type = $deviceRow['type'];
@@ -161,7 +161,7 @@ class JWNudge {
 				}
 
 				$serverAddress = null;
-				if( $type=='sms' && $serverAddress==null && $isMms ) {
+				if( $type=='sms' && $serverAddress==null && 'MMS'==$statusType ) {
 					$serverAddress = JWFuncCode::GetMmsNotifyFunc($address, $status['id'] );
 				}
 				if( $type=='sms' && $serverAddress==null ) {

@@ -117,10 +117,10 @@ class JWSearch {
 		/**
 		 * deal extra info
 		 */
-		$in_user .= ' ' . isset($extra['in_user']) ? $extra['in_user'] : null;
-		$in_device .= ' ' . isset($extra['in_device']) ? $extra['in_device'] : null;
-		$in_type .= ' ' . isset($extra['in_type']) ? $extra['in_type'] : null;
-		$in_tag .= ' ' . isset($extra['in_tag']) ? $extra['in_tag'] : null;
+		$in_user .= ' ' . ( isset($extra['in_user']) ? $extra['in_user'] : null );
+		$in_device .= ' ' . ( isset($extra['in_device']) ? $extra['in_device'] : null );
+		$in_type .= ' ' . ( isset($extra['in_type']) ? $extra['in_type'] : null );
+		$in_tag .= ' ' . ( isset($extra['in_tag']) ? $extra['in_tag'] : null );
 
 		/**
 		 * consider search syntax

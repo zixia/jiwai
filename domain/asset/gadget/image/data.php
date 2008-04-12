@@ -37,7 +37,7 @@ function getOwnTimeline($count=10, $icon_size=48) {
 			'icon'=> /*((!empty($r['idPicture']) && $icon_size==48) ?  JWPicture::GetUrlById($r['idPicture'], 'thumb'.$icon_size) :*/ JWPicture::GetUserIconUrl($r['idUser'], 'thumb'.$icon_size)/*)*/,
 			'body'=>$r['status'], 
 			'time'=>substr($r['timeCreate'], 0, strrpos($r['timeCreate'], ':')), 
-			'via'=>'来自'.JWDevice::GetNameFromType($r['device']).($r['isSignature']=='Y'?'签名':'')
+			'via'=>'来自'.JWDevice::GetNameFromType($r['device']).($r['statusType']=='SIG'?'签名':'')
 			);
 	}
 	//var_dump($a);die();

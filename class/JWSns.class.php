@@ -495,7 +495,7 @@ class JWSns {
 
 		//滤除换行 并 检查签名改变
 		$statusType = isset($options['statusType']) ? $options['statusType'] : 'NONE';
-		if(null==($status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType=='SIG')))
+		if( null == ( $status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType) ) )
 			return true;
 
 		$reply_info = JWStatus::GetReplyInfo( $status, $options );
@@ -839,11 +839,13 @@ class JWSns {
 		return $idVistors;
 	}
 
-	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $isSignature=false ) 
+	static public function StripStatusAndCheckSignature( $idUser, &$status=null, $device='msn', $statusType='NONE' ) 
 	{
 		$status = JWTextFormat::PreFormatWebMsg( $status, $device );
-		if( true === $isSignature ) {
-			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status)){
+		if( 'SIG' == $statusType ) 
+		{
+			if( false == JWDevice::IsSignatureChanged($idUser, $device, $status))
+			{
 				return null;
 			}
 		}

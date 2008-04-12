@@ -725,7 +725,6 @@ _TAB_;
 
 		/** initial **/
 		$status = null;
-		$isMms = false;
 
 		if ( $noneStatus )
 			$status = "到目前为止还没有叽歪过！";
@@ -747,8 +746,6 @@ _TAB_;
 			$status = $status_result['status'];
 			$replyto = $status_result['replyto'];
 			$replytoname = $status_result['replytoname'];
-
-			$isMms = ( @$statusRow['statusType'] == 'MMS') ;
 		}
 
 ?>
@@ -825,18 +822,11 @@ if( false == $protected && false == $noneStatus )
 
 		$asset_trash_alt = '删除';
 		$asset_trash_alt2 = '';
-//		$asset_trash_title = '删除';
 		$asset_trash_url		= self::GetAssetUrl("/img/icon_trash.gif");
 
 		$html_str = <<<_HTML_
 	<a href="javascript:void(0);" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt"><img border="0" src="$asset_trash_url" />$asset_trash_alt2</a>
 _HTML_;
-		if( @$options['isMms'] ) {
-			$html_str = <<<_HTML_
-	<a href="javascript:void(0);" onclick="JiWai.DoTrash($idStatus);" title="$asset_trash_alt" class="del">$asset_trash_alt</a>
-_HTML_;
-		}
-
 		return $html_str;
 	}
 
@@ -905,8 +895,6 @@ _HTML_;
 			$options['protected']	= false;
 		if ( !isset($options['strip']) )
 			$options['strip']	= false;
-		if ( !isset($options['isMms']) )
-			$options['isMms']	= false;
 
 		if( $options['protected'] ) return;
 
