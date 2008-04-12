@@ -91,7 +91,7 @@ http://weather.news.qq.com/inc/dc252.htm
 sub getWeatherUrlByCity {
     my ($city) = @_;
     ##my $prefix = 'http://weather.news.qq.com/inc/07_ss';
-    my $prefix = 'http://weather.news.qq.com/inc/dc';
+    my $prefix = 'http://weather.news.qq.com/inc/07_dc';
     my $suffix = '.htm';
     my $code = $cityMap{$city};
 
@@ -118,13 +118,12 @@ sub getWeatherReportByCity {
         }
         next if ($roi eq 0);
 
-        if (m#text_nbg1.gif.*?>([^>+])#si) {
+        if (m#EEEEEE.*?>([^>+])#si) {
             ++$day;
-        } elsif(m#^<tr><td height="20" align="center">(.*?)</td></tr>#si) {
+        } elsif(m#<td height="57" align="center" bgcolor="\#EEF3F8">(.*?)<br>(.*)#si) {
             $weather{$day}{'desc'} = $1; chomp $weather{$day}{'desc'};
-        } elsif(m#text_nbg3.gif.*?>([^>]+)#si) {
-            $weather{$day}{'temp'} = $1; chomp $weather{$day}{'temp'};
-        } elsif (m/text_nbg4.gif.*?>([^<]+)/si) {
+            $weather{$day}{'temp'} = $2; chomp $weather{$day}{'temp'};
+        } elsif (m/<br>([^<]+)<\/td>/si) {
             $weather{$day}{'wind'} = $1; chomp $weather{$day}{'wind'};
         }
     }
