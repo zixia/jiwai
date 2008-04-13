@@ -1642,14 +1642,13 @@ class JWRobotLingo {
 		$status_row = JWDB_Cache_Status::GetDbRowById( $vote_row['idStatus'] );
 		$user_row = JWUser::GetUserInfo( $status_row['idUser'] );
 		$items = JWSns::ParseVoteItem( $status_row['status'] );
-		$ochoice = abs(intval($choice)) || $ochoice = abs(strpos('0ABCDEFGHI',strtoupper($choice)));
+		($ochoice = abs(intval($choice))) || ($ochoice = abs(strpos('0ABCDEFGHI',strtoupper($choice))));
 		$value = $items[ $ochoice-1 ];
 
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
 			$user_row['nameScreen'], $choice, $value,
 		));
-		$sender_user_id = JWUser::GetUserInfo($status_row['idUser']);
-		JWMessage::Create( $sender_user_id, $device_user_id, $reply );
+		JWMessage::Create( $user_row['id'], $device_user_id, $reply );
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}

@@ -37,18 +37,23 @@ class JWNano{
 		$vote_form = '<FORM style="padding:10px; margin:5px; border:1px dashed #CCC;" ACTION="/wo/nano/vote" method="POST" id="vote_form_'.$id.'">';
 		$vote_form .= '<lable><strong>'.$status.'</strong></lable>';
 		$vote_form .= '<input type="hidden" name="id" value="'.$id.'"/>';
+		$vote_form .= '<input type="hidden" id="vote_choiced_'.$id.'" value="0"/>';
 		$vote_form .= '<UL style="margin:0px;">';
 
-		$rand_choice = rand(0,count($vote_items));
 		foreach ( $vote_items AS $key=>$item )
 		{
-			$r = intval(@$vote_result[$key+1]['total']);
-			$checked = ($key == $rand_choice) ? "checked" : null;
-			$vote_form .= '<li style="list-style:none; margin:5px 0;"><input type="radio" name="choice" '.$checked.' value="'.($key+1).'"/>'.$item.'［'.$r.'票］</li>';
+			$choice = $key+1;
+			$r = intval(@$vote_result[$choice]['total']);
+			$vote_form .=<<<_LI_
+<li style="list-style:none; margin:5px 0;">
+	<input onclick="$('vote_choiced_$id').value=$choice;" id="vote_choice_$id" type="radio" name="choice" value="$choice"/>
+	<label for="vote_choice_$id">$item</lable>［${r}票］
+</li>
+_LI_;
 		}
 
 		$vote_form .= '</UL>';
-		$vote_form .= '<input class="submitbutton" type="submit" value="投一票"/>';
+		$vote_form .= '<input class="submitbutton" onclick="return ($(\'vote_choiced_'.$id.'\').value > 0);" type="submit" value="投一票"/>';
 		$vote_form .= '</FORM>';
 
 		return $vote_form;
