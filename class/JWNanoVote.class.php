@@ -123,7 +123,7 @@ class JWNanoVote{
 	{
 		$mc_key = "NANO_VOTE_${status_id}_${user_id}";
 		$memcache = JWMemcache::Instance();
-		$v = $memcache->Get( $mc_key ) || $v = 0;
+		$v = intval($memcache->Get( $mc_key ));
 		return $v;
 	}
 
@@ -131,7 +131,7 @@ class JWNanoVote{
 	{
 		$mc_key = "NANO_VOTE_${status_id}_${user_id}";
 		$memcache = JWMemcache::Instance();
-		$v = $memcache->Get( $mc_key ) || $v = 0;
+		$v = intval($memcache->Get( $mc_key ));
 		$v += $plus;
 		$memcache->Set( $mc_key, $v, 0, $expire );
 		return true;
