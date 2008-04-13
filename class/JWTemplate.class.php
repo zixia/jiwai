@@ -734,6 +734,7 @@ _TAB_;
 		if ( null == $status )
 		{
 			$status_id = $statusRow['idStatus'];
+			$status_type = $statusRow['statusType'];
 			$status = $statusRow['status'];
 			$timeCreate = $statusRow['timeCreate'];
 			$sign = $statusRow['statusType'] == 'SIG' ? '签名' : '';
@@ -746,6 +747,8 @@ _TAB_;
 			$status = $status_result['status'];
 			$replyto = $status_result['replyto'];
 			$replytoname = $status_result['replytoname'];
+
+			$status = JWNano::NanoFormat($status_id, $status, $status_type);
 		}
 
 ?>
@@ -970,6 +973,8 @@ _HTML_;
 			$replyto = $formated_status['replyto'];
 			$replytoname = $formated_status['replytoname'];
 			$status = $formated_status['status'];
+
+			$status = JWNano::NanoFormat($status_id, $status, $statusRows[$status_id]['statusType']);
 
 			if ($n) { //分割线
 ?>

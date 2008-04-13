@@ -1648,8 +1648,8 @@ class JWRobotLingo {
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
 			$user_row['nameScreen'], $choice, $value,
 		));
-		$xiaodi = JWUser::GetUserInfo('叽歪小弟');
-		JWMessage::Create( $xiaodi['id'], $device_user_id, $reply );
+		$sender_user_id = JWUser::GetUserInfo($status_row['idUser']);
+		JWMessage::Create( $sender_user_id, $device_user_id, $reply );
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}

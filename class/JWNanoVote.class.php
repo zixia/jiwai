@@ -48,7 +48,7 @@ class JWNanoVote{
 			$r = array();
 			for( $i=1; $i<=$item_count; $i++)
 			{
-				$r[$i] = array();
+				$r[$i] = array('total'=>0,);
 			}
 		}
 
@@ -74,6 +74,7 @@ class JWNanoVote{
 			$r[$choice][$device] = 0;
 
 		$r[$choice][$device] += 1;
+		$r[$choice]['total'] += 1;
 
 		return self::DoVoteInfo( $status_id, $r );
 	}
@@ -92,7 +93,7 @@ class JWNanoVote{
 
 	static public function IsAvailable($vote_row, $user_id, $device='gtalk')
 	{
-		$now = date(DATE_RFC822);
+		$now = date('Y-m-d H:i:s');
 		if ( $now > $vote_row['timeExpire'] )
 			return self::FAIL_EXPIRE;
 
@@ -147,9 +148,9 @@ class JWNanoVote{
 		if ( false == self::IsVoteNumber($number) )
 			return false;
 
-		$timeCreate = date(DATE_RFC822);
+		$timeCreate = date('Y-m-d H:i:s');
 		$timeExpire = isset($options['expire']) ? $options['expire'] : self::$default_expire;
-		$timeExpire = date(DATE_RFC822, strtotime($timeCreate) + $timeExpire);
+		$timeExpire = date('Y-m-d H:i:s', strtotime($timeCreate) + $timeExpire);
 		
 		$deviceAllow = isset($options['deviceAllow']) ? $options['deviceAllow'] : self::$default_device_allow;
 		$limit = isset($options['limit']) ? $options['limit'] : self::$default_limit;
@@ -178,7 +179,7 @@ class JWNanoVote{
 			if ( 'VOTE' != strtoupper($status_row['statusType']) )
 				return array();
 
-			$timeExpire = date(DATE_RFC822, strtotime($status_row['timeCreate']) + self::$default_expire);
+			$timeExpire = date('Y-m-d H:i:s', strtotime($status_row['timeCreate']) + self::$default_expire);
 			$row = array(
 				'idStatus' => $id,
 				'notify' => self::$default_notify,
