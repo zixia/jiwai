@@ -6,10 +6,11 @@
 	<li ${$menu_nav=='userurl'?'class="selected"':''}><a href="/userurl.php">允许用户修改URL</a></li>
 </ul>
 
-<h2>会议管理</h2>
+<h2>扩展功能</h2>
 <ul>
 	<li ${$menu_nav=='conflist'?'class="selected"':''}><a href="/conflist.php">会议列表</a></li>
 	<li ${$menu_nav=='confsetting'?'class="selected"':''}><a href="/confsetting.php">修改会议设置</a></li>
+	<li ${$menu_nav=='votesetting'?'class="selected"':''}><a href="/votesetting.php">修改投票设置</a></li>
 </ul>
 
 <h2>更新管理</h2>
@@ -32,7 +33,6 @@
 <ul>
 	<li ${$menu_nav=='filterwords'?'class="selected"':''}><a href="/filterwords.php">禁忌词设置</a></li>
 	<li ${$menu_nav=='statusexam'?'class="selected"':''}><a href="/statusexam.php">待审核JiWai更新</a></li>
-	<li ${$menu_nav=='statusexamed'?'class="selected"':''}><a href="/statusexamed.php">已审核JiWai更新</a></li>
 </ul>
 
 <h2>系统运营</h2>

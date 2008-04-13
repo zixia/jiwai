@@ -47,7 +47,7 @@ class JWNano{
 			$vote_form .=<<<_LI_
 <li style="list-style:none; margin:5px 0;">
 	<input onclick="$('vote_choiced_$id').value=$choice;" id="vote_choice_${id}_${choice}" type="radio" name="choice" value="$choice"/>
-	<label for="vote_choice_${id}_${choice}">$item</lable>［${r}票］
+	<label for="vote_choice_${id}_${choice}">$item</label>［${r}票］
 </li>
 _LI_;
 		}

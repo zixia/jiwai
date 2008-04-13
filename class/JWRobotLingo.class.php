@@ -1627,10 +1627,11 @@ class JWRobotLingo {
 			$err_string = 'REPLY_VOTE_ERR';
 			JWNanoVote::FAIL_EXCEED == $flag && $err_string = 'REPLY_VOTE_ERR_EXCEED';
 			JWNanoVote::FAIL_EXPIRE == $flag && $err_string = 'REPLY_VOTE_ERR_EXPIRE';
+			JWNanoVote::FAIL_WAITIT == $flag && $err_string = 'REPLY_VOTE_ERR_WAITIT';
 			JWNanoVote::FAIL_DEVICE == $flag && $err_string = 'REPLY_VOTE_ERR_DEVICE';
 			JWNanoVote::FAIL_CHOICE == $flag && $err_string = 'REPLY_VOTE_ERR_CHOICE';
 			JWNanoVote::FAIL_NOVOTE == $flag && $err_string = 'REPLY_VOTE_ERR_NOVOTE';
-
+			
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, $err_string, array(
 				strtoupper($param_array[0]), strtoupper($type),
 			));

@@ -17,6 +17,7 @@ class JWNanoVote{
 	static private $default_limit = '20_1';
 
 	const FAIL_EXPIRE = -10;
+	const FAIL_WAITIT = -11;
 	const FAIL_DEVICE = -20;
 	const FAIL_EXCEED = -30;
 	const FAIL_CHOICE = -40;
@@ -64,7 +65,7 @@ class JWNanoVote{
 		if ( $choice > $item_count || 0==$choice )
 			return self::FAIL_CHOICE;
 
-		if ( 0 >= ($flag = self::IsAvailable($vote_row, $user_id, $device)) )
+		if ( 0 >= ($flag = self::IsAvailable($vote_row, $user_id, $device, true)) )
 			return $flag;
 
 		/**
@@ -91,11 +92,14 @@ class JWNanoVote{
 		return JWRuntimeInfo::Set($runtime_key, $r);
 	}
 
-	static public function IsAvailable($vote_row, $user_id, $device='gtalk')
+	static public function IsAvailable($vote_row, $user_id, $device='gtalk', $vote=false)
 	{
-		$now = date('Y-m-d H:i:s');
-		if ( $now > $vote_row['timeExpire'] )
+		$now = time();
+		if ( $now > strtotime($vote_row['timeExpire']) )
 			return self::FAIL_EXPIRE;
+
+		if ( $now < strtotime($vote_row['timeCreate']) )
+			return self::FAIL_WAITIT;
 
 		$device_cat = JWDevice::GetDeviceCategory( $device );
 		if ( false == in_array($device_cat, explode(',', $vote_row['deviceAllow']) ) )
@@ -108,7 +112,10 @@ class JWNanoVote{
 		if ( $v >= $count )
 			return self::FAIL_EXCEED;
 
-		self::SetLimitCount( $status_id, $user_id, $expire, 1 );
+		if ( true == $vote ) 
+		{
+			self::SetLimitCount( $status_id, $user_id, $expire, 1 );
+		}
 		return true;
 	}
 
@@ -130,7 +137,7 @@ class JWNanoVote{
 		return true;
 	}
 
-	static private function IsVoteNumber($number)
+	static public function IsVoteNumber($number)
 	{
 		if ( strlen($number) > 4 ) // less then 9999;
 			return false;
@@ -148,9 +155,10 @@ class JWNanoVote{
 		if ( false == self::IsVoteNumber($number) )
 			return false;
 
-		$timeCreate = date('Y-m-d H:i:s');
-		$timeExpire = isset($options['expire']) ? $options['expire'] : self::$default_expire;
-		$timeExpire = date('Y-m-d H:i:s', strtotime($timeCreate) + $timeExpire);
+		$timeCreate = isset($options['timeCreate']) ? $options['timeCreate'] : date('Y-m-d H:i:s');
+		$timeExpire = isset($options['timeExpire']) ? 
+				$options['timeExpire'] 
+				: date('Y-m-d H:i:s', strtotime($timeCreate)+self::$default_expire);
 		
 		$deviceAllow = isset($options['deviceAllow']) ? $options['deviceAllow'] : self::$default_device_allow;
 		$limit = isset($options['limit']) ? $options['limit'] : self::$default_limit;
@@ -176,11 +184,12 @@ class JWNanoVote{
 		{
 			$status_row = JWDB_Cache_Status::GetDbRowById( $id );
 
-			if ( 'VOTE' != strtoupper($status_row['statusType']) )
+			if ( empty($status_row) || 'VOTE' != strtoupper($status_row['statusType']) )
 				return array();
 
 			$timeExpire = date('Y-m-d H:i:s', strtotime($status_row['timeCreate']) + self::$default_expire);
 			$row = array(
+				'id' => 0,
 				'idStatus' => $id,
 				'notify' => self::$default_notify,
 				'timeCreate' => $status_row['timeCreate'],
