@@ -277,7 +277,7 @@ class JWNotify{
 			$message_send = array(
 				'im' => self::GetPrettySender($sender_user, $pretty_options)
 					. "[$$conference_user[nameScreen]]: $message[im]",
-				'sms' => self::GetPrettySender($conference_user, $pretty_options)
+				'sms' => self::GetPrettySender($sender_user, $pretty_options)
 					. "[$$conference_user[nameScreen]]: $message[sms]",
 			);
 			
