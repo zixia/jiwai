@@ -25,12 +25,14 @@ class JWNano{
 		return $status;
 	}
 	
-	static private function FormatVote( $id, $status )
+	static private function FormatVote( $id, $status, $device='web' )
 	{
 		if ( false == ($vote_items = JWSns::ParseVoteItem($status)) )
 			return $status;
 
 		$vote_result = JWNanoVote::DoVoteInfo( $id );
+		$vote_row = JWNanoVote::GetDbRowByNumber( $id );
+		$enabled =  (0 >= JWNanoVote::IsAvailable( $vote_row, $device, null, false )) ? 'disabled' : ''; 
 
 		$status = preg_replace( '/\s*{([^\{\}]+)\}\s*/iU', '', $status );
 
@@ -53,7 +55,7 @@ _LI_;
 		}
 
 		$vote_form .= '</UL>';
-		$vote_form .= '<input class="submitbutton" onclick="return ($(\'vote_choiced_'.$id.'\').value > 0);" type="submit" value="投一票"/>';
+		$vote_form .= '<input class="submitbutton" onclick="return ($(\'vote_choiced_'.$id.'\').value > 0);" type="submit" value="投一票" '.$enabled.'/>';
 		$vote_form .= '</FORM>';
 
 		return $vote_form;

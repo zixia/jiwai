@@ -36,7 +36,8 @@
 <option value="60" ${$vote['limit_p']==60?'selected':''}>1 小时</option>
 <option value="360" ${$vote['limit_p']==360?'selected':''}>6 小时</option>
 <option value="720" ${$vote['limit_p']==720?'selected':''}>12 小时</option>
-<option value="1440" ${$vote['limit_p']==1440?'selected':''}>1 天</option></select> 内，每用户允许投 <select name="vote[limit_l]">
+<option value="1440" ${$vote['limit_p']==1440?'selected':''}>1 天</option>
+<option value="0" ${$vote['limit_p']==0?'selected':''}>全程</option></select> 内，每用户允许投 <select name="vote[limit_l]">
 <option value="1" ${$vote['limit_l']==1?'selected':''}>1</option>
 <option value="5" ${$vote['limit_l']==5?'selected':''}>5</option>
 <option value="10" ${$vote['limit_l']==10?'selected':''}>10</option>

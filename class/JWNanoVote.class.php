@@ -65,7 +65,7 @@ class JWNanoVote{
 		if ( $choice > $item_count || 0==$choice )
 			return self::FAIL_CHOICE;
 
-		if ( 0 >= ($flag = self::IsAvailable($vote_row, $user_id, $device, true)) )
+		if ( 0 >= ($flag = self::IsAvailable($vote_row, $device, $user_id, true)) )
 			return $flag;
 
 		/**
@@ -92,7 +92,7 @@ class JWNanoVote{
 		return JWRuntimeInfo::Set($runtime_key, $r);
 	}
 
-	static public function IsAvailable($vote_row, $user_id, $device='gtalk', $vote=false)
+	static public function IsAvailable($vote_row, $device='gtalk', $user_id=null, $vote=false)
 	{
 		$now = time();
 		if ( $now > strtotime($vote_row['timeExpire']) )
@@ -104,6 +104,11 @@ class JWNanoVote{
 		$device_cat = JWDevice::GetDeviceCategory( $device );
 		if ( false == in_array($device_cat, explode(',', $vote_row['deviceAllow']) ) )
 			return self::FAIL_DEVICE;
+
+		if ( null == $user_id )
+		{
+			return true;
+		}
 
 		$status_id = $vote_row['idStatus'];
 		list($minute, $count) = explode('_', $vote_row['limit']);
