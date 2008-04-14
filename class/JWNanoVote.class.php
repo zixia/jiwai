@@ -44,8 +44,8 @@ class JWNanoVote{
 		if ( empty($r) )
 		{
 			$status_row = JWDB_Cache_Status::GetDbRowById( $vote_row['idStatus'] );
-			$vote_items = JWSns::ParseVoteItem( $status_row['raw_status'] );
-			$item_count = count($vote_items);
+			$vote_item = JWSns::ParseVoteItem( $status_row['raw_status'] );
+			$item_count = count($vote_item['items']);
 			$r = array();
 			for( $i=1; $i<=$item_count; $i++)
 			{

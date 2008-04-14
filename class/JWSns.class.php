@@ -949,13 +949,22 @@ class JWSns {
 
 	static public function ParseVoteItem( $status )
 	{
-		if ( false == preg_match_all( '/\s*{([^\{\}]+)\}\s*/iU', $status, $matches ) )
+		if ( false == preg_match( '/(\s*({([^\{\}]+)\}\s*)+)$/iU', $status, $matches ) )
+			return false;
+
+		$status = preg_replace( '/(\s*({([^\{\}]+)\}\s*)+)$/i', '', $status );
+		$matched = $matches[1];
+
+		if ( false == preg_match_all( '/\s*{([^\{\}]+)\}\s*/iU', $matched, $matches ) )
 			return false;
 		
 		if ( 1==count($matches[1]) )
 			return false;
 
-		return $matches[1]; 
+		return array( 
+			'status' => $status,
+			'items' => $matches[1],
+		);
 	}
 }
 ?>

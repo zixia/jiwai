@@ -214,12 +214,9 @@ class JWApi{
 						$_subXml .= self::ArrayToXml($value, $level+1, $subTagName);
 					}
 				}else{
-					$_subXml = self::ArrayToXml($value, $level+1 );
+					$_subXml = self::ArrayToXml($value, $level+1, $key);
 				}
-				$xml .= str_repeat("\t",$level)
-				."<$key>\n"
-				. $_subXml
-				. str_repeat("\t",$level)."</$key>\n";
+				$xml .= $_subXml;
 			} else { // 一层的 assoc array
 				$value = self::RemoveInvalidChar( $value );
 				if (htmlspecialchars($value)!=$value) {
@@ -252,6 +249,14 @@ class JWApi{
 			case 'direct_messages':
 				return 'direct_message';
 			default:
+				if ( is_numeric($default) ) 
+				{
+					$n = rtrim($key, 's');
+					if ( $n != $key )
+					{
+						return $n;
+					}
+				}
 				return $default;
 		}
 	}

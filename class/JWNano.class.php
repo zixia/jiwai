@@ -27,14 +27,15 @@ class JWNano{
 	
 	static private function FormatVote( $id, $status, $device='web' )
 	{
-		if ( false == ($vote_items = JWSns::ParseVoteItem($status)) )
+		if ( false == ($vote_item = JWSns::ParseVoteItem($status)) )
 			return $status;
 
 		$vote_result = JWNanoVote::DoVoteInfo( $id );
 		$vote_row = JWNanoVote::GetDbRowByNumber( $id );
 		$enabled =  (0 >= JWNanoVote::IsAvailable( $vote_row, $device, null, false )) ? 'disabled' : ''; 
 
-		$status = preg_replace( '/\s*{([^\{\}]+)\}\s*/iU', '', $status );
+		$status = $vote_item['status'];
+		$items = $vote_item['items'];
 
 		$vote_form = '<FORM style="padding:10px; margin:5px; border:1px dashed #CCC;" ACTION="/wo/nano/vote" method="POST" id="vote_form_'.$id.'">';
 		$vote_form .= '<lable><strong>'.$status.'</strong></lable>';
@@ -42,7 +43,7 @@ class JWNano{
 		$vote_form .= '<input type="hidden" id="vote_choiced_'.$id.'" value="0"/>';
 		$vote_form .= '<UL style="margin:0px;">';
 
-		foreach ( $vote_items AS $key=>$item )
+		foreach ( $items AS $key=>$item )
 		{
 			$choice = $key+1;
 			$r = intval(@$vote_result[$choice]['total']);

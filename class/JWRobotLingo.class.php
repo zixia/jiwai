@@ -1642,7 +1642,8 @@ class JWRobotLingo {
 		$vote_row = JWNanoVote::GetDbRowByNumber( $number );
 		$status_row = JWDB_Cache_Status::GetDbRowById( $vote_row['idStatus'] );
 		$user_row = JWUser::GetUserInfo( $status_row['idUser'] );
-		$items = JWSns::ParseVoteItem( $status_row['status'] );
+		$vote_item = JWSns::ParseVoteItem( $status_row['status'] );
+		$items = $vote_item['items'];
 		($ochoice = abs(intval($choice))) || ($ochoice = abs(strpos('0ABCDEFGHI',strtoupper($choice))));
 		$value = $items[ $ochoice-1 ];
 
