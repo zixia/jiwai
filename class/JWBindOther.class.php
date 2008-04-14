@@ -17,6 +17,9 @@ class JWBindOther {
 	const POST_TWITTER = 'http://twitter.com/statuses/update.json';
 	const POST_FANFOU = 'http://api.fanfou.com/statuses/update.json';
 
+    const DIRECT_MESSAGE_TWITTER = 'http://twitter.com/direct_messages/new.json';
+    const DIRECT_MESSAGE_FANFOU = 'http://api.fanfou.com/private_messages/new.json';
+
 	static public function Create( $user_id, $login_name='name', $login_pass='123456', $service='twitter', $options=array() ) 
 	{
 		if ( false==isset($options['sync_reply']) )
@@ -145,14 +148,25 @@ class JWBindOther {
 		$login_pass = $bind_other_row['loginPass'];
 		$login_name = $bind_other_row['loginName'];
 
-		switch( $service ) {
-			case 'twitter':
-				return self::PostTwitter( $login_name, $login_pass, $message );
-			break;
-			case 'fanfou':
-				return self::PostFanfou( $login_name, $login_pass, $message );
-			break;
-		}
+        if (@$bind_other_row['direct_message']) {
+            switch( $service ) {
+                case 'twitter':
+                    return self::DirectMessageTwitter( $bind_other_row['receiver'], $login_name, $login_pass, $message );
+                    break;
+                case 'fanfou':
+                    return self::DirectMessageFanfou( $bind_other_row['receiver'], $login_name, $login_pass, $message );
+                    break;
+            }
+        } else {
+            switch( $service ) {
+                case 'twitter':
+                    return self::PostTwitter( $login_name, $login_pass, $message );
+                    break;
+                case 'fanfou':
+                    return self::PostFanfou( $login_name, $login_pass, $message );
+                    break;
+            }
+        }
 		return false;
 	}
 
@@ -165,6 +179,16 @@ class JWBindOther {
 		$post_data = 'status='.urlEncode( $message );
 		return self::RealPostStatus( $login_name, $login_pass, $post_data, self::POST_FANFOU );
 	}
+
+    static public function DirectMessageTwitter( $receiver, $login_name='name', $login_pass='123456', $message=null ){
+        $post_data = 'user='.urlEncode( $receiver ).'&text='.urlEncode( $message );
+		return self::RealPostStatus( $login_name, $login_pass, $post_data, self::DIRECT_MESSAGE_TWITTER );
+    }
+
+    static public function DirectMessageFanfou( $receiver, $login_name='name', $login_pass='123456', $message=null ){
+        $post_data = 'user='.urlEncode( $receiver ).'&text='.urlEncode( $message );
+		return self::RealPostStatus( $login_name, $login_pass, $post_data, self::DIRECT_MESSAGE_FANFOU );
+    }
 
 	static public function RealPostStatus( $login_name='name', $login_pass='123456', $post_data=null, $post_url=null ) 
 	{
