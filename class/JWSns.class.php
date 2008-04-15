@@ -485,11 +485,14 @@ class JWSns {
 	{
 		/** deal filter **/
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
-		$quarantine_array = array($idUser, $status, $device, $timeCreate, $serverAddress, $options);
 		if ( false==isset($options['filter']) || $options['filter'] == true )
 		{
+			$options['filter'] = false;
+			$quarantine_array = array($idUser, $status, $device, $timeCreate, $serverAddress, $options);
 			if (self::FilterStatus( $status, $quarantine_array ) )
+			{
 				return -1;
+			}
 		}
 		/** end filter **/
 
@@ -939,7 +942,6 @@ class JWSns {
 		{
 			$type = JWQuarantineQueue::T_STATUS;
 			$user_id = $extra_info[0];
-			$extra_info[6]['filter'] = false;
 			$receiver_id = null;
 			JWQuarantineQueue::Create( $user_id, $receiver_id, $type, $extra_info );
 			return true;
