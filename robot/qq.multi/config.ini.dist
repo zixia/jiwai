@@ -1,0 +1,23 @@
+###############
+### server
+###############
+qq.server=sz2.tencent.com
+qq.udp=1
+
+##############
+### qq
+##############
+qq.no = 963688951, 964514179, 962689993, 961074068
+qq.pass = daodao19
+qq.avatar = 156
+
+##############
+### queue
+##############
+path.queue = /var/cache/tmpfs/jiwai/queue/qq
+
+##############
+### online status server
+##############
+online.port = 55020
+online.script = /home/robot/jiwai/robot/online/online_mo.php
