@@ -1650,7 +1650,13 @@ _HTML_;
     function sidebar_asus()
 	    {    
 			        $src = JWTemplate::GetAssetUrl('/images/adonjiwai.gif');
-					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a href="/asus2008/"><img src="'.$src.'" title="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)" alt="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)".></img></a></div>';
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/asus2008/"><img src="'.$src.'" title="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)" alt="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)".></img></a></div>';
+		}
+
+    function sidebar_ichina()
+	    {    
+			        $src = JWTemplate::GetAssetUrl('/images/jiwai_ichina.gif');
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/爱中国/"><img src="'.$src.'" title="[叽歪网]爱中国行动" alt="[叽歪网]爱中国行动".></img></a></div>';
 		}
 
 	/*
@@ -1671,6 +1677,7 @@ _HTML_;
 ?>
 
 <div id="sidebar" class="static">
+<? if('public_timeline'==$pageName)            self::sidebar_ichina();?>	
 <?php
 if ($menuList[0][0] == 'login') {
 	array_shift($menuList);

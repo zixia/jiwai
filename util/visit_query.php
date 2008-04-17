@@ -24,4 +24,8 @@ echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice('$device',10) 
 JWStatus::GetDaRenIdsByDevice("$device",10);
 echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice('$device',10) Done\n";
 }
+
+echo date("Y-m-d H:i:s", time()) . "JWStock::QueryAll() Start\n";
+JWStock::QueryAll();
+echo date("Y-m-d H:i:s", time()) . "JWStock::QueryAll() Done\n";
 ?>
