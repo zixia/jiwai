@@ -1,4 +1,4 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWTemplate::RedirectToUrl('sms');
+JWTemplate::RedirectToUrl('im');
 ?>

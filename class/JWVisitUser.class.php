@@ -96,6 +96,7 @@ class JWVisitUser
 		}
 
 		$memcache->Set($mc_key, $v+1);
+		self::Update();
 		return true;
 	}
 
@@ -130,7 +131,8 @@ class JWVisitUser
 		$year = date("Y");
 		$yesterday = date("Y-m-d H:i:s", mktime (0, 0, 0, $month, $day-1, $year));
 		$today = "$year-$month-$day";
-		$sql="select idUser,sum(count)as sum from VisitUser force index(IDX__VisitUser__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' group by idUser order by sum desc";
+		$sql="select idUser,count(1)as count from VisitUser force index(IDX__VisitUser__timeStamp) group by idUser order by count desc";
+		//$sql="select idUser,count(1)as count from VisitUser force index(IDX__VisitUser__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' group by idUser order by count desc";
 		if (!empty($limit)) $sql .= " limit $limit";
 		$row = JWDB_Cache::GetQueryResult($sql, true);
 

@@ -60,14 +60,12 @@ switch ( $func )
 		break;
 
 	case 'channel':
-		if ( 9259 == $tag_row['id'] )
-		{
+		if ( 9259 != $tag_row['id'] )
+			require_once(dirname(__FILE__) . "/channel.inc.php");
+		else
 			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
-			break;
-		}
-		require_once(dirname(__FILE__) . "/channel.inc.php");
+		JWVisitTag::Record($tag_id, JWRequest::GetRemoteIP());
 		break;
 
 }
-exit(0);
 ?>

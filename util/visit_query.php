@@ -28,4 +28,8 @@ echo date("Y-m-d H:i:s", time()) . "JWStatus::GetDaRenIdsByDevice('$device',10) 
 echo date("Y-m-d H:i:s", time()) . "JWStock::QueryAll() Start\n";
 JWStock::QueryAll();
 echo date("Y-m-d H:i:s", time()) . "JWStock::QueryAll() Done\n";
+
+echo date("Y-m-d H:i:s", time()) . "JWFund::QueryAll() Start\n";
+JWFund::QueryAll();
+echo date("Y-m-d H:i:s", time()) . "JWFund::QueryAll() Done\n";
 ?>

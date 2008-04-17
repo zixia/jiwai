@@ -16,6 +16,8 @@ class JWPlugins_Flickr
             return array(
                     'type' => 'html',
                     'html' => '<a href="' .$href. '" target="_blank" rel="nofollow"><img src="' .$src. '" title="Flickr图片" class="pic"/></a>',
+					'types' => 'picture',
+					'src' => $src,
                     );
         }
         return null;

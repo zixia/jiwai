@@ -48,6 +48,11 @@ $options = array(	 'title'		=> '随时随地记录与分享 / 叽歪网向导 4-
 ?>
 <head>
 <?php JWTemplate::html_head($options) ?>
+<script language="javascript">
+function $(el) {
+   return document.getElementById(el);
+}
+</script>
 </head>
 
 <body class="normal" id="front">

@@ -97,6 +97,7 @@ switch ( $func )
 			$status_id = intval($matches[1]);
 			$reply_status_id = intval(@$matches[2]);
 			user_status($page_user_id, $status_id, $reply_status_id);
+			JWVisitThread::Record($status_id, JWRequest::GetRemoteIP());
 		}
 		else
 		{

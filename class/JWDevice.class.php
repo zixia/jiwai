@@ -60,6 +60,9 @@ class JWDevice {
 
 	static public $nudgeOrderArray = 
 		array('msn','gtalk','skype','qq','yahoo','aol','sms','fetion','jabber');
+
+	static public $daRenArray =
+		array('sms', 'fetion', 'gtalk', 'msn', 'qq');
 	/**
 	 * Instance of this singleton class
 	 *

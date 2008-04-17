@@ -12,23 +12,29 @@ class JWPlugins_Video
 			$source = $info['source'];
 			$id = $info['id'];
 			$html = null;
+			$src = null;
 
 			switch( $source )
 			{
-				case 'tudou':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"> <object width="300" height="225"><param name="movie" value="'.$id.'"></param><param name="allowScriptAccess" value="always"></param><param name="wmode" value="opaque"></param><embed src="http://www.tudou.com/v/'.$id.'" type="application/x-shockwave-flash" width="300" height="225" allowFullScreen="true" wmode="opaque" allowScriptAccess="always"></embed></object></div>';
-				break;
-				case 'youku':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://player.youku.com/player.php/sid/'.$id.'" quality="high" width="300" height="248" align="middle" allowScriptAccess="sameDomain" wmode="opaque" type="application/x-shockwave-flash"></embed></div>';
-				break;
-				case 'youtube':
-					$html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/'.$id.'"></param><param name="wmode" value="opaque"></param><embed src="http://www.youtube.com/v/'.$id.'&rel=1" type="application/x-shockwave-flash" wmode="opaque" width="300" height="251"></embed></object></div>';
-				break;
+                case 'tudou':
+                    $html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://www.tudou.com/v/'.$id.'" quality="high" width="300" height="225" align="middle" allowScriptAccess="sameDomain" wmode="opaque" type="application/x-shockwave-flash"></embed></div>';
+                    $src = "http://www.tudou.com/v/$id";
+                break;
+                case 'youku':
+                    $html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://player.youku.com/player.php/sid/'.$id.'" quality="high" width="300" height="248" align="middle" allowScriptAccess="sameDomain" wmode="opaque" type="application/x-shockwave-flash"></embed></div>';
+                    $src = "http://player.youku.com/player.php/sid/$id";
+                break;
+                case 'youtube':
+                    $html = '<div style="border:1px solid #999999; background-color:#000000; padding:4px; width:300px; margin:5px 0 0px 0;"><embed src="http://www.youtube.com/v/'.$id.'" quality="high" width="300" height="251" align="middle" allowScriptAccess="sameDomain" wmode="opaque" type="application/x-shockwave-flash"></embed></div>';
+                    $src = "http://www.youtube.com/v/$id";
+                break;
 			}
 
 			return array(
 				'type' => 'html',
 				'html' => $html,
+				'types' => 'video',
+				'src' => $src,
 			);
 		}
 

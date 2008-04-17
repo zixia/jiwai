@@ -39,6 +39,8 @@ class JWPlugins
 			return array(
 				'type' => 'html',
 				'html' => '<a href="' .$photo_href. '" target="_blank"><img src="' .$photo_src. '" title="'.$photo_title.'" class="pic"/></a>',
+				'types' => 'picture',
+				'src' => $photo_src,
 			);
 
 		}

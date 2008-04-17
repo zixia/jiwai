@@ -140,7 +140,7 @@ class JWVisitThread
 		$sql="select idThread,sum(count)as sum from VisitThread force index(IDX__VisitThread__timeStamp) where type = '$type' group by idThread order by sum desc";
 		//$sql="select idThread,sum(count)as sum from VisitThread force index(IDX__VisitThread__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and type = '$type' group by idThread order by sum desc";
 		if (!empty($limit)) $sql .= " limit $limit";
-		$row = JWDB_Cache::GetQueryResult($sql, true);var_dump($row);
+		$row = JWDB_Cache::GetQueryResult($sql, true);
 
 		if(empty($row))
 			$row = array();

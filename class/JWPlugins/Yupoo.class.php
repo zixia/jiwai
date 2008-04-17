@@ -36,6 +36,8 @@ class JWPlugins_Yupoo{
 			return array(
 					'type' => 'html',
 					'html' => '<a href="' .$href. '" target="_blank"><img'.$src_size.' src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
+					'types' => 'picture',
+					'src' => $src,
 			);  
 		}
 		return null;

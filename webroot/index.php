@@ -51,6 +51,11 @@ $options = array(	 'title'		=> '随时随地记录与分享'
 ?>
 <head>
 <?php JWTemplate::html_head($options) ?>
+<script language="javascript">
+function $(el) {
+   return document.getElementById(el);
+}
+</script>
 </head>
 
 <body>
@@ -62,43 +67,36 @@ $options = array(	 'title'		=> '随时随地记录与分享'
     <div class="containerL">
     	<div id="jiwaiLogo"><a href="http://JiWai.de/">叽歪网</a></div>
 	    <div id="flash">&nbsp;<br />
-<!--影片中使用的 URL-->
-<!--影片中使用的文本-->
-<script language="javascript">
-	if (AC_FL_RunContent == 0) {
-		alert("此页需要 AC_RunActiveContent.js");
-	} else {
-		AC_FL_RunContent(
-			'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
-			'width', '520',
-			'height', '285',
-			'src', 'map',
-			'quality', 'high',
-			'pluginspage', 'http://www.macromedia.com/go/getflashplayer',
-			'align', 'middle',
-			'play', 'true',
-			'loop', 'true',
-			'scale', 'showall',
-			'wmode', 'transparent',
-			'devicefont', 'false',
-			'id', 'map',
-			'bgcolor', '#cccccc',
-			'name', 'map',
-			'menu', 'true',
-			'allowFullScreen', 'false',
-			'allowScriptAccess','sameDomain',
-			'movie', 'map',
-			'salign', ''
-			); //end AC code
-	}
+<script type="text/javascript">
+<?
+$focus_width = 520;
+$swf_height = 285;
+$swf_name = 'swf_jiwai';
+$swf_exp = JWTemplate::GetAssetUrl('/js/expressInstall.swf');
+$src = JWTemplate::GetAssetUrl('/js/map.swf');
+$bgcolor = '#cccccc';
+$flash_vars = null;
+?>
+	var flashvars ={
+	};
+	var paramvars ={
+		bgcolor : '<? echo $bgcolor;?>',
+		wmode : 'transparent'
+	};
+swfobject.embedSWF("<?php echo $src;?>", "<?echo $swf_name;?>", "<? echo $focus_width;?>", "<? echo $swf_height;?>", "9.0.0", "<?echo $swf_exp;?>", flashvars, paramvars);	
 </script>
-<noscript>
-	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="520" height="285" id="map" align="middle">
+	<object id="<?echo $swf_name;?>" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="<? echo $focus_width;?>" height="<?echo $swf_height;?>" align="middle">
 	<param name="allowScriptAccess" value="sameDomain" />
 	<param name="allowFullScreen" value="false" />
-	<param name="movie" value="<?php echo JWTemplate::GetAssetUrl('/js/map.swf');?>" /><param name="wmode" value="transparent" /><param name="quality" value="high" /><param name="bgcolor" value="#cccccc" />	<embed src="<?php echo JWTemplate::GetAssetUrl('/js/map.swf');?>" quality="high" bgcolor="#cccccc" width="520" height="285" name="map" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="transparent"/>
+	<param name="FlashVars" value="<?echo $flash_vars;?>" />
+	<param name="movie" value="<?php echo $src;?>" />
+	<param name="quality" value="high" />
+	<param name="bgcolor" value="<?echo $bgcolor;?>" />
+	<param name="wmode" value="transparent" />
+	<param name="width" value="<?echo $focus_width;?>" />
+	<param name="height" value="<?echo $swf_height;?>" />
+	<embed src="<?php echo $src;?>" quality="high" bgcolor="<?echo $bgcolor;?>" width="<? echo $focus_width;?>" height="<? echo $swf_height;?>" name="<?echo $swf_name;?>" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="transparent" FlashVars="<?echo $flash_vars;?>"/>
 	</object>
-</noscript>
 		</div>
 		<ul>
 		<?php
@@ -144,12 +142,12 @@ $options = array(	 'title'		=> '随时随地记录与分享'
 				  <input name="Submit" type="submit" class="closebutton" value="登 录" />
 			</form>
 				<li class="wid1"></li>
-				<li class="wid5"><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/account/create";?>">注册</a><a target="_blank" href="<?php echo JW_SRVNAME . "/public_timeline/";?>">随便逛逛</a><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/wizard/";?>">了解更多>></a></li>
+				<li class="wid5"><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/account/create";?>">注册</a><a target="_blank" href="<?php echo JW_SRVNAME . "/g/";?>">随便逛逛</a><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/wizard/";?>">了解更多>></a></li>
 			</ul>
 		</div>
 		<div id="search">
 		<?php $search_tips = "名字，Email，QQ号码，MSN帐号等";?>
-						<form id="f2" name="f2" method="get" action="<?php echo JW_SRVNAME . "/wo/search/users";?>" onsubmit="if($('search_user').value=='<?php echo $search_tips;?>')$('search_user').value='';$('f2').target='_blank';">
+						<form id="f2" target="_blank" name="f2" method="get" action="<?php echo JW_SRVNAME . "/wo/search/users";?>" onsubmit="if($('search_user').value=='<?php echo $search_tips;?>')$('search_user').value='';">
 		    <p align="center"><input type="text" id="search_user" class="searchBox1" onblur="this.className=this.className.replace(/\bfocus\b/,'');if(this.value=='')this.value='<?php echo $search_tips;?>';" onfocus="this.className+=' focus';if(this.value=='<?php echo $search_tips;?>')this.value=''" value="<?php echo $search_tips;?>" name="q"/>
 		    <p><input type="submit" class="submitbutton" value="寻找好友" />
 

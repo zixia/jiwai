@@ -115,7 +115,8 @@ class JWPagination {
 		return ($this->mCurrentPageNo - 1)*$this->mNumPerPage;
 	}
 
-    static public function BuildPageUrl( $url, $page=1){
+    static public function BuildPageUrl( $url=null, $page=1){
+		if(empty($url)) $url = $_SERVER['REQUEST_URI'];
         if( false === strpos( $url, 'page=' ) ){
             if( false === strpos( $url, '?' ) )
                 return $url . '?page=' . $page ;

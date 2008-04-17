@@ -54,7 +54,7 @@ _ERR_;
 		$quote2 = JWTemplate::GetAssetUrl('/images/quote2.gif');
 		if('N'==$device_user_info['isWebUser'])
 		{
-			$sql = "select * from Status where idUser=${device_row['idUser']} order by id desc limit 1";
+			$sql = "select * from Status where idUser=${device_row['idUser']} order by timeCreate desc limit 1";
 			$status_row = JWDB_Cache::GetQueryResult($sql);
 			$status = "${device_user_info['nameScreen']}: ${status_row['status']}";
 			if('sms'!=$type)

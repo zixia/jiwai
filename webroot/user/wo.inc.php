@@ -278,7 +278,7 @@ if ( empty($user_action_rows) )
 else
 	$user_action_row	= $user_action_rows[$page_user_info['id']];
 
-
+JWVisitUser::Record($page_user_id, JWRequest::GetRemoteIP());
 $arr_friend_list	= JWFollower::GetFollowingIds($page_user_info['id']);
 $arr_count_param	= JWSns::GetUserState($page_user_info['id']);
 

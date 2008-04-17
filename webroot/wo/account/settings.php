@@ -47,6 +47,7 @@ if ( isset($new_user_info) && $_POST['commit_u'] )
 		$arr_changed['nameUrl'] = $nameUrl;
 		$arr_changed['isUrlFixed'] = 'Y';
 	}
+	$nameUrl = empty($nameUrl) ? $user_info['nameUrl'] : $nameUrl;
 
 	$validate_item = array(
 		array( 'Email', $email),
