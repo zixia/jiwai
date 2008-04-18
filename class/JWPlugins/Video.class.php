@@ -3,6 +3,15 @@
 class JWPlugins_Video
 {
 
+    const REGEX_TUDOU = '#http://(?:www\.|)tudou\.com/programs/view/([a-zA-Z0-9_-]+)#i';
+    const REGEX_TUDOU_V = '#http://(?:www\.|)tudou\.com/v/([a-zA-Z0-9_-]+)#i';
+
+    const REGEX_YOUKU = '#http://(player\.youku\.com)/player.php/sid/([a-zA-Z0-9_-]+)#i';
+    const REGEX_YOUKU_V = '#http://(v\.youku\.com)/v\_show/id\_([a-zA-Z0-9_-]+)#i';
+
+    const REGEX_YOUTUBE = '#http://(?:www\.|)youtube\.com/watch\?v\=([a-zA-Z0-9_-]+)#i';
+    const REGEX_YOUTUBE_V = '#http://(?:www\.|)youtube\.com/v/([a-zA-Z0-9_-]+)#i';
+
 	static public function GetPluginResult( $string )
 	{
 		$info = self::GetPluginInfo( $string );
@@ -43,12 +52,12 @@ class JWPlugins_Video
 
     static public function Intercept( $string )
     {
-        if( preg_match('#http://(?:www\.|)tudou\.com/programs/view/([a-zA-Z0-9_-]+)#i', $string) 
-			|| preg_match('#http://(v\.youku\.com)/v\_show/id\_([a-zA-Z0-9]+)#i', $string ) 
-			|| preg_match('#http://(?:www\.|)youtube\.com/watch\?v\=([a-zA-Z0-9_]+)#i', $string )
-            || preg_match('#http://(?:www\.|)tudou\.com/v/([a-zA-Z0-9_-]+)#i', $string )
-            || preg_match('#http://(player\.youku\.com)/player.php/sid/([a-zA-Z0-9_]+)#i', $string )
-            || preg_match('#http://(?:www\.|)youtube\.com/v/([a-zA-Z0-9_]+)#i', $string ))
+        if( preg_match(self::REGEX_TUDOU, $string) 
+			|| preg_match(self::REGEX_YOUKU_V, $string ) 
+			|| preg_match(self::REGEX_YOUTUBE, $string )
+            || preg_match(self::REGEX_TUDOU_V, $string )
+            || preg_match(self::REGEX_YOUKU, $string )
+            || preg_match(self::REGEX_YOUTUBE_V, $string ))
         {
             return true;
         }
@@ -60,7 +69,7 @@ class JWPlugins_Video
 
     static public function GetPluginInfo( $string )
     {
-        if( preg_match('#http://(v\.youku\.com)/v\_show/id\_([a-zA-Z0-9]+)#i',$string,$matches))
+        if( preg_match(self::REGEX_YOUKU_V,$string,$matches))
         {
             return array(
                 'id' => $matches[2],
@@ -69,14 +78,14 @@ class JWPlugins_Video
             
         }
 
-        if( preg_match('#http://(?:www\.|)tudou\.com/programs/view/([a-zA-Z0-9_-]+)#i',$string,$matches))
+        if( preg_match(self::REGEX_TUDOU,$string,$matches))
         {
             return array(
                 'id' => $matches[1],
                 'source' => 'tudou',
             );
         }
-        if( preg_match('#http://(?:www\.|)youtube\.com/v/([a-zA-Z0-9_]+)#i',$string,$matches))
+        if( preg_match(self::REGEX_YOUTUBE_V,$string,$matches))
         {
             return array(
                 'id' => $matches[1],
@@ -84,7 +93,7 @@ class JWPlugins_Video
             );
 
         }
-        if( preg_match('#http://(?:www\.|)tudou\.com/v/([a-zA-Z0-9_-]+)#i',$string,$matches))
+        if( preg_match(self::REGEX_TUDOU_V,$string,$matches))
         {
             return array(
                 'id' => $matches[1],
@@ -92,7 +101,7 @@ class JWPlugins_Video
                 
             );
         }
-        if( preg_match('#http://(player\.youku\.com)/player.php/sid/([a-zA-Z0-9_]+)#i',$string,$matches))
+        if( preg_match(self::REGEX_YOUKU,$string,$matches))
         {
             return array(
                 'id' => $matches[2],
@@ -100,7 +109,7 @@ class JWPlugins_Video
             );
         }
 
-        if(preg_match('#http://(?:www\.|)youtube\.com/watch\?v\=([a-zA-Z0-9_]+)#i',$string,$matches))
+        if(preg_match(self::REGEX_YOUTUBE,$string,$matches))
         {
             return array(
                 'id' => $matches[1],
