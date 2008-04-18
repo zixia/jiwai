@@ -10,7 +10,13 @@ if( ! $pathParam ) {
 }
 
 $authed = false;
-@list($id, $type) = explode( ".", $pathParam, 2);
+$bound = strrpos($pathParam, '.');
+if ($bound === false) {
+	JWApi::OutHeader(406, true);
+} else {
+    $id = substr($pathParam, 0, $bound);
+    $type = substr($pathParam, $bound + 1);
+}
 if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
 }
