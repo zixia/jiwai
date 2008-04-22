@@ -100,7 +100,7 @@ class JWVisitTag
 	}
 
 	static public function Update()
-	{
+	{return false;
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyTagIds();
 		$idTags = $memcache->Get( $mc_key2 );

@@ -101,7 +101,7 @@ class JWVisitUser
 	}
 
 	static public function Update()
-	{
+	{return false;
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyUserIds();
 		$idUsers = $memcache->Get( $mc_key2 );

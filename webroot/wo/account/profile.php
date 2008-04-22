@@ -155,7 +155,7 @@ window.jiwai_init_hook_location_setting = function()
 		<input type="radio" id="user_gender0" name="user[gender]" value="female" <?php echo 'female'==$outInfo['gender']?'checked':'';?>><label for="user_gender0">女&nbsp;&nbsp;</label>
 		<input type="radio" id="user_gender2" name="user[gender]" value="secret" <?php echo 'secret'==$outInfo['gender']?'checked':'';?>><label for="user_gender2">保密</label>*/ ?>
 	<select id="user_gender" name="user[gender]" size="1" class="select seWidth">
-		  <option value="" selected>请选择</option>
+		  <option value="secret" selected>请选择</option>
 		  <option value="male" <?php echo 'male'==$outInfo['gender']?'selected':'';?>>男</option>
 		  <option value="female" <?php echo ('female'==$outInfo['gender'])?'selected':'';?>>女</option>
 		</select>
@@ -179,7 +179,7 @@ window.jiwai_init_hook_location_setting = function()
 	    <li class="box5">生日</li>
 		<li class="box6">
 		<select id="birthday_year" name="birthday[year]" size="1" class="select Width80">
-		  <option value="" selected>请选择</option>
+		  <option value="0000" selected>请选择</option>
 		<?php
 		$j = date("Y");
 		$k = $j-99;
@@ -193,7 +193,7 @@ window.jiwai_init_hook_location_setting = function()
 		?>
 		</select>
 		<select id="birthday_month" name="birthday[month]" size="1" class="select Width56">
-		  <option value="" selected>请选择</option>
+		  <option value="00" selected>请选择</option>
 		<?php
 		$j = 12;
 		$k = 1;
@@ -206,7 +206,7 @@ window.jiwai_init_hook_location_setting = function()
 		?>
 		</select>
 		<select id="birthday_day" name="birthday[day]" size="1" class="select Width56">
-		  <option value="" selected>请选择</option>
+		  <option value="00" selected>请选择</option>
 		<?php
 		$j = 31;
 		$k = 1;
@@ -223,7 +223,7 @@ window.jiwai_init_hook_location_setting = function()
 		<li class="box5">婚否</li>
 		<li class="box6">
 		<select id="user_marriage" name="user[marriage]" size="1" class="select seWidth">
-		  <option value="" selected>请选择</option>
+		  <option value="secret" selected>请选择</option>
 		  <option value="single" <?php echo 'single'==$outInfo['marriage']?'selected':'';?>>单身</option>
 		  <option value="had" <?php echo 'had'==$outInfo['marriage']?'selected':'';?>>有主</option>
 		  <option value="finding" <?php echo 'finding'==$outInfo['marriage']?'selected':'';?>>正找呢</option>

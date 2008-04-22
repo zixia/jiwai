@@ -77,6 +77,7 @@ _HTML_;
 		$asset_url_js_action 	= self::GetAssetUrl('/js/action.js' );
 		$asset_url_js_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.js' );
 		$asset_url_js_ac_content = self::GetAssetUrl('/js/AC_RunActiveContent.js');
+		$asset_js_swfobject = JWTemplate::GetAssetUrl('/js/swfobject.js');
 
 		$title = '叽歪 / ';
 		if ( empty($options['title']) )		$title .= '这一刻，你在做什么？';

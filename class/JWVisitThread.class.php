@@ -79,6 +79,8 @@ class JWVisitThread
 		$mc_key = self::GetCacheKeyByThreadId($idThread);
 		$memcache = JWMemcache::Instance();
 
+		return true;
+
 		$v = $memcache->Get( $mc_key );
 		if( !$v )
 		{
@@ -105,7 +107,7 @@ class JWVisitThread
 	}
 
 	static public function Update()
-	{
+	{return false;
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyThreadIds();
 		$idThreads = $memcache->Get( $mc_key2 );

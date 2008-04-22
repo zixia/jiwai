@@ -32,15 +32,26 @@ foreach ( $status_data['status_ids'] as $status_id )
 	}
 }
 
-$options = array(	 'title'		=> '叽歪广场'
-					,'keywords'		=> htmlspecialchars($keywords)
-					,'description'	=> htmlspecialchars($description)
-					,'author'		=> htmlspecialchars($keywords)
-					,'rss_url'		=> 'http://api.jiwai.de/status/public_timeline.rss'
-					,'rss_title'	=> '叽歪网 - 叽歪广场 [RSS]'
-					,'refresh_time'	=> '120'
-					,'refresh_url'	=> ''
-			);
+$options = array(
+	'title'		=> '叽歪广场'
+	,'keywords'		=> htmlspecialchars($keywords)
+	,'description'	=> htmlspecialchars($description)
+	,'author'		=> htmlspecialchars($keywords)
+	,'rss' => array(
+		array(
+			'url'		=> 'http://api.jiwai.de/statuses/public_timeline.rss',
+			'title'	=> '叽歪网 - 叽歪广场 [RSS]',
+			'type'		=> 'rss',
+		),
+		array(
+			'url'		=> 'http://api.jiwai.de/statuses/public_timeline.atom',
+			'title'	=> '叽歪网 - 叽歪广场 [ATOM]',
+			'type'		=> 'atom',
+		),
+	)
+	,'refresh_time'	=> '120'
+	,'refresh_url'	=> ''
+);
 
 ?>
 <head>

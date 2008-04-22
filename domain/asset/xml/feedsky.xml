@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeedFlareUnit>
+	<Catalog>
+		<Title>收藏到叽歪</Title>
+		<Description>收藏到叽歪</Description>
+		<Link href="http://asset.jiwai.de/xml/feedsky.xml" />
+		<Author>JiWai</Author>
+	</Catalog>
+	<FeedFlare>
+		<Text>收藏到叽歪</Text>
+		<Link href="http://jiwai.de/wo/share/s?u=${link}&amp;t=${title}" />
+	</FeedFlare>
+</FeedFlareUnit>

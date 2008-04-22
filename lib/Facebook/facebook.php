@@ -31,7 +31,7 @@
 // +---------------------------------------------------------------------------+
 //
 
-include_once $_SERVER['PHP_ROOT'].'/lib/api/client/php_1_1/facebookapi_php5_restlib.php';
+include_once dirname(__FILE__). '/facebookapi_php5_restlib.php';
 define('FACEBOOK_API_VALIDATION_ERROR', 1);
 class Facebook {
   public $api_client;
