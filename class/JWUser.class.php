@@ -264,7 +264,6 @@ _SQL_;
 		return self::GetDbRowById( $conference['idUser'] );
 	}
 
-
 	/*
 	 *	根据用户 nameScreen/email/idUser 返回用户信息
 	 * @param	string			value		condition val, could be array in the furture
@@ -273,7 +272,7 @@ _SQL_;
 	 * @return	array/string	user info 	array(string if one_item set). 
 											(or array of array if val is array in the furture).
 	 */
-	static public function GetUserInfo( $value=null, $one_item=null , $by_what=null, $guess_id=false)
+	static public function GetUserInfo( $value=null, $one_item=null , $by_what=null, $guess_id=false, $api=false)
 	{
 		if ( $by_what == null )
 		{
@@ -281,7 +280,7 @@ _SQL_;
 			{
 				$by_what = 'email';
 			}
-			else if ( preg_match('/^\d+$/',$value) )
+			else if ( !$api && preg_match('/^\d+$/',$value) )
 			{
 				$by_what = 'idUser';
 			}
@@ -1102,15 +1101,15 @@ _SQL_;
 	static public function GetPossibleName($nameInput, $email=null, $type=null)
 	{
 		# get rid of openid http
-		if ( preg_match('#^http://#',$nameInput) )
+		if ( preg_match('#^\w+://#',$nameInput) )
 		{
-			$user_name = preg_replace("#^http://#"	,""	,$nameInput);
-
+			$user_name = preg_replace("#^\w+://#"	,""	,$nameInput);
 			$user_name = preg_replace("#/.+#"	,""	,$user_name);
 			$user_name = preg_replace("#\.#"	,"_"	,$user_name);
 		}
 		else
-		{	$user_name = $nameInput;
+		{
+			$user_name = $nameInput;
 		}
 
 		// zixia: 7/24/07 我们允许中文用户名，允许用户名数字打头[IM注册]；
@@ -1137,12 +1136,17 @@ _SQL_;
 		}
 		
 
+		JWUnicode::unifyName($user_name);
 		/*
 		 *	处理名字过短的问题
 		 *	如果是3个字符的名字，那么通过
 		 *	如果是1、2个字符的名字，则随机填充到4个字符
 		 */
 		$user_name_len = strlen($user_name);
+		if ( 16<$user_name_len )
+		{
+			$user_name = substr($user_name, 0, 16);
+		}
 
 		if ( 3>$user_name_len )
 		{
@@ -1169,7 +1173,6 @@ _SQL_;
 					break;
 				}
 			}
-			
 		}
 
 		/*
