@@ -21,6 +21,16 @@ class JWPlugins
 		'Flickr',
 	);
 
+    static private $plugin_domains = array(
+            'yupoo.com' => 'Yupoo',
+            '8box.cn'   => 'Box',
+            'yobo.com'  => 'Yobo',
+            'flickr.com'    => 'Flickr',
+            'youtube.com'   => 'Video',
+            'youku.com'     => 'Video',
+            'tudou.com'     => 'Video',
+    );
+
 	static public function GetPluginResult( $status_row )
 	{
 		$status = $status_row['status'];
@@ -74,8 +84,11 @@ class JWPlugins
 
 			$url = 'http://' .$url_domain . $url_path;
 
-			foreach( self::$plugin_names as $plugin_name ) 
+            $url_domain_strip = strtolower($url_domain);
+            $url_domain_strip = preg_replace('/^.*?([^\.]+\.[^\.]+)$/', '${1}', $url_domain_strip);
+            if ( array_key_exists($url_domain_strip, self::$plugin_domains) )
 			{
+                $plugin_name = self::$plugin_domains[$url_domain_strip];
 				$callback = array('JWPlugins_' . $plugin_name , 'GetPluginResult');
 				if ( is_callable( $callback ) ) 
 				{
