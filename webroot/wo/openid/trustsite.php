@@ -3,27 +3,25 @@ require_once ('../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
-//die(var_dump($_REQUEST));
-
 $logined_user_id=JWLogin::GetCurrentUserId();
 
 if ( is_int($logined_user_id) )
 {
 	$param = $_REQUEST['pathParam'];
 
-	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
+	if ( preg_match('/\/(\d+)$/',$param,$match) ){
 		$trust_site_id = $match[1];
 
-		if ( ! JWOpenid_TrustSite::IsUserOwnId($logined_user_id, $trust_site_id) )
+		if ( ! JWOpenID_TrustSite::IsUserOwnId($logined_user_id, $trust_site_id) )
 		{
 			JWTemplate::RedirectTo404NotFound();
 		}
 
-		$trust_site_db_row = JWOpenid_TrustSite::GetDbRowById($trust_site_id);
+		$trust_site_db_row = JWOpenID_TrustSite::GetDbRowById($trust_site_id);
 
 		$trust_site_url = $trust_site_db_row['urlTrusted'];
 
-		if ( JWOpenid_TrustSite::Destroy($trust_site_id) )
+		if ( JWOpenID_TrustSite::Destroy($trust_site_id) )
 		{
 			$notice_html = <<<_HTML_
 $trust_site_url 删除成功。

@@ -3,8 +3,6 @@ require_once ('../../../jiwai.inc.php');
 
 JWLogin::MustLogined();
 
-//die(var_dump($_REQUEST));
-
 $logined_user_id=JWLogin::GetCurrentUserId();
 
 if ( $logined_user_id )
@@ -15,16 +13,16 @@ if ( $logined_user_id )
 	{
 		$openid_id = $match[1];
 
-		if ( ! JWOpenid::IsUserOwnId($logined_user_id, $openid_id) )
+		if ( ! JWOpenID::IsUserOwnId($logined_user_id, $openid_id) )
 		{
 			JWTemplate::RedirectTo404NotFound();
 		}
 		
-		$openid_db_row = JWOpenid::GetDbRowById($openid_id);
+		$openid_db_row = JWOpenID::GetDbRowById($openid_id);
 
 		$openid_url = $openid_db_row['urlOpenid'];
 
-		if ( JWOpenid::Destroy($openid_id) )
+		if ( JWOpenID::Destroy($openid_id) )
 		{
 			$notice_html = <<<_HTML_
 $openid_url 删除成功。

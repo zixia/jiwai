@@ -393,7 +393,6 @@ class Auth_OpenID_CheckAuthRequest extends Auth_OpenID_Request {
     function answer(&$signatory)
     {
         $is_valid = $signatory->verify($this->assoc_handle, $this->signed);
-error_log(__FILE__.':'.__LINE__." $is_valid \n");
 
         // Now invalidate that assoc_handle so it this checkAuth
         // message cannot be replayed.
@@ -1291,7 +1290,6 @@ class Auth_OpenID_Signatory {
     {
         $assoc = $this->getAssociation($assoc_handle, true);
         if (!$assoc) {
-error_log(__FILE__.':'.__LINE__." failed to get assoc with handle {$assoc_handle} \n");
             // oidutil.log("failed to get assoc with handle %r to verify sig %r"
             //             % (assoc_handle, sig))
             return false;

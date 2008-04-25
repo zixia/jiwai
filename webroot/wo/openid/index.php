@@ -6,16 +6,16 @@ JWLogin::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 
-$openid_id		= JWOpenid::GetIdByUserId($user_info['idUser']);
+$openid_id		= JWOpenID::GetIdByUserId($user_info['idUser']);
 
 if ( isset($_REQUEST['save']) )
 {
 	// 用户输入了自己的  openid，需要去验证
 	$openid_url = $_REQUEST['user']['openid'];
 
-	if ( JWOpenid::IsPossibleOpenid($openid_url) )
+	if ( JWOpenID::IsPossibleOpenID($openid_url) )
 	{
-		JWOpenid_Consumer::AuthRedirect($openid_url);
+		JWOpenID::AuthRedirect($openid_url);
 		// if it return, mean $username_or_email is not a valid openid url.
 	}
 	else
@@ -64,23 +64,23 @@ JWTemplate::html_head(array(
 <form id="f" action="" method="post" name="f">
    <div class="protection">
 	<div id="wtRegist" style="margin:30px 0 0 0; width:520px">
-        <ul>
+		<ul>
 
 <?php
 if ( true )
 {
 	// 用户自己的 openid
-	$openid_db_row 	= JWOpenid::GetDbRowById($openid_id);
+	$openid_db_row 	= JWOpenID::GetDbRowById($openid_id);
 	if(empty($openid_db_row))
 	{
 		$openid_url = JW_SRVNAME . "/${user_info['nameUrl']}/";
 	}
 	else
 	{
-		$openid_url 	= JWOpenid::GetFullUrl($openid_db_row['urlOpenid']);
+		$openid_url 	= JWOpenID::GetFullUrl($openid_db_row['urlOpenid']);
 	}
 	echo <<<_USER_OPENID_
-	    <li class="openIDbox">你现在的OpenID为：</li>
+		<li class="openIDbox">你现在的OpenID为：</li>
 		<li class="openIDbox1">&nbsp;$openid_url</li>
 		<li class="box9"></li>
 		<li class="openIDbox"><label for="user_openid">设置你自己的OpenID：</label></li>
@@ -92,8 +92,8 @@ if ( true )
 _USER_OPENID_;
 }
 
-$trusted_site_ids 		= JWOpenid_TrustSite::GetIdsByUserId($user_info['id']);
-$trusted_site_db_rows 	= JWOpenid_TrustSite::GetDbRowsByIds($trusted_site_ids);
+$trusted_site_ids 		= JWOpenID_TrustSite::GetIdsByUserId($user_info['id']);
+$trusted_site_db_rows 	= JWOpenID_TrustSite::GetDbRowsByIds($trusted_site_ids);
 
 if ( true)
 {
@@ -104,16 +104,16 @@ foreach ( $trusted_site_ids as $trusted_site_id )
 {
 	$db_row = $trusted_site_db_rows[$trusted_site_id];
 	echo <<<_HTML_
-<p><a href="/wo/trustsite/destroy/$db_row[id]">删除</a> <a href="$db_row[urlTrusted]" target="_blank"><strong>$db_row[urlTrusted]</strong></a></p>
+<p><a href="/wo/openid/trustsite/destroy/$db_row[id]">删除</a> <a href="$db_row[urlTrusted]" target="_blank"><strong>$db_row[urlTrusted]</strong></a></p>
 _HTML_;
 }
 }
 ?>
-    <p class="orange12"><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a>
-    <a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></p>
-       </div><!-- wtRegist -->
-	   </div>
-	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
+			<p class="orange12"><a href="http://openids.cn/openid-introduction/" target="_blank">什么是 OpenID？</a>
+			<a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a></p>
+		</div><!-- wtRegist -->
+		</div>
+		<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
   </form>
 </div><!-- lookfriend -->
 <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>

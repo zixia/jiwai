@@ -272,8 +272,9 @@ _SQL_;
 		}
 	}
 	static function DisplayError($s) {
-		echo $s;
-		die();
+		JWSession::SetInfo('error', $s);
+		header('Location /');
+		exit();
 	}
 }
 ?>
