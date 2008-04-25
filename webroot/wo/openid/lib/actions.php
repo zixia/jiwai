@@ -37,7 +37,15 @@ function action_default()
 	if ($request instanceof Auth_OpenID_ServerError) {
 		return redirect_render('http://'.$_SERVER['HTTP_HOST'].'/wo/openid/');
 	}
-	$trusted = JWOpenID_TrustSite::IsTrusted(getLoggedInUser('idUser'), $request->trust_root);
+	if ($request->trust_root) { //检测循环认证
+		if (preg_match('#\w+://[\w\-\.]+\.jiwai\.de/.*#i', $request->trust_root)) {
+			JWSession::SetInfo('error', '请求的OpenID不能是jiwai.de网址');
+			return redirect_render('http://'.$_SERVER['HTTP_HOST'].'/wo/openid/');
+		}
+		$trusted = JWOpenID_TrustSite::IsTrusted(getLoggedInUser('idUser'), $request->trust_root);
+	} else {
+		$trusted = false;
+	}
     if (in_array($request->mode,
                  array('checkid_immediate', 'checkid_setup'))) {
         if ($request->idSelect()) {
