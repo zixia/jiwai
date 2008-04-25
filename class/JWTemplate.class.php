@@ -938,20 +938,6 @@ _HTML_;
 			if ( false == isset($userRows[$user_id]) )
 				$userRows[$user_id] = JWUser::GetUserInfo( $user_id );
 				
-			$name_screen = $userRows[$user_id]['nameScreen'];
-			$name_url = $userRows[$user_id]['nameUrl'];
-			$name_full = $userRows[$user_id]['nameFull'];
-			$status = $statusRows[$status_id]['status'];
-			$timeCreate = $statusRows[$status_id]['timeCreate'];
-			$device = $statusRows[$status_id]['device'];
-			$idPartner = @$statusRows[$status_id]['idPartner'];
-			$reply_id = $statusRows[$status_id]['idStatusReplyTo'];
-			$sign = ( $statusRows[$status_id]['statusType'] == 'SIG' ) ?  '签名' : '';
-		
-			$reply_num = JWDB_Cache_Status::GetCountReply( $status_id );
-
-			$duration = JWStatus::GetTimeDesc($timeCreate);
-
 			if ( $statusRows[$status_id]['statusType'] == 'MMS' ) 
 			{
 				$photo_url = JWPicture::GetUserIconUrl( $statusRows[$status_id]['idUser'], 'thumb48' );
@@ -967,12 +953,7 @@ _HTML_;
 
 			$plugin_result = JWPlugins::GetPluginResult( $statusRows[$status_id] );
 	
-			$deviceName = JWDevice::GetNameFromType($device, @$statusRows[$status_id]['idPartner'] );
-
 			$formated_status = JWStatus::FormatStatus($statusRows[$status_id]);
-
-			$replyto = $formated_status['replyto'];
-			$replytoname = $formated_status['replytoname'];
 			$status = $formated_status['status'];
 
 			$status = JWNano::NanoFormat($status_id, $status, $statusRows[$status_id]['statusType']);
