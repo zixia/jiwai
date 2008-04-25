@@ -12,8 +12,21 @@ $idUser = JWApi::GetAuthedUserId();
 if( ! $idUser ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
+$user_info = JWUser::GetUserInfo($idUser);
 
-$result = array( 'verify' => array( 'authorized' => true, 'idUser' => $idUser ) );
+$result = array( 'verify' => array( 'authorized' => true, 'idUser' => $idUser, 'nameScreen' => $user_info['nameScreen'] ) );
+$openid_id = JWOpenID::GetIdByUserId($idUser);
+if ($openid_id) {
+	$openid_db_row  = JWOpenID::GetDbRowById($openid_id);
+	$openid_url     = JWOpenID::GetFullUrl($openid_db_row['urlOpenid']);
+} else {
+	if ($user_info['isUrlFixed']=='Y') {
+		$openid_url = JW_SRVNAME . "/${user_info['nameUrl']}/";
+	} else {
+		$openid_url = false;
+	}
+}
+if ($openid_url) $result['verify']['openid'] = $openid_url;
 
 switch($type){
 	case 'xml':

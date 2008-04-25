@@ -234,8 +234,9 @@ _SQL_;
 		// For OpenID 1, send a redirect.  For OpenID 2, use a Javascript
 		// form to send a POST request to the server.
 		if ($auth_request->shouldSendRedirect()) {
-			$redirect_url = $auth_request->redirectURL(getTrustRoot(),
-												   getReturnTo());
+			$redirect_url = $auth_request->redirectURL('http://'.$_SERVER['HTTP_HOST'], //Trust Root URL
+												   'http://'.$_SERVER['HTTP_HOST'].'/wo/openid/consumer/finish_auth' //Return To URL
+				);
 
 			// If the redirect URL can't be built, display an error
 			// message.
