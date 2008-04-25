@@ -40,10 +40,10 @@ class JWOAuth {
 		return JWDB::DelTableRow('OAuthToken', array('idUser'=>$idUser, 'key'=>$token_key));
 	}
 	static public function AuthorizeToken($idUser, $token_key) {
-			$token = JWMemcache::Instance('oauth')->Get('rt'.$token_key);
+			$token = JWMemcache::Instance('api')->Get('rt'.$token_key);
 			$token->authorized = true;
 			$token->idUser = $idUser;
-			$token = JWMemcache::Instance('oauth')->Set('rt'.$token_key, $token, 86400);
+			$token = JWMemcache::Instance('api')->Set('rt'.$token_key, $token, 86400);
 	}
 	static function GetConsumer($consumer_key) {/*{{{*/
 		$consumer_key = JWDB::EscapeString($consumer_key);
@@ -53,7 +53,7 @@ class JWOAuth {
 		return $arr;
 	}/*}}}*/
 	static function GetToken($key) {/*{{{*/
-		$token = JWMemcache::Instance('oauth')->Get('rt'.$key);
+		$token = JWMemcache::Instance('api')->Get('rt'.$key);
 		return $token;
 	}/*}}}*/
 	static function CheckToken($consumer_key, $token_key) {/*{{{*/
