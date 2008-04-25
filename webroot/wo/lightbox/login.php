@@ -7,9 +7,9 @@ if ( array_key_exists('username_or_email',$_POST) )
 	$username_or_email  = $_POST['username_or_email'];
 	$password			= $_POST['password'];
 
-	if ( JWOpenid::IsPossibleOpenid($username_or_email) )
+	if ( JWOpenID::IsPossibleOpenID($username_or_email) )
 	{
-		JWOpenid_Consumer::AuthRedirect($username_or_email);
+		JWOpenID::AuthRedirect($username_or_email);
 		// if it return, mean $username_or_email is not a valid openid url.
 	}
 
