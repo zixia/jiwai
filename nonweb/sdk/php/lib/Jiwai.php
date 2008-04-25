@@ -1,10 +1,10 @@
 <?php
 require_once 'OAuth.php';
 
-define('JIWAI_API_HOST', 'api.beta.jiwai.de');
+define('JIWAI_API_HOST', 'api.jiwai.de');
 define('JIWAI_OAUTH_REQUEST_TOKEN_URL', 'http://'.JIWAI_API_HOST.'/oauth/request_token');
 define('JIWAI_OAUTH_ACCESS_TOKEN_URL', 'http://'.JIWAI_API_HOST.'/oauth/access_token');
-define('JIWAI_OAUTH_AUTHORIZE_URL', 'http://beta.jiwai.de/wo/oauth/authorize');
+define('JIWAI_OAUTH_AUTHORIZE_URL', 'http://jiwai.de/wo/oauth/authorize');
 
 interface Jiwai_Auth {
 	function sendRequest($url, $param=array(), $method='GET');
@@ -124,6 +124,10 @@ class Jiwai {
 			($since ? '?since='.urlencode($since) : ''), 
 			array(
 			), 'GET');
+		return $ret ? json_decode($ret) : false;
+	}
+	function account() {
+		$ret = $this->auth->sendRequest('/account/verify_credentials.json', array(), 'GET');
 		return $ret ? json_decode($ret) : false;
 	}
 }

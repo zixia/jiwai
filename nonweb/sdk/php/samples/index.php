@@ -81,6 +81,11 @@ if (!empty($_POST['action'])) switch ($_POST['action']) {
 }
 ?>
 <hr />
+你好,
+<?php
+$account = $api->account();
+echo $account->verify->nameScreen;
+?>
 <form method="post">
 	<input type="hidden" name="action" value="update" />
 	<input type="text" name="status" value="hehe" /> 
