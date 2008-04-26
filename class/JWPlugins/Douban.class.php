@@ -1,7 +1,5 @@
 <?php
 
-include_once('/opt/jiwai.de/jiwai.inc.php');
-
 class JWPlugins_Douban {
 
     static private $apikey = '91395a28d87577ecb3ac0e7a896067c4';
@@ -13,6 +11,7 @@ class JWPlugins_Douban {
             'book'  => 'http://api.douban.com/book/subject/',
             'movie' => 'http://api.douban.com/movie/subject/',
             'music' => 'http://api.douban.com/music/subject/',
+            'review'=> 'http://api.douban.com/review/',
             'people'=> 'http://api.douban.com/people/',
             );
 
@@ -54,20 +53,36 @@ class JWPlugins_Douban {
     static public function GetPluginResult( $string ) {
         $info = self::GetPluginInfo( $string );
         $summary = @$info['summary']
-            ? $info['summary']
+            ? htmlspecialchars($info['summary'])
             : '暂无介绍';
         $link = $info['link'];
-        $title = $info['title'];
+        $title = htmlspecialchars($info['title']);
         $image = $info['image'];
-        $author = implode(', ', $info['author']);
+        $author = @$info['author']
+            ? implode(', ', $info['author'])
+            : '叽歪不知道是谁';
 
         if ( $info ) {
-            $html = <<<__DOUBAN__
-            <div style="padding:10px; margin:5px; border:1px dashed #CCC;">
-            <p class="t-text">$title ($author)</p>
-            <p class="t-text">$summary</p>
-            <a href="$link" targe="_blank"><img src="$image" title="DoubanApi" class="pic"/></a>
-            </div>
+            if (empty($image))
+                $html = <<<__DOUBAN__
+                    <div style="padding:10px; margin:5px; border:1px dashed #CCC;">
+                    <p class="t-text">$title</p>
+                    <p class="t-text">$summary</p>
+                    </div>
+__DOUBAN__;
+            else 
+                $html = <<<__DOUBAN__
+                    <div style="padding:10px; margin:5px; border:1px dashed #CCC;">
+                    <table><tr>
+                    <td valign="top">
+                    <p class="t-text">$title ($author)</p>
+                    <p class="t-text">$summary</p>
+                    </td>
+                    <td valign="top" halign="right">
+                    <a href="$link" targe="_blank"><img src="$image" title="$title" alt="$title"/></a>
+                    </td>
+                    </tr></table>
+                    </div>
 __DOUBAN__;
             return array(
                     'type' => 'html',
@@ -77,13 +92,14 @@ __DOUBAN__;
     }
 
     static public function GetPluginInfo( $string ) {
-        if (false == preg_match('#\.?douban\.com/subject/(\d+)#', $string, $matches) )
+        if (false == preg_match('#\.?douban\.com/(\w+)/([\w\d]+)#', $string, $matches) )
             return false;
 
         $url = $matches[0];
-        $id = $matches[1];
+        $cat = $matches[1];
+        $id = $matches[2];
 
-        $mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWPlugins_Douban', 'GetDoubanInfo'), array( $id ) );
+        $mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWPlugins_Douban', 'GetDoubanInfo'), array( $cat, $id ) );
         $memcache = JWMemcache::Instance();
 
         $v = $memcache -> Get( $mc_key );
@@ -99,7 +115,7 @@ __DOUBAN__;
             return $v;
         }
 
-        $v = self::GetDoubanInfoByApi( $id );
+        $v = self::GetDoubanInfoByApi( $id, $cat );
         if( false == empty( $v ) )
         {
             JWUrlMap::Create( null, $url, $v, array( 'type'=>'mix', ) );
@@ -109,15 +125,15 @@ __DOUBAN__;
         
     }
 
-    static public function GetDoubanInfoByApi( $id ) {
-        $cat = $assoc =  null;
-        if (self::validate($id, 'isbn')) {
+    static public function GetDoubanInfoByApi( $id, $cat ) {
+        $assoc =  null;
+        if ('isbn' == $cat || self::validate($id, 'isbn')) {
             $cat = 'isbn';
             $url = self::generateApiUrl($id, $cat);
             $assoc = self::renderOutput($url, $cat);
             $url = $assoc['id']['$t'].'?apikey='.self::$apikey.'&alt=json';
             $assoc = self::renderOutput($url);
-        } else {
+        } elseif ('subject' == $cat) {
             foreach (self::$guess as $maybe) {
                 $cat = $maybe;
                 $url = self::generateApiUrl($id, $cat);
@@ -125,6 +141,9 @@ __DOUBAN__;
                 $assoc = self::renderOutput($url, $cat);
                 if (is_array($assoc)) break;
             }
+        } else {
+            $url = self::generateApiUrl($id, $cat);
+            $assoc = self::renderOutput($url, $cat);
         }
 
         if (!is_array($assoc)) return false;

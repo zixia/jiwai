@@ -61,7 +61,7 @@ class JWPlugins
             $callback = array('JWPlugins_Douban', 'GetPluginResult');
             if ( is_callable( $callback ) ) 
             {
-                $result = call_user_func( $callback, '.douban.com/subject/' . $matches[1] );
+                $result = call_user_func( $callback, '.douban.com/isbn/' . $matches[1] );
                 if ( $result ) 
                 {
                     return $result;
