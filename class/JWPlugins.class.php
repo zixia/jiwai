@@ -19,6 +19,7 @@ class JWPlugins
 		'Yobo',
 		'Video',
 		'Flickr',
+        'Douban',
 	);
 
     static private $plugin_domains = array(
@@ -29,6 +30,7 @@ class JWPlugins
             'youtube.com'   => 'Video',
             'youku.com'     => 'Video',
             'tudou.com'     => 'Video',
+            'douban.com'    => 'Douban',
     );
 
 	static public function GetPluginResult( $status_row )
@@ -54,6 +56,18 @@ class JWPlugins
 			);
 
 		}
+        else if ( preg_match('/ISBN[^\w\d]*(\d{13})/i', $status, $matches) )
+        {
+            $callback = array('JWPlugins_Douban', 'GetPluginResult');
+            if ( is_callable( $callback ) ) 
+            {
+                $result = call_user_func( $callback, '.douban.com/subject/' . $matches[1] );
+                if ( $result ) 
+                {
+                    return $result;
+                }
+            }
+        }
 		else if ( preg_match(	'#'
 					// head_str
 					. '^(.*?)'
