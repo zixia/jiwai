@@ -20,6 +20,7 @@ class JWPlugins
 		'Video',
 		'Flickr',
         'Douban',
+        'Imdb',
 	);
 
     static private $plugin_domains = array(
@@ -31,6 +32,7 @@ class JWPlugins
             'youku.com'     => 'Video',
             'tudou.com'     => 'Video',
             'douban.com'    => 'Douban',
+            'imdb.com'  => 'Imdb',
     );
 
 	static public function GetPluginResult( $status_row )
@@ -56,12 +58,24 @@ class JWPlugins
 			);
 
 		}
-        else if ( preg_match('/ISBN[^\w\d]*(\d{13})/i', $status, $matches) )
+        else if ( preg_match('/isbn[^\w\d]*(\d{13})/i', $status, $matches) )
         {
             $callback = array('JWPlugins_Douban', 'GetPluginResult');
             if ( is_callable( $callback ) ) 
             {
                 $result = call_user_func( $callback, '.douban.com/isbn/' . $matches[1] );
+                if ( $result ) 
+                {
+                    return $result;
+                }
+            }
+        }
+        else if ( preg_match('/imdb[^\w\d]*(tt\d{7})/i', $status, $matches) )
+        {
+            $callback = array('JWPlugins_Imdb', 'GetPluginResult');
+            if ( is_callable( $callback ) ) 
+            {
+                $result = call_user_func( $callback, '.imdb.com/title/' . $matches[1] );
                 if ( $result ) 
                 {
                     return $result;
