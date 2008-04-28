@@ -103,7 +103,7 @@ class JWOpenID {
 
 	static public function IsPossibleOpenID($usernameOrEmail)
 	{
-		if (preg_match('#^\w+://[\w\.\-]+jiwai\.de#i', $usernameOrEmail)) return false;
+		if (preg_match('#^\w+://[^/]+jiwai\.de/#i', $usernameOrEmail)) return false;
 		if (preg_match('#^\w+://#', $usernameOrEmail)) return true;
 		return false;
 	}
