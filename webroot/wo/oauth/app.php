@@ -115,7 +115,12 @@ foreach ($r as $a) {
 f = new Fx.Slide('f');
 f.hide();
 </script>
-<p><a href="http://help.jiwai.de/">更多开发者信息</a></p>
+<pre>
+REQUEST TOKEN URL	http://api.jiwai.de/oauth/request_token
+ACCESS TOKEN URL	http://api.jiwai.de/oauth/access_token
+AUTHORIZE URL		http://jiwai.de/wo/oauth/authorize
+</pre>
+<p><!-- a href="http://help.jiwai.de/">更多开发者信息</a --> <a href="http://groups.google.com/group/jiwai-development-talk/">开发讨论区</a></p>
        </div>
 </div><!-- lookfriend -->
 <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
