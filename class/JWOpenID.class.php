@@ -102,12 +102,9 @@ class JWOpenID {
 	}
 
 	static public function IsPossibleOpenID($usernameOrEmail)
-	{ //FIXME: xxx.xx could be a username
-		if ( preg_match('#jiwai\.de#', $usernameOrEmail)) return false;
-		if ( preg_match('#\.#', $usernameOrEmail)			// 有 . 则可能是域名
-				&& !preg_match('#@#',$usernameOrEmail) )	//	排除 @ ，代表 email
-			return true;
-	
+	{
+		if (preg_match('#^\w+://[\w\.\-]+jiwai\.de#i', $usernameOrEmail)) return false;
+		if (preg_match('#^\w+://#', $usernameOrEmail)) return true;
 		return false;
 	}
 
@@ -274,7 +271,7 @@ _SQL_;
 	}
 	static function DisplayError($s) {
 		JWSession::SetInfo('error', $s);
-		header('Location /');
+		header('Location: /wo/login');
 		exit();
 	}
 }
