@@ -8,6 +8,7 @@ class JWPlugins_Douban {
 
     static private $apiurl = array(
             'isbn'  => 'http://api.douban.com/book/subjects?q=',
+            'imdb'  => 'http://api.douban.com/movie/subjects?q=',
             'book'  => 'http://api.douban.com/book/subject/',
             'movie' => 'http://api.douban.com/movie/subject/',
             'music' => 'http://api.douban.com/music/subject/',
@@ -17,17 +18,17 @@ class JWPlugins_Douban {
 
     static private function generateApiUrl($id, $cat) {
         if (! array_key_exists($cat, self::$apiurl)) return null;
-        if ('isbn' == $cat)
+        if ('isbn' == $cat || 'imdb' == $cat)
             return self::$apiurl[$cat].urlencode($id).'&apikey='.self::$apikey.'&alt=json';
         return self::$apiurl[$cat].urlencode($id).'?apikey='.self::$apikey.'&alt=json';
     }
 
-    static private function renderOutput($url, $cat) {
+    static private function renderOutput($url, $cat = 'subject') {
         $raw = @file_get_contents($url);
         $ret = json_decode($raw, true);
         if (! is_array($ret))
             return null;
-        if ('isbn' == $cat)
+        if ('isbn' == $cat || 'imdb' == $cat)
             return $ret['entry'][0];
         return $ret;
     }
@@ -36,12 +37,15 @@ class JWPlugins_Douban {
         $regex_isbn = '/^\d{13}$/';
         $regex_isbn_10 = '/^\d{10}$/';
         $regex_subject = '/^\d+$/';
+        $regex_imdb = '/^tt\d+$/';
 
         switch ($cat) {
             case 'isbn' :
                 if (preg_match($regex_isbn, $id)) return true;
             case 'isbn_10' :
                 return preg_match($regex_isbn_10, $id);
+            case 'imdb' :
+                return preg_match($regex_imdb, $id);
             case 'subject' :
             default :
                 return preg_match($regex_subject, $id);
@@ -73,8 +77,8 @@ __DOUBAN__;
             else 
                 $html = <<<__DOUBAN__
                     <div style="padding:10px; margin:5px; border:1px dashed #CCC;">
-                    <table><tr>
-                    <td valign="top">
+                    <table width="100%"><tr>
+                    <td valign="top" halign="left">
                     <p class="t-text">$title ($author)</p>
                     <p class="t-text">$summary</p>
                     </td>
@@ -89,6 +93,7 @@ __DOUBAN__;
                     'html' => $html,
                     );
 		}
+        return null;
     }
 
     static public function GetPluginInfo( $string ) {
@@ -129,6 +134,12 @@ __DOUBAN__;
         $assoc =  null;
         if ('isbn' == $cat || self::validate($id, 'isbn')) {
             $cat = 'isbn';
+            $url = self::generateApiUrl($id, $cat);
+            $assoc = self::renderOutput($url, $cat);
+            $url = $assoc['id']['$t'].'?apikey='.self::$apikey.'&alt=json';
+            $assoc = self::renderOutput($url);
+        } elseif('imdb' == $cat || self::validate($id, 'imdb')) {
+            $cat = 'imdb';
             $url = self::generateApiUrl($id, $cat);
             $assoc = self::renderOutput($url, $cat);
             $url = $assoc['id']['$t'].'?apikey='.self::$apikey.'&alt=json';
