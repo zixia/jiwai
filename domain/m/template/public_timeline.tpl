@@ -1,4 +1,5 @@
 <!--{include header}-->
+<!--{include wo/update}-->
 
 <h2>叽歪广场</h2>
 <ul>
@@ -15,6 +16,7 @@
 </li>
 <!--{/foreach}-->
 </ul>
+<!--{include wo/update}-->
 
 <!--{include shortcut}-->
 <!--{include footer}-->
