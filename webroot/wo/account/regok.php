@@ -12,7 +12,6 @@ JWLogin::MustLogined();
 
 $user_info		= JWUser::GetCurrentUserInfo();
 $has_photo		= !empty($user_info['idPicture']);
-$protected	= $user_info['protected'] == 'Y';
 
  if ( $has_photo ){
     // we have photo
@@ -26,12 +25,6 @@ if ( isset($_POST['save_x'] ) )
 {
     if(!empty($_POST['skip']))
 	JWTemplate::RedirectToUrl("/wo/account/regok2");
-
-    $protected = $_POST['protected'];
-
-    JWUser::Modify( $user_info['id'], array(
-		'protected' => $protected,
-	    ));
 
 	$file_info = @$_FILES['profile_image'];
 	if ( isset($file_info) 
