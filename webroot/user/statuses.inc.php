@@ -57,7 +57,7 @@ JWTemplate::html_head($head_options) ;
 <div id="content">
 <div id="wrapper">
 
-<?php JWTemplate::StatusHead( $page_user_info, $status_info, $options=array('replyLinkClick'=>false) ); ?>	
+<?php JWTemplate::StatusHead( $page_user_info, $status_info, $options=array('replyLinkClick'=>false, 'isMyPages'=>false) ); ?>	
 
 </div><!-- wrapper -->
 </div><!-- content -->

@@ -12,7 +12,7 @@ if( $tag_name )
 {
 	if ( false ==JWUnicode::unifyName( $tag_name ) )
 	{ 
-		JWTemplate::RedirectToUrl( '/t/' . urlEncode($tag_name) .'/' );
+		JWTemplate::RedirectToUrl( '/t/' . urlEncode($tag_name) . $pathParam );
 	}
 
 	$tag_id = JWTag::GetIdByNameOrCreate( $tag_name );

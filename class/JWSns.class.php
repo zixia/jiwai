@@ -880,6 +880,9 @@ class JWSns {
 
 	static public function IsProtectedStatus( $status_row, $action_user_id )
 	{
+		if( JWUser::IsAdmin($action_user_id ))
+			return false;
+
 		if ( empty( $status_row ) )
 			return false;
 
@@ -909,6 +912,9 @@ class JWSns {
 
 	static public function IsProtected( $user_row, $action_user_id )
 	{
+		if( JWUser::IsAdmin($action_user_id ))
+			return false;
+
 		if ( empty( $user_row ) )
 			return false;
 		

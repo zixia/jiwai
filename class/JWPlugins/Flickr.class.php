@@ -36,6 +36,7 @@ class JWPlugins_Flickr
         $mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWPlugins_Flickr', 'GetPhotoInfo'), array( $id ) );
         $memcache = JWMemcache::Instance();
 
+            $memcache -> set( $mc_key, array() );
         $v = $memcache -> Get( $mc_key );
 
 
@@ -82,13 +83,14 @@ class JWPlugins_Flickr
 
         $rsp_obj = @unserialize( $rsp );
 
-	if ( null==$rsp_obj || 'fail'==@$rsp_obj['stat'] || 0==@$rsp_obj['photo']['visibility']['isplublic'] )
+	if ( null==$rsp_obj || 'fail'==@$rsp_obj['stat'] || 0==@$rsp_obj['photo']['visibility']['ispublic'] || 2>=@$rsp_obj['photo']['farm'] )
 		return array();
 
         return array(
             'photo_server' => $rsp_obj['photo']['server'],
             'photo_id'  => $rsp_obj['photo']['id'],
             'photo_secret' => $rsp_obj['photo']['secret'],
+            'photo_farm' => $rsp_obj['photo']['farm'],
         );
     }
 
@@ -96,7 +98,7 @@ class JWPlugins_Flickr
     {
         if( false == empty( $photo_info ) )
         {
-            return 'http://farm3.static.flickr.com/'.$photo_info['photo_server'].'/'.$photo_info['photo_id'].'_'.$photo_info['photo_secret'].'_m.jpg';
+            return 'http://farm'.$photo_info['photo_farm'].'.static.flickr.com/'.$photo_info['photo_server'].'/'.$photo_info['photo_id'].'_'.$photo_info['photo_secret'].'_m.jpg';
         }
         else
             return null;

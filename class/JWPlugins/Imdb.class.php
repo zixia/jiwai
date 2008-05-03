@@ -11,6 +11,7 @@ class JWPlugins_Imdb {
         $image = $info['image'];
         $author = implode(',', $info['author']);
         $extra = @$info['extra'];
+	$tag = null;
 
         if ( is_array($extra) ) {
             if (array_key_exists('country', $extra))

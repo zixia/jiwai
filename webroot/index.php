@@ -142,7 +142,7 @@ swfobject.embedSWF("<?php echo $src;?>", "<?echo $swf_name;?>", "<? echo $focus_
 				  <input name="Submit" type="submit" class="closebutton" value="登 录" />
 			</form>
 				<li class="wid1"></li>
-				<li class="wid5"><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/account/create";?>">注册</a><a target="_blank" href="<?php echo JW_SRVNAME . "/g/";?>">随便逛逛</a><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/wizard/";?>">了解更多>></a></li>
+				<li class="wid5"><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/account/create";?>">注册</a><a target="_blank" href="<?php echo JW_SRVNAME . "/public_timeline/";?>">随便逛逛</a><a target="_blank" href="<?php echo JW_SRVNAME . "/wo/wizard/";?>">了解更多>></a></li>
 			</ul>
 		</div>
 		<div id="search">

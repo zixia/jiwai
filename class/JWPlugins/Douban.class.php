@@ -170,7 +170,8 @@ __DOUBAN__;
         }
 
         foreach ($assoc['author'] as $node) {
-            $author[] = $node['name']['$t'];
+	    if ( isset($node['name']) )
+		    $author[] = $node['name']['$t'];
         }
 
         return array(

@@ -174,6 +174,9 @@ JWTemplate::StatusHead( $user_row, $status_info, $options = array('isMyPages' =>
 		{
 			$formated_status = JWStatus::FormatStatus( $reply_info, false);
 			echo $formated_status['status'];
+		}else{
+			echo "我只和我的好友分享叽歪";
+		}
 			$reply_user_row = JWUser::GetUserInfo( $reply_info['idUser'] );
 			if ( $reply_info['idUser'] != $current_user_id )
 				$reply_user_nameScreen_txt = '@' .$reply_user_row['nameScreen']. ' ';
@@ -183,9 +186,6 @@ JWTemplate::StatusHead( $user_row, $status_info, $options = array('isMyPages' =>
 			JWTemplate::ShowStatusMetaInfo($reply_info, array(
 				'replyLinkClick' => 'javascript:scroll(0, screen.height);$("idUserReplyTo").value=' .$reply_info['idUser']. ';$("idStatusReplyTo").value=' .$reply_info['id']. ';$("jw_status").focus();$("jw_status").value="' .$reply_user_nameScreen_txt. '";return false;',
 			));
-		}else{
-			echo "我只和我的好友分享叽歪";
-		}
         ?>
        </div><!-- cont -->
    </div><!-- odd -->

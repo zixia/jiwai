@@ -155,8 +155,8 @@ _HTML_;
 		if ( !empty($options['openid_delegate']) )
 		{
 			$openid_html = <<<_HTML_
-	<link rel="openid.server" href="$options[openid_server]" />
-	<link rel="openid.delegate" href="$options[openid_delegate]" />
+	<link rel="openid2.provider openid.server" href="$options[openid_server]" />
+	<link rel="openid2.local_id openid.delegate" href="$options[openid_delegate]" />
 _HTML_;
 		}
 		$time = time();
@@ -196,9 +196,8 @@ _HTML_;
 		{
 			echo <<<_HTML_
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
-	<script language="javascript">AC_FL_RunContent = 0;</script><script type="text/javascript" src="$asset_url_js_ac_content"></script>
+	<script type="text/javascript" src="$asset_js_swfobject"></script>
 _HTML_;
-//			echo "<script language=\"javascript\">AC_FL_RunContent = 0;</script><script type=\"text/javascript\" src=\"$asset_url_js_ac_content\"></script>";
 		}
 		else if('g'==$options['is_load_all'])
 		{
@@ -253,9 +252,13 @@ _HTML_;
 		$is_anonymous = false==empty($userInfo) && JWUser::IsAnonymous($userInfo['id']);
 		$nameScreen = @$userInfo['nameScreen'];
 		$nameUrl = @$userInfo['nameUrl'];
+		$c = true;//@$userInfo['timeCreate'] < '2008-04-01 00:00:00';
+		$b = "逛逛";
+		$a = $c ? "/public_timeline/" : "http://beta.jiwai.de/g/";
 		if ( empty($nameScreen) ) {
 			$nav = array(
 				'/' => '首页',
+				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
@@ -266,6 +269,7 @@ _HTML_;
 		} else {
 			$nav = array(
 				'/wo/' => '首页',
+				$a => $b,
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -275,6 +279,7 @@ _HTML_;
 		{
 			$nav = array(
 				'/wo/' => '首页',
+				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',
@@ -967,7 +972,7 @@ _HTML_;
 
 ?>
 <div class="odd" id="status_<?php echo $status_id;?>">
-	<div class="head"><a href="/<?php echo $name_url;?>/" rel="contact"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $name_full; ?>" src="<?php echo $photo_url?>"/></a></div>
+	<div class="head"><a href="/<?php echo $userRows[$user_id]['nameUrl'];?>/" rel="contact"><img icon="<?php echo $user_id;?>" class="buddy_icon" width="48" height="48" title="<?php echo $userRows[$user_id]['nameFull']; ?>" src="<?php echo $photo_url?>"/></a></div>
 	<div class="cont">
 		<div class="bg"></div><?php echo $status; ?><br/>
 		<?php
@@ -1632,13 +1637,22 @@ _HTML_;
     function sidebar_asus()
 	    {    
 			        $src = JWTemplate::GetAssetUrl('/images/adonjiwai.gif');
-					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/asus2008/"><img src="'.$src.'" title="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)" alt="[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)".></img></a></div>';
+					$alt = "[叽歪网]挑战新高度(华硕2008珠峰志愿者行动)";
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/asus2008/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
 		}
 
     function sidebar_ichina()
 	    {    
 			        $src = JWTemplate::GetAssetUrl('/images/jiwai_ichina.gif');
-					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/爱中国/"><img src="'.$src.'" title="[叽歪网]爱中国行动" alt="[叽歪网]爱中国行动".></img></a></div>';
+					$alt = "[叽歪网]爱中国行动";
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/爱中国/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
+		}
+
+    function sidebar_tqybad()
+	    {    
+			        $src = JWTemplate::GetAssetUrl('/images/jiwai_tqybad.gif');
+					$alt = "[叽歪网]天气预报广告";
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
 		}
 
 	/*
@@ -1659,7 +1673,52 @@ _HTML_;
 ?>
 
 <div id="sidebar" class="static">
-<? if('public_timeline'==$pageName)            self::sidebar_ichina();?>	
+<?php 
+$searched_array = array(
+50101=>'北京天气',
+50268=>'上海天气',
+50274=>'天津天气',
+51854=>'成都天气',
+51845=>'石家庄天气',
+51856=>'乌鲁木齐天气',
+51853=>'重庆天气',
+51847=>'兰州天气',
+51837=>'南京天气',
+51838=>'南宁天气',
+51849=>'南昌天气',
+51859=>'厦门天气',
+51860=>'台北天气',
+51862=>'合肥天气',
+51839=>'呼和浩特天气',
+51836=>'哈尔滨天气',
+51863=>'太原天气',
+50270=>'广州天气',
+51842=>'拉萨天气',
+51841=>'昆明天气',
+50276=>'杭州天气',
+51846=>'桂林天气',
+50277=>'武汉天气',
+51864=>'沈阳天气',
+51840=>'济南天气',
+51857=>'海口天气',
+50275=>'深圳天气',
+51855=>'澳门天气',
+51850=>'福州天气',
+51865=>'西宁天气',
+51858=>'西安天气',
+51848=>'贵阳天气',
+51852=>'郑州天气',
+51844=>'银川天气',
+51851=>'长春天气',
+51861=>'长沙天气',
+51843=>'香港天气',
+);
+$searched_ids = array_keys($searched_array);
+if(in_array($idUser, $searched_ids))
+	self::sidebar_tqybad();
+if('public_timeline'==$pageName)            
+	self::sidebar_ichina();
+?>	
 <?php
 if ($menuList[0][0] == 'login') {
 	array_shift($menuList);
@@ -1702,7 +1761,12 @@ if ($menuList[0][0] == 'login') {
 
 ?>
 	</div><!-- sidediv -->
-<? if('public_timeline'==$pageName)            self::sidebar_asus();?>	
+<? if('public_timeline'==$pageName)
+{
+self::sidebar_asus();
+self::sidebar_tqybad();
+}
+?>	
 </div><!-- sidebar -->
 
 <?php

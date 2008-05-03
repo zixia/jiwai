@@ -31,8 +31,8 @@ if ( true )
 		$page_user_info = JWUser::GetUserInfo( $nameScreen, null, 'nameScreen' );
 		if( false == empty( $page_user_info ) )
 		{
-			$need_redirect = true;
-			JWTemplate::RedirectToUserPage( $page_user_info['nameUrl'] );
+				$name_url = urlEncode($page_user_info['nameUrl']);
+				JWTemplate::RedirectToUrl("/$name_url$pathParam");
 		}
 		else
 		{
@@ -43,7 +43,8 @@ if ( true )
 			if ( preg_match('/^\d+$/', $nameOrId ) 
 				&& $page_user_info = JWUser::GetUserInfo($nameOrId) )
 			{
-				JWTemplate::RedirectToUrl("/$page_user_info[nameUrl]" . $pathParam);
+				$name_url = urlEncode($page_user_info['nameUrl']);
+				JWTemplate::RedirectToUrl("/$name_url$pathParam");
 			}
 		}
 	}

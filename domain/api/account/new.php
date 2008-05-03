@@ -1,5 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
+if (JWRateLimit::Protect('account_new', JWRequest::GetClientIp(), 5, 60))
+    JWApi::OutHeader(403, true);
 JWLogin::Logout();
 
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
