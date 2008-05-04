@@ -2,7 +2,10 @@
 require_once("../../../jiwai.inc.php");
 
 $pathParam = null;
+$follow=false;
 extract($_REQUEST, EXTR_IF_EXISTS);
+
+$notification = ('true'==$follow) ? 'Y' : 'N';
 
 $pathParam = trim( $pathParam, '/' );
 if( ! $pathParam ) {
@@ -31,7 +34,7 @@ if( true === JWFollower::IsFollower($unFriendId, $idUser) ){
 }
 
 //Destroy the friendship of idUser & unFriendId
-JWFollower::Create($unFriendId, $idUser);
+JWFollower::Create($unFriendId, $idUser, $notification);
 
 switch( $type ){
 	case 'json':
