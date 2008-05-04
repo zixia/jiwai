@@ -154,9 +154,17 @@ class JWApi{
 		$out_info['created_at'] = date("D M d H:i:s O Y",strtotime($status['timeCreate']));
 		$out_info['text'] = $status['status'];
 		$out_info['id'] = $status['idStatus'];
-        if( isset( $status['idPicture'] ) && $status['statusType'] == 'MMS' ) {
-            $out_info['mms_image_url'] = JWPicture::GetUrlById( $status['idPicture'],'middle');
-        }
+
+		if( isset( $status['idPicture'] ) && $status['statusType'] == 'MMS' ) {
+			$out_info['mms_image_url'] = JWPicture::GetUrlById( $status['idPicture'],'middle');
+		}
+
+		$current_user_id = self::GetAuthedUserId();
+		if ( $current_user_id )
+		{
+			$out_info['favorited'] = JWFavourite::IsFavourite($current_user_id,$status['id']) ? true:false;
+		}
+
 		if( isset( $status['favourite_id'] ) )
 		{
 			$out_info['favourite_id'] = $status['favourite_id'];
