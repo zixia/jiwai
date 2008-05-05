@@ -6,6 +6,7 @@ $since_id = null;
 $since = null;
 $page = 1;
 $thumb = 48;
+$device = null;
 $pathParam = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
 $since = ($since) ? $since :  ( isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null );
@@ -57,6 +58,7 @@ $options = array(
 		'idConference' => $user['idConference'],
 		'page' => $page,
 		'idUserAuthed' => $idUserAuthed,
+		'device' => $device,
 		);
 
 switch($type){
@@ -144,6 +146,8 @@ function renderFeedReturn($options, $user, $feedType=JWFeed::ATOM){
  */
 function getUserTimelineStatuses($options, $needReBuild=false){
 	/* Twitter compatible */
+	$device = null;
+	if (!empty($options['device'])) $device = preg_replace('/[^a-zA-Z0-9.-]/', '', $options['device']);
 
 	$current_user_id = $options['idUserAuthed'];
 	$count	= intval($options['count']);
@@ -160,7 +164,7 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 	if( $options['idConference'] ) {
 		$status_data    = JWStatus::GetStatusIdsFromConferenceUser($options['idUser'], $count, $start );
 	}else{
-		$status_data    = JWStatus::GetStatusIdsFromUser($options['idUser'], $count, $start, $options['since_id'], $timeSince);
+		$status_data    = JWStatus::GetStatusIdsFromUser($options['idUser'], $count, $start, $options['since_id'], $timeSince, null, $device);
 	}
 	$status_rows	= JWStatus::GetDbRowsByIds($status_data['status_ids']);
 	$user_rows	= JWDB_Cache_User::GetDbRowsByIds($status_data['user_ids']);
