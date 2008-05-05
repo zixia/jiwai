@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . "/../../../jiwai.inc.php");
 echo '<?xml version="1.0" encoding="UTF-8" ?>';
 $u = empty($_GET['u']) ? '' : $_GET['u'];
-$rev = '{$Rev: 1954 $}';
+$rev = '{$Rev$}';
 $rev = preg_replace('#^[^\d]+(\d+)[^\d]+#', '$1', $rev);
 if ($u) {
 $user = JWUser::GetUserInfo($u);

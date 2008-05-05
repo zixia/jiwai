@@ -397,7 +397,7 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null, $userOnly = null)
+	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null, $userOnly = null, $device = null)
 	{
 		$idUser	= JWDB::CheckInt($idUser);
 		$num	= JWDB::CheckInt($num);
@@ -416,6 +416,13 @@ _SQL_;
         if( true == $userOnly ) {
             $condition_other .= " AND idStatusReplyTo IS NULL";
         }
+		if ($device) { // $device = 'gtalk-signature'
+			$device = explode('-', preg_replace('/[^a-zA-Z0-9.-]/', '', $device));
+			$condition_other .= " AND device = '{$device[0]}'";
+			if (!empty($device[1])) {
+				$condition_other .= " AND isSignature = 'Y'";
+			}
+		}
 
 		/*
 		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
