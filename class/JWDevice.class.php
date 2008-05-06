@@ -930,6 +930,25 @@ _SQL_;
 		return self::$allArray;
 	}
 
+	static public function CheckDeviceAddress($address, $type, $autoCreate=false)
+	{
+		$device_row = self::GetDeviceInfoByAddress( $address, $type );
+		if (false==empty($device_row) )
+		{
+			return $device_row['idUser'];
+		}
+
+		if ( $autoCreate )
+		{
+			$robot_msg = new JWRobotMsg();
+			$body = "CREATE FROM ROBOT";
+			$robot_msg->Set($address, $type, $body);
+			$device_row = JWRobotLingo::CreateAccount( $robot_msg );
+			return empty($device_row) ? false : $device_row['idUser'];
+		}
+		return false;
+	}
+
 	static public function IsHistorySignature($idUser, $signature){
 		$idUser = JWDB::CheckInt( $idUser );
 		$signature = trim( $signature );
