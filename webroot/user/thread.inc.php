@@ -121,10 +121,25 @@ foreach ( $replies_info as $one )
 	}
 }
 
+$rss = array ( 	
+	// User TimeLine RSS & Atom
+	array(
+		'url' => "http://api.jiwai.de/statuses/thread/${idStatus}.rss",
+		'title'	=> "$page_user_info[nameFull] 的 Thread (RSS)",
+		'type' => "rss",
+	),
+	array(
+		'url' => "http://api.jiwai.de/statuses/thread/${idStatus}.atom",
+		'title'	=> "$page_user_info[nameFull] 的 Thread(Atom)",
+		'type' => "atom",
+	),
+);
+
 $head_options = array(
 	'ui_user_id' => $page_user_id,
 	'keywords' => $keywords,
 	'description' => $description,
+	'rss' => $rss,
 );
 JWTemplate::html_head($head_options);
 ?>
