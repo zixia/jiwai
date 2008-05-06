@@ -932,7 +932,7 @@ _SQL_;
 
 	static public function CheckDeviceAddress($address, $type, $autoCreate=false)
 	{
-		$device_row = self::GetDeviceInfoByAddress( $address, $type );
+		$device_row = self::GetDeviceDbRowByAddress( $address, $type );
 		if (false==empty($device_row) )
 		{
 			return $device_row['idUser'];
