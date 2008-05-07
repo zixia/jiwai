@@ -92,16 +92,14 @@ class JWVisitUser
 			array_push($v2, $idUser);
 			$v2 = array_unique($v2);
 			$memcache->Set($mc_key2, $v2);
-			if(10<=count($v2)) self::Update();
 		}
 
 		$memcache->Set($mc_key, $v+1);
-		self::Update();
 		return true;
 	}
 
 	static public function Update()
-	{return false;
+	{
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyUserIds();
 		$idUsers = $memcache->Get( $mc_key2 );
@@ -112,12 +110,16 @@ class JWVisitUser
 			$v = $memcache->Get( $mc_key );
 			if(!$v) $v=1;
 
-			$condition = array(
-				'idUser' => $idUser,
-				'count' => $v,
-			);
-			$row = JWDB::SaveTableRow('VisitUser', $condition);
-			$memcache->Set($mc_key, 0);
+			$user_info = JWDB_Cache_User::GetDbRowById( $idUser );
+			if(empty($user_info))
+			{
+				$condition = array(
+					'idUser' => $idUser,
+					'count' => $v,
+				);
+				$row = JWDB::SaveTableRow('VisitUser', $condition);
+			}
+			$memcache->Del($mc_key);
 		}
 		$memcache->Set($mc_key2, array());
 

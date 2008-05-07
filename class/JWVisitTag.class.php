@@ -92,7 +92,6 @@ class JWVisitTag
 			array_push($v2, $idTag);
 			$v2 = array_unique($v2);
 			$memcache->Set($mc_key2, $v2);
-			if(10<=count($v2)) self::Update();
 		}
 
 		$memcache->Set($mc_key, $v+1);
@@ -100,7 +99,7 @@ class JWVisitTag
 	}
 
 	static public function Update()
-	{return false;
+	{
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyTagIds();
 		$idTags = $memcache->Get( $mc_key2 );
@@ -111,12 +110,16 @@ class JWVisitTag
 			$v = $memcache->Get( $mc_key );
 			if(!$v) $v=1;
 
-			$condition = array(
-				'idTag' => $idTag,
-				'count' => $v,
-			);
-			$row = JWDB::SaveTableRow('VisitTag', $condition);
-			$memcache->Set($mc_key, 0);
+			$tag_info = JWDB_Cache_Tag::GetDbRowById( $idTag );
+			if(empty($tag_info))
+			{
+				$condition = array(
+					'idTag' => $idTag,
+					'count' => $v,
+				);
+				$row = JWDB::SaveTableRow('VisitTag', $condition);
+			}
+			$memcache->Del($mc_key);
 		}
 		$memcache->Set($mc_key2, array());
 

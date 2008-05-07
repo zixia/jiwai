@@ -43,7 +43,7 @@ class JWVisitThread
 		if( $v )
 			return false;
 
-		$memcache->Set( $mc_key, 1, 0, 1);
+		$memcache->Set( $mc_key, 1, 0, 600);
 		self::SetCount($idThread);
 
 		return true;
@@ -56,9 +56,9 @@ class JWVisitThread
 		return $mc_key;
 	}
 
-	static public function GetCacheKeyTotal($type)
+	static public function GetCacheKeyTotal()
 	{
-		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWVisitThread', 'GetCacheKeyTotal' ), array($type));
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array( 'JWVisitThread', 'GetCacheKeyTotal' ), array());
 		return $mc_key;
 	}
 
@@ -99,7 +99,7 @@ class JWVisitThread
 			array_push($v2, $idThread);
 			$v2 = array_unique($v2);
 			$memcache->Set($mc_key2, $v2);
-			if(10<=count($v2)) self::Update();
+			$memcache->Set($mc_key2, $v2);
 		}
 
 		$memcache->Set($mc_key, $v+1);
@@ -107,7 +107,7 @@ class JWVisitThread
 	}
 
 	static public function Update()
-	{return false;
+	{
 		$memcache = JWMemcache::Instance();
 		$mc_key2 = self::GetCacheKeyThreadIds();
 		$idThreads = $memcache->Get( $mc_key2 );
@@ -117,15 +117,18 @@ class JWVisitThread
 			$type = JWStatus::GetTypeById($idThread);
 			$mc_key = self::GetCacheKeyByThreadId($idThread);
 			$v = $memcache->Get( $mc_key );
-			if(!$v) $v=1;
 
-			$condition = array(
-				'idThread' => $idThread,
-				'count' => $v,
-				'type' => $type,
-			);
-			$row = JWDB::SaveTableRow('VisitThread', $condition);
-			$memcache->Set($mc_key, 0);
+			$status_info = JWDB_Cache_Status::GetDbRowById( $idUser );
+			if(empty($status_info))
+			{
+				$condition = array(
+					'idThread' => $idThread,
+					'count' => $v,
+					'type' => $type,
+				);
+				$row = JWDB::SaveTableRow('VisitThread', $condition);
+			}
+			$memcache->Del($mc_key);
 		}
 		$memcache->Set($mc_key2, array());
 
@@ -139,15 +142,14 @@ class JWVisitThread
 		$year = date("Y");
 		$yesterday = date("Y-m-d", mktime (0, 0, 0, $month, $day-1, $year));
 		$today = "$year-$month-$day";
-		$sql="select idThread,sum(count)as sum from VisitThread force index(IDX__VisitThread__timeStamp) where type = '$type' group by idThread order by sum desc";
-		//$sql="select idThread,sum(count)as sum from VisitThread force index(IDX__VisitThread__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and type = '$type' group by idThread order by sum desc";
+		$sql="select idThread,count(1)as count from VisitThread where timeStamp >='$yesterday' and timeStamp <'$today' and type = '$type' group by idThread order by count desc";
 		if (!empty($limit)) $sql .= " limit $limit";
 		$row = JWDB_Cache::GetQueryResult($sql, true);
 
 		if(empty($row))
 			$row = array();
 		$memcache = JWMemcache::Instance();
-		$mc_key = self::GetCacheKeyTotal($type);
+		$mc_key = self::GetCacheKeyTotal();
 		$memcache->Set($mc_key, $row);
 
 		return $row;
@@ -156,9 +158,9 @@ class JWVisitThread
 	static public function Total($type ='normal', $limit=null)
 	{
 		$memcache = JWMemcache::Instance();
-		$mc_key = self::GetCacheKeyTotal($type);
+		$mc_key = self::GetCacheKeyTotal();
 		$v = $memcache->Get($mc_key);
-		if (true||!$v)
+		if (!$v)
 		{
 			$v = self::Query($type, $limit);
 		}
