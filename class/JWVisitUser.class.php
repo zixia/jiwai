@@ -111,7 +111,7 @@ class JWVisitUser
 			if(!$v) $v=1;
 
 			$user_info = JWUser::GetDbRowById( $idUser );
-			if(empty($user_info))
+			if(!empty($user_info))
 			{
 				$condition = array(
 					'idUser' => $idUser,

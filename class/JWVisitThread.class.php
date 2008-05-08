@@ -119,7 +119,7 @@ class JWVisitThread
 			$v = $memcache->Get( $mc_key );
 
 			$status_info = JWStatus::GetDbRowById( $idThread );
-			if(empty($status_info))
+			if(!empty($status_info))
 			{
 				$condition = array(
 					'idThread' => $idThread,

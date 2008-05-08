@@ -111,7 +111,7 @@ class JWVisitTag
 			if(!$v) $v=1;
 
 			$tag_info = JWTag::GetDbRowById( $idTag );
-			if(empty($tag_info))
+			if(!empty($tag_info))
 			{
 				$condition = array(
 					'idTag' => $idTag,
