@@ -110,7 +110,7 @@ class JWVisitTag
 			$v = $memcache->Get( $mc_key );
 			if(!$v) $v=1;
 
-			$tag_info = JWDB_Cache_Tag::GetDbRowById( $idTag );
+			$tag_info = JWTag::GetDbRowById( $idTag );
 			if(empty($tag_info))
 			{
 				$condition = array(

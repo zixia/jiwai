@@ -110,7 +110,7 @@ class JWVisitUser
 			$v = $memcache->Get( $mc_key );
 			if(!$v) $v=1;
 
-			$user_info = JWDB_Cache_User::GetDbRowById( $idUser );
+			$user_info = JWUser::GetDbRowById( $idUser );
 			if(empty($user_info))
 			{
 				$condition = array(

@@ -118,7 +118,7 @@ class JWVisitThread
 			$mc_key = self::GetCacheKeyByThreadId($idThread);
 			$v = $memcache->Get( $mc_key );
 
-			$status_info = JWDB_Cache_Status::GetDbRowById( $idUser );
+			$status_info = JWStatus::GetDbRowById( $idThread );
 			if(empty($status_info))
 			{
 				$condition = array(
