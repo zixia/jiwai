@@ -26,7 +26,7 @@ $queue = JWPubSub::Instance('spread://localhost/');
 $listener = new JWPubSub_Listener_Mt();
 $queue->AddListener( '/robot/mt/msn', $listener );
 $queue->AddListener( '/robot/mt/sms', $listener );
-$queue->AddListener( '/robot/mt/mobiz', $listener );
+$queue->AddListener( '/robot/mt/xiaonei', $listener );
 $queue->AddListener( '/robot/mt/aol', $listener );
 $queue->AddListener( '/robot/mt/fetion', $listener );
 $queue->AddListener( '/robot/mt/gtalk', $listener );
@@ -42,7 +42,7 @@ $queue->AddListener( '/robot/mt/jabber', $listener );
 /* Subscribe channel*/
 $queue->Subscribe('/robot/mt/msn');
 $queue->Subscribe('/robot/mt/sms');
-$queue->Subscribe('/robot/mt/mobiz');
+$queue->Subscribe('/robot/mt/xiaonei');
 $queue->Subscribe('/robot/mt/aol');
 $queue->Subscribe('/robot/mt/fetion');
 $queue->Subscribe('/robot/mt/gtalk');

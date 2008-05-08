@@ -1670,6 +1670,9 @@ class JWRobotLingo {
 			case 'qq':
 				$nameScreen = 'QQ'.$address;
 			break;
+			case 'xiaonei':
+				$nameScreen = 'XN'.$address;
+			break;
 			case 'fetion':
 				$nameScreen = 'F'.$address;
 			break;

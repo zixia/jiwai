@@ -35,13 +35,13 @@ class JWDevice {
 
 	/* device array */
 	static public $allArray =
-		array('web','api','wap','email','sms','msn','qq','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
+		array('web','api','wap','email','sms','msn','qq','xiaonei','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
 
 	static public $emailArray = 
 		array('msn','gtalk','aol','email','jabber','newsmth');
 
 	static public $imArray = 
-		array('jabber','msn','qq','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
+		array('jabber','msn','qq','xiaonei','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
 
 	static public $smsArray = 
 		array('sms');
@@ -53,13 +53,13 @@ class JWDevice {
 		array('web','api','wap');
 
 	static public $signatureRecordArray = 
-		array('msn','gtalk','skype','qq');
+		array('msn','gtalk','skype','qq','xiaonei');
 
 	static public $htmlTagAllowArray =
 		array('gtalk','jabber','msn','yahoo','aim','fetion');
 
 	static public $nudgeOrderArray = 
-		array('msn','gtalk','skype','qq','yahoo','aol','sms','fetion','jabber');
+		array('msn','gtalk','skype','qq','xiaonei','yahoo','aol','sms','fetion','jabber');
 
 	static public $daRenArray =
 		array('sms', 'fetion', 'gtalk', 'msn', 'qq');
@@ -101,6 +101,7 @@ class JWDevice {
 			case 'sms':
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
 			case 'fetion':
+            case 'xiaonei':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -779,6 +780,9 @@ _SQL_;
 				$name='229516989';
 				$name='742721768';
 				break;
+            case 'xiaoei':
+                $name='244553514';
+                break;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
