@@ -1147,7 +1147,7 @@ _HTML_;
 		}
 
 		// Add @ Link For other User
-		$status = preg_replace(	 '/@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ,"@<a href='/\\1/' rel='contact'>\\1</a>\\2" ,$status );
+		$status = preg_replace(	 '/\s@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ," @<a href='/\\1/' rel='contact'>\\1</a>\\2" ,$status );
 		$status = preg_replace(	 "/\[\s*([^<>@#\]\[]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/' rel='tag'>\\1</a>]\\2" ,$status );
 
 		if( $conf_id ) 
