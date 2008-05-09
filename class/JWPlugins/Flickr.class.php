@@ -26,7 +26,7 @@ class JWPlugins_Flickr
 
     static public function GetPluginInfo( $string )
     {
-        if( false == preg_match( '#\.?flickr\.com/photos/([a-zA-Z0-9]+)/([0-9]+)/#i', $string, $matches ) )
+        if( false == preg_match( '#\.?flickr\.com/photos/([a-zA-Z0-9@]+)/([0-9]+)/#i', $string, $matches ) )
             return false;
 
         $url = $matches[0];
@@ -39,7 +39,6 @@ class JWPlugins_Flickr
             $memcache -> set( $mc_key, array() );
         $v = $memcache -> Get( $mc_key );
 
-
         if( $v )
             return $v;
 
@@ -50,7 +49,7 @@ class JWPlugins_Flickr
             $memcache -> set( $mc_key, $v );
             return $v;
         }
-        
+
         $v = self::GetPhotoInfoByApi( $id );
         if( false == empty( $v ) )
         {
