@@ -373,7 +373,7 @@ var JiWai =
     },
 	Init: function() {
 		window.TimeOffset = window.ServerTime ? Math.floor((new Date()).getTime()/1000) - window.ServerTime : 0;
-		window.addEvent('domready', JiWai.onLoad); 
+		window.addEvent('domready', JiWai.onLoad);
 	}
 }
 
