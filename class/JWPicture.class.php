@@ -279,7 +279,7 @@ _SQL_;
 	{
 
 		if( empty( $options ) || empty($options['thumbs']) ) {
-			$thumbs = array( 'thumb48', 'thumb96', 'origin', 'picture', 'thumb48s', 'thumb96s' ) ;
+			$thumbs = array( 'origin', 'picture', 'thumb48', 'thumb96', 'thumb48s', 'thumb96s' ) ;
 		}else
 			$thumbs = $options['thumbs'];
 
@@ -347,6 +347,8 @@ _SQL_;
 		$ret = true;
 		$rel_save_files = array();
 
+		$rel_file_path2 = $picture_path . 'picture' . '.' . $dst_file_type;
+		$absFilePathName2 = $abs_storage_root . $rel_file_path2;
 		foreach( $thumbs as $op ) {
 
 			//for thumb-static
@@ -372,12 +374,12 @@ _SQL_;
 					}
 				case 'thumb48':
 					{
-						$ret = self::ConvertThumbnail48( $absFilePathName, $convert_path_name );
+						$ret = self::ConvertThumbnail48( $absFilePathName2, $convert_path_name );
 						break;
 					}
 				case 'thumb96':
 					{
-						$ret = self::ConvertThumbnail96( $absFilePathName, $convert_path_name );
+						$ret = self::ConvertThumbnail96( $absFilePathName2, $convert_path_name );
 						break;
 					}
 				case 'thumb48s':
