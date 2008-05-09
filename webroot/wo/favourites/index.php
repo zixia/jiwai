@@ -75,7 +75,38 @@ if ( isset($status_ids) )
 		</div><!-- wrapper -->
 	</div><!-- content -->
 <?php
-include_once dirname( dirname(__FILE__) ).'/sidebar.php';
+if ( $g_user_favourites )
+{
+		$current_user_id = $logined_user_info['id'];
+		$user_action_rows = JWSns::GetUserActions($current_user_id , array($page_user_info['id']) );
+		$user_action_row = empty($user_action_rows) ? array() : $user_action_rows[$page_user_info['id']];
+		$arr_friend_list = JWFollower::GetFollowingIds($page_user_info['id']);
+		$arr_count_param = JWSns::GetUserState($page_user_info['id']);
+		$idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], $current_user_id );
+		$arr_menu = array(
+			array ('user_notice', array($page_user_info)),
+			array ('device_info', array($page_user_info)),
+			array ('user_info', array($page_user_info)),
+			array ('action', array($user_action_row,$page_user_info['id'])),
+			array ('count', array($arr_count_param,$page_user_info)),
+			array ('vistors', array($idUserVistors )),
+			array ('friend', array($arr_friend_list)),
+			array ('listfollowing', array( $page_user_info['nameScreen'], count($arr_friend_list) > 60 ) ),
+			array ('rss', array('user', $page_user_info['nameScreen'])),
+			);
+
+	if ( false == JWLogin::IsLogined() ) {
+		array_push ( $arr_menu, array('register', array(true)) );
+	} else {
+		array_push ( $arr_menu, array('block', array($current_user_id, $g_page_user_id)) );
+	}
+
+	JWTemplate::sidebar( $arr_menu, $g_page_user_id);
+}
+else
+{
+	include_once dirname( dirname(__FILE__) ).'/sidebar.php';
+}
 JWTemplate::container_ending();
 ?>
 
