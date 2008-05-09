@@ -349,6 +349,7 @@ _SQL_;
 
 		$rel_file_path2 = $picture_path . 'picture' . '.' . $dst_file_type;
 		$absFilePathName2 = $abs_storage_root . $rel_file_path2;
+
 		foreach( $thumbs as $op ) {
 
 			//for thumb-static
