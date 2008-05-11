@@ -107,6 +107,10 @@ class JWStatus {
 					}else
 					{
 						$conference_id = $conference_user['idConference'];
+						if ( null == $conference_id )
+						{
+							break;
+						}
 						$status = $symbol_info['status'];
 
 						$rtn_array['conference_id'] = $conference_id;
