@@ -73,7 +73,7 @@ _ERR_;
 	   <p>你想要绑定的<b class="black14">手机号码为&nbsp;${address}</b>，我猜，你以前肯定用这个手机号给叽歪网发送过消息？</p>
 	   <p class="bindingblack">这是该手机发送的最新一条叽歪，是不是你的呢？<br /><div><img src="$quote1" title="“" alt="“" />$status<img src="$quote2" title="”" alt="”" /></div>
 	   <p>如果你确定绑定这个号码，请按以下步骤操作：</p>
-	   <p class="bindingblack">1. 将【叽歪小弟：106693184】 加入你的通讯簿</p>
+	   <p class="bindingblack">1. 将【叽歪小弟：$robot】 加入你的通讯簿</p>
 	   <p class="bindingblack">2. 发送以下验证信息给叽歪小弟，完成绑定</p>
        <p class="bindingblack">&nbsp;&nbsp;&nbsp;&nbsp;验证码：<input type="text" value="hebing ${current_user_info['nameScreen']} ${secret}" class="inputStyle3 Width135"/></p>
 	   <p class="bindinggray12">用手机发送验证码或发短信给叽歪网，与发短信给普通手机费用完全一样</p>
