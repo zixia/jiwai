@@ -35,14 +35,14 @@ $result = array();
 foreach ($rows as $r) {
 	if (empty($r['secret'])) { //已绑定
 		$result[] = array(
-			'idUser' => (int) $r['idUser'],
+			'id' => (int) $r['idUser'],
 			'status' => 'authenticated',
 			'type' => $type,
 			'address' => $address
 		);
 	} else {
 		$result[] = array(
-			'idUser' => (int) $r['idUser'],
+			'id' => (int) $r['idUser'],
 			'status' => 'pending',
 			'type' => $type,
 			'address' => $address
