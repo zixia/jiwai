@@ -111,13 +111,13 @@ function getUserExtendWithStatus($user){
 		&& false==JWFollower::IsFollower($idAuthedUser, $idUser)
 		)
 	{
-		$status['status'] = 'protected';
+		$userInfo['status'] = 'protected';
 	}
-
-	$statusInfo = JWApi::ReBuildStatus( $status );
-	
-	$userInfo['status'] = $statusInfo;
-
+	else
+	{
+		$statusInfo = JWApi::ReBuildStatus( $status );
+		$userInfo['status'] = $statusInfo;
+	}
 	return $userInfo;
 }
 
