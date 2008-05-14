@@ -98,11 +98,22 @@ function getUserExtendWithStatus($user){
 		$userInfo['statuses_count'] = JWStatus::GetStatusNum( $idUser );
 	}
 
+
 	
 	//Get Current Stuats,
 	$statusIds = JWStatus::GetStatusIdsFromUser( $idUser, 1 );
 	$statusId = $statusIds['status_ids'][0];
 	$status = JWStatus::GetDbRowById( $statusId );	
+
+	global $idAuthedUser;
+	if ( 'Y' == $user['protected'] && $status 
+		&& $idUser != $idAuthedUser
+		&& false==JWFollower::IsFollower($idAuthedUser, $idUser)
+		)
+	{
+		$status['status'] = 'protected';
+	}
+
 	$statusInfo = JWApi::ReBuildStatus( $status );
 	
 	$userInfo['status'] = $statusInfo;
