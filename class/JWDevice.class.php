@@ -518,6 +518,26 @@ _SQL_;
 	}
 
 
+	static function Lookup($address, $type, $verified=true)
+	{
+		if ( ! self::IsValid($address,$type) ){
+			return null;
+		}
+		$r = array();
+		$device_ids = JWDevice::GetDeviceIdsByAddresses( array(array('address'=>$address,'type'=>$type)) );
+		foreach ($device_ids as $device_id) {
+			$device_db_row = JWDevice::GetDeviceDbRowById($device_id);
+			if ( empty($device_db_row['idUser']) ) { //user died
+				JWDevice::Destroy($device_id);
+				continue;
+			}
+			// 参数要求已经激活，但是记录中的验证码还没有验证过（验证过应该为空）
+			if ( $verified && !empty($device_db_row['secret']) ) continue;
+			$r[] = $device_db_row;
+		}
+		return $r;
+	}
+
 	static public function IsUserOwnDevice($idUser, $idDevice)
 	{
 		$device_row = JWDevice::GetDeviceDbRowById($idDevice);
