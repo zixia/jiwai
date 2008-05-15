@@ -1,10 +1,20 @@
 <?php
+/**
+ *
+ * JiWai SDK
+ *
+ * http:/JiWai.de
+ *
+ **/
+
 require_once 'OAuth.php';
 
-define('JIWAI_API_HOST', 'api.jiwai.de');
-define('JIWAI_OAUTH_REQUEST_TOKEN_URL', 'http://'.JIWAI_API_HOST.'/oauth/request_token');
-define('JIWAI_OAUTH_ACCESS_TOKEN_URL', 'http://'.JIWAI_API_HOST.'/oauth/access_token');
-define('JIWAI_OAUTH_AUTHORIZE_URL', 'http://jiwai.de/wo/oauth/authorize');
+define('JIWAI_SDK_REV', '{$Rev$}');
+define('JIWAI_DOMAIN', 'jiwai.de');
+define('JIWAI_API_DOMAIN', 'api.'.JIWAI_DOMAIN);
+define('JIWAI_OAUTH_REQUEST_TOKEN_URL', 'http://'.JIWAI_API_DOMAIN.'/oauth/request_token');
+define('JIWAI_OAUTH_ACCESS_TOKEN_URL', 'http://'.JIWAI_API_DOMAIN.'/oauth/access_token');
+define('JIWAI_OAUTH_AUTHORIZE_URL', 'http://'.JIWAI_DOMAIN.'/wo/oauth/authorize');
 
 interface Jiwai_Auth {
 	function sendRequest($url, $param=array(), $method='GET');
@@ -23,7 +33,7 @@ class Jiwai_Auth_Basic implements Jiwai_Auth {
 		$this->password = $password;
 	}
 	function sendRequest($url, $param=array(), $method='GET') {
-		if (strpos($url, '://')===false) $url = 'http://'.JIWAI_API_HOST.$url;
+		if (strpos($url, '://')===false) $url = 'http://'.JIWAI_API_DOMAIN.$url;
 		if (empty($param)) $param = array();
 		$curl = $this->getCurlHandler();
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -83,7 +93,7 @@ class Jiwai_Auth_Oauth implements Jiwai_Auth {
 		return $this->setToken($t['oauth_token'], $t['oauth_token_secret']);
 	}
 	function sendRequest($url, $param=array(), $method='GET') {
-		if (strpos($url, '://')===false) $url = 'http://'.JIWAI_API_HOST.$url;
+		if (strpos($url, '://')===false) $url = 'http://'.JIWAI_API_DOMAIN.$url;
 		if (empty($param)) $param = array();
 		$req = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, strtoupper($method), $url, $param);
 		$req->sign_request($this->sign_method, $this->consumer, $this->token);
