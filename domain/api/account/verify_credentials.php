@@ -14,7 +14,7 @@ if( ! $idUser ){
 }
 $user_info = JWUser::GetUserInfo($idUser);
 
-$result = array( 'verify' => array( 'authorized' => true, 'idUser' => $idUser, 'nameScreen' => $user_info['nameScreen'] ) );
+$result = array( 'verify' => array( 'authorized' => true, 'id' => $idUser, 'screen_name' => $user_info['nameScreen'] ) );
 $openid_id = JWOpenID::GetIdByUserId($idUser);
 if ($openid_id) {
 	$openid_db_row  = JWOpenID::GetDbRowById($openid_id);
