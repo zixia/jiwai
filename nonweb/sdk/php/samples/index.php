@@ -1,8 +1,7 @@
 <h1>JiWai API 范例</h1>
 <?php
 require_once '../lib/Jiwai.php';
-$consumer_key    = '771020709341b1e110959e16012da225';
-$consumer_secret = '137b05030a3d9013e56072a547413369';
+require_once 'config.php';
 session_start(); 
 function error($s) {
 ?>

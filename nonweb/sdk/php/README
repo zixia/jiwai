@@ -1,0 +1,17 @@
+JIWAI SDK
+
+REQUIREMENT
+
+ * PHP 5.x
+ * php_json ext (included within php>=5.2.0)
+
+
+INCLUDED 3RD PARTY LIBRARY
+
+ * OAuth-php from http://oauth.net/
+
+
+INSTALL
+
+ * edit config.dist.php, save as config.php
+
