@@ -77,13 +77,18 @@ class JWApi{
 			return JWUser::GetUserFromPassword( $username_or_email, $password );
 		}
 		if (isset($_REQUEST['oauth_consumer_key'])) {
+			$p = $_REQUEST['pathParam'];
 			try {
 				$server = JWOAuth::Server();
 				$req = OAuthRequest::from_request();
 				$t = $server->verify_request($req);
+				$_REQUEST['pathParam'] = $p;
+				$_GET['pathParam'] = $p;
 				return $t[1]->idUser;
 			} catch (OAuthException $e) {
 				header('HTTP/1.1 401 Unauthorized');
+				$_REQUEST['pathParam'] = $p;
+				$_GET['pathParam'] = $p;
 				//error_log('OAuth failed');
 				return null;
 			}
@@ -110,7 +115,7 @@ class JWApi{
 	  */
 	static function RenderAuthHttp(){
 		header('WWW-Authenticate: Basic realm="JiWai API"');
-		//header('WWW-Authenticate: OAuth realm="JiWai API"');
+		header('WWW-Authenticate: OAuth realm="JiWai API"');
 		header('HTTP/1.0 401 Unauthorized');
 		exit;
 	}
