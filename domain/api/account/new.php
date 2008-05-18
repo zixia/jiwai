@@ -1,6 +1,13 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
-if (JWRateLimit::Protect('account_new', JWRequest::GetClientIp(), 5, 60))
+
+$caller = (int) JWApi::GetAuthedUserId();
+$consumer = JWApi::$OAuthConsumer;
+if ($consumer && $caller!=$consumer->idUser) {
+//    JWApi::OutHeader(401, true);
+}
+
+if (!$caller && JWRateLimit::Protect('account_new', JWRequest::GetClientIp(), 5, 60))
     JWApi::OutHeader(403, true);
 JWLogin::Logout();
 
@@ -11,25 +18,31 @@ if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
 }
 
-$apikey = @$_REQUEST['apikey'];
-$email = @$_POST['email'];
+if (!$consumer && isset($_REQUEST['apikey'])) {
+	$ds = new JWOAuth_DataStore();
+	$consumer = $ds->lookup_consumer($_REQUEST['apikey']);
+	$source = $consumer ? $consumer->title : null;
+} else {
+	$source = $consumer->title;
+}
+
+if (!$source) {
+    JWApi::OutHeader(401, true);
+}
+
+$email = @$_REQUEST['email'];
 $name_screen = @$_POST['name_screen'];
 $pass = @$_POST['pass'];
-
-$validApiKeys = array(
-    '0e4a4c24954f22cecea6b06b33efbfd7'  => 'widsets',
-    '6021742976b2af34f210abea548328bb'  => 'showr',
-    '4107f1349979cc9ed2951fb82b6105d4'  => 'jiwai',
-);
+if (isset($_REQUEST['screen_name'])) $name_screen = $_REQUEST['screen_name'];
+if ($caller) {
+	if (!$name_screen) $name_screen = $source.'_'.JWDevice::GenSecret(8);
+	$pass = md5(time().$name_screen);
+}
+$name_screen = JWUser::GetPossibleName($name_screen, $email);
 
 $autoFollowers = array(
     2,  // JiWai
 );
-
-if (null == $apikey
-    || !array_key_exists($apikey, $validApiKeys)) {
-    JWApi::OutHeader(401, true);
-}
 
 if (null == $email
         || null == $name_screen
@@ -42,18 +55,20 @@ $validate_item = array(
 		array( 'NameScreen', $name_screen ),
 );
 
-$validate_result = JWFormValidate::Validate($validate_item);
+if (!$caller) {
+	$validate_result = JWFormValidate::Validate($validate_item);
 
-if ( is_array($validate_result) )
-{
-    JWApi::OutHeader(406, true);
+	if ( is_array($validate_result) )
+	{
+		JWApi::OutHeader(406, true);
+	}
 }
 
 $user['email'] = $email;
 $user['nameFull'] = $user['nameScreen'] = $name_screen;
 $user['pass'] = $pass;
 $user['ip'] = JWRequest::GetIpRegister();
-$user['srcRegister'] = $validApiKeys[$apikey];
+$user['srcRegister'] = $source;
 
 if ( $user_id = JWUser::Create($user) ) {
     foreach ($autoFollowers as $idFollower) {
@@ -64,7 +79,19 @@ if ( $user_id = JWUser::Create($user) ) {
 } else {
     JWApi::OutHeader(406, true);
 }
-
+if ($caller) {
+	$token = new JWOAuth_RequestToken('', '', '');
+	$token->idUser = $user_id;
+	$token = JWApi::$OAuthServer->get_data_store()->new_access_token($token, $consumer);
+	$result = array('account'=>array(
+		'id' => $user_id,
+		'screen_name' => $name_screen,
+		'access_token' => array(
+			'key' => $token->key,
+			'secret' => $token->secret
+			)
+		));
+}
 switch($type){
 	case 'xml':
 		renderXmlReturn($result);
