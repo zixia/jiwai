@@ -146,7 +146,11 @@ class JWRobotMsg {
 			//Maybe normal robot_msg -- Comptiable with OLD RobotMsg DATA
 			else
 			{   
-				$body = mb_convert_encoding($output->body, 'UTF-8', 'GB2312,UTF-8');
+				$charset = mb_detect_encoding($output->body);
+				if ( 'UTF-8' == $charset )
+					$body = $output->body;
+				else
+					$body = mb_convert_encoding($output->body, 'UTF-8', $charset);
 				$this->mBody = $this->_StripBody( $body );
 			}   
 		}
