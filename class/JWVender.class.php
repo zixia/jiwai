@@ -40,10 +40,11 @@ class JWVender {
 			));
 	}
 
-	static public function Query( $user_id ) 
+	static public function Query( $user_id , $vender=null) 
 	{
 		$user_id = JWDB::CheckInt( $user_id );
 		$sql = "SELECT * FROM Vender WHERE idUser=$user_id";
+		if ($vender) $sql.=" AND vender='$vender'"; //FIXME SQL Injection
 		$r = JWDB::GetQueryResult( $sql, true );
 		if( empty($r) ) 
 			return array();
@@ -51,9 +52,10 @@ class JWVender {
 		$rtn = array();
 		foreach( $r as $one ) {
 			$one['venderMeta'] = json_decode($one['venderMeta'], true);
-			$rtn[ $one['service'] ] = $one;
+			$rtn[ $one['vender'] ] = $one;
 		}
 
+		if ($vender) $rtn=$rtn[$vender];
 		return $rtn;
 	}
 }
