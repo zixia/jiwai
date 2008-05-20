@@ -1500,7 +1500,31 @@ class JWRobotLingo {
 		 */
 		$param_array = preg_split('/\s+/', $body, 3);
 
-		if( count( $param_array ) < 3 ) 
+		$from_merge_request = false;
+		if( 2 == count($param_array) )
+		{
+			$merge_code = JWDB::EscapeString($param_array[1]);
+			$sql = <<<_SQL_
+SELECT * FROM MergeRequest
+WHERE
+	`code`='$merge_code'
+	AND `idSlaveDevice`='$device_db_row[id]'
+LIMIT 1
+_SQL_;
+			$row = JWDB::GetQueryResult($sql);
+			if ( $row )
+			{
+				$from_merge_request = true;
+				$mergeToUserInfo = JWUser::GetUserInfo( $row['idMasterUser']);
+				$param_array[2] = 'noneed';
+				$merge_request_id = $row['id'];
+			}
+			else
+				return;
+		}
+
+		if( count( $param_array ) < 3 
+			&& false==$from_merge_request ) 
 		{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_TIPS', array(
 				array_shift($param_array),
@@ -1513,9 +1537,11 @@ class JWRobotLingo {
 		$password = @array_shift( $param_array );
 
 		$userInfo = JWUser::GetUserInfo( $device_db_row['idUser'] );
+
+		if ( !isset($mergeToUserInfo) || !$mergeToUserInfo )
 		$mergeToUserInfo = JWUser::GetUserInfo( $nameScreen, null, 'nameScreen', true );
 
-		if( $userInfo['isWebUser'] == 'Y' ) 
+		if( $userInfo['isWebUser'] == 'Y' && false==$from_merge_request) 
 		{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_MERGE_WEBUSER' );
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -1529,10 +1555,19 @@ class JWRobotLingo {
 
 		if( false==empty($mergeToUserInfo)
 			&& false==empty($password) 
-			&& ( JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) ) || strtolower($password) == JWDevice::GetMergeSecret($mergeToUserInfo['id'], $type, $address ) ) 
+			&& ( 
+			//1. from api_merge_request
+			//2. from namescreen+password
+			//3. from web merge code
+				true == $from_merge_request 
+				|| JWUser::VerifyPassword( $mergeToUserInfo['id'], $password ) 
+				|| strtolower($password) == JWDevice::GetMergeSecret($mergeToUserInfo['id'], $type, $address) 
+			)
+		)
 		{
 			//Suc
 			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
+			//fixme for yiqi?
 			if( count( $dDeviceRows ) > 1 ) {
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_MULTI');
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -1544,9 +1579,14 @@ class JWRobotLingo {
 					$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_HAVE', array(
 						$nameScreen, $type, $mDeviceRows[$type]['address'],
 					));
+					if ( $from_merge_request )
+					{
+						$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_HAVE_YIQI');
+					}
 					return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 				}else{
 					JWDevice::Destroy( $mDeviceRows[$type]['id'] );
+
 				}
 			}
 
@@ -1571,14 +1611,30 @@ class JWRobotLingo {
 			JWDB::Execute( $sql );
 
 			//destroy user;
-			JWUser::Destroy( $device_db_row['idUser'] );
+			if ( 'N' == $userInfo['isWebUser'] )
+			{
+				JWUser::Destroy( $device_db_row['idUser'] );
+			}
+
+			if ( $from_merge_request )
+			{
+				$sql = <<<_SQL_
+DELETE FROM MergeRequest WHERE `id`='$merge_request_id'
+_SQL_;
+				JWDB::Execute( $sql );
+			}
 
 			//reply
-			$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_SUC', array(
-				$type, $address, $nameScreen,
-			));
+			if ($from_merge_request)
+			{
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_SUC_YIQI');
+			}
+			else{
+				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_SUC', array(
+							$type, $address, $nameScreen,
+							));
+			}
 			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
-
 		}
 		else
 		{

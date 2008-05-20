@@ -162,11 +162,13 @@ class JWRobotLingoReply {
 			'REPLY_MERGE_OWN' => '你好，当前设备绑定的用户正是 {0} ，无需合并',
 			'REPLY_MERGE_WEBUSER' => '你好，你当前设备用户已经在 WEB 上登录并设定了密码，请联系管理员吧',
 			'REPLY_MERGE_SUC' => '你好，当前设备 {0}://{1} 已转移绑定到用户 {2} ，常回来叽歪呀～',
+			'REPLY_MERGE_SUC_YIQI' => '合并绑定成功，查询当前登录名请回复whoami，修改登陆密码请回复passwd 新密码。',
 			'REPLY_MERGE_MULTI' => '你好，你的当前用户，已经绑定了多个设备，还是继续使用吧',
 			'REPLY_MERGE_HAVE' => '你好，{0} 已经绑定了 {1}://{2} ，删除绑定后才能合并过来',
 			'REPLY_MERGE_ERR' => '你提供的合并用户名 {0} 和你提供的密码不匹配，无法完成操作',
 			'REPLY_MERGE_WEBREQ' => '你好，合并帐户的请求只能从 (MSN/QQ/Skype/GTalk/Yahoo!/SMS) 端发起',
 			'REPLY_MERGE_TIPS' => '{0}用法：{0}+空格+web账户名+空格+web账户密码',
+			'REPLY_MERGE_HAVE_YIQI' => '合并失败，已绑定同类软件或移动设备！',
 
 			//Update Status
 			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，你发送的叽歪被我们暂时藏起来了！',
