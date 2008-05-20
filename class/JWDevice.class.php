@@ -284,7 +284,7 @@ _SQL_;
 	static public function Destroy( $idDevice )
 	{
 		$idDevice = JWDB::CheckInt($idDevice);
-		$device_row = self::GetDbRowById($idDevice);
+		$device_row = self::GetDeviceDbRowById($idDevice);
 
 		///{{{ //add by seek@jiwai.com 2008-05-20
 		//Wen send queue message;
