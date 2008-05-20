@@ -49,8 +49,8 @@ class JWFuncCode {
 	 */
 	const PRE_MYCAIFU_CODE = '08';
 
-	const PRE_VOTE_TP = '56';
-	static public $all_pre_id = array( '08', '10','11', '13','15','20','30', '40','50','56','86','88' );
+	const PRE_VOTE_TP = '66';
+	static public $all_pre_id = array( '08', '10','11', '13','15','20','30', '40','50','66','86','88' );
 
 	/**
 	 * pre_len
