@@ -1039,5 +1039,19 @@ _SQL_;
 
 		return strtolower($secret);
 	}
+
+	function MergeRequest($idUserMaster, $idDeviceSlave) {
+		do {
+			$code = self::GenSecret(8, JWDevice::CHAR_NUM);
+		} while (  preg_match('/^0+$/', $code) );
+		
+		JWDB::SaveTableRow('MergeRequest',array(
+						'idMasterUser' => $idUserMaster,
+						'idSlaveDevice' => $idDeviceSlave,
+						'code' => $code,
+						));
+
+		return $code;
+	}
 }
 ?>
