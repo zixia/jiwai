@@ -86,21 +86,20 @@ class JWVisitThread
 		{
 			$v = 0;
 			$memcache->Set( $mc_key, $v);
-			$mc_key2 = self::GetCacheKeyThreadIds();
-			$v2 = $memcache->Get( $mc_key2 );
-			if(!$v2)
-				$v2 = array();
-
-			array_push($v2, $idThread);
-			$v2 = array_unique($v2);
-			if(!$v2)
-				$v2 = array();
-
-			array_push($v2, $idThread);
-			$v2 = array_unique($v2);
-			$memcache->Set($mc_key2, $v2);
-			$memcache->Set($mc_key2, $v2);
 		}
+		$mc_key2 = self::GetCacheKeyThreadIds();
+		$v2 = $memcache->Get( $mc_key2 );
+		if(!$v2)
+			$v2 = array();
+
+		array_push($v2, $idThread);
+		$v2 = array_unique($v2);
+		if(!$v2)
+			$v2 = array();
+
+		array_push($v2, $idThread);
+		$v2 = array_unique($v2);
+		$memcache->Set($mc_key2, $v2);
 
 		$memcache->Set($mc_key, $v+1);
 		return true;
@@ -137,14 +136,12 @@ class JWVisitThread
 
 	static public function Query($type ='normal', $limit = null)
 	{
-		$month = date("m");
-		$day = date("d");
-		$year = date("Y");
-		$yesterday = date("Y-m-d", mktime (0, 0, 0, $month, $day-1, $year));
-		$today = "$year-$month-$day";
-		$sql="select idThread,count(1)as count from VisitThread where timeStamp >='$yesterday' and timeStamp <'$today' and type = '$type' group by idThread order by count desc";
+		$yesterday = date('Y-m-d', strtotime('1 days ago'));
+		$today = date('Y-m-d', time());
+		//$sql="select idThread,sum(count)as sum from VisitThread force index(IDX__VisitThread__timeStamp) where idThread is not null group by idThread order by sum desc";
+		$sql="select idThread,sum(count) as sum from VisitThread force index(IDX__VisitThread__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and idThread is not null group by idThread order by sum desc";
 		if (!empty($limit)) $sql .= " limit $limit";
-		$row = JWDB_Cache::GetQueryResult($sql, true);
+		$row = JWDB::GetQueryResult($sql, true);
 
 		if(empty($row))
 			$row = array();
@@ -167,5 +164,13 @@ class JWVisitThread
 
 		return $v;
 			
+	}
+
+	static public function GetCount($idThread)
+	{
+		$sql = "select sum(count) as sum from VisitThread where idThread=$idThread";
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['sum'];
 	}
 }

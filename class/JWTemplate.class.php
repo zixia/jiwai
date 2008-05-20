@@ -140,6 +140,7 @@ _HTML_;
 		 *	强制不使用自定义界面，设置为 false 即可
 		 */
 		$ui_css = '';
+		$options['ui_user_id']=false;
 		if ( false!==$options['ui_user_id'] && !empty($options['ui_user_id']) )
 		{
 			$ui = new JWDesign($options['ui_user_id']);
@@ -260,6 +261,7 @@ _HTML_;
 				'/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
+				'/t/地震/' => '地震',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
 				'http://help.jiwai.de/' => '帮助'
@@ -270,6 +272,7 @@ _HTML_;
 			$nav = array(
 				'/wo/' => '首页',
 				$a => $b,
+				'/t/地震/' => '地震',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -281,6 +284,7 @@ _HTML_;
 				'/wo/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
+				'/t/地震/' => '地震',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',
 			);
@@ -364,7 +368,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; ?>><?php echo $txt; ?></a></div>
+			<div class="nav" style="background-color:#cccccc;"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active" style="background-color:#cccccc;"' : ''; if($highlight!=$url && '地震'==$txt) echo " style='background-color:#999999;'"?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -597,7 +601,7 @@ _HTML_;
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
-					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" value="叽歪一下" title="叽歪一下"/>
+					<input style="margin-left:115px;filter:gray()" type="button" class="submitbutton" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" value="叽歪一下" title="叽歪一下"/>
 				</p>	
 			<?php
 				if(false == empty($options['sendtips']))
@@ -1052,7 +1056,8 @@ __HTML__;
 
 		$showPublisher = isset( $options['showPublisher'] ) ? $options['showPublisher'] : true;
 		$replyLinkClick = isset( $options['replyLinkClick'] ) ? $options['replyLinkClick'] : null;
-		$isInTag = isset( $options['isInTag'] ) ? $options['isInTag'] : false;
+		$idInTag = isset( $options['idInTag'] ) ? $options['idInTag'] : -1;
+		//$isInTag = isset( $options['isInTag'] ) ? $options['isInTag'] : false;
 
 		$current_user_id = JWLogin::GetCurrentUserId();
 
@@ -1067,9 +1072,11 @@ __HTML__;
 		$reply_user_id = $status_row['idUserReplyTo'];
 		$thread_id = $status_row['idThread'];
 		$tag_id = $status_row['idTag'];
+		$tag_id = intval($tag_id);
 		$tag_row = empty($tag_id) ? null : JWDB_Cache_Tag::GetDbRowById( $tag_id );
 		$tag_name = empty($tag_row) ? null : $tag_row['name'];
 
+		$isInTag = ($idInTag == $tag_id) ? true : false;
 		$reply_user = null;
 		$thread_user = null;
 
@@ -2256,11 +2263,11 @@ _HTML_;
 ?>
 
 			接收通知方式：
-			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'">
-				<li class="slect" onmouseover="style.backgroundColor='#F97B00';" onmouseout="style.backgroundColor='#F97B00'"><?php echo $viaDevName; ?></li>
+			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'" style="filter:gray();">
+				<li class="slect" onmouseover="style.backgroundColor='#F97B00';" onmouseout="style.backgroundColor='#F97B00'" style="filter:gray();"><?php echo $viaDevName; ?></li>
 <?php
 		foreach ($otherDev as $d => $n) if ($d!='facebook') echo <<<__HTML__
-				<li onmouseover="style.backgroundColor='#FF8D1D';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');">$n</li>
+				<li onmouseover="style.backgroundColor='#FF8D1D';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');" style="filter:gray();">$n</li>
 
 __HTML__;
 ?>

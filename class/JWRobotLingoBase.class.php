@@ -122,6 +122,9 @@ class JWRobotLingoBase {
 
 		//VOTE
 		'TP' => 'VOTE',
+
+		//Message
+		'!' => 'D',
 	); 
 
 	/**

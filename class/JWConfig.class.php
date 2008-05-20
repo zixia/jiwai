@@ -20,6 +20,11 @@ if (!defined('JW_CONFIG_DATA'))
  */
 define('JW_CONFIG_DATA',   null);
 
+if(!defined('TPL_COMPILED_DIR')) 
+	define('TPL_COMPILED_DIR', dirname(__FILE__).'/../compiled' );
+if(!defined('TPL_TEMPLATE_DIR')) 
+	define('TPL_TEMPLATE_DIR', dirname(__FILE__).'/../template' );
+
 /**
  * JiWai.de Configuration Class
  */

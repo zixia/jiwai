@@ -84,15 +84,15 @@ class JWVisitTag
 		{
 			$v = 0;
 			$memcache->Set( $mc_key, $v);
-			$mc_key2 = self::GetCacheKeyTagIds();
-			$v2 = $memcache->Get( $mc_key2 );
-			if(!$v2)
-				$v2 = array();
-
-			array_push($v2, $idTag);
-			$v2 = array_unique($v2);
-			$memcache->Set($mc_key2, $v2);
 		}
+		$mc_key2 = self::GetCacheKeyTagIds();
+		$v2 = $memcache->Get( $mc_key2 );
+		if(!$v2)
+			$v2 = array();
+
+		array_push($v2, $idTag);
+		$v2 = array_unique($v2);
+		$memcache->Set($mc_key2, $v2);
 
 		$memcache->Set($mc_key, $v+1);
 		return true;
@@ -128,14 +128,12 @@ class JWVisitTag
 
 	static public function Query($limit=null)
 	{
-		$month = date("m");
-		$day = date("d");
-		$year = date("Y");
-		$yesterday = date("Y-m-d", mktime (0, 0, 0, $month, $day-1, $year));
-		$today = "$year-$month-$day";
-		$sql="select idTag,sum(count)as sum from VisitTag force index(IDX__VisitTag__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' group by idTag order by sum desc";
+		$yesterday = date('Y-m-d', strtotime('1 days ago'));
+		$today = date('Y-m-d', time());
+		//$sql="select idTag,sum(count)as sum from VisitTag force index(IDX__VisitUser__timeStamp) where idTag is not null group by idTag order by sum desc";
+		$sql="select idTag,sum(count)as sum from VisitTag force index(IDX__VisitTag__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and idTag is not null group by idTag order by sum desc";
 		if (!empty($limit)) $sql .= " limit $limit";
-		$row = JWDB_Cache::GetQueryResult($sql, true);
+		$row = JWDB::GetQueryResult($sql, true);
 
 		if(empty($row))
 			$row = array();
@@ -158,5 +156,13 @@ class JWVisitTag
 
 		return $v;
 			
+	}
+
+	static public function GetCount($idTag)
+	{
+		$sql = "select sum(count) as sum from VisitTag where idTag=$idTag";
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['sum'];
 	}
 }

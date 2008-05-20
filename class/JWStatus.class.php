@@ -814,7 +814,7 @@ _SQL_;
 			return array('status_ids'=>array(), 'user_ids'=>array(),);
 
 		$status_ids = JWFunction::GetColArrayFromRows($rows, 'idStatus');
-		$user_ids 	= array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+		$user_ids = JWFunction::GetColArrayFromRows($rows, 'idUser');
 
 		return array ( 	 'status_ids'	=> $status_ids
 				,'user_ids'	=> $user_ids
@@ -1029,6 +1029,7 @@ _SQL_;
 	 */
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
 	{
+		$status2 = $status;
 
 		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = null;
 		if( is_array( $status ) )
@@ -1069,11 +1070,18 @@ _SQL_;
 					) )
 		{
 			//die(var_dump($matches));
-			$head_str = htmlspecialchars($matches[1]);
-			$url_domain = htmlspecialchars($matches[3]);
-			$url_path = htmlspecialchars($matches[4]);
-			$tail_str = htmlspecialchars($matches[5]);
+			$head_str = $matches[1];
+			$url_domain = $matches[3];
+			$url_path = $matches[4];
+			$tail_str = $matches[5];
 
+			if(!in_array($status2['idUser'], array(114733)))
+			{
+				$head_str = htmlspecialchars($head_str);
+				$url_domain = htmlspecialchars($url_domain);
+				$url_path = htmlspecialchars($url_path);
+				$tail_str = htmlspecialchars($tail_str);
+			}
 
 			/*
 			 *	检查 url path 是否为真正的 url path
@@ -1107,7 +1115,7 @@ _HTML_;
 			$status = $head_str . $url_str . $tail_str;
 
 		}
-		else
+		else if(!in_array($status2['idUser'], array(114733)))
 		{
 			$status = htmlspecialchars($status);
 		}
@@ -2126,5 +2134,62 @@ _SQL_;
         return $row;
     }
     
+	/**
+	 * Get Count of idTag [ only post ]
+	 */
+	static public function GetCountFromDiZhen() 
+	{
+		$txt = file_get_contents(FRAGMENT_ROOT . "page/dizhen.txt");
+		$sql = <<<_SQL_
+select count(1) as num 
+$txt
+_SQL_;
+	$row = JWDB::GetQueryResult( $sql );
+
+		return $row['num'];
+	}
+
+	/**
+	 * Get status_ids from idTag
+	 */
+	static public function GetStatusIdsFromDiZhen($num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
+	{
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		//$idSince 	= JWDB::CheckInt($idSince);
+		//$timeSince	= JWDB::CheckInt($timeSince);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND Status.id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND Status.timeCreate > '$timeSince'";
+		}
+		
+		$txt = file_get_contents(FRAGMENT_ROOT . "page/dizhen.txt");
+		$sql = <<<_SQL_
+select Status.id as id, idUser
+$txt
+		$condition_other
+ORDER BY Status.timeCreate DESC
+LIMIT $start, $num
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+
+		return $rows;
+	}
 }
 ?>

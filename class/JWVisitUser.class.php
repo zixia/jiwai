@@ -84,15 +84,15 @@ class JWVisitUser
 		{
 			$v = 0;
 			$memcache->Set( $mc_key, $v);
-			$mc_key2 = self::GetCacheKeyUserIds();
-			$v2 = $memcache->Get( $mc_key2 );
-			if(!$v2)
-				$v2 = array();
-
-			array_push($v2, $idUser);
-			$v2 = array_unique($v2);
-			$memcache->Set($mc_key2, $v2);
 		}
+		$mc_key2 = self::GetCacheKeyUserIds();
+		$v2 = $memcache->Get( $mc_key2 );
+		if(!$v2)
+			$v2 = array();
+
+		array_push($v2, $idUser);
+		$v2 = array_unique($v2);
+		$memcache->Set($mc_key2, $v2);
 
 		$memcache->Set($mc_key, $v+1);
 		return true;
@@ -128,15 +128,12 @@ class JWVisitUser
 
 	static public function Query($limit=null)
 	{
-		$month = date("m");
-		$day = date("d");
-		$year = date("Y");
-		$yesterday = date("Y-m-d H:i:s", mktime (0, 0, 0, $month, $day-1, $year));
-		$today = "$year-$month-$day";
-		$sql="select idUser,count(1)as count from VisitUser force index(IDX__VisitUser__timeStamp) group by idUser order by count desc";
-		//$sql="select idUser,count(1)as count from VisitUser force index(IDX__VisitUser__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' group by idUser order by count desc";
+		$yesterday = date('Y-m-d', strtotime('1 days ago'));
+		$today = date('Y-m-d', time());
+		//$sql="select idUser,sum(count)as sum from VisitUser force index(IDX__VisitUser__timeStamp) where idUser is not null group by idUser order by sum desc";
+		$sql="select idUser,sum(count) as sum from VisitUser force index(IDX__VisitUser__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and idUser is not null group by idUser order by sum desc";
 		if (!empty($limit)) $sql .= " limit $limit";
-		$row = JWDB_Cache::GetQueryResult($sql, true);
+		$row = JWDB::GetQueryResult($sql, true);
 
 		if(empty($row))
 			$row = array();
@@ -159,5 +156,13 @@ class JWVisitUser
 
 		return $v;
 			
+	}
+
+	static public function GetCount($idUser)
+	{
+		$sql = "select sum(count) as sum from VisitUser where idUser=$idUser";
+		$row = JWDB::GetQueryResult($sql);
+
+		return $row['sum'];
 	}
 }
