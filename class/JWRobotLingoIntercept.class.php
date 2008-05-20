@@ -42,7 +42,13 @@ class JWRobotLingoIntercept {
 						$id = $pre_and_id['id'];
 						if ( false == preg_match('/^\d{6}$/', $body ) )
 						{
-							break;
+							$u = JWUser::GetUserInfo($body);
+							if (empty($u))
+								break;
+							else
+							{
+								$id = 8;
+							}
 						}
 						if ( $id == '8' ) //stock
 						{
