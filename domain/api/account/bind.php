@@ -8,7 +8,7 @@ if( ! $user_id ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
 
-$r = JWVender::Bind($user_id, $_REQUEST['vender_id'], $_REQUEST['vender_user_id'], 
-	array('display_name'=>$_REQUEST['vender_user_nick'], 'profile_url'=>$_REQUEST['vender_user_profile']));
+$r = JWVender::Bind($user_id, $_REQUEST['vender_id'], $_REQUEST['vender_user'], 
+	array('display_name'=>$_REQUEST['vender_user_display_name'], 'profile_url'=>$_REQUEST['vender_user_profile_url']));
 
 ?>
