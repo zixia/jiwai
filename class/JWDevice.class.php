@@ -284,6 +284,23 @@ _SQL_;
 	static public function Destroy( $idDevice )
 	{
 		$idDevice = JWDB::CheckInt($idDevice);
+		$device_row = self::GetDbRowById($idDevice);
+
+		///{{{ //add by seek@jiwai.com 2008-05-20
+		//Wen send queue message;
+		if ( $device_row 
+			&& empty($device_row['secret'])  //Verified
+			&& $device_row['idUser']  // belong to a user;
+		)
+		{
+			$channel = "/device/unbind";
+			JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
+				'type' => $device_row['type'],
+				'address' => $device_row['address'],
+				'idUser' => $device_row['idUser'],
+				)); 
+		}
+		///}}} //add by seek@jiwai.com 2008-05-20
 
 		return JWDB::DelTableRow("Device", array('id'=>$idDevice));
 	}
@@ -406,6 +423,17 @@ _SQL_;
 						'secret' => '',
 						'address' => $address,
 						));
+
+			// {{{  //add by seek@jiwai.com 2008-05-20
+			//Verify Succ, we need pub a queue Message;
+			$channel = "/device/bind";
+
+			JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
+				'type' => $device_row['type'],
+				'address' => $device_row['address'],
+				'idUser' => $device_row['idUser'],
+				)); 
+			// }}} //add by seek@jiwai.com 2008-05-20
 
 		}
 		else // Verify FAIL
