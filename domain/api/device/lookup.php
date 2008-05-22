@@ -5,7 +5,7 @@ if( ! $user_id ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 	die();
 }
-if ( $user_id != 115076 )
+if ( $user_id != 20 && $user_id != 115076 )
 {
 	JWApi::OutHeader(403, true);
 	die();
@@ -36,9 +36,9 @@ foreach ($rows as $r) {
 	if (empty($r['secret'])) { //已绑定
 		$result[] = array(
 			'id' => (int) $r['idUser'],
-			'status' => 'authenticated',
+			'status' => JWUser::IsWebUser( $r['idUser'] ) ? 'authenticated' : 'incomplete' ,
 			'type' => $type,
-			'address' => $address
+			'address' => $address,
 		);
 	} else {
 		$result[] = array(
