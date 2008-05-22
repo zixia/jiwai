@@ -62,6 +62,7 @@ function getUserExtendWithStatus($user){
 	$idUser = $user['id'];
 	
 	$userInfo = JWApi::ReBuildUser( $user );
+	if (JWApi::$OAuthConsumer) $userInfo['register_source'] = $user['srcRegister'];
 	
 	//Desing Info, Come from JWDesign, table:Design
 	$design = new JWDesign( $idUser );
