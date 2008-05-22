@@ -1568,16 +1568,21 @@ _SQL_;
 			//Suc
 			$dDeviceRows = JWDevice::GetDeviceRowByUserId( $userInfo['id'] );
 			//fixme for yiqi?
-			if( count( $dDeviceRows ) > 1 ) {
+			if( count( $dDeviceRows ) > 1 
+				&& false == $from_merge_request) {
 				$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_MULTI');
 				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 			}
 
 			$mDeviceRows = JWDevice::GetDeviceRowByUserId( $mergeToUserInfo['id'] );
-			if( isset($mDeviceRows[$type]) ){
+
+			//loop devices
+			$d_types = array_keys($dDeviceRows);
+			foreach($d_types AS $d_type)
+			if( isset($mDeviceRows[$d_type]) ){
 				if( empty($mDeviceRows[$type]['secret']) ){
 					$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_MERGE_HAVE', array(
-						$nameScreen, $type, $mDeviceRows[$type]['address'],
+						$nameScreen, $d_type, $mDeviceRows[$type]['address'],
 					));
 					if ( $from_merge_request )
 					{
@@ -1585,14 +1590,16 @@ _SQL_;
 					}
 					return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 				}else{
-					JWDevice::Destroy( $mDeviceRows[$type]['id'] );
-
+					JWDevice::Destroy( $mDeviceRows[$d_type]['id'] );
 				}
 			}
 
 			//merge device;
 			$upArray = array( 'idUser' => $mergeToUserInfo['id'] );
-			JWDB::UpdateTableRow( 'Device', $device_db_row['id'], $upArray );
+			foreach( $dDeviceRows AS $one )
+			{
+			JWDB::UpdateTableRow('Device', $one['id'], $upArray);
+			}
 			
 			/**
 			 * merge status; 
