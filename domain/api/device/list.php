@@ -14,19 +14,22 @@ if( !in_array( $format, array('json','xml') )){
 $rows = JWDevice::GetDeviceRowByUserId($user_id);
 $result = array();
 foreach ($rows as $r) {
+	if ($r['type'] == 'facebook') continue;
 	if (empty($r['secret'])) { //已绑定
 		$result[] = array(
 			'id' => (int) $r['idUser'],
 			'status' => 'authenticated',
 			'type' => $r['type'],
-			'address' => $r['address']
+			'address' => $r['address'],
+			'service' =>  ($type == 'sms') ? JWDevice::GetMobileSpNo($r['address']) : JWDevice::GetRobotFromType($r['type'] , $r['address']),
 		);
 	} else {
 		$result[] = array(
 			'id' => (int) $r['idUser'],
 			'status' => 'pending',
 			'type' => $r['type'],
-			'address' => $r['address']
+			'address' => $r['address'],
+			'service' =>  ($type == 'sms') ? JWDevice::GetMobileSpNo($r['address']) : JWDevice::GetRobotFromType($r['type'] , $r['address']),
 		);
 	}
 }

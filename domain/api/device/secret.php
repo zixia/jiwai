@@ -32,10 +32,11 @@ foreach ($rows as $r) {
 	if ($r['idUser'] != $user_id) continue;
 	$result[] = array(
 		'id' => (int) $r['idUser'], 
-		'status' => empty($r['secret']) ? 'authenticated' : 'pending',
+		'status' => empty($r['secret']) ? 'authenticated' : 'pending', //incomplete not indicated
 		'type' => $type,
 		'address' => $address,
 		'secret' => $r['secret'],
+		'service' =>  ($type == 'sms') ? JWDevice::GetMobileSpNo($address) : JWDevice::GetRobotFromType($type , $address),
 	);
 }
 
