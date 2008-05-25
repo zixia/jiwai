@@ -41,13 +41,15 @@ exit;
 
 function mop_mo($mobile, $server_address, $content)
 {
-		//$content = mb_convert_encoding($content, 'UTF-8', 'GBK,UTF-8' );
+	//$content = mb_convert_encoding($content, 'UTF-8', 'GBK,UTF-8' );
+	$v = intval( JWRuntimeInfo::Get('ROBOT_COUNT_SMS_MO') );
+	JWRuntimeInfo::Set( 'ROBOT_COUNT_SMS_MO', ++$v );
 
-		JWSms::Instance();
-		$robot_msg = new JWRobotMsg();
-		$robot_msg->Set($mobile, 'sms', $content);
-		$robot_msg->SetHeader( 'serveraddress', $server_address );
-		$robot_msg->SetFile( JWSms::$msQueuePathMo . $robot_msg->GenFileName() );
-		return $robot_msg->Save();
+	JWSms::Instance();
+	$robot_msg = new JWRobotMsg();
+	$robot_msg->Set($mobile, 'sms', $content);
+	$robot_msg->SetHeader( 'serveraddress', $server_address );
+	$robot_msg->SetFile( JWSms::$msQueuePathMo . $robot_msg->GenFileName() );
+	return $robot_msg->Save();
 }
 ?>
