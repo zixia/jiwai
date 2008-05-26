@@ -675,11 +675,13 @@ die(var_dump($db_result));
 	{
 		ksort($condition);
 
-		$param_string	= serialize($condition);
-		$param_string	= preg_replace('/[\s]+/','_',$param_string);
+		$param_string = var_export($condition, true);
+		$param_string = preg_replace("/(=>)\s*'(\d+)'/", "\\1\\2", $param_string);
+		$param_string = preg_replace('/[\s]+/','_',$param_string);
 
-		$mc_key 	= "TB:$table(" . $param_string . "):$limit";
-
+		if ( strlen($param_string)>150 )
+			$param_string = md5($param_string);
+		$mc_key = "TB:$table(" . $param_string . "):$limit";
 		return $mc_key;
 	}
 
@@ -692,18 +694,16 @@ die(var_dump($db_result));
 		if ( is_array($param) )
 			ksort($param);
 
-		$param_string	= serialize($param);
-
-		$param_string	= preg_replace('/[\s]+/','_',$param_string);
+		$param_string = var_export($param, true);
+		$param_string = preg_replace("/(=>)\s*'(\d+)'/", "\\1\\2", $param_string);
+		$param_string = preg_replace('/[\s]+/','_',$param_string);
 
 		// memcache key 最大 250，留出 100 给其他字串
 		if ( strlen($param_string)>150 )
 			$param_string = md5($param_string);
 
-		$mc_key 	= "FN:$function[0]::$function[1](" . $param_string . ")";
-
+		$mc_key = "FN:$function[0]::$function[1](". $param_string. ")";
 		return $mc_key;
-
 	}
 
 	/*
