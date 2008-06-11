@@ -1598,24 +1598,27 @@ _SQL_;
 			$upArray = array( 'idUser' => $mergeToUserInfo['id'] );
 			foreach( $dDeviceRows AS $one )
 			{
-			JWDB::UpdateTableRow('Device', $one['id'], $upArray);
+				JWDB::UpdateTableRow('Device', $one['id'], $upArray);
 			}
 			
 			/**
 			 * merge status; 
 			 * fix me only support 9999
 			 */
-			$status_data = JWStatus::GetStatusIdsFromUser( $device_db_row['idUser'], 9999);
-			$status_ids = $status_data['status_ids'];
-			foreach( $status_ids as $one_status_id)
+			if ( false == $from_merge_request )
 			{
-				JWDB_Cache::UpdateTableRow( 'Status', $one_status_id, array(
-					'idUser' => $mergeToUserInfo['id'],
-				));
-			}
+				$status_data = JWStatus::GetStatusIdsFromUser( $device_db_row['idUser'], 9999);
+				$status_ids = $status_data['status_ids'];
+				foreach( $status_ids as $one_status_id)
+				{
+					JWDB_Cache::UpdateTableRow( 'Status', $one_status_id, array(
+								'idUser' => $mergeToUserInfo['id'],
+								));
+				}
 
-			$sql = "UPDATE Status SET idUser=$mergeToUserInfo[id] WHERE idUser=$device_db_row[idUser]";
-			JWDB::Execute( $sql );
+				$sql = "UPDATE Status SET idUser=$mergeToUserInfo[id] WHERE idUser=$device_db_row[idUser]";
+				JWDB::Execute( $sql );
+			}
 
 			//destroy user;
 			if ( 'N' == $userInfo['isWebUser'] )
