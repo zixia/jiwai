@@ -3,6 +3,10 @@ require_once('../../../jiwai.inc.php');
 if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 	JWApi::OutHeader(405,true);
 }
+/*if ( JWRateLimit::Protect('status_update', JWRequest::GetClientIp(), 5, 60))
+{
+	JWApi::OutHeader(403, true);
+}*/
 
 $status = null;
 $idPartner = null;
@@ -47,7 +51,7 @@ $options = array(
  * Support limited robot lingo in API update
  * array('D', 'GET', 'FOLLOW', 'LEAVE')
  */
-$supported_lingo = array( 'D', 'GET', 'FOLLOW', 'LEAVE' );
+$supported_lingo = array( 'D', 'GET', 'FOLLOW', 'LEAVE', 'ON' );
 if ( preg_match('/^(\w+)\s+.*$/i', $status, $matches)
 	&& in_array( strtoupper($matches[1]), $supported_lingo ) )
 {

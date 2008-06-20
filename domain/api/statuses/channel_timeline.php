@@ -147,7 +147,7 @@ function getUserTimelineStatuses($options, $needReBuild=false){
 
 	//TODO: since_id / since
 	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
-	$status_data    = JWDB_Cache_Status::GetStatusIdsTopicByIdTag($options['idTag'], $count, $start, $options['since_id'], $timeSince);
+	$status_data    = JWStatus::GetStatusIdsTopicByIdTag($options['idTag'], $count, $start, $options['since_id'], $timeSince);
 
 	$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 	$user_rows	= JWDB_Cache_User::GetDbRowsByIds($status_data['user_ids']);

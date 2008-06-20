@@ -21,7 +21,7 @@ foreach ($rows as $r) {
 			'status' => 'authenticated',
 			'type' => $r['type'],
 			'address' => $r['address'],
-			'service' =>  ($type == 'sms') ? JWDevice::GetMobileSpNo($r['address']) : JWDevice::GetRobotFromType($r['type'] , $r['address']),
+			'service' =>  ($r['type'] == 'sms') ? JWDevice::GetMobileSpNo($r['address']) : JWDevice::GetRobotFromType($r['type'] , $r['address']),
 		);
 	} else {
 		$result[] = array(
