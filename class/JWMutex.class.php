@@ -145,7 +145,8 @@ class JWMutex {
 			else
 			{
 				@fclose( $this->mMutexHandle );
-				@unlink( $this->mMutexFile );
+				if ( file_exists($this->mMutexFile) && is_writable($this->mMutexFile))
+					@unlink( $this->mMutexFile );
 			}
 		}
 	}
