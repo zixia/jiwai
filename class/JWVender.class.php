@@ -11,33 +11,36 @@
  */
 class JWVender {
 	static function Bind($user_id, $vender_id, $vender_user_id, $vender_meta=array()) {
-			$exist_id = JWDB::ExistTableRow('Vender', array( 
+		$exist_id = JWDB::ExistTableRow('Vender', array( 
 				'idUser' => $user_id, 
 				'vender' => $vender_id,
 			));
 
-			$up_array = array(
+		$up_array = array(
 				'idUser' => $user_id, 
 				'vender' => $vender_id,
 				'venderUser' => $vender_user_id,
 				'venderMeta' => json_encode($vender_meta),
 			);
-			if( $exist_id ) 
+		if( $exist_id ) 
 			{
 				JWDB::UpdateTableRow( 'Vender', $exist_id, $up_array );
-				return $exist_id;
 			}
-			else
+		else
 			{
-				return JWDB::SaveTableRow( 'Vender', $up_array );
+				$exist_id = JWDB::SaveTableRow( 'Vender', $up_array );
 			}
+		JWDB_Cache_Vender::_dirty($user_id , $vender);
+		return $exist_id;
 	}
 
 	static function Unbind($user_id, $vender_id) {
-		return JWDB::DelTableRow( 'Vender', array(
+		$r = JWDB::DelTableRow( 'Vender', array(
 				'vender'=>$vender_id,
 				'idUser'=>$user_id
 			));
+		JWDB_Cache_Vender::_dirty($user_id , $vender);
+		return $r;
 	}
 
 	static public function Query( $user_id , $vender=null) 
