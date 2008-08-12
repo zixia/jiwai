@@ -7,11 +7,11 @@ $pathParam 	= @$_REQUEST['pathParam'];
 
 // $pathParam is like: "/statuses/123"
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
-
+if(empty($tag_name)) $tag_name='笑话';
 if( $tag_name ) 
 {
 	if ( false ==JWUnicode::unifyName( $tag_name ) )
-	{ 
+	{
 		JWTemplate::RedirectToUrl( '/t/' . urlEncode($tag_name) . $pathParam );
 	}
 
@@ -60,10 +60,12 @@ switch ( $func )
 		break;
 
 	case 'channel':
-		if ( 9259 != $tag_row['id'] )
-			require_once(dirname(__FILE__) . "/channel.inc.php");
-		else
+		if ( 26559 == $tag_row['id']) 
+			require_once(dirname(__FILE__) . "/channel.inc.dizhen.php");
+		else if ( 9259 == $tag_row['id'] )
 			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
+		else
+			require_once(dirname(__FILE__) . "/channel.inc.php");
 		JWVisitTag::Record($tag_id, JWRequest::GetRemoteIP());
 		break;
 

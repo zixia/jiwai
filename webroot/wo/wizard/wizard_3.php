@@ -89,7 +89,7 @@ function $(el) {
 			<p class="note2"><a href="javascript:void(0);" onclick="$('readme').style.display = 'none'==$('readme').style.display ? 'block' : 'none'" class="orange14">如何操作，点击这里查看说明</a></p>
 		<div class="details" id="readme" style="display:none;">
 		   <p class="detailsPo"><span class="detailsNum orange">1</span><b>注册叽歪网</b> - 假设你的用户名为“jiwai”</p>
-		   <p class="detailsPo"><span class="detailsNum orange">2</span><b>设置群发关系</b> - 让朋友发送 <span class="blue12">on+空格+你的用户名</span> 到106693184</p>
+		   <p class="detailsPo"><span class="detailsNum orange">2</span><b>设置群发关系</b> - 让朋友发送 <span class="blue12">on+空格+你的用户名</span> 到1066808866</p>
 		   <p class="note3">例如你注册的用户名是jiwai，则叫你的朋友发送“on jiwai”，不区分字母大小写
 		   <p class="note5 gray">﹡发短信给叽歪网，与发短信给普通手机费用完全一样</p>
 		   <p class="note6"><a href="http://help.jiwai.de/WizardIM" target="_blank" class="gray12">点击了解如何发给QQ/MSN</a></p>

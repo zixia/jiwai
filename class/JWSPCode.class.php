@@ -21,11 +21,11 @@ class JWSPCode {
 
 	static private $codeBase = array(
 		self::SP_MOBILE => array(
-			// QianXiang 10669318-4
-			array( 
-				'code' => '10669318', 
-				'gid' => 85, 
-				'func' => 4,
+			// LinkTone 
+			array(
+				'code' => '10668088',
+				'gid' => '',
+				'func' => '66',
 				'funcPlus' => '',
 				'default' => true,
 			),
@@ -58,23 +58,8 @@ class JWSPCode {
 				'funcPlus' => '',
 				'default' => false,
 			),
-			// LinkTone 
-			array(
-				'code' => '10668088',
-				'gid' => '',
-				'func' => '66',
-				'funcPlus' => '',
-				'default' => false,
-			),
 		),
 		self::SP_UNICOM => array(
-			array( 
-				'code' => '10669318',
-				'gid' => 3, 
-				'func' => '4',
-				'funcPlus' => '',
-				'default' => true,
-			),
 			array(
 				'code' => '10605328',
 				'gid' => '',

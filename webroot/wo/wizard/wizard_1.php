@@ -86,8 +86,8 @@ function $(el) {
 			<p>在生活中经常看到有趣的场面？手机拍照，立即通过<span class="blue">彩信</span>发送到叽歪网。</p>
 			<p class="note2"><a href="javascript:void(0);" onclick="$('readme').style.display = 'none'==$('readme').style.display ? 'block' : 'none'" class="orange14">如何操作，点击这里查看说明</a></p>
 		<div class="details" id="readme" style="display:none;">
-		   <p class="detailsPo"><span class="detailsNum orange">1</span><b>注册叽歪网</b> - 用手机发送 <span class="blue12">zc+空格+你想要的用户名</span> 到106693184，例如“zc 美女”，不区分字母大小写
-		   <p class="detailsPo"><span class="detailsNum orange">2</span><b>发表文字</b> - 通过短信发送你的话到 106693184</p> 
+		   <p class="detailsPo"><span class="detailsNum orange">1</span><b>注册叽歪网</b> - 用手机发送 <span class="blue12">zc+空格+你想要的用户名</span> 到1066808866，例如“zc 美女”，不区分字母大小写
+		   <p class="detailsPo"><span class="detailsNum orange">2</span><b>发表文字</b> - 通过短信发送你的话到 1066808866</p> 
 		   <p class="detailsPo"><span class="detailsNum orange">3</span><b>发表图片</b> - 通过彩信发送照片到 <span class="blue12">m@jiwai.de</span> <span class="black12"></span><a href="http://help.jiwai.de/MMS" target="_blank"><img src="<?php echo JWTemplate::GetAssetUrl('/images/icon.gif');?>" border="0" /></a><span class="black12"></span></p>
 		   <p class="note4">只需三步，就可以随时记录你的话和你的照片，并分享给大家，就是这么简单！<br/>
 		   <span class="gray">﹡发短信给叽歪网，与发短信给普通手机费用完全一样</span></p>

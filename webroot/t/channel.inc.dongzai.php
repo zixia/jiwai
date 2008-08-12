@@ -129,7 +129,7 @@ $follow_string = $has_following ? '已关注' : '关注['.$tag_row['name'].']';
 	<div id="wtchannel">
 	<div class="cha_tit" style="height:100px;">
 		<span class="pad"><?php if($has_following) echo $follow_string; else { ?> <a href="<?php echo JW_SRVNAME .'/wo/followings/followchannel/' .$tag_row['id']; ?>" onClick="return JWAction.redirect(this);"><?php echo $follow_string;?><?php } ?></a></span>[<?php echo $tag_row['name'];?>]
-		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;">发送短信到<span style="font-weight:bold;">106693184001</span>，直播你的所见所闻</p>
+		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;">发送短信到<span style="font-weight:bold;">1066808866001</span>，直播你的所见所闻</p>
 		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;">发送彩信，内容用"<span style="font-weight:bold;">[冻灾]</span>"开头，到<span style="font-weight:bold;">m@jiwai.de</span></p>
 		<p style="padding-top:5px; clear:both; font-size:12px; font-weight:normal;"><input type="button" class="submitbutton" value="告诉朋友" onClick="send_dongzai();"/></p>
 	</div>
