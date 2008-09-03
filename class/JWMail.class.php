@@ -170,6 +170,7 @@ class JWMail {
 
 			 '/%Friend.nameScreen%/i' => @$friend['nameScreen'],
 			 '/%EFriend.nameScreen%/i' => UrlEncode(@$friend['nameScreen']),
+			 '/%EFriend.idUser%/i' => UrlEncode(@$friend['id']),
 			 '/%Friend.nameFull%/i' => @$friend['nameFull'],
 		);
 
@@ -314,7 +315,7 @@ class JWMail {
  	 *	@param	array	receiver	user_info的结构
  	 *	@param	string	message		direct message
  	 */
-	static public function SendMailNoticeDirectMessage($sender, $receiver, $message, $device)
+	static public function SendMailNoticeDirectMessage($sender, $receiver, $message, $device, $message_id=0)
 	{
 		if ( !JWUser::IsValidEmail($receiver['email']) )
 			return;
@@ -326,6 +327,7 @@ class JWMail {
 	
 		$template_data = preg_replace('/%DirectMessage.message%/i'	,$message	,$template_data);
 		$template_data = preg_replace('/%DirectMessage.device%/i'	,$device	,$template_data);
+		$template_data = preg_replace('/%DirectMessage.idMessage%/i'	,$message_id	,$template_data);
 
 		$template_info = self::ParseTemplate($template_data);
 

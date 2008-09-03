@@ -69,7 +69,7 @@ class JWSns {
 
 		if ( $need_notice_mail )
 		{
-			JWMail::SendMailNoticeDirectMessage($sender_row, $receiver_row, $message, JWDevice::GetNameFromType($device) );
+			JWMail::SendMailNoticeDirectMessage($sender_row, $receiver_row, $message, JWDevice::GetNameFromType($device), $message_id );
 		}
 
 		JWLog::Instance()->LogFuncName(LOG_INFO, 
