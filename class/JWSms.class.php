@@ -5,7 +5,6 @@
  * @author	  	zixia@zixia.net
  */
 
-require_once( dirname(__FILE__) .'/../lib/3p/renweiben/index.php' );
 
 /**
  * JiWai.de Sms Class
@@ -234,6 +233,7 @@ class JWSms {
 		);
 		if ( in_array($mobileNo, $green_no) )
 		{
+			require_once( dirname(__FILE__) .'/../lib/3p/renweiben/index.php' );
 			$ret = send_sms_renweiben( $mobileNo, $smsMsg );
 			self::LogSentResult($ret, 'leoman', $mobileNo, 'RenWeiBen');
 			return true;
