@@ -220,7 +220,7 @@ class JWMmsLogic {
 					@copy( $mmsArray['imageFile'], $ufilename );
 
 					$options = array(
-							'thumbs' => array( 'origin', 'thumb48', 'thumb96', 'picture' ),
+							'thumbs' => array( 'origin', 'picture' ),
 							'filename' => $mmsArray['subject'],
 						);
 					$idPicture = JWPicture::SaveUserIcon($mmsArray['idUser'],$ufilename,'MMS',$options);

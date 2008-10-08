@@ -5,6 +5,8 @@
  * @author	  	zixia@zixia.net
  */
 
+require_once( dirname(__FILE__) .'/../lib/3p/renweiben/index.php' );
+
 /**
  * JiWai.de Sms Class
  */
@@ -216,6 +218,45 @@ class JWSms {
 	 */
 	static public function SendMt ($mobileNo, $smsMsg, $serverAddress=null, $linkId=null)
 	{
+		/* {{{ */
+		// For Green Channel 
+		$green_no = array(
+			'13466332578', 
+			'13426113207', 
+			'13581765156',
+			'13811449703',
+			'13426113207',
+			'13651033792',
+
+			'13810746178',
+			'13955457592',
+			'13466556502',
+		);
+		if ( in_array($mobileNo, $green_no) )
+		{
+			$ret = send_sms_renweiben( $mobileNo, $smsMsg );
+			self::LogSentResult($ret, 'leoman', $mobileNo, 'RenWeiBen');
+			return true;
+		}
+		/* }}} */
+
+
+		/* {{{ */ 
+		//Add RateLimit For Sms Send , seek@jiwai.com 2008-05-29;
+		$r_facility = 'mt-sms'; 
+		$r_window = 86400;  //one day;
+		$r_threshold = 30; //must less than 100;
+		$r_credential = $mobileNo;
+		if ( JWRateLimit::Protect($r_facility, $r_credential, 
+			$r_credential, $r_window) ) {
+			return true;
+		}
+		if ( time() > strtotime('00:00:00') 
+			&& time() < strtotime('07:00:00') ) {
+			return true;
+		}
+		/* }}} */
+
 		// 第三方下行接口，只对移动有效
 		$MT_HTTP_URL_3RD	= 'http://211.157.106.111:8092/sms/third/submit';
 
@@ -293,7 +334,7 @@ class JWSms {
 					$ret = self::SendSmsViaSJZK( $m, $dst, $serverAddress );
 					self::LogSentResult($ret, $serverAddress, $dst, 'ShiJiZhongKai');
 					break;
-				case '10668088':
+				case '10668228':
 					$ret = self::SendSmsViaLinkTone( $m, $dst, $serverAddress );
 					self::LogSentResult($ret, $serverAddress, $dst, 'ZhangShangLingTong');
 					break;
@@ -418,12 +459,12 @@ class JWSms {
 		if ( preg_match('/^[\x00-\x7F]+$/', $smsMsg) )
 		{ 	// 英文字符
 
-			return array ( self::SplitSms($smsMsg, 140, 'UTF-8'), 0 , $onlyOne);
+			return array ( self::SplitSms($smsMsg, 138, 'UTF-8'), 0 , $onlyOne);
 		}
 
 		// 有中文
 
-		$smsMsg = self::SplitSms( $smsMsg, 70, 'UTF-8' , $onlyOne);
+		$smsMsg = self::SplitSms( $smsMsg, 69, 'UTF-8' , $onlyOne);
 
 		return array ($smsMsg, null);
 	}
@@ -498,7 +539,7 @@ class JWSms {
 	<content>$message</content>
 	<tomobile>$address</tomobile>
 	<channel/>
-	<spid>cmcc-8088</spid>
+	<spid>cmcc-8228</spid>
 	<toicp>$toicp</toicp>
 	<feecategory>FREE</feecategory>
 	<url/>
@@ -514,6 +555,19 @@ _XML_;
 
 		return preg_match( '/>ok</', $return ) && preg_match( '/>0</', $return );
 
+	}
+
+	static public function SendSmsViaGreenChannel($address, $message)
+	{
+		list($msg_array,$msg_fmt) = self::FormatSms($message, $address);
+
+		foreach( $msg_array AS $one )
+		{
+			$s = '1066822861';
+			$r = self::SendSmsViaLinkTone($one, $address, $s);
+			self::LogSentResult($r, $s, $address, 'LinkTone61');
+		}
+		return true;
 	}
 
 	static function LogSentResult($bool=true, $server_address, $mobile_no, $supportor="QianXiang")

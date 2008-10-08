@@ -146,7 +146,7 @@ class JWRobotMsg {
 			//Maybe normal robot_msg -- Comptiable with OLD RobotMsg DATA
 			else
 			{   
-				$charset = mb_detect_encoding($output->body);
+				$charset = @mb_detect_encoding($output->body);
 				if ( 'UTF-8' == $charset )
 					$body = $output->body;
 				else

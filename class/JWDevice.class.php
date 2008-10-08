@@ -232,9 +232,9 @@ class JWDevice {
 		$condition_in = JWDB::GetInConditionFromArray($idUsers, 'int');
 
 		$sql = <<<_SQL_
-SELECT	
+SELECT
 	*,id as idDevice
-FROM	
+FROM
 	Device
 WHERE
 	idUser IN ( $condition_in )

@@ -23,7 +23,7 @@ class JWSPCode {
 		self::SP_MOBILE => array(
 			// LinkTone 
 			array(
-				'code' => '10668088',
+				'code' => '10668228',
 				'gid' => '',
 				'func' => '66',
 				'funcPlus' => '',
@@ -83,7 +83,7 @@ class JWSPCode {
 			),
 			// LinkTone 
 			array(
-				'code' => '10668088',
+				'code' => '10668228',
 				'gid' => '',
 				'func' => '66',
 				'funcPlus' => '',
@@ -100,7 +100,7 @@ class JWSPCode {
 			),
 			// LinkTone 
 			array(
-				'code' => '10668088',
+				'code' => '10668228',
 				'gid' => '',
 				'func' => '66',
 				'funcPlus' => '',
