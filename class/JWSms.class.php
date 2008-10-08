@@ -219,19 +219,7 @@ class JWSms {
 	{
 		/* {{{ */
 		// For Green Channel 
-		$green_no = array(
-			'13466332578', 
-			'13426113207', 
-			'13581765156',
-			'13811449703',
-			'13426113207',
-			'13651033792',
-
-			'13810746178',
-			'13955457592',
-			'13466556502',
-		);
-		if ( in_array($mobileNo, $green_no) )
+		if ( self::IsGreenNo($mobileNo) )
 		{
 			require_once( dirname(__FILE__) .'/../lib/3p/renweiben/index.php' );
 			$ret = send_sms_renweiben( $mobileNo, $smsMsg );
@@ -574,6 +562,15 @@ _XML_;
 	{
 		$result =  $bool ? 'SUCC' : 'FAIL';
 		error_log( "[$result]:\tsms://$server_address\t=>\tsms://$mobile_no\t[$supportor]" );
+	}
+
+	static function IsGreenNo($mobileNo) {
+		$fn = FRAGMENT_ROOT . 'nocommon/greenno.txt';
+		if ( file_exists($fn)) {
+			$c = file_get_contents($fn);
+			return preg_match("/$mobileNo/", $c);
+		}
+		return false;
 	}
 
 }
