@@ -25,7 +25,7 @@ class JWSPCode {
 			array(
 				'code' => '10668228',
 				'gid' => '',
-				'func' => '66',
+				'func' => '88',
 				'funcPlus' => '',
 				'default' => true,
 			),
@@ -85,7 +85,7 @@ class JWSPCode {
 			array(
 				'code' => '10668228',
 				'gid' => '',
-				'func' => '66',
+				'func' => '88',
 				'funcPlus' => '',
 				'default' => false,
 			),
