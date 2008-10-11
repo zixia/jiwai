@@ -887,7 +887,7 @@ _SQL_;
 
 		$duration = time() - $unixtime;
 		if ( $forceDate || $duration > 2*86400 ){
-			return strftime("%Y-%m-%d 周%a %H:%M",$unixtime);
+			return strftime("%Y-%m-%d 周%a %H:%M:%S",$unixtime);
 		}else if ( $duration > 86400 ){
 			return strftime("%Y-%m-%d %H:%M",$unixtime);
 			//return "1 天前";
@@ -1027,7 +1027,7 @@ _SQL_;
 	 *	@return	array	formated status & other info
 	 *					array ( 'status' => ..., 'replyto' => ... );
 	 */
-	static public function FormatStatus ($status, $jsLink=true, $urchin=false)
+	static public function FormatStatus ($status, $jsLink=true, $urchin=false, $mobile = false)
 	{
 		$status2 = $status;
 
@@ -1101,7 +1101,14 @@ _HTML_;
 			}
 			else
 			{
-				if( $urchin ) {
+                if ( $mobile ) {
+## http://www.google.cn/gwt/n?hl=zh-CN&ct=res&cd=1&rd=1&u=xxx
+                    $google_mobile_url = 'http://www.google.cn/gwt/n?hl=zh-CN&ct=res&cd=1&rd=1&u=';
+                    $google_mobile_url.= urlencode("$matches[2]://$url_domain$url_path");
+					$url_str = <<<_HTML_
+						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$google_mobile_url" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">$matches[2]://$url_domain/...</a>
+_HTML_;
+                }elseif( $urchin ) {
 					$url_str = <<<_HTML_
 						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$matches[2]://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">$matches[2]://$url_domain/...</a>
 _HTML_;

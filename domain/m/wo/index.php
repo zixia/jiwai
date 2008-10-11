@@ -25,7 +25,7 @@ $protected = JWSns::IsProtected( $userRows[$s['idUser']], $loginedIdUser )
                 || JWSns::IsProtectedStatus( $s, $loginedIdUser );
 
 	if($protected) continue;
-    $fs = JWStatus::FormatStatus( $s, false );
+    $fs = JWStatus::FormatStatus( $s, false, false, true );
     $s['status'] = $fs['status'];
     $statuses[ $k ] = $s;
 }
