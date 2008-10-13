@@ -39,16 +39,16 @@
      <h1>联系我们</h1>
      <div class="groupfont">
        <h3>叽歪网</h3>
-       <p>地址：北京海淀区知春路甲48号盈都大厦C座4单元3A室
-<br />邮编：100098<br />
-       总机：010-58731472 <br />
-       传真：010-58731470<br /><br />
+       <p>地址：北京市东城区安定门东大街 28 号雍和大厦F座 816 室
+<br />邮编：100007<br />
+       总机：010-84195699<br />
+       传真：010-84195328<br /><br />
        客户服务邮箱：jiwai [at] jiwai.com （请把[at]改成@） <br />
        商务合作邮箱：bd [at] jiwai.com （请把[at]改成@）<br /><br />
        大屏幕合作邮箱：dpm [at] jiwai.com （请把[at]改成@）<br />
-       大屏幕合作专线：010-58731472-208（205）<br /><br />
+       大屏幕合作专线：010-84195699-8050<br /><br />
        </p>
-        <img alt="叽歪网的位置" title="叽歪网的位置" style="float:left;" src="<? echo JWTemplate::GetAssetUrl('/images/tu.jpg');?>" />
+        <img alt="叽歪网的位置" title="叽歪网的位置" style="float:left;" src="<? echo JWTemplate::GetAssetUrl('/images/org-map-office.jpg');?>" />
      </div>
      
    </div>
