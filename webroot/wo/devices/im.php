@@ -11,7 +11,7 @@ $notice = JWSession::GetInfo('notice');
 
 /*$supported_devices = JWDevice::GetSupportedDeviceTypes();
 $supported_devices = array_diff( $supported_devices, array( 'sms','facebook','newsmth' ) );*/
-$supported_devices = array('qq', 'msn', 'gtalk', 'fetion', 'skype', 'yahoo', 'aol', 'newsmth', 'jabber');
+$supported_devices = array('qq', 'msn', 'gtalk', 'fetion', 'skype', 'yahoo', 'aol', 'newsmth', 'jabber', 'xiaonei');
 
 //echo "<pre>";(var_dump($user_setting));
 if ( isset($_REQUEST['_shortcut']) )

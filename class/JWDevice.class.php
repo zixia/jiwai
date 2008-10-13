@@ -919,6 +919,9 @@ _SQL_;
 			case 'yahoo':
 				$name='Yahoo!';
 				break;
+			case 'xiaonei':
+				$name='校内';
+				break;
 			default:
 				$name=strtoupper($type);
 		}
