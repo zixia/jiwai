@@ -1,0 +1,194 @@
+/**
+ * iChat-like skin for Google Talk
+ * @version: 1.0
+ * @copyright: Piotr Usewicz
+ * @website: www.layer22.com
+ * @notice: Feel free to distribute, keep this notice.
+ **/
+
+BODY {
+  margin: 4px;
+  background: white;
+  width: 100%;
+}
+DIV#content, td {
+  font: 12px Arial;
+}
+DIV#insert {
+  display: none;
+}
+
+/* Two ways to do icons with these rules:
+   <img class='icon' src='%userIconPath%'>
+   <div class='icon'><div style='height:1px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="%userIconPath%")'></div></div>
+*/
+
+table {
+	border-collapse: collapse;
+	border: 0px;
+	padding: 0;
+}
+
+div.out .msg table.whole {
+	float: left;
+}
+
+div.in .msg table.whole {
+	float: right;
+}
+
+.out DIV.1st {
+  padding-top: 4px;
+  background: white;
+}
+
+.out td.first {
+	background: white;
+}
+
+.out td.top {
+	background: url('Outgoing/top.gif') repeat-x;
+	height: 9px;
+}
+
+.out td.top-left {
+	background: url('Outgoing/top-left.gif') no-repeat;
+	width: 18px;
+	height: 9px;
+}
+
+.out td.top-right {
+	background: url('Outgoing/top-right.gif') no-repeat;
+	width: 11px;
+	height: 9px;
+}
+
+.out td.bottom {
+	background: url('Outgoing/bottom.gif') repeat-x;
+	height: 12px;
+}
+
+.out td.bottom-left {
+	background: url('Outgoing/bottom-left.gif') no-repeat;
+	width: 18px;
+	height: 12px;
+}
+
+
+.out td.bottom-right {
+	background: url('Outgoing/bottom-right.gif') no-repeat;
+	width: 11px;
+	height: 12px;
+}
+
+.out td.left {
+	background: url('Outgoing/left.gif') repeat-y;
+	width: 16px;
+}
+
+.out td.right {
+	background: url('Outgoing/right.gif') repeat-y;
+	width: 11px;
+}
+
+/* Ingoing */
+
+.in DIV.1st {
+  padding-top: 4px;
+  background: #c0e668;
+}
+
+.in td.first {
+	background: #c0e668;
+}
+
+.in td.top {
+	background: url('Incoming/top.gif') repeat-x;
+	height: 9px;
+}
+
+.in td.top-left {
+	background: url('Incoming/top-left.gif') no-repeat;
+	width: 11px;
+	height: 9px;
+}
+
+.in td.top-right {
+	background: url('Incoming/top-right.gif') no-repeat;
+	width: 18px;
+	height: 9px;
+}
+
+.in td.bottom {
+	background: url('Incoming/bottom.gif') repeat-x;
+	height: 12px;
+}
+
+.in td.bottom-left {
+	background: url('Incoming/bottom-left.gif') no-repeat;
+	width: 11px;
+	height: 12px;
+}
+
+
+.in td.bottom-right {
+	background: url('Incoming/bottom-right.gif') no-repeat;
+	width: 18px;
+	height: 12px;
+}
+
+.in td.left {
+	background: url('Incoming/left.gif') repeat-y;
+	width: 11px;
+}
+
+.in td.right {
+	background: url('Incoming/right.gif') repeat-y;
+	width: 16px;
+}
+
+DIV.chat {
+  padding: 5px 2px;
+}
+
+DIV.chat .icon-o {
+  padding: 2px;
+  margin: 0px 3px 0px 0px;
+  vertical-align: bottom;
+  height: 32px;
+  width: 32px;
+}
+
+DIV.chat .icon-i {
+  padding: 2px;
+  margin: 0px 3px 0px 0px;
+  vertical-align: bottom;
+  height: 32px;
+  width: 32px;
+}
+
+DIV.chat DIV.Nth {
+  margin: 5px 0px 0px 0px;
+}
+
+DIV.out {
+  text-align: left;
+  height: 1px;
+}
+
+DIV.in {
+  text-align: left;
+  height: 1px;
+}
+
+DIV.clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+}
+
+DIV.break {
+  height: 1px;
+  margin: 3px 0px 0px 0px;
+  overflow: hidden;
+}

@@ -1,0 +1,167 @@
+/**
+ * iChat-like skin for Google Talk
+ * @version: 1.0
+ * @copyright: Piotr Usewicz
+ * @website: www.layer22.com
+ * @notice: Feel free to distribute, keep this notice.
+ **/
+
+BODY {
+  margin: 4px;
+  width: 100%;
+}
+DIV#content, td {
+  font: 12px Arial;
+}
+DIV#insert {
+  display: none;
+}
+
+/* Two ways to do icons with these rules:
+   <img class='icon' src='%userIconPath%'>
+   <div class='icon'><div style='height:1px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="%userIconPath%")'></div></div>
+*/
+
+table {
+	border-collapse: collapse;
+	border: 0px;
+	padding: 0;
+}
+
+div.out .msg table.whole {
+	float: left;
+}
+
+div.in .msg table.whole {
+	float: right;
+}
+
+.out DIV.1st {
+  padding-top: 4px;
+}
+
+.out td.top {
+	height: 9px;
+}
+
+.out td.top-left {
+	width: 18px;
+	height: 9px;
+}
+
+.out td.top-right {
+	width: 11px;
+	height: 9px;
+}
+
+.out td.bottom {
+	height: 12px;
+}
+
+.out td.bottom-left {
+	width: 18px;
+	height: 12px;
+}
+
+
+.out td.bottom-right {
+	width: 11px;
+	height: 12px;
+}
+
+.out td.left {
+	width: 16px;
+}
+
+.out td.right {
+	width: 11px;
+}
+
+/* Ingoing */
+
+.in DIV.1st {
+  padding-top: 4px;
+}
+
+.in td.top {
+	height: 9px;
+}
+
+.in td.top-left {
+	width: 11px;
+	height: 9px;
+}
+
+.in td.top-right {
+	width: 18px;
+	height: 9px;
+}
+
+.in td.bottom {
+	height: 12px;
+}
+
+.in td.bottom-left {
+	width: 11px;
+	height: 12px;
+}
+
+
+.in td.bottom-right {
+	width: 18px;
+	height: 12px;
+}
+
+.in td.left {
+	width: 11px;
+}
+
+.in td.right {
+	width: 16px;
+}
+
+DIV.chat {
+  padding: 5px 2px;
+}
+
+DIV.chat .icon-o {
+  padding: 2px;
+  margin: 0px 3px 0px 0px;
+  vertical-align: bottom;
+  height: 32px;
+  width: 32px;
+}
+
+DIV.chat .icon-i {
+  padding: 2px;
+  margin: 0px 3px 0px 0px;
+  vertical-align: bottom;
+  height: 32px;
+  width: 32px;
+}
+
+DIV.chat DIV.Nth {
+  margin: 5px 0px 0px 0px;
+}
+
+DIV.out {
+  text-align: left;
+  height: 1px;
+}
+
+DIV.in {
+  text-align: left;
+  height: 1px;
+}
+
+DIV.clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+}
+
+DIV.break {
+  height: 1px;
+  margin: 3px 0px 0px 0px;
+  overflow: hidden;
+}
