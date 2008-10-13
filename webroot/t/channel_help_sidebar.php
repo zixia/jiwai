@@ -4,6 +4,7 @@
 <div class="linkHelpMessager"><a href="/wo/feedback/" onClick="return JWAction.redirect(this);"><img src="<?php echo JWTemplate::GetAssetUrl('/images/feedback/feedback_10.jpg');?>" border="0"/></a></div>
 <DIV class=sidehelpdiv>是否要问以下的问题呢？</DIV>
 <UL class=helpinfo>
+	<LI style="font-weight:bold;color:#FF0000;">手机绑定和接收目前不正常<BR></LI>
 	<LI><A href="http://help.jiwai.de/Faq" target=_blank>常见问题集合(FAQ)</A><BR></LI>
 	<LI><A href="http://help.jiwai.de/MobileFAQ" target=_blank>手机常见问题</A></LI>
 	<LI><A href="http://help.jiwai.de/IMFAQ" target=_blank>QQ、MSN、Gtalk常见问题</A></LI>

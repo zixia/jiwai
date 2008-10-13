@@ -60,8 +60,12 @@ switch ( $func )
 		break;
 
 	case 'channel':
-		if ( 26559 == $tag_row['id']) 
-			require_once(dirname(__FILE__) . "/channel.inc.dizhen.php");
+		if ( 57612== $tag_row['id']) 
+			require_once(dirname(__FILE__) . "/channel.inc.shenqi.php");
+		else if ( 21784== $tag_row['id']) 
+			require_once(dirname(__FILE__) . "/channel.inc.aoyun.php");
+		else if ( 26559== $tag_row['id'] )
+			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
 		else if ( 9259 == $tag_row['id'] )
 			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
 		else

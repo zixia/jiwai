@@ -57,6 +57,7 @@ class JWMessage {
 	 */
 	static public function Create( $sender_id, $receiver_id, $message, $device='web', $options=array() )
 	{
+		//if(in_array($sender_id, array(40088)) return false;
 		$sender_id = JWDB::CheckInt($sender_id);
 		$receiver_id = JWDB::CheckInt($receiver_id);
 		$time = isset($options['time']) ? intval($options['time']) : time();

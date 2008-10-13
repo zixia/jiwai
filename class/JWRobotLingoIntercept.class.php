@@ -96,7 +96,7 @@ class JWRobotLingoIntercept {
 		$server_address = $robot_msg->GetHeader('serveraddress');
 		$body = $robot_msg->GetBody();
 
-		if ( '106693184001' == $server_address )
+		if ( '10668088664001' == $server_address )
 		{
 			if( false == preg_match('/^(F|FOLLOW|L|LEAVE|DELETE|ON|OFF)\b/i', $robot_msg->GetBody() ) )
 			{
@@ -105,7 +105,7 @@ class JWRobotLingoIntercept {
 			}
 		}
 
-		if ( '106693184002' == $server_address 
+		if ( '10668088664002' == $server_address 
 			|| '1066822888002' == $server_address
 			)
 		{

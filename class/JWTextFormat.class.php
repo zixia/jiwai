@@ -77,7 +77,7 @@ class JWTextFormat {
 	static public function _TrimSpecialChar( $text ) 
 	{
 		// new line to space
-		$text = preg_replace( '/[\n\r]/', ' ', $text);
+		$text = preg_replace( '/[\n\r]/', '', $text);
 
 		// invalid character in XML
 		$text = preg_replace( '/[\x00-\x09\x0b\x0c\x0e-\x19]/U', '', $text ); 

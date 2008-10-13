@@ -220,19 +220,39 @@ $menu_list = array (
 		'url' => "/$page_user_info[nameUrl]/",
 	),
 );
+
 if(34459 == $page_user_id)//冷笑话
+{
+	$menu_list['shuiping'] = array(
+		'active' => false,
+		'name' => "水瓶座",
+		'url' => "/t/%E6%B0%B4%E7%93%B6%E5%BA%A7/",
+	);
 	$menu_list['contribute'] = array(
 		'active' => false,
 		'name' => "投稿",
 		'url' => "/t/冷笑话/",
 	);
-if(32834 == $page_user_id)//冷笑话
 	$menu_list['joke'] = array(
 		'active' => false,
 		'name' => "笑话",
-		'url' => "/t/笑话/",
+		'url' => "/t/%E7%AC%91%E8%AF%9D/",
 	);
+}
 
+if(32834 == $page_user_id)//汪强
+{
+	$menu_list['joke'] = array(
+		'active' => false,
+		'name' => "笑话",
+		'url' => "/t/%E7%AC%91%E8%AF%9D/",
+	);
+	$menu_list['shuiping'] = array(
+		'active' => false,
+		'name' => "水瓶座",
+		'url' => "/t/%E6%B0%B4%E7%93%B6%E5%BA%A7/",
+	);
+}
 if( null!==$q ){
 	$menu_list['search'] = array(	
 		'active' => false , 

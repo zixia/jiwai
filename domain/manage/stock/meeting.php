@@ -128,7 +128,7 @@ if( !empty( $conference ) )
 					<br/>
 					<input <?php if ( null!==$conference_id ) echo ' checked="checked" ';?> id="enable_conference" name="enableConference" type="checkbox" value="Y" style="width:24px; display:inline;" /><label for="enable_conference">启动会议模式</label>
 					<p> 使用方法：<br/>
-						1、手机编辑短信，发送到 106693184-40-<?php echo $stock_num; ?>  , 
+						1、手机编辑短信，发送到 1066808866-40-<?php echo $stock_num; ?>  , 
 						<br/>
 						2、发消息时增加 "[<?php echo $tag_info['name'];  ?>]"
 					</p>

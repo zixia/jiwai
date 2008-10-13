@@ -42,12 +42,12 @@ sub _buildMail {
         'From'      => $from,
         'Subject'   => $subject,
         'message_from_file' => 1,
-        'headers_from_message'  => 0,
+        'headers_from_message'  => 1,
         'Message'   => $message,
         'servers'   => [$server, ],
     ) or die Mail::Bulkmail->error();
     $bulk->header("MIME-Version", "1.0");
-    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0006_01C85705.1F18C870"');
+    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0052_01C9217D.6AF41720"');
 
 =pod
     $bulk->header("MIME-Version", "1.0");
@@ -70,14 +70,15 @@ sub _buildList {
     open FD, ">", $newlist;
     ##unlink $newlist;
 
-    my $sth = $dbh->prepare("SELECT email FROM " . $table);
+    my $sth = $dbh->prepare("SELECT email FROM " . $table . " WHERE srcRegister IS NULL");
     $sth->execute();
 
     my ($ref, $entry) = ();
     while ($ref = $sth->fetchrow_hashref()) {
         $entry = $ref->{'email'};
         chomp $entry;
-	$entry = reverse $entry;
+        $entry = reverse $entry;
+        next if ($entry=~m!jiwai.de!);
         if ($entry=~m!.*?@.*?!) {
             print FD $entry, "\n";
         }       
@@ -94,7 +95,7 @@ my %opts = ();
 my $forceCharset = 'gb2312';
 my ($charset, $subject, $message) = ($forceCharset);
 my ($smtpServer, $smtpPort, $smtpDomain) = ('127.0.0.1', 25, 'jiwai.de');
-my ($mailList, $mailFrom) = ('/tmp/bulkmail.list', 'wo@jiwai.de');
+my ($mailList, $mailFrom) = ('/tmp/bulkmail.list', 'JiWai_de <wo@jiwai.de>');
 
 getopts('c:s:f:l:o:', \%opts);
 

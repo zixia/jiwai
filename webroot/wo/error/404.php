@@ -101,14 +101,39 @@ margin: 10px;
     <td><img src="http://asset.jiwai.de/images/org-404-right.jpg" width="381" height="399"></td>
   </tr>
   <tr>
-    <td class="countDown"><?php echo getTimeDiff(time(), strtotime('2008/8/8 20:00:00')); ?></td>
+    <td class="countDown"><?php echo getTimeDiff(time(), strtotime('2012/7/27 12:00:00')); ?></td>
   </tr>
     <tr align="center" >
     <td style="text-align:right; padding-right:25px; "><a href="<?php echo $url;?>">&lt;&lt; 从东土大唐来</a></td>
     <td style="text-align:left; padding-left:25px; "><a href="http://jiwai.de/">到西天取经去 &gt;&gt; </a></td>
   </tr>
+  <tr>
+  <style type="text/css">
+#goog-wm {
+  padding: 1em;
+  border: 3px solid #ff6600;
+  background-color: white;
+}
+#goog-wm h3#closest-match {
+  color: #8f2831;
+  border-bottom: 3px dashed #ff6600;
+  padding-bottom: 0.5em;;
+  font-size: 170%;
+  margin: 0;
+}
+#goog-wm h3#closest-match a { }
+#goog-wm h3#other-things { color: #8f2831; }
+#goog-wm ul li { }
+#goog-wm li.search-goog { display: block; }
+  </style>
+  <script type="text/javascript">
+  var GOOG_FIXURL_LANG = 'zh_CN';
+  var GOOG_FIXURL_SITE = 'http://jiwai.de/';
+  </script>
+  <script type="text/javascript" 
+  src="http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js"></script>
+  </tr>
 </table>
-
 
 </div><!-- #container -->
 

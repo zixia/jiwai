@@ -55,8 +55,8 @@
        </ul>
 	   </div>
      <div class="groupmen">
-	 <? $user_ids = array(20, 89, 863, 2802, 32834, 37222, 37340, 43000, 42998, 94479);
-	 $user_namescreens = array('zixia', 'freewizard', 'seek', 'lecause', 'wanghw', 'wqsemc', 'paopaoyu', '沈浅浅', 'Uranus-shi', 'rannie', 'xleoman');
+	 <? $user_ids = array(20, 89, 863, 2802, 32834, 37222, 37340, 43000, 42998, 94479, 135898);
+	 $user_namescreens = array('zixia', 'freewizard', 'seek', 'lecause', 'wanghw', 'wqsemc', 'paopaoyu', '沈浅浅', 'Uranus-shi', 'rannie', 'xleoman', 'winnie');
 	 foreach($user_ids as $user_id)
 	 {
 		$user_info = JWDB_Cache_User::GetDbRowById( $user_id );

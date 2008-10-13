@@ -179,6 +179,7 @@ _SQL_;
 			return $rtn;
 
 		$id_string = implode(',', $status_ids);
+        $id_string = preg_replace('/,,/', ',', $id_string);
 
 		$user_id = JWDB::CheckInt($user_id);
 

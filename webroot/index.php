@@ -147,7 +147,7 @@ swfobject.embedSWF("<?php echo $src;?>", "<?echo $swf_name;?>", "<? echo $focus_
 		</div>
 		<div id="search">
 		<?php $search_tips = "名字，Email，QQ号码，MSN帐号等";?>
-						<form id="f2" target="_blank" name="f2" method="get" action="<?php echo JW_SRVNAME . "/wo/search/users";?>" onsubmit="if($('search_user').value=='<?php echo $search_tips;?>')$('search_user').value='';">
+						<form id="f2" target="_blank" name="f2" method="get" action="<?php echo JW_SRVNAME . "/wo/search/users";?>" onsubmit="if($('search_user').value=='<?php echo $search_tips;?>') {alert('请输入查找内容');return false;}">
 		    <p align="center"><input type="text" id="search_user" class="searchBox1" onblur="this.className=this.className.replace(/\bfocus\b/,'');if(this.value=='')this.value='<?php echo $search_tips;?>';" onfocus="this.className+=' focus';if(this.value=='<?php echo $search_tips;?>')this.value=''" value="<?php echo $search_tips;?>" name="q"/>
 		    <p><input type="submit" class="submitbutton" value="寻找好友" />
 

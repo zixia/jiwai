@@ -63,7 +63,7 @@
 <a href="http://api.jiwai.de/statuses/channel_timeline/<?php echo $tag_row['id']; ?>.rss" class="rsshim">订阅[<?php echo $tag_row['name'];  ?>]的消息</a>
 
 <?php
-	if ( 26559 == $tag_row['id'] )
+	if ( 21784 == $tag_row['id'] )
 		echo '<a target="_blank" href="http://www.mytshirt.cn/tpub-kz?http://jiwai.de"><img src="'. JWTemplate::GetAssetUrl('/images/mytshirt.gif'). '"/></a>';
 ?>
 		<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>

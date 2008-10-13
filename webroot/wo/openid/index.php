@@ -110,7 +110,7 @@ _HTML_;
 }
 ?>
 			<p class="orange12"><a href="http://baike.baidu.com/view/832917.html" target="_blank">什么是 OpenID？</a>
-			<!--a href="http://openids.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a --></p>
+			<!--a href="http://openid.cn/how-to-use-openid/" target="_blank">OpenID如何使用？</a --></p>
 		</div><!-- wtRegist -->
 		</div>
 		<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>

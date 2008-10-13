@@ -140,7 +140,6 @@ _HTML_;
 		 *	强制不使用自定义界面，设置为 false 即可
 		 */
 		$ui_css = '';
-		$options['ui_user_id']=false;
 		if ( false!==$options['ui_user_id'] && !empty($options['ui_user_id']) )
 		{
 			$ui = new JWDesign($options['ui_user_id']);
@@ -261,7 +260,7 @@ _HTML_;
 				'/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
-				'/t/地震/' => '地震',
+				'/t/神七/' => '神七',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
 				'http://help.jiwai.de/' => '帮助'
@@ -272,7 +271,7 @@ _HTML_;
 			$nav = array(
 				'/wo/' => '首页',
 				$a => $b,
-				'/t/地震/' => '地震',
+				'/t/神七/' => '神七',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -284,7 +283,7 @@ _HTML_;
 				'/wo/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
-				'/t/地震/' => '地震',
+				'/t/神七/' => '神七',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',
 			);
@@ -368,7 +367,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav" style="background-color:#cccccc;"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active" style="background-color:#cccccc;"' : ''; if($highlight!=$url && '地震'==$txt) echo " style='background-color:#999999;'"?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; if($highlight!=$url && '神七'==$txt) echo " style='background-color:#FFCC00;'"?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -492,7 +491,7 @@ _HTML_;
 		<li><a href="<? echo JW_SRVNAME;?>/wo/about/partner" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
-		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a></li>
+		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP证020015号</a></li>
 	</ul>
 </div>
 
@@ -597,11 +596,11 @@ _HTML_;
 				<p>
                     <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
                     <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
-					<textarea name="jw_status" rows="3" id="jw_status" onkeydown="if(this.value.length>0 && ((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83))){JWAction.updateStatus(); return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
+					<textarea name="jw_status" wrap="hard" rows="3" id="jw_status" onkeydown="if(this.value.length>0 && ((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83))){JWAction.updateStatus(); return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>
-					<input style="margin-left:115px;filter:gray()" type="button" class="submitbutton" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" value="叽歪一下" title="叽歪一下"/>
+					<input style="margin-left:115px;" type="button" class="submitbutton" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" value="叽歪一下" title="叽歪一下"/>
 				</p>	
 			<?php
 				if(false == empty($options['sendtips']))
@@ -672,10 +671,13 @@ _TAB_;
 
 			/* custom menu */
 			if('joke'===$menu) {
-				echo "<a href = '$url' style='color:#0000FF;' class='active'>$name</a>";continue;
+				echo "<a target='_blank' href = '$url' style='color:#0000FF;' class='active'>$name</a>";continue;
+			}
+			if('shuiping'===$menu) {
+				echo "<a target='_blank' href = '$url' style='color:#0000FF;' class='active'>$name</a>";continue;
 			}
 			if('contribute'===$menu) {
-				echo "<a href = '$url' style='color:#FF0000;' class='active'>$name</a>";continue;
+				echo "<a target='_blank' href = '$url' style='color:#FF0000;' class='active'>$name</a>";continue;
 			}
 			/* custom menu end */
 
@@ -743,7 +745,7 @@ _TAB_;
 
 		if ( null == $status )
 		{
-			$status_id = $statusRow['idStatus'];
+			$status_id = $statusRow['id'];
 			$status_type = $statusRow['statusType'];
 			$status = $statusRow['status'];
 			$timeCreate = $statusRow['timeCreate'];
@@ -911,6 +913,7 @@ _HTML_;
 
 		if( $options['protected'] ) return;
 
+		$statusIds = array_diff($statusIds, array(null));
 		$is_favourited_array = JWFavourite::IsFavourited($current_user_id, $statusIds);
 
 		$current_user_id = JWUser::GetCurrentUserInfo('id');
@@ -1616,10 +1619,14 @@ _HTML_;
 
 
 	function sidebar_invite() {
+	$current_user_info = JWUser::GetCurrentUserInfo();
 ?>
 		<div class="featured" id="invite" style="line-height:30px;">
 			<p><a href="/wo/invitations/invite">邀请好友加入叽歪网</a></p>
 		</div>
+<div style="padding:0 10px;">
+<form target="_blank" action="http://www.mytshirt.cn/tool/tools_followme.html" method="POST"><input type="hidden" name="userid" value="<?php echo $current_user_info['nameScreen'];?>"><input type="hidden" name="apihash" value="jiwaimytshirt"><input type="submit" class="submitbutton" value="制作我的个性T恤"></form>
+</div>
 
 <?php
 	}
@@ -1648,11 +1655,26 @@ _HTML_;
 					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/asus2008/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
 		}
 
+    function sidebar_xcmlm()
+	    {    
+					echo "<span style='clear:both;font-size:16px;line-height:24px;font-weight:bold;align:center;'>叽歪网鼎力支持新媒体节</span>";
+			        $src = JWTemplate::GetAssetUrl('/images/jiwai_xcmlm.jpg');
+					$alt = "[叽歪网]中国国际新媒体节";
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="http://www.xcmlm.com/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
+		}
+
+    function sidebar_maxtv()
+	    {    
+			        $src = JWTemplate::GetAssetUrl('/images/jiwai_maxtv.gif');
+					$alt = "[叽歪网]迈视网";
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="http://news.maxtv.cn/file1/200884/644661.shtml"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
+		}
+
     function sidebar_ichina()
 	    {    
 			        $src = JWTemplate::GetAssetUrl('/images/jiwai_ichina.gif');
 					$alt = "[叽歪网]爱中国行动";
-					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/爱中国/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/神七/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
 		}
 
     function sidebar_tqybad()
@@ -1770,8 +1792,10 @@ if ($menuList[0][0] == 'login') {
 	</div><!-- sidediv -->
 <? if('public_timeline'==$pageName)
 {
-self::sidebar_asus();
-self::sidebar_tqybad();
+//self::sidebar_xcmlm();
+//self::sidebar_maxtv();
+//self::sidebar_asus();
+//self::sidebar_tqybad();
 }
 ?>	
 </div><!-- sidebar -->
@@ -2263,11 +2287,11 @@ _HTML_;
 ?>
 
 			接收通知方式：
-			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'" style="filter:gray();">
-				<li class="slect" onmouseover="style.backgroundColor='#F97B00';" onmouseout="style.backgroundColor='#F97B00'" style="filter:gray();"><?php echo $viaDevName; ?></li>
+			<ul class="droplist" onmouseover="this.className='droplistopen'" onmouseout="this.className='droplist'">
+				<li class="slect" onmouseover="style.backgroundColor='#F97B00';" onmouseout="style.backgroundColor='#F97B00'"><?php echo $viaDevName; ?></li>
 <?php
 		foreach ($otherDev as $d => $n) if ($d!='facebook') echo <<<__HTML__
-				<li onmouseover="style.backgroundColor='#FF8D1D';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');" style="filter:gray();">$n</li>
+				<li onmouseover="style.backgroundColor='#FF8D1D';" onmouseout="style.backgroundColor='#F97B00'" onclick="JiWai.ChangeDevice('$d');">$n</li>
 
 __HTML__;
 ?>

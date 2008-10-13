@@ -618,7 +618,7 @@ class JWBuddy_Mailbox_Gmail
 		//retrive contact list;		
 		$ret = array();
 		
-		$reg_string = '/<td>\s*<b>([^><]+)<\/b>\s*<\/td>\s*<td>\s*([\S]+@[\S]+)\s+.+<\/td>/U';
+		$reg_string = '#<td.*>\s*<b>([^><]+)</b>\s*</td>\s*<td>\s*([\S]+@[\S]+)\s+[^><]+</td>#U';
 		if ( preg_match_all($reg_string, $content, $matches, PREG_SET_ORDER) )
 		{
 			foreach( $matches AS $one )

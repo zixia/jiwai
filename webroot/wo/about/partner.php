@@ -54,8 +54,14 @@
         <ul>
          <li><a href="http://www.feedsky.com" title="feedsky" target="_blank"><img align="midddle" alt="feedsky" src="<? echo JWTemplate::GetAssetUrl('/images/fei14.jpg');?>" /></a></li>
          <li><a href="http://www.mycaifu.com" title="my财富" target="_blank"><img align="midddle" alt="my财富" src="<? echo JWTemplate::GetAssetUrl('/images/mycaifu.gif');?>" /></a></li>
-		 <li></li>
-		 <li></li>
+         <li><a href="http://maxtv.cn" title="迈视传媒" target="_blank"><img align="midddle" alt="迈视传媒" src="<? echo JWTemplate::GetAssetUrl('/images/flink/maxtv153x79.jpg');?>" /></a></li>
+         <li ><a href="http://www.xcmlm.com" title="新媒体产业联盟" target="_blank"><img style="width:79px;" align="midddle" alt="新媒体产业联盟" src="<? echo JWTemplate::GetAssetUrl('/images/flink/xcmlm79x79.jpg');?>" /></a></li>
+		 </ul>
+		 <ul>
+         <li><a href="http://www.51fayan.com/" title="中国发言人网" target="_blank"><img align="midddle" alt="中国发言人网" src="<? echo JWTemplate::GetAssetUrl('/images/flink/51fayan.jpg');?>" /></a></li>
+         <li><a href="http://www.cctn.info/" title="中国商务新闻网" target="_blank"><img align="midddle" alt="中国商务新闻网" src="<? echo JWTemplate::GetAssetUrl('/images/flink/shangwu.jpg');?>" /></a></li>
+         <li></li>
+         <li></li>
        </ul>
        
         <p style="float:left;width:100%;text-align:right;margin-top:13px;font-size:1.2em;color:#545454">合作伙伴排名不分先后</p>
@@ -72,6 +78,10 @@
 	<a href="http://www.fundodo.com" title="粉嘟嘟" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/fundodo8831.gif');?>" alt="粉嘟嘟"></a>
 	<a href="http://www.inezha.com" title="哪吒网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/inezha8831.gif');?>" alt="哪吒网"></a>
 	<a href="http://ow.blog.sohu.com/" title="搜狐博客开放平台" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/sohublog8831.jpg');?>" alt="搜狐博客开放平台"></a>
+	<a href="http://www.kaluu.com/" title="开路网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/kaluu8831.gif');?>" alt="开路网"></a>
+	<a href="http://www.dvod.com.cn/ " title="新世界网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/dvod8831.gif');?>" alt="新视界网"></a>
+	<a href="http://gocom.primeton.com/" title="构客网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/gocom8831.gif');?>" alt="构客网"></a>
+	<a href="http://h863.com/" title="健康863" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/h8638831.gif');?>" alt="健康863"></a>
 	<p style="float:left;width:100%;text-align:right;margin-top:13px;font-size:1.2em;color:#545454">友情链接排名不分先后</p>
 	 </div>
  </div>

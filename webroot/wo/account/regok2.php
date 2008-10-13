@@ -44,13 +44,16 @@ $picture_url_row = JWPicture::GetUrlRowByIds($picture_ids);
 <div class="lookfriend">
        <div class="binding">
 	   <p>一切就绪了，不知道从哪里开始吗？你可以</p>
-	   <p><a href="<?php echo JW_SRVNAME;?>/wo/">&gt;&gt; 马上开始叽歪</a></p>
-	   <p><a href="<?php echo JW_SRVNAME;?>/public_timeline/">&gt;&gt; 随便逛逛</a></p>
+	   <p><a href="http://beta.jiwai.de/wo/">&gt;&gt; 马上开始叽歪</a></p>
+	   <p><a href="http://beta.jiwai.de/g/">&gt;&gt; 随便逛逛</a></p>
 	   <p><b>或者，看看他们在叽歪什么</b></p>
 	   <div id="wtRegok"><!-- wtFollow start -->
         <div class="follow">
 	<ul class="followlist">
 <?php
+	   /*<p><a href="<?php echo JW_SRVNAME;?>/wo/">&gt;&gt; 马上开始叽歪</a></p>
+	   <p><a href="<?php echo JW_SRVNAME;?>/public_timeline/">&gt;&gt; 随便逛逛</a></p>
+	   */
 foreach( $friend_ids as $list_user_id )
 {
     $list_user_row = $friend_user_rows[$list_user_id];

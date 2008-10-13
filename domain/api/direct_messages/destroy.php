@@ -23,7 +23,7 @@ if( !in_array( $type, array('json','xml') )){
 if( !$message_id ) {
 	JWApi::OutHeader(400, true);
 }
-$un_message = JWMessage::GetMessageDbRowById( $message_id );
+$un_message = JWMessage::GetDbRowById( $message_id );
 if( !$un_message ) {
 	JWApi::OutHeader(404, true);
 }

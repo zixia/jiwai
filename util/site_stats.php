@@ -238,7 +238,9 @@ foreach ($templateReplace as $k=>$v) {
 /* Phase of Sendmail */
 $contact = array (
     'Wang Hongwei'  => 'glinus@jiwai.com',
-    'Tao Mengling'  => 'rannie@jiwai.com',
+    'Jing RuYa'     => 'jingruya@jiwai.com',
+    'Geng Li'       => 'gengli@jiwai.com',
+    'Lin Qiuyong'   => 'winnie@jiwai.com',
 );
 
 foreach ($contact as $name=>$mail) {
