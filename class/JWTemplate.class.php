@@ -1951,7 +1951,6 @@ _HTML_;
 		$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($aUserInfo['id']);
 
 		$isUserLogined = JWLogin::IsLogined() ;
-		$imicoUrl = "http://blog.jiwai.de/images";
 		$imicoUrlSms = "/wo/devices/sms";
 		$imicoUrlIm = "/wo/devices/im";
 		$imicoUrlHelpSms = "http://help.jiwai.de/VerifyYourPhone";
@@ -1972,6 +1971,7 @@ _HTML_;
 				'yahoo' => '已绑定 Yahoo!',
 				'newsmth' => '已绑定 水木社区',
 				'facebook' => '已绑定 Facebook',
+				'xiaonei' => '已绑定 校内',
 			       );
 
 		foreach( $pArray as $key=>$bindTip ) {
@@ -1981,8 +1981,9 @@ _HTML_;
 					( $key!='sms' ? $imicoUrlIm : $imicoUrlSms ) 
 					: 
 					( $key!='sms' ? $imicoUrlHelpIm : $imicoUrlHelpSms );
+				$imicoImgUrl = self::GetAssetUrl("/images/jiwai-${key}.gif");
 				echo <<<_HTML_
-					<a href="$imicoUrlHref"><img src=$imicoUrl/jiwai-${key}.gif title="$bindTip" title="$bindTip" /></a>
+					<a href="$imicoUrlHref"><img src="$imicoImgUrl" title="$bindTip" title="$bindTip" /></a>
 _HTML_;
 			}
 		}
