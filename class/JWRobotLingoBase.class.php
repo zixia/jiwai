@@ -64,6 +64,9 @@ class JWRobotLingoBase {
 
 		//VOTE
 		'VOTE' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Vote', 'param'=>2),
+
+		//DICT
+		'DICT' => array('class'=>'JWRobotLingo', 'func'=>'Lingo_Dict', 'param'=>1),
 	);
 
 

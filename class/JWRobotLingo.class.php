@@ -1721,6 +1721,67 @@ _SQL_;
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+	static function	Lingo_Dict($robotMsg)
+	{
+		/*
+		 *	获取发送者的 idUser
+		 */
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+
+		$device_db_row = JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return null;
+
+		$address_user_id = $device_db_row['idUser'];
+
+		/*
+	 	 *	解析命令参数
+	 	 */
+		$body = $robotMsg->GetBody();
+		$body = JWTextFormat::ConvertCorner( $body );
+
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_HELP' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$dict_query = $matches[1];
+        $dict_result = json_decode(
+                file_get_contents('http://e.jiwai.de/lab/dict/?q=' . urlencode($dict_query))
+                );
+
+        if (empty($dict_result)) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_NIL', array($dict_query) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+        }
+
+        switch ($dict_result->type) {
+            case 'return' :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_MATCH', array(
+                            $dict_query,
+                            $dict_result->result[0]->exp,
+                            $dict_result->result[0]->bookname
+                            ));
+                break;
+            case 'match' :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_GUESS', array(
+                            $dict_result->result[0]->def
+                            ));
+                break;
+            default :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_NIL', array($dict_query) );
+                break;
+        }
+
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
 
 	static public function CreateAccount($robotMsg, $pre_name_screen=null, $pre_name_full=null) {
 		

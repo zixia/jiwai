@@ -183,6 +183,12 @@ class JWRobotLingoReply {
 			'REPLY_VOTE_ERR_WAITIT' => '对不起，本次投票活动尚未开始，请等待！',
 			'REPLY_VOTE_ERR_DEVICE' => '对不起，你当前的设备 {1} 不允许参与此投票！',
 			'REPLY_VOTE_ERR_EXCEED' => '对不起，你在规定时间投票次数已达上限！',
+
+            //DICT
+            'REPLY_DICT_MATCH'  => '{0}:{1} 感谢{2}',
+            'REPLY_DICT_GUESS'  => '你要查找的是不是{0}',
+            'REPLY_DICT_NIL'    => '对不起，叽歪词典不知道{0}',
+            'REPLY_DICT_HELP'   => '用法：dict+空格+单词',
 		);
 
 	/**
