@@ -27,6 +27,7 @@ $mixedArray['inim']  = array();
 $mixedArray['inuser']= array();
 $mixedArray['minim']= array();
 $mixedArray['minuser']= array();
+$mixedArray['invite'] = array();
 
 $tables = array(
     'User'      => 'id',
@@ -64,7 +65,7 @@ __SQL__;
     $mixedArray['usmff'][$table] = mysql_result($result, 0);
 }
 
-$tables = array('gtalk', 'msn', 'qq', 'web', 'sms', 'api');
+$tables = array('gtalk', 'msn', 'qq', 'web', 'sms', 'api', 'wap');
 
 foreach ($tables as $robot) {
     $query = <<<__SQL__
@@ -102,6 +103,44 @@ __SQL__;
     $result = mysql_query($query) or die('Query failed: ' . mysql_error());
     $mixedArray['minuser'][$robot] = mysql_result($result, 0);
 }
+
+/* MMS */
+$query = <<<__SQL__
+SELECT COUNT(1) FROM Status
+WHERE (isMms='Y' OR statusType='MMS')
+AND timeCreate BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 DAY) AND CURDATE()
+__SQL__;
+$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$mixedArray['inim']['mms'] = mysql_result($result, 0);
+
+$query = <<<__SQL__
+SELECT COUNT(DISTINCT(idUser)) FROM Status
+WHERE (isMms='Y' OR statusType='MMS')
+AND timeCreate BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 DAY) AND CURDATE()
+__SQL__;
+$result = mysql_query($query) or die('Query failed: ' . mysql_error());
+$mixedArray['inuser']['mms'] = mysql_result($result, 0);
+
+/* Invitation */
+$devices = array('gtalk', 'msn', 'sms');
+foreach ($devices as $device) {
+    $query = <<<__SQL__
+        SELECT COUNT(1) FROM Invitation
+        WHERE type="$device"
+        AND timeCreate BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 DAY) AND CURDATE()
+__SQL__;
+    $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+    $mixedArray['inim']['invite'][$device] = mysql_result($result, 0);
+
+    $query = <<<__SQL__
+        SELECT COUNT(1) FROM Invitation
+        WHERE type="$device"
+        AND timeAccept BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 DAY) AND CURDATE()
+__SQL__;
+    $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+    $mixedArray['inim']['invite_accept'][$device] = mysql_result($result, 0);
+}
+
 
 /* binded Devices and Mobiles */
 $query = <<<__SQL__
@@ -160,8 +199,18 @@ $report     = <<<__REPORT__
 | WEB     %statusesSentByWeb%/%usersSentStatusByWeb%       %messagesSentByWeb%/%usersSentMessageByWeb%
 | SMS     %statusesSentBySms%/%usersSentStatusBySms%       %messagesSentBySms%/%usersSentMessageBySms%
 | API     %statusesSentByApi%/%usersSentStatusByApi%       %messagesSentByApi%/%usersSentMessageByApi%
+| WAP     %statusesSentByWap%/%usersSentStatusByWap%       %messagesSentByWap%/%usersSentMessageByWap%
+| MMS     %statusesSentByMms%/%usersSentStatusByMms%
+
+->用户邀请
+
+| 机器人      发送数      接受数
+| GTalk       %invitationsSentByGtalk%      %invitationsAcceptByGtalk%
+| MSN         %invitationsSentByMsn%      %invitationsAcceptByMsn%
+| SMS         %invitationsSentBySms%       %invitationsAcceptBySms%
 
 __REPORT__;
+
 /**
 ->摘要信息
 
@@ -195,6 +244,16 @@ $templateReplace = array (
     'statusesSentByWeb'         => $mixedArray['inim']['web'],
     'statusesSentBySms'         => $mixedArray['inim']['sms'],
     'statusesSentByApi'         => $mixedArray['inim']['api'],
+    'statusesSentByWap'         => $mixedArray['inim']['wap'],
+    'statusesSentByMms'         => $mixedArray['inim']['mms'],
+
+    'invitationsSentByGtalk'    => $mixedArray['inim']['invite']['gtalk'],
+    'invitationsSentByMsn'      => $mixedArray['inim']['invite']['msn'],
+    'invitationsSentBySms'      => $mixedArray['inim']['invite']['sms'],
+
+    'invitationsAcceptByGtalk'  => $mixedArray['inim']['invite_accept']['gtalk'],
+    'invitationsAcceptByMsn'    => $mixedArray['inim']['invite_accept']['msn'],
+    'invitationsAcceptBySms'    => $mixedArray['inim']['invite_accept']['sms'],
 
     'messagesSentByGtalk'       => $mixedArray['minim']['gtalk'],
     'messagesSentByMsn'         => $mixedArray['minim']['msn'],
@@ -202,6 +261,7 @@ $templateReplace = array (
     'messagesSentByWeb'         => $mixedArray['minim']['web'],
     'messagesSentBySms'         => $mixedArray['minim']['sms'],
     'messagesSentByApi'         => $mixedArray['minim']['api'],
+    'messagesSentByWap'         => $mixedArray['minim']['wap'],
 
     'usersSentStatusByGtalk'    => $mixedArray['inuser']['gtalk'],
     'usersSentStatusByMsn'      => $mixedArray['inuser']['msn'],
@@ -209,6 +269,8 @@ $templateReplace = array (
     'usersSentStatusByWeb'      => $mixedArray['inuser']['web'],
     'usersSentStatusBySms'      => $mixedArray['inuser']['sms'],
     'usersSentStatusByApi'      => $mixedArray['inuser']['api'],
+    'usersSentStatusByWap'      => $mixedArray['inuser']['wap'],
+    'usersSentStatusByMms'      => $mixedArray['inuser']['mms'],
 
     'usersSentMessageByGtalk'   => $mixedArray['minuser']['gtalk'],
     'usersSentMessageByMsn'     => $mixedArray['minuser']['msn'],
@@ -216,6 +278,7 @@ $templateReplace = array (
     'usersSentMessageByWeb'     => $mixedArray['minuser']['web'],
     'usersSentMessageBySms'     => $mixedArray['minuser']['sms'],
     'usersSentMessageByApi'     => $mixedArray['minuser']['api'],
+    'usersSentMessageByWap'     => $mixedArray['minuser']['wap'],
 
 /**
     'usersSentStatusPercentage'     => round((100.0 * $mixedArray['users']['Status']) / $mixedArray['users']['User']),
