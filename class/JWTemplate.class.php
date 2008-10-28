@@ -1803,6 +1803,12 @@ if ($menuList[0][0] == 'login') {
 <?php
 	}
 
+	static function sidebar_ggads() {
+		if (!file_exists(FRAGMENT_ROOT.'/page/googleadsense.php') )
+			return;
+		require_once( FRAGMENT_ROOT.'/page/googleadsense.php');
+		output_googleadsense(8, '赞助商链接');
+	}
 
 	/*
 	 * @param	array	JWSns::GetUserAction return array
