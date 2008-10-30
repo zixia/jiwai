@@ -115,7 +115,8 @@ $announce_options['title']		= '公告';
 $featured_options	= array( 'user_ids' => JWUser::GetFeaturedUserIds(8) );
 
 $arr_menu = array(	
-					array ('announce'		, array($announce_options) )
+					array ('ggads' 			, array() )
+					,array ('announce'		, array($announce_options) )
 					,array ('separator'		, array() )
 					,array ('announce'		, array($blog_options) )
 					,array ('separator'		, array() )
