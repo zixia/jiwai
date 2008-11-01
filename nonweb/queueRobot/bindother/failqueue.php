@@ -78,6 +78,7 @@ function enter_main_loop()
 					if ( $one['t'] > FB_MAX_TRY )
 					{
 						echo "[DROP] $bind[service]://$bind[loginName]\n";
+						error_log( "[DROP] $bind[service]://$bind[loginName]\n", 3, '/tmp/drop_bindother');
 					}
 					else
 					{

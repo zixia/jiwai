@@ -161,6 +161,19 @@ sub delive_file {
 		{
 			my $dest_file = "robot/$direction/$msg_type$file_name_tailer";
 
+			if ( $file_name_tailer =~m#mgroup(\d+)\@hotmail\.com# ) {
+				syslog('info', "remove $new_msg_file , it's xiaoi group");
+				unlink($new_msg_file);
+				return;
+			}
+
+			if ( $file_name_tailer =~m#(.+)\@zuosa\.com# ) {
+				syslog('info', "remove $new_msg_file , it's zuosa Robot");
+				unlink($new_msg_file);
+				return;
+			}
+
+
 			if ( link($new_msg_file, $dest_file) )
 			{
 				syslog('info', "move $new_msg_file to $dest_file");

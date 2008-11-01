@@ -13,6 +13,7 @@ switch( $type ){
 	case 'skype':
 	case 'gtalk':
 	case 'qq':
+    case 'fetion':
 		JWIMOnline::Create( $serverAddress, $type, $serverAddress, 'ONLINE' );
 		print "Create Success\n";
 	break;

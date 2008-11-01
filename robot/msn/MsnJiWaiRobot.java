@@ -33,7 +33,7 @@ public class MsnJiWaiRobot extends MsnAdapter implements MoMtProcessor{
 	public String mQueuePath = null;
 	public String mQueuePathMo = null;
 	public String mQueuePathMt = null;
-	public String _mDisplayName = "叽歪一下吧！（发送HELP了解更多）";
+	public String _mDisplayName = "(#)(#)叽歪一下吧！（发送HELP了解更多）";
 	
 	//device type
 	public final static String DEVICE = "msn";

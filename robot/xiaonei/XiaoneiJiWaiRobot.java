@@ -156,7 +156,7 @@ public class XiaoneiJiWaiRobot implements PacketListener, PacketFilter, MoMtProc
             online = "N";
         else if ( status.equals("away") )
             online = "A";
-        //worker.setOnlineStatus( address, online, mAddress );
+        worker.setOnlineStatus( address, online, mAddress );
     }
 
     /**
@@ -221,7 +221,7 @@ public class XiaoneiJiWaiRobot implements PacketListener, PacketFilter, MoMtProc
         while( true ) {
             try{
                 sendPresence();
-                Thread.sleep( 120000 );
+                Thread.sleep( 60000 );
             }catch(Exception e){
             }
         }

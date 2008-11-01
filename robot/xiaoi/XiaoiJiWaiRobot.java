@@ -53,7 +53,6 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
 
     private static Set<String> offlineSet = new HashSet<String>();
     private static Set<String> onlineSet  = new HashSet<String>();
-    private static Set<String> pendingSet = new HashSet<String>();
 
     private static Hashtable<String, String> mBuddySig
         = new Hashtable<String, String>();
@@ -76,8 +75,9 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
     public static String mAddress   = null;
     public static String mPassword  = null;
     public static String mQueuePath = null;
-    public static String _mStatus   = "(#)(#)叽歪一下吧！（发送HELP了解更多）";
+    public static String _mStatus   = "(L)CHINA 叽歪一下吧！（发送HELP了解更多）";
     public static String mStatus    = null;
+    public static String mAvatar    = null;
     public static String mServer    = null;
     public static String mPort      = null;
     public static String mOnlineScript = null;
@@ -103,11 +103,12 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
         mPassword   = config.getProperty("xiaoi.password",  System.getProperty("xiaoi.password") );
         mServer     = config.getProperty("xiaoi.server",    System.getProperty("xiaoi.server"));
         mPort       = config.getProperty("xiaoi.port",      System.getProperty("xiaoi.port"));
+        mAvatar     = config.getProperty("xiaoi.avatar",    System.getProperty("xiaoi.avatar"));
         mStatus     = config.getProperty("xiaoi.status", _mStatus );
         mQueuePath  = config.getProperty("queue.path", System.getProperty("queue.path") );
         mOnlineScript = config.getProperty("online.script", System.getProperty("online.script") );
-		_mSubAccounts = config.getProperty("xiaoi.subaccounts", System.getProperty("xiaoi.subaccounts"));
-		_mBlackLists  = config.getProperty("xiaoi.blacklists", System.getProperty("xiaoi.blacklists"));
+        _mSubAccounts = config.getProperty("xiaoi.subaccounts", System.getProperty("xiaoi.subaccounts"));
+        _mBlackLists  = config.getProperty("xiaoi.blacklists", System.getProperty("xiaoi.blacklists"));
 
         try{
             onlinePort = Integer.valueOf( config.getProperty("online.port", System.getProperty("online.port", "55066") )).intValue();
@@ -121,14 +122,14 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
             System.exit(1);
         }
 
-		mSubAccounts = _mSubAccounts.replaceAll("\\s+", "").split(",");
+        mSubAccounts = _mSubAccounts.replaceAll("\\s+", "").split(",");
         // Stack of requestContactList
         mBuddyListRequest.push(mAccount);
         for (String subAccount : mSubAccounts) {
             mBuddyListRequest.push(subAccount);
         }
         // End Stack
-		mBlackLists  = _mBlackLists.replaceAll("\\s+", "").split(",");
+        mBlackLists  = _mBlackLists.replaceAll("\\s+", "").split(",");
         htDeSerialize();
         initRegexMap();
     }
@@ -209,6 +210,7 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
             mXiaoiServer.setRobotHandler(mMoListener);
             mXiaoiServer.login(mSpid, mPassword);
             mXiaoiServer.setDisplayName(mStatus);
+            mXiaoiServer.setDisplayPicture(mAvatar);
             worker.startProcessor();
         }catch(Exception e ){
             Logger.logError("Xiaoi Login failed");
@@ -285,12 +287,8 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
                     mBuddyMessages.put(buddy, new ArrayList<String>());
                     // hardlimit set by M$ 
                     // 8 per minute, 400 per hour
-                    if (pendingSet.contains(buddy)) {
-                        Logger.log("pending::" + buddy + ":" + descAccount);
-                    } else {
-                        Logger.log("createSession:" + buddy + ":" + descAccount);
-                        mXiaoiServer.createSession(descAccount, buddy);
-                    }
+                    Logger.log("createSession:" + buddy + ":" + descAccount);
+                    mXiaoiServer.createSession(descAccount, buddy);
                 }
                 if (mQueueCapacity > mBuddyMessages.get(buddy).size()) {
                     mBuddyMessages.get(buddy).add(text);
@@ -354,9 +352,6 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
             if (commandLowerCase.equals("uptime")) {
                 session.send(mOriginalTime);
                 return false;
-            }
-            if (commandLowerCase.equals("help") || commandLowerCase.equals("tips")) {
-                session.sendActivity("http://contest.xiaoi.com/listRobot.do?action=showDetail&id=85", "给叽歪投票");
             }
         } catch (RobotException e) {
             e.printStackTrace();
@@ -425,7 +420,6 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
             String robot = session.getRobot();
             Logger.log("sessionOpened:" + buddy + ":" + robot);
             mBuddySession.put(buddy, session);
-            pendingSet.remove(buddy);
 
             ArrayList<String> msgs = mBuddyMessages.get(buddy);
             if (null == msgs) return;
@@ -438,7 +432,6 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
         public void sessionClosed(RobotSession session) {
             String buddy = session.getUser().getID();
             mBuddySession.remove(buddy);
-            pendingSet.remove(buddy);
         }
 
         public void messageReceived(RobotSession session, RobotMessage message) {
@@ -484,6 +477,15 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
             String robot = mBuddyRobot.get(buddy);
             if (null == robot) robot = mAccount;
             statusTransform(status, buddy, robot);
+            /*-- createSession gentle --*/
+            try {
+                if (null != mBuddyMessages.get(buddy)
+                    && mBuddyMessages.get(buddy).size() > 0) {
+                    Logger.log("dealing the pending:" + buddy + ":" + robot);
+                    mXiaoiServer.createSession(robot, buddy);
+                }
+            } catch (RobotException e) {
+            }
         }
 
         public void nudgeReceived(RobotSession session) {

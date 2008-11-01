@@ -24,13 +24,15 @@ def change(port,status):
 		pass
 
 status = '叽歪de将于9月1日上午8:00开始系统升级blahblah'
-status = '叽歪一下吧！（发送HELP了解更多）'
+status = '(#)(#)叽歪一下吧！（发送HELP了解更多）'
+status = '(#)(#)叽歪一下吧！（12月1日起，移动联通特服号统一为106693184）'
+status = '全国哀悼日，机器人隐身！叽歪一下吧！（发送HELP了解更多）'
 
 # gtalk
 #change( 55010, status )
 
 # qq
-#change( 55020, status )
+change( 55020, status )
 
 # msn
 #change( 55030, status )

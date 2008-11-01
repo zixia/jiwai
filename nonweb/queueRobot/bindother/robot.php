@@ -5,8 +5,8 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 {
 	public function OnData($channel, $data)
 	{
-	//	var_dump( $data );
-	//	file_put_contents('/tmp/bindother.log', date('r') . serialize( $data ) . "\n", FILE_APPEND);
+		//var_dump( $data );
+		//file_put_contents('/tmp/bindother.log', date('r') . serialize( $data ) . "\n", FILE_APPEND);
 		$device = $data['device'];
 		$sender = $data['sender'];
 

@@ -68,7 +68,7 @@ public class SkypeJiWaiRobot extends ChatMessageAdapter implements MoMtProcessor
 	}
 	
 	public void chatMessageReceived(ChatMessage received) throws SkypeException {
-		if (received.getType().equals(ChatMessage.Type.SAID)) {
+		if (ChatMessage.Type.SAID.equals(received.getType())) {
 			User sender = received.getSender();
 			if( false == sender.isAuthorized() ) {
 				sender.setAuthorized(true);

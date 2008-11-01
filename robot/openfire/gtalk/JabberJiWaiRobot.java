@@ -220,6 +220,7 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
         //      || 0 != m.getTo().indexOf(mAccount+"@"+mServer)
                 || body == null
                 || body.trim().equals("")
+                || body.trim().equals("hello")
                 ){
             return;
         }
@@ -368,7 +369,8 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
     public static void connect(){
         try {
             config = new ConnectionConfiguration(TALK_SERVER, TALK_PORT, mServer);
-            config.setReconnectionAllowed(false);
+
+            config.setReconnectionAllowed(true);
             config.setCompressionEnabled(true);
             config.setSecurityMode( ConnectionConfiguration.SecurityMode.enabled );
             config.setSASLAuthenticationEnabled(false);
@@ -394,6 +396,7 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
             fman = new FileTransferManager(con);
             fman.addFileTransferListener(jabber_robot);
 
+            jabber_robot.sendPresence();
             worker.startProcessor();
         }catch(Exception e ){
             e.printStackTrace();
@@ -404,8 +407,8 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
     public void run(){
         while( true ) {
             try{
-                sendPresence();
-                Thread.sleep( 600000 );
+                sendKeepAlive();
+                Thread.sleep( 900000 );
             }catch(Exception e){
             }
         }
@@ -424,12 +427,24 @@ public class JabberJiWaiRobot implements FileTransferListener, PacketListener, P
         }
     }
     
+    private void sendKeepAlive() {
+        try {
+            Message msg = new Message("monitor.jiwai.de@jiwai.com");
+            msg.setBody("Keep Alive");
+            msg.setType(Message.Type.chat); //Only have this property ,server will store offline message
+            con.sendPacket(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendPresence(){
         try {
             Presence presence = new Presence(Presence.Type.available);
             presence.setStatus(mStatus);
             presence.setMode(Presence.Mode.chat);
             con.sendPacket(presence);
+
             Logger.log("Send Presence Success");
         }catch(Exception e){
             worker.stopProcessor();

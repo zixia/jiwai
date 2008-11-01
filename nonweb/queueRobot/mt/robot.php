@@ -11,6 +11,13 @@ class JWPubSub_Listener_Mt implements JWPubSub_Listener
 		$server_address = $data['server_address'];
 		$link_id = isset($data['link_id']) ? $data['link_id'] : null;
 		$resource = isset($data['resource']) ? $data['resource'] : null;
+		if ('sms'==$type 
+			&& defined('MT_ENABLED_SMS') 
+			&& ! MT_ENABLED_SMS ) 
+		{
+			echo "[MT]: -> $type://$address droped.\n";
+			return;
+		}
 
 		if ( JWRobot::SendMtRaw( $address, $type, $message, $server_address, $link_id, $resource ) )
 		{

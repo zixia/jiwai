@@ -32,9 +32,11 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 	public static String mPassword = null;
 	public static String mQueuePath = null;
 	public static String _mStatus = "叽歪一下吧！（发送HELP了解更多）";
+//    public static String _mStatus = "叽歪的gtalk机器人要休息了，马上会回来的";
 	public static String mStatus = null;
 	public static String mAddress = null;
 	public static String mOnlineScript = null;
+    public static String mResource = null;
 	
 	public static MoMtWorker worker = null;
 	
@@ -49,6 +51,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		mServer = config.getProperty("gtalk.server", System.getProperty("gtalk.server") );
 		mAccount = config.getProperty("gtalk.account", System.getProperty("gtalk.account") );
 		mPassword = config.getProperty("gtalk.password", System.getProperty("gtalk.password") );
+		mResource = config.getProperty("gtalk.resource", System.getProperty("gtalk.resource"));
 		mStatus = config.getProperty("gtalk.status", _mStatus );
 
 		mQueuePath = config.getProperty("queue.path", System.getProperty("queue.path") );
@@ -166,12 +169,14 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		try {
 			config = new ConnectionConfiguration(TALK_SERVER, TALK_PORT, mServer);
 			config.setReconnectionAllowed(false);
+            config.setCompressionEnabled(true);
 			config.setSecurityMode( ConnectionConfiguration.SecurityMode.enabled );
 			config.setSASLAuthenticationEnabled(false);
 
 			realConnect();
 
 		}catch(Exception e ){
+            e.printStackTrace();
 			Logger.logError("GTalk Login failed");
 		}
 	}
@@ -180,7 +185,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 		try{
 			con = new XMPPConnection(config);
 			con.connect();
-			con.login( mAccount , mPassword );
+			con.login( mAccount , mPassword, mResource );
 
 			gtalk_robot.processOfflineMessage();
 			roster = con.getRoster();
@@ -189,6 +194,7 @@ public class GTalkJiWaiRobot implements PacketListener, PacketFilter, MoMtProces
 
 			worker.startProcessor();
 		}catch(Exception e ){
+            e.printStackTrace();
 			Logger.logError("GTalk Login failed");
 		}
 	}

@@ -1,8 +1,14 @@
+JAVA=/usr/java/jdk/bin/java
+JAVAC=/usr/java/jdk/bin/javac
+
+#JAVA=java
+#JAVAC=javac
+
 run: QQJiWaiRobot.class
-	/usr/java/jdk/bin/java -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwaiMessage.jar -Djiwai.robot.log.dir=/var/log/robot QQJiWaiRobot
+	${JAVA} -cp .:../../javaLib/LumaQQ.jar:../../javaLib/log4j.jar:../../javaLib/jiwai-library-1.2.jar -Djiwai.robot.log.dir=/var/log/robot QQJiWaiRobot
 
 QQJiWaiRobot.class: QQJiWaiRobot.java
-	/usr/java/jdk/bin/javac -Xlint:unchecked -cp .:../../javaLib/LumaQQ.jar:../../javaLib/jiwaiMessage.jar QQJiWaiRobot.java
+	${JAVAC} -Xlint:unchecked -cp .:../../javaLib/LumaQQ.jar:../../javaLib/jiwai-library-1.2.jar QQJiWaiRobot.java
 
 clean:
 	rm *.class

@@ -23,7 +23,7 @@ public class MobizJiWaiRobot implements MoMtProcessor {
 
     public static MobizJiWaiRobot mRobot = null;
 
-    public static final String DEVICE = "mobiz";
+    public static final String DEVICE = "sms";
     
     public static int onlinePort    = 55100;
     public static int mDebugLevel   = 0;
@@ -109,7 +109,9 @@ public class MobizJiWaiRobot implements MoMtProcessor {
 
     public boolean mtProcessing(MoMtMessage message){
         try {
-            mMobizSession.sendMessage(message.getAddress(), message.getBody());
+            mMobizSession.sendMessage(message.getAddress(),
+                    message.getBody(),
+                    message.getServerAddress());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -147,8 +149,6 @@ public class MobizJiWaiRobot implements MoMtProcessor {
 
         private String mPassword = null;
 
-        private String mSubCode = null;
-
         private ArrayList<JiWaiMobizListener> mMoListeners =
             new ArrayList<JiWaiMobizListener>();
 
@@ -165,6 +165,12 @@ public class MobizJiWaiRobot implements MoMtProcessor {
 
         private String getCheckCode(String timestamp) {
             return MD5Sum.md5Sum(mEntCode + mEntKey + timestamp);
+        }
+
+        private String getSubCode(String fullcode) {
+            if (null == fullcode || fullcode.indexOf(mAddress) != 0 ) return null;
+
+            return fullcode.substring(mAddress.length());
         }
 
         private void fetchAndTrigger() {
@@ -198,16 +204,6 @@ public class MobizJiWaiRobot implements MoMtProcessor {
             this.mEntCode = entCode;
             this.mEntKey = entKey;
             this.mPassword = password;
-            this.mSubCode = "";
-            this.mServiceClient = new ServiceClient();
-            this.mServiceSoap = this.mServiceClient.getServiceSoap();
-        }
-
-        public JiWaiMobizSession(String entCode, String entKey, String password, String subCode) {
-            this.mEntCode = entCode;
-            this.mEntKey = entKey;
-            this.mPassword = password;
-            this.mSubCode = subCode;
             this.mServiceClient = new ServiceClient();
             this.mServiceSoap = this.mServiceClient.getServiceSoap();
         }
@@ -216,17 +212,18 @@ public class MobizJiWaiRobot implements MoMtProcessor {
             mMoListeners.add(l);
         }
 
-        public void sendMessage(String buddy, String text) {
-            this.sendMessage(buddy, text, "");
+        public void sendMessage(String buddy, String text, String server) {
+            this.sendMessage(buddy, text, server, "");
         }
 
-        public void sendMessage(String buddy, String text, String sendTime) {
+        public void sendMessage(String buddy, String text, String server, String sendTime) {
             SendSmsRespInfo inf = new SendSmsRespInfo();
             try {
                 String timestamp = getCurrentTimestamp();
                 String checkCode = getCheckCode(timestamp);
+                String subCode = getSubCode(server);
                 inf = this.mServiceSoap.sendSMS (
-                        mEntCode, mPassword, timestamp, checkCode, mSubCode, buddy, text, sendTime);
+                        mEntCode, mPassword, timestamp, checkCode, subCode, buddy, text, sendTime);
                 if (mDebugLevel > 0) System.out.println(inf.getResult()+"|"+inf.getSubmitId());
             } catch (Exception e) {
                 e.printStackTrace();
