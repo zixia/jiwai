@@ -168,6 +168,11 @@ class JWNudge {
 					$serverAddress = JWNotify::GetServerAddress( $address, $conference, $user );
 				}
 
+				//附加投票链接
+				if( $type!='sms' && $statusType=='VOTE' ) {
+					$message .= '这是'.$user['nameScreen'].'在叽歪发起的投票,可以在这里( http://jiwai.de/'.$user['nameUrl'].'/statuses/'.$status['id'].' )参与投票并查看投票结果';
+				}
+
 				JWRobot::SendMtRawQueue($address, $type, $message, $serverAddress, null);
 			break;
 			case 'nothing':
