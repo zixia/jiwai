@@ -83,7 +83,7 @@ function run() {
 							,'email'		=> isset($sreg['email']) ? $sreg['email'] : '' //FIXME: what if empty?
 						);
 
-			$user_id =  JWUser::Create($new_user_row);
+			$user_id =  JWSns::CreateUser($new_user_row);
 
 			JWOpenID::Create($openid,$user_id);
 

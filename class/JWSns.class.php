@@ -98,9 +98,10 @@ class JWSns {
 	static public function CreateUser($userRow)
 	{
 		$user_id = JWUser::Create($userRow);
-		JWBalloonMsg::CreateUser($user_id);
-		self::CreateFollowers( $user_id, array($user_id) );
-
+		if ( $user_id ) 
+		{
+			JWBalloonMsg::CreateUser($user_id);
+		}
 		return $user_id;
 	}
 

@@ -70,7 +70,7 @@ $user['pass'] = $pass;
 $user['ip'] = JWRequest::GetIpRegister();
 $user['srcRegister'] = $source;
 
-if ( $user_id = JWUser::Create($user) ) {
+if ( $user_id = JWSns::CreateUser($user) ) {
     foreach ($autoFollowers as $idFollower) {
         JWSns::CreateFollower($user_id, $idFollower);
         JWSns::CreateFollower($idFollower, $user_id);

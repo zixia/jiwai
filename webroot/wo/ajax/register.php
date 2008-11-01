@@ -32,7 +32,7 @@ if ( array_key_exists('username',$_POST) )
 			'pass' => $password_one,
 		);
 
-		$user_id = JWUser::Create( $user_array );
+		$user_id = JWSns::CreateUser( $user_array );
 		if ( $user_id )
 		{
 			JWLogin::Login( $user_id, true );

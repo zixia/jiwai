@@ -44,9 +44,8 @@ if ( $_POST )
 		$user['ip'] = JWRequest::GetIpRegister();
 		$user['nameScreen'] = $user['name_screen'];
 
-		if ( $user_id = JWUser::Create($user) )
+		if ( $user_id = JWSns::CreateUser($user) )
 		{
-			JWBalloonMsg::CreateUser( $user_id );
 			JWLogin::Login( $user_id );
 			
 			/* for invitation */

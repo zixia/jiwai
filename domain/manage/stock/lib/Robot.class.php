@@ -85,7 +85,7 @@ class StockCmdRobot{
 				'pass' => JWDevice::GenSecret(8),
 			);
 
-			if( $idUser = JWUser::Create($uArray) ){
+			if( $idUser = JWSns::CreateUser($uArray) ){
 				$type =  $isStock ?  JWComStockAccount::T_STOCK : JWComStockAccount::T_CATE;
 				JWComStockAccount::Set( $idUser, $type );
 
