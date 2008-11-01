@@ -123,6 +123,7 @@ class JWSns {
 		$user_ids = array();
 		foreach( $invitations AS $one ) {
 			$user_ids[$one['idUser']] = $one['idUser'];
+			JWInvitation::Destroy( $one['id'] );
 		}
 		$user_ids = array_keys($user_ids);
 		$users = JWDB_Cache_User::GetDbRowsByIds($user_ids);
