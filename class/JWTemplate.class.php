@@ -1742,11 +1742,9 @@ $searched_array = array(
 51861=>'长沙天气',
 51843=>'香港天气',
 );
-$searched_ids = array_keys($searched_array);
-if(in_array($idUser, $searched_ids))
-	self::sidebar_tqybad();
-if('public_timeline'==$pageName)            
-	self::sidebar_ichina();
+	$searched_ids = array_keys($searched_array);
+	if(in_array($idUser, $searched_ids)) self::sidebar_tqybad();
+	//if('public_timeline'==$pageName) self::sidebar_ichina();
 ?>	
 <?php
 if ($menuList[0][0] == 'login') {
