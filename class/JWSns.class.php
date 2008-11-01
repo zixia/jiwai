@@ -101,8 +101,34 @@ class JWSns {
 		if ( $user_id ) 
 		{
 			JWBalloonMsg::CreateUser($user_id);
+			if ( $userRow['email'] ) {
+				$invitations = JWInvitation::GetInvitationIdsFromAddresses( array(array('address'=>$userRow['email'], 'type'=>'email')) );
+				JWSns::NoticeInvite($user_id, $invitations);
+			}
 		}
 		return $user_id;
+	}
+
+	static public function NoticeInvite($new_user_id, $invitations) {
+		if ( is_numeric($new_user_id) ) 
+		{
+			$friend = JWUser::GetDbRowById($new_user_id);
+		} 
+		else 
+		{
+			$friend = $new_user_id;
+		}
+		if ( empty($invitations) ) return;
+
+		$user_ids = array();
+		foreach( $invitations AS $one ) {
+			$user_ids[$one['idUser']] = $one['idUser'];
+		}
+		$user_ids = array_keys($user_ids);
+		$users = JWDB_Cache_User::GetDbRowsByIds($user_ids);
+		foreach( $users AS $user ) {
+			JWMail::SendMailNoticeEverInvite($user, $friend);
+		}
 	}
 
 	/*

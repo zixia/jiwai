@@ -226,6 +226,30 @@ class JWMail {
 		return $template_info;
 	}
 
+	/*
+	 *	$user 将 $friend 新加为好友，给 $friend 发送一封通知信
+ 	 *	@param	array	user	user_info的结构
+ 	 *	@param	array	friend	user_info的结构
+ 	 */
+	static public function SendMailNoticeEverInvite($user, $friend)
+	{
+		if ( !JWUser::IsValidEmail($user['email']) )
+			return;
+
+		$template_file	= 'NoticeEverInvite.tpl';
+
+		$template_data = self::LoadTemplate($template_file);
+		$template_data = self::RenderTemplate($template_data,$user,$friend);
+	
+
+		$template_info = self::ParseTemplate($template_data);
+
+		return self::SendMail( $template_info['from']
+			,$user['email']
+			,$template_info['subject']
+			,$template_info['html']
+		);
+	}
 
 	/*
 	 *	$user 将 $friend 新加为好友，给 $friend 发送一封通知信
