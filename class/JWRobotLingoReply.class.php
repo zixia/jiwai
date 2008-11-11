@@ -175,7 +175,7 @@ class JWRobotLingoReply {
 
 			//VOTE
 			'REPLY_VOTE_SUC' => '你好，你的投票被接受，谢谢参与！',
-			'REPLY_VOTE_SUC_DM' => '你参与了 @{0} 的投票活动，选择了选项 {1} : {2}',
+			'REPLY_VOTE_SUC_DM' => '@{0} 参与了你的投票活动，选择了选项 {1} : {2} ，请点击以下链接 http://jiwai.de/{3}/statuses/{4} 查看投票结果！',
 			'REPLY_VOTE_ERR' => '用法：{0}+空格+投票代码+空格+选项代码 ，请检查投票代码及选项代码是否正确！',
 			'REPLY_VOTE_ERR_NOVOTE' => '对不起，不存在的投票项目，请检查投票代码！',
 			'REPLY_VOTE_ERR_CHOICE' => '对不起，不存在的投票选项，请检查选项代码！',

@@ -1708,15 +1708,16 @@ _SQL_;
 		$vote_row = JWNanoVote::GetDbRowByNumber( $number );
 		$status_row = JWDB_Cache_Status::GetDbRowById( $vote_row['idStatus'] );
 		$user_row = JWUser::GetUserInfo( $status_row['idUser'] );
+		$device_user_row = JWUser::GetUserInfo( $device_user_id );
 		$vote_item = JWSns::ParseVoteItem( $status_row['status'] );
 		$items = $vote_item['items'];
 		($ochoice = abs(intval($choice))) || ($ochoice = abs(strpos('0ABCDEFGHI',strtoupper($choice))));
 		$value = $items[ $ochoice-1 ];
 
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
-			$user_row['nameScreen'], $choice, $value,
+			$device_user_row['nameScreen'], $choice, $value, $user_row['nameScreen'], $status_row['id']
 		));
-		JWMessage::Create( $user_row['id'], $device_user_id, $reply );
+		JWMessage::Create( $user_row['id'], $device_user_id, $reply, $type, array('delete'=>true,) );
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}

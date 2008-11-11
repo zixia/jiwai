@@ -65,6 +65,8 @@ class JWMessage {
 			$time = time();
 
 		$message_reply_id = isset($options['reply_id']) ? $options['reply_id'] : null;
+		$message_status_sender = isset($options['delete']) 
+			? 'delete' : 'haveRead';
 		/* strip \r\n with \s */
 		$message = preg_replace('[\r\n]',' ',$message);
 
@@ -78,6 +80,7 @@ class JWMessage {
 			'idUserSender' => $sender_id,
 			'idUserReceiver' => $receiver_id,
 			'idMessageReplyTo' => $message_reply_id,
+			'messageStatusSender' => $message_status_sender,
 			'message' => $message,
 			'device' => $device,
 			'timeCreate' => JWDB::MysqlFuncion_Now($time),
