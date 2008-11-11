@@ -238,7 +238,7 @@ class JWRobotLingo {
 						urlEncode($address_user_row['nameUrl']),		
 					));
 					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], 
-								$outMessage,$type, array('noreply_tips'=>true,) );
+								$outMessage,$type, array('noreply_tips'=>true, 'delete'=>true, ) );
 				}
 			}
 				
@@ -577,7 +577,7 @@ class JWRobotLingo {
 					urlEncode($address_user_row['nameUrl']),		
 				));
 				JWSns::CreateMessage( $address_user_id, $friend_user_id,
-							$outMessage,$type, array('noreply_tips'=>true,) );
+							$outMessage,$type, array('noreply_tips'=>true, 'delete'=>true,) );
 			}
 		}
 
