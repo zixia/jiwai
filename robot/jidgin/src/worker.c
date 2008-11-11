@@ -20,7 +20,7 @@ void *jidgin_worker_get_handle(void) {
 
 void jidgin_worker_cb_signon(PurpleConnection *gc, gpointer signal)
 {
-	PurpleAccount *account = purple_connection_get_account(gc);
+  PurpleAccount *account = purple_connection_get_account(gc);
   if (IS_BUDDY_SIGN_ON(signal)) {
     jidgin_log(LOG_INFO, "[jidgin_worker_cb_signon]%s %s\n", account->username, account->protocol_id);
   } else {
@@ -29,7 +29,6 @@ void jidgin_worker_cb_signon(PurpleConnection *gc, gpointer signal)
 }
 
 gboolean jidgin_worker_send_im(PurpleAccount *account, PurpleConversation *conv, pJidginMsg pmsg) {
-  char *reply = NULL;
   PurpleBuddy *buddy;
 
   if (!account) {
@@ -40,11 +39,6 @@ gboolean jidgin_worker_send_im(PurpleAccount *account, PurpleConversation *conv,
     buddy = purple_find_buddy(account, pmsg->from);
     if (!buddy) return FALSE;
     conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, buddy->account, pmsg->from);
-  }
-
-  if (jidgin_intercept_exec(pmsg->msg, &reply)) {
-    purple_conv_im_send(PURPLE_CONV_IM(conv), reply);
-    return FALSE;
   }
 
   jidgin_log(LOG_INFO, "[jidgin_worker_send_im]%s %s\n",
@@ -60,6 +54,7 @@ gboolean jidgin_worker_cb_recv(PurpleAccount *account,
     PurpleMessageFlags *flags)
 {
   pJidginMsg pmsg = jidgin_msg_init(ROBOTMSG_TYPE_CHAT);
+  char *reply = NULL;
   char *msg_pre_filter = *message;
   char *msg_post_filter = jidgin_text_filter_rough(msg_pre_filter);
   *message = msg_post_filter;
@@ -67,14 +62,19 @@ gboolean jidgin_worker_cb_recv(PurpleAccount *account,
 
   pmsg->from    = g_strdup(*sender);
   pmsg->to      = g_strdup(account->username);
-  pmsg->msg     = g_strdup(*message);
   pmsg->device  = g_strdup(account->protocol_id);
 
-  if (jidgin_worker_send_im(account, conv, pmsg)) {
-    jidgin_reactor_emit(pmsg);
+  if (jidgin_intercept_exec(*message, &reply)) {
+    pmsg->msg = g_strdup(reply);
+    jidgin_worker_send_im(account, conv, pmsg);
+    jidgin_msg_destroy(pmsg);
+    return FALSE;
   }
 
+  pmsg->msg     = g_strdup(*message);
+  jidgin_reactor_emit(pmsg);
   jidgin_msg_destroy(pmsg);
+
   return TRUE;
 }
 
@@ -87,8 +87,8 @@ void jidgin_worker_cb_sent(PurpleAccount *account,
 void jidgin_worker_cb_buddy(PurpleBuddy *buddy, gpointer signal)
 {
   return (IS_BUDDY_SIGN_ON(signal))
-  ? jidgin_log(LOG_DEBUG, "[jidgin_worker_cb_buddy]%s %d\n", buddy->name, signal)
-  : jidgin_log(LOG_DEBUG, "[jidgin_worker_cb_buddy]%s %d\n", buddy->name, signal);
+    ? jidgin_log(LOG_DEBUG, "[jidgin_worker_cb_buddy]%s %d\n", buddy->name, signal)
+    : jidgin_log(LOG_DEBUG, "[jidgin_worker_cb_buddy]%s %d\n", buddy->name, signal);
 }
 
 void jidgin_worker_cb_status(PurpleBuddy *buddy, PurpleStatus *old_status, PurpleStatus *status) {
@@ -114,7 +114,7 @@ void jidgin_worker_cb_status(PurpleBuddy *buddy, PurpleStatus *old_status, Purpl
 
 void jidgin_worker_on_data(pJidginMsg data) {
   assert(NULL != data);
-  pRobotMsg p = jidgin_robotmsg_init(data->device, data->from);
+  pRobotMsg p = jidgin_robotmsg_init(data->device, data->from, DIRECTION_MO);
 
   gchar *address = g_strjoin(
       NULL,
@@ -142,7 +142,7 @@ gpointer jidgin_worker_spawn(gpointer fd) {
   pJidginMsg pmsg;
   while (-1 != read(inotify_read_fd, inotify_buffer, INOTIFY_BUFFER_LEN)) {
     jidgin_log(LOG_DEBUG, "[jidgin_worker_spawn]%s\n", inotify_buffer);
-    rmsg = jidgin_robotmsg_init_with_path(inotify_buffer);
+    rmsg = jidgin_robotmsg_init_with_path(inotify_buffer, DIRECTION_MT);
     jidgin_robotmsg_parse(rmsg);
 
     pmsg = jidgin_msg_init(ROBOTMSG_TYPE_CHAT);
@@ -151,7 +151,6 @@ gpointer jidgin_worker_spawn(gpointer fd) {
     pmsg->msg     = rmsg->content;
     pmsg->device  = rmsg->device;
 
-    jidgin_worker_send_im(NULL, NULL, pmsg);
     free(pmsg);
     jidgin_robotmsg_destroy(rmsg);
   }

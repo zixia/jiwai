@@ -27,6 +27,8 @@ typedef struct {
   char *plugin_save_pref;
   char *ui_id;
   char *queue_path;
+  char *mo_path;
+  char *mt_path;
   unsigned short debug;
   char *chroot_dir;
   gboolean is_daemon;

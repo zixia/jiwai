@@ -94,6 +94,11 @@ void jidgin_setting_get_main(GKeyFile *config, pJidginSetting setting) {
   if (g_key_file_has_key(config, SECTION_PURPLE, "is_debug", &error))
     setting->is_debug = g_key_file_get_boolean(config, SECTION_PURPLE, "is_debug", &error);
 
+  if (setting->queue_path) {
+    setting->mo_path = g_strjoin(G_DIR_SEPARATOR_S, setting->queue_path, "mo", NULL);
+    setting->mt_path = g_strjoin(G_DIR_SEPARATOR_S, setting->queue_path, "mt", NULL);
+  }
+
   return;
 }
 

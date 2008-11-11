@@ -12,13 +12,26 @@
 #include <errno.h>
 #include <assert.h>
 
-static gchar *jidgin_robotmsg_path(pRobotMsg rmsg) {
+static gchar *jidgin_robotmsg_path(pRobotMsg rmsg, ROBOTMSG_DIRECTION orient) {
   gchar *realname;
   gchar *realpath;
+  gchar *robotmsg_path;
   gchar sec[G_ASCII_DTOSTR_BUF_SIZE + 1];
   gchar usec[G_ASCII_DTOSTR_BUF_SIZE + 1];
   pJidginSetting settings = jidgin_core_get_purple_settings();
   assert(NULL != rmsg);
+
+  switch (orient) {
+    case DIRECTION_MO:
+      robotmsg_path = settings->mo_path;
+      break;
+    case DIRECTION_MT:
+      robotmsg_path = settings->mt_path;
+      break;
+    default:
+      jidgin_log(LOG_ERR, "[jidgin_robotmsg_path]%s\n", rmsg->from);
+      return NULL;
+  }
 
   g_ascii_dtostr(sec, G_ASCII_DTOSTR_BUF_SIZE, rmsg->sec);
   sec[G_ASCII_DTOSTR_BUF_SIZE] = '\0';
@@ -36,7 +49,7 @@ static gchar *jidgin_robotmsg_path(pRobotMsg rmsg) {
       usec,
       NULL
       );
-  realpath = g_strjoin(G_DIR_SEPARATOR_S, settings->queue_path, realname, NULL);
+  realpath = g_strjoin(G_DIR_SEPARATOR_S, robotmsg_path, realname, NULL);
   g_free(realname);
   return realpath;
 }
@@ -52,7 +65,7 @@ char *jidgin_robotmsg_escape_protocol_id(char *id)
   return id + offset;
 }
 
-pRobotMsg jidgin_robotmsg_init(const char *device, const char *from) {
+pRobotMsg jidgin_robotmsg_init(const char *device, const char *from, ROBOTMSG_DIRECTION orient) {
   pRobotMsg rmsg = (pRobotMsg)malloc(sizeof(robotMsg));
   struct timeval time;
   assert(NULL != rmsg);
@@ -69,7 +82,7 @@ pRobotMsg jidgin_robotmsg_init(const char *device, const char *from) {
   rmsg->sec = time.tv_sec;
   rmsg->usec = time.tv_usec;
 
-  rmsg->path = jidgin_robotmsg_path(rmsg);
+  rmsg->path = jidgin_robotmsg_path(rmsg, orient);
   rmsg->stream = fopen(rmsg->path, "w");
 
   if (NULL == rmsg->stream)
@@ -78,17 +91,30 @@ pRobotMsg jidgin_robotmsg_init(const char *device, const char *from) {
   return rmsg;
 }
 
-pRobotMsg jidgin_robotmsg_init_with_path(const char *path) {
+pRobotMsg jidgin_robotmsg_init_with_path(const char *path, ROBOTMSG_DIRECTION orient) {
   // path passed in shall be relative
   pRobotMsg rmsg = (pRobotMsg)malloc(sizeof(robotMsg));
   pJidginSetting settings = jidgin_core_get_purple_settings();
+  gchar *robotmsg_path;
   assert(NULL != rmsg);
 
-  if (g_str_has_prefix(path, settings->queue_path)) {
-    rmsg->path = g_strdup(settings->queue_path);
-    path += strlen(settings->queue_path);
+  switch (orient) {
+    case DIRECTION_MO:
+      robotmsg_path = settings->mo_path;
+      break;
+    case DIRECTION_MT:
+      robotmsg_path = settings->mt_path;
+      break;
+    default:
+      jidgin_log(LOG_ERR, "[jidgin_robotmsg_init_with_path]%s\n", path);
+      return NULL;
+  }
+
+  if (g_str_has_prefix(path, robotmsg_path)) {
+    rmsg->path = g_strdup(robotmsg_path);
+    path += strlen(robotmsg_path);
   } else {
-    rmsg->path = g_strjoin(G_DIR_SEPARATOR_S, settings->queue_path, path, NULL);
+    rmsg->path = g_strjoin(G_DIR_SEPARATOR_S, robotmsg_path, path, NULL);
   }
   gchar **list = g_strsplit_set(path, ROBOTMSG_SEPARATOR, ROBOTMSG_FRAGMENTS);
 

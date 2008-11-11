@@ -10,13 +10,13 @@
 extern "C" {
 #endif
 
-#define ROBOTMSG_QUEUE_PATH  "/tmp/"
-#define ROBOTMSG_SEPARATOR "_"
-#define ROBOTMSG_FRAGMENTS 6
+#define ROBOTMSG_QUEUE_PATH   "/tmp/"
+#define ROBOTMSG_SEPARATOR    "_"
+#define ROBOTMSG_FRAGMENTS    6
 
 /* Resitrictions */
-#define ROBOTMSG_HEADER_MAX  1024
-#define ROBOTMSG_CONTENT_MAX 1024 * 1024
+#define ROBOTMSG_HEADER_MAX   1024
+#define ROBOTMSG_CONTENT_MAX  1024 * 1024
 
 typedef enum {
   DIRECTION_MO  = 0,
@@ -42,9 +42,9 @@ typedef struct {
 
 char *jidgin_robotmsg_escape_protocol_id(char *id);
 
-pRobotMsg jidgin_robotmsg_init(const char *, const char *);
+pRobotMsg jidgin_robotmsg_init(const char *, const char *, ROBOTMSG_DIRECTION);
 
-pRobotMsg jidgin_robotmsg_init_with_path(const char *);
+pRobotMsg jidgin_robotmsg_init_with_path(const char *, ROBOTMSG_DIRECTION);
 
 void jidgin_robotmsg_addheader(pRobotMsg, char *, char *);
 

@@ -1,6 +1,6 @@
 /* $Id: text.t.c 10 2008-11-08 16:24:02Z whw $ */
 
-#include <pcre.h>
+//#include <pcre.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
