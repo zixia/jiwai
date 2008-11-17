@@ -20,6 +20,10 @@ typedef struct {
   char *nickname;
 } jidginAccount, *pJidginAccount;
 
+
+#define JIDGIN_RETRY_COUNT_MAX 5
+#define JIDGIN_RETRY_SLEEP_SEC 10
+
 /* libpurple setting */
 typedef struct {
   char *custom_user_directory;
@@ -31,6 +35,7 @@ typedef struct {
   char *mt_path;
   unsigned short debug;
   char *chroot_dir;
+  unsigned short retry;
   gboolean is_daemon;
   gboolean is_debug;
 } jidginSetting, *pJidginSetting;
