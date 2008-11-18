@@ -11,9 +11,8 @@ extern "C" {
 
 void *jidgin_buddy_get_handle(void);
 
-void jidgin_buddy_cb_update(PurpleBuddy *);
-
 GList *jidgin_buddy_lookup(const char *, const char *);
 
+void jidgin_buddy_cb_request(PurpleAccount *, const char *);
 #endif  // HAVA_BUDDY_H
 

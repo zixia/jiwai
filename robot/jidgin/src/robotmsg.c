@@ -93,7 +93,7 @@ pRobotMsg jidgin_robotmsg_init(const char *device, const char *from, ROBOTMSG_DI
 
 pRobotMsg jidgin_robotmsg_init_with_path(const char *path, ROBOTMSG_DIRECTION orient) {
   // path passed in shall be relative
-  pRobotMsg rmsg = (pRobotMsg)malloc(sizeof(robotMsg));
+  pRobotMsg rmsg = (pRobotMsg)calloc(1, sizeof(robotMsg));
   pJidginSetting settings = jidgin_core_get_purple_settings();
   gchar *robotmsg_path;
   assert(NULL != rmsg);
@@ -123,8 +123,11 @@ pRobotMsg jidgin_robotmsg_init_with_path(const char *path, ROBOTMSG_DIRECTION or
   rmsg->sec = atol(list[4]);
   rmsg->usec = atol(list[5]);
 
-  if (NULL == rmsg->stream)
+  if (NULL == rmsg->stream) {
     jidgin_log(LOG_WARNING, "%s[%d]: %s\n", __FILE__, __LINE__, strerror(errno));
+    jidgin_robotmsg_destroy(rmsg);
+    return NULL;
+  }
 
   rmsg->from = g_strdup(list[2]);
 
@@ -186,10 +189,10 @@ static int jidgin_robotmsg_readrest(FILE *fp, char *content) {
 }
 
 pRobotMsg jidgin_robotmsg_parse(pRobotMsg rmsg) {
-  char line[ROBOTMSG_HEADER_MAX + 1];
-  char key[ROBOTMSG_HEADER_MAX + 1];
-  char value[ROBOTMSG_HEADER_MAX + 1];
-  char content[ROBOTMSG_CONTENT_MAX + 1];
+  char *line    = (char *)calloc(ROBOTMSG_HEADER_MAX  + 1, sizeof(char));
+  char *key     = (char *)calloc(ROBOTMSG_HEADER_MAX  + 1, sizeof(char));
+  char *value   = (char *)calloc(ROBOTMSG_HEADER_MAX  + 1, sizeof(char));
+  char *content = (char *)calloc(ROBOTMSG_CONTENT_MAX + 1, sizeof(char));
 
   assert(NULL != rmsg);
   fseek(rmsg->stream, 0L, 0);
@@ -208,6 +211,10 @@ pRobotMsg jidgin_robotmsg_parse(pRobotMsg rmsg) {
   content[ROBOTMSG_CONTENT_MAX] = '\0';
   jidgin_robotmsg_addcontent(rmsg, content);
 
+  free(content);
+  free(value);
+  free(key);
+  free(line);
   return rmsg;
 }
 

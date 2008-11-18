@@ -6,6 +6,7 @@
 #include <sys/inotify.h>
 #include "robotmsg.h"
 
+#define INOTIFY_EVENT_LISTEN (IN_CREATE | IN_MASK_ADD)
 #define INOTIFY_EVENT_SIZE (sizeof(struct inotify_event))
 #define INOTIFY_BUFFER_LEN ((INOTIFY_EVENT_SIZE + 16) * 1024)
 

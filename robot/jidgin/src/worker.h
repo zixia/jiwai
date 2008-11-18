@@ -15,7 +15,7 @@ typedef enum {
   SIGN_OFF  = 1,
 } WORKER_SIGNAL;
 
-#define IS_BUDDY_SIGN_ON(e) ((e) == SIGN_ON)
+#define IS_ACCOUNT_SIGN_ON(e) ((e) == SIGN_ON)
 
 void *jidgin_worker_get_handle(void);
 

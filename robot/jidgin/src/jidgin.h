@@ -19,7 +19,7 @@ extern "C" {
 #define CUSTOM_PLUGIN_PATH     ""
 #define PLUGIN_SAVE_PREF       "/purple/nullclient/plugins/saved"
 #define UI_ID                  "nullclient"
-#define QUEUE_PATH                "/var/cache/tmpfs/jiwai/queue/"
+#define QUEUE_PATH             "/var/cache/tmpfs/jiwai/queue/"
 
 pJidginSetting jidgin_core_get_purple_settings();
 

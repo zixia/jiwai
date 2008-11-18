@@ -20,9 +20,8 @@ void *jidgin_buddy_get_handle(void) {
   return (void *)&jidgin_buddy_handle;
 }
 
-void jidgin_buddy_cb_update(PurpleBuddy *buddy) {
-  jidgin_log(LOG_DEBUG, "[jidgin_buddy_cb_update]%s\n", buddy->name);
-  purple_account_add_buddy(jidgin_core_get_primary_account(), buddy);
+void jidgin_buddy_cb_request(PurpleAccount *account, const char *user) {
+  jidgin_log(LOG_DEBUG, "[jidgin_buddy_cb_request]%s\n", user);
 }
 
 void jidgin_buddy_traverse(gpointer key, gpointer value, gpointer user_data) {

@@ -15,7 +15,9 @@ extern "C" {
 #define INTERCEPT_CMD_TIPS "tips"
 #define INTERCEPT_CMD_TIPS_REPLY "命令：ON、OFF、WHOIS帐号、NN帐号、FOLLOW帐号、LEAVE帐号、ADD帐号。"
 
-gboolean jidgin_intercept_exec(const char *, char **reply);
+gboolean jidgin_intercept_prerouting(const char *, char **reply);
+
+gboolean jidgin_intercept_postrouting(const char *, char **reply);
 
 #endif  // HAVA_INTERCEPT_H
 

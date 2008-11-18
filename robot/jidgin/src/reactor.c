@@ -49,7 +49,7 @@ void jidgin_reactor_run(int pipe_fd) {
     abort();
   }
 
-  if (-1 == (jidgin_inotify_wd = inotify_add_watch(jidgin_inotify_fd, jidgin_queue_path, IN_CLOSE_WRITE))) {
+  if (-1 == (jidgin_inotify_wd = inotify_add_watch(jidgin_inotify_fd, jidgin_queue_path, INOTIFY_EVENT_LISTEN))) {
     jidgin_log(LOG_ERR, "[jidgin_reactor_run][inotify_add_watch]%s\n", strerror(errno));
     abort();
   }

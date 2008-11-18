@@ -1,6 +1,6 @@
 /*
  * jidgin
- * $Id: jidgin.c 11 2008-11-08 17:17:21Z whw $
+ * $Id$
  */
 
 #include <sys/types.h>
@@ -35,13 +35,12 @@ typedef struct _PurpleGLibIOClosure {
   gpointer data;
 } PurpleGLibIOClosure;
 
-static void purple_glib_io_destroy(gpointer data)
-{
+static void purple_glib_io_destroy(gpointer data) {
   g_free(data);
 }
 
-static gboolean purple_glib_io_invoke(GIOChannel *source, GIOCondition condition, gpointer data)
-{
+static gboolean purple_glib_io_invoke(GIOChannel *source,
+    GIOCondition condition, gpointer data) {
   PurpleGLibIOClosure *closure = data;
   PurpleInputCondition purple_cond = 0;
 
@@ -56,9 +55,8 @@ static gboolean purple_glib_io_invoke(GIOChannel *source, GIOCondition condition
   return TRUE;
 }
 
-static guint glib_input_add(gint fd, PurpleInputCondition condition, PurpleInputFunction function,
-    gpointer data)
-{
+static guint glib_input_add(gint fd,
+    PurpleInputCondition condition, PurpleInputFunction function, gpointer data) {
   PurpleGLibIOClosure *closure = g_new0(PurpleGLibIOClosure, 1);
   GIOChannel *channel;
   GIOCondition cond = 0;
@@ -79,7 +77,7 @@ static guint glib_input_add(gint fd, PurpleInputCondition condition, PurpleInput
   return closure->result;
 }
 
-static PurpleEventLoopUiOps glib_eventloops = 
+static PurpleEventLoopUiOps glib_eventloops =
 {
   g_timeout_add,
   g_source_remove,
@@ -99,9 +97,7 @@ static PurpleEventLoopUiOps glib_eventloops =
 };
 /*** End of the eventloop functions. ***/
 
-  static void
-connect_to_signals(void)
-{
+static void connect_to_signals(void) {
   void *conn_handle = purple_connections_get_handle();
   void *conv_handle = purple_conversations_get_handle();
   void *blist_handle = purple_blist_get_handle();
@@ -121,14 +117,9 @@ connect_to_signals(void)
       NULL);
 
   /* people love and people go */
-  purple_signal_connect(blist_handle, "buddy-added",
-      buddy_handle, PURPLE_CALLBACK(jidgin_buddy_cb_update),
+  purple_signal_connect(conn_handle, "account-authorization-requested",
+      buddy_handle, PURPLE_CALLBACK(jidgin_buddy_cb_request),
       NULL);
-  /*
-     purple_signal_connect(blist_handle, "buddy-removed",
-     buddy_handle, PURPLE_CALLBACK(jidgin_buddy_cb_update),
-     NULL);
-     */
 
   /* service up and service down */
   purple_signal_connect(conn_handle, "signed-on",
@@ -142,66 +133,7 @@ connect_to_signals(void)
   purple_signal_connect(conv_handle, "receiving-im-msg",
       worker_handle, PURPLE_CALLBACK(jidgin_worker_cb_recv),
       NULL);
-  /*
-     purple_signal_connect(conv_handle, "receiving-chat-msg",
-     worker_handle, PURPLE_CALLBACK(jidgin_worker_cb_recv),
-     NULL);
-     purple_signal_connect(conv_handle, "sent-im-msg",
-     worker_handle, PURPLE_CALLBACK(jidgin_worker_cb_sent),
-     NULL);
-     purple_signal_connect(conv_handle, "sent-chat-msg",
-     worker_handle, PURPLE_CALLBACK(jidgin_worker_cb_sent),
-     NULL);
-     */
 }
-
-/*** Conversation uiops ***/
-static PurpleConversationUiOps jidgin_conv_uiops = 
-{
-  NULL,                      /* create_conversation  */
-  NULL,                      /* destroy_conversation */
-  NULL,                      /* write_chat           */
-  NULL,                      /* write_im             */
-  NULL,                      /* write_conv           */
-  NULL,                      /* chat_add_users       */
-  NULL,                      /* chat_rename_user     */
-  NULL,                      /* chat_remove_users    */
-  NULL,                      /* chat_update_user     */
-  NULL,                      /* present              */
-  NULL,                      /* has_focus            */
-  NULL,                      /* custom_smiley_add    */
-  NULL,                      /* custom_smiley_write  */
-  NULL,                      /* custom_smiley_close  */
-  NULL,                      /* send_confirm         */
-  NULL,
-  NULL,
-  NULL,
-  NULL
-};
-
-  static void
-jidgin_ui_init(void)
-{
-  /**
-   * This should initialize the UI components for all the modules. Here we
-   * just initialize the UI for conversations.
-   */
-  purple_conversations_set_ui_ops(&jidgin_conv_uiops);
-}
-
-static PurpleCoreUiOps jidgin_core_uiops = 
-{
-  NULL,
-  NULL,
-  jidgin_ui_init,
-  NULL,
-
-  /* padding */
-  NULL,
-  NULL,
-  NULL,
-  NULL
-};
 
 jidginSetting purple_settings;
 
@@ -209,9 +141,7 @@ pJidginSetting jidgin_core_get_purple_settings() {
   return &purple_settings;
 }
 
-  static void
-init_settings(void)
-{
+static void init_settings(void) {
   purple_settings.custom_user_directory = CUSTOM_USER_DIRECTORY;
   purple_settings.custom_plugin_path = CUSTOM_PLUGIN_PATH;
   purple_settings.plugin_save_pref = PLUGIN_SAVE_PREF;
@@ -222,9 +152,7 @@ init_settings(void)
   purple_settings.queue_path = QUEUE_PATH;
 }
 
-  static void
-init_libpurple(void)
-{
+static void init_libpurple(void) {
   /* Set a custom user directory (optional) */
   purple_util_set_user_dir(purple_settings.custom_user_directory);
 
@@ -234,26 +162,9 @@ init_libpurple(void)
   purple_debug_set_enabled(FALSE);
 #endif
 
-  /* Set the core-uiops, which is used to
-   * 	- initialize the ui specific preferences.
-   * 	- initialize the debug ui.
-   * 	- initialize the ui components for all the modules.
-   * 	- uninitialize the ui components for all the modules when the core terminates.
-   */
-  purple_core_set_ui_ops(&jidgin_core_uiops);
-
-  /* Set the uiops for the eventloop. If your client is glib-based, you can safely
-   * copy this verbatim. */
   purple_eventloop_set_ui_ops(&glib_eventloops);
-
-  /* Set path to search for plugins. The core (libpurple) takes care of loading the
-   * core-plugins, which includes the protocol-plugins. So it is not essential to add
-   * any path here, but it might be desired, especially for ui-specific plugins. */
   purple_plugins_add_search_path(purple_settings.custom_plugin_path);
 
-  /* Now that all the essential stuff has been set, let's try to init the core. It's
-   * necessary to provide a non-NULL name for the current ui to the core. This name
-   * is used by stuff that depends on this ui, for example the ui-specific plugins. */
   if (!purple_core_init(purple_settings.ui_id)) {
     /* Initializing the core failed. Terminate. */
     jidgin_log(LOG_ERR, "%s",
@@ -262,19 +173,10 @@ init_libpurple(void)
     abort();
   }
 
-  /* Create and load the buddylist. */
   purple_set_blist(purple_blist_new());
   purple_blist_load();
-
-  /* Load the preferences. */
   purple_prefs_load();
-
-  /* Load the desired plugins. The client should save the list of loaded plugins in
-   * the preferences using purple_plugins_save_loaded(PLUGIN_SAVE_PREF) */
   purple_plugins_load_saved(purple_settings.plugin_save_pref);
-
-  /* Load the pounces. */
-  purple_pounces_load();
 }
 
 static PurpleAccount *account = NULL;
@@ -283,41 +185,58 @@ PurpleAccount *jidgin_core_get_primary_account() {
   return account;
 }
 
-int main(int argc, char *argv[])
-{
-  GList *iter;
+static void jidgin_core_print_version() {
+  fprintf(stdout, "jidgin $Id$ [http://jiwai.de/]\n");
+}
+
+static void jidgin_core_print_help() {
+  fprintf(stdout, "jidgin $Id$ [http://jiwai.de/]\n\
+      OPTIONS: \n\
+      -f: config file \n\
+      -d: enable debug level log \n\
+      -v: print version\n\
+      -h: this help\n\
+      EXAMPLES: \n\
+      jidgin -v -f config.qq \n\
+      jidgin -f config.qq -d \n");
+}
+
+int main(int argc, char *argv[]) {
   int argv0size = strlen(argv[0]);
   gchar *process_name;
   int i, c;
   const char *prpl;
+
+  GList *iter;
   GMainLoop *loop = g_main_loop_new(NULL, FALSE);
   GHashTable *protocol_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
-  //PurpleAccount *account;
-  PurpleSavedStatus *status;
   GKeyFile *config = NULL;
+  gboolean purple_debug_verbose = FALSE;
+
+  PurpleSavedStatus *status;
   pJidginAccount primary;
 
   pid_t pid;
   int wait_status;
   int inotify_pipe_fd[2];
 
-  /* libpurple's built-in DNS resolution forks processes to perform
-   * blocking lookups without blocking the main process.  It does not
-   * handle SIGCHLD itself, so if the UI does not you quickly get an army
-   * of zombie subprocesses marching around.
-   */
   signal(SIGCHLD, SIG_IGN);
-
   init_settings();
 
-  while ( -1 != (c = getopt(argc, argv, "c:")) ) {
+  while ( -1 != (c = getopt(argc, argv, "f:dvh")) ) {
     switch (c) {
-      case 'c': // config file
+      case 'f': // config file
         config = jidgin_setting_init(optarg);
         jidgin_setting_get_main(config, &purple_settings);
         break;
+      case 'd':
+        purple_debug_verbose = TRUE;
+        break;
+      case 'v':
+        jidgin_core_print_version();
+        return 1;
       default:
-        jidgin_log(LOG_ERR, "Illegal argument \"%c\"\n", c);
+        jidgin_core_print_help();
         return 1;
     }
   }
@@ -343,6 +262,7 @@ int main(int argc, char *argv[])
   }
 
   init_libpurple();
+  purple_debug_set_enabled(purple_debug_verbose);
 
   iter = purple_plugins_get_protocols();
   for (i = 0; iter; iter = iter->next) {

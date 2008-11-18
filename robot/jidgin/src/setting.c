@@ -17,6 +17,20 @@ GKeyFile *jidgin_setting_init(const char *ini) {
   return NULL;
 }
 
+void jidgin_setting_destroy(pJidginSetting s) {
+  if (s) {
+    if (s->custom_user_directory) free(s->custom_user_directory);
+    if (s->custom_plugin_path) free(s->custom_plugin_path);
+    if (s->plugin_save_pref) free(s->plugin_save_pref);
+    if (s->ui_id) free(s->ui_id);
+    if (s->queue_path) free(s->queue_path);
+    if (s->mo_path) free(s->mo_path);
+    if (s->mt_path) free(s->mt_path);
+    if (s->chroot_dir) free(s->chroot_dir);
+    free(s);
+  }
+}
+
 pJidginAccount jidgin_setting_get_primary_account(GKeyFile *config) {
   pJidginAccount account = NULL;
   GError *error;
@@ -52,13 +66,17 @@ GSList *jidgin_setting_get_accounts(GKeyFile *config) {
   pivot = groups;
 
   for (; *pivot; pivot++) {
-    if (g_str_equal(*pivot, SECTION_PURPLE)) continue;
+    if (g_str_equal(*pivot, SECTION_PURPLE)
+        || g_str_equal(*pivot, SECTION_PRIMARY)) {
+      continue;
+    }
+
     /* found an account */
     pJidginAccount account = (pJidginAccount)malloc(sizeof(jidginAccount));
     account->username = g_key_file_get_string(config, *pivot, "username", &error);
     account->password = g_key_file_get_string(config, *pivot, "password", &error);
     account->protocol = g_key_file_get_string(config, *pivot, "protocol", &error);
-    account->nickname = g_key_file_get_string(config, *pivot, "nickname", &error);
+    account->protocol = g_key_file_get_string(config, *pivot, "protocol", &error);
     accounts = g_slist_append(accounts, account);
   }
 
@@ -93,6 +111,10 @@ void jidgin_setting_get_main(GKeyFile *config, pJidginSetting setting) {
     setting->is_daemon = g_key_file_get_boolean(config, SECTION_PURPLE, "is_daemon", &error);
   if (g_key_file_has_key(config, SECTION_PURPLE, "is_debug", &error))
     setting->is_debug = g_key_file_get_boolean(config, SECTION_PURPLE, "is_debug", &error);
+  if (g_key_file_has_key(config, SECTION_PURPLE, "is_force_mt", &error))
+    setting->is_force_mt = g_key_file_get_boolean(config, SECTION_PURPLE, "is_force_mt", &error);
+  if (g_key_file_has_key(config, SECTION_PURPLE, "nchars", &error))
+    setting->nchars = g_key_file_get_integer(config, SECTION_PURPLE, "nchars", &error);
 
   if (setting->queue_path) {
     setting->mo_path = g_strjoin(G_DIR_SEPARATOR_S, setting->queue_path, "mo", NULL);

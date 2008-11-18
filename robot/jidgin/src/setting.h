@@ -38,9 +38,13 @@ typedef struct {
   unsigned short retry;
   gboolean is_daemon;
   gboolean is_debug;
+  gboolean is_force_mt;
+  unsigned int nchars;
 } jidginSetting, *pJidginSetting;
 
 GKeyFile *jidgin_setting_init(const char *);
+
+void jidgin_setting_destroy(pJidginSetting s);
 
 GSList *jidgin_setting_get_accounts(GKeyFile *);
 
