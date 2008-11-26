@@ -1717,8 +1717,9 @@ _SQL_;
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
 			$device_user_row['nameScreen'], $choice, $value, $user_row['nameScreen'], $status_row['id']
 		));
-		JWMessage::Create( $user_row['id'], $device_user_id, $reply, $type, array('delete'=>true,) );
-
+		JWMessage::Create( $device_user_id, $user_row['id'], $reply, $type, array('delete'=>true,) );
+		
+		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC', array() );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
