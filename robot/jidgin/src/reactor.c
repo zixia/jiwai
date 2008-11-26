@@ -4,6 +4,7 @@
 #include "log.h"
 
 #include <glib.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -53,7 +54,12 @@ void jidgin_reactor_run(int pipe_fd) {
     jidgin_log(LOG_ERR, "[jidgin_reactor_run][inotify_add_watch]%s\n", strerror(errno));
     abort();
   }
+
   for (;;) {
+    if (1 == getppid()) {
+      jidgin_reactor_destroy();
+      abort();
+    }
     if (-1 == (length = read(jidgin_inotify_fd, buf, INOTIFY_BUFFER_LEN))) {
       jidgin_log(LOG_ERR, "[jidgin_reactor_run][read]%s\n", strerror(errno));
       abort();

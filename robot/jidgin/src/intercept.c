@@ -6,18 +6,31 @@
 #include <string.h>
 #include <strings.h>
 
-#include "setting.h"
+#include "jidgin.h"
 #include "intercept.h"
 #include "log.h"
-#include "jidgin.h"
+#include "setting.h"
+#include "worker.h"
 
 gboolean jidgin_intercept_prerouting(const char *msg, char **reply) {
-  if (0 == strncasecmp(INTERCEPT_CMD_HELP, msg, strlen(INTERCEPT_CMD_HELP))) {
+  if (JIDGIN_STR_EQUAL(INTERCEPT_CMD_HELP, msg)) {
     *reply = INTERCEPT_CMD_HELP_REPLY;
     return TRUE;
   }
-  if (0 == strncasecmp(INTERCEPT_CMD_TIPS, msg, strlen(INTERCEPT_CMD_TIPS))) {
+  if (JIDGIN_STR_EQUAL(INTERCEPT_CMD_TIPS, msg)) {
     *reply = INTERCEPT_CMD_TIPS_REPLY;
+    return TRUE;
+  }
+  if (JIDGIN_STR_EQUAL(INTERCEPT_NONSENSE_QQ_IDLE, msg)) {
+    *reply = NULL;
+    return TRUE;
+  }
+  if (JIDGIN_STR_EQUAL(INTERCEPT_NONSENSE_QQ_IDLE2, msg)) {
+    *reply = NULL;
+    return TRUE;
+  }
+  if (JIDGIN_STR_EQUAL(INTERCEPT_CMD_UPTIME, msg)) {
+    *reply = jidgin_worker_get_uptime();
     return TRUE;
   }
 

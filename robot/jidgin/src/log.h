@@ -2,6 +2,7 @@
 #define HAVE_LOG_H
 
 #include <syslog.h>
+#include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,6 +20,8 @@ void jidgin_log_priority(int);
 void jidgin_log_device(int);
 
 void jidgin_log(int, const char *, ...);
+
+void jidgin_log_nil(const gchar *, GLogLevelFlags, const gchar *, gpointer);
 
 #endif  // HAVE_LOG_H
 

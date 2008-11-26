@@ -323,9 +323,13 @@ int main(int argc, char *argv[]) {
     jidgin_log(LOG_ERR, "[jidgin_core]thread error\n");
     abort();
   }
+
   jidgin_reactor_attach( jidgin_worker_on_data );
   connect_to_signals();
 
+  g_log_set_handler (NULL,
+      G_LOG_LEVEL_WARNING | G_LOG_FLAG_FATAL | G_LOG_LEVEL_CRITICAL ,
+      jidgin_log_nil, NULL);
   g_main_loop_run(loop);
 
   jidgin_reactor_destroy();

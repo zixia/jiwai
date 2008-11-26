@@ -37,5 +37,7 @@ void jidgin_worker_on_data(pJidginMsg);
 
 gpointer jidgin_worker_spawn(gpointer);
 
+char *jidgin_worker_get_uptime();
+
 #endif  // HAVA_WORKER_H
 

@@ -2,9 +2,11 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "reactor.h"
 #include "log.h"
@@ -13,18 +15,57 @@
 #include "intercept.h"
 #include "jidgin.h"
 
+static char jidgin_worker_uptime[201];
+
 void *jidgin_worker_get_handle(void) {
   static int jidgin_worker_handle;
   return (void *)&jidgin_worker_handle;
 }
 
+static gboolean jidgin_worker_get_uptime_str() {
+  time_t t;
+  struct tm *tmp;
+
+  t = time(NULL);
+  tmp = localtime(&t);
+  if (tmp == NULL) {
+    jidgin_log(LOG_ERR, "[jidgin_worker_get_uptime_str]%s\n", strerror(errno));
+    return FALSE;
+  }
+
+  if (strftime(jidgin_worker_uptime, sizeof(char) * 200, "%F %T", tmp) == 0) {
+    jidgin_log(LOG_ERR, "[jidgin_worker_get_uptime_str]%s\n", strerror(errno));
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
 void jidgin_worker_cb_signon(PurpleConnection *gc, gpointer signal)
 {
+  static unsigned short retry_count = 5;
   PurpleAccount *account = purple_connection_get_account(gc);
-  pJidginSetting setting = jidgin_core_get_purple_settings();
+
   if (purple_account_is_disconnected(account)) {
-    sleep(10);
-    purple_account_set_enabled(account, setting->ui_id, TRUE);
+    jidgin_log(LOG_ERR, "[purple_account_is_disconnected]%s %d\n",
+        purple_account_get_username(account), retry_count);
+
+    if (retry_count) {
+      sleep(10);
+      purple_account_connect(account);
+    } else {
+      jidgin_worker_get_uptime_str();
+      jidgin_log(LOG_CRIT, "[%s][jidgin down]%s\n",
+          jidgin_worker_uptime,
+          purple_account_get_username(account));
+      abort();
+    }
+
+    --retry_count;
+  } else {
+    jidgin_worker_get_uptime_str();
+    jidgin_log(LOG_INFO, "[purple_account_is_connected]%s\n",
+        purple_account_get_username(account));
   }
 }
 
@@ -35,6 +76,12 @@ gboolean jidgin_worker_send_im(PurpleAccount *account, PurpleConversation *conv,
 
   if (!account) {
     account = jidgin_core_get_primary_account();
+  }
+
+  if (purple_account_is_disconnected(account)) {
+    jidgin_log(LOG_INFO, "[jidgin_worker_send_im]%s disconnected\n",
+        purple_account_get_username(account));
+    return FALSE;
   }
 
   if (!conv) {
@@ -77,8 +124,10 @@ gboolean jidgin_worker_cb_recv(PurpleAccount *account,
   pmsg->device  = g_strdup(account->protocol_id);
 
   if (jidgin_intercept_prerouting(*message, &reply)) {
-    pmsg->msg = g_strdup(reply);
-    jidgin_worker_send_im(account, conv, pmsg);
+    if (reply) {
+      pmsg->msg = g_strdup(reply);
+      jidgin_worker_send_im(account, conv, pmsg);
+    }
     jidgin_msg_destroy(pmsg);
     return FALSE;
   }
@@ -173,5 +222,9 @@ gpointer jidgin_worker_spawn(gpointer fd) {
   }
 
   return GINT_TO_POINTER(inotify_read_fd);
+}
+
+char *jidgin_worker_get_uptime() {
+  return jidgin_worker_uptime;
 }
 

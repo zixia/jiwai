@@ -66,3 +66,10 @@ void jidgin_log(int priority, const char *format, ...) {
 
   // ignore the log request
 }
+
+void jidgin_log_nil(const gchar *log_domain,
+    GLogLevelFlags log_level,
+    const gchar *message,
+    gpointer user_data) {
+}
+
