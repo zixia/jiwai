@@ -21,6 +21,7 @@ class JWPlugins
 		'Flickr',
         'Douban',
         'Imdb',
+        'TeX',
 	);
 
     static private $plugin_domains = array(
@@ -32,7 +33,7 @@ class JWPlugins
             'youku.com'     => 'Video',
             'tudou.com'     => 'Video',
             'douban.com'    => 'Douban',
-            'imdb.com'  => 'Imdb',
+            'tug.org'   => 'TeX',
     );
 
 	static public function GetPluginResult( $status_row )
@@ -76,6 +77,18 @@ class JWPlugins
             if ( is_callable( $callback ) ) 
             {
                 $result = call_user_func( $callback, '.imdb.com/title/' . $matches[1] );
+                if ( $result ) 
+                {
+                    return $result;
+                }
+            }
+        }
+        else if ( preg_match('#(\[tex\].*?\[/tex\])#i', $status, $matches) )
+        {
+            $callback = array('JWPlugins_TeX', 'GetPluginResult');
+            if ( is_callable( $callback ) ) 
+            {
+                $result = call_user_func( $callback, $matches[1] );
                 if ( $result ) 
                 {
                     return $result;
