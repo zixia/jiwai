@@ -9,6 +9,9 @@ class JWTextFormat {
 
 	static public function PreFormatRobotMsg( $text ) 
 	{
+		/* Text Bug Web */
+		$text = self::_WebTextBug($text);
+
 		/* Mobile Software */
 		$text = self::_StripQQTail( $text );
 		$text = self::_StripMsnHead( $text );
@@ -71,13 +74,24 @@ class JWTextFormat {
 		return str_replace( $convert_keys, $convert_values, $text );
 	}
 
+	static public function _WebTextBug($text) {
+		if ( JWRequest::IsMozilla() ) {
+			$text = preg_replace( '/[\r]+/', '', $text );
+		} 
+		
+		if ( JWRequest::IsIE() ) {
+			$text = preg_replace( '/[\n]+/', '', $text );
+		}
+		return $text;
+	}
+
 	/**
 	 * trim special char
 	 */
 	static public function _TrimSpecialChar( $text ) 
 	{
 		// new line to space
-		$text = preg_replace( '/([\n\r\s]+)/', ' ', $text);
+		$text = preg_replace( '/[\r\n\s]+/', ' ', $text);
 
 		// invalid character in XML
 		$text = preg_replace( '/[\x00-\x09\x0b\x0c\x0e-\x19]/U', '', $text ); 

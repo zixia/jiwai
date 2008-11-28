@@ -143,17 +143,31 @@ class JWRequest {
 		return false;
 	}
 
+	static public function IsMozilla() {
+		$useragent = strtolower(@$_SERVER['HTTP_USER_AGENT']);
+		if(strpos($useragent, 'gecko') !== FALSE) {
+			preg_match("/gecko\/(\d+)/", $useragent, $regs);
+			return $regs[1];
+		}
+		return FALSE;
+	}
+
+	static public function IsIE() {
+		$useragent = strtolower(@$_SERVER['HTTP_USER_AGENT']);
+		return ($useragent && ! self::IsMozilla() ) ;
+	}
+
 	static public function IsWindowsLiveBrowser(){
-        /**
-         * User-Agent Headers
-         * MSN, MSN Messenger
-         * Windows Messenger, MSMSGS
-         * Windows Live Messenger, Windows Live Messenger
-         */
+		/**
+		 * User-Agent Headers
+		 * MSN, MSN Messenger
+		 * Windows Messenger, MSMSGS
+		 * Windows Live Messenger, Windows Live Messenger
+		 */
 		$agent = @$_SERVER['HTTP_USER_AGENT'];
 		if( null == $agent )
 			return  false;
-        return (strpos($agent, 'Windows Live Messenger') === false) ? false : true;
+		return (strpos($agent, 'Windows Live Messenger') === false) ? false : true;
 	}
 }
 ?>
