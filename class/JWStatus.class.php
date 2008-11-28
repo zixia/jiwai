@@ -232,6 +232,7 @@ class JWStatus {
 	 */
 	static public function GetSymbolInfo( $status, $symbol_need=null ) 
 	{
+		$nottags = array( 'TEX', '/TEX' );
 		/**
 		 * Convert to semi corner
 		 */
@@ -274,7 +275,10 @@ class JWStatus {
 				}
 			}
 
-			if ( $symbol_need==null || $symbol == $symbol_need ) 
+			if ( false===in_array(strtoupper($value, $nottags))
+					&& ( $symbol_need==null 
+						|| $symbol == $symbol_need )
+			   )
 			{
 				return array(
 					'symbol' => $symbol,
