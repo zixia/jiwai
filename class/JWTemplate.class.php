@@ -491,7 +491,7 @@ _HTML_;
 		<li><a href="<? echo JW_SRVNAME;?>/wo/about/partner" target="_blank">友情链接</a></li>
 	</ul>
 	<ul>
-		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP证020015号</a></li>
+		<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP备08104604号</a></li>
 	</ul>
 </div>
 
@@ -512,7 +512,7 @@ _HTML_;
 		<a href="http://help.jiwai.de/Api" target="_blank">API</a>
 		<a href="http://help.jiwai.de/" target="_blank">帮助</a>
 		<a href="<? echo JW_SRVNAME;?>/wo/about/partner" target="_blank">友情链接</a>
-		<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>
+		<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备08104604号</a>
 </div>
 
 <?php
@@ -523,7 +523,7 @@ _HTML_;
 	{
 ?>
 <div class="footer">
-		<span >&copy; 2007-<? echo date("Y");?>&nbsp;叽歪网版权所有</span><a href="http://www.miibeian.gov.cn" target="_blank" title="京ICP备07024804号" class="grey">京ICP备07024804号</a>
+		<span >&copy; 2007-<? echo date("Y");?>&nbsp;叽歪网版权所有</span><a href="http://www.miibeian.gov.cn" target="_blank" title="京ICP备08104604号" class="grey">京ICP备08104604号</a>
 </div>
 
 <?php
@@ -596,7 +596,7 @@ _HTML_;
 				<p>
                     <input type="hidden" id="idUserReplyTo" name="idUserReplyTo"/>
                     <input type="hidden" id="idStatusReplyTo" name="idStatusReplyTo"/>
-					<textarea name="jw_status" wrap="hard" rows="3" id="jw_status" onkeydown="if(this.value.length>0 && ((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83))){JWAction.updateStatus(); return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
+					<textarea name="jw_status" wrap="soft" rows="3" id="jw_status" onkeydown="if(this.value.length>0 && ((event.ctrlKey && event.keyCode == 13) || (event.altKey && event.keyCode == 83))){JWAction.updateStatus(); return false;}" onkeyup="updateStatusTextCharCounter(this.value)" onblur="updateStatusTextCharCounter(this.value)" value=""></textarea>
 				</p>
 				<p class="act">
 					<span class="ctrlenter">Ctrl+Enter直接叽歪</span>

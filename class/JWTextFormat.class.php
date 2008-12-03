@@ -75,6 +75,7 @@ class JWTextFormat {
 	}
 
 	static public function _WebTextBug($text) {
+		return;
 		if ( JWRequest::IsMozilla() ) {
 			$text = preg_replace( '/[\r]+/', '', $text );
 		} 
