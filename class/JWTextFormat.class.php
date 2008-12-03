@@ -9,9 +9,6 @@ class JWTextFormat {
 
 	static public function PreFormatRobotMsg( $text ) 
 	{
-		/* Text Bug Web */
-		$text = self::_WebTextBug($text);
-
 		/* Mobile Software */
 		$text = self::_StripQQTail( $text );
 		$text = self::_StripMsnHead( $text );
@@ -72,18 +69,6 @@ class JWTextFormat {
 		}
 
 		return str_replace( $convert_keys, $convert_values, $text );
-	}
-
-	static public function _WebTextBug($text) {
-		return $text;
-		if ( JWRequest::IsMozilla() ) {
-			$text = preg_replace( '/[\r]+/', '', $text );
-		} 
-		
-		if ( JWRequest::IsIE() ) {
-			$text = preg_replace( '/[\n]+/', '', $text );
-		}
-		return $text;
 	}
 
 	/**
