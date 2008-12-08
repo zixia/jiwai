@@ -100,17 +100,12 @@ sub urlFactory {
     my ($key, $options) = @_;
     my %options = %$options;
 
-    return 'http://china.nba.com/'. $options{$key}{'id'} .'/';
-}
-
-sub convertToAbsUrl {
-    my ($relative) = @_;
-    return 'http://china.nba.com' . $relative;
+    return 'http://nba.tom.com/teams/'. $options{$key}{'id'} .'/index.html';
 }
 
 sub getItems {
     my ($url) = @_;
-    my ($roiBegin, $roiEnd) = ('-球队新闻', '-\/球队新闻');
+    my ($roiBegin, $roiEnd) = ('新闻列表', '\/新闻列表');
 
     my $withRoi = 0;
     my %items = ();
@@ -188,7 +183,7 @@ foreach my $key (keys %teamMap) {
     my $url = urlFactory($key, \%teamMap);
     my %items = getItems($url);
     while (my($link, $title) = each %items) {
-        my $str = _postStrFactory($title, convertToAbsUrl($link));
+        my $str = _postStrFactory($title, $link);
         if (defined $cachedItems{$link}) {
             print "[DUP]", $str, "\n";
         } elsif (defined $ENV{'RSS_NONPOST'} and $ENV{'RSS_NONPOST'} eq 1) {
