@@ -275,7 +275,7 @@ class JWStatus {
 				}
 			}
 
-			if ( false===in_array(strtoupper($value, $nottags))
+			if ( !in_array(strtoupper($value, $nottags))
 					&& ( $symbol_need==null 
 						|| $symbol == $symbol_need )
 			   )
