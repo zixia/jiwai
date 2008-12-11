@@ -172,6 +172,8 @@ class JWMail {
 			 '/%EFriend.nameScreen%/i' => UrlEncode(@$friend['nameScreen']),
 			 '/%EFriend.idUser%/i' => UrlEncode(@$friend['id']),
 			 '/%Friend.nameFull%/i' => @$friend['nameFull'],
+			 '/%Friend.nameUrl%/i' => @$friend['nameUrl'],
+			 '/%Friend.contact%/i' => @$friend['contact'],
 		);
 
 		return preg_replace( array_keys($replace_array), array_values($replace_array), $template );

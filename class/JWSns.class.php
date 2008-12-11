@@ -120,14 +120,16 @@ class JWSns {
 		}
 		if ( empty($invitations) ) return;
 
-		$user_ids = array();
+		$user_ids = $addresses = array();
 		foreach( $invitations AS $one ) {
 			$user_ids[$one['idUser']] = $one['idUser'];
+			$addresses[$one['idUser']] = "{$one['type']}:{$one['address']}";
 			JWInvitation::Destroy( $one['id'] );
 		}
 		$user_ids = array_keys($user_ids);
 		$users = JWDB_Cache_User::GetDbRowsByIds($user_ids);
 		foreach( $users AS $user ) {
+			$friend['contact'] = $addresses[$user['id']];
 			JWMail::SendMailNoticeEverInvite($user, $friend);
 		}
 	}
