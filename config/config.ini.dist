@@ -1,0 +1,16 @@
+###
+# INI Config FILE
+###
+
+[gender]
+female = 女
+secret = 保密
+male = 男
+
+[type]
+S_SIG = 签名
+S_VOTE = 投票
+S_MMS = 彩信
+S_NONE =
+
+[end]
