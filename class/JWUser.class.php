@@ -1000,6 +1000,7 @@ _SQL_;
 				|| 32834==$idUser	// wqsemc
 				|| 89==$idUser	// seek
 				|| 863==$idUser	// lecause
+				|| 135898==$idUser // WinnieLin
 				|| $admin_user_db_row['idUser']==$idUser )
 			return true;
 
