@@ -796,7 +796,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	static public function GetCountReply( $status_id, $forceReload=false ) 
 	{
 		$ds_function = array('JWStatus', 'GetCountReply');
-		$ds_param = array( $status_id );
+		$ds_param = array( abs(intval($status_id)) );
 
 		$mc_param = $ds_param;
 		$mc_key = JWDB_Cache::GetCacheKeyByFunction( $ds_function, $mc_param );
