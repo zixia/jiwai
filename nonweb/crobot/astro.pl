@@ -79,7 +79,7 @@ my @astros = (
     '巨蟹座',
     '狮子座',
     '处女座',
-    '天枰座',
+    '天秤座',
     '天蝎座',
     '射手座',
     '摩羯座',
@@ -90,9 +90,9 @@ my @astros = (
 for my $astro (@astros) {
   my %result = _postItemsFactory($astro);
   print "[INF]$result{'废话很多'}", "\n";
-  _postItem('sohu.astro@jiwai.de', 'geekdem1ma', $result{'废话很多'});
+  _postItem($astro . '运程', 'bulkdem1ma', $result{'废话很多'});
   print "[INF]$result{'废话概述'}", "\n";
-  _postItem('sohu.astro@jiwai.de', 'geekdem1ma', $result{'废话概述'});
+  _postItem($astro . '运程', 'bulkdem1ma', $result{'废话概述'});
 }
 
 exit 0;
