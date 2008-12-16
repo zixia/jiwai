@@ -54,11 +54,11 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		 *	接下来一个一个的 OnDirty 过去
 		 */ 
 
-		$pk_id = $dbRow['id'];
-		$user_id = $dbRow['idUser'];
-		$reply_to_user_id = $dbRow['idUserReplyTo'];
-		$tag_id = $dbRow['idTag'];
-		$thread_id = $dbRow['idThread'];
+		$pk_id = abs(intval($dbRow['id']));
+		$user_id = abs(intval($dbRow['idUser']));
+		$reply_to_user_id = abs(intval($dbRow['idUserReplyTo']));
+		$tag_id = abs(intval($dbRow['idTag']));
+		$thread_id = abs(intval($dbRow['idThread']));
 
 		$dirty_keys = array (	 
 			JWDB_Cache::GetCacheKeyById('Status', $pk_id),
@@ -137,6 +137,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsFromConferenceUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idUser = abs(intval($idUser));
 		$max_num	= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -197,6 +198,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsFromSelfNReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idUser = abs(intval($idUser));
 		$max_num	= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -257,6 +259,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsFromUser($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idUser = abs(intval($idUser));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -321,6 +324,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsFromFriends($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idUser = abs(intval($idUser));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -381,6 +385,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsPostByIdTag($idTag, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idTag = abs(intval($idTag));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -441,6 +446,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsTopicByIdTag($idTag, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idTag = abs(intval($idTag));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -502,6 +508,8 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsPostByIdTagAndIdUser($idTag, $idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idTag = abs(intval($idTag));
+		$idUser = abs(intval($idUser));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -562,6 +570,8 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsTopicByIdTagAndIdUser($idTag, $idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idTag = abs(intval($idTag));
+		$idUser = abs(intval($idUser));
 		$max_num		= $start + $num;
 		$mc_max_num	= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -620,6 +630,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetStatusNumFromConference($idConference)
 	{
+		$idConference = abs(intval($idConference));
 		// call back function & param
 		$ds_function 	= array('JWStatus','GetStatusNumFromConference');
 		$ds_param		= array($idConference);
@@ -647,6 +658,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetStatusNumFromFriends($idUser)
 	{
+		$idUser = abs(intval($idUser));
 		// call back function & param
 		$ds_function 	= array('JWStatus','GetStatusNumFromFriends');
 		$ds_param		= array($idUser);
@@ -674,6 +686,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	
 	static public function GetStatusIdsFromReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
 	{
+		$idUser = abs(intval($idUser));
 		$max_num		= $start + $num;
 		$mc_max_num		= JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -755,6 +768,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetStatusNum($idUser)
 	{
+		$idUser = abs(intval($idUser));
 		// call back function & param
 		$ds_function 	= array('JWStatus','GetStatusNum');
 		$ds_param		= array($idUser);
@@ -775,6 +789,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetStatusNumFromReplies($idUser)
 	{
+		$idUser = abs(intval($idUser));
 		// call back function & param
 		$ds_function 	= array('JWStatus','GetStatusNumFromReplies');
 		$ds_param		= array($idUser);
@@ -795,6 +810,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetCountReply( $status_id, $forceReload=false ) 
 	{
+		$status_id = abs(intval($status_id));
 		$ds_function = array('JWStatus', 'GetCountReply');
 		$ds_param = array( abs(intval($status_id)) );
 
@@ -814,6 +830,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountTopicByIdTag( $idTag, $forceReload=false )
     {
+	$idTag = abs(intval($idTag));
         $ds_function = array('JWStatus', 'GetCountTopicByIdTag');
         $ds_param = array( $idTag );
         
@@ -834,6 +851,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
     }
     static public function GetCountPostByIdTag( $idTag, $forceReload=false )
     {
+	$idTag = abs(intval($idTag));
         $ds_function = array('JWStatus', 'GetCountPostByIdTag');
         $ds_param = array( $idTag );
 
@@ -855,6 +873,8 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountPostByIdTagAndIdUser( $idTag, $idUser, $forceReload=false )
     {
+	$idTag = abs(intval($idTag));
+	$idUser = abs(intval($idUser));
         $ds_function = array('JWStatus', 'GetCountPostByIdTagAndIdUser');
         $ds_param = array( $idTag, $idUser );
 
@@ -876,6 +896,8 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
     static public function GetCountTopicByIdTagAndIdUser( $idTag, $idUser, $forceReload=false )
     {
+	$idTag = abs(intval($idTag));
+	$idUser = abs(intval($idUser));
         $ds_function = array('JWStatus', 'GetCountTopicByIdTagAndIdUser');
         $ds_param = array( $idTag, $idUser );
 
@@ -897,6 +919,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function GetStatusNumFromSelfNReplies($idUser)
 	{
+		$idUser = abs(intval($idUser));
 		// call back function & param
 		$ds_function 	= array('JWStatus','GetStatusNumFromSelfNReplies');
 		$ds_param		= array($idUser);
@@ -920,6 +943,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 	 */
 	static public function GetStatusIdsByIdThread( $thread_id, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
 	{
+		$thread_id = abs(intval($thread_id));
 		$max_num = $start + $num;
 		$mc_max_num = JWDB_Cache::GetMaxCacheNum($max_num);
 
@@ -981,6 +1005,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 
 	static public function SetIdPicture($status_id, $picture_id=null)
 	{
+		$status_id = abs(intval($status_id));
 		$status_id = JWDB::CheckInt( $status_id );
 		$up_array = array(
 			'idPicture' => $picture_id,
