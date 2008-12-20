@@ -32,6 +32,7 @@ class JWPlugins
             'youtube.com'   => 'Video',
             'youku.com'     => 'Video',
             'tudou.com'     => 'Video',
+            'vimeo.com'     => 'Video',
             'douban.com'    => 'Douban',
             'tug.org'   => 'TeX',
     );
