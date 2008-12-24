@@ -101,7 +101,7 @@ class JWDevice {
 			case 'sms':
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
 			case 'fetion':
-            case 'xiaonei':
+			case 'xiaonei':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -231,14 +231,7 @@ class JWDevice {
 
 		$condition_in = JWDB::GetInConditionFromArray($idUsers, 'int');
 
-		$sql = <<<_SQL_
-SELECT
-	*,id as idDevice
-FROM
-	Device
-WHERE
-	idUser IN ( $condition_in )
-_SQL_;
+		$sql = "SELECT *,id as idDevice FROM Device WHERE idUser IN ({$condition_in})";
 
 		if ( ! $db_rows = JWDB::GetQueryResult ($sql, true) ){
 			$db_rows = array();
@@ -289,9 +282,9 @@ _SQL_;
 		///{{{ //add by seek@jiwai.com 2008-05-20
 		//Wen send queue message;
 		if ( $device_row 
-			&& empty($device_row['secret'])  //Verified
-			&& $device_row['idUser']  // belong to a user;
-		)
+				&& empty($device_row['secret'])  //Verified
+				&& $device_row['idUser']  // belong to a user;
+		   )
 		{
 			$channel = "/device/unbind";
 			JWPubSub::Instance('spread://localhost/')->Publish($channel, array(
@@ -648,15 +641,7 @@ _SQL_;
 
 		$condition_in = JWDB::GetInConditionFromArray($idDevices);
 
-		$sql = <<<_SQL_
-SELECT	
-	*, id as idDevice
-FROM
-	Device
-WHERE
-	id IN ($condition_in)
-_SQL_;
-
+		$sql = "SELECT	*, id as idDevice FROM Device WHERE id IN ({$condition_in})";
 		$rows = JWDB::GetQueryResult($sql,true);
 
 
@@ -698,15 +683,7 @@ _SQL_;
 			throw new JWException('must array');
 
 		$condition_in = JWDB::GetInConditionFromArrayOfArray($addresses, array('address','type'), 'char');
-
-		$sql = <<<_SQL_
-SELECT	
-	id as idDevice
-FROM	
-	Device
-WHERE	
-	(address,type) IN ($condition_in)
-_SQL_;
+		$sql = "SELECT	id as idDevice FROM	Device WHERE	(address,type) IN ({$condition_in})";
 
 		try {
 			$rows = JWDB::GetQueryResult($sql,true);
@@ -775,15 +752,7 @@ _SQL_;
 		settype($type, 'array');
 		$in_type_string = implode("','", $type);
 
-		$sql = <<<_SQL_
-SELECT 
-	*
-FROM 
-	Device
-WHERE 
-	address='$key' and type in ('$in_type_string');
-_SQL_;
-
+		$sql = "SELECT * FROM Device WHERE address='{$key}' and type in ('{$in_type_string}')";
 		$rows = JWDB::GetQueryResult($sql,true);
 
 		if( $field ) {
@@ -828,9 +797,9 @@ _SQL_;
 				$name='229516989';
 				$name='742721768';
 				break;
-            case 'xiaoei':
-                $name='244553514';
-                break;
+			case 'xiaoei':
+				$name='244553514';
+				break;
 			case 'skype':
 				$name='wo.jiwai.de';
 				break;
@@ -865,6 +834,7 @@ _SQL_;
 				} else {
 					$name = $row['serverAddress'];
 				}
+				$name = 'msn011@jiwai.de';
 				break;
 			default:
 				$name='wo@jiwai.de';
@@ -1075,12 +1045,12 @@ _SQL_;
 		do {
 			$code = self::GenSecret(8, JWDevice::CHAR_NUM);
 		} while (  preg_match('/^0+$/', $code) );
-		
+
 		JWDB::SaveTableRow('MergeRequest',array(
-						'idMasterUser' => $idUserMaster,
-						'idSlaveDevice' => $idDeviceSlave,
-						'code' => $code,
-						));
+					'idMasterUser' => $idUserMaster,
+					'idSlaveDevice' => $idDeviceSlave,
+					'code' => $code,
+					));
 
 		return $code;
 	}

@@ -260,7 +260,7 @@ _HTML_;
 				'/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
-				'/t/神七/' => '神七',
+				'/t/圣诞惊喜/' => '圣诞惊喜',
 				'/wo/account/create' => '注册',
 				'/wo/login' => '登录',
 				'http://help.jiwai.de/' => '帮助'
@@ -271,7 +271,7 @@ _HTML_;
 			$nav = array(
 				'/wo/' => '首页',
 				$a => $b,
-				'/t/神七/' => '神七',
+				'/t/圣诞惊喜/' => '圣诞惊喜',
 				'/public_timeline/' => '逛逛',
 				'/wo/gadget/' => '窗可贴',
 				'/t/帮助留言板/' => '留言板',
@@ -283,7 +283,7 @@ _HTML_;
 				'/wo/' => '首页',
 				//'http://beta.jiwai.de/g/' => '逛逛',
 				'/public_timeline/' => '逛逛',
-				'/t/神七/' => '神七',
+				'/t/圣诞惊喜/' => '圣诞惊喜',
 				'/wo/account/create' => '注册',
 				'http://help.jiwai.de/' => '帮助',
 			);
@@ -367,7 +367,7 @@ _HTML_;
 <?php foreach ($nav as $url => $txt) { ?>
 		<li>
 			<div class="line1"></div>
-			<div class="nav"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; if($highlight!=$url && '神七'==$txt) echo " style='background-color:#FFCC00;'"?>><?php echo $txt; ?></a></div>
+			<div class="nav"><a href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" <?php echo ($highlight==$url) ? 'class="active"' : ''; if($highlight!=$url && '圣诞惊喜'==$txt) echo " style='background-color:#FFCC00;'"?>><?php echo $txt; ?></a></div>
 		</li>
 <?php } ?>
 		</ul>
@@ -1674,7 +1674,7 @@ _HTML_;
 	    {    
 			        $src = JWTemplate::GetAssetUrl('/images/jiwai_ichina.gif');
 					$alt = "[叽歪网]爱中国行动";
-					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/神七/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
+					        echo '&nbsp;<div class="sidebar" style="margin-top:-3px;"><a target="_blank" href="/t/圣诞惊喜/"><img src="'.$src.'" title="'.$alt.'" alt="'.$alt.'".></img></a></div>';
 		}
 
     function sidebar_tqybad()
