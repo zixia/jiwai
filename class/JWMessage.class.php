@@ -22,6 +22,7 @@ class JWMessage {
 
 	const	OUTBOX	= 1;
 	const	INBOX	= 2;
+	const 	NOTICE	= 3;
 
 	const   MESSAGE_DELETE = 'delete';
 	const   MESSAGE_HAVEREAD = 'haveRead';
@@ -64,7 +65,9 @@ class JWMessage {
 		if ( 0>=$time )
 			$time = time();
 
-		$message_reply_id = isset($options['reply_id']) ? $options['reply_id'] : null;
+		$notice = isset($options['notice']) ? 'notice' : 'dm';
+
+		$message_reply_id = abs(intval(@$options['reply_id'])) ? $options['reply_id'] : null;
 		$message_status_sender = isset($options['delete']) 
 			? 'delete' : 'haveRead';
 		/* strip \r\n with \s */
@@ -77,14 +80,15 @@ class JWMessage {
 		}
 
 		return JWDB::SaveTableRow('Message', array(
-			'idUserSender' => $sender_id,
-			'idUserReceiver' => $receiver_id,
-			'idMessageReplyTo' => $message_reply_id,
-			'messageStatusSender' => $message_status_sender,
-			'message' => $message,
-			'device' => $device,
-			'timeCreate' => JWDB::MysqlFuncion_Now($time),
-		));
+					'idUserSender' => $sender_id,
+					'idUserReceiver' => $receiver_id,
+					'idMessageReplyTo' => $message_reply_id,
+					'messageStatusSender' => $message_status_sender,
+					'message' => $message,
+					'device' => $device,
+					'timeCreate' => JWDB::MysqlFuncion_Now($time),
+					'messageType' => $notice,
+					));
 	}
 
 
@@ -111,15 +115,15 @@ class JWMessage {
 		$idMessage	= intval($idMessage);
 
 		if(	JWDB::ExistTableRow('Message', array (	 'id'			=> intval($idMessage)
-													,'idUserSender'	=> intval($idUser)
-											) ) )
-            return JWMessage::OUTBOX;
+						,'idUserSender'	=> intval($idUser)
+						) ) )
+			return JWMessage::OUTBOX;
 		else if ( JWDB::ExistTableRow('Message', array (	 'id'				=> intval($idMessage)
-													,'idUserReceiver'	=> intval($idUser)
-											) ) )
-            return JWMessage::INBOX;
+						,'idUserReceiver'	=> intval($idUser)
+						) ) )
+			return JWMessage::INBOX;
 		else
-            return false;
+			return false;
 	}
 
 
@@ -135,15 +139,16 @@ class JWMessage {
 	{
 		$idUser	= JWDB::CheckInt($idUser);
 		$num	= JWDB::CheckInt($num);
-		
+
 		$condition_other = null;
 		if( $timeSince ){
-			$condition_other = " AND timeCreate > '$timeSince'";
+			$condition_other .= " AND timeCreate>'{$timeSince}'";
 		}
 
 		switch ( $type )
 		{
 			default:
+			case JWMessage::NOTICE:
 			case JWMessage::INBOX :
 				$where_col_name 	= 'idUserReceiver';
 				$select_col_name	= ", idUserSender as idUser, idUserReceiver";
@@ -156,14 +161,12 @@ class JWMessage {
 
 		$messageStatus=JWMessage::GetMessageStatusSql($type, $messageType);
 
-		$sql = <<<_SQL_
-SELECT		id	as idMessage $select_col_name
-FROM		Message
-WHERE		$where_col_name=$idUser
-		$condition_other $messageStatus
-ORDER BY 	timeCreate desc
-LIMIT 		$start,$num
-_SQL_;
+		$sql = "SELECT		id as idMessage {$select_col_name}
+			FROM		Message
+			WHERE		{$where_col_name}={$idUser}
+			{$condition_other} {$messageStatus}
+			ORDER BY 	timeCreate desc
+			LIMIT 		{$start}, {$num}";
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -188,8 +191,8 @@ _SQL_;
 
 		// 装换rows, 返回 id 的 array
 		$message_ids = array_map(	 $func_callable_name
-									,$rows
-								);
+				,$rows
+				);
 
 
 
@@ -207,17 +210,17 @@ _SQL_;
 
 			JWFunction::Set($func_key_name, $func_callable_name);
 		}
-	
+
 		// 装换rows, 返回 id 的 array
 		$user_ids = array_map(	 $func_callable_name
-								,$rows
-							);
+				,$rows
+				);
 
 		array_push($user_ids, $idUser);
 
 		return array ( 	 'message_ids'	=> $message_ids
-						,'user_ids'		=> $user_ids
-					);
+				,'user_ids'		=> $user_ids
+			     );
 	}
 
 
@@ -239,13 +242,11 @@ _SQL_;
 
 		$condition_in = JWDB::GetInConditionFromArray($message_ids);
 
-		$sql = <<<_SQL_
-SELECT
-	    *, id as idMessage
-FROM    Message
-WHERE
-	    id IN ($condition_in)
-_SQL_;
+		$sql = "SELECT
+			*, id as idMessage
+			FROM    Message
+			WHERE
+			id IN ({$condition_in})";
 
 		$rows = JWDB::GetQueryResult($sql,true);
 
@@ -312,11 +313,10 @@ _SQL_;
 
 		$messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
 
-		$sql = <<<_SQL_
-SELECT	COUNT(*) as num
-FROM	Message
-WHERE	$col_name=$idUser $messageStatus
-_SQL_;
+		$sql = "SELECT	COUNT(*) as num
+			FROM	Message
+			WHERE	{$col_name}={$idUser} {$messageStatus}";
+
 		$row = JWDB::GetQueryResult($sql);
 
 		return $row['num'];
@@ -347,11 +347,9 @@ _SQL_;
 		$messageStatus=JWMessage::GetMessageStatusSql($type, $messageType); 
 
 
-		$sql = <<<_SQL_
-SELECT	COUNT(*) as num
-FROM	Message
-WHERE	$col_name=$idUser $messageStatus 
-_SQL_;
+		$sql = "SELECT	COUNT(*) as num
+			FROM	Message
+			WHERE	{$col_name}={$idUser} {$messageStatus}";
 
 		$row = JWDB::GetQueryResult($sql);
 		return $row['num'];
@@ -394,24 +392,31 @@ _SQL_;
 
 	static public function GetMessageStatusSql($type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL )
 	{
+		$messageStatus = null;
 		switch ( $type )
 		{
 			default:
 			case JWMessage::INBOX :
 				$message_type= 'messageStatusReceiver';
+				$messageStatus = " AND messageType='dm'";
 				break;
 			case JWMessage::OUTBOX :
 				$message_type= 'messageStatusSender';
+				$messageStatus = " AND messageType='dm'";
+				break;
+			case JWMessage::NOTICE :
+				$message_type= 'messageStatusReceiver';
+				$messageStatus = " AND messageType='notice'";
 				break;
 		}
 
 		switch( $messageType )
 		{
 			case JWMessage::MESSAGE_NORMAL:
-				$messageStatus = ' AND ( ' .$message_type .'= \''.JWMessage::MESSAGE_NOTREAD.'\' OR  '.$message_type.'= \''.JWMessage::MESSAGE_HAVEREAD.'\')';
+				$messageStatus .= " AND ( {$message_type} = '". JWMessage::MESSAGE_NOTREAD."' OR  {$message_type} = '". JWMessage::MESSAGE_HAVEREAD."')";
 				break;
 			default:
-				$messageStatus = ' AND '.$message_type.'= \''.$messageType .'\'';
+				$messageStatus .= " AND {$message_type} = '{$messageType}'";
 				break;
 		}
 

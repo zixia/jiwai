@@ -237,8 +237,7 @@ class JWRobotLingo {
 						$address_user_row['nameScreen'],
 						urlEncode($address_user_row['nameUrl']),		
 					));
-					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], 
-								$outMessage,$type, array('noreply_tips'=>true, 'delete'=>true, ) );
+					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
 				}
 			}
 				
@@ -576,8 +575,7 @@ class JWRobotLingo {
 					$address_user_row['nameScreen'], 
 					urlEncode($address_user_row['nameUrl']),		
 				));
-				JWSns::CreateMessage( $address_user_id, $friend_user_id,
-							$outMessage,$type, array('noreply_tips'=>true, 'delete'=>true,) );
+				JWSns::CreateMessage( $address_user_id, $friend_user_id, $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true,) );
 			}
 		}
 
@@ -1717,7 +1715,7 @@ _SQL_;
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC_DM', array(
 			$device_user_row['nameScreen'], $choice, $value, $user_row['nameScreen'], $status_row['id']
 		));
-		JWMessage::Create( $device_user_id, $user_row['id'], $reply, $type, array('delete'=>true,) );
+		JWSns::CreateMessage( $device_user_id, $user_row['id'], $reply, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true,) );
 		
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_VOTE_SUC', array() );
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);

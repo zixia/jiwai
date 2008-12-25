@@ -238,7 +238,7 @@ class JWRobotLogic {
 				 	 * Send a D message plus from 叽歪小弟
 					 */
 					$xiaodi = JWUser::GetUserInfo('叽歪小弟');
-					JWMessage::Create( $xiaodi['id'], $idUser, $reply );	
+					JWSns::CreateMessage( $xiaodi['id'], $idUser, $reply, 'web', $options=array('delete'=>true, 'notice'=>true,) );	
 					return self::ReplyMsg( $robotMsg, $reply );
 				}
 				return null;
