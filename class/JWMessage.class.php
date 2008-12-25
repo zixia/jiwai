@@ -79,7 +79,7 @@ class JWMessage {
 			$message = mb_substr($message, 0, JW_HARDLEN_DB, 'UTF-8');
 		}
 
-		return JWDB::SaveTableRow('Message', array(
+		return JWDB_Cache::SaveTableRow('Message', array(
 					'idUserSender' => $sender_id,
 					'idUserReceiver' => $receiver_id,
 					'idMessageReplyTo' => $message_reply_id,
@@ -100,7 +100,7 @@ class JWMessage {
 	{
 		$idMessage = JWDB::CheckInt($idMessage);
 
-		return JWDB::DelTableRow('Message', array (	'id'	=> $idMessage ));
+		return JWDB_Cache::DelTableRow('Message', array ('id'=> $idMessage ));
 	}
 
 
@@ -322,6 +322,46 @@ class JWMessage {
 		return $row['num'];
 	}
 
+	/**
+	 * @param int $idUser
+	 * @return new inbox message
+	 */
+	static public function GetNewMessageNum($idUser) {
+		return self::GetMessageStatusNum($idUser, JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD);
+	}
+
+	/**
+	 * @param int $idUser
+	 * @return new notice message
+	 */
+	static public function GetNewNoticeMessageNum($idUser) {
+		return self::GetMessageStatusNum($idUser, JWMessage::NOTICE, JWMessage::MESSAGE_NOTREAD);
+	}
+
+	/**
+	 * @param int $idUser
+	 * @return all notice message
+	 */
+	static public function GetAllNoticeMessageNum($idUser) {
+		return self::GetMessageStatusNum($idUser, JWMessage::NOTICE, JWMessage::MESSAGE_NORMAL);
+	}
+
+	/**
+	 * @param int $idUser
+	 * @return all input message
+	 */
+	static public function GetAllInputMessageNum($idUser) {
+		return self::GetMessageStatusNum($idUser, JWMessage::INBOX, JWMessage::MESSAGE_NORMAL);
+	}
+
+	/**
+	 * @param int $idUser
+	 * @return all out message
+	 */
+	static public function GetAllOutputMessageNum($idUser) {
+		return self::GetMessageStatusNum($idUser, JWMessage::OUTBOX, JWMessage::MESSAGE_NORMAL);
+	}
+
 
 	/*
 	 *	@param	int		$idUser
@@ -387,7 +427,11 @@ class JWMessage {
 		}
 
 		$sql = "UPDATE Message SET $message_type = '$messageType' WHERE id IN ($idMessageString)";
-		return JWDB::Execute( $sql );
+		$flag = JWDB::Execute( $sql );
+
+		self::ClearCache( $idMessage );
+
+		return $flag;
 	}
 
 	static public function GetMessageStatusSql($type=JWMessage::INBOX, $messageType=JWMessage::MESSAGE_NORMAL )
@@ -422,5 +466,23 @@ class JWMessage {
 
 		return $messageStatus;
 	}
+	
+	/**
+	 * Clear JWDB_Cache
+	 */
+	static public function ClearCache($idMessage) {
+		if( is_numeric( $idMessage ) ) 
+			$idMessage = JWDB::CheckInt( $idMessage );
+
+		if( empty( $idMessage ) )
+			return true;
+
+		setType( $idMessage, 'array' );
+		$rows = self::GetDbRowsByIds($idMessage);
+		foreach( $rows AS $one ) {
+			JWDB_Cache::OnDirty($one, 'Message');
+		}
+	}
+
 }
 ?>
