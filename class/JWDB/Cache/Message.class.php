@@ -178,7 +178,7 @@ class JWDB_Cache_Message implements JWDB_Cache_Interface
 		);
 
 		array_push( $dirty_keys
-			, JWDB_Cache::GetCacheKeyById('Message', $pk_id),
+			, JWDB_Cache::GetCacheKeyById('Message', $pk_id)
 			, JWDB_Cache::GetCacheKeyByFunction( array('JWMessage', 'GetAllInputMessageNum'), array($receiver_id) )
 			, JWDB_Cache::GetCacheKeyByFunction( array('JWMessage', 'GetNewMessageNum'), array($receiver_id) )
 			, JWDB_Cache::GetCacheKeyByFunction( array('JWMessage', 'GetAllNoticeMessageNum'), array($receiver_id) )
