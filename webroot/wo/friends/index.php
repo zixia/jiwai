@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;

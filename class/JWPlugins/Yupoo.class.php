@@ -1,9 +1,9 @@
 <?php
 /**
-  * @package JiWai
-  * @author kxp@jiwai.de
-  * @version $Id$
-  */
+ * @package JiWai
+ * @author kxp@jiwai.de
+ * @version $Id$
+ */
 
 class JWPlugins_Yupoo{
 
@@ -35,17 +35,17 @@ class JWPlugins_Yupoo{
 			$href = $string;
 			return array(
 					'type' => 'html',
-					'html' => '<a href="' .$href. '" target="_blank"><img'.$src_size.' src="' .$src. '" title="Yupoo图片" class="pic"/></a>',
+					'html' => '<div class="e_photo e_photo_yupoo"><a href="' .$href. '" target="_blank"><img'.$src_size.' src="' .$src. '" title="Yupoo图片" class="pic"/></a></div>',
 					'types' => 'picture',
 					'src' => $src,
-			);  
+				    );  
 		}
 		return null;
 	}
-	
+
 	/** 
 	 * Intecept 
-	**/
+	 **/
 	static public function Intercept( $string, &$objectId="" ) 
 	{
 		if(preg_match('#http://www\.yupoo\.com/photos/view\?id=([0-9a-f]+)#i', $string, $matches))
@@ -57,7 +57,7 @@ class JWPlugins_Yupoo{
 			return false;
 		}
 	}
-	
+
 
 	/**
 	 * @author wqsemc@jiwai.com 
@@ -125,12 +125,12 @@ class JWPlugins_Yupoo{
 			if( $secret && $dir && $filename && $originalformat ) 
 			{
 				return array(
-					'secret' => $secret,
-					'host' => $host,
-					'dir' => $dir,
-					'filename' => $filename,
-					'originalformat' => $originalformat,
-				);
+						'secret' => $secret,
+						'host' => $host,
+						'dir' => $dir,
+						'filename' => $filename,
+						'originalformat' => $originalformat,
+					    );
 			}
 		}
 

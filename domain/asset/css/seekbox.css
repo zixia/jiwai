@@ -1,0 +1,16 @@
+html, body { min-height: 100%; height: auto !important; height: 100%; }
+
+#TB_window { font: 12px Arial, Helvetica, sans-serif; color: #333333; }
+#TB_window a:link {color: #666666;}
+#TB_window a:visited {color: #666666;}
+#TB_window a:hover {color: #000;}
+#TB_window a:active {color: #666666;}
+#TB_window a:focus {color: #666666;}
+
+#TB_overlay {position:absolute;top: 0px;left: 0px;background-color:#999;filter:alpha(opacity=60);opacity:0.6;}
+#TB_window { position: absolute; background: #ffffff; margin:0px; padding:0px; color: #000000; border: 0; text-align:left; overflow:hidden;}
+
+#TB_ajaxContent{ clear:both; padding:0px; overflow-x:hidden; overflow-y:hidden; text-align:left;}
+
+#TB_load{ position: absolute; display:none; height:100px; width:100px;}
+#TB_HideSelect { z-index:-100; position:absolute; top: 0; left: 0; background-color:#fff; border:none; }

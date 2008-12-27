@@ -437,7 +437,7 @@ die(var_dump($db_result));
 	{
 		self::Instance();
 
-		$db_rows 	= self::GetTableRow( $table, $condition, 9999 );
+		$db_rows = self::GetTableRow( $table, $condition, 9999 );
 
 		// 注意顺序：先操作数据库，然后再去 OnDirty
 		$ret = JWDB::DelTableRow($table, $condition);
@@ -615,6 +615,9 @@ die(var_dump($db_result));
 				break;
 			case "Tag":
 				return JWDB_Cache_Tag::OnDirty($dbRow);
+				break;
+			case "Message":
+				return JWDB_Cache_Message::OnDirty($dbRow);
 				break;
 			default:
 				throw new JWException("JWDBCache::OnDirty($dbRow[id], $table) not support yet!");

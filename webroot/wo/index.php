@@ -1,167 +1,46 @@
 <?php
-require_once(dirname(__FILE__) . '/../../jiwai.inc.php');
-JWTemplate::html_doctype();
-JWLogin::MustLogined(true);
+require_once( '../../jiwai.inc.php');
+JWLogin::MustLogined(false);
 
-$q = $page = null;
-extract($_GET, EXTR_IF_EXISTS);
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
-$logined_user_id 	= $logined_user_info['id'];
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-$page = ($page < 1 ) ? 1 : $page;
-
+$element = JWElement::Instance();
+$param_tab = array( 'now' => 'wo_following' );
 ?>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-<?php 
-$options = array ('ui_user_id' => $logined_user_id );
-JWTemplate::html_head($options);
-?>
-</head>
-
-
-<body class="normal">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 
 <div id="container">
-<?php 
-/*
-$now_str = strftime("%Y/%m/%d") ;
-echo <<<_HTML_
-	<div id="flaginfo">$now_str</div>
-_HTML_;
-*/
-?>
-<!-- google_ad_section_start -->
-	<div id="content">
-		<div id="wrapper">
+<?php $element->wide_notice();?>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_wo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_statuses_wo_with_friends();?>
+			<?php $element->block_rsslink();?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
-<?php JWTemplate::ShowBalloon($logined_user_id) ?>
-<?php JWTemplate::ShowAlphaBetaTips() ?>
-<?php JWTemplate::ShowActionResultTips() ?>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_wo_request_in();?>
+		<?php $element->side_wo_hi();?>
+		<?php $element->side_announcement();?>
+		<div class="line mar_b8"></div>
+		<?php $element->side_recent_vistor();?>
+		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
+		<?php $element->side_block_user();?>
+		<?php $element->side_searchuser();?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
 
+<div class="clear"></div>
+</div><!-- container -->
 
-<?php
-     $options = array('sendtips' => 'true');
-     JWTemplate::updater($options); 
-?>
-
-<?php JWTemplate::ShowActionResultTips(); ?>
-
-<?php 
-$active_tab = 'friends';
-
-if ( isset($g_show_user_archive) && $g_show_user_archive)
-	$active_tab = 'archive';
-
-if ( isset($g_replies) && $g_replies )
-	$active_tab = 'replies';
-
-if ( (isset($g_search) && $g_search) || $q )
-	$active_tab = 'search';
-
-
-$menu_list = array (
-	'archive'=> array('active'=>false, 'name'=>'历史', 'url'=>"/wo/archive/"),
-	'replies'=> array('active'=>false, 'name'=>'回复', 'url'=>"/wo/replies/"),
-	'friends'=> array('active'=>false, 'name'=>'最新', 'url'=>"/wo/"),
-);
-if( false == empty($q) )
-	$menu_list['search'] = array('active'=>false, 'name'=>'搜索结果', 'url'=>"/wo/search/statuses?q=".urlEncode($q));
-
-$menu_list[$active_tab]['active'] = true;
-
-JWTemplate::tab_menu($menu_list, '你和你的朋友们在做什么？');
-
-?>
-<div class="tab">
-<?php 
-// when show archive, we set $show_archive=true, then include this file.
-
-//die(var_dump($_REQUEST));
-
-switch ( $active_tab )
-{
-	case 'archive':
-		// 只显示用户自己的
-		//$user_status_num= JWStatus::GetStatusNum($logined_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNum($logined_user_id);
-
-		$pagination		= new JWPagination($user_status_num, $page);
-
-		//$status_data 	= JWStatus::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromUser($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-
-		break;
-	case 'replies':
-		// 显示回复自己的
-		//$user_status_num= JWStatus::GetStatusNumFromReplies($logined_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNumFromReplies($logined_user_id);
-
-		$pagination		= new JWPagination($user_status_num, $page);
-		//$status_data 	= JWStatus::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromReplies($logined_user_id, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-
-		break;
-	case 'search':
-		//搜索所有用户的Status更新
-		$searched_result = JWSearch::SearchStatus($q, $page);
-
-		$pagination = new JWPagination($searched_result['count'], $page);
-
-		$status_data = array('user_ids'=>array(), 'status_ids'=>$searched_result['list']);
-		break;
-
-	default:
-	case 'friends':
-		// 显示用户和好友的
-		//$user_status_num= JWStatus::GetStatusNumFromFriends($logined_user_id);
-		$user_status_num= JWDB_Cache_Status::GetStatusNumFromFriends($logined_user_id);
-
-		$pagination		= new JWPagination($user_status_num, $page);
-
-		//$status_data 	= JWStatus::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		$status_data 	= JWDB_Cache_Status::GetStatusIdsFromFriends($logined_user_id,$pagination->GetNumPerPage(), $pagination->GetStartPos() );
-		break;
-
-}
-
-$status_rows = $user_rows = $user_ids = $status_ids = array();
-if ( false==empty($status_data) )
-	$status_rows	= JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
-
-if ( false==empty($status_data) )
-{
-	$user_ids = $status_data['user_ids'];
-	$status_ids = $status_data['status_ids'];
-}
-
-$user_rows = JWDB_Cache_User::GetDbRowsByIds($user_ids);
-
-JWTemplate::Timeline($status_ids, $user_rows, $status_rows, array(
-	'search' => true,
-	//'pagination' => ($active_tab!='friends' ? $pagination : false),
-	'pagination' => $pagination,
-));
-?>
-
-			</div><!-- tab -->
-		</div><!-- wrapper -->
-	</div><!-- content -->
-
-<?php
-include_once ( dirname(__FILE__) . '/sidebar.php' );
-JWTemplate::container_ending();
-?>
-</div>
-</div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
-</body>
-</html>
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

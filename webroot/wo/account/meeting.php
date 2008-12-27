@@ -8,7 +8,7 @@ JWTemplate::html_doctype();
 */
 
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $user_info = JWUser::GetCurrentUserInfo();
 $idUser = $user_info['idUser'];

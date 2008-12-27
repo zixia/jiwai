@@ -1,103 +1,55 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWTemplate::html_doctype();
+JWLogin::MustLogined(false);
 
-JWLogin::MustLogined();
+$current_user_id = JWLogin::GetCurrentUserId();
+$bindother = JWBindOther::GetBindOther($current_user_id);
+$user_devices = JWDevice::GetDeviceRowByUserId($current_user_id);
+$facebook = @$user_devices['facebook'];
 
-$user_info = JWUser::GetCurrentUserInfo();
+//binds
+$others = array('facebook', 'twitter', 'fanfou', 'yiqi');
+$mothers = array_keys($bindother);
+if( $facebook ) $mothers[] = 'facebook';
+$mothers = array_diff($other, $mothers);
 
+$element = JWElement::Instance();
+$param_tab = array( 'now' => 'devices_other' );
+$param_side = array( 'sindex' => 'bind' );
+$param_main = array(
+	'facebook' => $facebook,
+	'bindother' => $bindother,
+	'others' => $others,
+	'mothers' => $mothers,
+);
 ?>
-<html>
-<head>
-<?php 
-JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-)); 
-?>
-</head>
 
-<body class="account">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTipsMain() ?>
-
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 <div id="container">
-<p class="top">设置</p>
-<div id="wtMainBlock">
-<div class="leftdiv">
-<ul class="leftmenu">
-<li><a href="/wo/account/settings">基本资料</a></li>
-<li><a href="/wo/privacy/">保护设置</a></li>
-<li><a href="/wo/devices/sms" class="now">绑定设置</a></li>
-<li><a href="/wo/notification/email">系统通知</a></li>
-<li><a href="/wo/account/profile_settings">个性化界面</a></li>
-<li><a href="/wo/openid/">Open ID</a></li>
-</ul>
-</div><!-- leftdiv -->
-<div class="rightdiv">
-<div class="lookfriend">
-<form id="f" action="" method="post" name="f" class="validator">
-<p class="right14"><a href="/wo/devices/sms">手机</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/devices/im">聊天软件</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/bindother/" class="now">其他网站</a></p>
-       <div class="binding">
-	   <p>通过MSN、QQ、GTalk、Skype等聊天软件就可以接收和更新你的叽歪，现在就来绑定吧。</p>
-<?php
-		$aDeviceInfo_rows = JWDevice::GetDeviceRowByUserId($user_info['id']);
-
-		$isUserLogined = JWLogin::IsLogined() ;
-		$imicoUrl = "http://blog.jiwai.de/images";
-		$imicoUrlSms = "/wo/devices/sms";
-		$imicoUrlIm = "/wo/devices/im";
-		$imicoUrlHelpSms = "http://help.jiwai.de/VerifyYourPhone";
-		$imicoUrlHelpIm = "http://help.jiwai.de/VerifyYourIM";
-		$imicoUrlHref = "";
-
-		$isUseNewSmth = false;
-
-		$bindico = JWTemplate::GetAssetUrl('/images/binding_icon.gif');
-		$devices = array('facebook', 'twitter');
-		$bind = JWBindOther::GetBindOther($user_info['id']);
-		foreach($devices as $type)
-		{
-	    echo <<<_HTML_
-	    <div class="entry" onclick="location.href='/wo/bindother/${type}'">
-_HTML_;
-			$deviceico = JWTemplate::GetAssetUrl("/images/${type}.gif");
-			if ( (isset($aDeviceInfo_rows[$type])&& empty($aDeviceInfo_rows[$type]['secret'])) || (isset($bind[$type]) && empty($bind[$type]['secret']) ))
-			{
-				echo <<<_HTML_
-	    <div class="floatleft1"><img src="$bindico" width="26" height="17" /></div>
-	    <div class="content">
-		<a href="/wo/bindother/$type" class="floatright orange12">设置</a><img src="$deviceico" width="129" height="30" />
-_HTML_;
-			}
-			else
-		echo <<<_HTML_
-	    <div class="contentOther">
-		<a href="/wo/bindother/$type" class="floatright orange12">绑定</a><span class="content"><img src="$deviceico" width="129" height="30" /></span>
-_HTML_;
-		echo <<<_HTML_
-		</div><!-- content -->
-	    </div><!-- entry -->
-_HTML_;
-		}
-
-?>
+<?php $element->wide_notice();?>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_minwo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_devices_other($param_main);?>
 		</div>
-	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-  </form>
-</div><!-- lookfriend -->
-<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-</div>
-<!-- rightdiv -->
-</div><!-- #wtMainBlock -->
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
-</div><!-- #container -->
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
-<?php JWTemplate::footer() ?>
-<script defer="true">
-	JWValidator.init('f');
-</script>
-</body>
-</html>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_setting($param_side);?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
+
+<div class="clear"></div>
+</div><!-- container -->
+
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

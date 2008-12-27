@@ -2,24 +2,21 @@
 header('Content-Type: text/html;charset=UTF-8');
 require_once ('../../../jiwai.inc.php');
 
-//JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 $current_user_id = JWLogin::GetCurrentUserId();
 
 $param = $_REQUEST['pathParam'];
 $follower_user_id = $follower_user_row = null;
-if ( preg_match('/^\/(\d+)$/',$param,$match) )
-{
+if ( preg_match('/^\/(\d+)$/',$param,$match) ) {
 	$follower_user_id = intval($match[1]);
-	$follower_user_row = JWDB_Cache_User::GetDbRowById( $follower_user_id );
+	$follower_user_row = JWDB_Cache_User::GetDbRowById($follower_user_id);
 }
 
-if( empty( $follower_user_row ) )
-{
+if( empty( $follower_user_row ) ) {
 	JWTemplate::RedirectToUrl('/');
 }
 
-if ( $_POST )
-{
+if ( $_POST ) {
 	if ( $current_user_id && $follower_user_id)
 	{
 		if( false == empty( $follower_user_row ) )
@@ -49,15 +46,14 @@ if ( $_POST )
 }
 ?>
 
-<?php JWTemplate::html_doctype(); ?>
 <?php
 $need_request = ( $follower_user_row['protected'] == 'Y'
 			&& $follower_user_id != $current_user_id
 			&& false == JWFollower::IsFollower( $current_user_id, $follower_user_id ) );
 ?>
 
-<form id="followForm" name="followForm" method="post" action="/wo/lightbox/follow/<?php echo $follower_user_id; ?>">
 <div id="wtLightbox">
+<form id="followForm" name="followForm" method="post" action="/wo/lightbox/follow/<?php echo $follower_user_id; ?>">
 	<div class="top">
 		<div class="head"><a href="/<?php echo urlEncode($follower_user_row['nameUrl']);?>/"><img class="buddy_icon" icon="<?php echo $follower_user_id;?>" width="48" height="48" title="<?php echo $follower_user_row['nameScreen'];?>" alt="<?php echo $follower_user_row['nameScreen'];?>" src="<?php echo JWPicture::GetUserIconUrl($follower_user_id);?>"/></a></div>
 
@@ -86,9 +82,7 @@ $need_request = ( $follower_user_row['protected'] == 'Y'
 <?php } ?>
 
 	<p class="butt">
-	  <input id="jwbutton" name="jwbutton" type="submit" class="submitbutton" value="确定" onclick="$('followForm').submit(); return false;"/>&nbsp;&nbsp;<input type="button" class="closebutton" value="取消" onclick="TB_remove();"/>
+	  <input id="jwbutton" name="jwbutton" type="submit" class="submitbutton" value="确定" onclick="$('followForm').submit(); return false;"/>&nbsp;&nbsp;<input type="button" class="closebutton" value="取消" onclick="JWSeekbox.remove();"/>
 	</p>
-</div><!-- wtLetterbox -->
 </form>
-</body>
-</html>
+</div>

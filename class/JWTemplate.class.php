@@ -56,12 +56,20 @@ class JWTemplate {
 _HTML_;
 	}
 
+	static public function html_head8($options)
+	{
+		$element = JWElement::Instance();
+		$element->html_header($options);
+	}
+
 	static public function html_head( $options=null )
 	{
 		if ( empty($options['version_css_jiwai_screen']) )
 			$asset_url_css = self::GetAssetUrl("/css/jiwai-screen.css");
 		else
 			$asset_url_css = self::GetAssetUrl("/css/$options[version_css_jiwai_screen]-jiwai-screen.css");
+		$asset_url_js_mooquee	= self::GetAssetUrl('/lib/mootools/mooquee.js' );
+		$asset_url_js_marquee	= self::GetAssetUrl('/lib/mootools/fx_marquee.js' );
 
 		$asset_url_css_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.css');
 
@@ -77,6 +85,17 @@ _HTML_;
 		$asset_url_js_action 	= self::GetAssetUrl('/js/action.js' );
 		$asset_url_js_box	= self::GetAssetUrl('/lib/smoothbox/smoothbox.js' );
 		$asset_url_js_ac_content = self::GetAssetUrl('/js/AC_RunActiveContent.js');
+
+		$asset_url_os_users	= self::GetAssetUrl('/opensearch/users.xml');
+		$asset_url_os_statuses	= self::GetAssetUrl('/opensearch/statuses.xml');
+
+		$asset_js_swfobject = JWTemplate::GetAssetUrl('/js/swfobject.js');
+
+		$asset_css_index = JWTemplate::GetAssetUrl('/css/index.css');
+		$asset_css_main = JWTemplate::GetAssetUrl('/css/main.css');
+		$asset_css_main2 = JWTemplate::GetAssetUrl('/css/main2.css');
+		$asset_css_stock = JWTemplate::GetAssetUrl('/css/stock.css');
+		$asset_js_index = JWTemplate::GetAssetUrl('/js/index.js');
 		$asset_js_swfobject = JWTemplate::GetAssetUrl('/js/swfobject.js');
 
 		$title = '叽歪 / ';
@@ -167,7 +186,6 @@ _HTML_;
 
 		echo <<<_HTML_
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
 	<title>$title</title>
 	<meta name="keywords" content="$keywords" />
 	<meta name="description" content="$description" />
@@ -183,6 +201,7 @@ _HTML_;
 		if(empty($options['is_load_all']))
 			echo <<<_HTML_
 	<link href="$asset_url_css" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
 				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
 				<script type="text/javascript" src="$asset_url_js_moo"></script>
 				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
@@ -201,13 +220,42 @@ _HTML_;
 		}
 		else if('g'==$options['is_load_all'])
 		{
-			$asset_css_index = JWTemplate::GetAssetUrl('/css/index.css');
-			$asset_css_main = JWTemplate::GetAssetUrl('/css/main.css');
-			$asset_js_index = JWTemplate::GetAssetUrl('/js/index.js');
 			echo <<<_HTML_
-	<link href="$asset_css_index" media="screen, projection" rel="Stylesheet" type="text/css" />
-	<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
-	<script type="text/javascript" src="$asset_js_index"></script>
+				<script type="text/javascript" src="$asset_url_js_moo"></script>
+				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+				<script type="text/javascript" src="$asset_url_js_box"></script>
+				<script type="text/javascript" src="$asset_url_js_action"></script>
+				<script type="text/javascript" src="$asset_js_index"></script>
+				<script type="text/javascript" src="$asset_js_swfobject"></script>
+				<link href="$asset_css_index" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
+_HTML_;
+		}
+		else if('stock'==$options['is_load_all'])
+		{
+			echo <<<_HTML_
+				<script type="text/javascript" src="$asset_url_js_moo"></script>
+				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+				<script type="text/javascript" src="$asset_url_js_buddy"></script>
+				<script type="text/javascript" src="$asset_url_js_box"></script>
+				<script type="text/javascript" src="$asset_url_js_action"></script>
+				<link href="$asset_css_stock" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
+_HTML_;
+		}
+		else if('w'==$options['is_load_all'])
+		{
+			echo <<<_HTML_
+				<script type="text/javascript" src="$asset_url_js_moo"></script>
+				<script type="text/javascript" src="$asset_url_js_jiwai"></script>
+				<script type="text/javascript" src="$asset_url_js_buddy"></script>
+				<script type="text/javascript" src="$asset_url_js_box"></script>
+				<script type="text/javascript" src="$asset_url_js_action"></script>
+				<script type="text/javascript" src="$asset_js_swfobject"></script>
+				<link href="$asset_css_main" media="screen, projection" rel="Stylesheet" type="text/css" />
+				<link href="$asset_url_css_box" media="screen, projection" rel="Stylesheet" type="text/css" />
 _HTML_;
 		}
 		?>
@@ -221,6 +269,21 @@ _HTML_;
 	<meta name="robots" content="all" />
 <?php
 	echo $ui_css;
+	}
+
+	static public function html_head2($options)
+	{
+		echo <<<_HTML_
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">	
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+_HTML_;
+		self::html_head($options);
+		echo <<<_HTML_
+</head>
+
+_HTML_;
 	}
 
 
@@ -246,7 +309,7 @@ _HTML_;
 	}
 
 
-	static public function header($highlight=null)
+	static public function header8($highlight=null)
 	{
 		$userInfo = JWUser::GetCurrentUserInfo();
 		$is_anonymous = false==empty($userInfo) && JWUser::IsAnonymous($userInfo['id']);
@@ -375,6 +438,209 @@ _HTML_;
 </div>
 <?php
 	}
+	static public function header()
+	{
+		$element = JWElement::Instance();
+		$element->common_header_wo();
+	}
+
+	static public function header2($highlight=null)
+	{
+		$userInfo = JWUser::GetCurrentUserInfo();
+		$is_anonymous = false==empty($userInfo) && JWUser::IsAnonymous($userInfo['id']);
+		$nameScreen = @$userInfo['nameScreen'];
+		$nameUrl = @$userInfo['nameUrl'];
+		if ( empty($nameScreen) ) {
+			$nav = array(
+				'/' => '首页',
+				'/t/地震/' => '地震',
+				'/wo/invitations/invite' => '找朋友',
+				'/g/' => '逛逛',
+				'/wo/gadget/' => '窗可贴',
+				//'/t/jiwai/' => '群组',
+				//'/jiwai/' => '用户',
+			);
+			$nameScreen = '游客';
+			$nameUrl = 'g';
+		} else {
+			$nav = array(
+				'/wo/' => '我的首页',
+				'/t/地震/' => '地震',
+				'/wo/invitations/invite' => '找朋友',
+				'/g/' => '逛逛',
+				'/wo/gadget/' => '窗可贴',
+				//'/t/jiwai/' => '群组',
+				//'/jiwai/' => '用户',
+			);
+		}
+		if ( $is_anonymous )
+		{
+			$nav = array(
+				'/wo/' => '我的首页',
+				'/t/地震/' => '地震',
+				'/wo/invitations/invite' => '找朋友',
+				'/g/' => '逛逛',
+				'/wo/gadget/' => '窗可贴',
+				//'/t/jiwai/' => '群组',
+				//'/jiwai/' => '用户',
+			);
+		}
+
+		$highlightAlias  = array(
+			'/wo/account/notification' => '/wo/account/settings',
+			'/wo/account/profile' => '/wo/account/settings',
+			'/wo/devices/' => '/wo/account/settings',
+			'/wo/account/profile_settings' => '/wo/account/settings',
+			'/wo/account/metting' => '/wo/account/settings',
+			'/wo/openid/' => '/wo/account/settings',
+			'/wo/gadget/image/' => '/wo/gadget/',
+			'/wo/gadget/flash/' => '/wo/gadget/',
+			'/wo/gadget/javascript/' => '/wo/gadget/',
+		);
+
+		if (null==$highlight) 
+		{
+			$a = array_reverse($nav);
+			$urlNow = $_SERVER['REQUEST_URI'];
+			$urlNow = ( $pos = strpos($urlNow, '?') ) ? substr($urlNow, 0, $pos) : $urlNow;
+			foreach ($highlightAlias as $u=>$aurl) 
+			{
+				if ( 0===strncasecmp($u,$urlNow,strlen($u)))
+				{
+					$urlNow=$aurl;
+					break;
+				}
+			}
+			foreach ($a as $url => $txt)
+			{
+				if (substr($urlNow, 0, strlen($url))==$url) 
+				{ 
+					$highlight = $url;
+					break;
+				}
+			}
+			if ( null==$highlight && empty($nameScreen) )
+			{
+				$highlight = '/g/'; //$url;
+			}
+		}
+
+		if( empty( $userInfo ) ) 
+		{
+			$msgString = '';
+		}
+		else
+		{
+			$msgCount = JWMessage::GetMessageStatusNum($userInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD) ;
+			//$msgString = '<a style="padding-left:0px;" href="/wo/direct_messages/">';
+			$msgString2 .= (0==$msgCount) ? '<img style="margin-bottom:-6px;" src="'.self::GetAssetUrl('/images/icon_unread_bw.gif').'">' : '<img style="margin-bottom:-4px;" src="'.self::GetAssetUrl('/images/icon_unread.gif').'">('.$msgCount.')';
+			//$msgString .= '</a>';
+			$msgString8 = ''; //FIXME free: do not know what is $msgString8 but that cause E_NOTICE below!!!
+			$msgString = '<span class="bgone"><a href="'.JW_SRVNAME.'/wo/direct_messages/" title="悄悄话">'.$msgString8.'悄悄话</a></span>';
+			$msgString2 = '<span><a href="'.JW_SRVNAME.'/wo/direct_messages/" title="悄悄话">'.$msgString2.'</a></span>';
+		}
+
+?>
+<div id="headerbody">
+<div id="tbody">
+<div id="header">
+	<a title="返回叽歪网首页" href="<? echo JW_SRVNAME;?>"><img class="headlogo" alt="返回叽歪网首页" src="<? echo JWTemplate::GetAssetUrl('/images/logo.gif');?>" /></a>	
+      <ul><li class="headtitle">
+<?php 
+$i = count($nav);
+foreach ($nav as $url => $txt) 
+{ 
+	$i--;
+		if($highlight!=$url)
+		{
+			?><a class="bl" href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" title="<? echo $txt;?>"><? echo $txt;?></a><? 
+		}
+		else
+		{
+			?><a class="bl" href="<?php echo substr($url,0,1)=='/' ? JW_SRVNAME.$url : $url; ?>" title="<? echo $txt;?>" ><strong><? echo $txt;?></strong></a><?
+		}
+if( 0 < $i )echo "|";
+}
+echo "</li>";?>
+        <li class="headlogin">
+	        <span class="bgone"><a href="<? echo JW_SRVNAME?>/t/帮助留言板/" title="有问题？">有问题？</a></span>
+			<?php 
+			if ( $is_anonymous )
+			{
+	        echo '<span class="bgone"><a href="'.JW_SRVNAME.'/wo/logout" title="退出">退出</a></span>';
+	        echo '<span class="bgtwo"><a href="'.JW_SRVNAME.'/wo/login" title="登录">登录</a></span>';
+			echo '<span class="bgtwo"><a href="'.JW_SRVNAME.'/wo/account/create" title="注册">注册</a></span>';
+			}
+			else if(!empty($userInfo))
+			{
+				if($nameUrl != 'g')
+				{
+	        echo '<span class="bgone"><a href="'.JW_SRVNAME.'/wo/logout" title="退出">退出</a></span>';
+	        echo '<span class="bgone"><a href="'.JW_SRVNAME.'/wo/account/settings/" title="设置">设置</a></span>';
+				}
+				echo "$msgString";
+			}
+			else
+			{
+			echo '<span class="bgtwo"><a href="'.JW_SRVNAME.'/wo/account/create" title="注册">注册</a></span>';
+	        echo '<span class="bgtwo"><a href="'.JW_SRVNAME.'/wo/login" title="登录">登录</a></span>';
+			}
+			?>
+			<span class="bgthree">你好，<a href="<?php echo JW_SRVNAME . '/'. $nameUrl . '/';?>" title="别人眼中我的首页"><?php echo $nameScreen;?></a><? echo !empty($userInfo) ? $msgString2 : "";?></span>
+			
+	   </li>
+        <li class="headbottom">
+          <div class="leftkeys">热点关键字：
+		  <? $hot_words_array = split("," , file_get_contents( FRAGMENT_ROOT . "/page/hot_words.txt"));
+		  $limit = 6;
+		  for($i=0; $i<$limit; $i++)
+		  {
+			  $r = intval(rand(0, count($hot_words_array)));
+			  $j = $hot_words_array[$i];
+			  $hot_words_array[$i] = $hot_words_array[$r];
+			  $hot_words_array[$r] = $j;
+		  }
+		 $jw_srvname = JW_SRVNAME;
+		  for($i=0; $i<$limit; $i++)
+		  {
+			  $u = urlencode($hot_words_array[$i]);
+			  echo <<<_HTML_
+            <a class="blno" href="$jw_srvname/t/$u/" title="$hot_words_array[$i]">$hot_words_array[$i]</a>
+_HTML_;
+		  }
+			$tips = "请先选择搜索类型：用户或群组";
+		  ?>
+          </div>
+          <div class="headserch">
+		 <form id='fsearch' action="<?php echo JW_SRVNAME . '/wo/search/s'; ?>" method="post" target="_blank" onsubmit="if($('q').value=='<?php echo $tips;?>') {alert('请输入搜索内容');return false;}"> 
+            <input type="submit" class="searchbg" value="" />
+            <input type="hidden" value="u" name="t" id="t"/>
+			<div onmouseout="this.className='selSearch'" onmouseover="this.className='selSearch2'" id="adb" class="selSearch" onclick="$('st1').innerHTML=$('st').innerHTML;$('s').style.display = 'none'==$('s').style.display ? 'block' : 'none';"> </div>
+            <div class="csster">
+             <div class="selectedto"> 
+             <p class="selone" id="st" style="border-bottom:none;">用户</p>
+             <div class="selectedto" style="display:none;" id="s">
+             <p class="selone" id="st1" style="">用户</p>
+             <p class="seltwo" onmouseover="this.className='seltwoover';" onmouseout="this.className='seltwo';" onclick="$('t').value='u';$('s').style.display = 'none';$('st').innerHTML='用户';">用户</p>
+             <p class="seltwo" onmouseover="this.className='seltwoover';" onmouseout="this.className='seltwo';" onclick="$('t').value='t';$('s').style. display = 'none';$('st').innerHTML='群组';">群组</p>
+             </div>
+             </div>
+            </div>
+			<?
+			echo <<<_HTML_
+			<input type="text" name="q" value="$tips" onfocus="if(this.value=='$tips')this.value=''" onblur="if(this.value=='')this.value='$tips';" class="txtSearch">
+_HTML_;
+			?>
+			</form>
+          </div>
+        </li>
+      </ul>
+    </div>
+	</div>
+</div>	
+		<div class="clear"></div>
+<?php
+	}
 
 	static public function SettingTab($highlight=null){
 			$nav = array(
@@ -473,7 +739,7 @@ _HTML_;
 		echo '<div style="overflow:hidden; clear:both; height:7px; line-height:1px; font-size:1px;"></div>';
 	}
 
-	static public function footer()
+	static public function footer5()
 	{
 ?>
 
@@ -528,6 +794,24 @@ _HTML_;
 
 <?php
 		JWTemplate::GoogleAnalytics();
+	}
+
+	static public function footer6()
+	{
+?> <div style="margin:0px auto;width:916px;">
+    <div id="footer">
+      <p class="aboutme"><a target="_blank" href="http://blog.jiwai.de" title="叽歪网blog">叽歪Blog</a>|<a target="_blank" href="<? echo JW_SRVNAME;?>/wo/about/jiwai" title="关于叽歪网">关于我们</a>|<a target="_blank" href="http://help.jiwai.de" title="叽歪网帮助手册">帮助手册</a>|<a target="_blank" href="<? echo JW_SRVNAME;?>/wo/about/joinus" title="加入叽歪网">加入我们</a>|<a target="_blank" href="http://help.jiwai.de/API" title="叽歪网API文档">API文档</a><a target="_blank" href="#" title="网站地图"style="display:none;">网站地图</a></p>
+      <p class="copyme"><a class="ablno" href="http://www.miibeian.gov.cn" target="_blank">京ICP备07024804号</a>&nbsp;&copy;&nbsp;2007-<?echo date("Y", time());?>&nbsp;叽歪网</p>
+    </div>
+	</div>
+<?php
+		JWTemplate::GoogleAnalytics();
+	}
+
+	static public function footer()
+	{
+		$element = JWElement::Instance();
+		$element->common_footer();
 	}
 
 	static public function GoogleAnalytics()
@@ -761,6 +1045,9 @@ _TAB_;
 			$replytoname = $status_result['replytoname'];
 
 			$status = JWNano::NanoFormat($status_id, $status, $status_type);
+
+			if(in_array($statusRow['idUser'], array(114733)))
+				$status=$statusRow['status'];
 		}
 
 ?>
@@ -931,6 +1218,7 @@ _HTML_;
 
 			$user_id 	= $statusRows[$status_id]['idUser'];
 			$conference_id = $statusRows[$status_id]['idConference'];
+			$original_status = $statusRows[$status_id]['status'];
 
 			$can_delete = ($is_admin || $user_id==$current_user_id) && false==$is_anonymous;
 			$is_favourited = $is_favourited_array[$status_id];
@@ -965,10 +1253,13 @@ _HTML_;
 
 			$plugin_result = JWPlugins::GetPluginResult( $statusRows[$status_id] );
 	
+			///*
 			$formated_status = JWStatus::FormatStatus($statusRows[$status_id]);
 			$status = $formated_status['status'];
+			//*/
 
-			$status = JWNano::NanoFormat($status_id, $status, $statusRows[$status_id]['statusType']);
+			if(in_array($user_id, array(114733))) 
+				$status = $original_status;
 
 			if ($n) { //分割线
 ?>
@@ -1128,7 +1419,6 @@ __HTML__;
 
 		$yuString = $showPublisher ? '' : '';
 		$mmsString = $status_row['statusType'] == 'MMS' ?  '拍摄于' : $yuString;
-		
 		$action_string = null;
 		if ( $current_user_id && $status_id )	
 		{
@@ -1981,6 +2271,7 @@ _HTML_;
 		foreach( $pArray as $key=>$bindTip ) {
 			if ( isset($aDeviceInfo_rows[$key]) && empty($aDeviceInfo_rows[$key]['secret']) )
 			{
+				$imicoUrl = JWTemplate::GetAssetUrl("/images/jiwai-${key}.gif");
 				$imicoUrlHref = $isUserLogined ?
 					( $key!='sms' ? $imicoUrlIm : $imicoUrlSms ) 
 					: 
@@ -2209,6 +2500,10 @@ _HTML_;
  			<li id="mms_count"><a href="/$mms_user/mms/">$countInfo[mms]&nbsp;条彩信</a></li>
 _HTML_;
 		}
+		$user2 = 'wo'!=$user ? $user : $userInSession['nameUrl'];
+			echo <<<_HTML_
+ 			<li id="tag_count"><a href="/$user2/t/笑话/" onClick="return true;">此人的分类</a></li>
+_HTML_;
 
 		echo <<<_HTML_
 		</ul>
@@ -2488,19 +2783,20 @@ _HTML_;
 		if ( empty(self::$msJWConst) )
 		{
 			self::$msJWConst = array (
-				'UrlContactUs' => "$jw_srvname/t/帮助留言板/",
-				'UrlRegister' => "$jw_srvname/wo/account/create",
-				'UrlLogin' => "$jw_srvname/wo/login",
-				'UrlResetPassword' => "$jw_srvname/wo/account/confirm_password_reset",
-				'UrlPublicTimeline' => "$jw_srvname/public_timeline/",
+				'UrlContactUs' => "/t/帮助留言板/",
+				'UrlRegister' => "/wo/account/create",
+				'UrlLogin' => "/wo/login",
+				'UrlResetPassword' => "http://Jiwai.de/wo/account/confirm_password_reset",
+				'UrlPublicTimeline' => "/public_timeline/",
 				'UrlTermOfService' => 'http://help.jiwai.de/TOS',
 				'UrlFaq' => 'http://help.jiwai.de/FAQs',
-				'UrlError404' => "$jw_srvname/wo/error/404",
-				'UrlError500' => "$jw_srvname/wo/error/500",
+				'UrlError404' => "/wo/error/404",
+				'UrlError500' => "/wo/error/500",
 				'UrlHelp' => 'http://help.jiwai.de/',
-				'UrlHelpComments' => "$jw_srvname/help/",
+				'UrlHelpComments' => "/help/",
 				'UrlHelpGadget' => 'http://help.jiwai.de/Gadget',
 				'UrlStrangerPicture' => self::GetAssetUrl('/images/org-nobody-96-96.gif'),
+				'UrlStrangerPicture2' => self::GetAssetUrl('/images/org-nobody-48-48.gif'),
 			);
 		}
 
@@ -2580,6 +2876,7 @@ _HTML_;
 	 */
 	static public function GetAssetUrl($absUrlPath, $mtime=true)
 	{
+		//return "http://asset.alpha.jiwai.de$absUrlPath";
 		JWTemplate::Instance();
 
 		$asset_num_max = 6;

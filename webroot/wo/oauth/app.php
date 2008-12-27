@@ -2,7 +2,7 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $user_info = JWUser::GetCurrentUserInfo();
 $path = isset($_GET['pathParam']) ? $_GET['pathParam'] : '';

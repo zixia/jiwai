@@ -1,6 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 JWTemplate::html_doctype();
 
 $memcache = JWMemcache::Instance();

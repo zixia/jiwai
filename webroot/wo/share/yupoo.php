@@ -2,7 +2,7 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 $t = $u = $d = null;
 extract( $_GET );
 $t = mb_convert_encoding($t, 'UTF-8', 'UTF-8,GB2312');

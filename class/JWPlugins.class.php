@@ -14,28 +14,28 @@ class JWPlugins
 {
 
 	static private $plugin_names = array(
-		'Yupoo',
-		'Box',
-		'Yobo',
-		'Video',
-		'Flickr',
-        'Douban',
-        'Imdb',
-        'TeX',
-	);
+			'Yupoo',
+			'Box',
+			'Yobo',
+			'Video',
+			'Flickr',
+			'Douban',
+			'Imdb',
+			'TeX',
+			);
 
-    static private $plugin_domains = array(
-            'yupoo.com' => 'Yupoo',
-            '8box.cn'   => 'Box',
-            'yobo.com'  => 'Yobo',
-            'flickr.com'    => 'Flickr',
-            'youtube.com'   => 'Video',
-            'youku.com'     => 'Video',
-            'tudou.com'     => 'Video',
-            'vimeo.com'     => 'Video',
-            'douban.com'    => 'Douban',
-            'tug.org'   => 'TeX',
-    );
+	static private $plugin_domains = array(
+			'yupoo.com' => 'Yupoo',
+			'8box.cn'   => 'Box',
+			'yobo.com'  => 'Yobo',
+			'flickr.com'    => 'Flickr',
+			'youtube.com'   => 'Video',
+			'youku.com'     => 'Video',
+			'tudou.com'     => 'Video',
+			'vimeo.com'     => 'Video',
+			'douban.com'    => 'Douban',
+			'tug.org'   => 'TeX',
+			);
 
 	static public function GetPluginResult( $status_row )
 	{
@@ -50,52 +50,52 @@ class JWPlugins
 
 			$photo_title = $photo_row['fileName'];
 			$photo_src = JWPicture::GetUrlById($status_row['idPicture'], 'middle');
-			$photo_href = JW_SRVNAME .'/'. $user_row['nameUrl'] .'/mms/'. $status_row['id'];
+			$photo_href = str_replace('/middle/','/origin/',$photo_src);
 
 			return array(
-				'type' => 'html',
-				'html' => '<a href="' .$photo_href. '" target="_blank"><img src="' .$photo_src. '" title="'.$photo_title.'" class="pic"/></a>',
-				'types' => 'picture',
-				'src' => $photo_src,
-			);
+					'type' => 'html',
+					'html' => '<div class="e_photo e_photo_mms"><a href="' .$photo_href. '" target="_blank"><img src="' .$photo_src. '" title="'.$photo_title.'" class="pic"/></a></div>',
+					'types' => 'picture',
+					'src' => $photo_src,
+				    );
 
 		}
-        else if ( preg_match('/isbn[^\w\d]*(\d{13})/i', $status, $matches) )
-        {
-            $callback = array('JWPlugins_Douban', 'GetPluginResult');
-            if ( is_callable( $callback ) ) 
-            {
-                $result = call_user_func( $callback, '.douban.com/isbn/' . $matches[1] );
-                if ( $result ) 
-                {
-                    return $result;
-                }
-            }
-        }
-        else if ( preg_match('/imdb[^\w\d]*(tt\d{7})/i', $status, $matches) )
-        {
-            $callback = array('JWPlugins_Imdb', 'GetPluginResult');
-            if ( is_callable( $callback ) ) 
-            {
-                $result = call_user_func( $callback, '.imdb.com/title/' . $matches[1] );
-                if ( $result ) 
-                {
-                    return $result;
-                }
-            }
-        }
-        else if ( preg_match('#(\[tex\].*?\[/tex\])#i', $status, $matches) )
-        {
-            $callback = array('JWPlugins_TeX', 'GetPluginResult');
-            if ( is_callable( $callback ) ) 
-            {
-                $result = call_user_func( $callback, $matches[1] );
-                if ( $result ) 
-                {
-                    return $result;
-                }
-            }
-        }
+		else if ( preg_match('/isbn[^\w\d]*(\d{13})/i', $status, $matches) )
+		{
+			$callback = array('JWPlugins_Douban', 'GetPluginResult');
+			if ( is_callable( $callback ) ) 
+			{
+				$result = call_user_func( $callback, '.douban.com/isbn/' . $matches[1] );
+				if ( $result ) 
+				{
+					return $result;
+				}
+			}
+		}
+		else if ( preg_match('/imdb[^\w\d]*(tt\d{7})/i', $status, $matches) )
+		{
+			$callback = array('JWPlugins_Imdb', 'GetPluginResult');
+			if ( is_callable( $callback ) ) 
+			{
+				$result = call_user_func( $callback, '.imdb.com/title/' . $matches[1] );
+				if ( $result ) 
+				{
+					return $result;
+				}
+			}
+		}
+		else if ( preg_match('#(\[tex\].*?\[/tex\])#i', $status, $matches) )
+		{
+			$callback = array('JWPlugins_TeX', 'GetPluginResult');
+			if ( is_callable( $callback ) ) 
+			{
+				$result = call_user_func( $callback, $matches[1] );
+				if ( $result ) 
+				{
+					return $result;
+				}
+			}
+		}
 		else if ( preg_match(	'#'
 					// head_str
 					. '^(.*?)'
@@ -108,7 +108,7 @@ class JWPlugins
 					. '(.*)$#is'
 					, $status
 					, $matches 
-		) )
+				    ) )
 		{
 			$head_str = htmlspecialchars($matches[1]);
 			$url_domain = htmlspecialchars($matches[2]);
@@ -126,11 +126,11 @@ class JWPlugins
 
 			$url = 'http://' .$url_domain . $url_path;
 
-            $url_domain_strip = strtolower($url_domain);
-            $url_domain_strip = preg_replace('/^.*?([^\.]+\.[^\.]+)$/', '${1}', $url_domain_strip);
-            if ( array_key_exists($url_domain_strip, self::$plugin_domains) )
+			$url_domain_strip = strtolower($url_domain);
+			$url_domain_strip = preg_replace('/^.*?([^\.]+\.[^\.]+)$/', '${1}', $url_domain_strip);
+			if ( array_key_exists($url_domain_strip, self::$plugin_domains) )
 			{
-                $plugin_name = self::$plugin_domains[$url_domain_strip];
+				$plugin_name = self::$plugin_domains[$url_domain_strip];
 				$callback = array('JWPlugins_' . $plugin_name , 'GetPluginResult');
 				if ( is_callable( $callback ) ) 
 				{

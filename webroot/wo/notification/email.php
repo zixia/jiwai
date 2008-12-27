@@ -1,19 +1,16 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWTemplate::html_doctype();
+JWLogin::MustLogined(false);
 
-JWLogin::MustLogined();
+$user_info = JWUser::GetCurrentUserInfo();
+$user_setting = JWUser::GetNotification($user_info['id']);
 
-
-$user_info		= JWUser::GetCurrentUserInfo();
-
-$user_setting	= JWUser::GetNotification($user_info['id']);
-
-if ( isset($_REQUEST['commit_x'])  )
+if ( isset($_POST['user']) )
 {
 	$user_new_setting = isset($_POST['user']) ? $_POST['user'] : array();
 	$user_setting['send_new_direct_text_email'] = isset($user_new_setting['send_new_direct_text_email']) ? $user_new_setting['send_new_direct_text_email'] : 'N';
 	$user_setting['allow_system_mail'] = isset($user_new_setting['allow_system_mail']) ? $user_new_setting['allow_system_mail'] : 'N';
+
 	$user_setting['send_new_friend_email'] = isset($user_new_setting['send_new_friend_email']) ? $user_new_setting['send_new_friend_email'] : 'N';
 
 	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
@@ -28,69 +25,38 @@ if ( isset($_REQUEST['commit_x'])  )
 	JWTemplate::RedirectToUrl();
 }
 
+$element = JWElement::Instance();
+$param_tab = array( 'now' => 'notice_email' );
+$param_side = array( 'sindex' => 'notice' );
+$param_main = array( 'user_setting' => $user_setting );
 ?>
-<html>
 
-<head>
-<?php 
-JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-)); 
-?>
-</head>
-
-
-<body class="account" id="settings">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header('/wo/account/settings') ?>
-<?php JWTemplate::ShowActionResultTipsMain() ?>
-
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 <div id="container">
-<p class="top">设置</p>
-<div id="wtMainBlock">
-<div class="leftdiv">
-<ul class="leftmenu">
-<li><a href="/wo/account/settings">基本资料</a></li>
-<li><a href="/wo/privacy/">保护设置</a></li>
-<li><a href="/wo/devices/sms">绑定设置</a></li>
-<li><a href="/wo/notification/email" class="now">系统通知</a></li>
-<li><a href="/wo/account/profile_settings">个性化界面</a></li>
-<li><a href="/wo/openid/">Open ID</a></li>
-</ul>
-</div><!-- leftdiv -->
-<div class="rightdiv">
-<div class="lookfriend">
-<form id="f" action="" method="post" name="f">
-<input type="hidden" name="commit_x" value="1"/>
-<p class="right14"><a href="/wo/notification/email" class="now">Email</a>&nbsp;|&nbsp;&nbsp;<a href="/wo/notification/im">手机/聊天软件</a></p>
-       <div class="binding">
-    <p><input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
-            id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
-    <label for="user_send_new_direct_text_email">当有新悄悄话时以邮件形式发到邮箱</label>
-	</p>
-    <p><input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
-            id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
-    <label for="user_send_new_friend_email">当我被别人关注时发到邮箱</label>
-	</p>
-    <p><input <?php if ( 'Y'==$user_setting['allow_system_mail'] ) echo ' checked="checked" ';?>
-            id="allow_system_mail" name="user[allow_system_mail]" type="checkbox" value="Y" />
-	   <label for="allow_system_mail">同意接收叽歪网最新动态</label></p>
-	   <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
-	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>
-	   </div>
-	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-  </form>
-</div><!-- lookfriend -->
-<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-</div>
-<!-- rightdiv -->
-</div><!-- #wtMainBlock -->
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
-</div><!-- #container -->
+<?php $element->wide_notice();?>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_minwo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_notification_email($param_main);?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- lefter end -->
 
-<?php JWTemplate::footer() ?>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_setting($param_side);?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter end -->
 
-</body>
-</html>
+<div class="clear"></div>
+</div><!-- container end -->
+
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

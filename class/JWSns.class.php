@@ -275,6 +275,37 @@ class JWSns {
 	}
 
 	/**
+	 * User Emails Invite
+	 */
+	static public function EmailInvite($emails, $user, $subject=null) 
+	{
+		settype($emails, 'array');
+		$options = array(
+				'content_type' => 'text/html',
+				'template_file' => 'html/Invitation.html',
+				);
+
+		$subject = ( $subject==null )
+			? "你的朋友 {$user['nameScreen']}({$user['nameFull']}) 邀请你加入叽歪" : $subject;
+
+		$count = 0;
+		if (false==empty($emails))
+		{
+			foreach ( $emails as $email )
+			{
+				if( true == JWDevice::IsValid( $email, 'email' ) )
+				{
+					if ( JWMail::SendMailInvitation( $user, $email, $subject, $options ) )
+					{
+						$count++;
+					}
+				}
+			}
+		}
+		return $count > 0;
+	}
+
+	/**
 	 * Conference/User Sms Invite
 	 */
 	static public function SmsInvite($user_id, $address, $message) 
@@ -413,9 +444,7 @@ class JWSns {
 		if ( empty($idUser) || empty($idOthers) )
 			return array();
 
-		if ( false == is_array($idOthers) )
-			throw new JWException('must array');
-
+		settype($idOthers, 'array');
 		$followingInfos = JWFollower::GetFollowingInfos($idUser);
 
 		$request_follower_ids = JWFollowerRequest::GetInRequestIds($idUser);
@@ -430,6 +459,7 @@ class JWSns {
 			'follow' => false,
 			'leave' => false,
 			'd' => false,	
+			'block' => true,
 		);
 
 		foreach ( $idOthers as $other_id )
@@ -449,13 +479,13 @@ class JWSns {
 
 			if( false == JWBlock::IsBlocked( $other_id, $idUser, false ) ) {
 				$action['d'] = true;
-
 				if( isset( $send_via_device_rows[$other_id] ) ) {
 					if ( 'web' != $send_via_device_rows[$other_id] && $other_id != $idUser )
 						$action['nudge'] = true;
 				}
 			}else{
 				$action = $init_action;
+				$action['block'] = false;
 				if( false == JWBlock::IsBlocked( $other_id, $idUser ) ) {
 					$action['follow'] = true;
 				}
@@ -497,6 +527,8 @@ class JWSns {
 
 		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
 		$num_mms		= JWStatus::GetStatusMmsNum($idUser);
+		$num_tag_following	= JWTagFollower::GetFollowingNum($idUser);
+		$num_tag		= count(JWStatus::GetTagIdsPostByIdUser($idUser));
 
 		return array(
 				'pm' => $num_pm,
@@ -505,6 +537,8 @@ class JWSns {
 				'follower' => $num_follower,
 				'status' => $num_status,
 				'mms' => $num_mms,
+				'tag_following' => $num_tag_following,
+				'tag' => $num_tag,
 			);
 	}
 	
@@ -712,16 +746,19 @@ class JWSns {
 	 *	删除设备，同时设置用户的设置为其他设备（如果用户有绑定其他设备的话）
 	 *	@return	bool
 	 */
-	static public function DestroyDevice($idDevice)
+	static public function DestroyDevice($idDevice, $idUser=null)
 	{
 		$ret = false;
 
 		$device_row 	= JWDevice::GetDeviceDbRowById($idDevice);
 
-		$user_id				= $device_row['idUser'];
-		$destroy_device_type	= $device_row['type'];
+		$user_id	= $device_row['idUser'];
+		$destroy_device_type = $device_row['type'];
 
-		$send_via_device	= JWUser::GetSendViaDevice($user_id);
+		$send_via_device = JWUser::GetSendViaDevice($user_id);
+
+		if ( $idUser && $user_id != $idUser ) 
+			return false;
 
 		if ( $destroy_device_type==$send_via_device )
 				JWUser::SetSendViaDevice( $user_id, 'web');

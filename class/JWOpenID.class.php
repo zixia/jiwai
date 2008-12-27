@@ -68,6 +68,19 @@ class JWOpenID {
 		return JWDB::DelTableRow('Openid', array( 'id'=>$idOpenid ));
 	}
 
+	/*
+	 *	@param	int		$idUser
+	 *	@return	array		$openidRow array() 代表没有这个 openid
+	 */
+	static public function GetDbRowByUserId($idUser)
+	{
+		$idUser = JWDB::CheckInt($idUser);
+
+		$row = JWDB::GetTableRow('Openid', array('idUser'=>$idUser));
+
+		return empty($row) ? array() : $row;
+	}
+
 
 	/*
 	 *	@param	int		$idUser

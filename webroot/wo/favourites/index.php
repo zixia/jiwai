@@ -1,118 +1,47 @@
 <?php
-require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
-JWTemplate::html_doctype();
-JWLogin::MustLogined(true);
+require_once( '../../../jiwai.inc.php');
+JWLogin::MustLogined(false);
 
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
-$logined_user_id 	= $logined_user_info['id'];
-$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
-$page = ($page < 1 ) ? 1 : $page;
-
-/*
- *	除了显示 /wo/favourites/ 之外，还负责显示 /zixia/favourites/
- *	如果是其他用户的 favourites 页(/zixia/friends)，则 $g_user_favourites = true, 并且 $g_page_user_id 是页面用户 id
- *
- */
-
-$logined_user_info 	= JWUser::GetCurrentUserInfo();
-
-$head_options = array();
-
-if ( isset($g_user_favourites) && $g_user_favourites ) {
-	$rows				= JWDB_Cache_User::GetDbRowsByIds(array($g_page_user_id));
-	$page_user_info		= $rows[$g_page_user_id];
-	$head_options['ui_user_id']		= $g_page_user_id;
-} else {
-	$page_user_info		= $logined_user_info;
-}
-
-$status_num		= JWFavourite::GetFavouriteNum($page_user_info['id']);
-$pagination		= new JWPagination($status_num, $page);
-$status_ids		= JWFavourite::GetFavourite($page_user_info['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
-
-$status_rows	= JWStatus::GetDbRowsByIds($status_ids);
-
-$user_ids		= array_map( create_function('$row','return $row["idUser"];'), $status_rows );
-$user_rows		= JWDB_Cache_User::GetDbRowsByIds($user_ids);
-
-
+$element = JWElement::Instance();
+$param_tab = array( 'now' => 'wo_favourite' );
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 
-<head>
-<?php JWTemplate::html_head($head_options) ?>
-</head>
+<div id="container">
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_wo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<div>
+				<?php $element->block_statuses_favourites();?>
+			</div>
+			<div style="clear"></div>
+			<?php $element->block_rsslink();?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_wo_request_in();?>
+		<?php $element->side_wo_hi();?>
+		<?php $element->side_announcement();?>
+		<div class="line mar_b8"></div>
+		<?php $element->side_recent_vistor();?>
+		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
+		<?php $element->side_block_user();?>
+		<div class="gra_input"><input type="text" value="QQ  MSN  Emai l id..." onFocus="clearValue(this)" onBlur="searchValue(this,'QQ  MSN  Emai l id...')" /> <input type="button" value="谁在叽歪" class="def_btn" /></div>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
 
-<body class="normal">
+<div class="clear"></div>
+</div><!-- container -->
 
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-
-
-<div id="container" class="subpage">
-	<div id="content">
-		<div id="wrapper">
-<?php 
-if ( $page_user_info['id']==$logined_user_info['id'] ) {
-	JWTemplate::tab_menu( array( array('name'=>'我的收藏', 'url'=>'javascript:void(0);', 'active'=>true, ) ) );
-} else {
-	JWTemplate::tab_menu( array( array('name'=>'此人收藏', 'url'=>'javascript:void(0);', 'active'=>true, ) ) );
-}
-?>
-			<div class="tab">
-
-<?php
-$n = 0;
-if ( isset($status_ids) )
-{
-	JWTemplate::Timeline($status_ids, $user_rows, $status_rows, array('pagination' => $pagination));
-}
-?>
-			</div><!-- tab -->
-		</div><!-- wrapper -->
-	</div><!-- content -->
-<?php
-if ( $g_user_favourites )
-{
-		$current_user_id = $logined_user_info['id'];
-		$user_action_rows = JWSns::GetUserActions($current_user_id , array($page_user_info['id']) );
-		$user_action_row = empty($user_action_rows) ? array() : $user_action_rows[$page_user_info['id']];
-		$arr_friend_list = JWFollower::GetFollowingIds($page_user_info['id']);
-		$arr_count_param = JWSns::GetUserState($page_user_info['id']);
-		$idUserVistors = JWSns::GetIdUserVistors( $page_user_info['id'], $current_user_id );
-		$arr_menu = array(
-			array ('user_notice', array($page_user_info)),
-			array ('device_info', array($page_user_info)),
-			array ('user_info', array($page_user_info)),
-			array ('action', array($user_action_row,$page_user_info['id'])),
-			array ('count', array($arr_count_param,$page_user_info)),
-			array ('vistors', array($idUserVistors )),
-			array ('friend', array($arr_friend_list)),
-			array ('listfollowing', array( $page_user_info['nameScreen'], count($arr_friend_list) > 60 ) ),
-			array ('rss', array('user', $page_user_info['nameScreen'])),
-			);
-
-	if ( false == JWLogin::IsLogined() ) {
-		array_push ( $arr_menu, array('register', array(true)) );
-	} else {
-		array_push ( $arr_menu, array('block', array($current_user_id, $g_page_user_id)) );
-	}
-
-	JWTemplate::sidebar( $arr_menu, $g_page_user_id);
-}
-else
-{
-	include_once dirname( dirname(__FILE__) ).'/sidebar.php';
-}
-JWTemplate::container_ending();
-?>
-
-</div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
-</body>
-</html>
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

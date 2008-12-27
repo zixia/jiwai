@@ -1,77 +1,37 @@
 <?php
-require_once('../../jiwai.inc.php');
-//die(var_dump($_REQUEST));
+require_once( dirname(__FILE__) . '/../../jiwai.inc.php');
 
-$tag_name	= @$_REQUEST['tag'];
-$pathParam 	= @$_REQUEST['pathParam'];
+$tag_name = isset($_REQUEST['tag']) ? $_REQUEST['tag'] : '笑话';
+$pathParam = strval(@$_REQUEST['pathParam']) | '/';
+$current_user_id = JWLogin::GetCurrentUserId();
 
-// $pathParam is like: "/statuses/123"
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
-if(empty($tag_name)) $tag_name='笑话';
-if( $tag_name ) 
-{
-	if ( false ==JWUnicode::unifyName( $tag_name ) )
-	{
+
+if( $tag_name ) {
+	if ( false ==JWUnicode::unifyName( $tag_name ) ) {
 		JWTemplate::RedirectToUrl( '/t/' . urlEncode($tag_name) . $pathParam );
 	}
-
 	$tag_id = JWTag::GetIdByNameOrCreate( $tag_name );
-
-	if( null == $tag_id ) 
-	{
+	if( null == $tag_id ) {
 		JWTemplate::RedirectTo404NotFound();
 	}
-
 	$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id );
-}
-else
-{
+} else {
 	JWTemplate::RedirectBackToLastUrl('/');
 }
 
-if( null == $func )
-{
-	$func = 'channel';
-}
+$func = $func | 'channel';
 
-switch ( $func )
-{
-	case 'thread':
-		require_once(dirname(__FILE__) . "/channelthread.inc.php");
-
-		if ( false == preg_match( '/^(\d+)\/?(\d*)$/', $param, $matches ) )
-			JWTemplate::RedirectTo404NotFound();
-
-		$status_id = intval($matches[1]);
-		$reply_status_id = intval(@$matches[2]);
-
-		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
-		if (empty($status_row) )
-		{
-			JWTemplate::RedirectTo404NotFound();
-		}
-		$page_user_id = $status_row['idUser'];
-
-		if ( false==JWLogin::IsLogined())
-			$_SESSION['login_redirect_url'] = $_SERVER['HTTP_REFERER'];
-
-		user_status($page_user_id, $status_id, $reply_status_id, $tag_id);
-
-		break;
-
+switch ( $func ) {
+	default:
 	case 'channel':
-		if ( 57612== $tag_row['id']) 
-			require_once(dirname(__FILE__) . "/channel.inc.shenqi.php");
-		else if ( 21784== $tag_row['id']) 
-			require_once(dirname(__FILE__) . "/channel.inc.aoyun.php");
-		else if ( 26559== $tag_row['id'] )
-			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
-		else if ( 9259 == $tag_row['id'] )
-			require_once(dirname(__FILE__) . "/channel.inc.dongzai.php");
-		else
-			require_once(dirname(__FILE__) . "/channel.inc.php");
+		$tagid_php = dirname(__FILE__) . "/{$tag_row['id']}.inc.php";
+		if (file_exists($tagid_php) ) {
+			require_once( $tagid_php );
+		} else {
+			require_once( dirname(__FILE__) . '/tagid.inc.php' );
+		}
 		JWVisitTag::Record($tag_id, JWRequest::GetRemoteIP());
 		break;
-
 }
 ?>

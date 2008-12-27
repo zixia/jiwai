@@ -1,8 +1,6 @@
 /* The overall pattern start */
-body { font:12px/120% verdana, Arial, Helvetica,sans-serif;}
+body { font:12px verdana, Arial, Helvetica,sans-serif;}
 body,form,ul,p{ margin:0 auto; padding:0;}
-a:link,a:visited{text-decoration:none;color:#FF6000;}
-a:hover{text-decoration:underline;color:#FF6000;}
 h1, h2, h3, h4, h5 {font-weight: normal;}
 ul { list-style: none;}
 a img, form, fieldset {border:0;}
@@ -29,7 +27,6 @@ i{color:#FF0000;font-size:12px;margin-left:5px;font-style:normal;}
 /* The overall pattern end */
 
 /* The header start */
-#header { margin:0 auto; height:80px;width:776px; border-bottom:5px solid #F97B00;}
 #header h2 {width:195px; height:63px; float:left; margin:16px 0 0 0;}
 html>body #header h2 {background:url(../images/org-logo.png) no-repeat;}
 * html #header h2 {filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="http://asset.jiwai.de/images/org-logo.png");}
@@ -189,13 +186,6 @@ html>body #content .tabMenu {margin-top:19px;}
 .rss {background:transparent url(http://asset.jiwai.de/img/rss.gif) no-repeat scroll 90% 50%;padding:5px 23px 5px 8px;right:0pt;text-decoration:none;text-transform:uppercase;top:16px;}
 .rsshim { display:block; background:url(../images/org-rss-bg.gif) #f2f2f2 no-repeat center; height:27px; line-height:27px; text-indent:34px; text-align:center; margin:0 auto; padding:10px; color:#515151; font-size:12px; text-decoration:none;}
 
-#footer h3 {position: absolute; left: -8888px; overflow: hidden;}
-#footer { height:auto; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
-#footer ul { text-align: center; }
-#footer ul li { display: inline; line-height:32px; padding:0 10px; font-family:Verdana, Arial, Helvetica, sans-serif; }
-#footer, #footer a {color:#7D7D7D;}
-#footer a:hover {color:#D05D00; text-decoration:underline;}
-
 body.normal #flaginfo {background: url(http://asset.jiwai.de/img/flag.gif) no-repeat 0 0;position:absolute;left:50%;top:105px;margin-left:-499px;text-align:right;width:89px;height:26px;color:#FFF;text-transform:uppercase;font-size:11px;padding:2px 4px 0 0;font-weight:bold;}
 
 #content h2.thumb {font-size:3em;}
@@ -225,8 +215,6 @@ input.openid_login { }
 .pages a { float:left; border:1px solid #E3E3E3; padding:2px 5px; background-color:#F7F7F7; color:#C55400; font-family:Verdana, Arial, Helvetica, sans-serif; margin:5px; text-decoration:none;}
 .pages .active {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
 .add {clear:both; padding:10px 0 15px 15px;}
-.search { width:170px; padding-top:10px; height:100%; }
-.search input {border:1px solid #A23D00; width:96px; height:19px; line-height:18px; margin:0 5px 0 0; text-indent:5px;}
 .search button {width:38px; height:22px; margin:0 5px 0 0;}
 
  /*Feature image*/
@@ -572,13 +560,6 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 #wtMainBlock .login { padding:22px 0 0 60px;}
 #wtMainBlock .mar { margin: 0 0 0 1em;}
 #wtMainBlock .po { padding:0 0 0 45px; font-size:12px; color:#666666;} 
-
-#wtMainBlock .gadget li { float:left;width:70px;padding: 5px 8px 10px 0;font-size:12px;text-align: center;font-family: Arial,sans-serif;}
-#wtMainBlock .gadget { width:550px; }
-#wtMainBlock .gadget li a img {width:30px; height:30px;}
-#wtMainBlock .gadget li p { margin:3px 0 0 0;}
-#wtMainBlock .gadgetFlash { width: 545px;border:1px solid #CECECE; padding:1px;background-color:#FFF;color:#333333; font-size:12px;}
-#wtMainBlock .gadgetimage { margin:3px 0 0 0; clear:both;}
 /* The wtMainBlock end */
 
 /* The wtRegok start */
@@ -617,3 +598,17 @@ a.normLink:hover { color:#FF830B!important; text-decoration:underline!important;
 
 .tipnote {clear:both; background-color:#FFF996; line-height:21px; border:1px solid #C2C2C2; margin:8px auto; text-indent:20px;} 
 .tipnote-red {clear:both; background-color:#FF0000; line-height:21px; border:1px solid #C2C2C2; margin:8px auto; text-indent:20px;} 
+
+#footer{
+float:left;width:100%;background:url(../images/documentbottombg.jpg) repeat-x;height:66px;margin-top:9px;
+}
+#footer .aboutme{
+float:left;width:100%;text-align:center;margin-top:15px;
+}
+#footer .aboutme a{
+margin:0px 5px;
+}
+#footer .copyme{
+float:left;width:100%;text-align:center;color:#999999;margin-top:5px;
+}
+#footer h3 {position:absolute; left:-88888px; overflow:hidden;}

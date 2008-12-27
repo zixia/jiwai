@@ -33,9 +33,9 @@ class JWVisitTag
 		return self::$msInstance;
 	}
 
-	static public function Record($idTag, $ip)
+	static public function Record($idTag, $ip=null)
 	{
-
+		$ip = JWRequest::GetRemoteIp();
 		$mc_key = self::GetCacheKeyByTagIdAndIp($idTag, $ip); 
 		$memcache = JWMemcache::Instance();
 

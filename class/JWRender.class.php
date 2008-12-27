@@ -1,33 +1,60 @@
 <?php
-/*
- * @author: Seek
+/**
+ * @author: shwdai@gmail.com
  */
-
 if(!defined('TPL_FILE_SUFFIX')) define('TPL_FILE_SUFFIX','.tpl');
 if(!defined('TPL_COMPILED_DIR')) define('TPL_COMPILED_DIR','/tmp');
 if(!defined('TPL_TEMPLATE_DIR')) define('TPL_TEMPLATE_DIR','/tmp');
-
 class JWRender{
-	static public function Render( $templateFile, $v=array() ){
-		$template = new Template_Render();
-		return $template->render( $templateFile, $v );
+	static private $mTemplate = null;
+	static private function GetTemplate(){
+		return null==self::$mTemplate ? 
+			self::$mTemplate = new Template_Render() : self::$mTemplate;
 	}
+	static private function CloseTemplate(){
+		self::$mTemplate = null;
+	}
+
+	static public function Render( $templateFile, $v=array() ){
+		$templateFile = preg_replace('/'.TPL_FILE_SUFFIX.'$/', '', $templateFile);
+		$content = self::GetTemplate()->render( $templateFile, $v );
+		self::CloseTemplate();
+		return $content;
+	}
+
 	static public function Display( $templateFile,$v=array() ){
 		echo self::Render( $templateFile, $v );
 	}
+
+	static public function Assign($k=null, $v=null){
+		self::GetTemplate()->assign($k, $v);
+	}
+
 	static public function GetLastContent(){
 		return Template_Render::$lastContent;
 	}
+
+	static public function Clear(){
+		self::CloseTemplate();
+	}
+
+	static public function Exist( $templateFile ) {
+		$templateFile = preg_replace('/'.TPL_FILE_SUFFIX.'$/', '', $templateFile);
+		return Template_Render::Exist( $templateFile );
+	}
+
+	static public function SetModule($module=null){
+		Template_Render::$module = $module;
+	}
 }
 
-class Template_Render{	
+class Template_Render{ 
 	
-	//now have fixed the warning to access not exists properties;
-	//used to store value stack of template calling especiall call [part]
-	protected $_properties_array_used_by_overload = array();
+        protected $_properties_array_used_by_overload = array();
 	public static $lastContent = null;
+	public static $module = null;
 
-	public function __get($name=null){
+        public function __get($name=null){
 		switch($name){
 			case '_SESSION':
 				return isset($_SESSION) ? $_SESSION : false;
@@ -45,19 +72,42 @@ class Template_Render{
 				return isset($this->_properties_array_used_by_overload[$name]) ?
 					$this->_properties_array_used_by_overload[$name] : false;
 		}
-	}
+        }
 
-	public function __set($name=null,$value=null){
-		return $this->_properties_array_used_by_overload[$name] = $value;
-	}
+        public function __set($name=null,$value=null){
+                return $this->_properties_array_used_by_overload[$name] = $value;
+        }
 
-	public function __call($method=null,$param = array()){
-		return false;
-	}
+        public function __call($method=null,$param = array()){
+                return false;
+        }
 	
 	//following is for template	
 
-	public function __construct(){}
+	public function __construct(){
+		global $g_page_user_id;
+		global $g_current_user_id;
+		$g_current_user_id = JWLogin::GetCurrentUserId();
+		$this->_INI = JWConfig::ini();
+		if ( $g_current_user_id ) {
+			$this->g_current_user = JWUser::GetUserInfo($g_current_user_id);
+		}
+
+		if ( false==$g_page_user_id) {
+			$g_page_user_id = $g_current_user_id;
+			$this->g_page_user = $this->g_current_user;
+		} else {
+			$this->g_page_user = JWUser::GetUserInfo($g_page_user_id);
+		}
+
+		$script_url = $_SERVER['SCRIPT_URI'];
+		$this->g_page_on = (!preg_match('#/(wo|g|t)/#i', $script_url));
+		$this->g_tag_on = preg_match('#/t/#i', $script_url);
+		$this->g_page_user_id = $g_page_user_id;
+		$this->g_current_user_id = $g_current_user_id;
+		$this->element = JWElement::Instance();
+	}
+
 	public function __destruct(){
 		$this->_properties_array_used_by_overload = null;
 	}
@@ -77,12 +127,13 @@ class Template_Render{
 		$fileContent = preg_replace("/\{(\\\$[a-zA-Z0-9_\[\]\\\ \-\'\,\%\*\/\.\(\)\'\"\$\x7f-\xff]+)\}/s", "<?php echo \\1 ?>", $fileContent);
 		$fileContent = preg_replace("/\\\$\{(.+?)\}/ies", "\$this->__replace('<?php echo \\1 ?>')", $fileContent);
 		$fileContent = preg_replace("/\<\!\-\-\s*\{else\s*if\s+(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<?php } else if(\\1) { ?>')", $fileContent);
+		$fileContent = preg_replace("/\<\!\-\-\s*\{elif\s+(.+?)\}\s*\-\-\>/ies", "\$this->__replace('<?php } else if(\\1) { ?>')", $fileContent);
 		$fileContent = preg_replace("/\<\!\-\-\s*\{else\}\s*\-\-\>/is", "<?php } else { ?>", $fileContent);
 
 		for($i = 0; $i < 5; ++$i) {
 			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*=>\s*(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<?php if(is_array(\\1)){foreach(\\1 as \\2=>\\3) { ?>\\4<?php }}?>')", $fileContent);
 			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<?php if(is_array(\\1)){foreach(\\1 as \\2) { ?>\\3<?php }}?>')", $fileContent);
-			$fileContent = preg_replace("/\<\!\-\-\s*\{if\s+(.+?)\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/if\}\s*\-\-\>/ies", "\$this->__replace('<?php if(\\1){?>\\2<?php }?>')", $fileContent);
+			$fileContent = preg_replace("/\<\!\-\-\s*\{if\s+(.+?)\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/if\}\s*\-\-\>/ies", "\$this->__replace('<?php if(\\1){?>\\2<? }?>')", $fileContent);
 		}
 		
 		//Add for call <!--{portal->part /video/index/}-->
@@ -104,15 +155,28 @@ class Template_Render{
 		return str_replace('\"', '"', $string);
 	}
 
-	public function render($templateFile,$valueArray=array()) {
-		$templateFile = TPL_TEMPLATE_DIR .'/'. $templateFile . TPL_FILE_SUFFIX;	
-		$compiledFile = TPL_COMPILED_DIR .'/'. md5($templateFile) . '.php';
+	public function assign($k=null, $v=null){
+		if ( is_array($k) ) { foreach( $k AS $key=>$value ) { $this->$key = $value; } }
+		else $this->$k = $v;
+	}
 
-		if(count($valueArray)){
-			foreach($valueArray as $key=>$value)
-				$this->$key = $value;
-		}
-		
+	private function realTemplateFile($templateFile){
+		if ( self::$module )
+			return TPL_TEMPLATE_DIR.'/'.self::$module.'/'.$templateFile.TPL_FILE_SUFFIX;	
+		return TPL_TEMPLATE_DIR.'/'.$templateFile.TPL_FILE_SUFFIX;	
+	}
+
+	public function exist($templateFile) {
+		return file_exists( $this->realTemplateFile($templateFile) );
+	}
+
+	public function render($templateFile,$valueArray=array()) {
+ 
+		$templateFile = $this->realTemplateFile($templateFile);
+		$compiledFile = TPL_COMPILED_DIR.'/'.md5($templateFile).'.php';
+
+		$this->assign( $valueArray );
+
 		if(false===file_exists($templateFile)){
 			throw new Exception("Templace File [$templateFile] Not Found!");
 		}

@@ -3,7 +3,7 @@ a {text-decoration:underline; color:blue;}
 ul {list-style:none; list-style-image:none; list-style-type:none; }
 a img, form, fieldset {border:0;}
 h1, h2, h3, h4, h5 {font-weight:normal;}
-body {font:12px/120% Arial, Helvetica, sans-serif; margin-left:auto; margin-right:auto;}
+body {font:12px Arial, Helvetica, sans-serif; margin-left:auto; margin-right:auto;}
 form {margin:0; padding:0;}
 button {cursor:pointer;}
 .imagb {border:1px solid #CDCBCC; background-color:#ffffff; padding:1px;}
@@ -50,7 +50,7 @@ a:hover {color:#F87A01;}
 .subhead {text-align:center; font-family:Georgia, Times, "Times New Roman", serif; margin-bottom:1.5em; font-style:italic;}
 .notice {border:1px solid #900; margin:1em 22em; padding:1em 1em 1em 3em; background:#FFD9D9;}
 
-#accessibility, #navigation h3, #footer h3 {position:absolute; left:-8888px; overflow:hidden;}
+#accessibility, #navigation h3 {position:absolute; left:-8888px; overflow:hidden;}
 .error {color:#F00; font-size:12px; margin:.5em; font-weight:bold;}
 
 .separator {height:104px; border:1px solid #D3D3D5; width:774px; margin:1px auto 0 auto; background:url(../images/org-note-bg.gif) repeat-x center;}
@@ -62,7 +62,6 @@ a:hover {color:#F87A01;}
  .separator p {line-height:26px; margin-left:87px;}
 
 
-#header {margin:0 auto; height:80px; width:776px; border-bottom:5px solid #F97B00;}
  #navigation {}
  #header h2 {width:195px; height:63px; float:left; margin-top:16px; margin-left:0px;}
  html>body #header h2 {background:url(../images/org-logo.png) no-repeat;}
@@ -306,14 +305,7 @@ html>body .odd .cont .bg {margin-top:4px;}
 }
 .rsshim {display:block; background:url(../images/org-rss-bg.gif) #f2f2f2 no-repeat center; height:27px; line-height:27px; text-indent:34px; text-align:center; margin:0 auto; padding:10px; color:#515151; font-size:12px; text-decoration:none;}
 
-#footer {height:auto; clear:both; margin:0 auto; width:776px; border-top:1px solid #CECECE; border-bottom:5px solid #F97B00; background-color:#f2f2f2;}
- #footer ul {text-align:center;}
- #footer ul li {display:inline; line-height:32px; padding:0 10px; font-family:Verdana, Arial, Helvetica, sans-serif;}
- #footer, #footer a, #footer a:visited {color:#7D7D7D;}
- #footer a:hover {color:#D05D00; text-decoration:underline;}
-
  body.normal #flaginfo {background:url(http://asset.jiwai.de/img/flag.gif) no-repeat 0 0; position:absolute; left:50%; top:105px; margin-left:-499px; text-align:right; width:89px; height:26px; color:#FFF; text-transform:uppercase; font-size:11px; padding:2px 4px 0 0; font-weight:bold;}
-
 #content h2.thumb {
 	font-size:3em; 
 }
@@ -388,8 +380,6 @@ input.openid_login {}
 .pages .active {border:none; background-color:#ffffff; color:#000000; font-weight:bold;}
 
 .add {clear:both; padding:10px 0 15px 15px;}
-.search {width:170px; padding-top:10px; height:100%;}
-.search input {border:1px solid #A23D00; width:96px; height:19px; line-height:18px; margin:0 5px 0 0; text-indent:5px;}
 .search button {width:38px; height:22px; margin:0 5px 0 0;}
 
 .droplist {background:url(../images/org-drop-bg.gif) no-repeat; width:80px; height:21px; position:absolute; margin-top:-5px; cursor:pointer;}
@@ -681,7 +671,7 @@ a.normLink:hover {color:#FF830B!important; text-decoration:underline!important;}
 
 #wtchannelsidebar .com {margin:0 7px 0 9px; padding:10px 0 0 0; clear:both;}
 #wtchannelsidebar .list {list-style:none; clear:both; text-align:center;}
-#wtchannelsidebar .list li {float:left; margin:0 1px 0 0; line-height:16px;}
+#wtchannelsidebar .list li {float:left;margin:0px; line-height:16px;}
 #wtchannelsidebar .list li a {width:50px; overflow:hidden; text-decoration:none;}
 #wtchannelsidebar .list li a img {display:block; border:1px solid #f2f2f2; padding:1px; width:46px; height:46px;}
 #wtchannelsidebar .list li a:hover img {border:1px solid #F97B00; padding:1px; background-color:#ffffff;}

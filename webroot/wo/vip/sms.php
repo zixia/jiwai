@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 JWTemplate::html_doctype();
-JWLogin::MustLogined(true);
+JWLogin::MustLogined(false);
 
 $q = $page = null;
 extract($_GET, EXTR_IF_EXISTS);

@@ -1,6 +1,6 @@
 @charset "utf-8";
 /* The overall pattern start */
-body { font:12px/120% verdana, Arial, Helvetica,sans-serif;}
+body { font:12px verdana, Arial, Helvetica,sans-serif;}
 body,form,ul,p{ margin:0; padding:0;}
 a:link,a:visited{text-decoration:none;color:#FF6600;}
 a:hover{text-decoration:underline;color:#FF6600;}
@@ -73,6 +73,7 @@ html>body #jiwaiLogo {background:url(../images/org-logo.png); no-repeat;}
 #IndexContainer .containerR #search input.searchBox1:focus {font-size:12px;color:#666666; background-color:#FFF7E7;}
 #IndexContainer .containerR #search .submitbutton {margin: 0 0 0 68px;}
 /**/
+
 #IndexContainer #footer {width: 780px;border-top: #CCCCCC 1px solid;color: #666666;line-height: 36px;text-align: center;margin: 0 auto;clear: both;}
 #IndexContainer #footer a {color: #666666;margin: 0 1em 0 0;}
 #IndexContainer #footer h3 {position:absolute; left:-88888px; overflow:hidden;}

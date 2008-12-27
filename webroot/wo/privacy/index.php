@@ -1,8 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWTemplate::html_doctype();
-
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $user_info = JWUser::GetCurrentUserInfo();
 $new_user_info = @$_POST['user'];
@@ -26,56 +24,37 @@ if ( !empty($_POST) )
 	JWTemplate::RedirectBackToLastUrl("/");
 }
 
+$element = JWElement::Instance();
+$param_tab = array( 'tabtitle' => '保护设置' );
+$param_side = array( 'sindex' => 'privacy' );
 ?>
-<html>
-<head>
-<?php 
-JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-)); 
-?>
-</head>
 
-<body class="account" id="settings">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTipsMain() ?>
-
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 <div id="container">
-<p class="top">设置</p>
-<div id="wtMainBlock">
-<div class="leftdiv">
-<ul class="leftmenu">
-<li><a href="/wo/account/settings">基本资料</a></li>
-<li><a href="/wo/privacy/" class="now">保护设置</a></li>
-<li><a href="/wo/devices/sms">绑定设置</a></li>
-<li><a href="/wo/notification/email">系统通知</a></li>
-<li><a href="/wo/account/profile_settings">个性化界面</a></li>
-<li><a href="/wo/openid/">Open ID</a></li>
-</ul>
-</div><!-- leftdiv -->
-<div class="rightdiv">
-<div class="lookfriend">
-<form id="f" action="" method="post" name="f">
-       <div class="protection">
-	   <p><label for="messageFriendOnly"><input type="checkbox" id="messageFriendOnly" name="user[messageFriendOnly]" value="Y" <?php if($outInfo['messageFriendOnly']=='Y') echo 'checked';?>/>&nbsp;只允许我关注的人给我发送悄悄话</label></p>
-	   <p><label for="protect"><input type="checkbox" id="protect" name="user[protected]" value="Y" <?php if($outInfo['protected']=='Y') echo 'checked="true"';?>/>&nbsp;只对我关注的人开放我的叽歪</label></p>
-	   <p class="checkboxText">其他任何人将无法看到你的叽歪，也不会被搜索引擎获取</p>	   
-	   <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
-	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>
-	   </div>
-	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-  </form>
-</div><!-- lookfriend -->
-<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-</div>
-<!-- rightdiv -->
-</div><!-- #wtMainBlock -->
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
-</div><!-- #container -->
+<?php $element->wide_notice();?>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_minwo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_privacy();?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- lefter end -->
 
-<?php JWTemplate::footer() ?>
-</body>
-</html>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_setting($param_side);?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter end -->
+
+<div class="clear"></div>
+</div><!-- container end -->
+
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

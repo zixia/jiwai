@@ -1964,6 +1964,7 @@ Fx.Slide = Fx.Base.extend({
 		this.open = true;
 		this.addEvent('onComplete', function(){
 			this.open = (this.now[0] === 0);
+			this.wrapper.remove(); 
 		});
 		if (window.webkit419) this.addEvent('onComplete', function(){
 			if (this.open) this.element.remove().inject(this.wrapper);

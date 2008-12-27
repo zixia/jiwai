@@ -1,23 +1,18 @@
 <?php 
 header('Content-Type: text/html;charset=UTF-8');
-
 require_once( '../../../jiwai.inc.php' );
 
 $pathParam = null;
 extract( $_REQUEST, EXTR_IF_EXISTS );
-$user_id = intval( trim($pathParam, '/') );
-if( ! $user_id ) 
-{
+$user_id = abs(intval(trim($pathParam,'/')));
+if(!$user_id ) {
     die( "Wrong Request!" );
 }
 
 $user_row = JWUser::GetUserInfo( $user_id );
-
 $user_name_screen = $user_row['nameScreen'];
 $user_name_url = $user_row['nameUrl'];
-
 $current_user_id = JWLogin::GetCurrentUserId();
-
 $show_protected = true;
 $show_status = false;
 $status_id = null;
@@ -91,21 +86,16 @@ if ( empty($actions) )
 	);
 }
 ?>
-<div id="wtTimelineLaunch">
-   <div class="entry" id="status_<?php echo $status_id;?>">
-     <div class="content">
-        <div class="bg"></div>
-        <?php echo $status;?><br />
-	<?php if ($show_protected && $show_status) { ?>
-        <div class="meta">
-          <span class="floatright">
-           <span class="reply"><a href=<?php echo $replyto_link;?>><?php echo $reply_link_string;?></a></span>
-          </span>
-        </div><!-- meta -->
-	<?php } ?>
-     </div><!-- content -->
-   </div><!-- entry -->                                                                                                      <div class="Concerndiv">
-     <ul class="Concern">
+
+<div class='up'></div>
+<div class='con_bor'>
+	<?php echo $status;?>
+	<div class='txt_r lightbg'>
+		<a href='<?php echo $replyto_link;?>'><span class='ico_rebak'><img src="<?php echo JWTemplate::GetAssetUrl('/images/img.gif');?>" width='16' height='13' /></span>回复</a>
+	</div>
+</div>
+
+<ul class="bgall">
 	 <?php 
 	 if( true == $actions['follow']) 
 	 {
@@ -160,6 +150,4 @@ _HTML_;
 		}
 	}
 	?>
-     </ul>
-   </div>
-</div>
+</ul>

@@ -102,21 +102,24 @@ var JiWai =
 	},
 	ToggleStar: function(id) {
 		var el = $('status_star_'+id);
-		var el_text = $('status_star_text_'+id);
+		/*var el_text = $('status_star_text_'+id);
 		var action = (el.src.indexOf('full')==-1 ? 'create' : 'destroy');
-		new Ajax( '/wo/favourites/'+action+'/'+id, {
+		new Ajax( '/wo/favourites/'+action+'/'+id, {*/
+		new Ajax( '/wo/favourites/create/'+id, {
 			method: 'get',
 			headers: {'AJAX':true},
-			onSuccess: function() {
-				el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
+			onSuccess: function(html) {
+				/*el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
 				el.title = action=='create' ? '不收藏' : '收藏它';
-				el.alt = el.title;
+				el.alt = el.title;*/
+				el.title = "1"==html ? "不收藏" : "收藏它";
+				el.innerHTML = "1"==html ? "不收" : "收藏";
  /*               el_text.innerText = el.alt;
                 el_text.textContent = el.alt;
 				el_text.title = el.alt; */
 			}
 		}).request();
-		el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 
+		//el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 
 	},
 	DoTrash: function(id) {
 		if (confirm('请确认操作：删除后将永远无法恢复！')) 
@@ -128,26 +131,32 @@ var JiWai =
 				headers: {'AJAX':true},
 				onSuccess: function(e, x) {
 					if (refresh) location.reload();
-					var countReply = $('countReply');
+					/*var countReply = $('countReply');
 					if (countReply)
-						countReply.innerHTML = e;
+						countReply.innerHTML = e;*/
 				}
 			}).request();
 			setTimeout(function() {
 				var el = $('status_'+id);
 				if (!el) { refresh = true; return; }
 				var line = el.getNext() || el.getPrevious();
-				(new Fx.Slide(el)).slideOut().addEvent('onComplete', function() { el.remove(); });
+				(new Fx.Slide(el,{nowrapper:true})).slideOut().addEvent('onComplete', function() { el.remove(); });
 				if (line) if (line.hasClass('line')) line.remove();
 			}, 0);
 		};
 	},
-	ChangeDevice: function(dev) {
+	ChangeDevice: function(dev, name) {
 		new Ajax( '/wo/account/update_send_via', {
 			method: 'post',
 			headers: {'AJAX':true},
 			data: 'current_user[send_via]='+dev,
-			onSuccess: function(html) { $('device_list').setHTML(html); }
+			onSuccess: function(html) {
+				if($('device')) {
+					(function(){
+					 $('device').innerHTML = name;
+					 }).delay(1000); 
+				}
+			}
 		}).request();
 	},
 	EnableDevice: function(id, postdata) {
@@ -157,9 +166,10 @@ var JiWai =
 			data: postdata,
 			onSuccess: function(html) {
 				var el = $('tips_' + id );		
-				if(el) 
+				if(el) { 
 					el.innerHTML = html;
 					(function(){el.innerHTML='';}).delay(3000);
+				}
 			}
 		}).request();
 	},
@@ -356,6 +366,19 @@ var JiWai =
 		if ( window.RefreshInterval && location.search && location.search.length>1) 
 			setTimeout(JiWai.Refresh, RefreshInterval*1000);
 	},
+	showPublic: function() {
+		new Ajax( '/wo/ajax/public', {
+			method: 'get',
+			headers: {'AJAX':true},
+			data: '',
+			onSuccess: function(html) {
+				var el = $('pub1');		
+				if(el) 
+					el.innerHTML = html;
+			}
+		}).request();
+	},
+	
     ShowDiv: function(name, curr, len) {
         for(var i=1; i<=len; i++)
         {   

@@ -161,5 +161,20 @@ Class JWFunction {
 */
 	}
 
+	static public function RandomArray($array, $limit=null)
+	{
+		$c = count($array);
+		if(empty($limit) || $limit>count($array))
+			$limit = $c;
+		for($i=0; $i<$limit; $i++)
+		{
+			$j = intval(rand(0, $c-1));
+			$t = $array[$i];
+			$array[$i] = $array[$j];
+			$array[$j] = $t;
+		}
+		return array_slice($array, 0, $limit);
+	}
+
 }
 ?>

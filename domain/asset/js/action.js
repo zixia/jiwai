@@ -24,27 +24,24 @@ var JWAction =
 
 		if ( false==allow_anonymous )
 		{
-			var caption = '登录叽歪';
-			var url = '/wo/lightbox/login_or_register';
-			var rel = '';
+			var url = '/wo/lightbox/login';
 			var options = {
-				height : 260,
+				height : 200,
 				width : 600,
-				focus : 'username_or_email'
+				modal : true
 			};
 		}
 		else
 		{
-			var caption = '登录叽歪';
-			var url = '/wo/lightbox/ip_driftbottle';
-			var rel = '';
+			var url = '/wo/lightbox/anonymous';
 			var options = {
-				height : 260,
-				width : 600
+				height : 244,
+				width : 600,
+				modal : true
 			};
 		}
 
-		TB_show(caption, url, rel, options);
+		JWSeekbox.showBox(url, options);
 		return false;
 	},
 
@@ -52,7 +49,7 @@ var JWAction =
 	{
 		var callback = JWAction.callback;
 		new Ajax( '/wo/ajax/get_anonymous_user_id', {
-			method: 'POST',
+			method: 'post',
 			headers: { 'AJAX' : true },
 			data : '',
 			onSuccess: function(responseText, x)
@@ -74,9 +71,8 @@ var JWAction =
 		username = ( username == null ) ? $('username_or_email').value : username ;
 		password = ( password == null ) ? $('password').value : password ;
 		var callback = JWAction.callback;
-
 		new Ajax( '/wo/lightbox/login', {
-			method: 'POST',
+			method: 'post',
 			headers: { 'AJAX' : true },
 			data: 'username_or_email='+username+'&password='+password,
 			onSuccess: function(responseText, x) 
@@ -109,7 +105,7 @@ var JWAction =
 		var callback = JWAction.callback;
 
 		new Ajax( '/wo/ajax/register', {
-			method: 'POST',
+			method: 'post',
 			headers: { 'AJAX' : true },
 			data: 'username='+username+'&password_one='+password_one+'&password_confirm='+password_confirm,
 			onSuccess: function(responseText, x) 
@@ -140,11 +136,31 @@ var JWAction =
 			if( !$('jw_status').value ) 
 				return false;
 
-			Cookie.set( 'JiWai_de_jw_status', $('jw_status').value);
+			Cookie.set('JiWai_de_jw_status', $('jw_status').value);
 			$('updaterForm').submit();
 			return false;
 		};
+		return this.isLogined( callback, true ) ? callback() : false;
+	},
 
+	replyStatus : function(us, ui, si) 
+	{
+		if ( !current_in_thread) return true;
+		var callback = function()
+		{
+			var v = $('jw_status').value;
+			if ( 0 == v.indexOf('@') ) {
+				var p = v.indexOf(' ');
+				if (p==-1) v = '';
+				else v = v.substring(p, v.length);
+			}
+			v = v.replace(/^\s+|\s+$/ig, '');
+			$('jw_status').value = '@'+us+' '+v;
+			if($('jw_rsid')) $('jw_rsid').value = si; 
+			if($('jw_ruid')) $('jw_ruid').value = ui; 
+			window.scrollTo(0,0);
+			return false;
+		};
 		return this.isLogined( callback, true ) ? callback() : false;
 	},
 
@@ -253,19 +269,19 @@ var JWAction =
 			};
 
 			new Ajax( '/wo/ajax/send_request_import_friend', {
-				method: 'POST',
+				method: 'post',
 				headers: { 'AJAX' : true },
 				data: 'type='+type+'&username='+username+'&password='+password,
 				onSuccess: function(responseText, x) { }
 			}).request();
 
-			TB_show(caption, url, rel, options);
+			JWSeekbox.showBox(url,options);
 
 			var loop_call = function(count) 
 			{
 				var max_count = 15;
 				new Ajax( '/wo/ajax/has_finished_import_friend', {
-					method: 'POST',
+					method: 'post',
 					headers: { 'AJAX' : true },
 					data: 'type='+type+'&username='+username+'&password='+password,
 					onSuccess: function(responseText, x)  
@@ -287,7 +303,7 @@ var JWAction =
 				{
 					$('importTips').innerHTML = '<span style="color:#FF0000;">账户密码不匹配操作超时。'
 							+ '<br/></span>你可以<a href="javascript:void(0);"'
-							+ ' onclick="TB_remove();">关闭</a>后重新试试。';
+							+ ' onclick="JWSeekbox.remove();">关闭</a>后重新试试。';
 				}
 			}
 
@@ -303,21 +319,33 @@ var JWAction =
 	{
 		var callback = function()
 		{
-			var caption = '关注用户';
 			var url ='/wo/lightbox/follow/' + id_or_name;
-			var rel='';
-
 			var options = {
 				height : 280,
-				width : 310
+				width : 310,
+				modal : true
 			};
 
-			TB_show(caption, url, rel, options);
+			JWSeekbox.showBox(url, options);
 			return false;
 		};
 
 		return this.isLogined( callback, false ) ? callback() : false;
 	},
+
+	ajaxFollow: function(user_id, operate)
+        {
+                var callback = function()
+                {
+                        new Ajax( '/wo/ajax/follow', {
+                                method: 'post',
+                                headers: {'AJAX':true},
+                                data: 'userid='+user_id+'&operate='+operate,
+                                onSuccess: function(html) {}
+                        }).request();
+                }
+                return this.isLogined( callback, false ) ? callback() : false;
+        },
 
 	onEnterSubmit : function( event, o )
 	{

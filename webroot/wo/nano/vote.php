@@ -1,8 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
-JWTemplate::html_doctype();
-
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $current_user_id = JWLogin::GetCurrentUserId();
 $status_id = $_POST['id'];

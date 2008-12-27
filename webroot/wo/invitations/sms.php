@@ -7,7 +7,7 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $current_user_info = JWUser::GetCurrentUserInfo();
 $current_user_id = $current_user_info['id'];

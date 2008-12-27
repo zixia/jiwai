@@ -79,24 +79,24 @@ class JWDesign {
 		return JWDB::GetTableRow('Design', array('idUser'=>$this->mUserId));
 	}
 
-	public function Save()
+	public function Save($user_id=null)
 	{
-		JWDB::DelTableRow(	 'Design'
-							,array ( 
-				 				'idUser'				=> $this->mUserId
-							)
-						);
+		if ( !$user_id )
+			$user_id = $this->mUserId;
+
+		JWDB::DelTableRow( 'Design', array ( 
+					'idUser' => $user_id )); 
 
 		return JWDB::SaveTableRow('Design', array ( 
-				 'idUser'				=> $this->mUserId
-				,'colorBackground'		=> $this->mBackgroundColor
-				,'idPictureBackground'	=> $this->mUseBackgroundImage
-				,'isTile'				=> $this->mBackgroundTile ? 'Y' : 'N'
-				,'colorText'			=> $this->mTextColor
-				,'colorName'			=> $this->mNameColor
-				,'colorLink'			=> $this->mLinkColor
-				,'colorSidebarFill'		=> $this->mSidebarFillColor
-				,'colorSidebarBorder'	=> $this->mSidebarBorderColor
+			'idUser' => $user_id
+			,'colorBackground' => $this->mBackgroundColor
+			,'idPictureBackground' => $this->mUseBackgroundImage
+			,'isTile' => $this->mBackgroundTile ? 'Y' : 'N'
+			,'colorText' => $this->mTextColor
+			,'colorName' => $this->mNameColor
+			,'colorLink' => $this->mLinkColor
+			,'colorSidebarFill' => $this->mSidebarFillColor
+			,'colorSidebarBorder' => $this->mSidebarBorderColor
 			) );
 	}
 

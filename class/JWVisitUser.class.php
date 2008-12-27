@@ -1,13 +1,9 @@
 <?php
 /**
- * @package	 JiWai.de
+ * @package	JiWai.de
  * @copyright   AKA Inc.
- * @author	  wqsemc@jiwai.com
- * @version	 $Id$
- */
-
-/**
- * 
+ * @author	wqsemc@jiwai.com
+ * @version	$Id$
  */
 
 class JWVisitUser
@@ -33,9 +29,9 @@ class JWVisitUser
 		return self::$msInstance;
 	}
 
-	static public function Record($idUser, $ip)
+	static public function Record($idUser, $ip=null)
 	{
-
+		$ip = JWRequest::GetRemoteIp();
 		$mc_key = self::GetCacheKeyByUserIdAndIp($idUser, $ip); 
 		$memcache = JWMemcache::Instance();
 
@@ -114,9 +110,9 @@ class JWVisitUser
 			if(!empty($user_info))
 			{
 				$condition = array(
-					'idUser' => $idUser,
-					'count' => $v,
-				);
+						'idUser' => $idUser,
+						'count' => $v,
+						);
 				$row = JWDB::SaveTableRow('VisitUser', $condition);
 			}
 			$memcache->Del($mc_key);
@@ -126,36 +122,37 @@ class JWVisitUser
 		return true;
 	}
 
-	static public function Query($limit=null)
-	{
-		$yesterday = date('Y-m-d', strtotime('1 days ago'));
-		$today = date('Y-m-d', time());
-		//$sql="select idUser,sum(count)as sum from VisitUser force index(IDX__VisitUser__timeStamp) where idUser is not null group by idUser order by sum desc";
-		$sql="select idUser,sum(count) as sum from VisitUser force index(IDX__VisitUser__timeStamp) where timeStamp >='$yesterday' and timeStamp <'$today' and idUser is not null group by idUser order by sum desc";
-		if (!empty($limit)) $sql .= " limit $limit";
-		$row = JWDB::GetQueryResult($sql, true);
-
-		if(empty($row))
-			$row = array();
-		$memcache = JWMemcache::Instance();
-		$mc_key = self::GetCacheKeyTotal();
-		$memcache->Set($mc_key, $row);
-
-		return $row;
-	}
-
-	static public function Total($limit=null)
+	static public function Total($size=10)
 	{
 		$memcache = JWMemcache::Instance();
 		$mc_key = self::GetCacheKeyTotal();
-		$v = $memcache->Get($mc_key);
-		if (!$v)
-		{
-			$v = self::Query($limit);
+		$row = $memcache->Get($mc_key);
+
+		if (empty($row)) {
+			$expire = 60 * 60; //1 hour cache
+			$limit = 100;
+			$yesterday = date('Y-m-d', strtotime('1 days ago'));
+			$today = date('Y-m-d', time());
+			$sql="SELECT idUser,SUM(count) AS sum FROM VisitUser FORCE INDEX(IDX__VisitUser__timeStamp) WHERE timeStamp >='{$yesterday}' AND timeStamp <'{$today}' AND idUser IS NOT NULL GROUP BY idUser ORDER BY sum DESC LIMIT 0,100";
+			$row = JWDB::GetQueryResult($sql, true);
+			if(empty($row))
+				$row = array();
+
+			/* block admin user */
+			foreach( $row AS $k=>$one ) {
+				if($one['idUser']==498)
+					unset($row[$k]);
+			}
+			/* end block */
+			$memcache->Set($mc_key, $row, 0, $expire);
 		}
 
-		return $v;
-			
+		if ( empty($row) )
+			return array();
+
+		if ($size < count($row)) 
+			return array_slice($row, 0, $size);
+		return $row;
 	}
 
 	static public function GetCount($idUser)

@@ -2,7 +2,7 @@
 require_once ('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 //die(var_dump($_SERVER));
 //die(var_dump($_REQUEST));

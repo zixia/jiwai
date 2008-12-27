@@ -1,7 +1,6 @@
 <?php
 require_once ('../../../jiwai.inc.php');
-
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $logined_user_id=JWLogin::GetCurrentUserId();
 
@@ -23,16 +22,11 @@ if ( is_int($logined_user_id) )
 
 		if ( JWOpenID_TrustSite::Destroy($trust_site_id) )
 		{
-			$notice_html = <<<_HTML_
-$trust_site_url 删除成功。
-_HTML_;
+			$notice_html = "{$trust_site_url} 删除成功。";
 		}
 		else
 		{
-			$error_html = <<<_HTML_
-哎呀！由于系统故障，删除失败了……
-请稍后再试。
-_HTML_;
+			$error_html = "哎呀！由于系统故障，删除失败了…… 请稍后再试。";
 		}
 	}
 

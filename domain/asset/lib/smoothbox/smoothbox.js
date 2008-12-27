@@ -238,8 +238,8 @@ function TB_show(caption, url, rel, options) {
 		TB_WIDTH = (params['width']*1) + 30;
 		TB_HEIGHT = (params['height']*1) + 40;
 
-		var ajaxContentW = TB_WIDTH - 30,
-			ajaxContentH = TB_HEIGHT - 45;
+		var ajaxContentW = TB_WIDTH - 30;
+		var ajaxContentH = TB_HEIGHT - 45;
 		
 		if(url.indexOf('TB_iframe') != -1){				
 			urlNoQuery = url.split('TB_');		
@@ -319,6 +319,13 @@ function TB_remove() {
 	TB_doneOnce = 0;
 
 	return false;
+}
+
+function TB_adjust(width, height) {
+	TB_WIDTH = width;
+	TB_HEIGHT = height;
+	TB_ajaxContent.setStyles({width:TB_WIDTH+'px',height:TB_HEIGHT+'px'});
+	TB_position();
 }
 
 function TB_position() {

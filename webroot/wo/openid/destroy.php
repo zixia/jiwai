@@ -1,7 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $logined_user_id=JWLogin::GetCurrentUserId();
 

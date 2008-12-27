@@ -1,0 +1,32 @@
+<!--${ $column = $inbox ? 'idUserSender' : 'idUserReceiver';}-->
+<!--{foreach $messages AS $one}-->
+<!--${
+	$user = $users[$one[$column]];
+	$reply = @$replies[$one['idMessageReplyTo']];
+	$avatar = JWPicture::GetUserIconUrl($user['id']);
+	$timedesc = JWStatus::GetTimeDesc($one['timeCreate']);
+	$through = JWDevice::GetNameFromType($one['device'],null); 
+}-->
+<div class="one">
+	<div class="lt hd"><a href="/{$user['nameUrl']}/"><em><img src="{$avatar}" class="a1 buddy_icon" icon="{$user['id']}"/></em></a></div>
+	<div class="rt line">
+	<!--{if $inbox && $one['messageStatusReceiver']=='notRead'}-->
+	<div class="new_msg">
+	<!--{/if}-->
+		<div class="text dark">${htmlSpecialChars($one['message'])}</div>
+		<div class="f_gra">
+			<div class="lt dark" ><a href="/{$user['nameUrl']}">{$user['nameScreen']}</a>&nbsp;{$timedesc}&nbsp;通过&nbsp;{$through}</div>
+			<div class="rt lightbg" ><!--{if $inbox && $one['messageType']=='dm'}--><a href="/wo/direct_messages/reply/{$one['id']}">回复</a>&nbsp;&nbsp;&nbsp;<!--{/if}--><a href="/wo/direct_messages/destroy/{$one['id']}">删除</a></div>
+		</div>
+		<!--{if $reply}-->
+		<div class="clear"></div>
+		<div class="reb_msg f_gra">回复原文：{$reply['message']}</div>
+		<!--{/if}-->
+	<!--{if $inbox && $one['messageStatusReceiver']=='notRead'}-->
+		<div class="clear"></div>
+	</div>
+	<!--{/if}-->
+	</div>
+	<div class="clear"></div>
+</div>
+<!--{/foreach}-->

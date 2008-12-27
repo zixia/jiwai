@@ -262,7 +262,7 @@ class JWDB implements JWDB_Interface
 
 		if ( !$result ){
 			JWDB::Close();
-			throw new JWException ("DB Error: " . $db->error);
+			throw new JWException ("DB Error: $sql," . $db->error);
 			return false;
 		}
 

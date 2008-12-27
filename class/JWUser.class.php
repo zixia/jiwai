@@ -701,8 +701,8 @@ _SQL_;
 		$user_info	= self::GetUserInfo($idUser);
 
 		
-		$noticeSettings['auto_nudge_me']				= isset($noticeSettings['auto_nudge_me']) 				? $noticeSettings['auto_nudge_me']:'Y';
-		$noticeSettings['send_new_friend_email']		= isset($noticeSettings['send_new_friend_email']) 		? $noticeSettings['send_new_friend_email']:'Y';
+		$noticeSettings['auto_nudge_me']	= isset($noticeSettings['auto_nudge_me']) 	? $noticeSettings['auto_nudge_me']:'Y';
+		$noticeSettings['send_new_friend_email']	= isset($noticeSettings['send_new_friend_email']) ? $noticeSettings['send_new_friend_email']:'Y';
 		$noticeSettings['send_new_direct_text_email']	= isset($noticeSettings['send_new_direct_text_email']) 	? $noticeSettings['send_new_direct_text_email']:'Y';
 		$noticeSettings['allow_system_mail']	= isset($noticeSettings['allow_system_mail']) 	? $noticeSettings['allow_system_mail']:'Y';
 		$noticeSettings['is_receive_offline']	= isset($noticeSettings['is_receive_offline']) 	? $noticeSettings['is_receive_offline']:'N';

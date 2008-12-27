@@ -36,6 +36,8 @@ class JWConfig {
 	 */
 	static private $instance__;
 
+	static private $ini = null;
+
 	/**
 	 * Instance of this singleton class
 	 *
@@ -49,6 +51,16 @@ class JWConfig {
 			if (!self::$instance__) throw new JWException('JiWai.de: Configuration file or data not loaded.');
 		}
 		return self::$instance__;
+	}
+
+	static public function ini()
+	{
+		$config_file = JW_ROOT . 'config/config.ini' ;
+		if ( null == self::$ini )
+		{
+			self::$ini = parse_ini_file($config_file, true);
+		}
+		return self::$ini;
 	}
 
 	static public function asXML() 

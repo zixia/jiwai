@@ -1,287 +1,106 @@
-/**
- * @author seek@jiwai.com
- * @date 2007-12-05
- * @version $Id$
- */
-
-var JWBuddyIcon = 
+var JWBuddyIcon =
 {
-	cache: [],
-	ajax_cache: [],
-	curr_target: null,
-	curr_uid: null,
-
-	init: function()
-	{
-		$$('img.buddy_icon').each( function(el) { JWBuddyIcon.initIcon(el); } );
-		window.addEvent('resize', JWBuddyIcon.globalResize);
-		(window.ie ? $(document.body) : window).addEvent('click', JWBuddyIcon.globalClick);
+	es : true,
+	cache : [],
+	uid : null,
+	init:function(){
+		JWBuddyIcon.createDiv();
+		$$('img.buddy').each(function(elem){JWBuddyIcon.mouseEvent(elem)});
+		$("buddy_bor").addEvent("mouseout",function(ev){JWBuddyIcon.hideBor(ev)});	//changed on 1221
+		(window.ie ? document : window).addEvent('click', JWBuddyIcon.initClick);
 	},
-
-	globalMouseMove: function(ev)
-	{
-		if( JWBuddyIcon.curr_target )
-		{
-			var evt = new Event(ev);
-			var up = $('avatar_'+JWBuddyIcon.curr_uid+'_up');
-			var down = $('avatar_'+JWBuddyIcon.curr_uid+'_down');
-			if( down.style.display != 'block' && false == JWBuddyIcon.onDivBody(evt, up) )
-				JWBuddyIcon.hideAvatarDiv(true);
+	initClick:function(){
+		if(oBuddyDiv.className=="hd_block"){	// add on 1221
+			JWBuddyIcon.es = true;
+			JWBuddyIcon.reMoveClass($("show_btn"),"poi_u");
+			JWBuddyIcon.addClass(oBuddyDiv,"no");
 		}
 	},
-
-	globalClick: function(ev)
-	{
-		/* Add TB_window for lightbox */
-		if( JWBuddyIcon.curr_target && null == $('TB_window') )
+	createDiv:function(){
+		oBuddyDiv = document.createElement("div");
+		oBuddyDiv.className = "hd_block no";
+		oBuddyDiv.id = "buddy_bor";
+		document.body.appendChild(oBuddyDiv);
+	},
+	mouseEvent:function(elem){
+		var uid = $(elem).getProperty('icon');
+		elem.addEvent("mouseover",function(ev)
 		{
-			var evt = new Event(ev);
-			var up = $('avatar_'+JWBuddyIcon.curr_uid+'_up');
-			var down = $('avatar_'+JWBuddyIcon.curr_uid+'_down');
-			if( false==JWBuddyIcon.onDivBody(evt, up) && false == JWBuddyIcon.onDivBody(evt,down) )
-				JWBuddyIcon.hideAvatarDiv(true);
-		}
+			if(JWBuddyIcon.es){
+				oBuddyDiv.innerHTML = "<div class='hed'><a id='show_btn' href='javascript:void(0)' onClick=\"JWBuddyIcon.shOrHid(this,'oBuddyCon',event, "+uid+")\" class='poi'></a><a href='#'><img id='th_img' src='http://asset.jiwai.de/images/img.gif' /></a></div>";
+				JWBuddyIcon.reMoveClass(oBuddyDiv,"no");
+				var oImg = $("th_img");
+				oImg.setAttribute("src",this.getProperty('src'));
+				oImg.parentNode.setAttribute("href",(this.parentNode.nodeName == "A")?this.parentNode:this.parentNode.parentNode);
+				var ct = (window.ie)?2:2;
+				var cl = (window.ie)?1:2;
+				oBuddyDiv.style.top = getIE(this).t - ct + "px";
+				oBuddyDiv.style.left = getIE(this).l - cl + "px";
+			}		
+		});
 	},
-
-	onDivBody: function(e, o)
-	{
-		var p = o.getPosition(); var x = p.x; var y = p.y;
-		return e.page.x > x && e.page.x < x + o.offsetWidth && e.page.y > y && e.page.y < y + o.offsetHeight;
-	},
-
-	globalResize: function()
-	{
-		if( JWBuddyIcon.curr_target )
-			JWBuddyIcon.showAvatarDiv( JWBuddyIcon.curr_target ); 
-	},
-	
-	initIcon: function(el)
-	{
-		el.onmouseover = function(ev) { JWBuddyIcon.iconMouseOver(ev); };
-	},
-
-	hideAvatarDiv: function(force)
-	{
-		if( JWBuddyIcon.curr_target ) 
-		{
-			if( JWBuddyIcon.cache[JWBuddyIcon.curr_uid] )
-			{
-				var down = $('avatar_'+JWBuddyIcon.curr_uid+'_down');
-				if( down.style.display != 'block' || true==force) 
-				{
-					JWBuddyIcon.cache[JWBuddyIcon.curr_uid].style.display = 'none';
-					JWBuddyIcon.hideDown( JWBuddyIcon.curr_uid );
-				}
-				else return false;
+	hideBor:function(e){	//changed on 1221
+		e=e||window.event;
+		var o = e.toElement||e.relatedTarget;
+		if(oBuddyDiv.contains){
+			if(!(oBuddyDiv.contains(event.toElement))&&JWBuddyIcon.es){
+				oBuddyDiv.addClass(" no");
+				return;
 			}
-			JWBuddyIcon.curr_target = null;
-			JWBuddyIcon.curr_uid = null;
+		}else{
+			var tar = $("buddy_bor");
+			if(o.className!="hed"&&o.id!="show_btn"&&o.id!="th_img"&&JWBuddyIcon.es){
+				oBuddyDiv.addClass(" no");
+			}
 		}
-		return true;
-	},
-
-	hideDown: function(uid)
-	{
-		var up = $('avatar_'+uid+'_up');
-		var nav = $('avatar_'+uid+'_nav');
-		var down = $('avatar_'+uid+'_down');
-
-		var is_down = down.style.display == 'block';
-		if( is_down == false )
-			return true;
-
-		var hover = nav.hasClass('nav_up_hover');
-		var r_class = hover ? 'nav_up_hover' : 'nav_up';
-		var a_class = hover ? 'nav_down_hover' : 'nav_down';
-
-		nav.removeClass(r_class);
-		nav.addClass(a_class);
-
-		up.toggleClass('up_down');
-		down.style.display = 'none';
-	},
-
-	showDown: function(uid)
-	{
-		var up = $('avatar_'+uid+'_up');
-		var nav = $('avatar_'+uid+'_nav');
-		var down = $('avatar_'+uid+'_down');
-
-		var is_down = down.style.display == 'block';
-		if( is_down )
-			return true;
-
-		var hover = nav.hasClass('nav_down_hover');
-		var r_class = hover ? 'nav_down_hover' : 'nav_down';
-		var a_class = hover ? 'nav_up_hover' : 'nav_up';
-
-		nav.removeClass(r_class);
-		nav.addClass(a_class);
-
-		up.toggleClass('up_down');
-		down.style.display = 'block';
-		JWBuddyIcon.setAvatarContent( uid );
-	},
-
-	iconMouseOver: function(ev)
-	{
-		var evt = new Event(ev);
-		var target = $(evt.target);
-		if ( JWBuddyIcon.hideAvatarDiv() ) 
-		{
-			JWBuddyIcon.showAvatarDiv(target);
-			JWBuddyIcon.curr_target = target;
-			JWBuddyIcon.curr_uid = target.getProperty('icon');
-		}
-	},
-
-	showAvatarDiv: function(target)
-	{
-		var pos = target.getPosition();
-		var width = target.offsetWidth;
-		var height = target.offsetHeight;
-
-		var border = target.getStyle('border-top-width');
-		if ( window.ie && border )try{var w=border.substr(0,1);width+=2*w;height+=2*w;}catch(e){}
-
-		var left = pos.x + width/2 - 24 - 3; 
-		var top = pos.y + height/2 - 24 - 3;
-
-		var d = JWBuddyIcon.getAvatarDiv(target);
-
-		d.setStyle('left', left );
-		d.setStyle('top', top );
-		d.setStyle('position', 'absolute' );
-		d.setStyle('display', 'block' );
-
-		//faint
-	},
-
-	getAvatarDiv: function(target)
-	{
-		var src = target.getProperty('src');
-		var pos = target.getPosition();
-		var uid = target.getProperty('icon');
-		return JWBuddyIcon.cache[uid] || JWBuddyIcon.createInitDiv(target) ;
-	},
-
-	setAvatarContent: function(uid)
-	{
-		var down = $('avatar_'+uid+'_down');
-		if( JWBuddyIcon.ajax_cache[uid] ) 
-		{
-			down.innerHTML = JWBuddyIcon.ajax_cache[uid];
-		}
-		else
-		{
-			down.innerHTML = '<img src="'+JiWai.AssetUrl('/images/avatar/load.gif')+'" width="20" height="20">';
-			var time_stamp = (new Date()).getTime();
-			var a = new Ajax( '/wo/ajax/getop/'+uid+'?'+time_stamp, {
-				method: 'get',
-				data: null,
-				onSuccess: function(e,x) {
-					down.innerHTML = e;
-					JWBuddyIcon.ajax_cache[uid] = e;
-				}
-			}).request();
-		}
-	},
-
-	createInitDiv: function(target) 
-	{
-		var uid = target.getProperty('icon');
-		var d = document.createElement('div');
-		var src = target.getProperty('src');
-		var title = target.getProperty('title');
-		var href = target.parentNode.tagName=='A' ? target.parentNode.href : 'javascript:void(0);';
-
-		document.body.appendChild(d);
-		JWBuddyIcon.cache[uid] = d;
-
-		/** set d **/
-		d.id = 'wtAvatar';
 		
-		d.innerHTML = '<div id="avatar_'+uid+'_up" class="up">' + 
-				'<div class="avatar"><a href="'+href+'"><img style="margin:0px; border:0px; padding:0px;" height="48" title="'+title+'" width="48" src="'+src+'"/></a></div>' +
-				'<div id="avatar_'+uid+'_nav" class="nav nav_down"></div>' +
-				'<div style="clear:both;"></div>' + 
-				'</div>' +
-				'<div id="avatar_'+uid+'_down" class="down"></div>';
-
-		$('avatar_'+uid+'_up').addEvent('mouseout', JWBuddyIcon.globalMouseMove);
-		$('avatar_'+uid+'_nav').addEvent('click', JWBuddyIcon.avatarNavClick);
-		$('avatar_'+uid+'_nav').addEvent('mouseover', JWBuddyIcon.avatarNavMouse);
-		$('avatar_'+uid+'_nav').addEvent('mouseout', JWBuddyIcon.avatarNavMouse);
-
-		/** return d **/
-		return $(d);
 	},
+	shOrHid:function(th,ob,e,uid){
+		if(!oBuddyCon){
+			var oBuddyCon = document.createElement("div");
+			oBuddyDiv.appendChild(oBuddyCon);
+			oBuddyCon.id = "oBuddyCon";
+			oBuddyCon.className="con_block no";
+		}
+		if ( JWBuddyIcon.cache[uid] ) {
+			oBuddyCon.innerHTML = JWBuddyIcon.cache[uid];
+		} else {
+			var time_stamp = (new Date()).getTime();
+			oBuddyCon.innerHTML = '<img src="http://asset.jiwai.de/images/avatar/load.gif" width="20" height="20" />';
+			var ajax_url = '/wo/ajax/getop/'+uid+'?'+time_stamp;
+			new Ajax(ajax_url, {
+				method: 'get', 
+				data: null, 
+				onSuccess: function(e,x) { 
+					oBuddyCon.innerHTML = e; 
+					JWBuddyIcon.cache[uid]=e;
+					}
+			}).request();
+}
 
-	onAvatarNav: function(ev,uid)
-	{
-		var evt = new Event(ev);
-		var up = $('avatar_'+uid+'_up');
-
-		if( evt.type == 'mouseleave' )
-			return false;
-
-		var x = evt.page.x;
-		var y = evt.page.y;
-
-		var ux = up.getPosition().x;
-		var uy = up.getPosition().y;
-
-		var on = true;
-		if( x < ux + 52 || x > ux + 67 || y < uy+6 || y > uy + 50 )
-			on = false;
-
-		return on;
+		JWBuddyIcon.cancelBubble(e);
+		if(th.className.indexOf("poi_u")==-1){
+			JWBuddyIcon.es = false;
+			JWBuddyIcon.addClass(th,"poi_u");
+			JWBuddyIcon.reMoveClass($(ob),"no");
+		}else{
+			JWBuddyIcon.es = true;
+			JWBuddyIcon.reMoveClass(th,"poi_u");
+			JWBuddyIcon.addClass($(ob),"no");
+		}
+		try{oBuddyCon.addEvent("click", function(e){JWBuddyIcon.cancelBubble(e)})}catch(e){};	// add on 1221
 	},
-
-	avatarNavMouse: function(ev)
-	{
-		var uid = JWBuddyIcon.curr_target.getProperty('icon');
-		var nav = $('avatar_'+uid+'_nav');
-		if( true ) 
-		{
-			if( nav.hasClass('nav_down') )
-			{
-				nav.removeClass('nav_down');
-				nav.addClass('nav_down_hover');
-			}else if( nav.hasClass('nav_up') )
-			{
-				nav.removeClass('nav_up');
-				nav.addClass('nav_up_hover');
-			} else if( nav.hasClass('nav_down_hover') )
-			{
-				nav.removeClass('nav_down_hover');
-				nav.addClass('nav_down');
-			}else if( nav.hasClass('nav_up_hover') )
-			{
-				nav.removeClass('nav_up_hover');
-				nav.addClass('nav_up');
-			}
+	cancelBubble:function(e){	// add on 1221
+		if (e.stopPropagation){
+			e.stopPropagation();
+		}else{
+			window.event.cancelBubble = true;
 		}
 	},
-
-	avatarNavClick: function(ev)
-	{
-		var uid = JWBuddyIcon.curr_target.getProperty('icon');
-		var down = $('avatar_'+uid+'_down');
-		if( down.style.display == 'block' )
-		{
-			JWBuddyIcon.hideDown(uid);
-		}
-		else
-		{
-			JWBuddyIcon.showDown(uid);
-		}
+	addClass:function(ob,classname){
+		ob.className += " "+classname;
 	},
-
-	__construct: function()
-	{
-		this.cache = this.ajax_cache = [];
-		this.curr_target = null;
-		this.curr_uid = null;
+	reMoveClass:function(ob,classname){
+		ob.className = ob.className.replace(" "+classname,"");
 	}
-};
+}

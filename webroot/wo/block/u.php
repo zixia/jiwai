@@ -1,6 +1,6 @@
 <?php
 require_once( '../../../jiwai.inc.php' );
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $pathParam = trim( $_REQUEST['pathParam'], '/' );
 $userInfo = JWUser::GetUserInfo( $pathParam );

@@ -1,27 +1,20 @@
 <?php
 require_once ('../../../jiwai.inc.php');
-
-JWLogin::MustLogined();
-
-//die(var_dump($_SERVER));
-//die(var_dump($_REQUEST));
+JWLogin::MustLogined(false);
 
 $note = null;
 extract( $_GET, EXTR_IF_EXISTS );
 
-$idLoginedUser=JWLogin::GetCurrentUserId();
+$current_user_id = JWLogin::GetCurrentUserId();
 
-if ( $idLoginedUser )
+if ( $current_user_id )
 {
 	$param = $_REQUEST['pathParam'];
-	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idTag = intval($match[1]);
-
-		$tagRow = JWDB_Cache_Tag::GetDbRowById( $idTag ); 
-		$userRow = JWUser::GetUserInfo( $idLoginedUser );
-
-                JWSns::ExecWeb($idLoginedUser, "off #$tagRow[name]", '取消此#更新通知');
-
+	if ( preg_match('/^\/(\d+)$/', $param, $match) ){
+		$tag_id = intval($match[1]);
+		$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id ); 
+		$userRow = JWUser::GetUserInfo( $current_user_id );
+                JWSns::ExecWeb($current_user_id, "off #$tag_row[name]", '取消此#更新通知');
 	}
 	else // no pathParam?
 	{

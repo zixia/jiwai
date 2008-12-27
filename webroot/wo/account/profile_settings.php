@@ -2,7 +2,7 @@
 require_once('../../../jiwai.inc.php');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 $user = array();
 extract($_REQUEST, EXTR_IF_EXISTS);
@@ -202,7 +202,7 @@ _HTML_;
 
 </head>
 
-<body class="account" id="settings">
+<body id="main">
 
 <?php JWTemplate::accessibility() ?>
 

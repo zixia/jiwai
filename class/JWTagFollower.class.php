@@ -59,6 +59,24 @@ class JWTagFollower {
 	}
 
 	/**
+	 * Get TagUser Record
+	 *
+	 */
+	static function GetTagUser($tag_id, $user_id)
+	{
+		if( false == $user_id || false == $tag_id )
+			return false;
+
+		$user_id = JWDB::CheckInt( $user_id );
+		$tag_id = JWDB::CheckInt( $tag_id );
+		$record = JWDB::GetTableRow( 'TagFollower', array(
+			'idTag' => $tag_id,
+			'idUser' => $user_id,
+		));
+		return $record;
+	}
+
+	/**
 	 * Get need notification's user_id by tag_id
 	 */
 	static function GetNotificationIds($tag_id, $num_max=self::DEFAULT_FOLLOWER_MAX, $offset = 0)

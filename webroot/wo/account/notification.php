@@ -3,7 +3,7 @@ require_once('../../../jiwai.inc.php');
 JWTemplate::RedirectToUrl('/wo/notification/im');
 JWTemplate::html_doctype();
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 
 
 $user_info		= JWUser::GetCurrentUserInfo();

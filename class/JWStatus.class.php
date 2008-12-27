@@ -296,7 +296,7 @@ class JWStatus {
 	 *	@param	int	$time	unixtime
 	 */
 	static public function Create( $idUser, $status=null, $device='web', $timeCreate=null, $options=array() )
-	{
+	{//die($status);
 		$statusType = isset( $options['statusType'] ) ? $options['statusType'] : 'NONE';
 
 		/** signature html encode filter */
@@ -1033,9 +1033,9 @@ _SQL_;
 	 */
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false, $mobile = false)
 	{
-		$status2 = $status;
+		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = $status_id = $user_id = null;
+		$status_type = 'NONE';
 
-		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = null;
 		if( is_array( $status ) )
 		{
 			$reply_to_user_id = $status['idUserReplyTo'];
@@ -1043,6 +1043,10 @@ _SQL_;
 			$tag_id = $status['idTag'];
 			$conf_id = $status['idConference'];
 			$device = $status['device'];
+
+			$user_id = $status['idUser'];
+			$status_id = $status['id'];
+			$status_type = $status['statusType'];
 
 			$status = $status['status'];
 		}
@@ -1079,7 +1083,7 @@ _SQL_;
 			$url_path = $matches[4];
 			$tail_str = $matches[5];
 
-			if(!in_array($status2['idUser'], array(114733)))
+			if(!in_array($user_id, array(114733)))
 			{
 				$head_str = htmlspecialchars($head_str);
 				$url_domain = htmlspecialchars($url_domain);
@@ -1096,7 +1100,6 @@ _SQL_;
 				$url_path = '';
 			}
 
-
 			if ( $jsLink && false )
 			{
 				$url_str = <<<_HTML_
@@ -1105,14 +1108,14 @@ _HTML_;
 			}
 			else
 			{
-                if ( $mobile ) {
+				if ( $mobile ) {
 ## http://www.google.cn/gwt/n?hl=zh-CN&ct=res&cd=1&rd=1&u=xxx
-                    $google_mobile_url = 'http://www.google.cn/gwt/n?hl=zh-CN&ct=res&cd=1&rd=1&u=';
-                    $google_mobile_url.= urlencode("$matches[2]://$url_domain$url_path");
+					$google_mobile_url = 'http://www.google.cn/gwt/n?hl=zh-CN&ct=res&cd=1&rd=1&u=';
+					$google_mobile_url.= urlencode("$matches[2]://$url_domain$url_path");
 					$url_str = <<<_HTML_
 						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$google_mobile_url" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">$matches[2]://$url_domain/...</a>
 _HTML_;
-                }elseif( $urchin ) {
+				}elseif( $urchin ) {
 					$url_str = <<<_HTML_
 						<a class="extlink" rel="nofollow" title="指向其它网站的链接" href="$matches[2]://$url_domain$url_path" target="_blank" onclick="urchinTracker('/wo/outlink/$url_domain$url_path');">$matches[2]://$url_domain/...</a>
 _HTML_;
@@ -1126,7 +1129,7 @@ _HTML_;
 			$status = $head_str . $url_str . $tail_str;
 
 		}
-		else if(!in_array($status2['idUser'], array(114733)))
+		else if(!in_array($user_id, array(114733)))
 		{
 			$status = htmlspecialchars($status);
 		}
@@ -1182,6 +1185,8 @@ _HTML_;
 			$reply_to_user_name_screen = $reply_to_user['nameScreen'];
 			//$status = '$<a href="/'.$reply_to_user_name_url.'/" rel="conference">'.$reply_to_user_name_screen.'</a> '.$status;
 		}
+
+		$status = JWNano::NanoFormat($status_id, $status, $status_type);
 
 		return array ( 
 			'status' => $status, 
@@ -1500,6 +1505,8 @@ _SQL_;
 	 */
 	static public function IsUserCanDelStatus ($idUser, $idStatus)
 	{
+		if(intval($idUser) <=0 ) return false;
+
 		if ( JWUser::IsAdmin($idUser) )
 			return true;
 
@@ -2144,25 +2151,84 @@ _SQL_;
         
         return $row;
     }
-    
-	/**
-	 * Get Count of idTag [ only post ]
-	 */
-	static public function GetCountFromDiZhen() 
-	{
-		$txt = file_get_contents(FRAGMENT_ROOT . "page/dizhen.txt");
-		$sql = <<<_SQL_
-select count(1) as num 
-$txt
-_SQL_;
-	$row = JWDB::GetQueryResult( $sql );
 
-		return $row['num'];
+	static public function GetSubString($status, $limit, $postfix='...')
+	{
+		if($limit < mb_strlen($status))
+		{
+			return mb_substr($status, 0, $limit)."$postfix";
+		}
+		return $status;
 	}
 
-	/**
-	 * Get status_ids from idTag
-	 */
+	static public function GetStatusNumFromTagIds($tag_id, $topic_only=true)
+	{
+		if ( empty($tag_id) )
+			return 0;
+
+		settype($tag_id, 'array');
+		$tag_id_string = implode(',', $tag_id);
+
+		$condition_other = $topic_only
+			? 'AND idThread IS NULL' : null;
+
+		$sql = <<<_SQL_
+SELECT 
+	COUNT(1) AS count
+FROM Status
+WHERE 
+	idTag IN($tag_id_string)
+	$condition_other
+_SQL_;
+
+		$row = JWDB_Cache::GetQueryResult( $sql, false );
+		return $row['count'];
+	}
+
+	static public function GetStatusIdsFromTagIds($tag_id,$num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $topic_only=true)
+	{
+		if ( empty($tag_id) )
+			return array(
+				'status_ids' => array(),
+				'user_ids' => array(),
+			);
+
+		settype($tag_id, 'array');
+		$tag_id_string = implode(',', $tag_id);
+
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		$condition_other = $topic_only
+			? 'AND idThread IS NULL' : null;
+
+		$sql = <<<_SQL_
+SELECT 
+	id, 
+	idUser
+FROM Status
+WHERE 
+	idTag IN($tag_id_string)
+	$condition_other
+ORDER BY Status.timeCreate DESC
+LIMIT $start, $num
+_SQL_;
+
+		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array('status_ids'=>array(), 'user_ids'=>array(),);
+
+		$status_ids = JWFunction::GetColArrayFromRows($rows, 'id');
+		$user_ids = array_unique(JWFunction::GetColArrayFromRows($rows, 'idUser'));
+
+		return array(
+			'status_ids' => $status_ids,
+			'user_ids' => $user_ids,
+		);
+
+		return $rows;
+	}
+    
 	static public function GetStatusIdsFromDiZhen($num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
 		$num	= JWDB::CheckInt($num);
@@ -2201,6 +2267,63 @@ _SQL_;
 		);
 
 		return $rows;
+	}
+
+	/* add for element, seek@jiwai.com */
+	static public function GetHeadStatusId($user_id, $nonemms=false)
+	{
+		$user_id = JWDB::CheckInt($user_id);
+		$user = JWUser::GetUserInfo( $user_id );
+		$condition = $nonemms 
+			? " AND `statusType` <> 'MMS'" 
+			: null;
+
+		if ( $user['idConference'] )
+		{
+			$sql = "SELECT id FROM Status WHERE `idConference`='$user[idConference]' $condition ORDER BY id DESC LIMIT 1";
+		}
+		else
+		{
+			$sql = "SELECT id FROM Status WHERE `idUser`='$user_id' $condition ORDER BY id DESC LIMIT 1";
+		}
+		$row = JWDB::GetQueryResult($sql, false);
+		return empty($row) ? null : $row['id'];
+	}
+	
+	/* add for element, seek@jiwai.com */
+	static public function GetHeadStatusRow($user_id, $nonemms=false)
+	{
+		$user_id = JWDB::CheckInt($user_id);
+		$user = JWUser::GetUserInfo( $user_id );
+		$condition = $nonemms 
+			? " AND `statusType` <> 'MMS'" 
+			: null;
+
+		if ( $user['idConference'] )
+		{
+			$sql = "SELECT * FROM Status WHERE `idConference`='$user[idConference]' $condition ORDER BY id DESC LIMIT 1";
+		}
+		else
+		{
+			$sql = "SELECT * FROM Status WHERE `idUser`='$user_id' $condition ORDER BY id DESC LIMIT 1";
+		}
+		$row = JWDB::GetQueryResult($sql, false);
+		return !empty($row) ? $row : array();
+	}
+
+	/**
+	 * Get Count of idTag [ only post ]
+	 */
+	static public function GetCountFromDiZhen() 
+	{
+		$txt = file_get_contents(FRAGMENT_ROOT . "page/dizhen.txt");
+		$sql = <<<_SQL_
+select count(1) as num 
+$txt
+_SQL_;
+	$row = JWDB::GetQueryResult( $sql );
+
+		return $row['num'];
 	}
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 
-//JWLogin::MustLogined();
+//JWLogin::MustLogined(false);
 //$current_user_id = JWLogin::GetCurrentUserId();
 //$vipIds = array(1, 89, 863, 2802, 77297);
 //

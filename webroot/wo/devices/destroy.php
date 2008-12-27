@@ -1,32 +1,17 @@
 <?php
 require_once ('../../../jiwai.inc.php');
+JWLogin::MustLogined(false);
+$current_user_id = JWLogin::GetCurrentUserId();
 
-JWLogin::MustLogined();
+if ( array_key_exists('pathParam',$_REQUEST) ){
 
-if ( $idUser=JWLogin::GetCurrentUserId() 
-		&& array_key_exists('_method',$_REQUEST)
-		&& array_key_exists('pathParam',$_REQUEST) ){
-
-	$method = $_REQUEST['_method'];
 	$param = $_REQUEST['pathParam'];
-
-	$idDevice = null;
-
-	if ( preg_match('/^\/(\d+)$/',$param,$match) ){
-		$idDevice = $match[1];
-
-		if ( $method==='delete' ){
-			JWSns::DestroyDevice($idDevice);
-		}
+	$device_id = null;
+	if ( preg_match('/^\/(\d+)$/',$param, $match) ){
+		$device_id = $match[1];
+		JWSns::DestroyDevice($device_id, $current_user_id);
 	}
 }
 
-$return_url = '/wo/device/';
-
-if ( isset($_SERVER['HTTP_REFERER']) )
-	$return_url = $_SERVER['HTTP_REFERER'];
-
-header ("Location: $return_url");
-
-exit(0);
+JWTemplate::RedirectBackToLastUrl('/wo/devices/');
 ?>

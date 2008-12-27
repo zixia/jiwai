@@ -1,7 +1,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 
-JWLogin::MustLogined();
+JWLogin::MustLogined(false);
 $user_info = JWUser::GetCurrentUserInfo();
 
 JWOAuth::RevokeToken($user_info['id'], $_GET['token']);

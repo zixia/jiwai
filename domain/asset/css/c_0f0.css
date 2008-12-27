@@ -1,0 +1,18 @@
+@charset "utf-8";/* CSS Document writted by guewool@hotmail.com,updata on 081124 */
+#righter .a,#righter .b,#righter .c,#righter .d{background:#0f0}
+#righter .b{border-right:2px #fff solid;}
+#righter .c,#righter .d,#righter .f{border-right:1px #fff solid;}
+#righter .a{margin:0 5px 0 0;background:#fff;}
+#righter .b{margin:0 3px 0 0;}
+#righter .c{margin:0 2px 0 0;}
+#righter .d{margin:0 1px 0 0;}
+#righter .f{background:#0f0;}
+
+#righter_g .a,#righter_g .b,#righter_g .c,#righter_g .d{background:#fff}
+#righter_g .b{border-right:2px #0f0 solid;}
+#righter_g .c,#righter_g .d,#righter_g .f{border-right:1px #0f0 solid;}
+#righter_g .a{margin:0 5px 0 0;background:#0f0;}
+#righter_g .b{margin:0 3px 0 0;}
+#righter_g .c{margin:0 2px 0 0;}
+#righter_g .d{margin:0 1px 0 0;}
+#righter_g .f{background:#fff;}

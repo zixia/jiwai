@@ -151,6 +151,17 @@ class JWSearch {
 
 	static private function LuceneSearch($search_url, $query_info=array() )
 	{
+		/**
+		 * format query string
+		 */
+		$query_string = $query_info['query_string'];
+		$query_string = trim($query_string, '+\r\n');
+		$query_string = str_replace('-', ' - ', $query_string);
+		$query_string = str_replace('+', ' AND ', $query_string);
+		$query_string = preg_replace('/\s+/', ' ', $query_string);
+		$query_info['query_string'] = $query_string;
+		/* end */
+
 		$encoded_query_info = base64_Encode( json_encode( $query_info ) );
 		$post_data = 'q=' . $encoded_query_info;
 

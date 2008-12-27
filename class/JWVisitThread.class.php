@@ -33,9 +33,9 @@ class JWVisitThread
 		return self::$msInstance;
 	}
 
-	static public function Record($idThread, $ip)
+	static public function Record($idThread, $ip=null)
 	{
-
+		$ip = JWRequest::GetRemoteIp();
 		$mc_key = self::GetCacheKeyByThreadIdAndIp($idThread, $ip); 
 		$memcache = JWMemcache::Instance();
 

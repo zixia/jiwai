@@ -1,10 +1,8 @@
 <?php
 require_once('../../../jiwai.inc.php');
-JWTemplate::html_doctype();
+JWLogin::MustLogined(false);
 
 define('DEFAULT_GADGET_COUNT', 3);
-
-JWLogin::MustLogined();
 $user_info   = JWUser::GetCurrentUserInfo();
 $user_id = $user_info['id'];
 $name_screen = $user_info['nameScreen'];
@@ -17,91 +15,37 @@ if( $user_info['protected'] == 'Y')
     exit(0);
 }
 
+$param_tab = array( 'tabtitle' => '图片窗口贴' );
+$param_side = array( 'gadget' => 'image' );
+$element = JWElement::Instance();
 ?>
-<html>
-<head>
-<?php JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-));?>
-</head>
 
-<body class="account" id="create">
-<?php JWTemplate::accessibility() ?>
-<?php JWTemplate::header() ?>
+<?php $element->html_header();?>
+<?php $element->common_header();?>
 
 <div id="container">
-    <p class="top">窗可贴</p>
-    <div id="wtMainBlock">
-        <div class="leftdiv">
-            <ul class="leftmenu">
-                <li><a href="/wo/gadget/">窗可贴说明</a></li>
-                <li><a href="/wo/gadget/image/" class="now">图片窗可贴</a></li>
-                <li><a href="/wo/gadget/flash/">Flash窗可贴</a></li>
-                <li><a href="/wo/gadget/uwa/">UWA窗可贴</a></li>
-                <li><a href="/wo/gadget/javascript/">代码窗可贴</a></li>
-            </ul>
-        </div><!-- leftdiv -->
-        <div class="rightdiv">
-            <div class="lookfriend">
-                <form method="post" id="f">
-                <p><span class="black15bold">版本：</span><input id="v2" type="radio" name="ver" value="2" checked /><span class="pad3">第二版</span>
-                <input type="radio" name="ver" value="1" /><span class="pad3">第一版</span></p>
-                <p><input type="hidden" id="m" value="2" />
-                <span class="black15bold">样式：</span><input type="radio" name="mode" value="2" onclick="$('c').disabled=false; $('m').value=2;" checked /><span class="pad3">侧栏型</span>
-                <input type="radio" name="mode" value="1" onclick="$('only').selected=true;$('c').disabled=true; $('m').value=1" /><span class="pad3">签名型</span>
-                <input type="radio" name="mode" value="0" onclick="$('c').disabled=false;$('m').value=0;" /><span class="pad3">跑马灯</span></p>
-                <p><span class="black15bold">宽度：</span>&nbsp;
-                    <input name="textfield" id="w" type="text" class="inputStyle1" style="width:50px;" value="300" />&nbsp;<span class="pad3">像素</span></p>
-                <p><span class="black15bold">条数：</span>&nbsp;
-                    <select id="c" name="count" size="1" class="select">
-                    <option value="1" id="only">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_minwo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_gadget_image();?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
-                    <option value="5" selected>5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_wo_gadget($param_side);?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
 
-                    </select>&nbsp;<span class="pad3">条新叽歪</span></p>
-<script type="text/javascript">
-function draw() 
-{
-    //alert( $('pic_url') );
-    var url = "http://api.jiwai.de" + ($("v2").checked ? "/g/i/" : "/gadget/image/") + "<?php echo $user_id;  ?>/c" + $("c").value 
-        + "/w"+ $("w").value 
-        + "/m" + $("m").value + "/g.png";
-    $('pic_url').value=url; 
-    $('ubb_url').value="[url=http://jiwai.de/<?php echo $name_url;  ?>/][img]" + url + " [/img][/url]";
-    $('html_url').value='<a href="http://jiwai.de/<?php echo $name_url; ?>/" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
-    $("o").src = url;
-}
-</script>
-                </form>
-                <p><input name="Submit" type="button" class="submitbutton" onclick="draw();" value="预览并更新代码" /></p>
-                <p class="black15bold">预览：</p>
-                <p><img id="o" title="叽歪" alt="叽歪" src="http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png"/>    </p>
-                <p class="black15bold">代码：</p>
-                <p class="black14">图片网址<span class="copytips" id="pic_url_tip" style="margin-left:15px">图片网址复制成功</span></p>
-                <p class="gadgetimage"><textarea id="pic_url" rows="1" class="textarea" readonly="readonly"  style="width:525px; height:18px" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png</textarea></p>
+<div class="clear"></div>
+</div><!-- container -->
 
-                <p class="black14">UBB代码（论坛专用代码）<span class="copytips" id="ubb_url_tip" style="margin-left:15px">UBB代码复制成功</span></p>
-                <p class="gadgetimage"><textarea id="ubb_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);" >[url=http://jiwai.de/<?php echo $name_url;  ?>/][img]http://api.jiwai.de/g/i/<?php echo $user_id; ?>/c5/w300/m2/g.png[/img][/url]</textarea></p>
-                <p class="black14">XHTML代码<span class="copytips" id="html_url_tip" style="margin-left:15px">XHTML代码复制成功</span></p>
-                <p class="gadgetimage"><textarea id="html_url" rows="3" class="textarea" readonly="readonly"  style="width:525px; height:32px" onclick="JiWai.copyToClipboard(this);"><a title="叽歪" alt="叽歪" href="http://jiwai.de/<?php echo $name_url; ?>/" target="_blank"><img src="http://api.jiwai.de/g/i/<?php echo $user_id;  ?>/c5/w300/m2/g.png" /></a></textarea></p>
-
-
-            </div><!-- lookfriend -->
-            <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-        </div><!-- rightdiv -->
-    </div><!-- #wtMainBlock -->
-
-<?php JWTemplate::container_ending();?>
-</div><!-- #container -->
-
-<?php JWTemplate::footer(); ?>
-</body>
-</html>
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>
