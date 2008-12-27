@@ -616,7 +616,7 @@ die(var_dump($db_result));
 			case "Tag":
 				return JWDB_Cache_Tag::OnDirty($dbRow);
 				break;
-			case "Messasge":
+			case "Message":
 				return JWDB_Cache_Message::OnDirty($dbRow);
 				break;
 			default:
