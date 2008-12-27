@@ -171,8 +171,6 @@ class JWDB_Cache_Message implements JWDB_Cache_Interface
 		$sender_id = abs(intval($dbRow['idUserSender']));
 		$receiver_id = abs(intval($dbRow['idUserReceiver']));
 
-		$name = strtoupper($dbRow['name']);
-
 		$dirty_keys = array(
 			 JWDB_Cache::GetCacheKeyById		('Message'	, $pk_id)
 		);
