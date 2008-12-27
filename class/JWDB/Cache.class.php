@@ -616,6 +616,9 @@ die(var_dump($db_result));
 			case "Tag":
 				return JWDB_Cache_Tag::OnDirty($dbRow);
 				break;
+			case "Messasge":
+				return JWDB_Cache_Message::OnDirty($dbRow);
+				break;
 			default:
 				throw new JWException("JWDBCache::OnDirty($dbRow[id], $table) not support yet!");
 				break;
