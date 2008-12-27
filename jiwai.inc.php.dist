@@ -57,15 +57,24 @@ define('CACHE_ROOT',	'/var/cache/tmpfs/jiwai/');
 define('FRAGMENT_ROOT',	'/opt/fragment/');
 
 /**
- * JW_HARDLEN_ 
+ * Filter Dict File && Hard/Soft Length
  * difine for db and other device
  */
 define('JW_HARDLEN_DB', 420);
+define('FILTER_DICT',  CONFIG_ROOT . 'dictionary/filterdict.txt');
 
 /**
  * Mms Storage
  */
 define('MMS_STORAGE_ROOT', '/opt/storage_MMS');
+
+/**
+ * Template Path
+ */
+if(!defined('TPL_COMPILED_DIR')) 
+	define('TPL_COMPILED_DIR', dirname(__FILE__).'/compiled' );
+if(!defined('TPL_TEMPLATE_DIR')) 
+	define('TPL_TEMPLATE_DIR', dirname(__FILE__).'/template' );
 
 /**
  * Path of config cache
@@ -157,5 +166,14 @@ if( substr(@$_SERVER['SERVER_NAME'],0,5) == 'jiwai' && JWRequest::IsWapBrowser()
 //XiaoI P4
 if (JWRequest::IsWindowsLiveBrowser()) {
     header('p3p: CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+}
+
+function debug($v, $e=false) {
+	$uid = JWLogin::GetCurrentUserId();
+	$debug_uid = array(1,89,3449);
+	if ( in_array($id, $debug_uid) ) {
+		var_dump($v);
+		if ($e) exit(0);
+	}
 }
 ?>
