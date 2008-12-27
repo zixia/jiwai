@@ -9,8 +9,12 @@ $page = ($page < 1 ) ? 1 : $page;
 $current_user_id = JWLogin::GetCurrentUserId();
 $current_user_info = JWUser::GetUserInfo($current_user_id);
 
-if ( isset($g_direct_messages_sent) && $g_direct_messages_sent )
-	$message_box_type = JWMessage::OUTBOX;
+if ( isset($g_direct_messages_sent) ) {
+	if ( $g_direct_messages_sent === true )
+		$message_box_type = JWMessage::OUTBOX;
+	else 
+		$message_box_type = JWMessage::NOTICE;
+}
 else
 	$message_box_type = JWMessage::INBOX;
 
@@ -81,6 +85,7 @@ JWTemplate::updater(array(
 ));
 
 $menu_list = array (
+	JWMessage::NOTICE => array('active'=>false, 'name'=>'提醒', 'url'=>"/wo/direct_messages/notice"),
 	JWMessage::OUTBOX => array('active'=>false, 'name'=>'发件箱', 'url'=>"/wo/direct_messages/sent"),
 	JWMessage::INBOX => array('active'=>false, 'name'=>'收件箱', 'url'=>"/wo/direct_messages/"),
 );

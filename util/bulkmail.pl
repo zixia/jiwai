@@ -39,7 +39,7 @@ sub _buildMail {
     $subject = _buildSubject($subject, $charset);
     my $bulk = Mail::Bulkmail->new(
         'LIST'      => $list,
-        'From'      => $from,
+        'From'      => _buildSubject($from, 'utf8') . ' <wo@jiwai.de>',
         'Subject'   => $subject,
         'message_from_file' => 1,
         'headers_from_message'  => 1,
@@ -47,7 +47,7 @@ sub _buildMail {
         'servers'   => [$server, ],
     ) or die Mail::Bulkmail->error();
     $bulk->header("MIME-Version", "1.0");
-    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=_NextPart_000_0052_01C9217D.6AF41720"');
+    $bulk->header("Content-type", 'multipart/related; type="multipart/alternative"; boundary="----=000_002C_01C9652C.D1FDD710"');
 
 =pod
     $bulk->header("MIME-Version", "1.0");

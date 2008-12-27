@@ -14,6 +14,7 @@ if ( isset($_REQUEST['commit_x'])  )
 	$user_new_setting = isset($_POST['user']) ? $_POST['user'] : array();
 	$user_setting['send_new_direct_text_email'] = isset($user_new_setting['send_new_direct_text_email']) ? $user_new_setting['send_new_direct_text_email'] : 'N';
 	$user_setting['allow_system_mail'] = isset($user_new_setting['allow_system_mail']) ? $user_new_setting['allow_system_mail'] : 'N';
+	$user_setting['send_new_friend_email'] = isset($user_new_setting['send_new_friend_email']) ? $user_new_setting['send_new_friend_email'] : 'N';
 
 	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
 	{
@@ -68,6 +69,10 @@ JWTemplate::html_head(array(
     <p><input <?php if ( 'Y'==$user_setting['send_new_direct_text_email'] ) echo ' checked="checked" ';?>
             id="user_send_new_direct_text_email" name="user[send_new_direct_text_email]" type="checkbox" value="Y" />
     <label for="user_send_new_direct_text_email">当有新悄悄话时以邮件形式发到邮箱</label>
+	</p>
+    <p><input <?php if ( 'Y'==$user_setting['send_new_friend_email'] ) echo ' checked="checked" ';?>
+            id="user_send_new_friend_email" name="user[send_new_friend_email]" type="checkbox" value="Y" />
+    <label for="user_send_new_friend_email">当我被别人关注时发到邮箱</label>
 	</p>
     <p><input <?php if ( 'Y'==$user_setting['allow_system_mail'] ) echo ' checked="checked" ';?>
             id="allow_system_mail" name="user[allow_system_mail]" type="checkbox" value="Y" />

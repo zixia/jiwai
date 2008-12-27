@@ -1,5 +1,6 @@
 <?php
 require_once('../../../jiwai.inc.php');
+JWTemplate::RedirectToUrl('/wo/notification/im');
 JWTemplate::html_doctype();
 
 JWLogin::MustLogined();
