@@ -6,7 +6,7 @@
 				<dt></dt>
 				<dd>
 					<div>
-						<select name="" style="width:150px" onChange="showSetBor(this.value); <!--{if !$facebook}-->$('facebook_button').style.display = (this.value=='fb_block') ? 'inline':'none';<!--{/if}-->">
+						<select name="fb" style="width:150px" onChange="showSetBor(this.value); <!--{if !$facebook}-->this.form.submit();<!--{/if}-->">
 							<option value="" selected>--请选择--</option>
 						<!--{if !$facebook || $facebook['secret']}-->
 							<option value="fb_block">Facebook</option>
@@ -17,8 +17,8 @@
 						<!--{if !$bindother['fanfou']}-->
 							<option value="ff_block">Fanfou</option>
 						<!--{/if}-->
-						</select><input type="button" value="绑定" id="facebook_button" style="display:none;" onclick="this.form.submit();" />
-<input type="hidden" name="device[type]" value="facebook" /><input type="hidden" name="device[address]" />
+						</select>
+<input type="hidden" name="device[type]" value="facebook" /><input type="hidden" name="device[address]" /><input type="hidden" name="u" value="/wo/bindother/index/fb" />
 					</div>
 				</dd>
 			</dl>
@@ -26,7 +26,7 @@
 		</form>
 
 		<!--{if $facebook['secret']}-->
-		<div id="fb_block" class="bg_gra pad mar_b20" style="display:none;">
+		<div id="fb_block" class="bg_gra pad mar_b20" style="display:${$oblockid=='fb' ? 'block' : 'none'};">
 			<div class="f_14 mar_b20">
 				<div class="rt"><span class="ico_face"><img src="${JWTemplate::GetAssetUrl('/image/img.gif')}" width="80" height="20" /></span></div>
 				<div>你想绑定Facebook，没错吧？那就请按以下步骤操作：</div>
@@ -41,7 +41,7 @@
 		<!--{/if}-->
 
 		<!--{if !$bindother['twitter']}-->
-		<div id="tw_block" class="bg_gra pad mar_b20" style="display:none">
+		<div id="tw_block" class="bg_gra pad mar_b20" style="display:${$oblockid=='tw' ? 'block' : 'none'}">
 			<div class="f_14 mar_b20 pad_t8">
 				<div class="rt"><span class="ico_twib"><img src="images/img.gif" width="80" height="20" /></span></div>
 				<div>绑定后，你不能从Twitter更新你的叽歪，但是叽歪将自动发送你的更新到Twitter。</div>
@@ -74,7 +74,7 @@
 		<!--{/if}-->
 
 		<!--{if !$bindother['fanfou']}-->
-		<div id="ff_block" class="bg_gra pad mar_b20" style="display:none">
+		<div id="ff_block" class="bg_gra pad mar_b20" style="display:${$oblockid=='ff' ? 'block' : 'none'};">
 			<div class="f_14 mar_b20 pad_t8">
 				<div class="rt"><span class="ico_twib"><img src="images/img.gif" width="80" height="20" /></span></div>
 				<div>绑定后，你不能从Fanfou更新你的叽歪，但是叽歪将自动发送你的更新到Fanfou。</div>
@@ -153,8 +153,8 @@
 							<div class="f_gra">你不能从{$us}更新你的叽歪，但是叽歪将自动发送你的更新到{$us}。</div>
 						</div>
 						<div class="indent">
-							<div><input type="checkbox" name="sync_reply" value="Y" ${$bind['syncReply']=='Y' ? 'checked':''}/> 发送你回复的叽歪到{$us}&nbsp; <span class="bg_yel">设置成功！</span></div>
-							<div><input type="checkbox" name="sync_conference" value="Y" ${$bind['syncConference']=='Y' ? 'checked':''}/> 发送你的会议叽歪到{$us}&nbsp; <span class="bg_yel">设置成功！</span></div>
+							<div><input type="checkbox" name="sync_reply" value="Y" ${$bind['syncReply']=='Y' ? 'checked':''}/> 发送你回复的叽歪到{$us}</div>
+							<div><input type="checkbox" name="sync_conference" value="Y" ${$bind['syncConference']=='Y' ? 'checked':''}/> 发送你的会议叽歪到{$us}</span></div>
 						</div>
 						<div class="indent mar_b8">
 							<input type="submit" value=" 完成 " />

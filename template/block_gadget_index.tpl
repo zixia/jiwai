@@ -1,6 +1,6 @@
 <div class="block">
 	<div class="mar_b40">
-		你常常喜欢浏览别人的blog,总看到音乐播放器、相片秀、虚拟宠物等有趣的小玩艺儿... 突然，你看到某blog上有个玩艺儿好像叽歪啊~，没错，你所看到的正是叽歪的窗可贴！<span class="f_gra">（没见过？可以看看<a href="http://blog.zixia.net" class="f_gra_l">zixia的blog</a>或者<a href="http://winnielincafe.spaces.live.com" class="f_gra_l">WinnieLin的Space</a>）</span>
+		你常常喜欢浏览别人的blog,总看到音乐播放器、相片秀、虚拟宠物等有趣的小玩艺儿... 突然，你看到某blog上有个玩艺儿好像叽歪啊~，没错，你所看到的正是叽歪的窗可贴！<span class="f_gra">（没见过？可以看看<a target="_blank" href="http://blog.zixia.net" class="f_gra_l">zixia的blog</a>或者<a target="_blank" href="http://winnielincafe.spaces.live.com" class="f_gra_l">WinnieLin的Space</a>）</span>
 	</div>
 	<div class="pagetitle">
 		<h3>你是否也想为自己的blog添加上你的最新叽歪呢？</h3>

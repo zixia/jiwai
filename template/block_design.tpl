@@ -2,7 +2,7 @@
 	<div class="gray mar_b20">
 		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 		<div class="t hand">
-			<div class="lt pad_t3"><a id="ctr_1" href="javascript:ctrObj('ctr_1','elm_1')" class="min" ><img src="images/img.gif" width="12" height="12" /></a></div>
+			<div class="lt pad_t3"><a id="ctr_1" href="javascript:ctrObj('ctr_1','elm_1')" class="min" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="12" height="12" /></a></div>
 			<h4 onClick="ctrObj('ctr_1','elm_1')">&nbsp;  推荐配色</h4>
 		</div>
 		<div class="f">
@@ -28,7 +28,7 @@
 	<div class="gray mar_b20">
 		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 		<div class="t hand">
-			<div class="lt pad_t3"><a id="ctr_2" href="javascript:ctrObj('ctr_2','elm_2')" class="min" ><img src="images/img.gif" width="12" height="12" /></a></div>
+			<div class="lt pad_t3"><a id="ctr_2" href="javascript:ctrObj('ctr_2','elm_2')" class="min" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="12" height="12" /></a></div>
 			<h4 onClick="ctrObj('ctr_2','elm_2')">&nbsp; 上传背景图片</h4>
 		</div>
 		<div class="f">
@@ -57,7 +57,7 @@
 	<div class="gray mar_b20">
 		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 		<div class="t hand">
-			<div class="lt pad_t3"><a id="ctr_3" href="javascript:ctrObj('ctr_3','elm_3')" class="min" ><img src="images/img.gif" width="12" height="12" /></a></div>
+			<div class="lt pad_t3"><a id="ctr_3" href="javascript:ctrObj('ctr_3','elm_3')" class="min" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="12" height="12" /></a></div>
 			<h4 onClick="ctrObj('ctr_3','elm_3')">&nbsp; 修改颜色</h4>
 		</div>
 		<div class="f">

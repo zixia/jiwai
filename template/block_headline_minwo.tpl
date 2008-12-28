@@ -5,7 +5,7 @@
 		<div class="lt">
 			<div class="one">
 				<div class="hd">
-					<a href="/wo/account/profile"><em><img src="${JWPicture::GetUrlById($minuser['idPicture']);}" title="{$minuser['nameScreen']}" /></em></a>
+					<a href="/wo/account/profile"><em><img src="${JWPicture::GetUrlById($minuser['idPicture']);}" title="{$minuser['nameScreen']}" class="buddy" icon="{$minuser['id']}" /></em></a>
 				</div>
 			</div>
 		</div>

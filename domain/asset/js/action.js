@@ -48,19 +48,18 @@ var JWAction =
 	anonymous : function()
 	{
 		var callback = JWAction.callback;
+		alert(callback);
 		new Ajax( '/wo/ajax/get_anonymous_user_id', {
 			method: 'post',
 			headers: { 'AJAX' : true },
-			data : '',
-			onSuccess: function(responseText, x)
+			data : 'get=true',
+			onSuccess: function(res, x)
 			{
-				var flag = responseText.substring(0,1);
+				var flag = res.substring(0,1);
 				if ( '+' == flag )
 				{
-					try{
-						current_user_id = responseText.substring(1);
-						callback();
-					}catch(e){}
+					current_user_id = res.substring(1);
+					try{ callback(); }catch(e){}
 				}
 			}
 		}).request();
@@ -75,20 +74,20 @@ var JWAction =
 			method: 'post',
 			headers: { 'AJAX' : true },
 			data: 'username_or_email='+username+'&password='+password,
-			onSuccess: function(responseText, x) 
+			onSuccess: function(res, x) 
 			{
-				var flag = responseText.substring(0,1);
+				var flag = res.substring(0,1);
 				if ( '+' == flag )
 				{
 					try{
-						current_user_id = responseText.substring(1);
+						current_user_id = res.substring(1);
 						callback();
 					}catch(e){}
 				}
 				else
 				{
 					if( $('loginTips') )
-						$('loginTips').innerHTML = responseText.substring(1);
+						$('loginTips').innerHTML = res.substring(1);
 				}
 			}
 		}).request();
@@ -108,20 +107,20 @@ var JWAction =
 			method: 'post',
 			headers: { 'AJAX' : true },
 			data: 'username='+username+'&password_one='+password_one+'&password_confirm='+password_confirm,
-			onSuccess: function(responseText, x) 
+			onSuccess: function(res, x) 
 			{
-				var flag = responseText.substring(0,1);
+				var flag = res.substring(0,1);
 				if ( '+' == flag )
 				{
 					try{
-						current_user_id = responseText.substring(1);
+						current_user_id = res.substring(1);
 						callback();
 					}catch(e){}
 				}
 				else
 				{
 					if( $('registerTips') )
-						$('registerTips').innerHTML = responseText.substring(1);
+						$('registerTips').innerHTML = res.substring(1);
 				}
 			}
 		}).request();
@@ -272,7 +271,7 @@ var JWAction =
 				method: 'post',
 				headers: { 'AJAX' : true },
 				data: 'type='+type+'&username='+username+'&password='+password,
-				onSuccess: function(responseText, x) { }
+				onSuccess: function(res, x) { }
 			}).request();
 
 			JWSeekbox.showBox(url,options);
@@ -284,9 +283,9 @@ var JWAction =
 					method: 'post',
 					headers: { 'AJAX' : true },
 					data: 'type='+type+'&username='+username+'&password='+password,
-					onSuccess: function(responseText, x)  
+					onSuccess: function(res, x)  
 					{   
-						if( 'true'==responseText )
+						if( 'true'==res )
 						{   
 							location.href = '/wo/invitations/invite_not_follow';
 							return false;
