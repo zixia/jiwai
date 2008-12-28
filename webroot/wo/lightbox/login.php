@@ -68,7 +68,7 @@ if ( array_key_exists('username_or_email', $_POST) )
 	<div class="mar_b20">
 		<div class="pagetitle mar_b20">
 			<div class="rt"><a href="javascript:void();" onclick="return JWSeekbox.remove();" class="close">X</a></div>
-			<h3 id="loginTips">登陆到叽歪</h3>
+			<h3 id="loginTips">登录到叽歪</h3>
 		</div>
 		<dl class="pad_t8">
 			<dt>用户名</dt>
@@ -79,7 +79,7 @@ if ( array_key_exists('username_or_email', $_POST) )
 			<dd><div><input id="jz" type="checkbox" id="remember_me" name="remember_me" value="1" checked /> <label for="jz">在这台电脑上记住我</label></div></dd>
 			<dt></dt>
 			<dd>
-				<div><input type="button" value="登陆" onclick="JWAction.login();"/></div>
+				<div><input type="button" value="登录" onclick="JWAction.login();"/></div>
 			</dd>
 		</dl>
 		<div class="clear"></div>

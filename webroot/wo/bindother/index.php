@@ -1,6 +1,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
 JWLogin::MustLogined(false);
+list($_, $oblockid) = @explode('/', @$_REQUEST['pathParam']);
 
 $current_user_id = JWLogin::GetCurrentUserId();
 $bindother = JWBindOther::GetBindOther($current_user_id);
@@ -21,6 +22,7 @@ $param_main = array(
 	'bindother' => $bindother,
 	'others' => $others,
 	'mothers' => $mothers,
+	'oblockid' => $oblockid,
 );
 ?>
 

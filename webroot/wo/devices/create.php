@@ -89,5 +89,11 @@ _ERR_;
 		JWSession::SetInfo('notice',$notice_html);
 
 }
-JWTemplate::RedirectBackToLastUrl();
+
+$redirect_url = trim(@$_REQUEST['u']);
+if ( $redirect_url ) {
+	JWTemplate::RedirectToUrl( $redirect_url );
+} else {
+	JWTemplate::RedirectBackToLastUrl();
+}
 ?>

@@ -56,7 +56,6 @@ if ( $_SERVER["REQUEST_METHOD"]=='POST' )
 			&& 4!==$file_info['error']
 			)
 	{
-		// PHP upload error, except NO FILE(that mean user want to delete).
 		switch ( $file_info['error'] )
 		{
 			case UPLOAD_ERR_INI_SIZE:
@@ -104,162 +103,37 @@ else
 	$ui->GetSidebarBorderColor($user['profile_sidebar_border_color']);
 }
 
-?>
-<?php 
-JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-)); 
-
-
-$asset_url_moorainbow_img_path	= JWTemplate::GetAssetUrl('/lib/mooRainbow/images/', false);
-$asset_url_moorainbow_js	= JWTemplate::GetAssetUrl('/lib/mooRainbow/mooRainbow.js');
-$asset_url_moorainbow_css	= JWTemplate::GetAssetUrl('/lib/mooRainbow/mooRainbow.css');
-
-echo <<<_HTML_
-<link href="$asset_url_moorainbow_css" media="screen, projection" rel="Stylesheet" type="text/css" />
-<script src="$asset_url_moorainbow_js" type="text/javascript"></script>
-
-_HTML_;
-
-$color_ids = array 
-( 
-	 'user_profile_background_color'
-	/*,'user_profile_text_color'
-	,'user_profile_name_color'
-	,'user_profile_link_color'
-	,'user_profile_sidebar_fill_color'
-	,'user_profile_sidebar_border_color'*/
-);
-
-echo <<<_HTML_
-<script type="text/javascript">
-//<![CDATA[
-
-window.addEvent('domready', function() 
-{
-
-_HTML_;
-
-foreach ( $color_ids as $color_id )
-{
-	$k = preg_replace('/^user_/','',$color_id);
-
-	echo <<<_HTML_
-try {
-
-	var default_bg_color = new Color('$user[$k]');
-	var default_fg_color = default_bg_color.invert();
-
-	$('$color_id').setStyle('background-color'	, default_bg_color);
-	$('$color_id').setStyle('color'				, default_fg_color);
-
-
-	var ${color_id}_r = new MooRainbow('$color_id', 
-	{
-		 id: '${color_id}_moo_id'
-		,startColor: default_bg_color
-		,imgPath: '$asset_url_moorainbow_img_path'
-		,wheel: true
-		,onChange: function(color) 
-		{
-			$('$color_id').setStyle('background-color'	, color.hex);
-			$('$color_id').setStyle('color'				, (new Color(color.hex)).invert());
-			$('$color_id'+'_value').value = color.hex;
-			$('$color_id'+'_val').innerHTML = color.hex;
-		}
-/*
-		,onComplete: function(color)
-		{
-			$('$color_id').setStyle('background-color', color.hex);
-			$('$color_id').value = color.hex;
-		}
-*/
-	});
-} catch (e) {
-}
-
-_HTML_;
-}
-
-echo <<<_HTML_
-
-});
-
-//]]>
-</script>
-
-_HTML_;
-
+$element = JWElement::Instance();
+$param_tab = array( 'tabtitle' => '个性化界面',);
+$param_side = array( 'sindex' => 'design' );
 ?>
 
-</head>
-
-<body id="main">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTipsMain() ?>
-
+<?php $element->html_header();?>
+<?php $element->common_header_wo();?>
 <div id="container">
-<p class="top">设置</p>
-<div id="wtMainBlock">
-<div class="leftdiv">
-<ul class="leftmenu">
-<li><a href="/wo/account/settings">基本资料</a></li>
-<li><a href="/wo/privacy/">保护设置</a></li>
-<li><a href="/wo/devices/sms">绑定设置</a></li>
-<li><a href="/wo/notification/email">系统通知</a></li>
-<li><a href="/wo/account/profile_settings" class="now">个性化界面</a></li>
-<li><a href="/wo/openid/">Open ID</a></li>
-</ul>
-</div><!-- leftdiv -->
-<?php
-$ui->GetUseBackgroundImage($picture_id);
-$picture_name = '无';
-if ( $picture_id )
-{
-	$pic_db_row = JWPicture::GetDbRowById($picture_id);
-	if ( false==empty($pic_db_row) )
-	{
-		$picture_name = $pic_db_row['fileName'] . '.' . $pic_db_row['fileExt'];
-	}
-}
-?>
-<div class="rightdiv">
-<div class="lookfriend">
-<form id="f" action="" method="post" name="f" enctype="multipart/form-data">
-<input type="hidden" name="commit_x" value="1"/>
-<input type="hidden" id="user_profile_background_color_value" name="user[profile_background_color]" value="#<?php echo $user['profile_background_color']?>" />
-       <div class="protection">
-	    <p><span class="black15bold">背景颜色:</span><input id="user_profile_background_color" size="30" type="text" class="personalized_bc"/>
-		&nbsp;&nbsp;<span class="black12" id="user_profile_background_color_val">#<?php echo $user['profile_background_color'];?></span>
-	    <p><span class="black15bold">背景图片:</span><input class="checkbox" id="user_profile_use_background_image" name="user[profile_use_background_image]" <?php if($picture_id) echo "checked";?> type="checkbox" value="checked" />
-					<input style="display:inline;" id="user_profile_background_image" name="profile_background_image" size="30" type="file" class="inputStyle2"/>
-					<br />
-		<div class="personalized">
-		<p class=" personalizedText">最大可以上传 2M 大小的图片</p>
-        <p><label for="user_profile_background_tile1"><input type="radio" id="user_profile_background_tile1" name="user[profile_background_tile]" value="1" <?php if ( $user['profile_background_tile'] ) echo 'checked="checked" ';?>/><span class="pad3">平铺&nbsp;&nbsp;</span></label>
-        <label for="user_profile_background_tile2"><input type="radio" id="user_profile_background_tile2" name="user[profile_background_tile]" value="0" <?php if ( !$user['profile_background_tile'] ) echo
-		     'checked="checked" ';?>/><span class="pad3">不平铺</span></label></p>
-	    <p>当前背景图片：<?php echo $picture_name?></p>
-	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
-	   <p><input type="submit" id="save" name="save" class="submitbutton" value="保存" /></p>
-	    <div style="overflow: hidden; clear: both; height: 10px; line-height: 1px; font-size: 1px;"></div>
-	<p><a class="orange12" href="/wo/account/restore_profile" onclick="return confirm('请确认你希望恢复叽歪网缺省设计方案？');">恢复叽歪网缺省配色方案</a></p>
-	   </div>
-	   </div>
-	   <div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-  </form>
-</div><!-- lookfriend -->
-<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-</div>
-<!-- rightdiv -->
-</div><!-- #wtMainBlock -->
-<?php JWTemplate::container_ending(); ?>
-</div><!-- #container -->
+<?php $element->wide_notice();?>
+<div id="lefter">
+	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+	<div id="leftBar" >
+		<?php $element->block_headline_minwo();?>
+		<?php $element->block_tab($param_tab);?>
+		<div class="f">
+			<?php $element->block_design($param_main);?>
+		</div>
+	</div>
+	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
-<?php JWTemplate::footer() ?>
+<div id="righter">
+	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+	<div id="rightBar" class="f" >
+		<?php $element->side_setting($param_side);?>
+	</div>
+	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
 
-</body>
-</html>
+<div class="clear"></div>
+</div><!-- container -->
+
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>
