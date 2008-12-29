@@ -199,9 +199,9 @@ class JWRobotLingo {
 			}
 		
 			//On Tag
-			if( substr($followe,0,1) == '#' ) 
+			if( preg_match('/#(\S+)$/', $followe, $m) || preg_match('/^\[\s*(\S+)\s*\]$/', $followe, $m))
 			{
-				$tag_name = substr( $followe, 1 );
+				$tag_name = trim($m[1]);
 				$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 				if( false == empty( $tag_row ) )
 				{
@@ -308,9 +308,9 @@ class JWRobotLingo {
 		foreach( $param_array as $followe ) {
 			
 			//Leave Tag
-			if( substr($followe,0,1) == '#' ) 
+			if( preg_match('/#(\S+)$/', $followe, $m) || preg_match('/^\[\s*(\S+)\s*\]$/', $followe, $m))
 			{
-				$tag_name = substr( $followe, 1 );
+				$tag_name = $m[1];
 				$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 				if( false == empty( $tag_row ) )
 				{
@@ -504,9 +504,9 @@ class JWRobotLingo {
 		$invitee_address = $followe;
 
 		//Follow Tag
-		if( substr($followe,0,1) == '#' ) 
+		if( preg_match('/#(\S+)$/', $followe, $m) || preg_match('/^\[\s*(\S+)\s*\]$/', $followe, $m))
 		{
-			$tag_name = substr( $followe, 1 );
+			$tag_name = $m[1];
 			$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
 			if( false == empty( $tag_row ) )
 			{
