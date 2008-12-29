@@ -146,6 +146,8 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
 
     private static void initRegexMap()
     {
+        regexMap.put("Flickr图片",
+                Pattern.compile("http://(?:www\\.|)flickr\\.com/photos/[\\d\\w@]+/\\d+", Pattern.CASE_INSENSITIVE));
         regexMap.put("Yupoo图片",
                 Pattern.compile("http://www\\.yupoo\\.com/photos/view\\?id=([0-9a-f]+)", Pattern.CASE_INSENSITIVE));
         regexMap.put("土豆视频",   
@@ -281,18 +283,19 @@ public class XiaoiJiWaiRobot implements MoMtProcessor {
         RobotSession s = mBuddySession.get(buddy);
         try {
             if (null == s || s.isClosed()) {
-                mBuddySession.remove(buddy);
-                if (null == mBuddyMessages.get(buddy)) {
-                    Logger.log("store::" + buddy);
-                    mBuddyMessages.put(buddy, new ArrayList<String>());
-                    // hardlimit set by M$ 
-                    // 8 per minute, 400 per hour
-                    Logger.log("createSession:" + buddy + ":" + descAccount);
-                    mXiaoiServer.createSession(descAccount, buddy);
-                }
-                if (mQueueCapacity > mBuddyMessages.get(buddy).size()) {
-                    mBuddyMessages.get(buddy).add(text);
-                }
+		mXiaoiServer.pushMessage(descAccount, buddy, text);
+                // mBuddySession.remove(buddy);
+                // if (null == mBuddyMessages.get(buddy)) {
+                //     Logger.log("store::" + buddy);
+                //     mBuddyMessages.put(buddy, new ArrayList<String>());
+                //     // hardlimit set by M$ 
+                //     // 8 per minute, 400 per hour
+                //     Logger.log("createSession:" + buddy + ":" + descAccount);
+                //     mXiaoiServer.createSession(descAccount, buddy);
+                // }
+                // if (mQueueCapacity > mBuddyMessages.get(buddy).size()) {
+                //     mBuddyMessages.get(buddy).add(text);
+                // }
             } else {
                 mtProcessingBySession(s, text);
             }
