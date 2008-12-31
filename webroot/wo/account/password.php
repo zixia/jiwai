@@ -26,23 +26,22 @@ if ( isset($_POST['password']) ) {
 	{
 		$current_password = trim( @$_POST['current_password'] );
 		$password = trim( @$_POST['password'] );
-		$password_confirmation = trim( @$_POST['password_confirmation'] );
-		if ( $verify_corrent_password
-				&& (	empty($current_password) 
+		$password_confrim = trim( @$_POST['password_confrim'] );
+		if ( $verify_corrent_password && (	
+					empty($current_password) 
 					|| empty($password)
-					|| empty($password_confirmation) 
-				   ) )
+					|| empty($password_confrim) 
+					))
 		{
 			$error_html = "<li>请完整填写三处密码输入框</li";
 		}
 
-		if ( $password !== $password_confirmation )
+		if ( $password !== $password_confrim )
 		{
 			$error_html .= "<li>两次输入密码不一致！请重新输入</li>";
 		}
 
-		if ( $verify_corrent_password &&
-				! JWUser::VerifyPassword($user_info['id'], $current_password) )
+		if ( $verify_corrent_password && ! JWUser::VerifyPassword($user_info['id'], $current_password) )
 		{
 			$error_html .= "<li>当前密码输入错误，请重新输入</li>";
 		}
@@ -53,7 +52,7 @@ if ( isset($_POST['password']) ) {
 	 */
 	if ( empty($error_html) )
 	{
-		if ( ! JWUser::ChangePassword($user_info['id'], $password_confirmation) )
+		if ( ! JWUser::ChangePassword($user_info['id'], $password_confrim) )
 		{
 			JWSession::SetInfo('error', '密码修改失败，请稍后再试。');
 		}

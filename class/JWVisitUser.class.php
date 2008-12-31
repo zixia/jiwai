@@ -140,7 +140,7 @@ class JWVisitUser
 
 			/* block admin user */
 			foreach( $row AS $k=>$one ) {
-				if($one['idUser']==498)
+				if($one['idUser'] == '498')
 					unset($row[$k]);
 			}
 			/* end block */

@@ -1,4 +1,4 @@
-<div class="side2 mar_b8">
+<div class="side2">
 	<div class="pagetitle">
 		<h3>公告...</h3>
 	</div>

@@ -7,7 +7,7 @@
 </div>
 <div class="side2">
 	<div class="pagetitle">
-		<h3 class="lt">近期活动... &nbsp;</h3> <div class="lightbg f_gra lt">(<a href="/g/es">全部</a>)</div>
+		<h3 class="lt">近期活动... &nbsp;</h3> <div class="lightbg f_gra lt">（<a href="/g/es">全部</a>）</div>
 		<div class="clear"></div>
 	</div>
 	<div class="bg_pink pad">

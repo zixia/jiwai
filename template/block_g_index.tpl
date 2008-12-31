@@ -27,7 +27,7 @@
 		</ul>
 		<ul class="channel_g">
 		<!--{foreach $newsbot AS $newsc=>$one}-->
-			<li><span><b>{$newsc}&nbsp; &nbsp;</b> &nbsp;|&nbsp;</span><!--{foreach $one AS $oone}-->&nbsp;<span class="dark"><a href="/{$oone}/">{$oone}</a></span><!--{/foreach}--></li>
+			<li><span><b>{$newsc} </b>&nbsp;|</span><!--{foreach $one AS $oone}--> <span class="dark"><a href="/{$oone}/">{$oone}</a></span><!--{/foreach}--></li>
 		<!--{/foreach}-->
 		</ul>
 	</div>

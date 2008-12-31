@@ -17,7 +17,6 @@ $param_tab = array(
 		'tabtitle' => "目前已有{$count_reply}条回复",
 		);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">

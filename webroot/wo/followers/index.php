@@ -41,6 +41,7 @@ $param_pager = array(
 $param_tab = array( 
 		'now' => 'followers_' . $now,
 		'tabtitle' => '被'.$followers_num.'人关注',
+		'tab' => $tab,
 		); 
 ?>
 
@@ -73,6 +74,7 @@ $param_tab = array(
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div id="rightBar" class="f" >
 		<?php $element->side_invite_index();?>
+		<?php $element->side_inviteuser();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div><!-- righter -->

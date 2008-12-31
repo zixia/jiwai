@@ -2,7 +2,6 @@
 $element = JWElement::Instance();
 $param_tab = array( 'now' => 'user_my' );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">
@@ -22,11 +21,7 @@ $param_tab = array( 'now' => 'user_my' );
 <div id="righter">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div id="rightBar" class="f" >
-		<?php $element->side_profile_wo();?>
-		<?php $element->side_userstatistic();?>
-		<?php $element->side_recent_vistor();?>
-		<?php $element->side_whom_me_follow();?>
-		<?php $element->side_usertaglist();?>
+		<?php $element->side_user();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div>

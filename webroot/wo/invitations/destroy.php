@@ -5,21 +5,14 @@ $param = $_REQUEST['pathParam'];
 
 if ( preg_match('/^\/([\d\w=\/]+)$/',$param,$match) )
 {
-	$invitation_code = $match[1];
-	if( $inviter_id = JWUser::GetIdUserFromIdEncoded( $invitation_code ) )
-	{
-		JWSession::SetInfo('inviter_id', null);
-	}
-	else
-	{
-		$invitation_row	= JWInvitation::GetInviteInfoByCode($invitation_code);
-		$inviter_id = $invitation_row['idInvitation'];
-		if ( $inviter_id )
-		{
-			JWInvitation::Destroy($inviter_id);
-		}
+	$code = $match[1];
+	$invitation_row	= JWInvitation::GetInvitationInfoByCode($code);
+	if ( $invitation_row['id'] ) {
+		JWInvitation::Destroy($invitation_row['id']);
 	}
 
+	JWSession::SetInfo('inviter_id', null);
+	JWSession::SetInfo('invitation_id', null);
 	$notice_html = '我们已经取消了对你的邀请。有时间的话在叽歪de网站上看看大家都在做什么吧！';
 }
 

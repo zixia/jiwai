@@ -1901,7 +1901,7 @@ GROUP BY idTag
 ORDER BY count DESC
 _SQL_;
 
-		$rows = JWDB_Cache::GetQueryResult( $sql, true );
+		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty($rows) )
 			return array();
 		

@@ -14,7 +14,7 @@
 						<!--{if !$bindother['twitter']}-->
 							<option value="tw_block">Twitter</option>
 						<!--{/if}-->
-						<!--{if !$bindother['fanfou']}-->
+						<!--{if !$bindother['fanfou']&&false}-->
 							<option value="ff_block">Fanfou</option>
 						<!--{/if}-->
 						</select>

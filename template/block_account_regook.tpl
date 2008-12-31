@@ -13,7 +13,7 @@
 		<li class="f_gra indent">赶紧告诉大家你现在在做什么，开始记录生活中的点滴吧~</li>
 	</ul>
 	<ul class="mar_b50">
-		<li class="f_14">&gt;&gt;  &nbsp;<a href="/public_timeline/">随便逛逛</a></li>
+		<li class="f_14">&gt;&gt;  &nbsp;<a href="/g/">随便逛逛</a></li>
 		<li class="f_gra indent">看看大家都在叽歪什么~</li>
 	</ul>
 	<div>

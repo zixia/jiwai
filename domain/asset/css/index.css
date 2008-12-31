@@ -1,6 +1,6 @@
 @charset "utf-8";/* CSS Document writted by guewool@hotmail.com,update on 081212 */
 * {margin:0; padding:0;font-family:Arial,Helvetica,sans-serif;}
-html{margin:0;background:#FFCC66;}
+html{margin:0;background:#fdfdfd;}
 
 ul, li{list-style:none;}
 table,form,div,img,dl,dd,h1,h2,h3,h4{border:0px;}
@@ -38,7 +38,7 @@ a.f_gra_l{text-decoration:underline}
 .hand{cursor:pointer}
 h3, .f_14, h4{font-size:14px}
 .no{display:none}
-.clear{overflow: hidden; clear:both; height:1px; line-height:1px; font-size:1px;}
+.clear{overflow:hidden; clear:both; height:1px; line-height:1px; font-size:1px;}
 
 .mar_b8{margin-bottom:8px;}
 .mar_b20{margin-bottom:20px;}
@@ -70,14 +70,15 @@ h3, .f_14, h4{font-size:14px}
 * html #header h2 {background:none; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="images/org-logo.png");}
 #header .hdnav{margin:0 0 10px 200px; padding:20px 0 0 0}
 
-#nav{width:750px; float:right}
-#nav.non{width:300px; }
+#nav{width:680px; float:right}
+#nav.non{width:350px; }
 #nav ul{height:30px;}
 #nav ul li{float:left; margin-right:18px;text-align:center; padding-top:5px;}
 #nav ul li a{color:#f87000; font-size:14px; font-weight:bold;}
+#nav ul li a.act{font-size:12px; font-weight:normal}
 #nav ul li.rt{float:right; margin:0;}
 #nav ul li.rt a{font-size:12px; font-weight:normal;}
-.wht .a, .wht .b, .wht .c, .wht .d, .wht .f{background:#fff;}
+.wht .a, .wht .b, .wht .c, .wht .d, .wht .f{background:#fff4ea;}
 
 .nav_line{border-bottom:5px #f87000 solid}
 
@@ -93,7 +94,7 @@ h3, .f_14, h4{font-size:14px}
 #lefter .s .b{margin:0 0 0 3px;}
 #lefter .s .c{margin:0 0 0 2px;}
 #lefter .s .d{margin:0 0 0 1px;}
-#leftBar{background:#fff}
+#leftBar{background:#fff;}
 
 #righter{width:252px;display:table-cell;}
 #righter .a,#righter .b,#righter .c,#righter .d{background:#fff4ea}
@@ -194,7 +195,7 @@ a.ags{COLOR:#D05D02;} 									/* 4 */
 
 .gra_input input{color:gray;}
 .gra_input .focus, .focus{color:#333; border-top:2px #666 solid;border-left:2px #666 solid;border-right:2px #eee solid;border-bottom:0px #fff solid}
-input.def_btn{height:22px; line-height:18px; padding:auto 0;color:#333;}
+input.def_btn{height:22px; line-height:18px; color:#333;}
 #righter_g .inp_w{width:240px;}
 #righter .def_btn, #righter_g .def_btn{width:64px}
 /* button style gather begin  */
@@ -259,13 +260,13 @@ a.po_d{background-position:left -660px;}
 #flash{padding:10px;background:#fff}
 
 .dot_b li{padding-left:15px; background-position:left -690px;}
-.tag{height:33px; background:#fff4ea; border-bottom:1px #fee3ca solid;position:relative;}
+.tag{height:33px; background:#fff4ea; margin:0 10px; border-bottom:1px #fee3ca solid;position:relative;}
 .tag ul{padding-left:20px; position:absolute; top:7px; }
-.tag li{float:left; height:30px;line-height:25px; width:100px; margin-right:10px; font-size:14px; text-align:center}
+.tag li{float:left; height:30px;line-height:25px; width:100px; margin-right:20px; font-size:14px; text-align:center}
 .tag li.sel .f{height:22px;}
 .tag li.sel a{color:#D05D02;}
-#lefter_g .tag{margin-right:30px; overflow:hidden}
-#lefter_g .tag li{maigin-right:4px;}
+#lefter_g .tag{margin-right:30px;}
+#lefter_g .tag li{margin-right:5px;}
 
 .pagetitle{margin-bottom:10px;}
 .pagetitle span{margin-top:15px}
@@ -303,7 +304,7 @@ a.po_d{background-position:left -660px;}
 .one .hd a em{display:block;width:48px; height:48px; padding:2px; overflow:hidden; border:1px #ddd solid; cursor:pointer}
 .one .hd a img{width:48px; height:48px;vertical-align:top;}
 .one .text {font-size:14px; margin-bottom:5px; line-height:1.5em;}
-.one .mar_lt{margin-left:80px;}
+.one .mar_lt{margin-left:80px; z-index:10}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
 

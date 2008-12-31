@@ -35,7 +35,7 @@
 </div>
 
 <div class="side2">
-	<div> &gt;&gt; <a target="_blank" href="/public_timeline/">随便逛逛</a></div>
+	<div> &gt;&gt; <a target="_blank" href="/g/">随便逛逛</a></div>
 	<div> &gt;&gt; <a href="/wo/wizard/">了解叽歪</a></div>
 </div>
 <!--{include side_searchuser}-->

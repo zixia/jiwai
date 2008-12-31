@@ -46,23 +46,15 @@ if ( true )
 		}
 	}
 
-	if ( 't'==$func)
-	{
-		if ( preg_match('/^([^\/]+)\/?$/',$param,$matches) ) {
+	if ( 't' == $func) {
+		if ( preg_match('/^([^\/]+)\/?$/',$param, $matches) ) {
 			$func = 'tag';
-		}
-		else if(true){
-			$matches[1]='笑话';
-			$func = 'tag';
-		}
-		else{
-			$name_url = urlEncode( $page_user_info['nameUrl' ]);
-			JWTemplate::RedirectToUrl("/$name_url$pathParam");
 		}
 	}
 
 	$page_user_id = empty($page_user_info) ? null : $page_user_info['id'];
 	$g_page_user_id	= $page_user_id;
+	$g_page_user = $page_user_info;
 }
 
 if ( 'public_timeline'===strtolower($nameScreen) )
@@ -107,30 +99,32 @@ switch ( $func )
 			exit(0);
 		}
 		break;
+	case 't': 
+		require_once(dirname(__FILE__) . "/t.inc.php");
+		break;
+	case 'tfollowings':
+		require_once(dirname(__FILE__) . "/tfollowings.inc.php");
+		break;
 	case 'tag':
-		{
-			$tag_name = $matches[1];
-			if ( false == JWUnicode::unifyName( $tag_name ) )
-			{
-				JWTemplate::RedirectToUrl( '/'.urlEncode( $nameScreen ).'/t/'.urlEncode($tag_name).'/' );
-			}
+		$tag_name = $matches[1];
+		if ( false == JWUnicode::unifyName( $tag_name ) ) {
+			JWTemplate::RedirectToUrl( '/'.urlEncode( $nameScreen ).'/t/'.urlEncode($tag_name).'/' );
+		}
 
-			$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
-			if ( false == empty($tag_row) )
-				require_once(dirname(__FILE__) . "/tag.inc.php");
-			else
-				header( 'Location: /'. urlencode( $nameScreen ) . '/' );
+		$tag_row = JWDB_Cache_Tag::GetDbRowByName( $tag_name );
+		if ( false == empty($tag_row) ) {
+			require_once(dirname(__FILE__) . "/tag.inc.php");
+		} else {
+			header( 'Location: /'.urlencode($nameScreen).'/');
+			exit;
 		}
 		break;
 	case 'statuses':
-		if ( preg_match('/^(\d+)$/',$param,$matches) )
-		{
+		if ( preg_match('/^(\d+)$/',$param,$matches) ) {
 			$status_id = intval($matches[1]);
 			require_once(dirname(__FILE__) . "/statuses.inc.php");
 			exit;
-		}
-		else
-		{
+		} else {
 			JWTemplate::RedirectTo404NotFound();
 			exit(0);
 		}

@@ -13,7 +13,7 @@
 		</dd>
 		<dt>确认新密码</dt>
 		<dd>
-			<div><input id="password_confirmation" name="password_confirmation" type="password" compare="password" alt="确认密码" minlength="6" maxlength="16" /><i></i></div>
+			<div><input id="password_confrim" name="password_confrim" type="password" compare="password" alt="确认密码" minlength="6" maxlength="16" /><i></i></div>
 		</dd>
 		<dt></dt>
 		<dd>

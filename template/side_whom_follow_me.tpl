@@ -9,12 +9,12 @@
 <!--{if count($users)}-->
 <div class="side2">
 	<div class="pagetitle">
-		<h3 class="lt">关注我的人... &nbsp;</h3> <a href="/wo/followers/" class="lt">(全部)</a>
+		<h3 class="lt">关注我的人... &nbsp;</h3> <div class="lightbg f_gra lt">（<a href="/wo/followings/">全部</a>）</div>
 		<div class="clear"></div>
 	</div>
 	<ul class="one">
 	<!--{foreach $users AS $one}-->
-		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><em><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" class="buddy" icon="{$one['id']}" /></em>{$one['nameScreen']}</a></li>
+		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" class="buddy" icon="{$one['id']}" /> {$one['nameScreen']}</a></li>
 	<!--{/foreach}-->
 		<div class="clear"></div>
 	</ul>

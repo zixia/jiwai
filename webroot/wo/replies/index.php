@@ -34,8 +34,7 @@ $param_tab = array( 'now' => 'wo_reply' );
 		<div class="line mar_b8"></div>
 		<?php $element->side_recent_vistor();?>
 		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
-		<?php $element->side_block_user();?>
-		<div class="gra_input"><input type="text" value="QQ  MSN  Emai l id..." onFocus="clearValue(this)" onBlur="searchValue(this,'QQ  MSN  Emai l id...')" /> <input type="button" value="谁在叽歪" class="def_btn" /></div>
+		<?php $element->side_searchuser();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div><!-- righter -->

@@ -59,29 +59,39 @@
 				<a href="/{$user['nameUrl']}/"><img src="{$avatar}" title="{$user['nameScreen']}" /></a>
 			</div>
 			<!--{if ($g_current_user_id != $g_page_user_id)}-->
-			<!--${
-				$action = JWSns::GetUserAction($g_current_user_id, $g_page_user_id);
-			}-->
+			<!--${$action = JWSns::GetUserAction($g_current_user_id, $g_page_user_id);}-->
 			<div class="mar_b8" >
+				<!--{if !$action||$action['follow']}-->
 				<div class="button sbtn">
 					<div class="at"></div><div class="bt"></div>
 					<div class="tt">
-					<!--{if empty($action) || $action['follow']}-->
-						<a href="/wo/action/follow/{$g_page_user_id}" onclick="return JWAction.follow({$g_page_user_id},this);">关注此人</a>
-					<!--{elseif $action['leave']}-->
-						<a href="/wo/action/leave/{$g_page_user_id}">取消关注</a>
-					<!--{/if}-->
+						<a href="/wo/action/follow/{$g_page_user_id}" onclick="return JWAction.follow({$g_page_user_id});">关注此人</a>
 					</div>
 					<div class="bt"></div><div class="at"></div>
-				</div>						
+				</div>
+				<!--{else}-->
+				<div class="bg_dark">
+					已关注此人
+				</div>
+				<!--{/if}-->
 			</div>
 			<ul id="update_count" class="bgall">
 				<li><span class="ico_mail"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/direct_messages/create/{$user['id']}" onclick="return JWAction.redirect(this);">发送悄悄话</a></li>
 				<li><span class="ico_nao"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/action/nudge/{$user['id']}" onclick="return JWAction.redirect(this);">挠挠此人</a></li>
+				<!--{if $action['on']}-->
+				<li><span class="ii"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a href="/wo/action/on/{$user['id']}" onclick="return JWAction.redirect(this);">接受更新通知</a></li>
+				<!--{elseif $action&&!$action['follow']&&!$action['on']}-->
+				<li><span class="ii"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a class="f_gra" href="/wo/action/off/{$user['id']}" onclick="return JWAction.redirect(this);">取消更新通知</a></li>
+				<!--{/if}-->
+
 				<!--{if $action['block']===false}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a href="/wo/block/u/{$user['id']}">解除阻止</a></li>
+				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a class="f_gra" href="/wo/block/u/{$user['id']}">解除阻止</a></li>
 				<!--{else}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a href="/wo/block/b/{$user['id']}" onclick="return JWAction.redirect(this);">阻止此人</a></li>
+				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a class="f_gra" href="/wo/block/b/{$user['id']}" onclick="return JWAction.redirect(this);">阻止此人</a></li>
+				<!--{/if}-->
+
+				<!--{if $action['follow']===false}-->
+				<li><span class="ii"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a class="f_gra" href="/wo/action/leave/{$user['id']}" onclick="return JWAction.redirect(this);">取消关注</a></li>
 				<!--{/if}-->
 			</ul>
 			<!--{/if}-->

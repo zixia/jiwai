@@ -4,13 +4,15 @@ JWLogin::MustLogined(false);
 
 $element = JWElement::Instance();
 $param_tab = array( 'now' => 'wo_following' );
+$param_notice = array(
+	'forcenotice' => '<li>叽歪网正在改版测试中,你可以在<a href="http://jiwai.de/改版反馈/statuses/13979420">这里</a>投下你神圣的一票，有任何意见或建议欢迎到<a href="http://jiwai.de/t/改版反馈/">这里</a>反馈。</li><li>或者<a href="http://alpha.jiwai.de/">去旧版叽歪</a>。</li>',
+);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header_wo();?>
 
 <div id="container">
-<?php $element->wide_notice();?>
+<?php $element->wide_notice($param_notice);?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 	<div id="leftBar" >
@@ -33,7 +35,6 @@ $param_tab = array( 'now' => 'wo_following' );
 		<div class="line mar_b8"></div>
 		<?php $element->side_recent_vistor();?>
 		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
-		<?php $element->side_block_user();?>
 		<?php $element->side_searchuser();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>

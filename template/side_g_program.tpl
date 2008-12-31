@@ -22,7 +22,7 @@
 	<div class="bg_pink pad">
 		<ul>
 			<li class="mar_b8">使用聊天软件向叽歪小弟发送</li>
-			<li class="mar_b8"><h3 align="center"><b>get</b> + <b>空格</b> + <b>某地区的天气</b></h3></li>
+			<li class="mar_b8"><h3 align="center"><b>get</b> + <b>空格</b> + <b>某电视台</b></h3></li>
 			<li class="f_gra">例如“get cctv5”、“get 湖南卫视”</li>
 		</ul>
 	</div>

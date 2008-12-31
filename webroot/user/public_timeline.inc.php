@@ -35,7 +35,9 @@ if ( $is_logined ) {
 	<div id="rightBar" class="f" >
 		<?php $element->side_wo_hi();?>
 		<?php $element->side_announcement();?>
+		<div class="line mar_b8"></div>
 		<?php $element->side_recent_vistor();?>
+		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
 		<?php $element->side_searchuser();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>

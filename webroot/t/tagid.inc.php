@@ -12,6 +12,9 @@ $param_head = array(
 $param_side = array(
 		'tag' => $tag_row,
 		);
+$param_rss = array(
+		'tag' => $tag_row,
+		);
 ?>
 
 <?php $element->html_header();?>
@@ -25,7 +28,7 @@ $param_side = array(
 		<?php $element->block_tab($param_tab);?>
 		<div class="f">
 			<?php $element->block_statuses_tag($param_main);?>
-			<?php $element->block_rsslink();?>
+			<?php $element->block_rsslink($param_rss);?>
 		</div>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>

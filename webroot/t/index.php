@@ -1,7 +1,7 @@
 <?php
 require_once( dirname(__FILE__) . '/../../jiwai.inc.php');
 
-$tag_name = isset($_REQUEST['tag']) ? $_REQUEST['tag'] : '笑话';
+$tag_name = @$_REQUEST['tag'];
 $pathParam = strval(@$_REQUEST['pathParam']) | '/';
 $current_user_id = JWLogin::GetCurrentUserId();
 
@@ -17,12 +17,15 @@ if( $tag_name ) {
 	}
 	$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id );
 } else {
-	JWTemplate::RedirectBackToLastUrl('/');
+	$func = 'public';
 }
 
-$func = $func | 'channel';
+$func = $func ? $func : 'channel';
 
 switch ( $func ) {
+	case 'public':
+		require_once( dirname(__FILE__) . '/public.inc.php' );
+		break;
 	default:
 	case 'channel':
 		$tagid_php = dirname(__FILE__) . "/{$tag_row['id']}.inc.php";

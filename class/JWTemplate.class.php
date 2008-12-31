@@ -2876,7 +2876,6 @@ _HTML_;
 	 */
 	static public function GetAssetUrl($absUrlPath, $mtime=true)
 	{
-		//return "http://asset.alpha.jiwai.de$absUrlPath";
 		JWTemplate::Instance();
 
 		$asset_num_max = 6;
@@ -2884,20 +2883,12 @@ _HTML_;
 		if ( empty($absUrlPath) )
 			throw new JWException('must have path');
 
-		$asset_path	= JW_ROOT . 'domain/asset';
-
-
+		$asset_path = JW_ROOT . 'domain/asset';
 
 		$domain = 'jiwai.de';
-
-		if ( empty($_SERVER['HTTP_HOST']) )
+		if ( preg_match('#(alpha|beta)\.jiwai\.(\w+)#i', $_SERVER["HTTP_HOST"],$matches) )
 		{
-			//$ip = JWRequest::GetClientIp();
-			//JWLog::Log(LOG_CRIT, "[$ip] GetAssetUrl($absUrlPath) can't find HTTP_HOST");
-		}
-		else if ( preg_match('#(alpha|beta)\.jiwai\.(\w+)#i',$_SERVER["HTTP_HOST"],$matches) )
-		{
-			$domain		= "$matches[1].jiwai.$matches[2]";
+			$domain	= "{$matches[1]}.jiwai.{$matches[2]}";
 		}
 
 
@@ -2911,9 +2902,8 @@ _HTML_;
 		if ( !$mtime )
 			return "http://asset${n}.$domain$absUrlPath";
 
-		$timestamp 	= filemtime("$asset_path$absUrlPath");
+		$timestamp = filemtime("$asset_path$absUrlPath");
 
-		//we use more then one domain name to down load asset in parallel
 		return "http://asset${n}.$domain$absUrlPath?$timestamp";
 	}
 

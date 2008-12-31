@@ -1,3 +1,31 @@
+function colorSelect(cid, start_color) 
+{
+	var start_color = start_color==undefined ? '000000' : start_color;
+	var elem = $(cid);
+	var valu = $(cid + '_value');
+	var vari = $(cid + '_variable');
+	try {
+		var default_bg_color = new Color(start_color);
+		var default_fg_color = default_bg_color.invert();
+		elem.setStyle('background-color', default_bg_color);
+		elem.setStyle('color', default_bg_color);
+		var color_r = new MooRainbow(cid, 
+		{
+			 id: cid + '_moo_id'
+			,startColor: default_bg_color
+			,imgPath: JiWai.AssetUrl('/lib/mooRainbow/images/')
+			,wheel: true
+			,onChange: function(color) 
+			{
+				elem.setStyle('background-color', color.hex);
+				elem.setStyle('color',(new Color(color.hex)).invert());
+				valu.value = color.hex;
+				vari.innerHTML = color.hex;
+			}
+		});
+	} catch (e) {}
+};
+
 function theSameHeight() {
 	var ol = $("leftBar");
 	var or = $("rightBar");

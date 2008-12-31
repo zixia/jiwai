@@ -11,7 +11,7 @@
 				<div class="dark">
 					<div>时间：<span class="f_gra">{$one['time']}</span></div>
 					<div>地点：<span class="f_gra">{$one['address']}</span></div>
-					<div>活动ID：<a href="/{$one['user']['nameUrl']}">{$one['user']['nameScreen']}</a></div>
+					<div>活动ID：<a href="/{$one['user']['nameUrl']}/">{$one['user']['nameScreen']}</a></div>
 				</div>
 				<div align="right" class="lightbg"><a href="/wo/action/follow/{$one['user']['id']}" onclick="return JWAction.follow({$one['user']['id']});">关注</a></div>
 				<div class="line mar_b8"></div>

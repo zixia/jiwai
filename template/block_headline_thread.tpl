@@ -72,22 +72,22 @@ window.jiwai_init_hook_threadreply = function() {
 			<div class="hd mar_b8">
 				<a href="/{$user['nameUrl']}/"><img src="{$avatar}" title="{$user['nameScreen']}" /></a>
 			</div>
-			<!--{if !$nofollower && $g_current_user_id && ($g_current_user_id != $g_page_user_id)}-->
+			<!--{if !$nofollower && ($g_current_user_id != $g_page_user_id)}-->
 			<!--${$action = JWSns::GetUserAction($g_current_user_id, $g_page_user_id);}-->
 			<div class="mar_b8" >
+				<!--{if !$action||$action['follow']}-->
 				<div class="button sbtn">
-					<!--{if $action['follow']}-->
 					<div class="at"></div><div class="bt"></div>
 					<div class="tt">
 						<a href="/wo/action/follow/{$g_page_user_id}" onclick="return JWAction.follow({$g_page_user_id});">关注此人</a>
 					</div>
 					<div class="bt"></div><div class="at"></div>
-					<!--{else}-->
-					<div class="bg_dark">
-						已关注此人
-					</div>
-					<!--{/if}-->
-				</div>						
+				</div>
+				<!--{else}-->
+				<div class="bg_dark">
+					已关注此人
+				</div>
+				<!--{/if}-->
 			</div>
 			<!--{/if}-->
 		</div>

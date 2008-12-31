@@ -1,3 +1,4 @@
+<!--{if $g_current_user_id||$g_page_user_id}-->
 <!--${
 	if (!$size) $size = 40;
 	$user_ids = JWFollower::GetFollowingIds($g_page_user_id);
@@ -14,9 +15,10 @@
 	</div>
 	<ul class="one">
 	<!--{foreach $users AS $one}-->
-		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><em><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" class="buddy" icon="{$one['id']}" /></em>{$one['nameScreen']}</a></li>
+		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" class="buddy" icon="{$one['id']}" /> {$one['nameScreen']}</a></li>
 	<!--{/foreach}-->
 		<div class="clear"></div>
 	</ul>
 	<div class="clear"></div>
 </div>
+<!--{/if}-->

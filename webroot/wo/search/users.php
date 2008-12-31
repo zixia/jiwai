@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 $page = $q = null;
 extract($_GET, EXTR_IF_EXISTS);
 $curpage = abs(intval($page)) ? abs(intval($page)) : 1;
-$perpage = 28;
+$perpage = 60;
 
 $current_user_info = JWUser::GetCurrentUserInfo();
 $page_user_info	= $current_user_info;

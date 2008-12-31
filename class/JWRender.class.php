@@ -100,8 +100,8 @@ class Template_Render{
 			$this->g_page_user = JWUser::GetUserInfo($g_page_user_id);
 		}
 
-		$script_url = $_SERVER['SCRIPT_URI'];
-		$this->g_page_on = (!preg_match('#/(wo|g|t)/#i', $script_url));
+		$script_url = $_SERVER['REQUEST_URI'];
+		$this->g_page_on = (!preg_match('#^/(wo|g|t)/#i',$script_url));
 		$this->g_tag_on = preg_match('#/t/#i', $script_url);
 		$this->g_page_user_id = $g_page_user_id;
 		$this->g_current_user_id = $g_current_user_id;

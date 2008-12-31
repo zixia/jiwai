@@ -1,7 +1,7 @@
 <?php
 require_once ('../../../jiwai.inc.php');
-
 $param = $_REQUEST['pathParam'];
+
 if ( preg_match('/^\/([\w\d=]+)$/',$param,$match) )
 {
 	$invite_code = $match[1];
@@ -14,7 +14,7 @@ if ( preg_match('/^\/([\w\d=]+)$/',$param,$match) )
 		$invitation_row	= JWInvitation::GetInvitationInfoByCode($invite_code);
 		if ( isset($invitation_row) )
 		{
-			JWSession::SetInfo('invitation_id',$invitation_row['idInvitation']);
+			JWSession::SetInfo('invitation_id', $invitation_row['idInvitation']);
 			JWSns::AcceptInvitation($invitation_row['idInvitation']);
 		}
 	}

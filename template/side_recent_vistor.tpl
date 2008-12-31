@@ -13,7 +13,7 @@
 	</div>
 	<ul class="one">
 	<!--{foreach $vistor_user_ids AS $one}-->
-		<li class="hd"><a href="/{$vistors[$one]['nameUrl']}/" rel="contact"><em><img src="{$avatars[$vistors[$one]['idPicture']]}" class="buddy" icon="{$vistors[$one]['id']}" title="{$vistors[$one]['nameScreen']}" /></em>{$vistors[$one]['nameScreen']}</a></li>
+		<li class="hd"><a href="/{$vistors[$one]['nameUrl']}/" rel="contact"><img src="{$avatars[$vistors[$one]['idPicture']]}" class="buddy" icon="{$vistors[$one]['id']}" title="{$vistors[$one]['nameScreen']}" /> {$vistors[$one]['nameScreen']}</a></li>
 	<!--{/foreach}-->
 	</ul>
 	<div class="clear"></div>

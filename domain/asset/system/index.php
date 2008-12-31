@@ -2,10 +2,7 @@
 define('NO_SESSION', true);
 $pathParam = null;
 extract($_REQUEST,EXTR_IF_EXISTS);
-
 require_once("../../../jiwai.inc.php");
-require_once(JW_ROOT . "webroot/user/picture.inc.php");
-
 
 if ( preg_match('#^user/profile_image/(?P<id_or_name>\w+)/(?P<pic_id>\w+)/(?P<pic_size>\w+)/#',$pathParam,$matches) )
 {
@@ -20,7 +17,13 @@ if ( preg_match('#^user/profile_image/(?P<id_or_name>\w+)/(?P<pic_id>\w+)/(?P<pi
 	$dir = dirname(__FILE__).'/../img/emote/';
 	$file = $dir.$theme.'/theme';
 	JWEmote::RenderJS($theme, file_exists($file) ? $file : $dir.'default/theme');
+} elseif ( preg_match('#^(?P<idUser>\d+)\.css$#', $pathParam, $matches) ) {
+	$user_id = $matches['idUser'];
+	$design = new JWDesign($user_id);
+	if ( $design->mIsDesigned ) {
+		header('Content-Type: text/css; charset=utf-8;');
+		die($design->GetStyleSheet());
+	}
 }
-
 exit(0);
 ?>
