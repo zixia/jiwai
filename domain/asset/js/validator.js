@@ -384,4 +384,5 @@ var JWValidator = {
     {
         this.ajax2('user_nameScreen','user_DeviceNo','RegTips2','第一次接触','不正确','DevNo2',3,'DevName','user_DeviceNo');
     }
-}
+};
+window.jiwai_init_hook_jwvalidator = JWValidator.init;

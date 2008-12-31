@@ -12,7 +12,7 @@
 		<dt></dt>
 		<dd><input id="remember_me" name="remember_me" type="checkbox" value="true" checked /><label for="remember_me">在这台电脑上记住我</label></dd>
 		<dt></dt>
-		<dd><input name="Submit" type="submit" class="" value="登 录" />&nbsp;&nbsp;<a href="/wo/account/resend_password" target="_blank">忘记密码？</a></dd>
+		<dd><input name="Submit" type="submit" class="" value="登 录" />&nbsp;<a href="/wo/account/resend_password" target="_blank">忘记密码？</a></dd>
 		</dl>
 		<div class="clear"></div>
 	</form>

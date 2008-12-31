@@ -1,5 +1,6 @@
 <!--${
 	$user = JWUser::GetUserInfo($g_page_user_id);
+	$iconurl = JWTemplate::GetAssetUrl('/images/img.gif');
 	if ( !$thread_id )
 		$thread_id = JWStatus::GetHeadStatusId($g_page_user_id);
 	if ( $thread_id )
@@ -80,7 +81,7 @@ window.jiwai_init_hook_threadreply = function() {
 			<div class="f_14 mar_b8">{$formated_one['status']}<!--{if isset($plugin_result['html'])}--><div class="bg_black">{$plugin_result['html']}</div><!--{/if}--></div>
 			<div class="f_gra">
 				<div class="dark"><a href="/{$user['nameUrl']}/" title="{$user['nameFull']}">{$user['nameScreen']}</a>&nbsp;<a href="/{$user['nameUrl']}/statuses/{$thread_id}" class="f_gra" title="{$one['timeCreate']}">${JWStatus::GetTimeDesc($one['timeCreate'])}</a>&nbsp;通过&nbsp;{$through}</div>
-				<div class="rt lightbg"><a href="/{$replyto}/thread/{$replyid}" class="thread_item" onclick="return JWAction.replyStatus('{$user['nameScreen']}','{$one['idUser']}','{$one['id']}');" rel="{$one['id']}:{$user['nameScreen']}">${$replynum ? $replynum.'条':''}回复</a>&nbsp;&nbsp;&nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"不收藏":"收藏它"}">${$is_favourited?"不收":"收藏"}</a><!--{if $can_delete}-->&nbsp;&nbsp;&nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})">删除</a><!--{/if}--></div>
+				<div class="rt lightbg"><a href="/{$replyto}/thread/{$replyid}" class="thread_item" onclick="return JWAction.replyStatus('{$user['nameScreen']}','{$one['idUser']}','{$one['id']}');" rel="{$one['id']}:{$user['nameScreen']}">${$replynum ? $replynum.'条':''}回复</a>&nbsp; &nbsp;< href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}">${$is_favourited?"取消收藏":"收藏"}</a><!--{if $can_delete}-->&nbsp; &nbsp;< href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})">删除</a><!--{/if}--></div>
 			</div>
 			<!--{/if}-->
 		</div>

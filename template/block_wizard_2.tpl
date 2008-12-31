@@ -13,7 +13,7 @@
 		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 		<div class="t hand">
 			<div class="lt pad_t3"><a id="ctr_1" href="javascript:ctrObj('ctr_1','elm_1')" class="max" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="12" height="12" /></a></div>
-			<h4 onClick="ctrObj('ctr_1','elm_1')">&nbsp 点击查看操作说明...</h4>
+			<h4 onClick="ctrObj('ctr_1','elm_1')">& 点击查看操作说明...</h4>
 		</div>
 		<div class="f">
 			<div id="elm_1" class="pad" style="display:none">

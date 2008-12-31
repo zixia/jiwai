@@ -1,6 +1,6 @@
 <!--{if $g_current_user_id||$g_page_user_id}-->
 <!--${
-	if (!$size) $size = 40;
+	$size = 40;
 	$user_ids = JWFollower::GetFollowingIds($g_page_user_id);
 	$users = JWUser::GetDbRowsByIdsAndOrderByActivate($user_ids, $size);
 	$avatars = JWFunction::GetColArrayFromRows($users,'idPicture');

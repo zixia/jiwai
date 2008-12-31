@@ -68,9 +68,9 @@ $need_request = ( $follower_user['protected'] == 'Y'
 <?php if ($need_request) { ?>
 
 	<div class="pagetitle"><h2>输入你的请求附言：</h2></div>
-		<div>
-			<textarea style="width:310px; height:50px; overflow:hidden;" name="request_follow" mission="$('followForm').submit();" onKeyDown="JWAction.onEnterSubmit(event,this);"></textarea>
-		</div>
+	<div>
+		<textarea style="width:310px; height:50px; overflow:hidden;" name="request_follow" mission="$('followForm').submit();" onKeyDown="JWAction.onEnterSubmit(event,this);"></textarea>
+	</div>
 
 <?php } else { ?>
 

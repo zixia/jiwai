@@ -1,4 +1,7 @@
-<!--${ $column = $inbox ? 'idUserSender' : 'idUserReceiver';}-->
+<!--${ 
+	$column = $inbox ? 'idUserSender' : 'idUserReceiver';
+	$iconurl = JWTemplate::GetAssetUrl('/images/img.gif');
+}-->
 <!--{foreach $messages AS $one}-->
 <!--${
 	$user = $users[$one[$column]];
@@ -16,7 +19,7 @@
 		<div class="text dark">${htmlSpecialChars($one['message'])}</div>
 		<div class="f_gra">
 			<div class="lt dark" ><a href="/{$user['nameUrl']}">{$user['nameScreen']}</a>&nbsp;{$timedesc}&nbsp;通过&nbsp;{$through}</div>
-			<div class="rt lightbg" ><!--{if $inbox && $one['messageType']=='dm'}--><a href="/wo/direct_messages/reply/{$one['id']}">回复</a>&nbsp;&nbsp;&nbsp;<!--{/if}--><a href="/wo/direct_messages/destroy/{$one['id']}">删除</a></div>
+			<div class="rt lightbg" ><!--{if $inbox && $one['messageType']=='dm'}--><a href="/wo/direct_messages/reply/{$one['id']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>回复</a>&nbsp; &nbsp;<!--{/if}--><a href="/wo/direct_messages/destroy/{$one['id']}"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a></div>
 		</div>
 		<!--{if $reply}-->
 		<div class="clear"></div>

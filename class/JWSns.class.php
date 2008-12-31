@@ -528,7 +528,7 @@ class JWSns {
 		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
 		$num_mms		= JWStatus::GetStatusMmsNum($idUser);
 		$num_tag_following	= JWTagFollower::GetFollowingNum($idUser);
-		$num_tag		= count(JWStatus::GetTagIdsPostByIdUser($idUser));
+		$num_tag		= count(JWDB_Cache_Status::GetTagIdsTopicByIdUser($idUser));
 
 		return array(
 				'pm' => $num_pm,

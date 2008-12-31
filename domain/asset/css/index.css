@@ -67,10 +67,10 @@ h3, .f_14, h4{font-size:14px}
 #header h2, #header h2 a, #header h2 img{width:195px; height:63px;} 
 #header h2 {float:left; background:url(../images/org-logo.png) no-repeat; margin-top:4px; margin-left:0px;}
 #header h2 a{display:block;}
-* html #header h2 {background:none; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="images/org-logo.png");}
+* html #header h2 {background:none; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="http://asset.jiwai.de/images/org-logo.png");}
 #header .hdnav{margin:0 0 10px 200px; padding:20px 0 0 0}
 
-#nav{width:680px; float:right}
+#nav{width:690px; float:right}
 #nav.non{width:350px; }
 #nav ul{height:30px;}
 #nav ul li{float:left; margin-right:18px;text-align:center; padding-top:5px;}
@@ -262,7 +262,7 @@ a.po_d{background-position:left -660px;}
 .dot_b li{padding-left:15px; background-position:left -690px;}
 .tag{height:33px; background:#fff4ea; margin:0 10px; border-bottom:1px #fee3ca solid;position:relative;}
 .tag ul{padding-left:20px; position:absolute; top:7px; }
-.tag li{float:left; height:30px;line-height:25px; width:100px; margin-right:20px; font-size:14px; text-align:center}
+.tag li{float:left;height:30px;line-height:25px; width:100px; margin-right:20px; font-size:14px; text-align:center}
 .tag li.sel .f{height:22px;}
 .tag li.sel a{color:#D05D02;}
 #lefter_g .tag{margin-right:30px;}
@@ -317,22 +317,6 @@ a.po_d{background-position:left -660px;}
 .side1, .side2{padding:10px 0;margin-bottom:40px;}
 .side3{padding:10px 0;}
 
-#sendOjb{width:100px; position:relative; z-index:100;}
-.bg_dark{width:100px;}
-.bg_dark{background:#fff5ec; text-align:center; color:#999;}
-#sendOjb .tt, #sendOjb .sbtn .tt{height:16px; font-weight:normal; padding:0;}
-#sendOjb .tt{padding-left:20px; text-align:left}
-#sendOjb ul{position:absolute; display:none; left:0; top:19px;width:100px;}
-* html #sendOjb{
-ie6:expression(
-	onmouseover=function(){this.getElementsByTagName("ul")[0].style.display="block"},
-	onmouseout=function(){this.getElementsByTagName("ul")[0].style.display="none"}
-	);
-}
-#sendOjb:hover ul{display:block; z-index:100}
-#sendOjb ul li a{display:block;width:80px; padding-left:20px; height:18px;color:#fff;background:#f87000;border-top:1px #eee solid}
-#sendOjb ul li a:hover{background:#f8aa66;}
-
 /* setting begin */
 #set_bor, .block{margin:25px 30px}
 #set_bor .button{width:90px;}
@@ -366,7 +350,7 @@ dl dd{text-align:left;}
 .page span {float:left; padding:2px 7px 0 7px;}
 
 .rss {margin-top:30px;color:#aaa; line-height:40px;}
-.rss a {color:#AAA;}
+.rss a {color:#aaaaaa;}
 
 #footer{margin-top:1em;}
 #footer ul {text-align:center;}
@@ -409,7 +393,17 @@ dl dd{text-align:left;}
 .hd_block ul li{white-space:nowrap; height:1.5em}
 /* buddy ico head block end*/
 
-
-
-
-
+#sendOjb{width:100px; position:relative; z-index:100;}
+.bg_dark{width:100px;}
+.bg_dark{background:#fff5ec; text-align:center; color:#999;}
+#sendOjb .tt, #sendOjb .sbtn .tt{height:16px; font-weight:normal; padding:0;}
+#sendOjb .tt{padding-left:20px; text-align:left}
+#sendOjb ul{position:absolute; display:none; left:0; top:19px;width:100px;}dOjb:hover ul{display:block; z-index:100}
+#sendOjb ul li a{display:block;width:80px; padding-left:20px; height:18px;color:#fff;background:#f87000;border-top:1px #eee solid}
+#sendOjb ul li a:hover{background:#f8aa66;}
+* html #sendOjb{
+ie6:expression(onmouseover=function(){this.getElementsByTagName("ul")[0].style.display="block"},
+	onmouseout=function(){this.getElementsByTagName("ul")[0].style.display="none"}
+	);
+}
+#sen

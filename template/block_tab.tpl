@@ -83,7 +83,7 @@
 	<!--{/if}-->
 	<!--{foreach $tab AS $tabname=>$one}-->
 	<!--{if $tabname==$now}-->
-		<li class="sel yel_bor"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div><div class="f"><a class="now" href="{$one[1]}">{$one[0]}</a></li>
+		<li class="sel yel_bor"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div><div class="f"><a class="now" href="{$one[1]}">{$one[0]}</a></div></li>
 	<!--{else}-->
 		<li><a href="{$one[1]}">{$one[0]}</a></li>
 	<!--{/if}-->

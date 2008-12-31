@@ -102,24 +102,20 @@ var JiWai =
 	},
 	ToggleStar: function(id) {
 		var el = $('status_star_'+id);
-		/*var el_text = $('status_star_text_'+id);
-		var action = (el.src.indexOf('full')==-1 ? 'create' : 'destroy');
-		new Ajax( '/wo/favourites/'+action+'/'+id, {*/
+		var elspan = $('ico_star_'+id);
 		new Ajax( '/wo/favourites/create/'+id, {
 			method: 'get',
 			headers: {'AJAX':true},
 			onSuccess: function(html) {
-				/*el.src = el.src.replace(/throbber/g, action=='create' ? 'star_full' : 'star_empty');
-				el.title = action=='create' ? '不收藏' : '收藏它';
-				el.alt = el.title;*/
-				el.title = "1"==html ? "不收藏" : "收藏它";
-				el.innerHTML = "1"==html ? "不收" : "收藏";
- /*               el_text.innerText = el.alt;
-                el_text.textContent = el.alt;
-				el_text.title = el.alt; */
+				var d = ('1'==html);
+				var t = d ? '取消收藏' : '收藏';
+				el.title = el.innerHTML = t;
+				if(elspan){
+					var n = d ? 'ico_favd' : 'ico_fav';
+					elspan.className = n;
+				}
 			}
 		}).request();
-		//el.src=JiWai.AssetUrl('/img/icon_throbber.gif') 
 	},
 	DoTrash: function(id) {
 		if (confirm('请确认操作：删除后将永远无法恢复！')) 
@@ -152,9 +148,8 @@ var JiWai =
 			data: 'current_user[send_via]='+dev,
 			onSuccess: function(html) {
 				if($('device')) {
-					(function(){
-					 $('device').innerHTML = name;
-					 }).delay(1000); 
+					    $('device').innerHTML = name;
+					    (function(){$("othObj").style.visibility="visible"}).delay(500);
 				}
 			}
 		}).request();
@@ -356,10 +351,6 @@ var JiWai =
 	},
 	onLoad: function() 
 	{
-		if ( window.JWBuddyIcon ) JWBuddyIcon.init();
-		if ( window.JWValidator ) JWValidator.init();
-		if ( window.JWLocation ) JWLocation.init();
-
 		JiWai.AutoEmote();
 		JiWai.InitHook();
 

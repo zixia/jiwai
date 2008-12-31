@@ -42,8 +42,8 @@ var JWBuddyIcon =
 				JWBuddyIcon.pNodeHref(oImg.parentNode, this);
 				var ct = (window.ie)?2:2;
 				var cl = (window.ie)?1:2;
-				oBuddyDiv.style.top = getIE(this).t - ct+"px";
-				oBuddyDiv.style.left = getIE(this).l - cl+"px";
+				oBuddyDiv.style.top = JWBuddyIcon.getIE(this).t - ct+"px";
+				oBuddyDiv.style.left = JWBuddyIcon.getIE(this).l - cl+"px";
 			}
 		});
 	},
@@ -113,11 +113,17 @@ var JWBuddyIcon =
 	},
 	reMoveClass:function(ob,classname){
 		ob.className = ob.className.replace(' '+classname,'');
-	}
+	},
+	getIE:function(e){ 
+	      var t=e.offsetTop; 
+	      var l=e.offsetLeft; 
+	      var h=e.offsetHeight;
+	      var w=e.offsetWidth;
+	      while(e=e.offsetParent){ 
+		      t+=e.offsetTop; 
+		      l+=e.offsetLeft;
+	      }
+	      return {b:t+h,t:t,l:l,w:w}
+      }
 };
-
-function ddump(v) {
-	if (current_user_id==89) {
-		alert(v);
-	}
-}
+window.jiwai_init_hook_jwbuddyicon = JWBuddyIcon.init;

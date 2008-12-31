@@ -229,7 +229,7 @@ class JWDesign {
 		if ( !$this->mIsDesigned ) return;
 		$url = "/system/{$this->mUserId}.css";
 		$time_stamp = $this->GetLastModifiedTime();
-		//$url .= "?$time_stamp";
+		$url .= "?$time_stamp";
 		return JWTemplate::GetAssetUrl($url, false);
 	}
 
