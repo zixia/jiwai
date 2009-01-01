@@ -23,8 +23,6 @@ if ( empty($url) )
 
 JWLog::Log(LOG_CRIT, "404URL: $url");
 
-JWTemplate::html_doctype();
-
 /* Return the Time Diff */
 define ('MINUTE_SECS', 60);
 define ('HOUR_SECS', MINUTE_SECS * 60);
@@ -47,19 +45,10 @@ function getTimeDiff($now, $future) {
     return $ret['day'] . "天" . $ret['hour'] . "小时" . $ret['minute'] . "分钟";
 }
 
+$element = JWElement::Instance();
 ?>
-<head>
-<?php JWTemplate::html_head() ?>
-</head>
-
-
-
-  <body>
-
-<?php JWTemplate::header() ?>
-
-
-<div id="container">
+<?php $element->html_header(); ?>
+<?php $element->common_header(); ?>
 
 <style type="text/css">
 #container table td { margin: 10px; padding:10px; }
@@ -95,6 +84,7 @@ margin: 10px;
 #err404 a:active{color:#ffffff; text-decoration:none; line-height:50px; background-color:#ff6600; font-size:28px;}
 </STYLE>
 
+<div id="container">
 <table border="0" cellpadding="0" cellspacing="0" id="err404">
   <tr>
     <td width="381" rowspan="2"><img src="http://asset.jiwai.de/images/org-404-left.jpg" width="381" height="484"></td>
@@ -138,7 +128,5 @@ margin: 10px;
 </div><!-- #container -->
 
 
-<?php JWTemplate::footer() ?>
-
-</body>
-</html>
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>

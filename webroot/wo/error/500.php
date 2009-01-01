@@ -25,20 +25,10 @@ if ( empty($url) )
 
 JWLog::Log(LOG_CRIT, "500URL: $url");
 
-JWTemplate::html_doctype();
-
-
-
+$element = JWElement::Instance();
 ?>
-<head>
-<?php JWTemplate::html_head()?>
-</head>
-
-
-
-  <body>
-
-<?php JWTemplate::header() ?>
+<?php $element->html_header();?>
+<?php $element->common_header();?>
 
 <div id="container">
 
@@ -90,8 +80,5 @@ margin: 10px;
 
 
 </div><!-- #container -->
-
-<?php JWTemplate::footer() ?>
-
-</body>
-</html>
+<?php $element->common_footer();?>
+<?php $element->html_footer();?>
