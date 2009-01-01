@@ -286,7 +286,7 @@ _SQL_;
 		if( empty( $options ) || empty($options['filename']) ) {
 			$filename = null;
 		}else
-			$filename = $options['filename'];
+			$filename = basename($options['filename']);
 
 
 		if( false == in_array( $type, array('ICON', 'MMS' ) ))
