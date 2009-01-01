@@ -122,4 +122,3 @@ var JWBuddyIcon =
 	      return {b:t+h,t:t,l:l,w:w}
       }
 };
-window.jiwai_init_hook_jwbuddyicon = JWBuddyIcon.init;

@@ -351,6 +351,10 @@ var JiWai =
 	},
 	onLoad: function() 
 	{
+		if (JWLocation) JWLocation.init();
+		if (JWValidator) JWValidator.init();
+		if (JWBuddyIcon) JWBuddyIcon.init();
+
 		JiWai.AutoEmote();
 		JiWai.InitHook();
 

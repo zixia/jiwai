@@ -31,4 +31,3 @@ var JWLocation = {
 		}
 	}
 };
-window.jiwai_init_hook_jwlocation = JWLocation.init;
