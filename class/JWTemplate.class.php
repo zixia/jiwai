@@ -437,7 +437,7 @@ _HTML_;
 	{
 		$element = JWElement::Instance(); ob_start();
 		$element->common_header(); $c = ob_get_clean();
-		echo preg_replace('#href=\"/([^\"]+)\"#i', 'href="http://jiwai.de/\\1"', $c);
+		echo preg_replace('#href=\"/([^\"]*)\"#i', 'href="http://jiwai.de/\\1"', $c);
 	}
 
 	static public function header2($highlight=null)
@@ -808,7 +808,7 @@ _HTML_;
 	{
 		$element = JWElement::Instance(); ob_start();
 		$element->common_footer(); $c = ob_get_clean();
-		echo preg_replace('#href=\"/([^\"]+)\"#i', 'href="http://jiwai.de/\\1"', $c);
+		echo preg_replace('#href=\"/([^\"]*)\"#i', 'href="http://jiwai.de/\\1"', $c);
 	}
 
 	static public function GoogleAnalytics()
