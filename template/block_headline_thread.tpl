@@ -50,7 +50,7 @@
 	}
 	else
 	{
-			$formated_one = array(
+		$formated_one = array(
 				'status'=>'目前为止没有叽歪过。'
 				);
 	}
@@ -86,7 +86,7 @@ window.jiwai_init_hook_threadreply = function() {
 				</div>
 				<!--{else}-->
 				<div class="bg_dark">
-					已关注此人
+					已关注 &gt;&gt; <a href="/wo/action/leave/{$g_page_user_id}" onclick="return JWAction.redirect(this);" class="bg_dark">取消</a>
 				</div>
 				<!--{/if}-->
 			</div>
@@ -105,16 +105,18 @@ window.jiwai_init_hook_threadreply = function() {
 			<div class="mar_b8">
 				<div class="bg_black">{$plugin_result['html']}</div>
 			</div>
-			<div>
+			<div class="mar_b8">
+				<div class="f_gra mar_b20">{$formated_one['status']}</div>
+			</div>
+			<div class="mar_b50">
 				<div class="rt lightbg"><a href="/{$replyto}/thread/{$replyid}" class="thread_item" onclick="return JWAction.replyStatus('{$user['nameScreen']}','{$one['idUser']}','{$one['id']}');" rel="{$one['id']}:{$user['nameScreen']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>${$replynum ? $replynum.'条':''}回复</a><!--{if $g_current_user_id}-->&nbsp; &nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}"><span id="ico_star_{$one['id']}"  class="ico_fav${$is_favourited?'d':''}"><img src="{$iconurl}" width="16" height="12" /></span>${$is_favourited?"取消收藏":"收藏"}</a><!--{/if}--><!--{if $can_delete}-->&nbsp; &nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a><!--{/if}--></div>
-				<div class="f_gra mar_b40">{$formated_one['status']}</div>
 			</div>
 			<!--{elseif $one}-->
 			<div class="line mar_b8"></div>
 			<div class="f_14 mar_b8">{$formated_one['status']}<!--{if isset($plugin_result['html'])}--><div class="bg_black">{$plugin_result['html']}</div><!--{/if}--></div>
 			<div class="f_gra">
-				<div class="dark"><a href="/{$user['nameUrl']}/" title="{$user['nameFull']}">{$user['nameScreen']}</a>&nbsp;<a href="/{$user['nameUrl']}/statuses/{$thread_id}" class="f_gra" title="{$one['timeCreate']}">${JWStatus::GetTimeDesc($one['timeCreate'])}</a>&nbsp;通过&nbsp;{$through}</div>
 				<div class="rt lightbg"><a href="/{$replyto}/thread/{$replyid}" class="thread_item" onclick="return JWAction.replyStatus('{$user['nameScreen']}','{$one['idUser']}','{$one['id']}');" rel="{$one['id']}:{$user['nameScreen']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>${$replynum ? $replynum.'条':''}回复</a><!--{if $g_current_user_id}-->&nbsp; &nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}"><span id="ico_star_{$one['id']}"  class="ico_fav${$is_favourited?'d':''}"><img src="{$iconurl}" width="16" height="12" /></span>${$is_favourited?"取消收藏":"收藏"}</a><!--{/if}--><!--{if $can_delete}-->&nbsp; &nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a><!--{/if}--></div>
+				<div class="dark"><a href="/{$user['nameUrl']}/" title="{$user['nameFull']}">{$user['nameScreen']}</a>&nbsp;<a href="/{$user['nameUrl']}/statuses/{$thread_id}" class="f_gra" title="{$one['timeCreate']}">${JWStatus::GetTimeDesc($one['timeCreate'])}</a>&nbsp;通过&nbsp;{$through}</div>
 			</div>
 			<!--{/if}-->
 		</div>
