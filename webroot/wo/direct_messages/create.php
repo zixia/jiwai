@@ -30,15 +30,12 @@ if ( isset($_REQUEST['jw_status']) ) {
 	$message = $_REQUEST['jw_status'];
 	$message = trim($message);
 	if ( false==empty($message) ) {
-		$is_succ = JWSns::CreateMessage( $current_user_id, $dm_user_id, $message, 'web', array( 'reply_id' => $dm_message_id,)); 
-		if( $is_succ ) {   
-			JWSession::SetInfo('notice', '悄悄话发送成功。'); 
-			JWTemplate::RedirectToUrl('/wo/direct_messages/sent');
-		}
+		$dm_user = JWUser::GetUserInfo( $dm_user_id );
+                JWSns::ExecWeb($current_user_id, "D {$dm_user['nameScreen']} {$message}");
 	} else {
 		JWSession::SetInfo('哎呀！请不要发送空悄悄话！');
 	}
-	JWTemplate::RedirectToLastUrl('/');
+	JWTemplate::RedirectBackToLastUrl('/');
 }
 ?>
 
