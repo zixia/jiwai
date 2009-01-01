@@ -105,6 +105,9 @@ class JWDesign {
 		JWDB::DelTableRow( 'Design', array ( 
 					'idUser' => $user_id )); 
 
+		if ( !$this->mIsDesigned )
+			return true;
+
 		return JWDB::SaveTableRow('Design', array ( 
 			'idUser' => $user_id
 			,'colorBackground' => $this->mBackgroundColor
