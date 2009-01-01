@@ -31,7 +31,8 @@
 
 		if( !$is_protected)
 		{
-			$plugin_result = JWPlugins::GetPluginResult( $one );
+			$scale = $noupdater ? 'picture' : 'middle';
+			$plugin_result = JWPlugins::GetPluginResult($one, $scale);
 			$formated_one = JWStatus::FormatStatus($one);
 		}
 		else

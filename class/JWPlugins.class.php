@@ -37,20 +37,18 @@ class JWPlugins
 			'tug.org'   => 'TeX',
 			);
 
-	static public function GetPluginResult( $status_row )
+	static public function GetPluginResult( $status_row, $scale='middle' )
 	{
 		$status = $status_row['status'];
 
 		if( 'MMS' == $status_row['statusType'] ) 
 		{
-
-
 			$photo_row = JWPicture::GetDbRowById( $status_row['idPicture'] );
 			$user_row = JWDB_Cache_User::GetDbRowById( $status_row['idUser'] );
 
 			$photo_title = $photo_row['fileName'];
-			$photo_src = JWPicture::GetUrlById($status_row['idPicture'], 'middle');
-			$photo_href = str_replace('/middle/','/origin/',$photo_src);
+			$photo_src = JWPicture::GetUrlById($status_row['idPicture'],$scale);
+			$photo_href = str_replace("/$scale/",'/origin/',$photo_src);
 
 			return array(
 					'type' => 'html',
