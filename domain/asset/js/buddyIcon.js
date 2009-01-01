@@ -57,7 +57,7 @@ var JWBuddyIcon =
 			}
 		}else{
 			var tar = $('buddy_bor');
-			if( JWBuddyIcon.es && ( ( o.id != 'show_btn' && o.id != 'th_img' && o.className != 'hed') || !o.id )) {
+			if (JWBuddyIcon.es && ((!o.id||(o.id != 'show_btn' && o.id != 'th_img')) && o.className != 'hed')) {
 				oBuddyDiv.addClass('no');
 			}
 		}
