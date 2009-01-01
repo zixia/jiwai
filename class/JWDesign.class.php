@@ -83,10 +83,13 @@ class JWDesign {
 		$this->mDesignChoice = null;
 	}
 
-	public function Destroy()
+	public function Destroy($idUser=null)
 	{
+		if ( !$idUser ) 
+			$idUser = $this->mUserId;
+
 		return JWDB::DelTableRow('Design', array(
-					'idUser' => $this->mUserId,
+					'idUser' => $idUser,
 					));
 	}
 
@@ -104,9 +107,6 @@ class JWDesign {
 
 		JWDB::DelTableRow( 'Design', array ( 
 					'idUser' => $user_id )); 
-
-		if ( !$this->mIsDesigned )
-			return true;
 
 		return JWDB::SaveTableRow('Design', array ( 
 			'idUser' => $user_id
