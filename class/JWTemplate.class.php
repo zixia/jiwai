@@ -435,8 +435,9 @@ _HTML_;
 	}
 	static public function header()
 	{
-		$element = JWElement::Instance();
-		$element->common_header_wo();
+		$element = JWElement::Instance(); ob_start();
+		$element->common_header(); $c = ob_get_clean();
+		echo preg_replace('#href=\"/([^\"]+)\"#i', 'href="http://jiwai.de/\\1"', $c);
 	}
 
 	static public function header2($highlight=null)
@@ -805,8 +806,9 @@ _HTML_;
 
 	static public function footer()
 	{
-		$element = JWElement::Instance();
-		$element->common_footer();
+		$element = JWElement::Instance(); ob_start();
+		$element->common_footer(); $c = ob_get_clean();
+		echo preg_replace('#href=\"/([^\"]+)\"#i', 'href="http://jiwai.de/\\1"', $c);
 	}
 
 	static public function GoogleAnalytics()
