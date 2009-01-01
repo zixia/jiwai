@@ -11,7 +11,7 @@
 	$through = JWDevice::GetNameFromType($one['device'],null); 
 }-->
 <div class="one">
-	<div class="lt hd"><a href="/{$user['nameUrl']}/"><em><img src="{$avatar}" class="a1 buddy_icon" icon="{$user['id']}"/></em></a></div>
+	<div class="lt hd"><a href="/{$user['nameUrl']}/"><em><img src="{$avatar}" class="a1 buddy" icon="{$user['id']}"/></em></a></div>
 	<div class="rt line">
 	<!--{if $inbox && $one['messageStatusReceiver']=='notRead'}-->
 	<div class="new_msg">
