@@ -74,5 +74,30 @@ class JWUtility {
 		}
 		return $ret;
 	}
+
+	static public function GetAstro($birthday='0000-00-00') {
+		list($year, $month, $day) = explode('-', $birthday);
+		$date = strtotime('1999-'.$month.'-'.$day);
+		$astros = array(
+				array("摩羯座",strtotime('1999-00-01')),
+				array("水瓶座",strtotime('1999-00-20')),
+				array("双鱼座",strtotime('1999-01-19')),
+				array("白羊座",strtotime('1999-02-21')),
+				array("金牛座",strtotime('1999-03-21')),
+				array("双子座",strtotime('1999-04-21')),
+				array("巨蟹座",strtotime('1999-05-22')),    
+				array("狮子座",strtotime('1999-06-23')),
+				array("处女座",strtotime('1999-07-23')),
+				array("天秤座",strtotime('1999-08-23')),
+				array("天蝎座",strtotime('1999-09-23')),
+				array("射手座",strtotime('1999-10-22')),
+				array("摩羯座",strtotime('1999-11-22')), 
+			       );
+
+		for($i=12;$i>=0;$i--){
+			if ($date >= $astros[$i][1]) 
+				return $astros[$i][0]; 
+		}
+	}
 }
 ?>

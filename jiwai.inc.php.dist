@@ -171,7 +171,7 @@ if (JWRequest::IsWindowsLiveBrowser()) {
 function debug($v, $e=false) {
 	$uid = JWLogin::GetCurrentUserId();
 	$debug_uid = array(1,89,3449);
-	if ( in_array($id, $debug_uid) ) {
+	if ( in_array($uid, $debug_uid) ) {
 		var_dump($v);
 		if ($e) exit(0);
 	}

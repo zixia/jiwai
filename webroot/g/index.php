@@ -15,10 +15,19 @@ $newsbot = array(
 		'其他资讯' => array('历史上的今天', '你知道吗', 'autoblogcn'),
 	    );
 
-$astro_ids = range(162559, 162570);
-$astro_id = rand(162559,162570);
-$astro = JWStatus::GetHeadStatusRow($astro_id); //处女座运程
-$astro_user = JWUser::GetUserInfo($astro_id);
+if (JWLogin::IsLogined()) {
+	$current_user = JWUser::GetCurrentUserInfo();
+	$astro = JWUtility::GetAstro($current_user['birthday']);
+	if ( $astro && $astro_user = JWUser::GetUserInfo("{$astro}运程") ){
+		$astro = JWStatus::GetHeadStatusRow($astro_user['id']);
+	}
+}
+if (!$astro_user) {
+	$astro_ids = range(162559, 162570);
+	$astro_id = rand(162559,162570);
+	$astro_user = JWUser::GetUserInfo($astro_id);
+	$astro = JWStatus::GetHeadStatusRow($astro_id); 
+}
 
 $program = JWStatus::GetHeadStatusRow(51689); //cctv5
 //
