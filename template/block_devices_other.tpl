@@ -135,7 +135,7 @@
 		<!--${$us = ucwords($s);}-->
 		<!--${$ts = $s=='twitter' ? 'twib' : 'fanb';}-->
 		<!--${$ictr++;}-->
-		<div class="gray mar_b50">
+		<div class="gray mar_b20">
 			<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 			<form action="/wo/bindother/create" method="post">
 			<input type="hidden" name="bid" value="{$bind['id']}"/>
@@ -145,7 +145,7 @@
 				<h4 onClick="ctrObj('ctr_{$ictr}','elm_{$ictr}')">&nbsp;{$us}</h4>
 			</div>
 			<div class="f">
-				<div id="elm_2" class="pad" style="display:none">
+				<div id="elm_{$ictr}" class="pad" style="display:none">
 					<div>
 						<div class="mar_b20">
 							<div class="rt"><a href="/wo/bindother/destroy/{$bind['id']}">删除并重设</a></div>
