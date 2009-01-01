@@ -346,13 +346,19 @@ var JWAction =
                 return this.isLogined( callback, false ) ? callback() : false;
         },
 
-	onEnterSubmit : function( event, o )
+	onEnterSubmit : function( event, o, ctrl )
 	{
-		if( event.keyCode==13 )
-		{
+		var flag = false;
+		if ( ctrl ) {
+			flag = (event.ctrlKey && event.keyCode==13) 
+				|| (event.altKey && event.keyCode==83);
+		} else {
+			flag = (event.keyCode==13) ;
+		}
+		if (flag){
 			var mission = $(o).getProperty('mission');
 			return eval( mission );
 		}
-		return false;
+		return flag;
 	}
 };

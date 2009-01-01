@@ -78,18 +78,18 @@
 			</div>
 			<ul id="update_count" class="bgall">
 				<!--{if $action['on']}-->
-				<li><span class="f_gra">&gt;&gt; <a href="/wo/action/on/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">接受更新通知</a></li>
+				<li><span class="f_gra">&gt;&gt;</span> <a href="/wo/action/on/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">接受更新通知</a></li>
 				<!--{elseif $action&&!$action['follow']&&!$action['on']}-->
-				<li><span class="f_gra">&gt;&gt; <a class="f_gra" href="/wo/action/off/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">取消更新通知</a></li>
+				<li><span class="f_gra">&gt;&gt;</span> <a href="/wo/action/off/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">取消更新通知</a></li>
 				<!--{/if}-->
 
 				<li><span class="ico_mail"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/direct_messages/create/{$user['id']}" onclick="return JWAction.redirect(this);">发送悄悄话</a></li>
 				<li><span class="ico_nao"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/action/nudge/{$user['id']}" onclick="return JWAction.redirect(this);">挠挠此人</a></li>
 
 				<!--{if $action['block']===false}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a href="/wo/block/u/{$user['id']}">解除阻止</a></li>
+				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/block/u/{$user['id']}">解除阻止</a></li>
 				<!--{else}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /><a href="/wo/block/b/{$user['id']}" onclick="return JWAction.redirect(this);">阻止此人</a></li>
+				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/block/b/{$user['id']}" onclick="return JWAction.redirect(this);">阻止此人</a></li>
 				<!--{/if}-->
 			</ul>
 			<!--{/if}-->

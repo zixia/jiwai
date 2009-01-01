@@ -12,7 +12,7 @@
 	<form name="" action="/wo/status/update" id="updaterForm" method="post" onsubmit="$('jw_status').style.backgroundColor='#eee';">
 		<div class="pagetitle">
 			<span class="rt">{$count['status']}条叽歪&nbsp;<span class="f_gra">&nbsp;|&nbsp;</span>&nbsp;{$countv}次访问</span>
-			<h1 cl>这一刻在做什么？</h1>
+			<h1>这一刻在做什么？</h1>
 			<div class="label">
 				<span class="f_gra">话题：</span>
 			<!--{foreach $suggest_tags AS $one}-->

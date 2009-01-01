@@ -25,7 +25,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$title}</title>
-	<meta name=="keywords" content="{$keywords}" />
+	<meta name="keywords" content="{$keywords}" />
 	<meta name="description" content="{$description}" />
 	<meta name="author" content="{$author}" />
 <!--{if $refresh}-->

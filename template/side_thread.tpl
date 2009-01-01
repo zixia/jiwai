@@ -20,8 +20,8 @@
 	<div class="mar_b8">在使用手机和聊天软件时，可以使用：</div>
 	<h4 class="mar_b8"><b>@ + 用户名 + 空格 + 内容</b></h4>
 	<div>例如你收到：</div>
-	<div class="mar_b8">&nbsp; &nbsp;&nbsp&nbsp;zixia: 我爱北京天安门</div>
+	<div class="mar_b8">&nbsp; &nbsp;zixia: 我爱北京天安门</div>
 	<div>你可以发送：</div>
-	<div class="mar_b8">&nbsp; &nbsp;&nbsp&nbsp;@zixia 我也爱北京天安门</div>
+	<div class="mar_b8">&nbsp; &nbsp;@zixia 我也爱北京天安门</div>
 	<div>这样就可以回复你关注的人了。</div>
 </div>
