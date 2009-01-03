@@ -13,7 +13,8 @@ $sql = <<<_SQL_
 SELECT	 idUser
 		,UNIX_TIMESTAMP(MAX(timeCreate)) as mtime
 FROM 	 Status
-WHERE	idUser IS NOT NULL
+WHERE	idUser IS NOT NULL 
+	AND timeCreate > ( now() - interval 7 day )
 GROUP BY	idUser
 _SQL_;
 

@@ -136,9 +136,11 @@ class JWRequest {
 			case 'WAPA': //Another unknown browser
 				return true;
 			default:
-				if( false === strpos( strtoupper($agent), 'WAP' ) )
-					return false;
-				return true;
+				if( preg_match('#Opera Mini#i', $agent) )
+					return true;
+				if( preg_match('#WAP#i', $agent) )
+					return true;
+				return false;
 		}
 		return false;
 	}

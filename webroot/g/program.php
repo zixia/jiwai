@@ -53,6 +53,7 @@ $param_main = array(
 			<div class="block">
 				<?php $element->block_statuses_muser($param_main);?>
 			</div>
+			<div class="clear"></div>
 		</div>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>

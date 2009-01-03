@@ -4,6 +4,8 @@
  */
 class JWUtility {
 
+	static private $global_vars = array();
+
 	static public function Option($a=array(), $v=null, $all=null)
 	{
 		$option = null;
@@ -98,6 +100,74 @@ class JWUtility {
 			if ($date >= $astros[$i][1]) 
 				return $astros[$i][0]; 
 		}
+	}
+
+	static public function AddLink($string) {
+		$pattern = '#^(.*?)(http|https|ftp|rtsp|mms)?://([\x00-\x1F\x21-\x2B\x2D-\x2E\x30-\x39\x3B-\x7F]+)([\x00-\x09\x0B-\x0C\x0E-\x1F\x21-\x7F\xE0-\xEF\x80-\xBF]*)(.*)$#is';
+		if ( preg_match($pattern, $string, $matches) ) {
+
+			$head_str = $matches[1];
+			$url_scheme = $matches[2];
+			$url_domain = $matches[3];
+			$url_path = $matches[4];
+			$tail_str = $matches[5];
+
+			if ( preg_match( '#jiwai.de#i', $url_domain ) ) {
+				$string = "{$head_str}<a target=\"_blank\" href=\"{$url_scheme}://{$url_domain}{$url_path}\">{$url_scheme}://{$url_domain}{$url_path}</a>{$tail_str}";
+			}
+		}
+		return $string;
+	}
+
+	static public function GetRssLink() {
+
+		if ( self::$global_vars['getrsslink'] ) 
+			return self::$global_vars['getrsslink'];
+
+		global $g_page_user_id;
+
+		$current_user_id = JWLogin::GetCurrentUserId();
+		$uri = @$_SERVER['REQUEST_URI'];
+		$prehost = "http://api.{$_SERVER['HTTP_HOST']}/statuses";
+
+		$rss = array();
+		if (empty($uri) ) return $rss;
+
+		//self
+		if ( preg_match('#/wo/#', $uri) && $current_user_id ) {
+			$link = "{$prehost}/user_timeline/{$current_user_id}.rss";
+			$rss[$link] = "自己的源";
+		}
+		//tag
+		if (preg_match('#/t/([^/]+)#i', $uri, $m) ) {
+			$tag_name = urlDecode($m[1]);
+			$tag_id = JWTag::GetIdByNameOrCreate($tag_name);
+			$link = "{$prehost}/channel_timeline/{$tag_id}.rss";
+			$rss[$link] = "订阅[{$tag_name}]";
+		}
+		//g
+		elseif (preg_match('#/g/#', $uri) ) {}
+
+		//public_timeline
+		if (preg_match('#^/public_timeline/#i', $uri) ) {
+			$link = "{$prehost}/public_timeline.rss";
+			$rss[$link] = "订阅最新叽歪";
+		}
+		//user
+		elseif (preg_match('#^/([^/]{3,})/(with_friends|favourites)?#i', $uri, $m) ) {
+			$user = JWUser::GetUserInfo($g_page_user_id);
+			$link = "{$prehost}/user_timeline/{$g_page_user_id}.rss";
+			$rss[$link] = "订阅{$user['nameScreen']}";
+			$step = strtolower(@$m[2]);
+			switch($step) {
+				case 'with_friends':
+					$link = "{$prehost}/friends_timeline/{$g_page_user_id}.rss";
+					$rss[$link] = "订阅{$user['nameScreen']}与朋友";
+					break;
+			}
+		}
+
+		return self::$global_vars['getrsslink'] = $rss;
 	}
 }
 ?>

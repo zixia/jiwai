@@ -53,22 +53,19 @@ else
 		$replyto = $formated_status['replyto'];
 		
 		$thread_user = null;
-		if ( $thread_id ) 
-		{
+		if ( $thread_id ) {
 			$thread_status = JWDB_Cache_Status::GetDbRowById( $thread_id );
-			if ( $thread_status['idUser'] )
+			if ( $thread_status['idUser'] ) {
 				$thread_user = JWDB_Cache_User::GetDbRowById( $thread_status['idUser'] );
+			}
 		}
 
 		$reply_link_string = "回复";
 		$reply_status_id = ( $thread_id ) ? $thread_id : $status_id;
-		if ( false == empty($thread_user) )
-		{
-			$replyto_link = "/$thread_user[nameUrl]/thread/$reply_status_id/$status_id";
-		}
-		else
-		{
-			$replyto_link = "/$user_name_url/thread/$reply_status_id/$status_id";
+		if ( false == empty($thread_user) ) {
+			$replyto_link = "/{$thread_user['nameUrl']}/thread/{$reply_status_id}/{$status_id}";
+		} else {
+			$replyto_link = "/{$user_name_url}/thread/{$reply_status_id}";
 		}
 	}
 }

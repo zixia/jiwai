@@ -39,7 +39,7 @@ sub _buildMail {
     $subject = _buildSubject($subject, $charset);
     my $bulk = Mail::Bulkmail->new(
         'LIST'      => $list,
-        'From'      => _buildSubject($from, 'utf8') . ' <wo@jiwai.de>',
+        'From'      => _buildSubject($from, 'utf-8') . ' <wo@jiwai.de>',
         'Subject'   => $subject,
         'message_from_file' => 1,
         'headers_from_message'  => 1,

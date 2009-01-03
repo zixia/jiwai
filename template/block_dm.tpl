@@ -16,7 +16,7 @@
 	<!--{if $inbox && $one['messageStatusReceiver']=='notRead'}-->
 	<div class="new_msg">
 	<!--{/if}-->
-		<div class="text dark">${htmlSpecialChars($one['message'])}</div>
+		<div class="text dark">${JWUtility::AddLink(htmlSpecialChars($one['message']))}</div>
 		<div class="f_gra">
 			<div class="lt dark" ><a href="/{$user['nameUrl']}">{$user['nameScreen']}</a>&nbsp;{$timedesc}&nbsp;通过&nbsp;{$through}</div>
 			<div class="rt lightbg" ><!--{if $inbox && $one['messageType']=='dm'}--><a href="/wo/direct_messages/reply/{$one['id']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>回复</a>&nbsp; &nbsp;<!--{/if}--><a href="/wo/direct_messages/destroy/{$one['id']}"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a></div>

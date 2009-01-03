@@ -92,6 +92,6 @@
 
 <div class="side3">
 	<h4 class="mar_b8">&gt;&gt;<a href="/public_timeline/"> 最新叽歪</a></h4>
-	<h4>&gt;&gt;<a href="http://lab.aust.edu.cn/googlemap/"> 叽歪大中国</a></h4>
+	<h4>&gt;&gt;<a href="http://lab.jiwai.de/googlemap/"> 叽歪大中国</a></h4>
 </div>
 <!--{include side_registeruser}-->

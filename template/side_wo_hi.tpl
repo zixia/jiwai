@@ -2,8 +2,7 @@
 <!--${
 	$user = $g_current_user;
 	$devices = JWDevice::GetDeviceRowByUserId( $g_current_user_id );
-	if(isset($devices['facebook'])) unset($devices['facebook']);
-	$devices = array_merge(array('web'=>'网页'),$devices);
+	$devices = array_merge(array('web'=>array()),$devices);
 	$count = JWSns::GetUserState($user['id']);
 	$nmnum = JWDB_Cache_Message::GetNewMessageNum($user['id']);
 	$nnnum = JWDB_Cache_Message::GetNewNoticeMessageNum($user['id']);
@@ -30,8 +29,10 @@
 			</div>
 			<ul id="othObj">
 			<!--{foreach $devices AS $type=>$device}-->
+			<!--{if !$device['secret']&&$type!='facebook'}-->
 			<!--${$type_name=JWDevice::GetNameFromType($type);}-->
 				<li><a href="javascript:JiWai.ChangeDevice('{$type}','{$type_name}');">{$type_name}</a></li>
+			<!--{/if}-->
 			<!--{/foreach}-->
 				<div class="bt"></div><div class="at"></div>
 			</ul>

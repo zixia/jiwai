@@ -19,7 +19,7 @@
 		<!--{if $g_current_user['isUrlFixed']=='N'}-->
 		<dt>永久地址</dt>
 		<dd>
-			<div><a href="http://jiwai.de/">http://jiwai.de/</a> <input type="text" name="user[nameUrl]" value="{$g_current_user['nameUrl']}" size="10" /></div>
+			<div><a href="http://jiwai.de/">http://jiwai.de/</a> <input type="text" name="user[nameUrl]" value="{$g_current_user['nameUrl']}" size="10" id="user_nameUrl" ajax="nameUrl" alt="永久地址" /><i></i></div>
 			<div class="f_red">你可以设置个性URL地址，但是只能修改一次，以后不能修改！如果现在你不确定你想要的名字，可以暂时维持现状，等以后再说。</div>
 		</dd>
 		<!--{/if}-->

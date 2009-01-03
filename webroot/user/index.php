@@ -84,7 +84,9 @@ switch ( $func )
 		// TODO: http://jiwai.de/zixia/picture/thumb48/para.jpg
 		user_picture($page_user_id, $pict_size);
 		break;
-
+	case 'avatar':
+		require_once(dirname(__FILE__) . "/avatar.inc.php");
+		break;
 	case 'thread':
 		if ( preg_match('/^(\d+)\/?(\d*)$/',$param,$matches) )
 		{

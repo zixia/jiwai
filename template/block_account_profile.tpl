@@ -76,7 +76,7 @@ window.jiwai_init_hook_location_setting = function()
 		</dd>
 		<dt></dt>
 		<dd>
-			<div><input type="submit" name="" value="&nbsp; 保存修改 &nbsp;" /> &nbsp; <input type="reset" value="取消"若罔闻/></div>
+			<div><input type="submit" name="" value="&nbsp; 保存修改 &nbsp;" /> &nbsp; <input type="reset" value="取消" /></div>
 		</dd>
 	</dl>
 	<div class="clear"></div>

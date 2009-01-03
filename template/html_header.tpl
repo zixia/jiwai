@@ -21,6 +21,7 @@
 	}
 	$author = $author ? $author : htmlspecialchars('叽歪网 <wo@jiwai.de>');
 	$is_anonymous = JWUser::IsAnonymous($g_current_user_id);
+	$rsslink = JWUtility::GetRssLink();
 }-->
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -31,6 +32,9 @@
 <!--{if $refresh}-->
 	<meta http-equiv="refresh" content="600;url={$_SERVER['SCRIPT_URI']}" />
 <!--{/if}-->
+<!--{foreach $rsslink AS $rssone=>$rsstitle}-->
+	<link rel="alternate"  type="application/rss+xml" title="{$rsstitle} - [RSS]" href="{$rssone}" />
+<!--{/foreach}-->
 <!--{if $g_page_on}-->
 	<link rel="openid2.provider openid.server" href="http://jiwai.de/wo/openid/server" />
 	<link rel="openid2.local_id openid.delegate" href="http://jiwai.de/{$g_page_user['nameUrl']}/" />

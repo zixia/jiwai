@@ -8,8 +8,9 @@ if ( $is_logined ) {
 } else {
 	$param_tab = array( 'tabtitle' => '大家的叽歪' );
 }
+$param_head = array( 'title' => '叽歪广场 / 最新叽歪', );
 ?>
-<?php $element->html_header();?>
+<?php $element->html_header($param_head);?>
 <?php $element->common_header();?>
 <div id="container">
 <div id="lefter">
