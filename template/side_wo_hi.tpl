@@ -44,7 +44,7 @@
 		<li id="friend_count"><a class="dark" href="/wo/followings/" onClick="return JWAction.redirect(this);">关注&nbsp;{$count['following']}&nbsp;人</a></li>
 		<li id="follower_count"><a class="dark" href="/wo/followers/" onClick="return JWAction.redirect(this);">被&nbsp;{$count['follower']}&nbsp;人关注</a></li>
 		<li id="follower_count"><a class="dark" href="/{$user['nameUrl']}/t/" onClick="return JWAction.redirect(this);">{$count['tag']}&nbsp;话题</a></li>
-		<li id="friend_count"><a class="dark" href="/{$user['nameUrl']}/t/" onClick="return JWAction.redirect(this);">关注&nbsp;{$count['tag_following']}&nbsp;话题</a></li>
+		<li id="friend_count"><a class="dark" href="/{$user['nameUrl']}/tfollowings/" onClick="return JWAction.redirect(this);">关注&nbsp;{$count['tag_following']}&nbsp;话题</a></li>
 		<li id="mms_count"><a class="dark" href="/wo/mms/">{$count['mms']}&nbsp;张照片</a></li>
 	</ul>
 </div>

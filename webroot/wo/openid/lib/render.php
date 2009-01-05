@@ -92,55 +92,44 @@ function navigation_render($msg, $items)
 function page_render($body, $user, $title, $h1=null, $login=false)
 {
 	ob_start();
+
+	$element = JWElement::Instance();
+	$element->html_header();
+	$element->common_header();
+	$param_tab = array( 'tabtitle' => 'OpenID设置' );
+	$param_side = array( 'sindex' => 'openid' );
 ?>
-<html>
 
-<head>
-<?php 
-JWTemplate::html_head(array(
-	'version_css_jiwai_screen' => 'v1',
-)); 
-?>
-</head>
-
-
-<body class="account" id="settings">
-
-<?php JWTemplate::accessibility() ?>
-
-<?php JWTemplate::header() ?>
-<?php JWTemplate::ShowActionResultTipsMain(); ?>
 <div id="container">
-<p class="top">设置</p>
-<div id="wtMainBlock">
-<div class="leftdiv">
-<ul class="leftmenu">
-<li><a href="/wo/account/settings">基本资料</a></li>
-<li><a href="/wo/privacy/">保护设置</a></li>
-<li><a href="/wo/devices/sms">绑定设置</a></li>
-<li><a href="/wo/notification/email">系统通知</a></li>
-<li><a href="/wo/account/profile_settings">个性化界面</a></li>
-<li><a href="/wo/openid/" class="now">Open ID</a></li>
-</ul>
-</div><!-- leftdiv -->
-<div class="rightdiv">
-<div class="lookfriend">
-	<h1><?php echo $title; ?></h1>
-	<?php echo $body; ?>
-</div><!-- lookfriend -->
-<div style="overflow: hidden; clear: both; height: 50px; line-height: 1px; font-size: 1px;"></div>
-</div>
-<!-- rightdiv -->
-</div><!-- #wtMainBlock -->
-<div style="overflow: hidden; clear: both; height: 7px; line-height: 1px; font-size: 1px;"></div>
-</div><!-- #container -->
+<?php $element->wide_notice();?>
+<div id="lefter">
+        <div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+        <div id="leftBar" >
+                <?php $element->block_headline_minwo();?>
+                <?php $element->block_tab($param_tab);?>
+                <div class="f">
+			<div class="block">
+			<?php echo $body;?>
+			</div>
+                </div>
+        </div>
+        <div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+</div><!-- end lefter -->
 
-<?php JWTemplate::footer() ?>
+<div id="righter">
+        <div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+        <div id="rightBar" class="f" >
+                <?php $element->side_setting($param_side);?>
+        </div>
+        <div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+</div><!-- righter -->
+<div class="clear"></div>
+</div><!-- container -->
 
-</body>
-</html>
 <?php
-    $headers = array();
+	$element->common_footer();
+	$element->html_footer();
+	$headers = array();
 	$text = ob_get_contents();
 	ob_end_clean();
 	return array($headers, $text);

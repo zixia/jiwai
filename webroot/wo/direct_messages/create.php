@@ -34,8 +34,9 @@ if ( isset($_REQUEST['jw_status']) ) {
                 JWSns::ExecWeb($current_user_id, "D {$dm_user['nameScreen']} {$message}");
 	} else {
 		JWSession::SetInfo('哎呀！请不要发送空悄悄话！');
+		JWTemplate::RedirectBackToLastUrl('/');
 	}
-	JWTemplate::RedirectBackToLastUrl('/');
+	JWTemplate::RedirectToUrl('/wo/direct_messages/sent');
 }
 ?>
 

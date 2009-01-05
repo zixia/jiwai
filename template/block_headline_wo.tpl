@@ -25,7 +25,7 @@
 		<!--{include block_updater}-->
 	</form>
 	
-	<div class="gra_input mar_b8 rt">
+	<div class="gra_input mar_b8 txt_r">
 	<form action="/wo/search/statuses" method="get"><input type="text" name="q" value="关键字..." onFocus="clearValue(this)" onBlur="searchValue(this,'关键字...')" /> <input type="button" onclick="this.form.submit();" value="搜索" class="def_btn" /></form>
 	</div>
 	<div class="clear"></div>

@@ -208,7 +208,7 @@ class JWFarrago
 
 	static public function GetSuggestTag($user_id=null) 
 	{
-		$suggest_tags = array('圣诞惊喜', '笑话');
+		$suggest_tags = array('新年愿望', '笑话');
 		$p_tags = array('叽歪', '读书', '美食', '生活');
 		if ( $user_id == null ) {
 			return array_merge($suggest_tags, $p_tags);

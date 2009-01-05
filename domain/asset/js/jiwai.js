@@ -104,10 +104,11 @@ var JiWai =
 		var el = $('status_star_'+id);
 		var elspan = $('ico_star_'+id);
 		new Ajax( '/wo/favourites/create/'+id, {
-			method: 'get',
+			method: 'post',
+			data: 'post=true',
 			headers: {'AJAX':true},
 			onSuccess: function(html) {
-				var d = ('1'==html);
+				var d = html.test(/delete/);
 				var t = d ? '取消收藏' : '收藏';
 				el.title = el.innerHTML = t;
 				if(elspan){

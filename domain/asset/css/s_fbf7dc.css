@@ -115,7 +115,7 @@ h3, .f_14, h4{font-size:14px}
 #lefter_g .s .b{margin:0 0 0 3px;}
 #lefter_g .s .c{margin:0 0 0 2px;}
 #lefter_g .s .d{margin:0 0 0 1px;}
-#leftBar{background:#fff}
+
 
 #righter_g{width:352px;display:table-cell;}
 #righter_g .a,#righter_g .b,#righter_g .c,#righter_g .d{background:#fff}
@@ -297,8 +297,7 @@ a.po_d{background-position:left -660px;}
 
 .one {clear:both; margin-top:15px;}
 .one .lt {margin-right:10px;}
-.one .rt {width:610px; padding:0 0 7px 5px;}
-.one .rt .rt{width:auto;}
+.one .con {margin-left:65px; border-bottom:1px #f1f1f1 solid; padding:0 0 7px 0px;}
 .one .hd{padding-top:2px;}
 .one .hd a{display:block;color:#D05D02; width:auto; height:auto; border:0; text-decoration:none}
 .one .hd a:hover{color:#F87A01;}
@@ -344,11 +343,11 @@ dl dd{text-align:left;}
 /* setting end */
 
 
-.page {float:right; height:26px; margin:20px 0 0 0; line-height:18px;}
-.page a {float:left; padding:2px 3px 0 3px; text-decoration:none; margin-right:3px;}
-.page a:hover{background:#ff5500; color:#fff;}
-.page a.now {color:#000; font-weight:bold; cursor:default;}
-.page span {float:left; padding:2px 7px 0 7px;}
+.page{text-align:right;height:26px; margin:20px 0 0 0; line-height:2em;}
+.page a {padding:5px 3px; text-decoration:none; margin:0 1px; line-height:2em;}
+.page a:hover{background:#ff5500; color:#fff; text-decoration:none;}
+.page .now {color:#000; font-weight:bold; cursor:default;}
+.page span {padding:2px 7px 0 7px;}
 
 .rss {margin-top:30px;color:#aaa; line-height:40px;}
 .rss a {color:#AAA;}

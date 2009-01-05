@@ -240,11 +240,11 @@ class JWStatus {
 			'　','＃', '＄', '＠', '【', '】', '［', '］', '，', '：',
 		));
 
-		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s]+)/', $status, $matches ) )
+		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $matches ) )
 		{
 			$symbol = trim( $matches[1] );
 			$value = $matches[2];
-			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s]+)/', '', $status );
+			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', '', $status );
 
 			if ( $symbol_need==null || $symbol == $symbol_need ) 
 			{
@@ -1051,11 +1051,6 @@ _SQL_;
 			$status = $status['status'];
 		}
 
-		$replyto = null;
-
-		if ( preg_match( '/^@\s*([^\s<>\$@#]{3,20})(\b|\s)/', $status, $matches ) ) 
-			$replyto = $matches[1];
-
 		$skip_url_regex = '#'.'(komoo.cn)'
 				// .'|(fanfou.com)'
 				.'#';
@@ -1173,7 +1168,7 @@ _HTML_;
 		}
 
 		// Add @ Link For other User
-		$status = preg_replace(	 '/\s@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ," @<a href='/\\1/' rel='contact'>\\1</a>\\2" ,$status );
+		$status = preg_replace(	 '/(\s|^)@\s*([^\s<>,，:\$@#]{3,20})(,|，|:|\b|\s|$)/' ," @<a href='/\\2/' rel='contact'>\\2</a>\\3" ,$status );
 		$status = preg_replace(	 "/\[\s*([^<>@#\]\[]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/' rel='tag'>\\1</a>]\\2" ,$status );
 
 		if( $conf_id ) 

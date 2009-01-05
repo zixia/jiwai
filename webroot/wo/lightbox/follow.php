@@ -60,7 +60,7 @@ $need_request = ( $follower_user['protected'] == 'Y'
 		</div>
 		<ul class="msg">
 			<li class="rt"><a href="javascript:;" onClick="return JWSeekbox.remove();" class="close">X</a></li>
-			<li class="pad_t8"><h3><b>要开始关注<?php echo $follower_user['nameScren'];?>吗？</b></h3></li>
+			<li class="pad_t8"><h3><b>要开始关注<?php echo $follower_user['nameScreen'];?>吗？</b></h3></li>
 		</ul>
 		<div class="clear"></div>
 	</div>

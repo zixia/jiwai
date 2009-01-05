@@ -25,8 +25,9 @@ $param_dm = array( 'reply' => $message );
 ?>
 
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
+<?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 	<div id="leftBar" >

@@ -2,83 +2,42 @@
 require_once ('../../../jiwai.inc.php');
 
 JWLogin::MustLogined(false);
+$current_user_id = JWLogin::GetCurrentUserId();
 
-$idLoginedUser=JWLogin::GetCurrentUserId();
-
-if ( $idLoginedUser )
+$is_fav = $succ = false;
+if ( $current_user_id )
 {
 	$param = $_REQUEST['pathParam'];
 	if ( preg_match('/^\/(\d+)$/',$param,$match) )
 	{
-		$idStatus = intval($match[1]);
+		$status_id = intval($match[1]);
 
-		$is_fav = JWFavourite::IsFavourite($idLoginedUser, $idStatus);
-		if($is_fav)
-			$is_succ = JWFavourite::Destroy($idLoginedUser, $idStatus);
-		else
-			$is_succ = JWFavourite::Create($idLoginedUser, $idStatus);
-		$succ = $is_fav ? "取消收藏" : "收藏";
-
-		if ($is_succ )
-		{
-			echo !$is_fav ? "1" : "0";
-			$notice_html = <<<_HTML_
-${succ}成功！
-_HTML_;
+		$is_fav = JWFavourite::IsFavourite($current_user_id, $status_id);
+		if($is_fav) {
+			$is_succ = JWFavourite::Destroy($current_user_id, $status_id);
+		} else {
+			$is_succ = JWFavourite::Create($current_user_id, $status_id);
 		}
-		else
-		{
-			$error_html = <<<_HTML_
-哎呀！由于系统故障，没能够${succ}成功……
-请稍后再尝试吧。 
-_HTML_;
+		$succ = $is_fav ? "取消收藏" : "收藏";
+		$ajax = $is_fav ? "create" : "delete";
+		if ($is_succ ) {
+			$notice_html = "${succ}成功！";
+		} else {
+			$error_html = "哎呀！由于系统故障，没能够${succ}成功…… 请稍后再尝试吧。 ";
 		} 
 	}
 	else // no pathParam?
 	{
-		$error_html = <<<_HTML_
-哎呀！系统路径好像不太正确……
-_HTML_;
+		$error_html = "哎呀！系统路径好像不太正确……";
 	}
 
 }
 
-// is request ajax?
-if ( ('XMLHttpRequest'==$_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_AJAX'] )
-{/*
-	// AJAX here
-	$favourite_html	= JWTemplate::FavouriteAction($idStatus, true);
-
-	if ( JWStatus::IsUserOwnStatus($idLoginedUser,$idStatus) )
-		$favourite_html	.= JWTemplate::TrashAction($idStatus);
-
-	$favourite_html	= preg_replace('/"/', '\\"',$favourite_html);
-
-	$js_str = <<<_JS_
-$("status_actions_$idStatus").setHTML("$favourite_html");
-JiWai.ApplyFav($("status_actions_$idStatus"));
-_JS_;
-
-	//die($js_str);
-	header ( "Content-Type: text/javascript" );
-	echo $js_str;
-*/}
-else // NOT ajax
-{/*
-	if ( !empty($error_html) )
-		JWSession::SetInfo('error',$error_html);
-
-	if ( !empty($notice_html) )
-		JWSession::SetInfo('notice',$notice_html);
-*/
-
-	if ( array_key_exists('HTTP_REFERER',$_SERVER) )
-		$redirect_url = $_SERVER['HTTP_REFERER'];
-	else
-		$redirect_url = '/';
-
-	header ("Location: $redirect_url");
+if (false==empty($_POST)) {
+	die($ajax);
+} else {
+	JWSession::SetInfo(($notice_html | $error_html));
 }
 
-exit(0);
+JWTemplate::RedirectBackToLastUrl('/');
 ?>

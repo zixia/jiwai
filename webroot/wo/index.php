@@ -5,7 +5,7 @@ JWLogin::MustLogined(false);
 $element = JWElement::Instance();
 $param_tab = array( 'now' => 'wo_following' );
 $param_notice = array(
-	'forcenotice' => '<li>叽歪网正在改版测试中,你可以在<a href="http://jiwai.de/改版反馈/statuses/14094129">这里</a>投下你神圣的一票，有任何意见或建议欢迎到<a href="http://jiwai.de/t/改版反馈/">这里</a>反馈，我们将会持续的努力的改进叽歪。</li><li>如果不喜欢叽歪的配色可以在<a href="http://jiwai.de/wo/design/">这里</a>进行设置</li><li>或者<a href="http://alpha.jiwai.de/">去旧版叽歪</a>。</li>',
+	'forcenotice' => '<li>叽歪网正在改版测试中,你可以在<a href="http://jiwai.de/改版反馈/statuses/14094129">这里</a>投下你神圣的一票，有任何意见或建议欢迎到<a href="http://jiwai.de/t/改版反馈/">这里</a>反馈，我们将会持续的努力的改进叽歪。</li><li>如果不喜欢叽歪的配色可以在<a href="http://jiwai.de/wo/design/">这里</a>进行设置，还可以在<a href="http://jiwai.de/改版反馈/statuses/14159314">这里</a>提交你的需求。</li><li>或者<a href="http://alpha.jiwai.de/">去旧版叽歪</a>。 ---- IE下区域空白现象已经修复，请大家继续食用叽歪de.</li>',
 );
 ?>
 <?php $element->html_header();?>
