@@ -82,7 +82,7 @@ class JWPlugins_Flickr
 
 		$rsp_obj = @unserialize( $rsp );
 
-		if ( null==$rsp_obj || 'fail'==@$rsp_obj['stat'] || 0==@$rsp_obj['photo']['visibility']['ispublic'] || 2>=@$rsp_obj['photo']['farm'] )
+		if ( null==$rsp_obj || 'fail'==@$rsp_obj['stat'] || 0==@$rsp_obj['photo']['visibility']['ispublic'] )
 			return array();
 
 		return array(
