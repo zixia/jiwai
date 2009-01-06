@@ -237,14 +237,14 @@ class JWStatus {
 		 * Convert to semi corner
 		 */
 		$status = JWTextFormat::ConvertCorner( $status, array(
-			'　','＃', '＄', '＠', '【', '】', '［', '］', '，', '：',
+			'　','＃', '＄', '＠', '【', '】', '［', '］', '：',
 		));
 
-		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $matches ) )
+		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,，:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $matches ) )
 		{
 			$symbol = trim( $matches[1] );
 			$value = $matches[2];
-			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', '', $status );
+			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,，:\$@#]{3,20})([\b\s:\$@#,;]+)/', '', $status );
 
 			if ( $symbol_need==null || $symbol == $symbol_need ) 
 			{
@@ -261,9 +261,7 @@ class JWStatus {
 			$symbol = '[]';
 			$value = $matches[2];
 			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,})(\s*\])(\s*)/U', '', $status));
-			$maybe_tags = JWTextFormat::ConvertCorner( $value, array('，') );
-			$maybe_tags = array_unique(explode( ',', $maybe_tags));
-
+			$maybe_tags = preg_split('/[,，]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
 			if ( 1<count($maybe_tags) )
 			{
 				$value = array_shift($maybe_tags);

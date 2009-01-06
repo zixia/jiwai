@@ -9,7 +9,7 @@
 }-->
 <div class="one line">
 	<div class="lt hd"><a href="/{$user_row['nameUrl']}/"><em><img src="{$user_icon_url}" class="a1" /></em></a></div>
-	<div class="rt">
+	<div class="con_no">
 		<div class="dark">
 			<div><a href="{$user_row['nameUrl']}">{$user_row['nameScreen']}</a></div>
 			<div>
@@ -23,7 +23,7 @@
 		<div class="f_gra">
 			<div class="rt lightbg" ><a href="/wo/direct_messages/create/{$user_id}">悄悄话</a> &nbsp;|&nbsp; <a href="/wo/action/nudge/{$user_id}" onclick="return JWAction.redirect(this);">挠挠</a> &nbsp;|&nbsp; <a href="/wo/action/off/{$user_id}" onclick="JWAction.redirect(this);">取消关注</a> &nbsp;|&nbsp; <a href="/wo/block/b/{$user_id}">阻止此人</a></div>
 		</div>
+		<div class="clear"></div>
 	</div>
-	<div class="clear"></div>
 </div>
 <!--{/foreach}-->

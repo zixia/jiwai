@@ -289,6 +289,8 @@ class JWMail {
 		if ( false == JWUser::IsValidEmail($email) )
 			return false;
 
+		return self::SendMailInvitation2009($user, $email, $message);
+
 		$template_file = isset( $options['template_file'] ) 
 			? $options['template_file'] : 'Invitation.tpl';
 
@@ -316,6 +318,7 @@ class JWMail {
 	
 		$template_data = preg_replace('/%INVITATION_ID%/i', $invitation_code, $template_data);
 		$template_data = preg_replace('/%SUBJECT%/i', $message, $template_data);
+		$template_data = preg_replace('/%DATE%/i', date('Y/m/d'), $template_data);
 		$template_data = preg_replace('/%Photo.Url%/i', $photo_url, $template_data);
 
 		$template_data = preg_replace('/%Num.Status%/i', $num_status, $template_data);
@@ -389,6 +392,24 @@ class JWMail {
 			,$template_info['subject']
 			,$template_info['html']
 		);
+	}
+
+	static public function SendMailInvitation2009($user, $email, $subject) 
+	{
+		$param = array(
+			'g_current_user_id' => $user['idUser'],
+		);
+		ob_start();
+		$element = JWElement::Instance();
+		$element->mail_template_invitation($param);
+		$content = ob_get_clean();
+		
+		//send
+		$from = "{$user['nameScreen']}（{$user['nameFull']}） <noreply@jiwai.de>";
+		$send_options = array( 
+				'contentType' => 'text/html',
+				);
+		return self::SendMail( $from, $email, $subject, $content, $send_options);
 	}
 }
 ?>
