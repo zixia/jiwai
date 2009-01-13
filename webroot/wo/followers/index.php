@@ -42,6 +42,7 @@ $param_tab = array(
 		'now' => 'followers_' . $now,
 		'tabtitle' => '被'.$followers_num.'人关注',
 		'tab' => $tab,
+		'wo' => true,
 		); 
 ?>
 

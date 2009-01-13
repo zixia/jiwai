@@ -305,6 +305,7 @@ a.po_d{background-position:left -660px;}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
 
+.msg, .one .con, #lefter .pagetitle{position:relative}
 #lefter .one_block{width:590px; overflow:hidden; padding-left:2em;}
 #lefter_g .one_block{width:555px; overflow:hidden; padding-left:2em;}
 #lefter_g .one .rt {width:450px;}
@@ -395,7 +396,8 @@ dl dd{text-align:left;}
 .bg_dark{background:#fff5ec; text-align:center; color:#999;}
 #sendOjb .tt, #sendOjb .sbtn .tt{height:16px; font-weight:normal; padding:0;}
 #sendOjb .tt{padding-left:20px; text-align:left}
-#sendOjb ul{position:absolute; display:none; left:0; top:19px;width:100px;}dOjb:hover ul{display:block; z-index:100}
+#sendOjb ul{position:absolute; display:none; left:0; top:19px;width:100px;}
+#sendOjb:hover ul{display:block; z-index:100}
 #sendOjb ul li a{display:block;width:80px; padding-left:20px; height:18px;color:#fff;background:#f87000;border-top:1px #eee solid}
 #sendOjb ul li a:hover{background:#f8aa66;}
 * html #sendOjb{
@@ -403,4 +405,3 @@ ie6:expression(onmouseover=function(){this.getElementsByTagName("ul")[0].style.d
 	onmouseout=function(){this.getElementsByTagName("ul")[0].style.display="none"}
 	);
 }
-#sen

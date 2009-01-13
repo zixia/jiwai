@@ -6,7 +6,7 @@ $user_info = JWUser::GetCurrentUserInfo();
 $new_user_info = @$_POST['user'];
 $outInfo = $user_info;
 $photo_url = JWPicture::GetUserIconUrl($user_info['id'],'thumb96');
-if ( !empty($_POST) )
+if ( 'POST' == $_SERVER['REQUEST_METHOD'] )
 {
 	$new_user_info['protected'] = isset($new_user_info['protected'])?'Y':'N';
 	$new_user_info['messageFriendOnly'] = isset($new_user_info['messageFriendOnly'])?'Y':'N';

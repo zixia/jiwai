@@ -9,6 +9,6 @@
 	if ( $user_picture_id )
 		$user_icon_url = $picture_url_row[$user_picture_id];
 }-->
-	<li class="hd"><a href="/{$user_row['nameUrl']}/" title="{$user_row['nameScreen']}"><img src="{$user_icon_url}" alt="{$user_row['nameScreen']}" title="{$user_row['nameScreen']}" class="buddy" icon="{$user_row['id']}" />{$user_row['nameScreen']}</a></li>
+	<li class="hd"><a href="/{$user_row['nameUrl']}/" title="{$user_row['nameScreen']}"><img src="{$user_icon_url}" alt="{$user_row['nameScreen']}" title="{$user_row['nameScreen']}" class="buddy" icon="{$user_row['id']}" /> {$user_row['nameScreen']}</a></li>
 <!--{/foreach}-->
 </ul>

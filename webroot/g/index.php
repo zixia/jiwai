@@ -80,7 +80,6 @@ $param_side = array(
 
 $element = JWElement::Instance();
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">

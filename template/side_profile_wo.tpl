@@ -77,7 +77,7 @@
 	<li>喜欢的音乐和歌手：{$user['music']}</li>
 	<!--{/if}-->
 	<!--{if !empty($user['place'])}-->
-	<li>喜欢的地方：{$user['artist']}</li>
+	<li>喜欢的地方：{$user['place']}</li>
 	<!--{/if}-->
 	</ul>
 </div>

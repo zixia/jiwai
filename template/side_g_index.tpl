@@ -39,7 +39,7 @@
 	<!--{foreach $hotjiwais AS $one}-->
 		<div class="one">
 			<div class="lt hd">
-				<a href="/{$users[$one['idUser']]['nameUrl']}"><img src="${JWPicture::GetUrlById($users[$one['idUser']]['idPicture']);}" class="buddy" icon="{$one['idUser']}" /><br />{$users[$one['idUser']]['nameScreen']}</a>
+				<a href="/{$users[$one['idUser']]['nameUrl']}/"><img src="${JWPicture::GetUrlById($users[$one['idUser']]['idPicture']);}" class="buddy" icon="{$one['idUser']}" /><br />{$users[$one['idUser']]['nameScreen']}</a>
 
 			</div>
 			<div>{$one['status']}</div>

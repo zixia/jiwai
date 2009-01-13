@@ -40,9 +40,10 @@
 		break;
 		case 'followings':
 		case 'followers':
+			$wourl = $wo ?  'wo' : $g_page_user['nameUrl'];
 			$tab = array(
-				'list'=>array('列表','/'.$g_page_user['nameUrl'].'/'.$o.'/'),
-				'square'=>array('方格','/'.$g_page_user['nameUrl'].'/'.$o.'/?s=1'),
+				'list'=>array('列表','/'.$wourl.'/'.$o.'/'),
+				'square'=>array('方格','/'.$wourl.'/'.$o.'/?s=1'),
 			);
 		break;
 		case 'account':

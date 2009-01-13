@@ -240,11 +240,11 @@ class JWStatus {
 			'　','＃', '＄', '＠', '【', '】', '［', '］', '：',
 		));
 
-		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s<>,，:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $matches ) )
+		if ( preg_match( '/^(\s*[\$@#]\s*)([^\s\b<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $matches ) )
 		{
 			$symbol = trim( $matches[1] );
 			$value = $matches[2];
-			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,，:\$@#]{3,20})([\b\s:\$@#,;]+)/', '', $status );
+			$status = preg_replace( '/^(\s*[\$@#]\s*)([^\s<>,:\$@#\b]{3,20})([\b\s:\$@#,;]+)/', "\\3", $status );
 
 			if ( $symbol_need==null || $symbol == $symbol_need ) 
 			{
