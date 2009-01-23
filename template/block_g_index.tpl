@@ -18,7 +18,7 @@
 	</div>
 	<div class="mar_b50">
 		<div class="pagetitle">
-			<h3>新闻咨询...</h3>
+			<h3>新闻资讯...</h3>
 		</div>
 		<ul class="mar_b20">
 		<!--${$program_u=JWUser::GetUserInfo($program['idUser'])}-->
