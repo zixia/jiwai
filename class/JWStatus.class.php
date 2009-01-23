@@ -794,6 +794,10 @@ _SQL_;
 		$condition_other .= " AND (User.srcRegister IS NULL OR User.srcRegister NOT IN ('TV-PREDICT', 'STOCK', 'FUND'))";
 		$condition_other .= " AND (User.id = Status.idUser)";
 
+		//not display RSS/Feedlr
+		$condition_other .= " AND (Status.idPartner IS NULL OR Status.idPartner NOT IN(10044,10046))";
+
+
 		$sql = <<<_SQL_
 SELECT		
 			Status.id	as idStatus
