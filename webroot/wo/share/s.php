@@ -25,8 +25,8 @@ function collectToJiWai(){
 		method: 'post',
 		data: $('f').toQueryString(),
 		headers: {'AJAX':true},
-		onSuccess: function() {
-			alert('收藏到叽歪成功');
+		onSuccess: function(m) {
+			alert(m);
 			window.close();
 		}
 	}).request();

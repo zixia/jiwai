@@ -3,8 +3,7 @@ require_once('../../../jiwai.inc.php');
 define( 'BOOKMARKLET_IDPARTNER', 10037 );
 $idUser = JWLogin::GetPossibleUserId();
 if( false == $idUser ) {
-	Header('Location: /wo/share/login');
-	exit;
+	die('/wo/share/login');
 }
 
 if( $_POST ) {
@@ -16,8 +15,7 @@ if( $_POST ) {
 		$idPartner = BOOKMARKLET_IDPARTNER;
 
 	if( strpos( strtolower($url), 'http://jiwai.de/' ) === 0 ) {
-		Header( "Location: /" );
-		exit;
+		die('无需收藏叽歪上已有的内容!');
 	}
 
 	$device = 'api';
@@ -30,7 +28,6 @@ if( $_POST ) {
 
 	$idStatus = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $serverAddress, $options);
 	if( $idStatus > 1 ) JWFavourite::Create($idUser, $idStatus);
-	
-	exit;
+	die('收藏到叽歪成功!');
 }
 ?>
