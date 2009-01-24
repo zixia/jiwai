@@ -23,4 +23,3 @@
 		</li>
 	</form>
 </ul>
-<script>window.jiwai_init_hook_jwsearch = JWSearch.init();</script>

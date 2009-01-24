@@ -50,7 +50,6 @@ function clearBothHeight() {
 };
 
 function ctrObj(ctrElem,signElem){
-	clearBothHeight();
 	var myctrer = $(ctrElem);
 	var mySlider = $(signElem);
 	if(mySlider.style.display!="none"){
@@ -60,7 +59,6 @@ function ctrObj(ctrElem,signElem){
 		myctrer.className="min";
 		mySlider.style.display="block";
 	}
-	theSameHeight();
 };
 
 function reSetHeight(){
@@ -220,12 +218,12 @@ window.jiwai_init_hook_bgblack = function() {
 	});
 };
 
-window.jiwai_init_hook_eheight = theSameHeight;
 
 var JWSsearch =
 {
 	init:function()
 	{
+		if (!($('searchType'))) return;
 		$("searchType").value= 0;
 		(window.ie ? document : window).addEvent('click', function(){$("othSh").style.display="none";});
 	},
@@ -277,3 +275,6 @@ var JWSsearch =
 				|| v=="搜索自己的叽歪" || v=="搜索此人的叽歪");
 	}
 };
+
+window.jiwai_init_hook_eheight = theSameHeight;
+window.jiwai_init_hook_jwsearch = JWSsearch.init;

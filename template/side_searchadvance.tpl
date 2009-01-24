@@ -23,12 +23,4 @@
 		</form>
 	</dl>
 </div>
-
-<div class="side3">
-	<div class="pagetitle"><h3>相关话题...</h3></div>
-	<div>
-		<a href="#">笑话</a>
-		<a href="#">苹果</a>
-		<a href="#">冰灾</a>
-	</div>
-</div>
+<div class="clear"></div>
