@@ -42,3 +42,4 @@
 	<!--{/if}-->
 	<!--{if infotip}-->{$infotip}<!--{/if}-->
 </div>
+<div class="clear"></div>

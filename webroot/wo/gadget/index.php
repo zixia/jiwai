@@ -5,19 +5,16 @@ $element = JWElement::Instance();
 $param_side = array( 'gadget' => 'index' );
 $param_tab = array( 'tabtitle' => '窗可贴说明' );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 
 <div id="container">
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_gadget_index();?>
-		</div>
+		<?php $element->block_gadget_index();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->

@@ -59,57 +59,65 @@
 	}
 	$avatar = JWPicture::GetUrlById($user['idPicture'], 'thumb96');
 }-->
-<div class="f">
+<div class="top_block">
 	<div class="usermsg">
-		<div class="lt">
-			<div class="hd mar_b8">
-				<a href="/{$user['nameUrl']}/avatar/"><img src="{$avatar}" title="{$user['nameScreen']}" /></a>
-			</div>
-			<!--{if true}-->
-			<!--${$action = JWSns::GetUserAction($g_current_user_id, $g_page_user_id);}-->
-			<div class="mar_b8" >
-				<!--{if !$action||$action['follow']}-->
-				<div class="button sbtn">
-					<div class="at"></div><div class="bt"></div>
-					<div class="tt">
-						<a href="/wo/action/follow/{$g_page_user_id}" onclick="return JWAction.follow({$g_page_user_id});">关注此人</a>
+		<div class="lt wht hdimg">
+			<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+			<div class="f">
+				<div class="hd mar_b8">
+					<a href="/{$user['nameUrl']}/avatar/"><img src="{$avatar}" title="{$user['nameScreen']}" /></a>
+				</div>
+				<!--{if true}-->
+				<!--${$action = JWSns::GetUserAction($g_current_user_id, $g_page_user_id);}-->
+				<div class="mar_b8" >
+					<!--{if !$action||$action['follow']}-->
+					<div class="button sbtn">
+						<div class="at"></div><div class="bt"></div>
+						<div class="tt">
+							<a href="/wo/action/follow/{$g_page_user_id}" onclick="return JWAction.follow({$g_page_user_id});">关注此人</a>
+						</div>
+						<div class="bt"></div><div class="at"></div>
 					</div>
-					<div class="bt"></div><div class="at"></div>
+					<!--{else}-->
+					<div class="bg_dark">
+						已关注 &gt;&gt; <a href="/wo/action/leave/{$g_page_user_id}" onclick="return JWAction.redirect(this);" class="bg_dark">取消</a>
+					</div>
+					<!--{/if}-->
 				</div>
-				<!--{else}-->
-				<div class="bg_dark">
-					已关注 &gt;&gt; <a href="/wo/action/leave/{$g_page_user_id}" onclick="return JWAction.redirect(this);" class="bg_dark">取消</a>
+
+				<div id="update_count">
+					<a href="/wo/direct_messages/create/{$user['id']}" class="ico_mail"  onclick="return JWAction.redirect(this);" title="发送悄悄话"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></a>
+					<a href="/wo/action/nudge/{$user['id']}" class="ico_nao" onclick="return JWAction.redirect(this);" title="挠挠此人"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></a>
+					<!--{if $action['on']}-->
+					<a href="/wo/action/on/{$user['id']}" class="ico_nosound" title="接受更新通知"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="16" /></a>
+					<!--{elseif $action&&!$action['follow']&&!$action['on']}-->
+					<a href="/wo/action/off/{$user['id']}" class="ico_nosound" title="取消更新通知"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="16" /></a>
+					<!--{/if}-->
+					<!--{if $action['block']===false}-->
+					<a href="/wo/block/u/{$user['id']}" class="ico_stop" title="取消阻止"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="16" /></a>
+					<!--{else}-->
+					<a href="/wo/block/b/{$user['id']}" class="ico_stop" title="阻止此人" onclick="return JWAction.redirect(this);"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="16" /></a>
+					<!--{/if}-->
 				</div>
 				<!--{/if}-->
 			</div>
-			<ul id="update_count" class="bgall">
-				<!--{if $action['on']}-->
-				<li><span class="f_gra">&gt;&gt;</span> <a href="/wo/action/on/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">接受更新通知</a></li>
-				<!--{elseif $action&&!$action['follow']&&!$action['on']}-->
-				<li><span class="f_gra">&gt;&gt;</span> <a href="/wo/action/off/{$user['id']}" onclick="return JWAction.redirect(this);" class="f_gra">取消更新通知</a></li>
-				<!--{/if}-->
-
-				<li><span class="ico_mail"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/direct_messages/create/{$user['id']}" onclick="return JWAction.redirect(this);">发送悄悄话</a></li>
-				<li><span class="ico_nao"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/action/nudge/{$user['id']}" onclick="return JWAction.redirect(this);">挠挠此人</a></li>
-
-				<!--{if $action['block']===false}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/block/u/{$user['id']}">解除阻止</a></li>
-				<!--{else}-->
-				<li><span class="ico_stop"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="18" height="12" /></span><a href="/wo/block/b/{$user['id']}" onclick="return JWAction.redirect(this);">阻止此人</a></li>
-				<!--{/if}-->
-			</ul>
-			<!--{/if}-->
+			<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 		</div>
 		<div class="msg phot_mar">
-			<div class="rt txt_r"><a href="/wo/design/save/{$user['id']}" class="dark">使用此人配色</a></div>
-			<h1>{$user['nameScreen']}</h1>
-			<!--{if $one}-->
-			<div class="f_14 mar_b8">{$formated_one['status']}<!--{if isset($plugin_result['html'])}--><div class="bg_black">{$plugin_result['html']}</div><!--{/if}--></div>
-			<div class="f_gra">
-				<div class="rt lightbg"><a href="/{$replyurl}/thread/{$replyid}" class="thread_item" rel="{$one['id']}:{$user['nameScreen']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>${$replynum ? $replynum.'条':''}回复</a><!--{if $g_current_user_id}-->&nbsp; &nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}"><span id="ico_star_{$one['id']}" class="ico_fav${$is_favourited?'d':''}"><img src="{$iconurl}" width="16" height="12" /></span>${$is_favourited?"取消收藏":"收藏"}</a><!--{/if}--><!--{if $can_delete}-->&nbsp; &nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a><!--{/if}--></div>
-				<div class="dark"><a href="/{$user['nameUrl']}/" title="{$user['nameFull']}">{$user['nameScreen']}</a>&nbsp;<a href="/{$user['nameUrl']}/statuses/{$thread_id}" class="f_gra" title="{$one['timeCreate']}">${JWStatus::GetTimeDesc($one['timeCreate'])}</a>&nbsp;通过&nbsp;{$through}</div>
+			<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+			<div class="f">
+				<div class="rt txt_r"><a href="/wo/design/save/{$user['id']}" class="dark">使用此人配色</a></div>
+				<h1>{$user['nameScreen']}</h1>
+				<div class="po_lt"></div>
+				<div class="f_14 mar_b8">{$formated_one['status']}<!--{if isset($plugin_result['html'])}--><div class="bg_black">{$plugin_result['html']}</div><!--{/if}--></div>
+				<div class="f_gra">
+				<!--{if $one}-->
+					<div class="rt lightbg"><a href="/{$replyurl}/thread/{$replyid}" class="thread_item" rel="{$one['id']}:{$user['nameScreen']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>${$replynum ? $replynum.'条':''}回复</a><!--{if $g_current_user_id}-->&nbsp; &nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}"><span id="ico_star_{$one['id']}" class="ico_fav${$is_favourited?'d':''}"><img src="{$iconurl}" width="16" height="12" /></span>${$is_favourited?"取消收藏":"收藏"}</a><!--{/if}--><!--{if $can_delete}-->&nbsp; &nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a><!--{/if}--></div>
+					<div class="dark"><a href="/{$user['nameUrl']}/" title="{$user['nameFull']}">{$user['nameScreen']}</a>&nbsp;<a href="/{$user['nameUrl']}/statuses/{$thread_id}" class="f_gra" title="{$one['timeCreate']}">${JWStatus::GetTimeDesc($one['timeCreate'])}</a>&nbsp;通过&nbsp;{$through}</div>
+				<!--{else}--><br/><!--{/if}-->
+				</div>
 			</div>
-			<!--{/if}-->
+			<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 		</div>
 		<div class="clear"></div>
 	</div>

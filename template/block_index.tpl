@@ -2,7 +2,7 @@
 	<h1><img src="${JWTemplate::GetAssetUrl('/images/jiwai_ban.gif');}" /></h1>
 </div>
 <div id="flash" class="mar_b20">
-	<object id="swf_jiwai" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="650" height="355" align="middle">
+	<object id="swf_jiwai" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="540" height="305" align="middle">
 	<param name="allowScriptAccess" value="sameDomain" />
 	<param name="allowFullScreen" value="false" />
 	<param name="FlashVars" value="" />
@@ -11,9 +11,9 @@
 	<param name="bgcolor" value="#cccccc" />
 	<param name="wmode" value="transparent" />
 
-	<param name="width" value="650" />
-	<param name="height" value="355" />
-	<embed src="${JWTemplate::GetAssetUrl('/js/map.swf')}" quality="high" bgcolor="#cccccc" width="650" height="355" name="swf_jiwai" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="transparent" FlashVars=""/>
+	<param name="width" value="540" />
+	<param name="height" value="305" />
+	<embed src="${JWTemplate::GetAssetUrl('/js/map.swf')}" quality="high" bgcolor="#cccccc" width="540" height="305" name="swf_jiwai" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" wmode="transparent" FlashVars=""/>
 	</object>
 </div>
 <div class="mar_b20">

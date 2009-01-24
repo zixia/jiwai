@@ -107,12 +107,18 @@ class JWSearch {
 			$q = preg_replace("/\s+type\s*:\s*([\w]+)/","",$q);
 		}
 
+		$order = isset($extra['order']) ? (!!$extra['order']) : true;
+
 		$query_info = array(
 			'query_string' => $q,
-			'order' => true,
+			'order' => $order,
 			'current_page' => $current_page,
 			'page_size' => $page_size,
 		);
+
+		if ( isset($extra['order_field']) ) {
+			$query_info['order_field'] = $extra['order_field'];
+		}
 
 		/**
 		 * deal extra info
@@ -126,10 +132,10 @@ class JWSearch {
 		 * consider search syntax
 		 */
 
-		$in_user_array = array_unique(preg_split('/\s|,/', strtolower($in_user), -1, PREG_SPLIT_NO_EMPTY));
-		$in_device_array = array_unique(preg_split('/\s|,/', strtolower($in_device), -1, PREG_SPLIT_NO_EMPTY));
-		$in_type_array = array_unique(preg_split('/\s|,/', strtolower($in_type), -1, PREG_SPLIT_NO_EMPTY));
-		$in_tag_array = array_unique(preg_split('/\s|,/', strtolower($in_tag), -1, PREG_SPLIT_NO_EMPTY));
+		$in_user_array = array_unique(preg_split('/[\s,，]+/', strtolower($in_user), -1, PREG_SPLIT_NO_EMPTY));
+		$in_device_array = array_unique(preg_split('/[\s,，]+/', strtolower($in_device), -1, PREG_SPLIT_NO_EMPTY));
+		$in_type_array = array_unique(preg_split('/[\s,，]+/', strtolower($in_type), -1, PREG_SPLIT_NO_EMPTY));
+		$in_tag_array = array_unique(preg_split('/[\s,，]+/', strtolower($in_tag), -1, PREG_SPLIT_NO_EMPTY));
 
 		/**
 		 * set query_info

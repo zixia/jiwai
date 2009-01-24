@@ -32,7 +32,6 @@ $param_pager = array(
 		'pager' => $pager,
 		);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 
@@ -40,20 +39,16 @@ $param_pager = array(
 <?php $element->wide_notice();?>
 <div id="lefter_g">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<div class="f">
-			<?php $element->block_g_es($param_main);?>
-			<div class="block">
-				<?php $element->block_pager($param_pager);?>
-			</div>
-		</div>
+	<div id="leftBar_g" class="f">
+		<?php $element->block_g_es($param_main);?>
+		<?php $element->block_pager($param_pager);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->
 
 <div id="righter_g">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
-	<div id="rightBar" class="f" >
+	<div id="rightBar_g" class="f" >
 		<?php $element->side_g_es();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>

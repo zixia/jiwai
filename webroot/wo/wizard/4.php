@@ -4,18 +4,15 @@ $element = JWElement::Instance();
 $param_tab = array('tabtitle' => '密切关注活动现场');
 $param_side = array('windex' => 4 );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_tips();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_wizard_4();?>
-		</div>
+		<?php $element->block_wizard_4();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- lefter end -->

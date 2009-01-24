@@ -10,19 +10,25 @@ $param_tab = array( 'now' => 'wo_reply' );
 
 <div id="container">
 <div id="lefter">
-	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<?php $element->block_headline_wo();?>
-		<?php $element->block_tab($param_tab);?>
+
+	<div class="mar_b20">
+		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<div class="f">
-			<div>
-				<?php $element->block_statuses_wo_replies();?>
-			</div>
+			<?php $element->block_headline_wo();?>
+		</div>
+		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+	</div>
+
+	<div>
+		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+		<div class="f">
+			<?php $element->block_tab($param_tab);?>
+			<?php $element->block_statuses_wo_replies();?>
 			<div style="clear"></div>
 			<?php $element->block_rsslink();?>
 		</div>
+		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 	</div>
-	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->
 
 <div id="righter">

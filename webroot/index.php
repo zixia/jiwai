@@ -13,13 +13,12 @@ $element = JWElement::Instance();
 <?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<div class="f">
-			<?php $element->block_index();?>
-		</div>
+	<div class="f">
+		<?php $element->block_index();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->
+
 <div id="righter">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div id="rightBar" class="f" >

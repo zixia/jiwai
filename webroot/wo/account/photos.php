@@ -78,12 +78,10 @@ $param_side = array( 'sindex' => 'account' );
 <?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_account_photos();?>
-		</div>
+		<?php $element->block_account_photos();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- lefter end -->

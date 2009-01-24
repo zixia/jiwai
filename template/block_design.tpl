@@ -10,7 +10,7 @@
 			<input type="hidden" name="ui[profile_design_choice_whole]" value="{$ui[profile_design_choice][0]}" id="ui_profile_design_choice_whole"/>
 			<div id="elm_1" class="pad" >
 				<div class="mar_b20">
-					<table cellpadding="0" cellspacing="8" width="570" height="180" id="set_style_bor">
+					<table cellpadding="0" cellspacing="8" width="490" height="180" id="set_style_bor">
 					<tr>
 						<td title="s_dfdfdf" style="background:#dfdfdf">&nbsp;</td>
 						<td title="s_f3e8f7" style="background:#f3e8f7">&nbsp;</td>
@@ -66,7 +66,7 @@
 			<div id="elm_2" class="pad">
 				<div>
 					<div class="lt50">
-						<div><input type="file" name="profile_background_image" size="30" /> </div>
+						<div><input type="file" name="profile_background_image" size="22" /> </div>
 						<div class="f_gra">持.jpg .gif .png格式,最大可以上传 2M 大小的图片</div>
 						<div class="pad_t8">
 							<input type="radio" id="left" name="ui[profile_background_tile]" value="left" ${$ui['profile_background_tile']=='left' ? 'checked':''} /> <label for="left" >居左</label> &nbsp; &nbsp;

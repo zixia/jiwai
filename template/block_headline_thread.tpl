@@ -74,7 +74,7 @@ window.jiwai_init_hook_threadreply = function() {
 	$('jw_rsid').value = '${$status_id ? $status_id : $thread_id}';
 }
 </script>
-<div class="f">
+<div class="${$single?'single':'top'}_block">
 	<div class="usermsg">
 		<div class="lt">
 			<div class="hd mar_b8">
@@ -143,3 +143,4 @@ window.jiwai_init_hook_threadreply = function() {
 	</div>
 	<!--{/if}-->
 </div>
+<br/>

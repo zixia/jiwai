@@ -27,15 +27,15 @@ function colorSelect(cid, start_color)
 };
 
 function theSameHeight() {
-	var ol = $("leftBar");
-	var or = $("rightBar");
+	var ol = $("leftBar") || $("leftBar_g");
+	var or = $("rightBar") || $("rightBar_g");
 	if ( !ol || !or ) return;
 	var maxHeight = (parseInt(ol.offsetHeight)>=parseInt(or.offsetHeight))?parseInt(ol.offsetHeight):parseInt(or.offsetHeight);
 	if(parseInt(ol.offsetHeight)>=parseInt(or.offsetHeight))
 		or.style.height = maxHeight+"px";
 	else
 		ol.style.height = maxHeight+"px";
-};
+}
 
 function textCounter(field, countfield, maxlimit) {
 	if (field.value.length > maxlimit) 
@@ -45,8 +45,8 @@ function textCounter(field, countfield, maxlimit) {
 };
 
 function clearBothHeight() {
-	$('leftBar').style.height = 'auto';
-	$('rightBar').style.height = 'auto';
+	($('leftBar_g') || $('leftBar')).style.height = 'auto';
+	($('rightBar_g') || $('rightBar')).style.height = 'auto';
 };
 
 function ctrObj(ctrElem,signElem){
@@ -221,3 +221,59 @@ window.jiwai_init_hook_bgblack = function() {
 };
 
 window.jiwai_init_hook_eheight = theSameHeight;
+
+var JWSsearch =
+{
+	init:function()
+	{
+		$("searchType").value= 0;
+		(window.ie ? document : window).addEvent('click', function(){$("othSh").style.display="none";});
+	},
+	click:function(e)
+	{
+		var oth = $("othSh");
+		JWBuddyIcon.cancelBubble(e);
+		if(oth.style.display !="block"){
+			var o = $("seni_btn");
+			oth.style.left = getIE(o).l + "px";
+			oth.style.top = getIE(o).t + 18 + "px";
+			oth.style.display="block";
+			for(var i=0;i<JWSsearch.arr().length;i++)
+			{
+				JWSsearch.arr()[i].setAttribute("href","javascript:JWSsearch.showValue('"+ JWSsearch.arr()[i].rel +"','"+i+"')");
+			}
+		}else{
+			oth.style.display="none";
+		}
+	},
+	showValue:function(v,i)
+	{
+		if(false==JWSsearch.condiction()){
+			$("searchType").value= i;
+			JWSsearch.toSearch();
+		}else{
+			JWSsearch.arr()[$("searchType").value].parentNode.style.display="block";
+			$("jwssch").value= v;
+			$("sValue").value= v;
+			$("searchType").value= i;
+			JWSsearch.arr()[i].parentNode.style.display="none"
+			$("othSh").style.display="none";
+		}
+	},
+	arr:function(){
+		var obj = $("othSh").getElementsByTagName("A");
+		return obj;
+	},
+	toSearch:function()
+	{
+		if(false==JWSsearch.condiction()) {
+			if ( $('searchType').value == 0 ) $('InUser').value='';
+			$('searchForm').submit();
+		}
+	},
+	condiction:function(){
+		var v = $("jwssch").value;
+		return ( v='' || v =="搜索大家的叽歪" 
+				|| v=="搜索自己的叽歪" || v=="搜索此人的叽歪");
+	}
+};

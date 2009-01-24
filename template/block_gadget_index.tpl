@@ -15,21 +15,21 @@
 	<div class="pagetitle"><h3>我们列出了一些窗可贴的使用方法，希望对您有所帮助：</h3></div>
 	
 	<ul class="one one_block">
-		<li class="hd"><a href="http://help.jiwai.de/BlogbusWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogbus.gif');}" title="博客大巴" border="0" /></em>博客大巴</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/SinablogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_sina.gif');}" title="新浪博客" /></em>新浪博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/MsnSpaceWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_msn.gif');}" title="MSN空间" /></em>MSN空间</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/SohublogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_sohu.gif');}" title="搜狐博客" /></em>搜狐博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/NeteaseblogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_163.gif');}" title="网易博客" /></em>网易博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/MopblogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_maopu.gif');}" title="猫扑博客" /></em>猫扑博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/TianhublogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_tianhu.gif');}" title="天虎博客" /></em>天虎博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/BlogChineseWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogchinese.gif');}" title="BlogChinese" /></em>BlogChinese</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/BlogbusWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogbus.gif');}" title="博客大巴" border="0" />博客大巴</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/SinablogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_sina.gif');}" title="新浪博客" />新浪博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/MsnSpaceWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_msn.gif');}" title="MSN空间" />MSN空间</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/SohublogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_sohu.gif');}" title="搜狐博客" />搜狐博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/NeteaseblogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_163.gif');}" title="网易博客" />网易博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/MopblogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_maopu.gif');}" title="猫扑博客" />猫扑博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/TianhublogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_tianhu.gif');}" title="天虎博客" />天虎博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/BlogChineseWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogchinese.gif');}" title="BlogChinese" />BlogChinese</a></li>
 
-		<li class="hd"><a href="http://help.jiwai.de/TomblogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_tom.gif');}" title="TOM博客" /></em>TOM博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/QzoneblogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_qzone.gif');}" title="QQ空间" /></em>QQ空间</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/BlogCnWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogcn.gif');}" title="博客中国" /></em>博客中国</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/HexunblogWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_hexun.gif');}" title="和讯博客" /></em>和讯博客</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/BloggerWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogger.gif');}" title="Blogger" /></em>Blogger</a></li>
-		<li class="hd"><a href="http://help.jiwai.de/TianyaWidget" class="smallblack" target="_blank"><em><img src="${JWTemplate::GetAssetUrl('/images/gadget_tianya.gif');}" title="天涯博客" /></em>天涯博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/TomblogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_tom.gif');}" title="TOM博客" />TOM博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/QzoneblogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_qzone.gif');}" title="QQ空间" />QQ空间</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/BlogCnWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogcn.gif');}" title="博客中国" />博客中国</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/HexunblogWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_hexun.gif');}" title="和讯博客" />和讯博客</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/BloggerWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_blogger.gif');}" title="Blogger" />Blogger</a></li>
+		<li class="hd"><a href="http://help.jiwai.de/TianyaWidget" class="smallblack" target="_blank"><img src="${JWTemplate::GetAssetUrl('/images/gadget_tianya.gif');}" title="天涯博客" />天涯博客</a></li>
 	</ul>
 </div>
 <div class="clear"></div>

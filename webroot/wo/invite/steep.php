@@ -54,12 +54,10 @@ $param_tab = array( 'tabtitle' => '不在叽歪的联系人' );
 <?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_invite_steep($param_step);?>
-		</div>
+		<?php $element->block_invite_steep($param_step);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- lefter end -->

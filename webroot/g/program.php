@@ -17,7 +17,7 @@ $program_users = array(
 );
 
 $block_tab = array(
-	0 => array('中央电视台', '/g/program'),
+	0 => array('央视', '/g/program'),
 	1 => array('全国卫视', '/g/program/1'),
 	2 => array('北京台', '/g/program/2'),
 	3 => array('上海台', '/g/program/3'),
@@ -34,7 +34,6 @@ $param_main = array(
 		'user_ids' => $program_users[$oblockid],
 		);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 
@@ -42,18 +41,13 @@ $param_main = array(
 <?php $element->wide_notice();?>
 <div id="lefter_g">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<div class="f">
-			<div class="pagetitle">
-				<h1>叽歪电视节目预告</h1>
-			</div>
+	<div id="leftBar_g" class="f">
+		<div class="pagetitle">
+			<h1>叽歪电视节目预告</h1>
 		</div>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<div class="block">
-				<?php $element->block_statuses_muser($param_main);?>
-			</div>
-			<div class="clear"></div>
+		<div class="block">
+			<?php $element->block_statuses_muser($param_main);?>
 		</div>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>

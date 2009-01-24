@@ -20,7 +20,7 @@
 		<div class="mar_b20 f_14 ">或者，看看他们在叽歪什么</div>
 		<ul class="one one_block">
 		<!--{foreach $featured_users AS $uid=>$one}-->
-			<li class="hd"><a href="/{$one['nameUrl']}" title="{$one['nameScreen']}"><em><img src="{$picture_urls[$one['idPicture']]}" alt="{$one['nameScreen']}" title="{$one['nameScreen']}" /></em>{$one['nameScreen']}</a></li>
+			<li class="hd"><a href="/{$one['nameUrl']}" title="{$one['nameScreen']}"><img src="{$picture_urls[$one['idPicture']]}" alt="{$one['nameScreen']}" title="{$one['nameScreen']}" /> {$one['nameScreen']}</a></li>
 		<!--{/foreach}-->
 		</ul>
 	</div>

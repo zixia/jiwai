@@ -12,7 +12,7 @@
 			<div id="elm_1" class="pad" style="display:none">
 				<div class="mar_b8">输入朋友的Email地址：[多个收件人用回车或者,分隔]</div>
 				<div class="mar_b8">
-					<textarea name="emails" style="width:550px;"></textarea>
+					<textarea name="emails" style="width:500px;"></textarea>
 				</div>
 				<div class="mar_b8"><input type="submit" value=" &nbsp;发送邀请" />	</div>
 			</div>
@@ -34,7 +34,7 @@
 			<div id="elm_2" class="pad" style="display:none">
 				<div class="mar_b8">输入朋友的手机号：[多个收件人用回车或者,分隔]</div>
 				<div class="mar_b8">
-					<textarea name="smses" style="width:550px;"></textarea>
+					<textarea name="smses" style="width:500px;"></textarea>
 				</div>
 				<div>内容：</div>
 				<div class="mar_b8">我是<input type="text" name="nickname" value="{$g_current_user['nameScreen']}" size="10" />，我在叽歪网建立了我的碎碎念平台，你可以回复任何想说的话，开始你的碎碎念，回复 F 关注我（可以随时停止关注）</div>

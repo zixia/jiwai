@@ -2290,7 +2290,8 @@ _SQL_;
 	/* add for element, seek@jiwai.com */
 	static public function GetHeadStatusRow($user_id, $nonemms=false)
 	{
-		$user_id = JWDB::CheckInt($user_id);
+		if ( !$user_id = abs(intval($user_id)))
+			return array();
 		$user = JWUser::GetUserInfo( $user_id );
 		$condition = $nonemms 
 			? " AND `statusType` <> 'MMS'" 

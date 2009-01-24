@@ -66,22 +66,19 @@ if ( $_POST )
 	}
 }
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header_no();?>
 <div id="container">
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_tips();?>
 		<div class="tag">
 			<ul>
 				<h2><b>快速注册</b></h2>
 			</ul>
 		</div>
-		<div class="f">
-			<?php $element->block_account_create();?>
-		</div>
+		<?php $element->block_account_create();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- lefter end -->

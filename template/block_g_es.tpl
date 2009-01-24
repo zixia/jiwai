@@ -2,6 +2,7 @@
 	<h1>叽歪大屏幕活动</h1>
 </div>
 <div class="block">
+	<!--{if count($events)}-->
 	<div class="mar_b50">
 		<div>
 			<!--{foreach $events AS $one}-->
@@ -19,4 +20,6 @@
 			<!--{/foreach}-->
 		</div>
 	</div>
+	<!--{/if}-->
+	<div class="clear"></div>
 </div>

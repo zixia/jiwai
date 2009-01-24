@@ -21,6 +21,7 @@ $element = JWElement::Instance();
 $param_main = array(
 	'thread_id' => $status_id,
 	'noupdater' => true,
+	'single' => true,
 );
 ?>
 <?php $element->html_header($param_head);?>
@@ -29,7 +30,9 @@ $param_main = array(
 <?php $element->wide_notice();?>
 <div class="wht">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
-	<?php $element->block_headline_thread($param_main);?>
+	<div class="f">
+		<?php $element->block_headline_thread($param_main);?>
+	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div>
 <div class="clear"></div>

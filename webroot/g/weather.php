@@ -52,7 +52,6 @@ $param_main = array(
 		'picture_urls' => $picture_urls,
 		);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 
@@ -60,17 +59,15 @@ $param_main = array(
 <?php $element->wide_notice();?>
 <div id="lefter_g">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<div class="f">
+	<div id="leftBar_g" class="f">
 		<?php $element->block_g_weather($param_main);?>
-		</div>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->
 
 <div id="righter_g">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
-	<div id="rightBar" class="f" >
+	<div id="rightBar_g" class="f" >
 		<?php $element->side_g_weather();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>

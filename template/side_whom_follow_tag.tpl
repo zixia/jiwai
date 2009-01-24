@@ -13,7 +13,7 @@
 	</div>
 	<ul class="one">
 	<!--{foreach $users AS $one}-->
-		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" />{$one['nameScreen']}</a></li>
+		<li class="hd"><a href="/{$one['nameUrl']}/" title="{$one['nameScreen']}"><img src="{$avatars[$one['idPicture']]}" title="{$one['nameScreen']}" /> {$one['nameScreen']}</a></li>
 	<!--{/foreach}-->
 		<div class="clear"></div>
 	</ul>

@@ -51,7 +51,6 @@ $param_main = array(
 	'device_row' => $device_row,
 );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header_wo();?>
 
@@ -59,12 +58,10 @@ $param_main = array(
 <?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_wo_feedback($param_main);?>
-		</div>
+		<?php $element->block_wo_feedback($param_main);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->

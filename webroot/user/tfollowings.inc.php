@@ -13,8 +13,8 @@ $param_main = array(
 $param_tab = array(
 	'now' => 'ut_followings',
 	'tab' => array(
-		'owner' =>  array('此人的话题', "/{$g_page_user['nameUrl']}/t/"),
-		'followings' => array('关注的话题', "/{$g_page_user['nameUrl']}/tfollowings/"),
+		'owner' =>  array('此人话题', "/{$g_page_user['nameUrl']}/t/"),
+		'followings' => array('此人关注', "/{$g_page_user['nameUrl']}/tfollowings/"),
 	),
 );
 ?>
@@ -24,12 +24,10 @@ $param_tab = array(
 <?php $element->wide_notice();?>
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<div class="f">
-			<?php $element->block_tag_user($param_main);?>
-		</div>
+		<?php $element->block_tag_user($param_main);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div>

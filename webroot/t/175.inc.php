@@ -22,16 +22,21 @@ $param_side = array(
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">
-	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
+	<div class="mar_b20">
+		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<?php $element->block_headline_tag($param_head);?>
-		<?php $element->block_tab($param_tab);?>
+		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
+	</div>
+
+	<div>
+		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<div class="f">
+			<?php $element->block_tab($param_tab);?>
 			<?php $element->block_statuses_tag($param_main);?>
 			<?php $element->block_rsslink();?>
 		</div>
+		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 	</div>
-	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div>
 <div id="righter">
 

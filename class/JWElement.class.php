@@ -172,25 +172,34 @@ class JWElement {
 		$this->block_pager( array('pager'=>$pager) );
 	}
 
-	function block_statuses_search()
+	function block_statuses_search($args=array())
 	{
 		$page_size = 20;
-		$q = isset($_GET['q']) ? $_GET['q'] : null;
-		if ( !$q ) return;
+		$extra = isset($args['extra']) ? $args['extra'] : array();
+		$value = isset($args['value']) ? $args['value'] : array();
+		$result = isset($args['result']) ? $args['result'] : array();
 
-		$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
+		if ( empty($result) ) {
+			$q = isset($_GET['q']) ? $_GET['q'] : null;
+			if ( !$q ) return;
+			$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
+			$result = JWSearch::SearchStatus($q, $page, 20, $extra);
+		}
 
-		$result = JWSearch::SearchStatus($q, $page, 20);
 		$total = $result['count'];
 		$status_ids = $result['list'];
 
 		$status_data = array(
 				'status_ids' => $status_ids,
 				);
-		$pager = new JWPager(array(
-					'rowCount' => $total,
-					'pageSize' => $page_size,
-					));
+		$page_options = array( 
+			'rowCount' => $total,
+			'pageSize' => $page_size,
+			);
+		if( false==empty($value) ) {
+			$page_options['valueArray'] = $value;
+		}
+		$pager = new JWPager( $page_options );
 
 		/* display */
 		$this->block_statuses($status_data);

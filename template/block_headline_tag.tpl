@@ -9,9 +9,10 @@ window.jiwai_init_hook_tagupdater = function(){
 		<!--{if $tipnote}-->
 			<h1>{$tipnote}</h1>
 		<!--{else}-->
-			<h1>这里是&nbsp;[{$tag['name']}]&nbsp;话题的叽歪</h1>
+			<h1>这里是&nbsp;[{$tag['name']}]&nbsp;话题叽歪</h1>
 		<!--{/if}-->
 		</div>
 		<!--{include block_updater}-->
 	</form>
+	<div class="clear"></div>
 </div>

@@ -23,18 +23,20 @@ if ( $message['idUserReceiver'] != $current_user_id )
 $element = JWElement::Instance();
 $param_dm = array( 'reply' => $message );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">
-	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div id="leftBar" >
-		<?php $element->block_headline_dm($param_dm);?>
+	<div class="mar_b20">
+		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+		<div class="f">
+			<?php $element->block_headline_dm($param_dm);?>
+		</div>
+		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 	</div>
-	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div>
+
 <div id="righter">
         <div class="a"></div><div class="b"></div><div class="c"></div><div class="
 d"></div>

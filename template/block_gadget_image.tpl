@@ -51,15 +51,15 @@ function draw()
 	<div>
 		<ul class="mar_b20">
 			<li class="f_14">图片网址<span class="bg_yel no" id="pic_url_tip" >&nbsp; 图片网址复制成功&nbsp;</span></li>
-			<li><textarea id="pic_url" rows="1" class="textarea" readonly="readonly"  style="width:600px; height:18px; overflow:hidden" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png</textarea></li>
+			<li><textarea id="pic_url" rows="1" class="textarea" readonly="readonly"  style="width:500px; height:18px; overflow:hidden" onclick="JiWai.copyToClipboard(this);" >http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png</textarea></li>
 		</ul>
 		<ul class="mar_b20">
 			<li class="f_14">UBB代码（论坛专用代码）<span class="bg_yel no" id="ubb_url_tip" >UBB代码复制成功</span></li>
-			<li><textarea id="ubb_url" rows="3" class="textarea" readonly="readonly"  style="width:600px; height:35px; overflow:hidden" onclick="JiWai.copyToClipboard(this);" >[url=http://jiwai.de/abcdefghijklmnopqrst/][img]http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png[/img][/url]</textarea></li>
+			<li><textarea id="ubb_url" rows="3" class="textarea" readonly="readonly"  style="width:500px; height:35px; overflow:hidden" onclick="JiWai.copyToClipboard(this);" >[url=http://jiwai.de/abcdefghijklmnopqrst/][img]http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png[/img][/url]</textarea></li>
 		</ul>
 		<ul>
 			<li>XHTML代码<span class="bg_yel no" id="html_url_tip" >&nbsp; XHTML代码复制成功 &nbsp; </span></li>
-			<li><textarea id="html_url" rows="3" class="textarea" readonly="readonly"  style="width:600px; height:35px; overflow:hidden" onclick="JiWai.copyToClipboard(this);"><a title="叽歪" alt="叽歪" href="http://jiwai.de/abcdefghijklmnopqrst/" target="_blank"><img src="http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png" /></a></textarea></li>
+			<li><textarea id="html_url" rows="3" class="textarea" readonly="readonly"  style="width:500px; height:35px; overflow:hidden" onclick="JiWai.copyToClipboard(this);"><a title="叽歪" alt="叽歪" href="http://jiwai.de/abcdefghijklmnopqrst/" target="_blank"><img src="http://api.jiwai.de/g/i/{$g_current_user_id}/c5/w300/m2/g.png" /></a></textarea></li>
 		</ul>
 	</div>
 </div>

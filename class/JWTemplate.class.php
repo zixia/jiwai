@@ -2897,11 +2897,11 @@ _HTML_;
 			$absUrlPath ="/$absUrlPath";
 
 		if ( !$mtime )
-			return "http://asset${n}.$domain$absUrlPath";
+			return "http://asset.$domain$absUrlPath";
 
 		$timestamp = filemtime("$asset_path$absUrlPath");
 
-		return "http://asset${n}.$domain$absUrlPath?$timestamp";
+		return "http://asset.$domain$absUrlPath?$timestamp";
 	}
 
 
