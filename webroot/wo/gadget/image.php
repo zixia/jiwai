@@ -8,15 +8,14 @@ $user_id = $user_info['id'];
 $name_screen = $user_info['nameScreen'];
 $name_url = $user_info['nameUrl'];
 
-if( $user_info['protected'] == 'Y')
-{
-    $sub_menu = 'image';
-    require_once( './noperm.php' );
-    exit(0);
-}
-
 $param_tab = array( 'tabtitle' => '图片窗口贴' );
 $param_side = array( 'gadget' => 'image' );
+if( $user_info['protected'] == 'Y')
+{
+	$sub_menu = 'image';
+	require_once( dirname(__FILE__) . '/noperm.php' );
+	exit(0);
+}
 $element = JWElement::Instance();
 ?>
 <?php $element->html_header();?>

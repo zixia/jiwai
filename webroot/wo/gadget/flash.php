@@ -5,15 +5,14 @@ JWLogin::MustLogined(false);
 $user_id	= JWLogin::GetCurrentUserId();
 $user_info = JWUser::GetUserInfo($user_id);
 
+$param_tab = array( 'tabtitle' => 'Flash窗口贴' );
+$param_side = array( 'gadget' => 'flash' );
 if( $user_info['protected'] == 'Y')
 {
 	$sub_menu = 'flash';
-	require_once( './noperm.php' );
+	require_once( dirname(__FILE__) . '/noperm.php' );
 	exit;
 }
-
-$param_tab = array( 'tabtitle' => 'Flash窗口贴' );
-$param_side = array( 'gadget' => 'flash' );
 $element = JWElement::Instance();
 ?>
 <?php $element->html_header();?>

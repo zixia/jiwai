@@ -7,6 +7,12 @@ define('DEFAULT_GADGET_THEME', 'iChat');
 
 $param_tab = array( 'tabtitle' => 'JS窗口贴' );
 $param_side = array( 'gadget' => 'javascript' );
+if( $user_info['protected'] == 'Y')
+{
+    $sub_menu = 'javascript';
+    require_once( dirname(__FILE__) . '/noperm.php' );
+    exit(0);
+}
 $element = JWElement::Instance();
 ?>
 <?php $element->html_header();?>

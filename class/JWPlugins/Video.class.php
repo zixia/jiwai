@@ -11,7 +11,7 @@ class JWPlugins_Video
 
 	const REGEX_YOUTUBE = '#http://(?:www\.|)youtube\.com/watch\?v\=([a-zA-Z0-9_-]+)#i';
 	const REGEX_YOUTUBE_V = '#http://(?:www\.|)youtube\.com/v/([a-zA-Z0-9_-]+)#i';
-	const REGEX_VIMEO_V = '#http://vimeo\.com/([0-9]+)#i';
+	const REGEX_VIMEO_V = '#http://(?:www\.|)vimeo\.com/([0-9]+)#i';
 
 	static public function GetPluginResult( $string )
 	{

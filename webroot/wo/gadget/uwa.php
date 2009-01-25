@@ -4,16 +4,16 @@ JWLogin::MustLogined(false);
 
 $user_id = JWLogin::GetCurrentUserId();
 $user_info = JWUser::GetUserInfo($user_id);
+
+$param_side = array( 'gadget' => 'uwa' );
+$param_tab = array( 'tabtitle' => 'UWA窗口贴' );
 if( $user_info['protected'] == 'Y')
 {
 	$sub_menu = 'uwa';
 	require_once( './noperm.php' );
 	exit;
 }
-
 $element = JWElement::Instance();
-$param_side = array( 'gadget' => 'uwa' );
-$param_tab = array( 'tabtitle' => 'UWA窗口贴' );
 ?>
 <?php $element->html_header();?>
 <?php $element->common_header();?>
