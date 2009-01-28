@@ -261,7 +261,7 @@ class JWStatus {
 			$symbol = '[]';
 			$value = $matches[2];
 			$status = trim(preg_replace( '/^(\s*\[\s*)([^<>\$@#\]\[]{3,})(\s*\])(\s*)/U', '', $status));
-			$maybe_tags = preg_split('/[,，]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
+			$maybe_tags = preg_split('/[,]+/',$value,-1,PREG_SPLIT_NO_EMPTY);
 			if ( 1<count($maybe_tags) )
 			{
 				$value = array_shift($maybe_tags);
