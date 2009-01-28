@@ -24,6 +24,7 @@ $current_page = $query_info['current_page'];
 $page_size = $query_info['page_size'];
 $order = $query_info['order'];
 $order_field = isset( $query_info['order_field'] ) ? $query_info['order_field'] : null;
+$order = ($order_field==null) ? false==$order : $order;
 $demo = isset($query_info['demo']) ? $query_info['demo'] : false;
 
 if ( $demo )
