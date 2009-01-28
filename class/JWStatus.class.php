@@ -616,10 +616,18 @@ _SQL_;
 	 *	@param	int		$idUser	用户的id
 	 *	@return	array	array ( 'status_ids'=>array(), 'user_ids'=>array() )
 	 */
-	static public function GetStatusIdsFromReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	static public function GetStatusIdsFromReplies($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0, $idSince=null, $timeSince=null)
 	{
 		$idUser	= JWDB_Cache::CheckInt($idUser);
 		$num	= JWDB_Cache::CheckInt($num);
+
+		$condition_other = null;
+		if( $idSince > 0 ){
+			$condition_other .= " AND id > $idSince";
+		}
+		if( $timeSince ) {
+			$condition_other .= " AND timeCreate > '$timeSince'";
+		}
 
 		/*
 		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
@@ -630,6 +638,7 @@ SELECT		 id
 			,idUser
 FROM		Status
 WHERE		idUserReplyTo=$idUser
+			$condition_other
 ORDER BY 	timeCreate desc
 LIMIT 		$start,$num
 _SQL_;

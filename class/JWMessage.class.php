@@ -135,7 +135,7 @@ class JWMessage {
 	 *	
 	 *	根据 $type 选取 INBOX / OUTBOX ，返回的数组中，会自动将不是自己的用户的数据库col name命名为 idUser
 	 */
-	static public function GetMessageIdsFromUser($idUser, $type=JWMessage::INBOX, $num=JWMessage::DEFAULT_MESSAGE_NUM, $start=0, $timeSince = null, $messageType=JWMessage::MESSAGE_NORMAL)
+	static public function GetMessageIdsFromUser($idUser, $type=JWMessage::INBOX, $num=JWMessage::DEFAULT_MESSAGE_NUM, $start=0, $idSince=null, $timeSince=null, $messageType=JWMessage::MESSAGE_NORMAL)
 	{
 		$idUser	= JWDB::CheckInt($idUser);
 		$num	= JWDB::CheckInt($num);
@@ -143,6 +143,9 @@ class JWMessage {
 		$condition_other = null;
 		if( $timeSince ){
 			$condition_other .= " AND timeCreate>'{$timeSince}'";
+		}
+		if ( ($idSince=abs(intval($idSince))) > 0 ) {
+			$condition_other .= " AND id > {$idSince}";
 		}
 
 		switch ( $type )

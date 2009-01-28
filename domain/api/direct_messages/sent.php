@@ -3,8 +3,8 @@ require_once("../../../jiwai.inc.php");
 
 $pathParam = null;
 $page = 1;
-$since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? 
-	$_SERVER['HTTP_IF_MODIFIED_SINCE'] : null;
+$since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null;
+$since_id = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 $page = ( $page < 1 ) ? 1 : intval($page);
 $start = JWMessage::DEFAULT_MESSAGE_NUM * ( $page - 1 );
@@ -16,7 +16,8 @@ if( ! $idUser ){
 
 $since = ($since==null) ? null : ( is_numeric($since) ? date("Y-m-d H:i:s", $since) : $since );
 $timeSince = ($since==null) ? null : date("Y-m-d H:i:s", strtotime($since) );
-$messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::OUTBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $timeSince);
+$idSince = abs(intval($since_id));
+$messageIds = JWMessage::GetMessageIdsFromUser($idUser, JWMessage::OUTBOX,JWMessage::DEFAULT_MESSAGE_NUM, $start, $idSince, $timeSince);
 $messages = JWMessage::GetDbRowsByIds( $messageIds['message_ids'] );
 
 $type = strtolower(trim($pathParam,'.'));

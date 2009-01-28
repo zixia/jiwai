@@ -3,6 +3,8 @@ require_once("../../../jiwai.inc.php");
 
 $pathParam = null;
 $page = 1;
+$since = null;
+$since_id = null;
 extract($_REQUEST, EXTR_IF_EXISTS);
 $page = ( $page < 1 ) ? 1 : intval($page);
 
@@ -21,6 +23,11 @@ $idUser = JWApi::GetAuthedUserId();
 if( !$idUser ){
 	JWApi::RenderAuth(JWApi::AUTH_HTTP);
 }
+
+$options = array(
+	'since' => $since,
+	'since_id' => abs(intval($since_id)),
+);
 
 switch( $type ){
 	case 'json':
@@ -102,11 +109,13 @@ function renderFeedStatuses($idUser, $feedType) {
 function getStatusesWithUser($idUser, $needReBuild=true)
 {
 
-	global $page;
+	global $page, $options;
 	if( 1>=$page ) $page = 1;
 	$start = 20 * ( $page - 1 );
 
-	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20, $start);
+	$timeSince = ($options['since']==null) ? null : date("Y-m-d H:i:s", strtotime($options['since']) );
+
+	$statusIds = JWStatus::GetStatusIdsFromReplies( $idUser, 20, $start, $options['since_id'], $timeSince);
 	$status_rows = JWStatus::GetDbRowsByIds( $statusIds['status_ids'] );
 	$statusesWithUser = array();
 	$userTemp = array();
