@@ -197,10 +197,13 @@ class JWApi{
 		$m_info['recipient_id'] = $message['idUserReceiver'];
 		$m_info['created_at'] = date("D M d H:i:s O Y", strtotime($message['timeCreate']));
 
-		$screenNameSenderUser = JWUser::GetUserInfo( $message['idUserSender'], 'nameScreen' );
-		$screenNameReceiverUser = JWUser::GetUserInfo( $message['idUserReceiver'], 'nameScreen' );
-		$m_info['sender_screen_name'] = $screenNameSenderUser;
-		$m_info['recipient_screen_name'] = $screenNameReceiverUser;
+		$senderUser = JWUser::GetUserInfo( $message['idUserSender'] );
+		$receiverUser = JWUser::GetUserInfo( $message['idUserReceiver'] );
+
+		$m_info['sender_screen_name'] = $senderUser['nameScreen'];
+		$m_info['recipient_screen_name'] = $receiverUser['nameScreen'];
+		$m_info['sender_profile_url'] = "http://jiwai.de/{$senderUser['nameUrl']}/";
+		$m_info['recipient_profile_url'] = "http://jiwai.de/{$receiverUser['nameUrl']}/";
 		
 		return $m_info;
 	}
