@@ -45,7 +45,7 @@ var JWSeekbox = {
 		var modal = op['modal'];
 		var time = (new Date()).getTime();
 
-		JWSeekbox.TB_window.innerHTML = "<div id='TB_ajaxContent' style='width:10px;height:10px;'></div>";
+		JWSeekbox.TB_window.innerHTML = "<div id='TB_ajaxContent'></div>";
 		url += (url.test(/\?/) ? '&' : '?') + '_t=' + time;
 		var myRequest = new Ajax(url, {method:'get',headers:{AJAX:'true'},update:$('TB_ajaxContent'),onComplete:JWSeekbox.adjust}).request();
 		window.onresize = window.onscroll= JWSeekbox.positionEffect;
@@ -89,19 +89,17 @@ var JWSeekbox = {
 	size : function(){
 		var sl = window.getScrollLeft() || document.body.scrollLeft;
 		var st = window.getScrollTop() || document.body.scrollTop;
-		var sw = document.body.scrollWidth;
-		var sh = document.body.scrollHeight;
-
+		var sw = window.getScrollWidth() || document.body.scrollWidth;
+		var sh = window.getScrollHeight() || document.body.scrollHeight;
 		var h = window.getHeight() || document.body.clientHeight;
 		var w = window.getWidth() || document.body.clientWidth;
 		return {sl:sl,st:st,sw:sw,sh:sh, h:h,w:w};
 	},
 
 	adjust : function(){
-		var ow = JWSeekbox.width;
-		var oh = JWSeekbox.height;
 		JWSeekbox.width = $('TB_ajaxContent').scrollWidth;
 		JWSeekbox.height = $('TB_ajaxContent').scrollHeight;
+		var size = $('TB_ajaxContent').getSize();
 		$('TB_ajaxContent').setStyles({ width: JWSeekbox.width+'px', height: JWSeekbox.height+'px' });
 		JWSeekbox.positionWindow();
 		JWSeekbox.showWindow();
