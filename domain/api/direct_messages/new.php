@@ -4,7 +4,7 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 	JWApi::OutHeader(405, true);
 }
 
-$user = $text = $noreply = null;
+$user = $text = $noreply = $idMessageReplyTo = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
 
@@ -33,23 +33,24 @@ $idUserReceiver = $userReceiver['id'];
 
 // Check Friend Relation, idUserSender must be idUserSender's friend;
 /*if( false == JWFollower::IsFollower($idUserSender, $idUserReceiver) ){
-	JWApi::OutHeader(403, true);
-}*/
+  JWApi::OutHeader(403, true);
+  }*/
 
 $text = urlDecode( $text );
 $options = array(
-	'noreply_tips' => intval($noreply),
-);
+		'reply_id' => abs(intval($idMessageReplyTo)),
+		'noreply_tips' => intval($noreply),
+		);
 
 if( $insertedId = JWSns::CreateMessage($idUserSender, $idUserReceiver, $text, $device, $options)){
 	$message = JWMessage::GetDbRowById( $insertedId );
 	switch($type){
 		case 'xml':
 			renderXmlReturn($message);
-		break;
+			break;
 		case 'json':
 			renderJsonReturn($message);
-		break;
+			break;
 		default:
 			JWApi::OutHeader(406, true);
 	}	

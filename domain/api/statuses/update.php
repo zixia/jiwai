@@ -4,14 +4,15 @@ if( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 	JWApi::OutHeader(405,true);
 }
 /*if ( JWRateLimit::Protect('status_update', JWRequest::GetClientIp(), 5, 60))
-{
-	JWApi::OutHeader(403, true);
-}*/
+  {
+  JWApi::OutHeader(403, true);
+  }*/
 
 $status = null;
 $idPartner = null;
 $idStatusReplyTo = null;
 $idUserReplyTo = null;
+$in_reply_to_status_id = null;
 // geocode
 $mcc = null;
 $mnc = null;
@@ -19,7 +20,7 @@ $cid = null;
 $lac = null;
 extract($_POST, EXTR_IF_EXISTS);
 $pathParam = isset($_REQUEST['pathParam']) ? $_REQUEST['pathParam'] : null;
-$idStatusReplyTo = intval($idStatusReplyTo);
+$idStatusReplyTo = abs(intval($idStatusReplyTo)) | abs(intval($in_reply_to_status_id));
 $idUserReplyTo = intval($idUserReplyTo);
 
 $type = trim( $pathParam, '.' );
@@ -41,10 +42,10 @@ $timeCreate = date("Y-m-d H:i:s");
 $status = urlDecode( $status );
 $serverAddress = null;
 $options = array(
-                'idPartner' => $idPartner,
+		'idPartner' => $idPartner,
 		'idStatusReplyTo' => $idStatusReplyTo ? $idStatusReplyTo : null,
 		'idUserReplyTo' => $idUserReplyTo ? $idUserReplyTo : null,
-            );
+		);
 
 
 /**
@@ -52,31 +53,31 @@ $options = array(
  * array('D', 'GET', 'FOLLOW', 'LEAVE')
  */
 $supported_lingo = array( 'D', 'GET', 'FOLLOW', 'LEAVE', 'ON' );
-if ( preg_match('/^(\w+)\s+.*$/i', $status, $matches)
-	&& in_array( strtoupper($matches[1]), $supported_lingo ) )
+	if ( preg_match('/^(\w+)\s+.*$/i', $status, $matches)
+			&& in_array( strtoupper($matches[1]), $supported_lingo ) )
 {
 	$robot_msg = new JWRobotMsg();
 	$robot_msg->Set( $idUser, 'api', $status);
 	$robot_msg->SetHeader('serveraddress', 'api.jiwai.de' );
 
 	$reply_msg = JWRobotLogic::ProcessMo( $robot_msg );
-	
+
 	if ( false===$reply_msg )
 	{
 		JWApi::OutHeader(406, true);
 	}
-	
+
 	$out_message = array(
-		'reply_message' => $reply_msg->GetBody(),
-	);
+			'reply_message' => $reply_msg->GetBody(),
+			);
 
 	switch ($type)
 	{
 		case 'xml':
 			header('Content-Type: application/xml; charset=utf-8');
 			echo <<<_XML_
-<?xml version="1.0" encoding="UTF-8"?>
-<reply_message>$out_message[reply_message]</reply_message>
+				<?xml version="1.0" encoding="UTF-8"?>
+				<reply_message>$out_message[reply_message]</reply_message>
 _XML_;
 			exit;
 		case 'json':
@@ -87,15 +88,15 @@ _XML_;
 //end
 
 if ( null != $cid ) {
-    // geocoding by cid/lac
-    $options['idGeocode'] = JWGeocode::GetGeocode(
-            JWGeocode::GEOCODING_FUNC_CELL,
-            array(
-                'mcc' => $mcc,
-                'mnc' => $mnc,
-                'cid' => $cid,
-                'lac' => $lac
-                ));
+	// geocoding by cid/lac
+	$options['idGeocode'] = JWGeocode::GetGeocode(
+			JWGeocode::GEOCODING_FUNC_CELL,
+			array(
+				'mcc' => $mcc,
+				'mnc' => $mnc,
+				'cid' => $cid,
+				'lac' => $lac
+				));
 }
 
 if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $serverAddress, $options) )
@@ -112,10 +113,10 @@ if( $insertedId = JWSns::UpdateStatus($idUser, $status, $device, $time=null, $se
 	{
 		case 'xml':
 			renderXmlReturn($status);
-		break;
+			break;
 		case 'json':
 			renderJsonReturn($status);
-		break;
+			break;
 		default:
 			JWApi::OutHeader(406, true);
 	}	
@@ -131,7 +132,7 @@ function renderXmlReturn($status)
 	$user = JWUser::GetUserInfo( $status['idUser'] );
 	$userInfo = JWApi::ReBuildUser( $user );
 	$oStatus['user'] = $userInfo;
-	
+
 	$xmlString = null;
 	header('Content-Type: application/xml; charset=utf-8');
 	$xmlString .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";

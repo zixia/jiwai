@@ -1,11 +1,11 @@
 <?php
 require_once( '/opt/jiwai.de/jiwai.inc.php' );
 $prow = array(
-	'nameScreen' => 'JiWaiShare',
-	'nameDevice' => '叽歪分享',
-	'remark' => '联系人：shwdai@gmail.com',
+	'nameScreen' => 'iJiWai',
+	'nameDevice' => 'iJiWai',
+	'remark' => '联系人：jiwai.de/tsing',
 	'email' => 'shwdai@gmail.com',
-	'link' => 'http://jiwai.de/wo/share/',
+	'link' => 'http://labs.geowhy.org/ijiwai/',
 	'timeCreate' => date('Y-m-d H:i:s'),
 );
  

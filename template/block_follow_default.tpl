@@ -11,7 +11,7 @@
 	<div class="lt hd"><a href="/{$user_row['nameUrl']}/"><em><img src="{$user_icon_url}" class="a1" /></em></a></div>
 	<div class="con_no">
 		<div class="dark">
-			<div><a href="{$user_row['nameUrl']}">{$user_row['nameScreen']}</a></div>
+			<div><a href="/{$user_row['nameUrl']}/">{$user_row['nameScreen']}</a></div>
 			<div>
 				更新通知：
 				<input name="radio_{$user_id}" type="radio" value="1" <!--${if(!$user_action_row['on']) echo "checked";}--> onclick="JWAction.ajaxFollow({$user_id}, 1);"/>
