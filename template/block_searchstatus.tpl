@@ -19,7 +19,7 @@
 		<li class="gra_input">
 			<input id="searchType" type="hidden" name="scope" value="0" />
 			<input id="sValue" type="hidden" value="搜索大家的叽歪" />
-			<input id="jwssch" type="text" name="q" value="搜索大家的叽歪" onFocus="clearValue(this)" onBlur="searchValue(this,$('sValue').value)" /> &nbsp;
+			<input id="jwssch" type="text" name="q" value="搜索大家的叽歪" onFocus="clearValue(this)" onBlur="searchValue(this,$('sValue').value)" mission="JWSsearch.toSearch();" onKeyDown="JWAction.onEnterSubmit(event,this);" /> &nbsp;
 		</li>
 	</form>
 </ul>

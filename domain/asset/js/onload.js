@@ -224,7 +224,7 @@ var JWSsearch =
 	init:function()
 	{
 		if (!($('searchType'))) return;
-		$("searchType").value= 0;
+		$('searchType').value = 0;
 		(window.ie ? document : window).addEvent('click', function(){$("othSh").style.display="none";});
 	},
 	click:function(e)
