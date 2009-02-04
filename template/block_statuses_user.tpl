@@ -17,7 +17,10 @@
 	if ( $one['statusType'] == 'MMS' ) {
 		$photo_url = JWPicture::GetUrlById($user['idPicture']);
 	} else {
-		$photo_url=JWPicture::GetUrlById($one['idPicture'],'thumb48');
+        $idPicture = empty($one['idPicture'])
+            ? $user['idPicture']
+            : $one['idPicture'];
+		$photo_url=JWPicture::GetUrlById($idPicture,'thumb48');
 	}
 
 	if(!$is_protected) {
