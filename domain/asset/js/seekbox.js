@@ -91,8 +91,8 @@ var JWSeekbox = {
 		var st = window.getScrollTop() || document.body.scrollTop;
 		var sw = window.getScrollWidth() || document.body.scrollWidth;
 		var sh = window.getScrollHeight() || document.body.scrollHeight;
-		var h = window.getHeight() || document.body.clientHeight;
-		var w = window.getWidth() || document.body.clientWidth;
+		var h = Math.min(window.getHeight(), document.documentElement.clientHeight);
+		var w = Math.min(window.getWidth(), document.documentElement.clientWidth);
 		return {sl:sl,st:st,sw:sw,sh:sh, h:h,w:w};
 	},
 
