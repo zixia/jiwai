@@ -42,6 +42,7 @@
 	<!--{if $replyto}-->
 		<div class="mar_b8"><b>悄悄回复{$replyto['nameScreen']}：</b></div>
 	<!--{/if}-->
+		<input type="hidden" name="crumb" value="${JWUtility::GenCrumb()}"/>
 		<textarea id="jw_status" name="jw_status" onKeyDown="if(this.value.length>0&&((event.ctrlKey&&event.keyCode==13)||(event.altKey&&event.keyCode==83))){JWAction.updateStatus();return false;}" onKeyUp="textCounter(this.form.jw_status,$('count'),70);"></textarea>
 		<ul class="f_gra">
 			<li class="lt">1条短信还剩 <span id="count">70</span> 字</li>

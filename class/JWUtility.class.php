@@ -169,5 +169,33 @@ class JWUtility {
 
 		return self::$global_vars['getrsslink'] = $rss;
 	}
+
+	static public function GenCrumb() {
+		$user_id = JWLogin::GetCurrentUserId();
+		$secret = uniqid();
+		$secret = md5("{$user_id}={$uniqid}");
+		$memcache = JWMemcache::Instance('default');
+		$memcache->Set($secret, true, 0, 1800);
+		return $secret;
+	}
+
+	static public function CheckCrumb($crumb=null) {
+		$crumb = (null==$crumb) ? @$_REQUEST['crumb'] : $crumb;
+		$memcache = JWMemcache::Instance('default');
+		$correct = $memcache->Get($crumb);
+		if ( $correct ) {
+			$memcache->Del($crumb);
+		} else { 
+			JWSession::SetInfo('notice', '叽歪判定为非法请求，请重新尝试。');
+			JWTemplate::RedirectBackToLastUrl('/');
+		}
+		return $correct;
+	}
+
+	static public function MustPost() {
+		if ( 'POST' != $_SERVER['REQUEST_METHOD'] ) {
+			JWTemplate::RedirectBackToLastUrl('/');
+		}
+	}
 }
 ?>

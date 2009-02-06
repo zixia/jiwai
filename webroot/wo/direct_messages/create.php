@@ -27,15 +27,17 @@ $param_dm = array( 'to' => $user );
 
 // create new direct_messages
 if ( isset($_REQUEST['jw_status']) ) {
+	JWUtility::MustPost();
+	JWUtility::CheckCrumb();
 	$message = $_REQUEST['jw_status'];
 	$message = trim($message);
 	if ( false==empty($message) ) {
 		$dm_user = JWUser::GetUserInfo( $dm_user_id );
 		if ( JWSns::CreateMessage( $current_user_id, $dm_user_id, $message, 'web', array( 'reply_id' => $dm_message_id, )) ) {
-			JWSession::SetInfo("悄悄话已经发送给 {$dm_user['nameScreen']} ，也许 {$dm_user['nameScreen']} 会马上回复你的哦。");
+			JWSession::SetInfo('notice', "悄悄话已经发送给 {$dm_user['nameScreen']} ，也许 {$dm_user['nameScreen']} 会马上回复你的哦。");
 			JWTemplate::RedirectToUrl('/wo/direct_messages/sent');
 		} else {
-			JWSession::SetInfo('哎呀！请不要发送空悄悄话！');
+			JWSession::SetInfo('notice', '哎呀！请不要发送空悄悄话！');
 			JWTemplate::RedirectBackToLastUrl('/');
 		}
 	}

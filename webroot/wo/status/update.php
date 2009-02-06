@@ -1,5 +1,7 @@
 <?php
 require_once('../../../jiwai.inc.php');
+JWUtility::MustPost();
+JWUtility::CheckCrumb();
 JWLogin::MustLogined(true);
 $update_user_id = JWLogin::GetPossibleUserId();
 
