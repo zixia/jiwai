@@ -29,7 +29,7 @@ $param_dm = array( 'to' => $user );
 if ( isset($_REQUEST['jw_status']) ) {
 	JWUtility::MustPost();
 	JWUtility::CheckCrumb();
-	$message = $_REQUEST['jw_status'];
+	$message = trim($_REQUEST['jw_status']);
 	$message = trim($message);
 	if ( false==empty($message) ) {
 		$dm_user = JWUser::GetUserInfo( $dm_user_id );

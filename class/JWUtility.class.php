@@ -173,19 +173,19 @@ class JWUtility {
 	static public function GenCrumb() {
 		$user_id = JWLogin::GetCurrentUserId();
 		$secret = uniqid();
-		$secret = md5("{$user_id}={$uniqid}");
+		$crumb = md5("{$user_id}={$uniqid}");
+		$session_id = session_id();
 		$memcache = JWMemcache::Instance('default');
-		$memcache->Set($secret, true, 0, 1800);
-		return $secret;
+		$memcache->Set($crumb, $session_id, 0, 1800);
+		return $crumb;
 	}
 
 	static public function CheckCrumb($crumb=null) {
 		$crumb = (null==$crumb) ? @$_REQUEST['crumb'] : $crumb;
 		$memcache = JWMemcache::Instance('default');
-		$correct = $memcache->Get($crumb);
-		if ( $correct ) {
-			$memcache->Del($crumb);
-		} else { 
+		$correct = ( $memcache->Get($crumb) == session_id() );
+		$memcache->Del($crumb);
+		if ( false === $correct ) {
 			JWSession::SetInfo('notice', '叽歪判定为非法请求，请重新尝试。');
 			JWTemplate::RedirectBackToLastUrl('/');
 		}
