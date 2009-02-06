@@ -2,10 +2,12 @@
 	<div class="mar_20">&nbsp;</div>
 	<form id="f1" action="/wo/account/password" class="validator" method="post">
 	<dl class="w1">
+	<!--{if false==$reset_password}-->
 		<dt>当前密码</dt>
 		<dd>
 			<div><input id="current_password" name="current_password" type="password" minlength="6" maxlength="16" class="inputStyle" alt="当前密码" /><i></i></div>
 		</dd>
+	<!--{/if}-->
 		<dt>新密码</dt>
 		<dd>
 			<div><input id="password" name="password" type="password" alt="新密码" minlength="6" maxlength="16" /><i></i></div>

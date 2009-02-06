@@ -78,6 +78,7 @@ if ( isset($_POST['password']) ) {
 $element = JWElement::Instance();
 $param_tab = array( 'now' => 'account_password' );
 $param_side = array( 'sindex' => 'account' );
+$param_main = array( 'reset_password' => $is_reset_password );
 ?>
 <?php $element->html_header();?>
 <?php $element->common_header_wo();?>
@@ -88,7 +89,7 @@ $param_side = array( 'sindex' => 'account' );
 	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<?php $element->block_account_password();?>
+		<?php $element->block_account_password($param_main);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- lefter end -->

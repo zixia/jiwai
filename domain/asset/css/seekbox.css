@@ -1,5 +1,5 @@
 #TB_overlay {position:absolute;top: 0px;left: 0px;background:#999;filter:alpha(opacity=60);opacity:0.6; z-index:101}
 #TB_window { position: absolute;color: #000000; z-index:102; background-color:#FFF;}
-#TB_ajaxContent{clear:both;}
+#TB_ajaxContent{clear:both;background-color:#FFF;}
 #TB_load{ position: absolute; display:none; height:100px; width:100px;}
 #TB_HideSelect { z-index:-100; position:absolute; top: 0; left: 0; background-color:#fff; border:none; }
