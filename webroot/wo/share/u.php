@@ -7,7 +7,7 @@ if( false == $idUser ) {
 }
 
 if( $_POST ) {
-
+	JWUtility::CheckCrumb();
 	$idPartner = $url = $title = $description = null;
 	extract( $_POST );
 	$status = "$title - $description $url";

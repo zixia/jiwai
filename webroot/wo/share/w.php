@@ -44,6 +44,7 @@ function collectToJiWai(){
 
 <h1>收藏到叽歪</h1>
 <form method="post" id="f">
+	<input type="hidden" name="crumb" value="<?php echo JWUtility::GenCrumb();?>" />
 	<p>标<span class="mar">题</span>：<input name="title" type="text" id="shareTitle" check="null" class="inputStyle2" value="<?php echo htmlSpecialChars($t);?>" alt="标题"/></p>
 	<p>网<span class="mar">址</span>：<input name="url" type="text" id="shareUrl" check="null" class="inputStyle2" value="<?php echo htmlSpecialChars($u);?>" readOnly="true" alt="网址"/></p>
 	<p>
