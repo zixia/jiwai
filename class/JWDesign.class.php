@@ -285,7 +285,13 @@ class JWDesign {
 		}
 
 		if ( $styles && $this->mUseBackgroundImage ) {
-			$styles .= $background_url_css;
+			if ( $pos = strpos($styles, '#sendOjb') ) {
+				$precon = substr($styles, 0, $pos);
+				$sufcon = substr($styles, $pos);
+				$styles = $precon . $background_url_css . $sufcon;
+			} else {
+				$styles .= $background_url_css;
+			}
 		}elseif ( !$styles || $index ) {
 			$styles .= $background_url_css;
 		}
