@@ -232,16 +232,24 @@ class JWRobotLingo {
 				}
 			}else{
 				if( $on ) {
+					if ( 'N' == $userInfoFollower['protected'] || JWFollower::IsFollower( $address_user_id, $userInfoFollower['idUser']) ) {
 					JWSns::CreateFollower( $userInfoFollower['idUser'], $address_user_id, 'Y' );
 					$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
 						$address_user_row['nameScreen'],
 						urlEncode($address_user_row['nameUrl']),		
 					));
 					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
+					$flag = true;
+					} else {
+						$robotMsg->setBody("FOLLOW {$userInfoFollower['nameScreen']}");
+						return self::Lingo_Follow($robotMsg);
+					}
 				}
 			}
 				
-			array_push( $follower_name, $userInfoFollower['nameScreen'] );
+			if ($flag) { 
+				array_push( $follower_name, $userInfoFollower['nameScreen'] );
+			}
 		}
 
 		if( empty( $follower_name ) ){
