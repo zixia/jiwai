@@ -11,7 +11,7 @@
 	<div class="gray mar_b8">
 		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 		<div class="t">
-			<h4><input type="checkbox" name="" onclick="CheckAll('use_list',this.checked)" /> 选择所以联系人</h4>
+			<h4><input type="checkbox" name="" onclick="CheckAll('use_list',this.checked)" /> 选择所有联系人</h4>
 		</div>
 		<div id="use_list" class="f">
 			<div>
