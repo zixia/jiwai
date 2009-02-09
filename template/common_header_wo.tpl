@@ -10,7 +10,7 @@
 			<ul class="f" >
 				<li><a href="/" class="sel">首页</a></li>
 				<li><a href="/{$user['nameUrl']}/" >我的叽歪</a></li>
-				<li><a href="/g/" >随便逛逛</a> <a href="/t/跨年倒数/" class="act">跨年倒数</a></li>
+				<li><a href="/g/" >随便逛逛</a> <a href="/t/情人节/" class="act">情人节</a></li>
 				<li><a href="/wo/invite/" >找朋友</a></li>
 				<li><a href="/wo/gadget/" >窗可贴</a></li>
 				<li class="rt">

@@ -7,7 +7,7 @@
                         <div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
                         <ul class="f">
                                 <li><a href="/" class="sel">首页</a></li>
-                                <li><a href="/g/">随便逛逛</a> <a href="/t/跨年倒数/" class="act">跨年倒数</a></li>
+                                <li><a href="/g/">随便逛逛</a> <a href="/t/情人节/" class="act">情人节</a></li>
                                 <li class="rt"><a href="/t/帮助留言板/" title="帮助留言板">帮助</a> &nbsp; &nbsp; <a href="/wo/account/create">注册</a>  &nbsp; &nbsp;  <a href="/wo/login">登录</a></li>
                         </ul>
                         <div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
