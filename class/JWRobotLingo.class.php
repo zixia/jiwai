@@ -232,24 +232,21 @@ class JWRobotLingo {
 				}
 			}else{
 				if( $on ) {
-					if ( 'N' == $userInfoFollower['protected'] || JWFollower::IsFollower( $address_user_id, $userInfoFollower['idUser']) ) {
-					JWSns::CreateFollower( $userInfoFollower['idUser'], $address_user_id, 'Y' );
-					$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
-						$address_user_row['nameScreen'],
-						urlEncode($address_user_row['nameUrl']),		
-					));
-					JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
-					$flag = true;
+					if ( $userInfoFollower['idUser']==$address_user_id || 'N'==$userInfoFollower['protected'] || JWFollower::IsFollower($address_user_id, $userInfoFollower['idUser']) ) {
+						JWSns::CreateFollower( $userInfoFollower['idUser'], $address_user_id, 'Y' );
+						$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
+									$address_user_row['nameScreen'],
+									urlEncode($address_user_row['nameUrl']),		
+									));
+						JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
+						$flag = true;
 					} else {
 						$robotMsg->setBody("FOLLOW {$userInfoFollower['nameScreen']}");
 						return self::Lingo_Follow($robotMsg);
 					}
 				}
 			}
-				
-			if ($flag) { 
-				array_push( $follower_name, $userInfoFollower['nameScreen'] );
-			}
+			array_push( $follower_name, $userInfoFollower['nameScreen'] );
 		}
 
 		if( empty( $follower_name ) ){
@@ -561,11 +558,12 @@ class JWRobotLingo {
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_FOLLOW_EXISTS', array( 
 				$follower['nameScreen'],
 			));
-		} else
-	       	{
+		} 
+		else
+		{
 			if( $follower['protected'] == 'Y' 
-				&& false == JWFollower::IsFollower($address_user_id, $friend_user_id) ) 
-			{
+					&& $friend_user_id != $address_user_id 
+					&& false == JWFollower::IsFollower($address_user_id, $friend_user_id) ) {
 				if( false == JWFollowerRequest::IsExist( $friend_user_id, $address_user_id )) {
 					JWSns::CreateFollowerRequest( $friend_user_id, $address_user_id );
 				}
