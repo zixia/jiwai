@@ -1,5 +1,6 @@
 import de.jiwai.lucene.*;
 import de.jiwai.dao.*;
+import de.jiwai.util.*;
 import java.io.*;
 import java.util.*;
 import java.text.*;
@@ -31,18 +32,36 @@ public class Increment
 		//System.out.println( t.get("nameScreen")) ;
 
 		boolean force_create = false;
+		int start = 0;
 
 		LuceneIndex indexer = new LuceneIndex( argv[0], false );
 
 		Vector<String> v = getIdList(argv[1]);
 
 		if ( argv[1].equals("status") ){
-			for( String id:v ) updateStatus(indexer, id);
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
+				updateStatus(indexer, id);
+			}
 		}else if ( argv[1].equals("tag") ){
-			for( String id:v ) updateTag(indexer, id);
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
+				updateTag(indexer, id);
+			}
 		}else if ( argv[1].equals("user") ){
-			for( String id:v ) updateUser(indexer, id);
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
+				updateUser(indexer, id);
+			}
 		}
+		Logger.log( "Total: " + start );
+			
 
 		indexer.flush();
 		indexer.close();
