@@ -1,6 +1,5 @@
 <?php
 require_once( '../../../jiwai.inc.php');
-JWLogin::MustLogined(false);
 
 //for search
 $value = $extra = $result = array();

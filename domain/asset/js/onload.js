@@ -265,14 +265,17 @@ var JWSsearch =
 	toSearch:function()
 	{
 		if(false==JWSsearch.condiction()) {
-			if ( $('searchType').value == 0 ) $('InUser').value='';
+			if ( $('searchType').value == 0 ) { 
+				$('InUser').disabled=true;
+			}
+			$('searchType').disabled=true;
 			$('searchForm').submit();
 		}
 	},
 	condiction:function(){
 		var v = $("jwssch").value;
-		return ( v='' || v =="搜索大家的叽歪" 
-				|| v=="搜索自己的叽歪" || v=="搜索此人的叽歪");
+		return ( v == '' || v =="搜索大家的叽歪"
+				|| v =="搜索自己的叽歪" || v =="搜索此人的叽歪");
 	}
 };
 

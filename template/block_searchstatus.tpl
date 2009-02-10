@@ -1,8 +1,7 @@
 <!--${$iconurl=JWTemplate::GetAssetUrl('/images/img.gif');}-->
 <!--${$whom=$g_page_on?'此人':'自己';}-->
 <ul class="jsbor txt_r">
-	<form action="/wo/search/statuses" method="post" id="searchForm">
-		<input type="hidden" id="InUser" name="u" value="{$g_page_user['nameScreen']}"/>
+	<form action="/wo/search/statuses" method="get" id="searchForm">
 		<li class="jsbtn rt">
 			<div class="at"></div><div class="bt"></div>
 			<div id="seni_btn" class="tt">
@@ -21,5 +20,6 @@
 			<input id="sValue" type="hidden" value="搜索大家的叽歪" />
 			<input id="jwssch" type="text" name="q" value="搜索大家的叽歪" onFocus="clearValue(this)" onBlur="searchValue(this,$('sValue').value)" mission="JWSsearch.toSearch();" onKeyDown="JWAction.onEnterSubmit(event,this);" /> &nbsp;
 		</li>
+		<input type="hidden" id="InUser" name="u" value="{$g_page_user['nameScreen']}"/>
 	</form>
 </ul>
