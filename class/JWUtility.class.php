@@ -170,6 +170,24 @@ class JWUtility {
 		return self::$global_vars['getrsslink'] = $rss;
 	}
 
+	static public function HighLight($string=null) {
+		if (!(preg_match('#/search/#', @$_SERVER['REQUEST_URI']) 
+					&& $key=@$_GET['q']))
+			return $string;
+
+		$key = strtolower($key);
+		$keys = preg_split('/[\s,\+\-\(\)\#\/]+/', $key);
+		$keys = array_diff(array_unique($keys), array('and','or','not'));
+		$pattern = implode('|', $keys);
+		$string_orin = $string;
+		
+		$string_on = strip_tags($string);
+		$string_on = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string_on);
+		$string = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string);
+		return strip_tags($string_on)==strip_tags($string) 
+			? $string : $string_orin;
+	}
+
 	static public function GenCrumb() {
 		$user_id = JWLogin::GetCurrentUserId();
 		$secret = uniqid();

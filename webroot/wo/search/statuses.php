@@ -18,10 +18,14 @@ if ( $_REQUEST) {
 		$extra['in_type'] = $_REQUEST['t'];
 		$value['t'] = $_GET['t'] = $_REQUEST['t'];
 	}
-	if ( in_array(strtolower($_REQUEST['f']), array('time'))) { 
-		$extra['order_field'] = strtolower($_REQUEST['f']);
+	if ( in_array(strtolower($_REQUEST['f']), array('null'))) { 
+		$extra['order_field'] = null;
 		$value['f'] = $_REQUEST['f'];
+	}else{
+		$extra['order_field'] = 'time';
+		$value['f'] = 'time';
 	}
+
 	if ( $_REQUEST['o'] == 'asc' ) {
 		$extra['order'] = false;
 		$value['o'] = 'asc';
