@@ -38,7 +38,7 @@ my %roi = (
         'withinRoi' => 0,
         'match'     => '^<li>(.*?)</li>$',
         'filter'    => 's/<[^<>]+>//g',
-        'prefix'    => '[历史]',
+        'prefix'    => '[历史]' . `date +%m/%d, `,
     },
 );
 
@@ -60,10 +60,12 @@ while (<PAGE>) {
             if (m#$roi{$r}{'match'}#) {
                 my $c = $1;
                 eval '$c=~'.$roi{$r}{'filter'};
+                my $prefix = $roi{$r}{'prefix'};
+                chomp $prefix;
                 print "[INF]", $c, "\n";
                 _postItem($roi{$r}{'username'},
                         $roi{$r}{'password'},
-                        $roi{$r}{'prefix'} . $c);
+                        $prefix . ' ' . $c);
             }
         }
     }
