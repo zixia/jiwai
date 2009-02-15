@@ -14,6 +14,7 @@ class JWPlugins_Douban {
             'music' => 'http://api.douban.com/music/subject/',
             'review'=> 'http://api.douban.com/review/',
             'people'=> 'http://api.douban.com/people/',
+            'event' => 'http://api.douban.com/event/',
             );
 
     static private function generateApiUrl($id, $cat) {
@@ -169,9 +170,13 @@ __DOUBAN__;
             }
         }
 
-        foreach ($assoc['author'] as $node) {
-	    if ( isset($node['name']) )
-		    $author[] = $node['name']['$t'];
+        if ( isset($assoc['author']['name']['$t']) ) {
+            $author = $assoc['author']['name']['$t'];
+        } else {
+            foreach ($assoc['author'] as $node) {
+                if ( isset($node['name']) )
+                    $author[] = $node['name']['$t'];
+            }
         }
 
         return array(
@@ -180,7 +185,9 @@ __DOUBAN__;
             'title' => $assoc['title']['$t'],
             'link'  => $link,
             'image' => $image,
-            'summary'   => @$assoc['summary']['$t'],
+            'summary'   => @$assoc['summary']['$t']
+            ? $assoc['summary']['$t']
+            : $assoc['summary'][0]['$t'],
         );
     }
 
