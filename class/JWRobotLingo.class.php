@@ -816,7 +816,7 @@ class JWRobotLingo {
 			$nudge_message = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_NUDGE', array(
 				JWNotify::GetPrettySender($address_user_db_row),
 			));
-			JWNudge::NudgeToUsers( array($friend_user_db_row['idUser']), $nudge_message, 'nudge', $type );
+			JWSns::CreateMessage($address_user_id, $friend_user_db_row['idUser'], $nudge_message, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_NUDGE_SUC', array(
 						$friend_user_db_row['nameScreen'],
 			));
