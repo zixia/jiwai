@@ -31,7 +31,7 @@ if( !in_array( $type, array('json','xml') )){
 if( !$status ) {
 	JWApi::OutHeader(400,true);
 }
-$status = mb_convert_encoding( $status, "UTF-8", "GB2312,UTF-8");
+$status = mb_convert_encoding( $status, "UTF-8", "UTF-8,GB2312");
 
 if( ! $idUser=JWApi::GetAuthedUserId() ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );
