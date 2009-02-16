@@ -2,7 +2,6 @@
 $("o").onload = window.jiwai_init_hook_eheight;
 function draw() 
 {
-	clearBothHeight();
 	var url = "http://api.jiwai.de" + ($("v2").checked ? "/g/i/" : "/gadget/image/") + "{$g_current_user_id}/c" + $("c").value + "/w"+ $("w").value + "/m" + $("m").value + "/g.png";
 	$('pic_url').value=url; 
 	$('ubb_url').value="[url=http://jiwai.de/{$g_current_user['nameUrl']}/][img]" + url + " [/img][/url]";
