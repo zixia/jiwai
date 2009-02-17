@@ -1,6 +1,6 @@
 @charset "utf-8";/* CSS Document writted by guewool@hotmail.com,update on 081212 */
 * {margin:0; padding:0;font-family:Arial,Helvetica,sans-serif;}
-html{margin:0;background:#fefefe;}
+html{margin:0;background:#efefef;}
 
 ul, li{list-style:none;}
 table,form,div,img,dl,dd,h1,h2,h3,h4{border:0px;}
@@ -68,18 +68,17 @@ h3, .f_14, h4{font-size:14px}
 #header h2 {float:left; background:url(../images/org-logo.png) no-repeat; margin-top:4px; margin-left:0px;}
 #header h2 a{display:block;}
 * html #header h2 {background:none; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="http://asset.jiwai.de/images/org-logo.png");}
-#header .hdnav{margin:0 0 10px 200px; padding:20px 0 0 0}
+#header .hdnav{margin:0 0 10px 200px; padding:5px 0 0 0}
 
 #nav{width:650px; float:right}
 #nav.non{width:350px; }
-#nav ul{height:30px;}
-#nav ul li{float:left; margin-right:10px;text-align:center; padding-top:5px;}
+#nav ul{height:22px;}
+#nav ul li{float:left; margin-right:10px;text-align:center; padding-top:2px;}
 #nav ul li a{color:#f87000; font-size:14px; font-weight:bold;}
 #nav ul li a.act{font-size:12px; font-weight:normal}
 #nav ul li.rt{float:right; margin:0;}
 #nav ul li.rt a{font-size:12px; font-weight:normal;}
 .wht .a, .wht .b, .wht .c, .wht .d, .wht .f{background:#fff4ea;}
-#lefter .wht .f{border:0px}
 
 .nav_line{border-bottom:5px #f87000 solid}
 
@@ -98,7 +97,7 @@ h3, .f_14, h4{font-size:14px}
 
 #righter{width:252px;display:table-cell;}
 #righter .a,#righter .b,#righter .c,#righter .d{background:#fff4ea}
-#righter .b{border-right:2px #fff solid;}
+#righter .b{border-right:2px #fff solid;border-left:2px #fff solid;}
 #righter .c,#righter .d,#righter .f{border-right:1px #fff solid;border-right:1px #fff solid;}
 #righter .a{margin:0 5px;background:#fff;}
 #righter .b{margin:0 3px;}
@@ -150,7 +149,7 @@ a.ags{COLOR:#D05D02;} 									/* 4 */
 .yel_bor .a,.yel_bor .b,.yel_bor .c,.yel_bor .d,.yel_bor .t{background:#fee3ca}
 .yel_bor .b,.yel_bor .c,.yel_bor .d,.yel_bor .f{background:#ffffff;}
 .yel_bor .b{border-left:2px #fee3ca solid;border-right:2px #fee3ca solid;}
-.yel_bor .c,.yel_bor .d,.yel_bor .t,.yel_bor .f{border-left:1px #fee3ca solid;border-right:1px #fee3ca solid;}
+.yel_bor .c,.yel_bor .d,.yel_bor .t,#lefter .yel_bor .f{border-left:1px #fee3ca solid;border-right:1px #fee3ca solid;}
 
 .gray .a,.gray .b,.gray .c,.gray .d,.gray .t{background:#eee;}
 .gray div .b,.gray div .c,.gray div .d{background:none}
@@ -193,7 +192,7 @@ a.ags{COLOR:#D05D02;} 									/* 4 */
 .usermsg .button, .update .button, .bbtn{width:100px;}
 
 .gra_input input{color:gray;}
-.gra_input .focus, .focus{color:#333; border-top:2px #666 solid;border-left:2px #666 solid;border-right:2px #eee solid;border-bottom:0px #fff solid}
+.gra_input .focus, .focus{color:#333; border-top:2px #666 solid;border-left:2px #666 solid;border-right:2px #fff solid;border-bottom:1px #fff solid; margin-bottom:1px}
 input.def_btn{height:22px; line-height:18px; color:#333;}
 #righter_g .inp_w{width:240px;}
 #righter .def_btn, #righter_g .def_btn{width:64px}
@@ -262,7 +261,7 @@ a.po_d{background-position:left -660px;}
 #flash{padding:10px;background:#fff}
 
 .dot_b li{padding-left:15px; background-position:left -690px;}
-.tag{height:33px; background:#fff4ea;border-bottom:1px #fee3ca solid;position:relative;}
+.tag{height:33px; background:#fff4ea; border-bottom:1px #fee3ca solid;position:relative;}
 .tag ul{padding-left:20px; position:absolute; top:7px; }
 .tag li{float:left;height:30px;line-height:25px; width:80px; margin-right:20px; font-size:14px; text-align:center}
 .tag li.sel .f{height:22px;}
@@ -270,6 +269,7 @@ a.po_d{background-position:left -660px;}
 #lefter_g .tag{margin-right:30px;}
 #lefter_g .tag li{margin-right:5px;}
 .top_block, .single_block{margin-bottom:15px}
+
 .pagetitle{margin-bottom:10px;}
 .pagetitle span{margin-top:15px}
 .pagetitle .label a{color:#999; text-decoration:none}
@@ -304,7 +304,7 @@ a.po_d{background-position:left -660px;}
 .one .hd a:hover{color:#F87A01;}
 .one .hd a em{display:block;width:48px; height:48px; padding:2px; overflow:hidden; border:1px #ddd solid; cursor:pointer}
 .one .hd a img{width:48px; height:48px;vertical-align:top;}
-.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em; overflow:hidden;width:auto;}
+.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em;}
 .one .mar_lt{margin-left:80px; z-index:10}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
@@ -343,7 +343,6 @@ dl dd{text-align:left;}
 .show_num li{float:left; width:24%;height:1.5em; text-align:center; border-right:1px gray dashed; color:#000}
 .show_num li.ll{ border-left:1px gray dashed;}
 /* setting end */
-
 
 .page{text-align:right;height:26px; margin:20px 0 0 0; line-height:2em;}
 .page a {padding:5px 3px; text-decoration:none; margin:0 1px; line-height:2em;}
@@ -390,18 +389,19 @@ dl dd{text-align:left;}
 .hd_block .hed a.poi_u{background-color:#ddd;background-position:right -613px;}
 .hd_block .hed a.poi_u:hover{background-color:#F87A01;background-position:2px -613px;}
 .hd_block .con_block{position:relative; clear:left; width:174px; padding:10px; border-top:1px #aaa solid; border-left:1px #aaa solid; border-right:1px #666 solid; border-bottom:1px #666 solid;background:#fff;}
-.hd_block .up{position:absolute; width:71px;height:20px; top:-2px; left:0px; background-position:0px -1600px; }
+.hd_block .up{position:absolute; width:71px;height:20px; top:-2px; left:0px; background-position:0px -1600px;}
 .hd_block .con_bor{border:1px #ffcfa8 solid; width:154px; font-size:14px; line-height:1.5em; margin-bottom:10px; padding:8px}
 .hd_block ul li{white-space:nowrap; height:1.5em}
 /* buddy ico head block end*/
+
 .jsbtn .at,.jsbtn .bt, .jsbtn .tt{background-color:#eee}
 .jsbtn .at{background:#999}
 .jsbtn .bt, .jsbtn .tt{border-left:1px #999 solid;border-right:1px #999 solid;}
 .jsbtn .tt{line-height:1.2em;text-align:center; font-weight:bold; color:#fff; padding:3px 0;}
-.jsbor{height:24px; margin-bottom:10px}
-.jsbor .jsbtn{width:60px;}
+.jsbor{height:24px; margin-bottom:5px}
+.jsbor .jsbtn{width:40px;}
 .jsbor .gra_input input{margin-top:1px}
-.jsbor .jsbtn input{border:0; background:none; cursor:pointer; width:30px; margin-left:5px; height:18px; overflow:hidden;border-right:1px #999 solid}
+.jsbor .jsbtn input{border:0; background:none; cursor:pointer; width:30px; margin-left:5px; height:18px; overflow:hidden;/*border-right:1px #999 solid */}
 .jsbor .tt a{float:right;margin:2px 5px auto auto; height:14px; width:12px}
 .jsbor .tt a:hover{background-color:#666; text-decoration:none; background-position:0 -660px;}
 .jsbor .tt{height:18px; font-weight:normal; padding:0; text-align:left;}
@@ -410,10 +410,17 @@ dl dd{text-align:left;}
 .jsbor ul li a{display:block;width:58px; text-align:center;height:18px;color:#333;background:#eee;border-top:1px #eee solid}
 .jsbor ul li a:hover{background:#fff; text-decoration:none}
 
-.more_search{height:160px;}
-.more_search dt{width:60px; font-size:12px; text-align:right; }
-.more_search dd{width:150px; margin-bottom:10px;}
-.ch_w{width:140px}
+.more_search{height:310px;}
+.more_search dt{width:225px; font-size:12px; margin-bottom:10px; text-align:left}
+.more_search dd{width:225px; margin-bottom:10px;}
+.ch_w{width:225px}
+.w_p33 li{float:left;width:33%;}
+
+.kwd_0{font-weight:bold}
+.kwd_1{border:1px #333 solid}
+.kwd_2{text-decoration:underline}
+.kwd_3{border-bottom:1px #333 dotted}
+.kwd_4{ font-style:italic}
 #sendOjb{width:100px; position:relative; z-index:100;}
 .bg_dark{width:100px;}
 .bg_dark{background:#fff5ec; text-align:center; color:#999;}

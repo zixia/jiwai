@@ -11,7 +11,6 @@ $param_tab = array( 'now' => 'user_my' );
 	<div>
 		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<div class="f">
-			<?php $element->block_searchstatus();?>
 			<?php $element->block_tab($param_tab);?>
 			<?php $element->block_statuses_user();?>
 			<?php $element->block_rsslink();?>
