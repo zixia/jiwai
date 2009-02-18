@@ -1,11 +1,10 @@
-<!--{if $g_current_user_id}-->
 <!--${$b = JWTagFollower::GetTagUser($tag['id'], $g_current_user_id);}-->
 <div class="side3">
 <ul>
 	<!--{if !$b}-->
 	<li class="button side_btn">
 		<div class="at"></div><div class="bt"></div>
-		<div class="tt" onclick="location.href='/wo/action/ton/{$tag['id']}'">关注这个话题</div>
+		<div class="tt" onclick="return JWAction.redirect('/wo/action/ton/{$tag['id']}');">关注这个话题</div>
 		<div class="bt"></div><div class="at"></div>
 	</li>
 	<!--{elseif 'Y'==$b['notification']}-->
@@ -35,4 +34,3 @@
 	<!--{/if}-->
 </ul>
 </div>
-<!--{/if}-->

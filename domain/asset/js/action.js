@@ -185,7 +185,7 @@ var JWAction =
 	{
 		var callback = function()
 		{
-			location.href = $(o).href;		
+			location.href = typeof(o)=='string' ? o : $(o).href;		
 			return false;
 		};
 
