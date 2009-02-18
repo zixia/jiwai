@@ -1045,7 +1045,7 @@ _SQL_;
 	 */
 	static public function FormatStatus ($status, $jsLink=true, $urchin=false, $mobile = false)
 	{
-		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = $status_id = $user_id = null;
+		$reply_to_user_id = $reply_to_status_id = $tag_id = $thread_id = $device = $conf_id = $status_id = $user_id = $is_mms = $picture_id = null;
 		$status_type = 'NONE';
 
 		if( is_array( $status ) )
@@ -1059,6 +1059,9 @@ _SQL_;
 			$user_id = $status['idUser'];
 			$status_id = $status['id'];
 			$status_type = $status['statusType'];
+
+			$is_mms = ('MMS' == $status_type);
+			$picture_id = $status['idPicture'];
 
 			$status = $status['status'];
 		}
@@ -1194,6 +1197,11 @@ _HTML_;
 		}
 
 		$status = JWNano::NanoFormat($status_id, $status, $status_type);
+
+		if ( $mobile && $is_mms && $picture_id) {
+			$mmsurl = JWPicture::GetUrlById($picture_id, 'middle');
+			$status .= "<br/><img src=\"".$mmsurl."\" /><br/>";
+		}
 
 		return array ( 
 			'status' => $status, 
