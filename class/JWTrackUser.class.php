@@ -60,7 +60,7 @@ class JWTrackUser{
 	/**
 	 * Get WordList by idUser
 	 */
-	static function GetWordListByIdUser( $idUser ){
+	static function GetWordListByIdUser( $idUser, $join=true ){
 
 		$idUser = JWDB::CheckInt( $idUser );
 
@@ -68,14 +68,14 @@ class JWTrackUser{
 		
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
-			return null;
+			return $join ? null : array();
 
-		$rtn = null;
+		$rtn = array();
 		foreach( $rows as $r ) {
-			$rtn .= ", $r[wordTerm]";
+			$rtn[] = $r['wordTerm'];
 		}
 
-		return trim( $rtn, ', ');
+		return $join ? join(', ', $rtn) : $rtn;
 	}
 
 	/**
@@ -95,6 +95,39 @@ SELECT distinct( idUser )
 	WHERE
 		idTrackWordSequence IN ('$sequenceString')
 _SQL_;
+
+		$rows = JWDB::GetQueryResult( $sql, true );
+		if( empty( $rows ) )
+			return array();
+
+		$rtn = array();
+		foreach( $rows as $r ) {
+			array_push( $rtn, $r['idUser'] );
+		}
+
+		return $rtn;
+	}
+
+	static function IsTrackUser( $idUser, $word ) {
+
+		$idUser = abs(intval($idUser));
+
+		if ( !$idUser ) return false;
+
+		$array = array(
+			'idUser' => $idUser,
+			'wordTerm' => $word,
+		);
+
+		return JWDB::ExistTableRow( 'TrackUser' , $array );
+	}
+
+	/**
+	 * GetIdUsersByWord
+	 */
+	static function GetIdUsersByWord( $word, $size = 12 ){
+		$qword = JWDB::EscapeString($word);
+		$sql = "SELECT idUser FROM TrackUser WHERE wordTerm = '{$qword}' ORDER BY timeCreate DESC LIMIT $size";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )

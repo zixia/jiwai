@@ -1,6 +1,6 @@
 <!--${
 	if (!$size) $size = 12;
-	$follower_ids = JWTagFollower::GetFollowerIds( $tag['id'] , $size);
+	$follower_ids = JWTrackUser::GetIdUsersByWord( $key , $size);
 	$users = JWDB_Cache_User::GetDbRowsByIds( $follower_ids );
 	$picture_ids = JWUtility::GetColumn($users, 'idPicture');
 	$avatars = JWPicture::GetUrlRowByIds($picture_ids);
