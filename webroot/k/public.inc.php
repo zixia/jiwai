@@ -2,7 +2,7 @@
 require_once( dirname(__FILE__) . '/../../jiwai.inc.php');
 $element = JWElement::Instance();
 
-$param_tab = array( 'tabtitle' => '大家的话题', );
+$param_tab = array( 'tabtitle' => '热门词汇', );
 ?>
 <?php $element->html_header();?>
 <?php $element->common_header();?>
