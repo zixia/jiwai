@@ -312,8 +312,6 @@ a.po_d{background-position:left -660px;}
 .msg, .one .con, pagetitle{position:relative;}
 #lefter .one_block{width:490px; overflow:hidden; padding-left:2em;}
 #lefter_g .one_block{width:455px; overflow:hidden; padding-left:2em;}
-#lefter_g .one .rt {width:450px;}
-#lefter_g .one .rt .rt{width:auto;}
 #lefter .one_block li.hd, #lefter_g .one_block li.hd{margin:0 40px 20px 0}
 
 .side1, .side2{padding:10px 0;margin-bottom:40px;}
@@ -327,8 +325,8 @@ dl dt{margin-right:10px; text-align:right; clear:left; font-size:14px;}
 dl dd{text-align:left;}
 #set_bor dl.w1 dt{width:180px;margin-bottom:20px;}
 #set_bor dl.w1 dd{width:300px;margin-bottom:20px;}
-#set_bor dl.w2 dt{width:160px;height:160px;}
-#set_bor dl.w2 dd{width:300px;height:160px;}
+#set_bor dl.w2 dt{width:160px;margin-bottom:30px;}
+#set_bor dl.w2 dd{width:300px;margin-bottom:30px;}
 #set_bor dl.w3 dt{width:100px; margin-bottom:20px;}
 #set_bor dl.w3 dd{width:380px; margin-bottom:20px;}
 
