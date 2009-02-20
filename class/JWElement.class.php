@@ -191,6 +191,7 @@ class JWElement {
 
 		$status_data = array(
 				'status_ids' => $status_ids,
+				'is_skip' => true,
 				);
 		$page_options = array( 
 			'rowCount' => $total,

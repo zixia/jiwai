@@ -6,17 +6,21 @@ $value = $extra = $result = array();
 $_GET['q'] = $value['q'] = isset($_GET['q']) ? $_GET['q'] : $_POST['q'];
 $extra = array();
 if ( $_REQUEST) {
+	$no_guess = false;
 	if ( $_REQUEST['s'] ) { 
 		$extra['in_device'] = $_REQUEST['s']; 
 		$value['s'] = $_GET['s'] = $_REQUEST['s'];
+		$no_guess = true;
 	}
 	if ( $_REQUEST['u'] ) { 
 		$extra['in_user'] = $_REQUEST['u']; 
 		$value['u'] = $_GET['u'] = $_REQUEST['u'];
+		$no_guess = true;
 	}
 	if ( $_REQUEST['t'] ) {
 		$extra['in_type'] = $_REQUEST['t'];
 		$value['t'] = $_GET['t'] = $_REQUEST['t'];
+		$no_guess = true;
 	}
 	if ( in_array(strtolower($_REQUEST['f']), array('null'))) { 
 		$extra['order_field'] = null;
@@ -39,7 +43,10 @@ if ( true ) {
 	} else {
 		$result = JWSearch::SearchStatus($q, $page, 20, $extra);
 	}
+	$guessword = ( $no_guess==false && $page==1 ) ? 
+		JWSearchWord::GuessWord($q, $result['count']) : null;
 }
+
 //end search
 
 $element = JWElement::Instance();
@@ -60,6 +67,7 @@ $param_head = array(
 		'count' => $result['count'],
 		'sourl' => $sourl,
 		'sovalue' => $value,
+		'guessword' => $guessword,
 		);
 $param_search = array(
 		'extra' => $extra,

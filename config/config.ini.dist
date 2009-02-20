@@ -13,4 +13,7 @@ S_VOTE = 投票
 S_MMS = 彩信
 S_NONE =
 
+[search]
+G_THRESHOLD = 40
+
 [end]
