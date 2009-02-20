@@ -34,7 +34,7 @@ $param_tab = array(
 <div id="righter">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div id="rightBar" class="f" >
-		<?php $element->side_tag_user($param_side);?>
+		<?php $element->side_key_user($param_side);?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div>

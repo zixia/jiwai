@@ -18,6 +18,14 @@ class JWTrackWord{
 		'】',
 	);
 
+	static public function InvalidWord($word) {
+		if (is_numeric($word) && strlen($word)<7)
+			return true;
+		if (preg_match('/\.(html|shtml|php|asp|jsp|cgi|pl|do|py)$/i', $word))
+			return true;
+		if (mb_strlen($word, 'UTF-8')==1)
+			return true;
+	}
 
 	/**
 	 * Sentence segment
@@ -122,7 +130,7 @@ class JWTrackWord{
 			array_push( $rtn, $keyWords[ $word ] );
 		}
 
-		return $rtn;
+		return array_diff($rtn, array(false));
 	}
 
 	/**
@@ -209,6 +217,9 @@ class JWTrackWord{
 		}
 
 		if( in_array( $word, self::$punctuation ) )
+			return false;
+
+		if( self::InvalidWord( $word ) )
 			return false;
 		
 		$idExist = JWDB::ExistTableRow( 'TrackWord', array( 'word'=>$word, ) );
