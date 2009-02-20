@@ -2,17 +2,15 @@
 require_once( '../../jiwai.inc.php' );
 $element = JWElement::Instance();
 
-$tag_id_counts = JWDB_Cache_Status::GetTagIdsTopicByIdUser($g_page_user_id);
-$tag_ids = array_keys($tag_id_counts);
-$tags = JWDB_Cache_Tag::GetDbRowsByIds( $tag_ids );
+$words = JWTrackUser::GetWordListByIdUser( $g_page_user['idUser'], false );
 
 $param_main = array(
-	'tags' => $tags,
-	'title' => "{$g_page_user['nameScreen']}的" .count($tags) ."个话题",
+	'words' => $words,
+	'title' => "{$g_page_user['nameScreen']}追踪的" .count($words) ."个词汇",
 );
 
 $param_tab = array(
-	'now' => 'ut_owner',
+	'now' => 'ut_fkey',
 	'tab' => array(
 		'owner' =>  array('此人话题', "/{$g_page_user['nameUrl']}/t/"),
 		'ftag' => array('此人关注', "/{$g_page_user['nameUrl']}/tfollowings/"),
@@ -29,7 +27,7 @@ $param_tab = array(
 	<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
-		<?php $element->block_tag_user($param_main);?>
+		<?php $element->block_key_user($param_main);?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div>

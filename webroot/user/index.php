@@ -107,6 +107,9 @@ switch ( $func )
 	case 'tfollowings':
 		require_once(dirname(__FILE__) . "/tfollowings.inc.php");
 		break;
+	case 'kfollowings':
+		require_once(dirname(__FILE__) . "/kfollowings.inc.php");
+		break;
 	case 'tag':
 		$tag_name = $matches[1];
 		if ( false == JWUnicode::unifyName( $tag_name ) ) {

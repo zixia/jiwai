@@ -11,10 +11,11 @@ $param_main = array(
 );
 
 $param_tab = array(
-	'now' => 'ut_followings',
+	'now' => 'ut_ftag',
 	'tab' => array(
 		'owner' =>  array('此人话题', "/{$g_page_user['nameUrl']}/t/"),
-		'followings' => array('此人关注', "/{$g_page_user['nameUrl']}/tfollowings/"),
+		'ftag' => array('此人关注', "/{$g_page_user['nameUrl']}/tfollowings/"),
+		'fkey' => array('追踪词汇',	"/{$g_page_user['nameUrl']}/kfollowings/"),
 	),
 );
 ?>

@@ -1,24 +1,8 @@
-<?php
-require_once( '../../jiwai.inc.php' );
+<?php 
+require_once( dirname(__FILE__) . '/../../jiwai.inc.php');
 $element = JWElement::Instance();
 
-$tag_id_counts = JWDB_Cache_Status::GetTagIdsTopicByIdUser($g_page_user_id);
-$tag_ids = array_keys($tag_id_counts);
-$tags = JWDB_Cache_Tag::GetDbRowsByIds( $tag_ids );
-
-$param_main = array(
-	'tags' => $tags,
-	'title' => "{$g_page_user['nameScreen']}的" .count($tags) ."个话题",
-);
-
-$param_tab = array(
-	'now' => 'ut_owner',
-	'tab' => array(
-		'owner' =>  array('此人话题', "/{$g_page_user['nameUrl']}/t/"),
-		'ftag' => array('此人关注', "/{$g_page_user['nameUrl']}/tfollowings/"),
-		'fkey' => array('追踪词汇',	"/{$g_page_user['nameUrl']}/kfollowings/"),
-	),
-);
+$param_tab = array( 'tabtitle' => '大家的话题', );
 ?>
 <?php $element->html_header();?>
 <?php $element->common_header();?>
@@ -27,16 +11,16 @@ $param_tab = array(
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 	<div class="f">
-		<?php $element->block_headline_minwo();?>
+		<?php $element->block_headline_tips();?>
 		<?php $element->block_tab($param_tab);?>
-		<?php $element->block_tag_user($param_main);?>
+		<?php $element->block_tag_index();?>
 	</div>
 	<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div>
 <div id="righter">
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div id="rightBar" class="f" >
-		<?php $element->side_tag_user($param_side);?>
+		<?php $element->side_tag_index($param_side);?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 </div>
