@@ -184,6 +184,7 @@ class JWUtility {
 		$string_on = strip_tags($string);
 		$string_on = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string_on);
 		$string = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string);
+		$string = preg_replace("/(<[^<>]+)<font color=\"red\">({$pattern})<\/font>([^<>]+>)/i", "\\1\\2\\3", $string);
 		return strip_tags($string_on)==strip_tags($string) 
 			? $string : $string_orin;
 	}

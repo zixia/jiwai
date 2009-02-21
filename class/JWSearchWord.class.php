@@ -51,7 +51,7 @@ class JWSearchWord{
 		$all_letter = PinYin::GetAllLetter($word); 
 		$init_letter = PinYin::GetInitLetter($word); 
 
-		if ( !$exist_id && $result > 0 ) {
+		if ( !$exist_id && $result > 0 && $all_letter ) {
 			$save_array = array(
 					'word' => $word,
 					'initLetter' => $init_letter,
@@ -65,7 +65,7 @@ class JWSearchWord{
 		if ( $result < self::GetThreshold() ) {
 			if ( preg_match('/^\w+$/',$word) ) {
 				return PinYin::CorrectWord($word);
-			} else {
+			} else if ( $all_letter ) {
 				$sql = "SELECT word FROM SearchWord WHERE allLetter='{$all_letter}' AND word <> '{$word}' AND countResult > {$result} LIMIT 1";
 				$result = JWDB::GetQueryResult( $sql ) ;
 				return $result ? array($result['word']) : false;
