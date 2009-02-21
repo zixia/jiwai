@@ -3,6 +3,7 @@
         <h2 id="logo"><a class="header" href="/"><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" alt="叽歪de" /></a></h2>
 	<!--{if !$nonav}-->
         <div class="hdnav">
+			<ul id="othSh" style="display:none;"><li></li></ul>
 			<ul class="jsbor txt_r">
 				<form action="/wo/search/statuses" method="get" id="searchForm">
 					<li class="jsbtn rt">
