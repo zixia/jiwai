@@ -268,6 +268,7 @@ var JWSsearch =
 			if ( $('searchType').value == 0 ) { 
 				$('InUser').disabled=true;
 			}
+			$('InUser').disabled=true;
 			$('searchType').disabled=true;
 			$('searchForm').submit();
 		}
