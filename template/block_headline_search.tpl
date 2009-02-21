@@ -2,7 +2,7 @@
 	<h1>搜索结果</h1>
 </div>
 <div class="f_14">共有 <b>{$count}条</b> 符合</div>
-<!--{if $guessword}--><div>你是不是要搜索：<span class="f_yel"><a href="/wo/search/statuses?q={$guessword}">{$guessword}</a></span></div><!--{/if}-->
+<!--{if $guessword}--><div>你是不是要搜索：<!--{foreach $guessword AS $one}--><span class="f_yel"><a href="/wo/search/statuses?q={$one}">{$one}</a></span><!--{/foreach}--></div><!--{/if}-->
 <!--${$o=$sovalue['o']=='asc'?'desc':'asc';}-->
 <div class="txt_r">
 <!--{if $sovalue['f']=='null'}-->		

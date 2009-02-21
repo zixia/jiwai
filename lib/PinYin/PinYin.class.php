@@ -5,6 +5,8 @@
 class PinYin 
 {
 	static private $map = array();
+	static private $en = array();
+
 	static private function Init() {
 		if (self::$map) return;
 		$db = dirname(__FILE__) . '/pinyin.db';
@@ -12,6 +14,16 @@ class PinYin
 		while($line = trim(fgets($fp))){
 			list($word, $pinyin) = explode('`', $line);
 			self::$map[$word] = $pinyin;
+		}
+		fclose($fp);
+	}
+
+	static private function InitEn() {
+		if (self::$en) return;
+		$db = dirname(__FILE__) . '/english.db';
+		$fp = fopen($db, 'r');
+		while($line = trim(fgets($fp))){
+			@self::$en[strlen($line)][] = strtolower($line);
 		}
 		fclose($fp);
 	}
@@ -48,6 +60,36 @@ class PinYin
 			}
 		}
 		return strtoupper(join($delim, $ret));
+	}
+
+	static public function CorrectWord($word) {
+		self::InitEn();
+		$len = strlen($word);
+		$word = strtolower($word);
+		if ( $len < 4 ) return false;
+		if ( !isset(self::$en[$len]) ) return false;
+		if ( in_array($word, self::$en[$len]) )
+			return false;
+		switch($len) {
+			case 4: $r = range(4,5);  
+					break;
+			case 5: case 6: case 7: case 8: case 9:
+					$r = range($len-1, $len+1); break;
+			default: $r = range($len-2, $len+2); 
+					 break;
+		}
+
+		$ws = array();
+		foreach($r AS $i) {
+			if (isset(self::$en[$i])) { 
+				foreach(self::$en[$i] AS $w) {
+					$l = similar_text($word, $w);
+					if ( $l==$len || ( $l==$i ) )
+						$ws[] = $w;
+				}
+			}
+		}
+		return $ws;
 	}
 }
 ?>

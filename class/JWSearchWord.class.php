@@ -63,9 +63,13 @@ class JWSearchWord{
 		}
 
 		if ( $result < self::GetThreshold() ) {
-			$sql = "SELECT word FROM SearchWord WHERE allLetter='{$all_letter}' AND word <> '{$word}' AND countResult > {$result} LIMIT 1";
-			$result = JWDB::GetQueryResult( $sql ) ;
-			return $result ? $result['word'] : false;
+			if ( preg_match('/^\w+$/',$word) ) {
+				return PinYin::CorrectWord($word);
+			} else {
+				$sql = "SELECT word FROM SearchWord WHERE allLetter='{$all_letter}' AND word <> '{$word}' AND countResult > {$result} LIMIT 1";
+				$result = JWDB::GetQueryResult( $sql ) ;
+				return $result ? array($result['word']) : false;
+			}
 		}
 		return false;
 	}
