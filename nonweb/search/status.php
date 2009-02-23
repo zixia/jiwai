@@ -38,6 +38,10 @@ if ( $demo )
 $searcher = new LuceneSearch( $status_index );
 
 $query = $searcher->parseQuery( $query_string, "status" );
+if ( @$query_info['include_tag'] ) {
+	$one_query = $searcher->termQuery( $query_string, "tag" );
+	$query = $searcher->mergeShouldQuery( array($query, $one_query) );
+}
 
 /**
  * advance search [type, device, user, tag] limitations;
