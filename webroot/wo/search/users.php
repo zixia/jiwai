@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . '/../../../jiwai.inc.php');
 $page = $q = null;
 extract($_GET, EXTR_IF_EXISTS);
+$_GET['q'] = $q = preg_replace('/\\\\/', '', $q);
 $curpage = abs(intval($page)) ? abs(intval($page)) : 1;
 $perpage = 60;
 

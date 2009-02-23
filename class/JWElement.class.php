@@ -182,6 +182,7 @@ class JWElement {
 		if ( empty($result) ) {
 			$q = isset($_GET['q']) ? $_GET['q'] : null;
 			if ( !$q ) return;
+			$_GET['q'] = $q = preg_replace('/\\\\/', '', $q);
 			$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
 			$result = JWSearch::SearchStatus($q, $page, 20, $extra);
 		}

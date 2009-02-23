@@ -4,6 +4,7 @@ require_once( '../../../jiwai.inc.php');
 //for search
 $value = $extra = $result = array();
 $_GET['q'] = $value['q'] = isset($_GET['q']) ? $_GET['q'] : $_POST['q'];
+$_GET['q'] = preg_replace('/\\\\/', '', $_GET['q']);
 $extra = array();
 if ( $_REQUEST) {
 	$no_guess = false;

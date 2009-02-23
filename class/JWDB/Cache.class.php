@@ -420,8 +420,6 @@ die(var_dump($db_result));
 
 		$db_row	= self::GetTableRow($table, array('id'=>$inserted_id), 1);
 
-		JWSearch::LuceneUpdate( $table, $inserted_id, false );
-
 		self::OnDirty($db_row,$table);	
 
 		return $inserted_id;
@@ -523,8 +521,6 @@ die(var_dump($db_result));
 		$db_row 	=  JWDB::GetTableRow($table, array('id'=>$idPk));
 		self::OnDirty($db_row, $table);
 
-		JWSearch::LuceneUpdate( $table, $idPk, false );
-
 		return $ret;
 	}
 
@@ -598,6 +594,7 @@ die(var_dump($db_result));
 
 	static public function OnDirty($dbRow, $table=null)
 	{
+		JWSearch::LuceneUpdate( $table, $dbRow['id'], false );
 		switch ( $table )
 		{
 			case "Picture":
