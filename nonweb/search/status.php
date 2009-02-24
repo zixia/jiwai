@@ -23,6 +23,7 @@ $query_string = $query_info['query_string'];
 $current_page = $query_info['current_page'];
 $page_size = $query_info['page_size'];
 $order = $query_info['order'];
+$userid = abs(intval(@$query_info['userid']));
 $order_field = isset( $query_info['order_field'] ) ? $query_info['order_field'] : null;
 $order = ($order_field==null) ? false==$order : $order;
 $demo = isset($query_info['demo']) ? $query_info['demo'] : false;
@@ -110,6 +111,12 @@ if ( isset($query_info['user']) )
 		}
 		$one_query = $searcher->mergeShouldQuery( $one_query );
 	}
+	
+	if ( $userid ) {
+		$id_query = $searcher->termQuery( $userid, 'userid');
+		$one_query = $searcher->mergeShouldQuery(array($id_query,$one_query));
+	}
+
 	$query = $searcher->mergeMustQuery( array($query, $one_query) );
 }
 

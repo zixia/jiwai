@@ -176,7 +176,8 @@ class JWUtility {
 			return $string;
 
 		$key = strtolower($key);
-		$keys = preg_split('/[\s,\+\-\(\)\#\/]+/', $key);
+		$key = preg_replace('/[\#]+/', '', $key);
+		$keys = preg_split('/[\s,\+\-\(\)\#\/\\\\\*]+/', $key);
 		$keys = array_diff(array_unique($keys), array('and','or','not'));
 		$pattern = implode('|', $keys);
 		$string_orin = $string;

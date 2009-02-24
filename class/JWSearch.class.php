@@ -140,8 +140,13 @@ class JWSearch {
 		/**
 		 * set query_info
 		 */
-		if ( false==empty($in_user_array) ) 
+		if ( false==empty($in_user_array) )  {
+			if ( count($in_user_array) == 1 ) {
+				$name = array_shift(array_values($in_user_array));
+				$query_info['userid'] = JWUser::GetUserInfo($name, 'id');
+			}
 			$query_info['user'] = $in_user_array;
+		}
 
 		if ( false==empty($in_device_array) ) 
 			$query_info['device'] = $in_device_array;
@@ -161,7 +166,7 @@ class JWSearch {
 		 * format query string
 		 */
 		$query_string = $query_info['query_string'];
-		$query_string = preg_replace('/\\\\/', '', $query_string);
+		$query_string = preg_replace('/[\\\\\#]+/', '', $query_string);
 		$query_string = trim($query_string, '+\r\n');
 		$query_string = str_replace('-', ' - ', $query_string);
 		$query_string = str_replace('+', ' AND ', $query_string);
