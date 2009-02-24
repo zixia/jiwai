@@ -38,14 +38,18 @@ if ( $_REQUEST) {
 }
 if ( true ) { 
 	$q = isset($_GET['q']) ? $_GET['q'] : null;
+	if ( false===$no_guess AND 1===count(preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
+		JWTemplate::RedirectToUrl( "/k/{$q}/" );
+	}
 	$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
 	if ( !$q ) { 
 		$result = array( 'count' => 0, 'error' => 0, );
 	} else {
 		$result = JWSearch::SearchStatus($q, $page, 20, $extra);
 	}
-	$guessword = ( $no_guess==false && $page==1 ) ? 
-		JWSearchWord::GuessWord($q, $result['count']) : null;
+	// $guessword = ( $no_guess==false && $page==1 ) ?  JWSearchWord::GuessWord($q, $result['count']) : null;
+	
+	$trackword = preg_replace('/(\s*)([^\s\(\)\\\\\*\#\+\-|AND|OR|NOT]+)(\s*)/', "\\1<a href=\"/k/\\2/\"><span class=\"f_red\">\\2</span></a>\\3", $q);
 }
 
 //end search
@@ -69,6 +73,7 @@ $param_head = array(
 		'sourl' => $sourl,
 		'sovalue' => $value,
 		'guessword' => $guessword,
+		'trackword' => $trackword,
 		);
 $param_search = array(
 		'extra' => $extra,

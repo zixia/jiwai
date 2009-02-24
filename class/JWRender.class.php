@@ -101,7 +101,7 @@ class Template_Render{
 		}
 
 		$script_url = $_SERVER['REQUEST_URI'];
-		$this->g_page_on = (!preg_match('#^/(wo|g|t)/#i',$script_url));
+		$this->g_page_on = !preg_match('#^/(wo|g|t|k)/#i',$script_url);
 		$this->g_tag_on = preg_match('#/t/#i', $script_url);
 		$this->g_page_user_id = $g_page_user_id;
 		$this->g_current_user_id = $g_current_user_id;
