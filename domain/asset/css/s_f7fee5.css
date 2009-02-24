@@ -95,7 +95,7 @@ h3, .f_14, h4{font-size:14px}
 #lefter .s .c{margin:0 2px;}
 #lefter .s .d{margin:0 1px;}
 
-#righter{width:252px;display:table-cell;}
+#righter{width:252px;display:table-cell;word-break:break-all;}
 #righter .a,#righter .b,#righter .c,#righter .d{background:#f7fee5}		/* ch */
 #righter .b{border-right:2px #fff solid;border-left:2px #fff solid;}
 #righter .c,#righter .d,#righter .f{border-right:1px #fff solid;border-right:1px #fff solid;}
@@ -305,7 +305,7 @@ a.po_d{background-position:left -660px;}
 .one .hd a:hover{color:#F87A01;}
 .one .hd a em{display:block;width:48px; height:48px; padding:2px; overflow:hidden; border:1px #ddd solid; cursor:pointer}
 .one .hd a img{width:48px; height:48px;vertical-align:top;}
-.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em;}
+.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em;word-break:break-all;}
 .one .mar_lt{margin-left:80px; z-index:10}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
