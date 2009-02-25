@@ -4,23 +4,27 @@
 
 require_once(dirname(__FILE__) . "/../jiwai.inc.php");
 setlocale(LC_ALL, 'zh_CN.UTF8');
-$delay = 3;
+
+function GetBirthdayUsersForecast($delay = 0) {
+    $sql = <<<__SQL__
+    SELECT id, nameScreen, nameUrl, birthday
+    FROM `User`
+    WHERE (
+    EXTRACT(MONTH FROM `birthday`) = EXTRACT(MONTH FROM ADDDATE(CURDATE(), INTERVAL $delay DAY))
+    AND
+    DAYOFMONTH(`birthday`) = DAYOFMONTH(ADDDATE(CURDATE(), INTERVAL $delay DAY))
+    )
+__SQL__;
+
+    return JWDB::GetQueryResult($sql, true, true);
+}
+
 $system_sender_id = 59668;
 $birthday = strftime('%m月%d日', strtotime("+$delay days"));
 
-$sql = <<<__SQL__
-SELECT id, nameScreen, nameUrl, birthday
-FROM `User`
-WHERE (
-EXTRACT(MONTH FROM `birthday`) = EXTRACT(MONTH FROM ADDDATE(CURDATE(), INTERVAL $delay DAY))
-AND
-DAYOFMONTH(`birthday`) = DAYOFMONTH(ADDDATE(CURDATE(), INTERVAL $delay DAY))
-)
-__SQL__;
-
-$birthday_user = JWDB::GetQueryResult($sql, true, true);
-
-foreach ($birthday_user as $birthday_user) {
+/* 3days before, notice his/her friends */
+$birthday_users = GetBirthdayUsersForecast(3);
+foreach ($birthday_users as $birthday_user) {
     $birthday_user_name = $birthday_user['nameScreen'];
     $birthday_user_url = empty($birthday_user['nameUrl'])
         ? 'http://JiWai.de/' . urlencode($birthday_user_name) . '/'
@@ -37,5 +41,23 @@ __HTML__;
                 'web',
                 array('notice' => 'notice'));
     }
+}
+
+$birthday_users = GetBirthdayUsersForecast();
+foreach ($birthday_users as $birthday_user) {
+    $birthday_user_name = $birthday_user['nameScreen'];
+    $birthday_user_url = empty($birthday_user['nameUrl'])
+        ? 'http://JiWai.de/' . urlencode($birthday_user_name) . '/'
+        : 'http://JiWai.de/' . urlencode($birthday_user['nameUrl']) . '/';
+    $message = <<<__HTML__
+亲爱的${birthday_user_name}( ${birthday_user_url} )，叽歪小弟祝你生日快乐!
+__HTML__;
+
+    echo "[HappyBirthday]FROM $system_sender_id TO $birthday_user_name", "\n";
+    JWMessage::Create($system_sender_id,
+            $birthday_user['id'],
+            $message,
+            'web',
+            array('notice' => 'notice'));
 }
 
