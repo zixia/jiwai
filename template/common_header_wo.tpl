@@ -28,7 +28,7 @@
 			<ul class="f" >
 				<li><a href="/" class="sel">首页</a></li>
 				<li><a href="/{$user['nameUrl']}/" >我的叽歪</a></li>
-				<li><a href="/g/" >随便逛逛</a> <a href="/t/敢问敢答/" class="act">敢问敢答</a></li>
+				<li><a href="/g/" >随便逛逛</a> <a href="/t/有问必答/" class="act">有问必答</a></li>
 				<li><a href="/wo/invite/" >找朋友</a></li>
 				<li><a href="/wo/gadget/" >窗可贴</a></li>
 				<li class="rt">
