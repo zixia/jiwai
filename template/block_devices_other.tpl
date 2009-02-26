@@ -32,7 +32,7 @@
 				<div>你想绑定Facebook，没错吧？那就请按以下步骤操作：</div>
 			</div>
 			<ul class="mar_b20">
-				<li class="mar_b8">1. 请访问 叽歪de <a href="http://apps.facebook.com/jiwaide/?verify">Facebook Application</a> 并安装</li>
+				<li class="mar_b8">1. 请访问 叽歪de <a href="http://apps.facebook.com/jiwaide/?verify" target="_blank">Facebook Application</a> 并安装</li>
 				<li class="mar_b20">2. 输入你的叽歪网用户名和以下验证码</li>
 				<li class="mar_b20">验证码：<input type="text" readonly value="{$facebook['secret']}" class="secret" /></li>
 				<li>3. 点击“关联”确定</li>

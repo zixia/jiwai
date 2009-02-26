@@ -45,8 +45,10 @@ function textCounter(field, countfield, maxlimit) {
 };
 
 function clearBothHeight() {
-	($('leftBar_g') || $('leftBar')).style.height = 'auto';
-	($('rightBar_g') || $('rightBar')).style.height = 'auto';
+	var ol = $("leftBar") || $("leftBar_g");
+	var or = $("rightBar") || $("rightBar_g");
+	if ( !ol || !or ) return;
+	ol.style.height = or.style.height = 'auto';
 };
 
 function ctrObj(ctrElem,signElem){
