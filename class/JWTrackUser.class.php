@@ -63,22 +63,24 @@ class JWTrackUser{
 	/**
 	 * Get WordList by idUser
 	 */
-	static public function GetWordListByHot($size = 100, $join=true) {
+	static public function GetWordListByHot($size = 100) {
 
-		$sql = "SELECT wordTerm,COUNT(1) AS count FROM TrackUser GROUP BY wordTerm ORDER BY count DESC LIMIT $size";
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWTrackUser', 'GetWordListByHot'), array($size) );
+		$memcache = JWMemcache::Instance();
+		$words = $memcache->Get( $mc_key );
 
-		$rows = JWDB::GetQueryResult( $sql, true );
-		if( empty( $rows ) )
-			return $join ? null : array();
+		$expire = 60 * 15; //15 mins
 
-		$rtn = array();
-		if ( $join ) {
-			foreach( $rows as $r ) {
-				$rtn[] = $r['wordTerm'];
+		if ( false == $words ) {	
+			$sql = "SELECT wordTerm,COUNT(1) AS count FROM TrackUser GROUP BY wordTerm ORDER BY count DESC LIMIT $size";
+
+			$words = JWDB::GetQueryResult( $sql, true );
+			if ( $words ) {
+				$memcache->Set($mc_key, $words, 0, $expire);
 			}
-			return join(', ', $rtn);
 		}
-		return $rows;
+
+		return $words;
 	}
 
 	/**

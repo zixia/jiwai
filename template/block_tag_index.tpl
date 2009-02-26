@@ -1,8 +1,10 @@
 <div class="block">
 	<div class="aalgin">
-	<!--${$words = JWFarrago::GetHotWords()}-->
+	<!--${$words = JWFarrago::GetHotWords(100)}-->
+	<!--${$styles = array('ads', 'adb', 'ags', 'agb');}-->
 	<!--{foreach $words AS $one}-->
-		<a href="/t/{$one[0]}/" title="{$one[0]}" class="{$one[1]}">{$one[0]}</a>
+	<!--${$style = $styles[($one['count']%4)];}-->
+		<a href="/t/{$one['name']}/" title="{$one['name']}" class="{$style}">{$one['name']}</a>
 	<!--{/foreach}-->
 	</div>
 </div>
