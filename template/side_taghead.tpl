@@ -8,5 +8,6 @@
 		<!--{/if}-->
 	<!--{/if}-->
 		<h3 class="mar_b8"><a href="/t/">大家的话题</a></h3>
+		<h3 class="mar_b8"><a href="/k/">热门的词汇</a></h3>
 	</div>
 </div>

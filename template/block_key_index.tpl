@@ -1,6 +1,6 @@
 <div class="block">
 	<div class="aalgin">
-	<!--${$words = JWTrackUser::GetWordListByHot(100, false)}-->
+	<!--${$words = JWTrackUser::GetWordListByHot(200, false)}-->
 	<!--${$styles = array('ads', 'adb', 'ags', 'agb');}-->
 	<!--{foreach $words AS $one}-->
 	<!--${$style = $styles[($one['count']%4)];}-->

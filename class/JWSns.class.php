@@ -520,15 +520,16 @@ class JWSns {
 	static public function GetUserState($idUser)
 	{
 		//TODO
-		$num_pm			= JWMessage::GetMessageNum($idUser);
-		$num_fav		= JWFavourite::GetFavouriteNum($idUser);
-		$num_following		= JWDB_Cache_Follower::GetFollowingNum($idUser);
-		$num_follower		= JWDB_Cache_Follower::GetFollowerNum($idUser);
+		$num_pm = JWDB_Cache_Message::GetAllInputMessageNum($idUser);
+		$num_fav = JWFavourite::GetFavouriteNum($idUser);
+		$num_following = JWDB_Cache_Follower::GetFollowingNum($idUser);
+		$num_follower = JWDB_Cache_Follower::GetFollowerNum($idUser);
 
-		$num_status		= JWDB_Cache_Status::GetStatusNum($idUser);
-		$num_mms		= JWStatus::GetStatusMmsNum($idUser);
+		$num_status = JWDB_Cache_Status::GetStatusNum($idUser);
+		$num_mms = JWStatus::GetStatusMmsNum($idUser);
 		$num_tag_following	= JWTagFollower::GetFollowingNum($idUser);
-		$num_tag		= count(JWDB_Cache_Status::GetTagIdsTopicByIdUser($idUser));
+		$num_tag = count(JWDB_Cache_Status::GetTagIdsTopicByIdUser($idUser));
+		$num_key = count(JWTrackUser::GetWordListByIdUser($idUser,false));
 
 		return array(
 				'pm' => $num_pm,
@@ -539,6 +540,7 @@ class JWSns {
 				'mms' => $num_mms,
 				'tag_following' => $num_tag_following,
 				'tag' => $num_tag,
+				'key' => $num_key,
 			);
 	}
 	

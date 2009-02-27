@@ -1,6 +1,6 @@
 <div class="block">
 	<div class="aalgin">
-	<!--${$words = JWFarrago::GetHotWords(100)}-->
+	<!--${$words = JWFarrago::GetHotWords(150)}-->
 	<!--${$styles = array('ads', 'adb', 'ags', 'agb');}-->
 	<!--{foreach $words AS $one}-->
 	<!--${$style = $styles[($one['count']%4)];}-->

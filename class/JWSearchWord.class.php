@@ -32,6 +32,7 @@ class JWSearchWord{
 	 */
 	static function GuessWord($word, $result=0 ) {
 		$word = strtolower( trim($word) );
+		$result = abs(intval($result));
 
 		if( null == $word ) {
 			return false;

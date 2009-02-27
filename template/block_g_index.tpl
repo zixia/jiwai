@@ -4,27 +4,22 @@
 <div class="block">
 	<div class="mar_b50">
 		<div><a href="/g/weather" class="rt">其他城市</a><span class="dark"><a href="/北京天气/">北京天气</a></span>&nbsp;${htmlspecialchars($weather['status'])}</div>
+		<!--${$program_u=JWUser::GetUserInfo($program['idUser'])}-->
+		<div><a href="/g/program" class="rt">更多电视台</a><span class="dark"><a href="/{$program_u['nameUrl']}/">{$program_u['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($program['status']),0,60,'...')}</div>
+		<div><a href="/g/astro" class="rt">更多星座</a><span class="dark"><a href="/{$astro_user['nameUrl']}/">{$astro_user['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($astro['status']),0,60,'...')}</div>
 	</div>
 	<div class="mar_b50">
-		<div class="pagetitle">
-			<h3>大家的话题...</h3>
-		</div>
-		<div class="aalgin">
-		<!--${$words = JWFarrago::GetHotWords()}-->
-		<!--{foreach $words AS $one}-->
-			<a href="/t/{$one[0]}/" title="{$one[0]}" class="{$one[1]}">{$one[0]}</a>
-		<!--{/foreach}-->
-		</div>
+		<ul>
+			<li><span>&gt;&gt; <a href="/public_timeline/">大家的叽歪</a></span>　　<span>最新叽歪,你可以知道大家现在在做什么</span></li>
+			<li><span>&gt;&gt; <a href="/t/">大家的话题</a></span>　　<span>大家对什么话题感兴趣呢? 快来看看吧!</span></li>
+			<li><span>&gt;&gt; <a href="/k/">热门词汇</a></span>　　　<span>看看大家的叽歪中,什么词汇是最热门的</span></li>
+			<li><span>&gt;&gt; <a href="http://lab.jiwai.de/googlemap/">叽歪大中国</a></span>　　<span>在这里,你可以感受上帝之眼</span></li>
+		</ul>
 	</div>
 	<div class="mar_b50">
 		<div class="pagetitle">
 			<h3>新闻资讯...</h3>
 		</div>
-		<ul class="mar_b20">
-		<!--${$program_u=JWUser::GetUserInfo($program['idUser'])}-->
-			<li><span class="rt"><a href="/g/program">更多电视台</a></span><span class="dark"><a href="/{$program_u['nameUrl']}/">{$program_u['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($program['status']),0,60,'...')}</li>
-			<li><span class="rt"><a href="/g/astro">更多星座</a></span>		<span class="dark"><a href="/{$astro_user['nameUrl']}/">{$astro_user['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($astro['status']),0,60,'...')}</li>
-		</ul>
 		<ul class="channel_g">
 		<!--{foreach $newsbot AS $newsc=>$one}-->
 			<li><span><b>{$newsc} </b>&nbsp;|</span><!--{foreach $one AS $oone}--> <span class="dark"><a href="/{$oone}/">{$oone}</a></span><!--{/foreach}--></li>
@@ -94,7 +89,7 @@
 					<span class="lightbg"><a href="/wo/action/nudge/{$one}" onclick="return JWAction.redirect(this);">挠挠</a></span>
 					<!--{/if}-->
 				</div>
-				<div class="dark"><a href="/{$u['nameUrl']}/">{$u['nameScreen']}</a>&nbsp;<!--{if $s}--><a href="/{$u['nameUrl']}/statuses/{$s['id']}" class="bla" title="${strip_tags($s['status'])}">${mb_strimwidth(strip_tags($s['status']),0,54,'...')}</a><!--{else}--><a href="/wo/action/nudge/{$one}" class="bla" onclick="return JWAction.redirect(this);">我还没有叽歪过~~挠我一下吧~~<!--{/if}--></a> </div>
+				<div class="dark"><a href="/{$u['nameUrl']}/">{$u['nameScreen']}</a>&nbsp;<!--{if $s}--><a href="/{$u['nameUrl']}/statuses/{$s['id']}" class="bla" title="${strip_tags($s['status'])}">${mb_strimwidth(strip_tags($s['status']),0,54,'...')}</a><!--{else}--><a href="/wo/action/nudge/{$one}" class="bla" onclick="return JWAction.redirect(this);">我还没有叽歪过~~挠我一下吧~~</a><!--{/if}--></div>
 			</div>
 			<div class="clear"></div>
 		</div>
