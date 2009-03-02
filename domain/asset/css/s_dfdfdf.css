@@ -116,7 +116,7 @@ h3, .f_14, h4{font-size:14px}
 #lefter_g .s .d{margin:0 0 0 1px;}
 
 
-#righter_g{width:352px;display:table-cell;}
+#righter_g{width:352px;display:table-cell;word-break:break-all;}
 #righter_g .a,#righter_g .b,#righter_g .c,#righter_g .d{background:#fff}
 #righter_g .b{border-right:2px #fff4ea solid;}
 #righter_g .c,#righter_g .d,#righter_g .f{border-right:1px #fff4ea solid;}
@@ -315,6 +315,7 @@ a.po_d{background-position:left -660px;}
 #lefter .one_block{width:490px; overflow:hidden; padding-left:2em;}
 #lefter_g .one_block{width:455px; overflow:hidden; padding-left:2em;}
 #lefter .one_block li.hd, #lefter_g .one_block li.hd{margin:0 40px 20px 0}
+#lefter_g .one .hd, #righter_g .one .hd{margin-right:5px;}
 
 .side1, .side2{padding:10px 0;margin-bottom:40px;}
 .side3{padding:10px 0;}
@@ -367,7 +368,7 @@ dl dd{text-align:left;}
 .log_wid{width:320px;padding:6px; height:180px;}
 .reg_wid{width:320px;padding:6px;}
 .dot_line{border-bottom:1px #bbb dashed}
-.free{border:6px #FFCC66 solid}
+.free{border:6px #FFCC66 solid; background:#fff;}
 .free .yel_line{width:1px; height:150px; float:left; background:#dfdfdf; margin:20px 0; overflow:hidden}
 .free dl{width:280px;}
 .free dl dt,.free dl dd{margin-bottom:8px}
