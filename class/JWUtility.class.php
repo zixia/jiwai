@@ -145,6 +145,12 @@ class JWUtility {
 			$link = "{$prehost}/channel_timeline/{$tag_id}.rss";
 			$rss[$link] = "订阅[{$tag_name}]";
 		}
+		//k
+		if (preg_match('#/k/([^/]+)#i', $uri, $m) ) {
+			$key_name = urlDecode($m[1]);
+			$link = "{$prehost}/search/{$key_name}.rss";
+			$rss[$link] = "订阅{{$key_name}}";
+		}
 		//g
 		elseif (preg_match('#/g/#', $uri) ) {}
 
@@ -170,10 +176,16 @@ class JWUtility {
 		return self::$global_vars['getrsslink'] = $rss;
 	}
 
-	static public function HighLight($string=null) {
+	static public function HighLight($string=null,$prefix=null,$suffix=null) {
 		if (!(preg_match('#/(search|k)/#', @$_SERVER['REQUEST_URI']) 
 					&& $key=@$_GET['q']))
 			return $string;
+
+		$prefix = null==$prefix ? '<font color="red">' : $prefix;
+		$suffix = null==$suffix ? '</font>' : $suffix;
+
+	#	debug( $prefix );
+	#	debug( $suffix );
 
 		$key = strtolower($key);
 		$key = preg_replace('/[\#\(\)\-\+\\\\\*]+/', ' ', $key);
@@ -184,9 +196,9 @@ class JWUtility {
 		$string_orin = $string;
 		
 		$string_on = strip_tags($string);
-		$string_on = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string_on);
-		$string = preg_replace("/({$pattern})/i", "<font color=\"red\">\\1</font>", $string);
-		$string = preg_replace("/(<[^<>]+)<font color=\"red\">({$pattern})<\/font>([^<>]+>)/i", "\\1\\2\\3", $string);
+		$string_on = preg_replace("#({$pattern})#i", "{$prefix}\\1{$suffix}", $string_on);
+		$string = preg_replace("#({$pattern})#i", "{$prefix}\\1{$suffix}", $string);
+		$string = preg_replace("#(<[^<>]+){$prefix}({$pattern}){$suffix}([^<>]+>)#i", "\\1\\2\\3", $string);
 		return strip_tags($string_on)==strip_tags($string) 
 			? $string : $string_orin;
 	}

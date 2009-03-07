@@ -58,6 +58,7 @@ $param_side = array(
 			<?php $element->block_headline_key($param_head);?>
 			<?php $element->block_tab($param_tab);?>
 			<?php $element->block_statuses_search($param_main);?>
+			<?php $element->block_rsslink();?>
 		</div>
 		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 	</div>
