@@ -19,6 +19,9 @@ class JWStatus {
 
 	const	DEFAULT_STATUS_NUM	= 20;
 
+	const 	STATUS_FILTERED = -1;
+	const	STATUS_REPEATED	= -2;
+
 	/**
 	 * Instance of this singleton class
 	 *

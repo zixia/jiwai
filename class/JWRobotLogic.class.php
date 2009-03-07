@@ -228,7 +228,7 @@ class JWRobotLogic {
 					return null;
 				}
 			}
-			else if ( -1 == $ret ) //Filtered
+			else if ( JWStatus::STATUS_FILTERED == $ret ) //Filtered
 			{
 				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_FILTERED');
 
@@ -242,6 +242,11 @@ class JWRobotLogic {
 					return self::ReplyMsg( $robotMsg, $reply );
 				}
 				return null;
+			}
+			else if ( JWStatus::STATUS_REPEATED == $ret ) // repeated
+			{
+				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_REPEATED');
+				return self::ReplyMsg( $robotMsg, $reply );
 			}
 			else
 			{

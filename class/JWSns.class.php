@@ -557,8 +557,12 @@ class JWSns {
 			$quarantine_array = array($idUser, $status, $device, $timeCreate, $serverAddress, $options);
 			if (self::FilterStatus( $status, $quarantine_array ) )
 			{
-				return -1;
+				return JWStatus::STATUS_FILTERED;
 			}
+		}
+
+		if ( JWUtility::IsRepeated($status, $idUser) ) {
+			return JWStatus::STATUS_REPEATED;
 		}
 		/** end filter **/
 
@@ -639,7 +643,7 @@ class JWSns {
 		}
 
 		//Real Create Status
-		$idStatus = JWUtility::IsRepeated($status, $idUser) ?  false : JWStatus::Create( $idUser, $status, $device, $timeCreate, $createOptions);
+		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $createOptions);
 		if( $idStatus ) {
 
 			$status = JWStatus::SimpleFormat( $status, $idUserReplyTo );	
