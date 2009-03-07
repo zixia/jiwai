@@ -171,7 +171,7 @@ class JWUtility {
 	}
 
 	static public function HighLight($string=null) {
-		if (!(preg_match('#/search/#', @$_SERVER['REQUEST_URI']) 
+		if (!(preg_match('#/(search|k)/#', @$_SERVER['REQUEST_URI']) 
 					&& $key=@$_GET['q']))
 			return $string;
 

@@ -462,22 +462,6 @@ _SQL_;
 					);
 	}
 	
-	static public function SetIdThread( $idStatus, $idThread = null ) 
-	{
-		$idStatus = JWDB::CheckInt( $idStatus );
-
-		$is_succ = JWDB_Cache::UpdateTableRow( 'Status', $idStatus, array(
-			'idThread' => $idThread,
-		));
-
-		if( $is_succ && $idThread ) 
-		{
-			JWDB_Cache_Status::GetCountReply($idThread, true);
-		}
-
-		return $is_succ;
-	}
-
 	static public function GetStatusIdsFromUserMms($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
 	{
 		$idUser	= JWDB::CheckInt($idUser);
