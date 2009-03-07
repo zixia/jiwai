@@ -218,5 +218,22 @@ class JWUtility {
 			JWTemplate::RedirectBackToLastUrl('/');
 		}
 	}
+
+	/**
+	 * check if a status was published illintentionally
+	 * default interval is 120 seconds
+	 */
+	static public function IsRepeated($status=null, $user_id=0, $expire=120) {
+		$user_id = abs(intval($user_id));
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWUtility', 'IsRepeated'), array($user_id) );
+		$memcache = JWMemcache::Instance();
+		$last = $memcache->Get( $mc_key );
+		if ( $last && $last == $status ) {
+			return true;
+		} else if ( $status ) {
+			$memcache->Set($mc_key, $status, 0, $expire);
+		}
+		return false;
+	}
 }
 ?>
