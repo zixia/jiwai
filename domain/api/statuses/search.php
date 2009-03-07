@@ -26,8 +26,8 @@ $extra = array(
 
 $result = JWSearch::SearchStatus($q, $page, $count, $extra);
 $statuses = JWDB_Cache_Status::GetDbRowsByIds( $result['list'] );
-foreach( $statuses AS $k=>$one ) {
-	$statuses[$k]['status'] = JWUtility::HighLight($one['status'], '<b>', '</b>');
+foreach( $statuses AS $k=>$s ) {
+	$statuses[$k]['status'] = JWUtility::HighLight($s['status'],'<b>','</b>');
 }
 
 $options = array(
@@ -60,6 +60,7 @@ function renderXmlReturn($options){
     ob_start("ob_gzhandler");
 
 	$statuses = $options['statuses'];
+	foreach($statuses AS $k=>$s) $statuses[$k] = JWApi::RebuildStatus($s);
 	$q = $options['q'];
 	
 	$xmlString = null;
@@ -78,6 +79,7 @@ function renderJsonReturn($options){
     ob_start("ob_gzhandler");
 
 	$statuses = $options['statuses'];
+	foreach($statuses AS $k=>$s) $statuses[$k] = JWApi::RebuildStatus($s);
 	$q = $options['q'];
 
 	if( $options['callback'] ){
