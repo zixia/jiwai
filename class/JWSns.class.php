@@ -639,7 +639,7 @@ class JWSns {
 		}
 
 		//Real Create Status
-		$idStatus = JWStatus::Create( $idUser, $status, $device, $timeCreate, $createOptions);
+		$idStatus = JWUtility::IsRepeated($status, $idUser) ?  false : JWStatus::Create( $idUser, $status, $device, $timeCreate, $createOptions);
 		if( $idStatus ) {
 
 			$status = JWStatus::SimpleFormat( $status, $idUserReplyTo );	
