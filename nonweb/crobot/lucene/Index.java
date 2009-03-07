@@ -3,9 +3,13 @@ import de.jiwai.dao.*;
 
 public class Index
 {
+	static public String[] args = null;
+
 	public static void main(String[] argv){
 		//Table t = Execute.getOnePK("User", 89);
 		//System.out.println( t.get("nameScreen")) ;
+
+		args = argv;	
 
 		int count = Execute.getCount("Tag", "1");
 		int stepLen = 10000;
@@ -110,20 +114,28 @@ public class Index
 		int count = Execute.getCount("Status", "1");
 		int stepLen = 10000;
 		int step = ( count + stepLen - 1) / stepLen;
+		int i = 0;
+		int to = step;
+
+		if ( args.length == 4 ) {
+			i = Integer.valueOf(args[2]);
+			to = Integer.valueOf(args[3]);
+		}
 
 		Table[] a = null;
-		for( int i=0; i<step; i++ )
+		for( ; i<step && i<to; i++ )
 		{
-			a = Execute.getArray("SELECT s.id AS id,u.nameScreen as user,t.name AS tag,status,device,statusType,unix_timestamp(s.timeCreate) AS time From Status s LEFT JOIN User u ON u.id=s.idUser LEFT JOIN Tag t ON t.id=s.idTag ORDER BY s.id ASC", i*stepLen, stepLen);
+			a = Execute.getArray("SELECT s.id AS id,s.idUser AS userid,u.nameScreen as user,t.name AS tag,status,device,statusType,unix_timestamp(s.timeCreate) AS time From Status s LEFT JOIN User u ON u.id=s.idUser LEFT JOIN Tag t ON t.id=s.idTag ORDER BY s.id ASC", i*stepLen, stepLen);
 
 			for( int j=0; j<a.length; j++)
 			{
 				String keyField = "id";
 				String keyValue = a[j].get("id");
 
-				String[] otherField = { "device", "user", "type", "tag", "time", "status" };
+				String[] otherField = { "device", "userid", "user", "type", "tag", "time", "status" };
 				String[] otherValue = {
 					a[j].get("device")
+						, a[j].get("userid")
 						, a[j].get("user")
 						, a[j].get("statusType")
 						, a[j].get("tag")
@@ -131,7 +143,7 @@ public class Index
 						, a[j].get("status")
 				};
 
-				boolean token[] = { false, false, false, false, false, true };
+				boolean token[] = { false, false, false, false, false, false, true };
 
 				indexer.create(keyField, keyValue, otherField, otherValue, token);
 			}

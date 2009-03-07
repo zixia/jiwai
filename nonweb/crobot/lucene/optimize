@@ -18,12 +18,22 @@ fi
 # DIR Rotation
 INDEXDIR=${INDEXPATH}/${INDEX}
 SEARCHDIR=${INDEXPATH}/${INDEX}s
+REALDIR=${INDEXPATH}/${INDEX}r
+OREALDIR=${INDEXPATH}/${INDEX}o
 
 TEMPDIR=${INDEXPATH}/${INDEX}.${NOW}
 TEMPDIRS=${TEMPDIR}s
 
+EMPTYDIR=${INDEXPATH}/${NOW}
+
+if [ -d $OREALDIR ]; then
+    exit;
+fi
+
 # Increment UPDATE
+java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${EMPTYDIR} ${NOW}
 mv /tmp/update_${INDEX} /tmp/update_${INDEX}_temp
+mv ${REALDIR} ${OREALDIR}; mv ${EMPTYDIR} ${REALDIR};
 cat /tmp/update_${INDEX}_temp | sort | uniq > /tmp/update_${INDEX}_u
 java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Increment ${INDEXDIR} ${INDEX}
 rm -rf /tmp/update_${INDEX}_*
@@ -31,9 +41,10 @@ rm -rf /tmp/update_${INDEX}_*
 #CD Work Directory
 cp -R ${INDEXDIR} ${TEMPDIR}
 
-java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Optimize ${TEMPDIR}
+java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Optimize optimize ${TEMPDIR}
 
 # CP BACK
 mv ${SEARCHDIR} ${TEMPDIRS}
 mv ${TEMPDIR} ${SEARCHDIR}
+rm -rf ${OREALDIR}
 rm -rf ${TEMPDIRS}

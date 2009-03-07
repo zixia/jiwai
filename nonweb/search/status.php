@@ -1,7 +1,13 @@
 <?php
 import de.jiwai.lucene.*;
 error_reporting(0);
-$status_index = '/opt/lucene/index/statuss';
+$status_index = array();
+$status_index[] = '/opt/lucene/index/statuss';
+$status_index[] = '/opt/lucene/index/statusr';
+if(file_exists('/opt/lucene/index/statuso')) {
+	$status_index[] = '/opt/lucene/index/statuso';
+}
+
 $key_field = 'id';
 $order_field = null;
 

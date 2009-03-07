@@ -1,9 +1,8 @@
 <?php
-exit;
 import de.jiwai.lucene.*;
 import de.jiwai.dao.*;
 error_reporting(0);
-$status_index = '/opt/lucene/index/status';
+$status_index = '/opt/lucene/index/statusr';
 
 $id = intval($_GET['id']);
 
@@ -23,13 +22,14 @@ if ( $id )
 		 */
 
 
-		$token = array( true, false, false, false, false, false, false);
+		$token = array( true, false, false, false, false, false, false, false);
 		$user = Execute::GetOnePK('User', $record->get("idUser"));
 		$tag = Execute::GetOnePK('Tag', $record->get("idTag"));
-		$other_field = array( "status", "user", "device", "mms", "tag", "time", "signature" );
+		$other_field = array( "status", "user", "user_id", "device", "mms", "tag", "time", "signature" );
 		$other_value = array( 
 			$record->get("status"),
 			empty($user) ? '' : $user->get("nameScreen"),
+            $record->get("idUser"),
 			$record->get("device"),
 			$record->get("isMms"),
 			empty($tag) ? '' : $tag->get("name"),

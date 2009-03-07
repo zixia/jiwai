@@ -1,0 +1,15 @@
+#!/bin/bash
+PWD=/opt/jiwai.de/nonweb/crobot/lucene
+PATH=/bin:/usr/bin:/usr/java/jdk/bin
+
+JAVALIB=/opt/jiwai.de/javaLib
+INDEXPATH=/opt/lucene/index
+
+INDEX=$1
+INDEXDIR=${INDEXPATH}/${INDEX}
+
+cd $PWD
+
+java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXDIR} ${INDEX}
+
+cd $OLDPWD

@@ -14,6 +14,10 @@ class JWPubSub_Listener_LuceneUpdate implements JWPubSub_Listener
 		$file = "/tmp/update_${index}";
 		error_log( "$id\n", 3, $file );
 		echo "[LuceneUpdate]: $index://$id\n";
+
+		if ( $index == 'status' ) {
+			file_get_contents("http://localhost:8080/status_update.php?id={$id}");
+		}
 	}   
 }
 

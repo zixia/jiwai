@@ -20,6 +20,10 @@ status: index
 	@rm -rf ${INDEXPATH}/status
 	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/status status
 
+statusr: index
+	@rm -rf ${INDEXPATH}/status
+	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/statusr statusr
+
 tag: index
 	@rm -rf ${INDEXPATH}/tag
 	java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Index ${INDEXPATH}/tag tag

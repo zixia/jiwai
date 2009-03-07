@@ -1,0 +1,23 @@
+#!/bin/bash
+PWD=/opt/jiwai.de/nonweb/crobot/lucene
+PATH=/bin:/usr/bin:/usr/java/jdk/bin
+
+JAVALIB=/opt/jiwai.de/javaLib
+INDEXPATH=/opt/lucene/index
+
+FROM=${INDEXPATH}/$1
+TO=${INDEXPATH}/$2
+
+cd ${PWD}
+
+# TEST
+if [ ! -d $FROM ]; then
+	echo "no from";
+	exit;
+fi
+
+if [ ! -d $TO ]; then
+	echo "no to";
+	exit;
+fi
+java -cp .:${JAVALIB}/jiwai-library-1.2.jar:${JAVALIB}/lucene-core-2.0.0.jar:${JAVALIB}/mysql-connector-java.jar Optimize merge ${FROM} ${TO}

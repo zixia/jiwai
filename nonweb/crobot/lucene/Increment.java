@@ -43,6 +43,14 @@ public class Increment
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
 				}
+				deleteStatus(indexer, id);
+			}
+            indexer.flush();
+            indexer.close();
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
 				updateStatus(indexer, id);
 			}
 		}else if ( argv[1].equals("tag") ){
@@ -50,9 +58,25 @@ public class Increment
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
 				}
+				deleteTag(indexer, id);
+			}
+            indexer.flush();
+            indexer.close();
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
 				updateTag(indexer, id);
 			}
 		}else if ( argv[1].equals("user") ){
+			for( String id:v ) {
+				if ( 0 == ( ++start % 100 ) ) {
+					Logger.log( "Update: " + start );
+				}
+				deleteUser(indexer, id);
+			}
+            indexer.flush();
+            indexer.close();
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
@@ -68,10 +92,12 @@ public class Increment
 
 	}
 
+    static public void deleteTag(LuceneIndex indexer, String id) {
+        indexer.delete( "id", id );
+    }
 	static public void updateTag(LuceneIndex indexer, String id){
 		Table record = Execute.getOnePK( "Tag", id );
 		if ( null == record ){
-			indexer.delete( "id", id );
 			return;
 		}
 
@@ -82,14 +108,16 @@ public class Increment
 			record.get("description"),
 		};
 
-		indexer.update( "id", id, other_field, other_value, token );
+		indexer.create( "id", id, other_field, other_value, token );
 	}
 
+    static public void deleteUser(LuceneIndex indexer, String id) {
+        indexer.delete( "id", id );
+    }
 	static public void updateUser(LuceneIndex indexer, String id){
 
 		Table record = Execute.getOnePK( "User", id );
 		if ( null == record ){
-			indexer.delete( "id", id );
 			return;
 		}
 
@@ -111,31 +139,34 @@ public class Increment
 			record.get("bio")
 		};
 
-		indexer.update( "id", id, other_field, other_value, token );
+		indexer.create( "id", id, other_field, other_value, token );
 	}
 
+    static public void deleteStatus(LuceneIndex indexer, String id) {
+        indexer.delete( "id", id );
+    }
 	static public void updateStatus(LuceneIndex indexer, String id) {
 
 		Table record = Execute.getOnePK( "Status", id );
 		if ( null == record ){
-			indexer.delete( "id", id );
 			return;
 		}
 
 		try{
-			boolean[] token = {true, false, false, false, false, false};
+			boolean[] token = {true, false, false, false, false, false, false};
 			Table user = Execute.getOnePK("User", record.get("idUser"));
 			Table tag = Execute.getOnePK("Tag", record.get("idTag"));
-			String[] other_field = {"status", "user", "device", "tag", "time", "type"};
+			String[] other_field = {"status", "userid", "user", "device", "tag", "time", "type"};
 			String[] other_value = { 
 				record.get("status"),
+				null==user ? "" : user.get("id"),
 				null==user ? "" : user.get("nameScreen"),
 				record.get("device"),
 				null==tag ? "" : tag.get("name"),
 				String.valueOf( record.getDate("timeCreate").getTime()/1000 ),
 				record.get("statusType")
 			};
-			indexer.update( "id", id, other_field, other_value, token );
+			indexer.create( "id", id, other_field, other_value, token );
 		}catch(Exception e){
 			e.printStackTrace();
 		}

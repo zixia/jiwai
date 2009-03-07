@@ -9,6 +9,6 @@
        <entry key="cacheSize">0</entry>
        <entry key="user">root</entry>
        <entry key="pass"></entry>
-       <entry key="url">jdbc:mysql://10.1.30.20:3306/jiwai</entry>
+       <entry key="url">jdbc:mysql://10.1.30.10:3306/jiwai</entry>
        <entry key="desc">Notice: JUST FOR READ!</entry>
 </properties>
