@@ -41,12 +41,14 @@ public class Increment
 		if ( argv[1].equals("status") ){
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
-					Logger.log( "Update: " + start );
+					Logger.log( "Delete: " + start );
 				}
 				deleteStatus(indexer, id);
 			}
             indexer.flush();
             indexer.close();
+
+            start = 0;
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
@@ -56,12 +58,14 @@ public class Increment
 		}else if ( argv[1].equals("tag") ){
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
-					Logger.log( "Update: " + start );
+					Logger.log( "Delete: " + start );
 				}
 				deleteTag(indexer, id);
 			}
             indexer.flush();
             indexer.close();
+
+            start = 0;
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
@@ -71,12 +75,14 @@ public class Increment
 		}else if ( argv[1].equals("user") ){
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
-					Logger.log( "Update: " + start );
+					Logger.log( "Delete: " + start );
 				}
 				deleteUser(indexer, id);
 			}
             indexer.flush();
             indexer.close();
+
+            start = 0;
 			for( String id:v ) {
 				if ( 0 == ( ++start % 100 ) ) {
 					Logger.log( "Update: " + start );
