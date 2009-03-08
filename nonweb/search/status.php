@@ -152,6 +152,7 @@ if ( isset($query_info['tag']) )
 
 try{
 	$result = $searcher->searchKey( $query, $current_page, $page_size, $key_field, $order_field, $order );
+    $cost = (float) ( $searcher->cost / 1000 );
 }catch(Exception $e){
 	die('{"error":1}');
 }
@@ -160,6 +161,7 @@ $return = array(
 	'error' => 0,
 	'count' => $result->getResultCount(),
 	'list' => $result->getKeyList(),
+    'cost' => $cost,
 );
 
 echo json_encode( $return );
