@@ -41,6 +41,7 @@ $param_head = array(
 		'sovalue' => $value,
 		'sourl' => "/k/{$key}/",
 		'count' => $result['count'],
+		'cost' => sprintf('%.4f', $result['cost']),
 		);
 $param_side = array(
 		'key' => $key,

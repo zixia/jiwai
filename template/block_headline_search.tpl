@@ -1,7 +1,7 @@
 <div class="pagetitle">
 	<h1>搜索结果</h1>
 </div>
-<div class="mar_b8">共有 <b>{$count}条</b> 符合 {$trackword}</div>
+<div class="mar_b8"><span style="float:right">用时{$cost}秒</span>共有 <b>{$count}条</b> 符合 {$trackword}</div>
 <!--{if $guessword}-->
 <div>你是不是要搜索：<!--{foreach $guessword AS $one}--><span class="f_yel"><a href="/wo/search/statuses?q={$one}">{$one}</a></span>&nbsp;<!--{/foreach}--></div>
 <!--{else}-->

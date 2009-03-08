@@ -74,6 +74,7 @@ $param_head = array(
 		'sovalue' => $value,
 		'guessword' => $guessword,
 		'trackword' => $trackword,
+		'cost' => sprintf('%.4f', $result['cost']),
 		);
 $param_search = array(
 		'extra' => $extra,
