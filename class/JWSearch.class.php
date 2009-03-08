@@ -167,7 +167,7 @@ class JWSearch {
 		 */
 		$query_string = $query_info['query_string'];
 		$query_string = preg_replace('/[\\\\\#]+/', '', $query_string);
-		$query_string = trim($query_string, '+\r\n');
+		$query_string = trim(trim($query_string), '+');
 		$query_string = str_replace('-', ' - ', $query_string);
 		$query_string = str_replace('+', ' AND ', $query_string);
 		if (preg_match('/\s(AND|OR|\-|)\s/i', $query_string)) {
