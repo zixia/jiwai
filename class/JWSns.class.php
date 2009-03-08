@@ -561,15 +561,17 @@ class JWSns {
 			}
 		}
 
-		if ( JWUtility::IsRepeated($status, $idUser) ) {
-			return JWStatus::STATUS_REPEATED;
-		}
 		/** end filter **/
 
 		//滤除换行 并 检查签名改变
 		$statusType = isset($options['statusType']) ? $options['statusType'] : 'NONE';
 		if( null == ( $status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType) ) )
 			return true;
+
+		/** repeated status */
+		if ( JWUtility::IsRepeated($status, $idUser) ) {
+			return JWStatus::STATUS_REPEATED;
+		}
 
 		/**
 		 * nano format parse
