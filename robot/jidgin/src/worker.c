@@ -16,6 +16,7 @@
 #include "jidgin.h"
 
 static char jidgin_worker_uptime[201];
+static unsigned short retry_count = 5;
 
 void *jidgin_worker_get_handle(void) {
   static int jidgin_worker_handle;
@@ -41,27 +42,29 @@ static gboolean jidgin_worker_get_uptime_str() {
   return TRUE;
 }
 
+static void jidgin_worker_cb_retry(PurpleAccount *account) {
+  if (retry_count) {
+    sleep(10);
+    purple_account_connect(account);
+  } else {
+    jidgin_worker_get_uptime_str();
+    jidgin_log(LOG_CRIT, "[%s][jidgin down]%s\n",
+        jidgin_worker_uptime,
+        purple_account_get_username(account));
+    abort();
+  }
+
+  --retry_count;
+}
+
 void jidgin_worker_cb_signon(PurpleConnection *gc, gpointer signal)
 {
-  static unsigned short retry_count = 5;
   PurpleAccount *account = purple_connection_get_account(gc);
 
   if (purple_account_is_disconnected(account)) {
     jidgin_log(LOG_ERR, "[purple_account_is_disconnected]%s %d\n",
         purple_account_get_username(account), retry_count);
-
-    if (retry_count) {
-      sleep(10);
-      purple_account_connect(account);
-    } else {
-      jidgin_worker_get_uptime_str();
-      jidgin_log(LOG_CRIT, "[%s][jidgin down]%s\n",
-          jidgin_worker_uptime,
-          purple_account_get_username(account));
-      abort();
-    }
-
-    --retry_count;
+    jidgin_worker_cb_retry(account);
   } else {
     jidgin_worker_get_uptime_str();
     jidgin_log(LOG_INFO, "[purple_account_is_connected]%s\n",
@@ -81,6 +84,7 @@ gboolean jidgin_worker_send_im(PurpleAccount *account, PurpleConversation *conv,
   if (purple_account_is_disconnected(account)) {
     jidgin_log(LOG_INFO, "[jidgin_worker_send_im]%s disconnected\n",
         purple_account_get_username(account));
+    jidgin_worker_cb_retry(account);
     return FALSE;
   }
 
