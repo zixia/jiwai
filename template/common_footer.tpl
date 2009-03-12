@@ -2,7 +2,7 @@
 	<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 	<div class="f">
 		<ul>
-			<li>&copy; 2007-2008 叽歪网</li>
+			<li>&copy; 2007-2009 叽歪网</li>
 			<li><a href="http://jiwai.de/wo/about/jiwai" target="_blank">关于我们</a></li>
 			<li><a href="http://jiwai.de/wo/about/joinus" target="_blank">加入我们</a></li>
 			<li><a href="http://help.jiwai.de/MediaComments" target="_blank">媒体和掌声</a></li>
