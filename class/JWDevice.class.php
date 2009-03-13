@@ -35,13 +35,13 @@ class JWDevice {
 
 	/* device array */
 	static public $allArray =
-		array('web','api','wap','email','sms','msn','qq','xiaonei','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth');
+		array('web','api','wap','email','sms','msn','qq','xiaonei','gtalk','irc','skype','fetion','jabber','aol','fetion','yahoo','newsmth','facebook');
 
 	static public $emailArray = 
 		array('msn','gtalk','aol','email','jabber','newsmth');
 
 	static public $imArray = 
-		array('jabber','msn','qq','xiaonei','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc');
+		array('jabber','msn','qq','xiaonei','gtalk','skype','fetion','jabber','aol','yahoo','newsmth','irc','facebook');
 
 	static public $smsArray = 
 		array('sms');
@@ -56,10 +56,10 @@ class JWDevice {
 		array('msn','gtalk','skype','qq','xiaonei');
 
 	static public $htmlTagAllowArray =
-		array('gtalk','jabber','msn','yahoo','aim','fetion');
+		array('gtalk','jabber','msn','yahoo','aim','fetion','facebook');
 
 	static public $nudgeOrderArray = 
-		array('msn','gtalk','skype','qq','xiaonei','yahoo','aol','sms','fetion','jabber');
+		array('msn','gtalk','skype','qq','xiaonei','yahoo','aol','sms','fetion','jabber','facebook');
 
 	static public $daRenArray =
 		array('sms', 'fetion', 'gtalk', 'msn', 'qq');
@@ -102,6 +102,7 @@ class JWDevice {
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
 			case 'fetion':
 			case 'xiaonei':
+            case 'facebook':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -164,6 +165,10 @@ class JWDevice {
 					return true;
 				}
 				else if(false != self::IsValid($address, 'newsmth'))
+				{
+					return true;
+				}
+				else if(false != self::IsValid($address, 'facebook'))
 				{
 					return true;
 				}
