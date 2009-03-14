@@ -160,12 +160,6 @@ class JWNotify{
 			$options['notify'] = 'ALL';
 		}
 
-		$pretty_options = array();
-		if ( $tag ) 
-		{
-			$pretty_options = array( 'tag' => $tag['name'], );
-		}
-		
 		/**
 		 * build message
 		 */
@@ -174,6 +168,13 @@ class JWNotify{
 			'sms' => $status_row['raw_status'],
 		);
 
+		$pretty_options = array();
+		if ( $tag ) 
+		{
+			$pretty_options = array( 'tag' => $tag['name'], );
+			$message['im'] = $message['im'] . self::GetLeadUrl( $pretty_options );
+		}
+		
 		if ( $mms ) 
 		{
 			$mms_url = 'http://JiWai.de/'.$sender_user['nameUrl'].'/mms/'.$idStatus;
@@ -215,7 +216,6 @@ class JWNotify{
 		}
 
 		/* Add reply Link */
-		/**
 		if ( null==$conference )
 		{
 			if ( $thread_status )
@@ -232,7 +232,6 @@ class JWNotify{
 			}
 			$message['im'] .= $reply_plus_url;
 		}
-		*/
 
 		/** Sync to Facebook - removed - bcz of F8 API change
 		if ( null==$receiver_user && $idFacebook = JWFacebook::GetFBbyUser($sender_user['id']) ) 
@@ -535,6 +534,13 @@ class JWNotify{
 			return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_CUSTOM . $conference['number'];
 
 		return $code['code'] . $code['func'] . JWFuncCode::PRE_CONF_IDUSER . $conference['idUser'];
+	}
+
+	static public function GetLeadUrl( $options=array() ) {
+		if ( isset( $options['tag'] ) ) {
+			return " 话题 http://jiwai.de/t/{$options['tag']}/";
+		}
+		return null;
 	}
 	
 	/**
