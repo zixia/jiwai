@@ -15,9 +15,9 @@ function title() {
 <fb:title>JiWai.de</fb:title>
 <fb:dashboard>
   <fb:action href="http://apps.facebook.com/jiwaide/">首页</fb:action>
-  <fb:action href="?verify">帐号设置</fb:action>
-  <fb:action href="http://jiwai.de/wo/account/settings">其他设置</fb:action>
-  <fb:help href="http://jiwai.de/" title="Go to JiWai.de">叽歪de</fb:help>
+  <fb:action href="http://apps.facebook.com/jiwaide/?verify">帐号设置</fb:action>
+  <fb:action href="http://apps.facebook.com/jiwaide/?settings">其他设置</fb:action>
+  <fb:help href="http://apps.facebook.com/jiwaide/?jiwaide" title="Go to JiWai.de">叽歪de</fb:help>
 </fb:dashboard>
 <?php
 }
@@ -94,6 +94,14 @@ function update() {
 	}
 	$g_with_friends = 1;
 	include_once 'status.php';
+}
+
+function jiwaide() {
+	JWTemplate::RedirectToUrl('http://jiwai.de/');
+}
+
+function settings() {
+	JWTemplate::RedirectToUrl('http://jiwai.de/wo/account/settings');
 }
 
 function profile() {
