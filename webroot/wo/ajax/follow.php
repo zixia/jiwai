@@ -8,7 +8,7 @@ if($_POST)
 {
 	$list_user_id = $_POST['list_user_id'];
 	$operate = $_POST['operate'];
-	$list_user_id = JWDB::CheckInt($list_user_id);
+	$list_user_id = abs(intval($list_user_id));
 	$action_rows = JWSns::GetUserActions($current_user_id,$list_user_id);
 	$action_row = $action_rows[$list_user_id];
 	$list_user_info = JWUser::GetUserInfo( $list_user_id );

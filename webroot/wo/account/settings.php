@@ -31,7 +31,7 @@ if ( isset($new_user_info) )
 		$arr_changed['email'] = $email;
 	}
 	
-	$nameUrl = isset($_POST['nameUrl']) ? $_POST['nameUrl'] : $user_info['nameUrl'];
+	$nameUrl = isset($new_user_info['nameUrl']) ? $new_user_info['nameUrl'] : $user_info['nameUrl'];
 	if ( !empty($nameUrl) && $nameUrl!=$user_info['nameUrl'] && 'N'==$user_info['isUrlFixed'])
 	{
 		$arr_changed['nameUrl'] = $nameUrl;
