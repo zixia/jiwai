@@ -3,7 +3,7 @@ require_once('../../../jiwai.inc.php');
 JWLogin::MustLogined(false);
 $element = JWElement::Instance();
 
-$featured_ids = JWUser::GetFeaturedUserIds( 12 );
+$featured_ids = JWUser::GetFeaturedUserIds( 10, 'commender' );
 $featured_users = JWDB_Cache_User::GetDbRowsByIds($featured_ids);
 
 $picture_ids = JWFunction::GetColArrayFromRows($featured_users, 'idPicture');

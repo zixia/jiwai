@@ -851,9 +851,9 @@ _SQL_;
 	}
 
 
-	static public function GetFeaturedUserIds($max=10)
+	static public function GetFeaturedUserIds($max=10, $nameScreen='featured')
 	{
-		$featured_user_info = self::GetUserInfo('featured');
+		$featured_user_info = self::GetUserInfo($nameScreen);
 		$status_row = JWDB_Cache_Status::GetStatusIdsFromUser($featured_user_info['id'], $max);
 
 		if ( empty($status_row['status_ids']) )
@@ -865,7 +865,7 @@ _SQL_;
 
 		foreach ( $status_row['status_ids'] as $status_id )
 		{
-			$status = $status_db_row[$status_id]['status'];
+			$status = trim($status_db_row[$status_id]['status']);
 			if ( ! preg_match('/^(\S+)/', $status, $matches) )
 				continue;
 
