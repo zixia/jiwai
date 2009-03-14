@@ -8,7 +8,7 @@
 <!--{if count($users)}-->
 <div class="side2">
 	<div class="pagetitle">
-		<h3 class="lt">最近加入关注... &nbsp;</h3>
+		<h3 class="lt">最近加入追踪... &nbsp;</h3>
 		<div class="clear"></div>
 	</div>
 	<ul class="one">
