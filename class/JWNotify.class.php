@@ -216,6 +216,7 @@ class JWNotify{
 		}
 
 		/* Add reply Link */
+		/*
 		if ( null==$conference )
 		{
 			if ( $thread_status )
@@ -232,6 +233,7 @@ class JWNotify{
 			}
 			$message['im'] .= $reply_plus_url;
 		}
+		*/
 
 		/** Sync to Facebook - removed - bcz of F8 API change
 		if ( null==$receiver_user && $idFacebook = JWFacebook::GetFBbyUser($sender_user['id']) ) 
