@@ -1,4 +1,4 @@
-SUBDIRS = t
+SUBDIRS = protocol/fetion protocol/facebook
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = $(PURPLE_CFLAGS) ${GLIB2_CFLAGS} ${GTHREAD2_CFLAGS}
 bin_PROGRAMS = jidgin
