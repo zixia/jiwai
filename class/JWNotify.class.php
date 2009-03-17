@@ -540,7 +540,7 @@ class JWNotify{
 
 	static public function GetLeadUrl( $options=array() ) {
 		if ( isset( $options['tag'] ) ) {
-			return " 话题 http://jiwai.de/t/{$options['tag']}/";
+			return " 点击浏览话题 http://jiwai.de/t/{$options['tag']}/";
 		}
 		return null;
 	}
