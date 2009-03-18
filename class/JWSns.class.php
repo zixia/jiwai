@@ -551,26 +551,27 @@ class JWSns {
 	{
 		/** deal filter **/
 		$timeCreate = ( $timeCreate == null ) ? time() : intval( $timeCreate );
+		$statusType = isset($options['statusType']) ? $options['statusType'] : 'NONE';
+
 		if ( false==isset($options['filter']) || $options['filter'] == true )
 		{
 			$options['filter'] = false;
 			$quarantine_array = array($idUser, $status, $device, $timeCreate, $serverAddress, $options);
 			if (self::FilterStatus( $status, $quarantine_array ) )
 			{
-				return JWStatus::STATUS_FILTERED;
+				return $statusType == 'SIG' ? false : JWStatus::STATUS_FILTERED;
 			}
 		}
 
 		/** end filter **/
 
 		//滤除换行 并 检查签名改变
-		$statusType = isset($options['statusType']) ? $options['statusType'] : 'NONE';
 		if( null == ( $status=self::StripStatusAndCheckSignature($idUser,$status,$device,$statusType) ) )
 			return true;
 
 		/** repeated status */
 		if ( JWUtility::IsRepeated($status, $idUser) ) {
-			return JWStatus::STATUS_REPEATED;
+			return $statusType == 'SIG' ? false : JWStatus::STATUS_REPEATED;
 		}
 
 		/**
