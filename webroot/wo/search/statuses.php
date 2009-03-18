@@ -38,8 +38,8 @@ if ( $_REQUEST) {
 }
 if ( true ) { 
 	$q = isset($_GET['q']) ? $_GET['q'] : null;
-	if ( false===$no_guess AND 1===count(preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
-		JWTemplate::RedirectToUrl( "/k/{$q}/" );
+	if ( false===$no_guess AND 1===count($qs = preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
+		JWTemplate::RedirectToUrl( "/k/{$qs[0]}/" );
 	}
 	$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
 	if ( !$q ) { 
