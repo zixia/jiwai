@@ -114,16 +114,13 @@ class JWTrackUser{
 		settype( $sequence, 'array' );
 
 		$sequenceString = implode( "','", $sequence );
-		$sql = "SELECT distinct( idUser ) FROM TrackUser WHERE idTrackWordSequence IN ('{$sequenceString}')";
+		$sql = "SELECT distinct( idUser ), wordTerm FROM TrackUser WHERE idTrackWordSequence IN ('{$sequenceString}')";
 
 		$rows = JWDB::GetQueryResult( $sql, true );
 		if( empty( $rows ) )
 			return array();
 
-		$rtn = array();
-		foreach( $rows as $r ) {
-			array_push( $rtn, $r['idUser'] );
-		}
+		$rtn = JWUtility::AssColumn($rows, 'idUser');
 
 		return $rtn;
 	}

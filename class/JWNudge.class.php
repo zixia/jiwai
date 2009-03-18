@@ -56,6 +56,8 @@ class JWNudge {
 		$user = ( $user == null ) ? ( $status == null ? null : JWUser::GetUserInfo($status['idUser']) ) : $user;
 		$receiver_user = isset($options['receiver_id']) ? JWUser::GetUserInfo($options['receiver_id']) : null;
 
+		$tracks = isset($options['track']) ? $options['track'] : null;
+
 		$nudgeOptions = array(
 			'conference' => $conference,
 			'status' => $status,
@@ -115,8 +117,13 @@ class JWNudge {
 				$message = $message['message'];
 			}
 
+			$oneoptions = $nudgeOptions;
+			if ( $tracks && isset($tracks[$idUser]) ) {
+				$oneoptions['plus'] = " 叽歪词汇 http://JiWai.de/k/{$tracks[$idUser]}/";
+			}
+
 			$deviceRow = $deviceRows[ $availableSendVia ];
-			JWNudge::NudgeToUserDevice( $deviceRow, $message, $messageType, $nudgeOptions );
+			JWNudge::NudgeToUserDevice( $deviceRow, $message, $messageType, $oneoptions);
 		}
 	}
 
@@ -171,6 +178,8 @@ class JWNudge {
 				//附加投票链接
 				if( $type!='sms' && $statusType=='VOTE' ) {
 					$message .= '这是'.$user['nameScreen'].'在叽歪发起的投票,可以在这里( http://jiwai.de/'.$user['nameUrl'].'/statuses/'.$status['id'].' )参与投票并查看投票结果';
+				} else if ( $type!='sms' && isset($options['plus'])) {
+					$message .= $options['plus'];
 				}
 
 				JWRobot::SendMtRawQueue($address, $type, $message, $serverAddress, null);

@@ -362,7 +362,8 @@ class JWNotify{
 			$message_cutted = mb_substr( $message_be_cutted, 0, 420, 'UTF-8' );  //maybe block .....
 
 			$trackword_sequence_id = JWTrackWord::GetStatusTrackOrder( $message_cutted );
-			$to_ids = JWTrackUser::GetIdUsersBySequence( $trackword_sequence_id );
+			$to_id_words = JWTrackUser::GetIdUsersBySequence( $trackword_sequence_id );
+			$to_ids = array_keys($to_id_words);
 
 			$to_ids = array_diff( $to_ids, $have_send_ids );
 			foreach($to_ids as $to_id)
@@ -382,6 +383,7 @@ class JWNotify{
 						. '): '
 						. $message_be_cutted;
 
+				$options['track'] = $to_id_words;
 				JWNudge::NudgeToUsers( $to_ids, $message_send, 'nudge', 'bot', $options );
 				$have_send_ids = array_merge( $have_send_ids, $to_ids );
 			}
@@ -540,7 +542,7 @@ class JWNotify{
 
 	static public function GetLeadUrl( $options=array() ) {
 		if ( isset( $options['tag'] ) ) {
-			return " 点击浏览话题 http://jiwai.de/t/{$options['tag']}/";
+			return " 叽歪话题 http://jiwai.de/t/{$options['tag']}/";
 		}
 		return null;
 	}
