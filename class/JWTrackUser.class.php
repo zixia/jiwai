@@ -120,9 +120,10 @@ class JWTrackUser{
 		if( empty( $rows ) )
 			return array();
 
-		$rtn = JWUtility::AssColumn($rows, 'idUser');
+		$ids = JWUtility::GetColumn($rows, 'idUser');
+		$words = JWUtility::GetColumn($rows, 'wordTerm');
 
-		return $rtn;
+		return array_combine($ids, $words);
 	}
 
 	static function IsTrackUser( $idUser, $word ) {
