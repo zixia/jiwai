@@ -75,9 +75,11 @@ h3, .f_14, h4{font-size:14px}
 #nav ul{height:22px;}
 #nav ul li{float:left; margin-right:10px;text-align:center; padding-top:2px;}
 #nav ul li a{color:#f87000; font-size:14px; font-weight:bold;}
-#nav ul li a.act{font-size:12px; font-weight:normal}
+#nav ul li a.po_d_b{font-size:12px; font-weight:normal;padding-right:12px;background-position:23px -1529px;}
 #nav ul li.rt{float:right; margin:0;}
 #nav ul li.rt a{font-size:12px; font-weight:normal;}
+.poplist{position:absolute; left:0;top:0; padding:0 8px; background:#d8f3e4; border-left:1px #eee solid;border-right:2px #ddd solid; border-bottom:2px #ddd solid;}
+.poplist li{margin-bottom:5px;}
 .wht .a, .wht .b, .wht .c, .wht .d, .wht .f{background:#d8f3e4;}	/* ch */
 
 .nav_line{border-bottom:5px #f87000 solid}
@@ -290,7 +292,7 @@ a.po_d{background-position:left -660px;}
 .usermsg .hd a{display:block;padding:2px; border:1px #ccc solid; width:96px; height:96px; overflow:hidden}
 .usermsg .hd a img{width:96px; height:96px;vertical-align:top;}
 .msg h1, .msg h3{font-weight:bold}
-.msg .po_lt{width:11px; height:25px; position:absolute;left:-10px; top:20px; background-position:left -1650px}
+.msg .po_lt{width:11px; height:25px; position:absolute;left:-21px; top:20px; background-position:left -1650px}
 .usermsg h1{line-height:1.2em; margin-bottom:10px;}
 .usermsg .phot_mar{width:445px; margin-left:auto;}
 .single_block .usermsg .phot_mar{width:715px; margin-left:auto;}
@@ -311,7 +313,7 @@ a.po_d{background-position:left -660px;}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
 
-.msg, .one .con, pagetitle{position:relative;}
+.msg .po_lt_bor, .one .con, pagetitle{position:relative;}
 #lefter .one_block{width:490px; overflow:hidden; padding-left:2em;}
 #lefter_g .one_block{width:455px; overflow:hidden; padding-left:2em;}
 #lefter .one_block li.hd, #lefter_g .one_block li.hd{margin:0 40px 20px 0}

@@ -39,7 +39,8 @@ if ( $_REQUEST) {
 if ( true ) { 
 	$q = isset($_GET['q']) ? $_GET['q'] : null;
 	if ( false===$no_guess AND 1===count($qs = preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
-		JWTemplate::RedirectToUrl( "/k/{$qs[0]}/" );
+		$q = JWRequest::IsIE() ? urlEncode($qs[0]) : $qs[0];
+		JWTemplate::RedirectToUrl( "/k/{$q}/" );
 	}
 	$page = isset($_GET['page']) ? abs(intval($_GET['page'])) : 1;
 	if ( !$q ) { 

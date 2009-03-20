@@ -7,9 +7,9 @@
 	if ( $user_picture_id )
 		$user_icon_url = $picture_url_row[$user_picture_id];
 }-->
-<div class="one line">
+<div class="one">
 	<div class="lt hd"><a href="/{$user_row['nameUrl']}/"><em><img src="{$user_icon_url}" class="a1" /></em></a></div>
-	<div class="con_no">
+	<div class="con">
 		<div class="dark">
 			<div><a href="/{$user_row['nameUrl']}/">{$user_row['nameScreen']}</a></div>
 			<div>

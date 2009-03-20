@@ -37,6 +37,7 @@
 			$formated_one = array(
 				'status' => '我只和我关注的人分享我的叽歪。',
 				'replyto' => NULL,
+				'protected' => true,
 				);
 		}
 		$replyto = $formated_one['replyto'] 
@@ -110,6 +111,15 @@
 				<h1>{$user['nameScreen']}</h1>
 				<div class="po_lt"></div>
 				<div class="f_14 mar_b8">{$formated_one['status']}<!--{if isset($plugin_result['html'])}--><div class="bg_black">{$plugin_result['html']}</div><!--{/if}--></div>
+				<!--{if $formated_one['protected']}-->
+				<div class="pad hand" onMouseover="this.className+=' bg_gra'" onMouseOut="this.className=this.className.replace(' bg_gra','')" onClick="var o=$('protect_info');o.className=o.className.replace(' no','')">
+					<div class="txt_r mar_b8">如何获得{$user['nameScreen']}的关注？</div>
+					<ul id="protect_info" class="dot_b f_gra no">
+						<li>你可以先关注此人，说不定{$user['nameScreen']}就会关注你哦。</li>
+						<li>你还可以发悄悄话与{$user['nameScreen']}进行交流，要小心，可别造成骚扰哦，  被{$user['nameScreen']}阻止了可不是件好事。</li>
+					</ul>
+				</div>
+				<!--{/if}-->
 				<div class="f_gra">
 				<!--{if $one}-->
 					<div class="rt lightbg"><a href="/{$replyurl}/thread/{$replyid}" class="thread_item" rel="{$one['id']}:{$user['nameScreen']}"><span class="ico_rebak"><img src="{$iconurl}" width="16" height="12" /></span>${$replynum ? $replynum.'条':''}回复</a><!--{if $g_current_user_id}-->&nbsp; &nbsp;<a href="/wo/favourites/${$is_favourited?"create":"create"}/{$one['id']}" onclick="return JWAction.toggleStar({$one['id']});" id="status_star_{$one['id']}" title="${$is_favourited?"取消收藏":"收藏它"}"><span id="ico_star_{$one['id']}" class="ico_fav${$is_favourited?'d':''}"><img src="{$iconurl}" width="16" height="12" /></span>${$is_favourited?"取消收藏":"收藏"}</a><!--{/if}--><!--{if $can_delete}-->&nbsp; &nbsp;<a href="/wo/status/destroy/{$one['id']}" class="c_note" onclick="return JWAction.doTrash({$one['id']})"><span class="ico_trash"><img src="{$iconurl}" width="16" height="12" /></span>删除</a><!--{/if}--></div>

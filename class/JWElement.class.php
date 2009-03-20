@@ -91,12 +91,16 @@ class JWElement {
 
 	function block_statuses_user($args=array())
 	{
-		global $g_page_user_id;
+		global $g_page_user_id, $g_current_user_id;
 		$user = JWUser::GetUserInfo($g_page_user_id);
 		if ( $user['idConference'] )
 		{
 			return $this->_block_statuses_conference($args);
 		}
+
+		if (JWSns::IsProtected($user, $g_current_user_id))
+			return;
+
 		$total = JWStatus::GetStatusNum($g_page_user_id);
 		$pager = new JWPager(array('rowCount'=>$total-1));
 		$status_data = JWDB_Cache_Status::GetStatusIdsFromUser( (string)$g_page_user_id, $pager->pageSize, $pager->offset+1);
@@ -145,9 +149,13 @@ class JWElement {
 
 	function block_statuses_favourites($args=array())
 	{
-		global $g_page_user_id;
+		global $g_page_user_id, $g_current_user_id;
 		($user_id = $g_page_user_id) 
 			|| ($user_id=JWLogin::GetCurrentUserId());
+		$user = JWUser::GetUserInfo($user_id);
+
+		if (JWSns::IsProtected($user, $g_current_user_id))
+			return;
 
 		$total = JWFavourite::GetFavouriteNum($user_id);
 		$pager = new JWPager(array('rowCount'=>$total));
@@ -210,9 +218,13 @@ class JWElement {
 
 	function block_statuses_mms()
 	{
-		global $g_page_user_id;
+		global $g_page_user_id, $g_current_user_id;
 		$user_id = $g_page_user_id 
 			? $g_page_user_id : JWLogin::GetCurrentUserId();
+		$user = JWUser::GetUserInfo($user_id);
+
+		if (JWSns::IsProtected($user, $g_current_user_id))
+			return;
 
 		$total = JWStatus::GetStatusMmsNum($user_id);
 		$pager = new JWPager(array(
