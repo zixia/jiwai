@@ -19,6 +19,7 @@ __SQL__;
     return JWDB::GetQueryResult($sql, true, true);
 }
 
+$delay = 3;
 $system_sender_id = 59668;
 $birthday = strftime('%m月%d日', strtotime("+$delay days"));
 
