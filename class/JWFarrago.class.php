@@ -237,9 +237,10 @@ class JWFarrago
 		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'TrendTag'), array($savenum) );
 		$memcache = JWMemcache::Instance();
 		$words = $memcache->Get( $mc_key );
+
 		if ( empty($words) ) {
 			$words = array();
-		}
+		} 
 
 		if ( $word ) {
 			$expire = 24 * 60 * 60; // 1 day
@@ -253,7 +254,7 @@ class JWFarrago
 		}
 
 		if ( $size ) {
-			return count($words)>$size ? array_slice($words,0,$size):$words;
+			return count($words)>$size ? array_slice($words,0,$size) : $words;
 		}
 
 		return null;

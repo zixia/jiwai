@@ -622,7 +622,7 @@ class JWSns {
 		if ($createOptions['idTag'] && !$createOptions['idUserReplyTo']) {
 			$trTag = JWDB_Cache_Tag::GetDbRowById($createOptions['idTag']);
 			if ( $trTag ) {
-				JWFarrago::TrendTag($jw_rtag['name'], 0);
+				JWFarrago::TrendTag($trTag['name'], 0);
 			}
 		}
 
