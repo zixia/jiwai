@@ -45,7 +45,7 @@ if ( isset($_REQUEST['jw_status']) ) {
 }
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 <div id="lefter">
 	<div class="mar_b20">

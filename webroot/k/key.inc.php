@@ -26,6 +26,9 @@ if ( true ) {
 	}
 	$guessword = ( $page==1 ) ? 
 		JWSearchWord::GuessWord($q, $result['count']) : null;
+	
+	$trendword = ( $page==1 ) ?
+		JWFarrago::TrendWord($q, 0) : null;
 }
 
 $param_tab = array( 
@@ -47,7 +50,6 @@ $param_side = array(
 		'key' => $key,
 		);
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">

@@ -11,9 +11,12 @@
  */
 class JWFarrago
 {
+	const ID_USER_ESCREEN = 165657;
+	const SIZE_TRENDWORD = 50;
+
 	static public function GetEScreen($size=3, $offset=0) 
 	{
-		$esuser_id = 165657;
+		$esuser_id = self::ID_USER_ESCREEN;
 		$status_data = JWDB_Cache_Status::GetStatusIdsFromUser($esuser_id, $size, $offset);
 		$status_rows = JWDB_Cache_Status::GetDbRowsByIds($status_data['status_ids']);
 		$events = array();
@@ -226,6 +229,76 @@ class JWFarrago
 		$picture_rows = JWDB::GetQueryResult($sql, true);
 		$memcache->Set( $mc_key, $picture_rows, 0, $expire );
 		return $picture_rows;
+	}
+
+	static public function TrendTag($word=null, $size=0) 
+	{
+		$savenum = self::SIZE_TRENDWORD;
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'TrendTag'), array($savenum) );
+		$memcache = JWMemcache::Instance();
+		$words = $memcache->Get( $mc_key );
+		if ( empty($words) ) {
+			$words = array();
+		}
+
+		if ( $word ) {
+			$expire = 24 * 60 * 60; // 1 day
+			$word = strtolower($word);
+			array_unshift($words, $word);
+			$words = array_unique($words);
+			if ( count($words) > $savenum ) {
+				$words = array_slice($words, 0, $savenum);
+			}
+			$memcache->Set($mc_key, $words, 0, $expire);
+		}
+
+		if ( $size ) {
+			return count($words)>$size ? array_slice($words,0,$size):$words;
+		}
+
+		return null;
+	}
+
+	static public function TrendWord($word=null, $size=0) 
+	{
+		$savenum = self::SIZE_TRENDWORD;
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'TrendWord'), array($savenum) );
+		$memcache = JWMemcache::Instance();
+		$words = $memcache->Get( $mc_key );
+
+		if ( empty($words) ) {
+			$words = array();
+		} 
+
+		if ( $word ) {
+			$expire = 24 * 60 * 60; // 1 day
+			$word = strtolower($word);
+			array_unshift($words, $word);
+			$words = array_unique($words);
+			if ( count($words) > $savenum ) {
+				$words = array_slice($words, 0, $savenum);
+			}
+			$memcache->Set($mc_key, $words, 0, $expire);
+		}
+
+		if ( $size ) {
+			return count($words)>$size ? array_slice($words,0,$size) : $words;
+		}
+
+		return null;
+	}
+
+	static public function GetPopkey() {
+		$f_tag = array_merge(self::TrendTag(null,3),array('笑话','小秘密'));
+		$f_word = self::TrendWord(null, 5);
+		$f_tag = array_unique($f_tag);
+		$r = array();
+		foreach($f_tag AS $one) $r[] = "[{$one}]"; 
+		foreach($f_word AS $one) $r[] = "{$one}"; 
+		$r_k = array_rand($r, count($r));
+		$r = array_combine($r_k, $r);
+		ksort($r);
+		return json_encode($r);
 	}
 
 	static public function GetSuggestTag($user_id=null) 

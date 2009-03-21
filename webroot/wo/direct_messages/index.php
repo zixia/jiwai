@@ -7,7 +7,7 @@ $param_tab = array( 'now' => 'dm_inbox');
 $param_dm = array( 'box' => 'in' );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">

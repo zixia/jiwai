@@ -35,7 +35,7 @@
 		{
 			$plugin_result = "";
 			$formated_one = array(
-				'status' => '我只和我关注的人分享我的叽歪。',
+				'status' => '<div class="pad bg_yel"><h2>我只和我关注的人分享我的叽歪。</h2></div>',
 				'replyto' => NULL,
 				'protected' => true,
 				);

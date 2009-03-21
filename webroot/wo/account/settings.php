@@ -80,7 +80,7 @@ $param_tab = array( 'now' => 'account_settings' );
 $param_side = array( 'sindex' => 'account' );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">

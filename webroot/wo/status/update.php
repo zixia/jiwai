@@ -61,7 +61,7 @@ function tag_or_thread_updater($status)
 	} else {
 		return false;
 	}
-
+	
 	$is_succ = JWSns::UpdateStatus($update_user_id, $status, 'web', null, 'web@jiwai.de', $options_info);
 	if( false == $is_succ ) {
 		JWSession::SetInfo('error', '对不起，叽歪失败。'); 

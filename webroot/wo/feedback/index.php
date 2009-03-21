@@ -52,7 +52,7 @@ $param_main = array(
 );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 
 <div id="container">
 <?php $element->wide_notice();?>

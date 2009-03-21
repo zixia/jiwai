@@ -105,7 +105,7 @@ $param_main = array(
 <script src="<?php echo JWTemplate::GetAssetUrl('/lib/mooRainbow/mooRainbow.js');?>" type="text/javascript"></script>
 <link id="set_style" href="#" media="screen, projection" rel="Stylesheet" type="text/css" />
 <!-- design end -->
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 
 <?php $element->wide_notice();?>

@@ -81,7 +81,7 @@ $param_side = array( 'sindex' => 'account' );
 $param_main = array( 'reset_password' => $is_reset_password );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">

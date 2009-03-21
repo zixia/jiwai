@@ -3,7 +3,7 @@ require_once('../../../jiwai.inc.php');
 $element = JWElement::Instance();
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_no();?>
+<?php $element->common_header();?>
 <div id="container">
 <div id="lefter">
 	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>

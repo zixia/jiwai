@@ -31,7 +31,7 @@ $param_side = array( 'sindex' => 'notice' );
 $param_main = array( 'user_setting' => $user_setting );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">

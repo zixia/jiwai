@@ -6,7 +6,7 @@ $element = JWElement::Instance();
 $param_tab = array( 'now' => 'wo_reply' );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_wo();?>
+<?php $element->common_header();?>
 
 <div id="container">
 <div id="lefter">

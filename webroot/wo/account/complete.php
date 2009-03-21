@@ -61,7 +61,7 @@ $element = JWElement::Instance();
 $param_tab = array( 'tabtitle' => '完成你的帐号设置', );
 ?>
 <?php $element->html_header();?>
-<?php $element->common_header_no();?>
+<?php $element->common_header();?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">

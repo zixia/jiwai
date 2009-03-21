@@ -110,6 +110,7 @@ function page_render($body, $user, $title, $h1=null, $login=false)
 			<div class="block">
 				<?php echo $body;?>
 			</div>
+			<div class="clear"></div>
 		</div>
         <div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>
 </div><!-- end lefter -->

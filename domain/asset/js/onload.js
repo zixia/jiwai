@@ -220,6 +220,30 @@ window.jiwai_init_hook_bgblack = function() {
 	});
 };
 
+function popShow(o,e,popKey){
+	var l = popKey.length;
+	var str="";
+	if($("oPopList")&&$("oPopList").className=="poplist"){
+		document.body.removeChild($("oPopList"));
+		return;
+	}
+	if(ul==undefined||!ul){
+		var ul=document.createElement("ul");
+		ul.className="poplist";
+		ul.id="oPopList";
+		document.body.appendChild(ul);
+		JWBuddyIcon.cancelBubble(e);
+	}
+	for(var i=0;i<l;i++){
+		var v = popKey[i];
+		var vs = v.replace(/\[/, '').replace(/\]/,'');
+		var s = ( v == vs ) ? 'k' : 't';
+		str += "<li><a href='/"+s+"/"+vs+"/'>"+v+"</a></li>";
+	}
+	ul.innerHTML=str;
+	ul.style.top = getIE(o).b + 8 + "px";
+	ul.style.left = getIE(o).l - 8 + "px";
+}
 
 var JWSsearch =
 {
