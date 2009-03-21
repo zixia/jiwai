@@ -242,7 +242,7 @@ class JWFarrago
 			$words = array();
 		} 
 
-		if ( $word ) {
+		if ( $word && !is_numeric($word) ) {
 			$expire = 24 * 60 * 60; // 1 day
 			$word = strtolower($word);
 			array_unshift($words, $word);
@@ -271,7 +271,7 @@ class JWFarrago
 			$words = array();
 		} 
 
-		if ( $word ) {
+		if ( $word && !is_numeric($word) ) {
 			$expire = 24 * 60 * 60; // 1 day
 			$word = strtolower($word);
 			array_unshift($words, $word);
