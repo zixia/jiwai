@@ -592,6 +592,11 @@ class JWSns {
 		$idConference = $reply_info['conference_id'];
 		$idGeocode = $reply_info['geocode_id'];
 
+		/** block reply */
+		if ( $idUserReplyTo && JWBlock::IsBlocked($idUserReplyTo, $idUser)) {
+			return $statusType == 'SIG' ? false : JWStatus::STATUS_BLOCKED;
+		}
+
 		//Conference Protected And 过滤处理
 		$idConference = JWConference::IsAllowJoin( $idConference, $idUser, $device ) ? $idConference : null;
 		$conference = ( $idConference ) ? JWConference::GetDbRowById( $idConference ) : null;

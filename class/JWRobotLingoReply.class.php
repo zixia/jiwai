@@ -173,6 +173,7 @@ class JWRobotLingoReply {
 			//Update Status
 			'REPLY_UPDATESTATUS_FILTERED' => '对不起，因为含有某些关键词，你发送的叽歪被我们暂时藏起来了！',
 			'REPLY_UPDATESTATUS_REPEATED' => '对不起，请不要重复发布相同内容的叽歪！',
+			'REPLY_UPDATESTATUS_BLOCKED' => '对不起，对方已经阻止你进行回复！',
 
 			//VOTE
 			'REPLY_VOTE_SUC' => '你好，你的投票被接受，谢谢参与！',

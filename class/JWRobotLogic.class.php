@@ -248,6 +248,11 @@ class JWRobotLogic {
 				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_REPEATED');
 				return self::ReplyMsg( $robotMsg, $reply );
 			}
+			else if ( JWStatus::STATUS_BLOCKED == $ret ) // repeated
+			{
+				$reply = JWRobotLingoReply::GetReplyString(null, 'REPLY_UPDATESTATUS_BLOCKED');
+				return self::ReplyMsg( $robotMsg, $reply );
+			}
 			else
 			{
 				return false;

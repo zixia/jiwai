@@ -21,6 +21,7 @@ class JWStatus {
 
 	const 	STATUS_FILTERED = -1;
 	const	STATUS_REPEATED	= -2;
+	const 	STATUS_BLOCKED = -3;
 
 	/**
 	 * Instance of this singleton class
