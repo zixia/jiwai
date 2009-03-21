@@ -613,6 +613,15 @@ class JWSns {
 			'statusType' => $statusType,
 		);
 
+		//log tag for Trend
+		if ($createOptions['idTag'] && !$createOptions['idUserReplyTo']) {
+			$trTag = JWDB_Cache_Tag::GetDbRowById($createOptions['idTag']);
+			if ( $trTag ) {
+				JWFarrago::TrendTag($jw_rtag['name'], 0);
+			}
+		}
+
+
 		$acceptKeys = array( 'idPicture', 'statusType', 'idPartner' );
 		foreach( $acceptKeys as $key ) {
 			if( isset( $options[ $key ] ) && false==isset($createOptions[$key]) ) {

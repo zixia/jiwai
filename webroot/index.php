@@ -8,7 +8,7 @@ $element = JWElement::Instance();
 ?>
 
 <?php $element->html_header();?>
-<?php $element->common_header_no(array('nonav'=>true));?>
+<?php $element->common_header(array('nonav'=>true));?>
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">
