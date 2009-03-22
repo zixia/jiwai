@@ -1007,6 +1007,10 @@ class JWSns {
 
 		if ( empty( $user_row ) )
 			return false;
+
+		if ( JWBlock::IsBlocked($user_row['id'], $action_user_id) ) {
+			return true;
+		}
 		
 		if ( $user_row['protected'] == 'Y' 
 			&& $action_user_id != $user_row['id'] 
