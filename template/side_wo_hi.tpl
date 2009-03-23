@@ -29,7 +29,7 @@
 			</div>
 			<ul id="othObj">
 			<!--{foreach $devices AS $type=>$device}-->
-			<!--{if !$device['secret']&&$type!='facebook'}-->
+			<!--{if !$device['secret']}-->
 			<!--${$type_name=JWDevice::GetNameFromType($type);}-->
 				<li><a href="javascript:JiWai.ChangeDevice('{$type}','{$type_name}');">{$type_name}</a></li>
 			<!--{/if}-->

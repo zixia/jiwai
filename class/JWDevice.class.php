@@ -877,7 +877,7 @@ class JWDevice {
 				$name='水木社区';
 				break;
 			case 'facebook':
-				$name='Facebook';
+				$name='F8';
 				break;
 			case 'web':
 				$name='网页';
