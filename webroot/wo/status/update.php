@@ -65,6 +65,12 @@ function tag_or_thread_updater($status)
 	$is_succ = JWSns::UpdateStatus($update_user_id, $status, 'web', null, 'web@jiwai.de', $options_info);
 	if( false == $is_succ ) {
 		JWSession::SetInfo('error', '对不起，叽歪失败。'); 
+	} else if ( JWStatus::STATUS_BLOCKED == $is_succ ) {
+		JWSession::SetInfo('error', '对不起，你未被授权回复叽歪。'); 
+	} else if ( JWStatus::STATUS_REPEATED == $is_succ ) {
+		JWSession::SetInfo('error', '对不起，请不要重复发送相同内容。'); 
+	} else if ( JWStatus::STATUS_FILTERED == $is_succ ) {
+		JWSession::SetInfo('error', '对不起，你发送的叽歪被屏蔽。'); 
 	} else {
 		JWSession::SetInfo('notice', '你的叽歪发送成功。');
 	}

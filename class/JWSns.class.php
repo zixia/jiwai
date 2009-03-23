@@ -583,6 +583,7 @@ class JWSns {
 
 		//parse reply
 		$reply_info = JWStatus::GetReplyInfo( $status, $options );
+
 		
 		$status = $reply_info['status'];
 		$idThread = $reply_info['thread_id'];
@@ -596,8 +597,8 @@ class JWSns {
 		if ( $idUserReplyTo && JWBlock::IsBlocked($idUserReplyTo, $idUser)) {
 			return $statusType == 'SIG' ? false : JWStatus::STATUS_BLOCKED;
 		}
-		if ( $idThread && $threadStatus = JWDB_Cache_Status::GetDbRowById($idThread) && JWBlock::IsBlocked($threadStatus['idUser'], $idUser) ) {
-			return $statusType == 'SIG' ? false : JWStatus::STATUS_BLOCKED;
+		if ( $idThread && ($threadStatus = JWDB_Cache_Status::GetDbRowById($idThread)) && JWBlock::IsBlocked($threadStatus['idUser'], $idUser) ) {
+			return $statusType=='SIG' ? false:JWStatus::STATUS_BLOCKED;
 		}
 
 		//Conference Protected And 过滤处理
