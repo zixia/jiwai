@@ -64,7 +64,7 @@ class JWPlugins_Douban {
         $title = htmlspecialchars($info['title']);
         $image = $info['image'];
         $author = @$info['author']
-            ? implode(', ', $info['author'])
+            ? $info['author']
             : '叽歪不知道是谁';
 
         if ( $info ) {
