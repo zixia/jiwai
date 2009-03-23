@@ -73,7 +73,13 @@ class JWFormValidate
 			}
 			else if ( strlen( $name_screen ) < 4 ) 
 			{
-				return "用户名 不能短于 4 个字符";
+				return "用户名 不能短于4个字符";
+			}
+			else if ( strlen( $name_screen ) > 30 ) {
+				return "用户名 不能超过10个汉字或20英文字母";
+			}
+			else if ( mb_strimwidth($name_screen,0,20) != $name_screen ) {
+				return "用户名 不能超过10个汉字或20英文字母";
 			}
 			else
 			{
