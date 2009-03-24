@@ -45,6 +45,7 @@ $param_notice = array(
 		<div class="line mar_b8"></div>
 		<?php $element->side_recent_vistor();?>
 		<?php $element->side_whom_me_follow(array('url'=>'wo'));?>
+		<?php $element->side_whom_me_interest();?>
 		<?php $element->side_searchuser();?>
 	</div>
 	<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
