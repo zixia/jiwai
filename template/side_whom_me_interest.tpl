@@ -9,7 +9,7 @@
 }-->
 <div class="side2">
 	<div class="pagetitle">
-		<h3 class="lt">你可能会感兴趣的人... &nbsp;</h3></div>
+		<h3 class="lt">你可能会感兴趣的人... &nbsp;</h3>
 		<div class="clear"></div>
 	</div>
 	<ul class="one">
