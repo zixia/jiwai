@@ -100,9 +100,10 @@ class JWDevice {
 				return preg_match('/^\d{9,}$/',$address);
 			case 'sms':
 				return preg_match('/^\d{11}$/',$address) or preg_match('/^0\d{10,11}$/', $address);
+			case 'facebook':
+				return empty($address) ||  preg_match('/^\d+$/', $address );
 			case 'fetion':
 			case 'xiaonei':
-            case 'facebook':
 			case 'qq':
 				return preg_match('/^\d+$/'				,$address);
 			case 'newsmth':
@@ -877,7 +878,7 @@ class JWDevice {
 				$name='水木社区';
 				break;
 			case 'facebook':
-				$name='F8';
+				$name='Facebook';
 				break;
 			case 'web':
 				$name='网页';

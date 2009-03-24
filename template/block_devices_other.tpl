@@ -1,3 +1,6 @@
+<!--${
+	$iconurl = JWTemplate::GetAssetUrl('/images/img.gif');
+}-->
 <div id="set_bor">
 	<div class="mar_b40 f_14">通过Facebook，Twitter等网站接收和更新你的叽歪，现在就来绑定吧。</div>
 	<div class="mar_b50">
@@ -28,7 +31,7 @@
 		<!--{if $facebook['secret']}-->
 		<div id="fb_block" class="bg_gra pad mar_b20" style="display:${$oblockid=='fb' ? 'block' : 'none'};">
 			<div class="f_14 mar_b20">
-				<div class="rt"><span class="ico_face"><img src="${JWTemplate::GetAssetUrl('/image/img.gif')}" width="80" height="20" /></span></div>
+				<div class="rt"><span class="ico_face"><img src="{$iconurl}" width="80" height="20" /></span></div>
 				<div>你想绑定Facebook，没错吧？那就请按以下步骤操作：</div>
 			</div>
 			<ul class="mar_b20">
@@ -43,7 +46,7 @@
 		<!--{if !$bindother['twitter']}-->
 		<div id="tw_block" class="bg_gra pad mar_b20" style="display:${$oblockid=='tw' ? 'block' : 'none'}">
 			<div class="f_14 mar_b20 pad_t8">
-				<div class="rt"><span class="ico_twib"><img src="images/img.gif" width="80" height="20" /></span></div>
+				<div class="rt"><span class="ico_twib"><img src="{$iconurl}" width="80" height="20" /></span></div>
 				<div>绑定后，你不能从Twitter更新你的叽歪，但是叽歪将自动发送你的更新到Twitter。</div>
 			</div>
 			<form action="/wo/bindother/create" method="post">
@@ -114,8 +117,8 @@
 		<div class="gray mar_b20">
 			<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 			<div class="t hand">
-				<div class="lt pad_t3"><a id="ctr_1" href="javascript:ctrObj('ctr_1','elm_1')" class="max" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="12" height="12" /></a></div>
-				<div class="rt"><span class="ico_face"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="80" height="20" /></span></div>
+				<div class="lt pad_t3"><a id="ctr_1" href="javascript:ctrObj('ctr_1','elm_1')" class="max" ><img src="{$iconurl}" width="12" height="12" /></a></div>
+				<div class="rt"><span class="ico_face"><img src="{$iconurl}" width="80" height="20" /></span></div>
 				<h4 onClick="ctrObj('ctr_1','elm_1')">&nbsp; Facebook</h4>
 			</div>
 			<div class="f">
@@ -140,8 +143,8 @@
 			<form action="/wo/bindother/create" method="post">
 			<input type="hidden" name="bid" value="{$bind['id']}"/>
 			<div class="t hand">
-				<div class="lt pad_t3"><a id="ctr_{$ictr}" href="javascript:ctrObj('ctr_{$ictr}','elm_{$ictr}')" class="max" ><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="12" height="12" /></a></div>
-				<div class="rt"><span class="ico_{$ts}"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="80" height="20" /></span></div>
+				<div class="lt pad_t3"><a id="ctr_{$ictr}" href="javascript:ctrObj('ctr_{$ictr}','elm_{$ictr}')" class="max" ><img src="{$iconurl}" width="12" height="12" /></a></div>
+				<div class="rt"><span class="ico_{$ts}"><img src="{$iconurl}" width="80" height="20" /></span></div>
 				<h4 onClick="ctrObj('ctr_{$ictr}','elm_{$ictr}')">&nbsp;{$us}</h4>
 			</div>
 			<div class="f">
