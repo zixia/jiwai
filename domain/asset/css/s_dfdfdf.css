@@ -365,6 +365,12 @@ dl dd{text-align:left;}
 .c_f00{background:#f00}
 .c_0f0{background:#0f0}
 .c_00f{background:#00f}
+/*seekbox*/
+#TB_overlay {position:absolute;top: 0px;left: 0px;background:#999;filter:alpha(opacity=60);opacity:0.6; z-index:101}
+#TB_window { position: absolute;color: #000000; z-index:102;background:#fff}
+#TB_ajaxContent{clear:both;overflow-x:hidden; overflow-y:hidden;}
+#TB_load{ position: absolute; display:none; height:100px; width:100px;}
+#TB_HideSelect { z-index:-100; position:absolute; top: 0; left: 0; background-color:#fff; border:none; }
 
 /* login style */
 .log_wid{width:320px;padding:6px; height:180px;}

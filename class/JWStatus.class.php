@@ -932,6 +932,12 @@ _SQL_;
 
 		$status_row = JWDB_Cache_Status::GetDbRowById( $status_id );
 
+		if ( empty($status_row) )
+			return;
+		
+		if ( $status_row['idUser'] )
+			JWUser::ActivateUser($status_row['idUser']);
+
 		if ( null===$status_row['idThread'] 
 			&& 0 < JWDB_Cache_Status::GetCountReply( $status_row['id'] )
 			&& $jiwaixiaodi = JWUser::GetUserInfo('叽歪小弟') )

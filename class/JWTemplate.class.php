@@ -2881,11 +2881,13 @@ _HTML_;
 			throw new JWException('must have path');
 
 		$asset_path = JW_ROOT . 'domain/asset';
+		$absUrlPath = '/' . ltrim($absUrlPath,'/');
 
 		$domain = 'jiwai.de';
 		if ( preg_match('#(alpha|beta)\.jiwai\.(\w+)#i', $_SERVER["HTTP_HOST"],$matches) )
 		{
 			$domain	= "{$matches[1]}.jiwai.{$matches[2]}";
+			return "http://asset.{$domain}{$absUrlPath}";
 		}
 
 
@@ -2893,15 +2895,15 @@ _HTML_;
 		$n = sprintf('%u',crc32($absUrlPath));
 		$n %= $asset_num_max;
 
-		if('/' != mb_substr($absUrlPath, 0, 1))
-			$absUrlPath ="/$absUrlPath";
-
 		if ( !$mtime )
-			return "http://asset.$domain$absUrlPath";
+				return "http://asset{$n}.$domain$absUrlPath";
+		else if ( is_string($mtime) ) {
+				$timestamp=strtotime($mtime);
+		} else {
+				$timestamp = filemtime("$asset_path$absUrlPath");
+		}
 
-		$timestamp = filemtime("$asset_path$absUrlPath");
-
-		return "http://asset.$domain$absUrlPath?$timestamp";
+		return "http://asset{$n}.$domain$absUrlPath?$timestamp";
 	}
 
 
