@@ -176,4 +176,5 @@ function debug($v, $e=false) {
 		if ($e) exit(0);
 	}
 }
+if(false==CONSOLE) ob_start('ob_gzhandler');
 ?>

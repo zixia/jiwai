@@ -15,15 +15,15 @@ class JWRender{
 		self::$mTemplate = null;
 	}
 
-	static public function Render( $templateFile, $v=array() ){
+	static public function Render( $templateFile, $v=array(), $dispaly=true){
 		$templateFile = preg_replace('/'.TPL_FILE_SUFFIX.'$/', '', $templateFile);
-		$content = self::GetTemplate()->render( $templateFile, $v );
+		$content = self::GetTemplate()->render( $templateFile, $v, $dispaly );
 		self::CloseTemplate();
 		return $content;
 	}
 
 	static public function Display( $templateFile,$v=array() ){
-		echo self::Render( $templateFile, $v );
+		self::Render( $templateFile, $v, true);
 	}
 
 	static public function Assign($k=null, $v=null){
@@ -49,12 +49,12 @@ class JWRender{
 }
 
 class Template_Render{ 
-	
-        protected $_properties_array_used_by_overload = array();
+
+	protected $_properties_array_used_by_overload = array();
 	public static $lastContent = null;
 	public static $module = null;
 
-        public function __get($name=null){
+	public function __get($name=null){
 		switch($name){
 			case '_SESSION':
 				return isset($_SESSION) ? $_SESSION : false;
@@ -72,16 +72,16 @@ class Template_Render{
 				return isset($this->_properties_array_used_by_overload[$name]) ?
 					$this->_properties_array_used_by_overload[$name] : false;
 		}
-        }
+	}
 
-        public function __set($name=null,$value=null){
-                return $this->_properties_array_used_by_overload[$name] = $value;
-        }
+	public function __set($name=null,$value=null){
+		return $this->_properties_array_used_by_overload[$name] = $value;
+	}
 
-        public function __call($method=null,$param = array()){
-                return false;
-        }
-	
+	public function __call($method=null,$param = array()){
+		return false;
+	}
+
 	//following is for template	
 
 	public function __construct(){
@@ -135,7 +135,7 @@ class Template_Render{
 			$fileContent = preg_replace("/\<\!\-\-\s*\{foreach\s+(\S+)\s+as\s+(\S+)\s*\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/foreach\}\s*\-\-\>/ies", "\$this->__replace('<?php if(is_array(\\1)){foreach(\\1 as \\2) { ?>\\3<?php }}?>')", $fileContent);
 			$fileContent = preg_replace("/\<\!\-\-\s*\{if\s+(.+?)\}\s*\-\-\>(.+?)\<\!\-\-\s*\{\/if\}\s*\-\-\>/ies", "\$this->__replace('<?php if(\\1){?>\\2<? }?>')", $fileContent);
 		}
-		
+
 		//Add for call <!--{portal->part /video/index/}-->
 		$fileContent = preg_replace("/\<\!\-\-\s*\{\s*(\w+)\-\>(\w+)\s+(.+?)\s*}\s*\-\-\>/is","<?php echo $\\1->\\2('\\3') ?>",$fileContent);
 		$fileContent = preg_replace_callback("/\<\!\-\-\s*\{\s*include\s+(.+?)\s*}\s*\-\-\>/is", array(&$this,'__parsecall'), $fileContent);
@@ -170,8 +170,8 @@ class Template_Render{
 		return file_exists( $this->realTemplateFile($templateFile) );
 	}
 
-	public function render($templateFile,$valueArray=array()) {
- 
+	public function render($templateFile,$valueArray=array(), $dispaly=true) {
+
 		$templateFile = $this->realTemplateFile($templateFile);
 		$compiledFile = TPL_COMPILED_DIR.'/'.md5($templateFile).'.php';
 
@@ -186,9 +186,15 @@ class Template_Render{
 			$this->parse($templateFile,$compiledFile);
 		}
 
-		ob_start();
-		require($compiledFile);
-		return self::$lastContent = ob_get_clean();
+		if ( false == $dispaly ) {
+			ob_start();
+			require($compiledFile);
+			self::$lastContent = ob_get_clean();
+			ob_end_flush();
+			return self::$lastContent;
+		} else {
+			require($compiledFile);
+		}
 	}
 }
 ?>
