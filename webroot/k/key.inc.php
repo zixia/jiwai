@@ -27,7 +27,7 @@ if ( true ) {
 	$guessword = ( $page==1 ) ? 
 		JWSearchWord::GuessWord($q, $result['count']) : null;
 	
-	$trendword = ( $page==1 ) ?
+	$trendword = ( $page==1 && $result['count']>9 ) ?
 		JWFarrago::TrendWord($q, 0) : null;
 }
 
