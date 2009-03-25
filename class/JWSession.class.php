@@ -56,8 +56,12 @@ Class JWSession {
 	}
 
 	function __destruct() {
-		if ( $length = ob_get_length() ) {
-			@header("Content-Length: {$length}");
+		if ( in_array('ob_gzhandler', ob_list_handlers()) ) {
+			ob_end_flush();
+			if ( $length = ob_get_length() ) {
+				@header("Content-Length: {$length}");
+				ob_end_flush();
+			}
 		}
 	}
 
