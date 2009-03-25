@@ -840,7 +840,6 @@ class JWDevice {
 				} else {
 					$name = $row['serverAddress'];
 				}
-				$name = 'wo@jiwai.de';
 				break;
 			default:
 				$name='wo@jiwai.de';
