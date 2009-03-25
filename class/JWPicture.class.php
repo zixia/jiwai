@@ -206,7 +206,7 @@ _SQL_;
 					. '.'
 					. $fileExt
 					;
-				$url_row[$picture_id] = JWTemplate::GetAssetUrl($asset_url_path, false);
+				$url_row[$picture_id] = JWTemplate::GetAssetUrl($asset_url_path, $picture_rows[$picture_id]['timeCreate']);
 			}
 		}
 
