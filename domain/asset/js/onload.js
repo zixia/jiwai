@@ -305,5 +305,10 @@ var JWSsearch =
 	}
 };
 
+function removeOPoplist() {
+	(window.ie ? document : window).addEvent('click',function(){if($('oPopList')){document.body.removeChild($('oPopList'))}});
+}
+
 window.jiwai_init_hook_eheight = theSameHeight;
 window.jiwai_init_hook_jwsearch = JWSsearch.init;
+window.jiwai_init_hook_jwrmpoplist = removeOPoplist;

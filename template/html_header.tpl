@@ -52,13 +52,6 @@
 	<link href="${JWTemplate::GetAssetUrl('/css/index.css')}" rel="stylesheet" type="text/css" />
 <!--{/if}-->
 	<link href="${JWTemplate::GetAssetUrl('/css/seekbox.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/lib/mootools/mootools.v1.11.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/onload.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/jiwai.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/buddyIcon.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/location.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/validator.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/seekbox.js')}"></script>
-	<script type="text/javascript" src="${JWTemplate::GetAssetUrl('/js/action.js')}"></script>
+	<script type="text/javascript" src="${JWFarrago::GetInitJs(true)}"></script>
 </head>
 <body>

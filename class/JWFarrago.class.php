@@ -337,5 +337,36 @@ class JWFarrago
 
 		return $suggest_tags;
 	}
+
+	static public function GetInitJs($onlyurl=true) 
+	{
+			$jses = array(
+							'/lib/mootools/mootools.v1.11.js',
+							'/js/onload.js',
+							'/js/jiwai.js',
+							'/js/buddyIcon.js',
+							'/js/location.js',
+							'/js/validator.js',
+							'/js/seekbox.js',
+							'/js/action.js',
+						 );
+			$content = null;
+			$timestamp = 0;
+			foreach( $jses AS $one ) {
+					$absone = JW_ROOT . '/domain/asset/' . $one;
+					if(false==file_exists($absone)) break;
+					$content[] = ($onlyurl) ? '' : file_get_contents($absone);
+					$ftimestamp = filemtime($absone);
+					$timestamp = max($timestamp, $ftimestamp);
+			}
+			if ( $onlyurl ) {
+					$timestamp = date('Y-m-d H:i:s', $timestamp);
+					return JWTemplate::GetAssetUrl('/jiwai.js', $timestamp);
+			}
+			return array(
+							'time' => $timestamp,
+							'content' => join("\n", $content),
+						);
+	}
 }
 ?>
