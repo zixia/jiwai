@@ -606,6 +606,8 @@ _CMD_;
 					exit(0);
 				}
 
+				if ( date(DATE_RFC822,filemtime($filename)) == @$_SERVER['HTTP_IF_MODIFIED_SINCE']) { header('HTTP/1.1 304 Not Modified'); exit; }
+
 				header('Content-Type: image/'.$picType);
 				header('Content-Length: '.filesize($filename));
 
@@ -613,7 +615,7 @@ _CMD_;
 				header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
 				header('Pragma: public');
 				//header('X-Sendfile: '.$filename);
-				header("cache-control: max-age=259200");
+				//header("cache-control: max-age=259200");
 
 				$fp = fopen($filename, 'rb');
 				fpassthru($fp);
@@ -630,6 +632,7 @@ _CMD_;
 					header ( "Location: " . JWTemplate::GetConst('UrlStrangerPicture') );
 					exit(0);
 				}
+				if ( date(DATE_RFC822,filemtime($filename)) == @$_SERVER['HTTP_IF_MODIFIED_SINCE']) { header('HTTP/1.1 304 Not Modified'); exit; }
 
 				header('Content-Type: image/'.$picType);
 				header('Content-Length: '.filesize($filename));
@@ -638,7 +641,7 @@ _CMD_;
 				header('Expires: '.date(DATE_RFC822, time()+3600*24*365*10));
 				header('Pragma: public');
 				//header('X-Sendfile: '.$filename);
-				header("cache-control: max-age=259200");
+				//header("cache-control: max-age=259200");
 
 				$fp = fopen($filename, 'rb');
 				fpassthru($fp);
