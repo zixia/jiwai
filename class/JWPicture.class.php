@@ -583,6 +583,9 @@ _CMD_;
 
 	static public function Show($idPicture, $picSize='thumb48')
 	{
+		if ( preg_match('/\&(\d+)$/', $_SERVER['QUERY_STRING'], $m) ) {
+			if ( date(DATE_RFC822,abs($m[1])) == @$_SERVER['HTTP_IF_MODIFIED_SINCE']) { header('HTTP/1.1 304 Not Modified'); exit; }
+		}
 		switch ($picSize)
 		{
 			default:	// fall to thumb48
