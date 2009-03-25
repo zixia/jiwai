@@ -124,7 +124,7 @@ class JWFarrago
 		}
 
 		$expire = 15 * 60;
-		$sql = "SELECT s.idThread as id, COUNT(distinct idUser) AS ucount, COUNT(1) AS rcount FROM (Select * FROM Status WHERE timeCreate >(now() - interval 24 hour))s WHERE s.idThread IS NOT NULL AND s.idThread IN (SELECT id FROM Status WHERE timeCreate>(now() - interval 24 hour)) GROUP BY s.idThread ORDER BY ucount DESC, rcount DESC LIMIT 0,{$size}";
+		$sql = "SELECT s.idThread as id, COUNT(distinct idUser) AS ucount, COUNT(1) AS rcount FROM (Select * FROM Status WHERE timeCreate >(now() - interval 24 hour))s,User u WHERE s.idUser=u.id AND s.idThread IS NOT NULL AND u.protected='N' AND s.idThread IN (SELECT id FROM Status WHERE timeCreate>(now() - interval 24 hour)) GROUP BY s.idThread ORDER BY ucount DESC, rcount DESC LIMIT 0,{$size}";
 
 		$query_rows = JWDB::GetQueryResult($sql, true);
 		$visit_thread_ids = JWFunction::GetColArrayFromRows($query_rows, 'id');
