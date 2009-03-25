@@ -51,7 +51,6 @@
 <!--{else}-->
 	<link href="${JWTemplate::GetAssetUrl('/css/index.css')}" rel="stylesheet" type="text/css" />
 <!--{/if}-->
-	<link href="${JWTemplate::GetAssetUrl('/css/seekbox.css')}" media="screen, projection" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="${JWFarrago::GetInitJs(true)}"></script>
 </head>
 <body>

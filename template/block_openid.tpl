@@ -21,7 +21,7 @@
 	<div class="mar_b8"><h3><b>当前允许的网站...</b></h3></div>
 	<div>
 	<!--{foreach $trusted_sites AS $tid=>$row}-->
-		<p><a href="/wo/openid/trustsite/destroy/$db_row[id]">删除</a> <a href="{$row['urlTrusted']}" target="_blank"><strong>{$row['urlTrusted']}</strong></a></p>
+		<p><a href="/wo/openid/trustsite/destroy/{$row['id']}">删除</a> <a href="{$row['urlTrusted']}" target="_blank"><strong>{$row['urlTrusted']}</strong></a></p>
 	<!--{/foreach}-->
 	</div>
 </div>

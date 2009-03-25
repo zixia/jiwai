@@ -8,7 +8,7 @@
 		</dd>
 		<dt><input ${$user_setting['is_receive_offline']=='Y' ? 'checked':''} id="user_is_receive_offline" name="user[is_receive_offline]" type="checkbox" value="Y" /></dt>
 		<dd>
-			<div class="mar_b8"> 我的聊天软件处于离线（隐身）状态时也税收通知</div>
+			<div class="mar_b8"> 我的聊天软件处于离线（隐身）状态时也接收通知</div>
 		</dd>
 		<dt><input ${$user_setting['allowSystemSms']=='Y' ? 'checked':''} id="user_allowSystemSms" name="user[allowSystemSms]" type="checkbox" value="Y" /></dt>
 		<dd>
