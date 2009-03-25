@@ -1,6 +1,7 @@
 <?php
 $element = JWElement::Instance();
-$param_tab = array( 'now' => 'user_favourite' );
+$user = JWUser::GetUserInfo($g_page_user_id);
+$param_tab = array( 'now' => 'user_nore' );
 ?>
 <?php $element->html_header();?>
 <?php $element->common_header();?>
@@ -12,7 +13,7 @@ $param_tab = array( 'now' => 'user_favourite' );
 		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<div class="f">
 			<?php $element->block_tab($param_tab);?>
-			<?php $element->block_statuses_favourites();?>
+			<?php $element->block_statuses_nore();?>
 			<?php $element->block_rsslink();?>
 		</div>
 		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>

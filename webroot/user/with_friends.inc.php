@@ -3,7 +3,6 @@ $element = JWElement::Instance();
 $user = JWUser::GetUserInfo($g_page_user_id);
 $param_tab = array( 'now' => 'user_following' );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">

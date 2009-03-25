@@ -13,7 +13,6 @@ $param_side = array(
 	'tag' => $tag_row,
 );
 ?>
-
 <?php $element->html_header();?>
 <?php $element->common_header();?>
 <div id="container">

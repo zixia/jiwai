@@ -63,10 +63,13 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		$dirty_keys = array (  
 				JWDB_Cache::GetCacheKeyById('Status', $pk_id),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusIdsFromUser'), array($user_id) ),
+				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusIdsFromUserNoRe'), array($user_id) ),
+				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusIdsFromFriends'), array($user_id) ) ,
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusIdsFromFriends'), array($user_id) ) ,
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusIdsFromSelfNReplies'), array($user_id) ),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNum'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromReplies'), array($user_id)),
+				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromUserNoRe'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromSelfNReplies'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromSelfNReplies'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetTagIdsTopicByIdUser'), array($user_id)),
@@ -278,6 +281,60 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 		 所以需要重新进行数据库查询，获取足够的数据：增加 $forceReload=true 的参数
 		 *
 		 */
+
+		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
+		{
+			$status_info = JWDB_Cache::GetCachedValueByKey(
+					$mc_key
+					,$ds_function
+					,$ds_param
+					,$expire_time
+					,true
+					);
+		}
+
+		if ( !empty($status_info['status_ids']) )
+		{
+			$status_info['status_ids'] = array_slice(  $status_info['status_ids']
+					,$start,$num
+					);
+		}
+
+		return $status_info;
+	}
+
+	/**
+	 * FIXME: not support idSince & $timeScince param.
+	 */
+	static public function GetStatusIdsFromUserNoRe($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser = abs(intval($idUser));
+		$max_num  = $start + $num;
+		$mc_max_num = JWDB_Cache::GetMaxCacheNum($max_num);
+
+		// call back function & param
+		$ds_function  = array('JWStatus','GetStatusIdsFromUserNoRe');
+		$ds_param  = array($idUser,$mc_max_num);
+		// param to make memcache key
+		$mc_param  = array($idUser);
+
+
+		$mc_key  = JWDB_Cache::GetCacheKeyByFunction ($ds_function,$mc_param);
+
+		/*
+		 * 对于过多的结果集，只保留一段时间
+		 */
+		if ( $mc_max_num > JWDB_Cache::NUM_LARGE_DATASET )
+			$expire_time = JWDB_Cache::PERMANENT_EXPIRE_SECENDS_LARGE_DATA;
+		else
+			$expire_time = JWDB_Cache::PERMANENT_EXPIRE_SECENDS;
+
+		$status_info = JWDB_Cache::GetCachedValueByKey(
+				$mc_key
+				,$ds_function
+				,$ds_param
+				,$expire_time
+				);
 
 		if ( ! JWDB_Cache::IsCachedCountEnough(count($status_info['status_ids']),$max_num) )
 		{
@@ -636,6 +693,26 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 				);
 
 
+	}
+
+	static public function GetStatusNumFromUserNoRe($idUser)
+	{
+		$idUser = abs(intval($idUser));
+		// call back function & param
+		$ds_function  = array('JWStatus','GetStatusNumFromUserNoRe');
+		$ds_param  = array($idUser);
+		// param to make memcache key
+		$mc_param  = $ds_param;
+		$mc_key  = JWDB_Cache::GetCacheKeyByFunction ($ds_function,$mc_param);
+
+		$expire_time = 60;
+
+		return JWDB_Cache::GetCachedValueByKey(
+				$mc_key
+				,$ds_function
+				,$ds_param
+				,$expire_time
+				);
 	}
 
 	static public function GetStatusNumFromFriends($idUser)

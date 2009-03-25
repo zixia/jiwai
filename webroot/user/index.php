@@ -163,6 +163,9 @@ switch ( $func )
 			require_once(dirname(__FILE__) . "/mms.inc.php");
 		}
 		break;
+	case 'nore':
+		require_once(dirname(__FILE__) . '/nore.inc.php');
+		break;
 	case 'with_friends':
 		require_once(dirname(__FILE__) . '/with_friends.inc.php');
 		break;

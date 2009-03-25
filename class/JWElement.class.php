@@ -76,6 +76,19 @@ class JWElement {
 		$this->block_pager( array('pager'=>$pager) );
 	}
 
+	function block_statuses_nore($args=array())
+	{
+		global $g_page_user_id;
+		$user = JWUser::GetUserInfo($g_page_user_id);
+		$total = JWStatus::GetStatusNumFromUserNoRe($g_page_user_id);
+		$pager = new JWPager(array('rowCount'=>$total-1));
+		$status_data = JWDB_Cache_Status::GetStatusIdsFromUserNoRe($g_page_user_id, $pager->pageSize, $pager->offset);
+
+		/* display */
+		$this->block_statuses($status_data);
+		$this->block_pager( array('pager'=>$pager) );
+	}
+
 	function block_statuses_with_friends($args=array())
 	{
 		global $g_page_user_id;

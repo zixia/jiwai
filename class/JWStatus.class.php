@@ -465,6 +465,26 @@ _SQL_;
 						,'user_ids'		=> array($idUser)
 					);
 	}
+
+	static public function GetStatusIdsFromUserNoRe($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0)
+	{
+		$idUser	= JWDB::CheckInt($idUser);
+		$num	= JWDB::CheckInt($num);
+		$start	= intval($start);
+
+		$condition_other = " AND idUserReplyTo IS NULL";
+
+		/*
+		 *	每个结果集中，必须保留 id，为了 memcache 统一处理主键
+		 */
+		$sql = "SELECT id,id as idStatus FROM Status WHERE idUser='{$idUser}' {$condition_other} ORDER BY timeCreate DESC LIMIT {$start},{$num}";
+		$rows = JWDB_Cache::GetQueryResult($sql,true);
+		$status_ids = JWUtility::GetColumn($rows, 'idStatus');
+
+		return array (	'status_ids'	=> $status_ids
+						,'user_ids'		=> array($idUser)
+					);
+	}
 	
 	static public function GetStatusIdsFromUserMms($idUser, $num=JWStatus::DEFAULT_STATUS_NUM, $start=0 )
 	{
@@ -1244,6 +1264,18 @@ _SQL_;
 		return $row['num'];
 	}
 
+
+	/*
+	 *	@param	int		$idUser
+	 *	@return	int		$statusNum for replies to $idUser
+	 */
+	static public function GetStatusNumFromUserNoRe($idUser)
+	{
+		$idUser = JWDB_Cache::CheckInt($idUser);
+		$sql = "SELECT COUNT(1) AS num FROM Status WHERE idUser='{$idUser}' AND idUserReplyTo IS NULL";
+		$row = JWDB_Cache::GetQueryResult($sql);
+		return $row['num'];
+	}
 
 	/*
 	 *	@param	int		$idUser

@@ -5,6 +5,7 @@
 		case 'user':
 			$tab = array(
 				'my'=>array('自己的','/'.$g_page_user['nameUrl'].'/'),
+				'nore'=>array('非@的','/'.$g_page_user['nameUrl'].'/nore/'),
 				'following'=>array('关注的','/'.$g_page_user['nameUrl'].'/with_friends/'),
 				'favourite'=>array('收藏的','/'.$g_page_user['nameUrl'].'/favourites/'),
 				'mms'=>array('照片','/'.$g_page_user['nameUrl'].'/mms/'),
