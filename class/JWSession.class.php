@@ -55,6 +55,12 @@ Class JWSession {
 		session_start();		
 	}
 
+	function __destruct() {
+		if ( $length = ob_get_length() ) {
+			@header("Content-Length: {$length}");
+		}
+	}
+
 
 	public static function SetInfo($infoType, $data)
 	{
