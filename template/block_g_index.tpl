@@ -33,7 +33,7 @@
 	<!--{foreach $hotids AS $one}-->
 	<!--${
 		$u = JWUser::GetUserInfo($one);
-		$s = JWStatus::GetHeadStatusRow($u['id']);
+		$s = JWDB_Cache_Status::GetHeadStatusRow($u['id']);
 	}-->
 		<div class="one">
 			<div class="lt"><a href="/{$u['nameUrl']}/"><img src="${JWPicture::GetUrlById($u['idPicture']);}" width="32" height="32"  /></a></div>
@@ -55,7 +55,7 @@
 	<!--{foreach $featureds AS $one}-->
 	<!--${
 		$u = JWUser::GetUserInfo($one);
-		$s = JWStatus::GetHeadStatusRow($u['id']);
+		$s = JWDB_Cache_Status::GetHeadStatusRow($u['id']);
 	}-->
 		<div class="one">
 			<div class="lt"><a href="/{$u['nameUrl']}/"><img src="${JWPicture::GetUrlById($u['idPicture']);}" width="32" height="32"  /></a></div>
@@ -77,7 +77,7 @@
 	<!--{foreach $newids AS $one}-->
 	<!--${
 		$u = JWUser::GetUserInfo($one);
-		$s = JWStatus::GetHeadStatusRow($u['id']);
+		$s = JWDB_Cache_Status::GetHeadStatusRow($u['id']);
 	}-->
 		<div class="one">
 			<div class="lt"><a href="/{$u['nameUrl']}/"><img src="${JWPicture::GetUrlById($u['idPicture']);}" width="32" height="32"  /></a></div>
@@ -103,7 +103,7 @@
 	<!--{foreach $darens AS $dc=>$done}-->
 	<!--${
 		$u = JWUser::GetUserInfo($done[1][0]['id']);
-		$s = JWStatus::GetHeadStatusRow($u['id']);
+		$s = JWDB_Cache_Status::GetHeadStatusRow($u['id']);
 	}-->
 		<div class="one">
 			<div class="mar_b8"><a href="#" class="ico_{$done[0]}"><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="20" height="16" /></a> <b>{$dc} 共{$done[1][0]['count']}条</b></div>

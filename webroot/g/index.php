@@ -1,8 +1,8 @@
 <?php
 require_once('../../jiwai.inc.php');
 
-$weather = JWStatus::GetHeadStatusRow(50101); //北京天气
-$video = JWStatus::GetHeadStatusRow(56598); //youkuhot
+$weather = JWDB_Cache_Status::GetHeadStatusRow(50101); //北京天气
+$video = JWDB_Cache_Status::GetHeadStatusRow(56598); //youkuhot
 $photo = JWFarrago::GetGPicture(1); $photo = $photo[0]; //last mms;
 
 //news related
@@ -29,7 +29,7 @@ if (!$astro_user) {
 	$astro = JWStatus::GetHeadStatusRow($astro_id); 
 }
 
-$program = JWStatus::GetHeadStatusRow(51689); //cctv5
+$program = JWDB_Cache_Status::GetHeadStatusRow(51689); //cctv5
 //
 
 $darens = array(
@@ -54,7 +54,7 @@ $darens = array(
 	       );
 
 //user list
-$featureds = JWUser::GetFeaturedUserIds(5);
+$featureds = JWUser::GetFeaturedUserIds(5, 'featured');
 $hotids = JWUtility::GetColumn(JWVisitUser::Total(5), 'idUser');
 $newids = JWUser::GetNewestUserIds(5);
 

@@ -73,6 +73,7 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromSelfNReplies'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetStatusNumFromSelfNReplies'), array($user_id)),
 				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetTagIdsTopicByIdUser'), array($user_id)),
+				JWDB_Cache::GetCacheKeyByFunction( array('JWStatus','GetHeadStatusRow'), array($user_id) ),
 				);
 
 		if ( !empty($reply_to_user_id) )
@@ -174,6 +175,28 @@ class JWDB_Cache_Status implements JWDB_Cache_Interface
 					,$start,$num
 					);
 		}
+
+		return $status_info;
+	}
+	
+	static public function GetHeadStatusRow($idUser) 
+	{
+		$idUser = abs(intval($idUser));
+
+		$ds_function  = array('JWStatus','GetHeadStatusRow');
+		$ds_param  = array($idUser);
+		$mc_param  = array($idUser);
+
+		$mc_key  = JWDB_Cache::GetCacheKeyByFunction ($ds_function,$mc_param);
+
+		$expire_time = JWDB_Cache::PERMANENT_EXPIRE_SECENDS;
+
+		$status_info = JWDB_Cache::GetCachedValueByKey(
+				$mc_key
+				,$ds_function
+				,$ds_param
+				,$expire_time
+				);
 
 		return $status_info;
 	}
