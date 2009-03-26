@@ -32,7 +32,7 @@
 		<div id="nav" class="{$nonclass}wht">
 			<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
 			<ul class="f">
-				<li><a href="/" class="sel">首页</a></li>
+				<li><a href="${$g_current_user_id?'/wo/':'/'}" class="sel">首页</a></li>
 				<!--{if $g_current_user_id}-->
 				<li><a href="/{$user['nameUrl']}/">我的叽歪</a></li>
 				<!--{/if}-->
