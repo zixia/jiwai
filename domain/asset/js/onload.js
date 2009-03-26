@@ -35,7 +35,7 @@ function theSameHeight() {
 		or.style.height = maxHeight+"px";
 	else
 		ol.style.height = maxHeight+"px";
-}
+};
 
 function textCounter(field, countfield, maxlimit) {
 	if (field.value.length > maxlimit) 
@@ -173,7 +173,7 @@ function getIE(e){
 		l+=e.offsetLeft;
 	}
 	return {b:t+h,t:t,l:l,w:w}
-}
+};
 
 function radiovalue(name) {
 	var elm = document.getElementsByName(name);
@@ -184,7 +184,7 @@ function radiovalue(name) {
                 }
         }       
 	return '';
-}
+};
 
 function opendialog(url, width, height) {
 	if( document.all ) {  
@@ -243,7 +243,7 @@ function popShow(o,e,popKey){
 	ul.innerHTML=str;
 	ul.style.top = getIE(o).b + 8 + "px";
 	ul.style.left = getIE(o).l - 8 + "px";
-}
+};
 
 var JWSsearch =
 {
@@ -307,8 +307,16 @@ var JWSsearch =
 
 function removeOPoplist() {
 	(window.ie ? document : window).addEvent('click',function(){if($('oPopList')){document.body.removeChild($('oPopList'))}});
-}
+};
+
+function focusJWStatus() {
+	if ($('jw_status')){
+		$('jw_status').focus();
+		$('jw_status').value = $('jw_status').value;
+	}
+};
 
 window.jiwai_init_hook_eheight = theSameHeight;
 window.jiwai_init_hook_jwsearch = JWSsearch.init;
 window.jiwai_init_hook_jwrmpoplist = removeOPoplist;
+window.jiwai_init_hook_focusjwstatus = focusJWStatus;

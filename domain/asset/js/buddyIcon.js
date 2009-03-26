@@ -50,6 +50,7 @@ var JWBuddyIcon =
 	hideBor:function(e){	//changed on 1221
 		e=e||window.event;
 		var o = e.toElement||e.relatedTarget;
+		if ( !o ) return;
 		if(oBuddyDiv.contains){
 			if(!(oBuddyDiv.contains(event.toElement))&&JWBuddyIcon.es){
 				oBuddyDiv.addClass('no');
