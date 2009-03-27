@@ -17,8 +17,7 @@
     <link href="css/jiwai-screen.css" media="screen, projection" rel="Stylesheet" type="text/css" />
     <link href="http://asset.jiwai.de/css/index.css" media="screen, projection" rel="Stylesheet" type="text/css" />
     <link rel="shortcut icon" href="http://asset1.jiwai.de/img/favicon.ico?1183979714" type="image/icon" />
-    <script type="text/javascript" src="js/mootools.v1.11.js"></script>
-    <script type="text/javascript" src="js/jiwai.js"></script>
+    <script type="text/javascript" src="<?php echo JWFarrago::GetInitJs();?>"></script>
     <link rel="start" href="http://JiWai.de/" title="叽歪de首页" />
     <meta name="ICBM" content="40.4000, 116.3000" />
     <meta name="DC.title" content="叽歪de" />

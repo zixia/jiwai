@@ -1,5 +1,7 @@
 <?php
 require_once("../../jiwai.inc.php");
+ob_end_clean();
+ob_end_clean();
 /**
  * The Wikka mainscript.
  * 
