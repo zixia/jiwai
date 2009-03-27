@@ -1,12 +1,12 @@
- <?php
- require_once('../../../jiwai.inc.php');
- JWLogin::MustLogined(false);
- 
- $user_info  = JWUser::GetCurrentUserInfo();
- $user_setting = JWUser::GetNotification($user_info['id']);
+<?php
+require_once('../../../jiwai.inc.php');
+JWLogin::MustLogined(false);
 
- if ( isset($_POST['user']) )
- {
+$user_info  = JWUser::GetCurrentUserInfo();
+$user_setting = JWUser::GetNotification($user_info['id']);
+
+if ( isset($_POST['user']) )
+{
 	$user_new_setting = isset($_POST['user']) ? $_POST['user'] : array();
 	$user_setting['auto_nudge_me'] = isset($user_new_setting['auto_nudge_me']) ? $user_new_setting['auto_nudge_me'] : 'N';
 	$user_setting['is_receive_offline'] = isset($user_new_setting['is_receive_offline']) ? $user_new_setting['is_receive_offline'] : 'N';
@@ -15,7 +15,7 @@
 	$user_setting['notReceiveTime1'] = $user_new_setting['notReceiveTime1'].':00:00';
 	$user_setting['notReceiveTime2'] = $user_new_setting['notReceiveTime2'].':00:00';
 	$user_setting['allowReplyType'] = $user_new_setting['allowReplyType'];
- 
+
 	if ( ! JWUser::SetNotification($user_info['id'], $user_setting) )
 	{
 		JWSession::SetInfo('error', '通知设置由于系统故障未能保存成功，请稍后再试。');
@@ -48,8 +48,8 @@ $param_main = array(
 <div id="container">
 <?php $element->wide_notice();?>
 <div id="lefter">
-	<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
-	<div class="f">
+<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
+<div class="f">
 		<?php $element->block_headline_minwo();?>
 		<?php $element->block_tab($param_tab);?>
 		<?php $element->block_notification_im($param_main);?>
