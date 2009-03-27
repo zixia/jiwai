@@ -58,7 +58,7 @@ function get_session_var($name, $use_once=true)
 }
 
 function paginate($pagination, $url){
-	$pageString= '<p>';
+	$pageString= '<p align="right">';
 	if( $pagination->isShowOlder()){
 		$pageString.= '6 <a href="' . JWPagination::BuildPageUrl($url, $pagination->GetOlderPageNo()).'" accesskey="6">下页</a>';
 	}
