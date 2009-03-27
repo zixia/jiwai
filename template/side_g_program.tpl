@@ -3,7 +3,7 @@
 </div>
 
 <!--{if $g_current_user_id}-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<div class="f_14">是否有我所在地区的叽歪叽歪电视节目预告？</div>
 	</div>

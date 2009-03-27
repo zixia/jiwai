@@ -7,7 +7,7 @@
 
 	$is_favourited = JWFavourite::IsFavourite($g_current_user_id, $thread_id);
 }-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<h2><!--{if !$is_favourited}--><a href="/wo/favourites/create/{$thread_id}">收藏这条叽歪</a><!--{else}--><a>已收藏</a><!--{/if}-->收藏</h2>
 	</div>

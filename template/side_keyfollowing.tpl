@@ -1,5 +1,5 @@
 <!--${$b = JWTrackUser::IsTrackUser($g_current_user_id, $key);}-->
-<div class="side2">
+<div class="side3">
 	<!--{if !$b}-->
 	<div class="mar_b20">
 		<div class="button side_btn">

@@ -3,7 +3,7 @@
 </div>
 
 <!--{if $g_current_user_id}-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<div class="f_14">未关注情况下，如何查询星座运程？</div>
 	</div>

@@ -3,7 +3,7 @@
 		<h3>欢迎使用叽歪回复功能...</h3>
 	</div>
 </div>
-<div class="side2">
+<div class="side3">
 	<ul>
 		<li class="mar_b8">
 			1. 你可以点击每条叽歪的“回复”按钮来回复对方

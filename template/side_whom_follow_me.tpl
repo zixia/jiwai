@@ -7,7 +7,7 @@
 	$u = $g_page_on ? $g_page_user['nameUrl'] : 'wo';
 }-->
 <!--{if count($users)}-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<h3 class="lt">关注我的人... &nbsp;</h3> <div class="lightbg f_gra lt">（<a href="/wo/followings/">全部</a>）</div>
 		<div class="clear"></div>

@@ -1,4 +1,4 @@
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<h3 class="mar_b8">寻找...</h3>
 	</div>

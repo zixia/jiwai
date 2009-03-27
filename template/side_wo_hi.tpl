@@ -7,7 +7,7 @@
 	$nmnum = JWDB_Cache_Message::GetNewMessageNum($user['id']);
 	$nnnum = JWDB_Cache_Message::GetNewNoticeMessageNum($user['id']);
 }-->
-<div class="usermsg mar_b50">
+<div class="usermsg mar_b8">
 	<div class="bline">
 		<div class="one">
 			<div class="hd lt">
@@ -50,7 +50,7 @@
 	</ul>
 </div>
 <!--{/if}-->
-<div class="side2">
+<div class="side3">
 	<p><a onClick="if(confirm('将此按钮添加到浏览器的收藏夹或工具栏上，即可方便地收藏网址信息到叽歪。\r\n需要了解详细的使用方法吗？'))location.href='http://help.jiwai.de/BookmarkletUsage';return false;" href="javascript:var d=document,w=window,f='http://jiwai.de/wo/share/',l=d.location,e=encodeURIComponent,p='?u='+e(l.href)+'&amp;t='+e(d.title)+'&amp;d='+e(w.getSelection?w.getSelection().toString():d.getSelection?d.getSelection():d.selection.createRange().text);a=function(){if(!w.open(f+'s'+p,'sharer','toolbar=0,status=0,resizable=0,width=540,height=310'))l.href=f+'w'+p};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else{a()}void(0)" class="sharebtn"><img src="http://asset5.jiwai.de/images/org-share-collect.gif?1230346365" title="收藏到叽歪" /></a></p>
 </div>
 

@@ -3,7 +3,7 @@
 </div>
 <div class="block">
 	<!--{if count($events)}-->
-	<div class="mar_b50">
+	<div class="mar_b8">
 		<div>
 			<!--{foreach $events AS $one}-->
 			<div class="one">

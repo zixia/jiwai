@@ -1,7 +1,7 @@
 <!--${
 	$tags = JWDB_Cache_Tag::GetDbRowsByIds($tag_ids);
 }-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<h2>标签云</h2>
 	</div>

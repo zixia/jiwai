@@ -1,7 +1,7 @@
 <!--${
 	$count = count(JWDB_Cache_Status::GetTagIdsTopicByIdUser($g_page_user_id));
 }-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		&gt;&gt;&nbsp;<a href="/{$g_page_user['nameUrl']}/followers/">关注{$g_page_user['nameScreen']}的人</a>
 	</div>

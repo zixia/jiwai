@@ -8,7 +8,7 @@
 	$u = $g_page_on ? $g_page_user['nameUrl'] : 'wo';
 	$whom = $g_page_on ? $g_page_user['nameScreen'] : '';
 }-->
-<div class="side2">
+<div class="side3">
 	<div class="pagetitle">
 		<h3 class="lt">{$whom}关注的人... &nbsp;</h3> <div class="lightbg f_gra lt">( <a href="/{$u}/followings/">全部</a> )</div>
 		<div class="clear"></div>
