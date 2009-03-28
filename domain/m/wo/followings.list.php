@@ -10,7 +10,7 @@ $actionOps = actionop( $loginedUserInfo['id'], $followingIds );
 
 $pageString = paginate( $pagination, '/wo/followings/' );
 
-$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'search', 'message', 'followings', 'replies' );
+$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'search', 'favourite', 'message', 'followings', 'replies' );
 JWRender::Display( 'wo/followings', array(
                 'followings' => $followingRows,
                 'actionOps' => $actionOps,

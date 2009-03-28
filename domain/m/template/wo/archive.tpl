@@ -5,7 +5,7 @@
 	$msgCount = JWMessage::GetMessageStatusNum($loginedUserInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD);
 	$msgString = ( $msgCount == 0 ) ? '' : '('.$msgCount.'条)';
 }-->
-<h2>最新｜<a href="/wo/replies/">回复</a>｜<a href="/wo/message/inbox">{$msgString}悄悄话</a></h2>
+<h2>最新｜<a href="/wo/replies/">回复</a>｜<a href="/wo/message/inbox">悄悄话{$msgString}</a></h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>

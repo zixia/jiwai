@@ -33,7 +33,7 @@ $protected = JWSns::IsProtected( $userRows[$s['idUser']], $loginedIdUser )
 $followingsNum = JWFollower::GetFollowingNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'search', 'message' , 'followings', 'index', 'replies' );
+$shortcut = array( 'public_timeline', 'logout', 'my', 'search', 'favourite', 'message' , 'followings', 'index', 'replies' );
 $pageString = paginate( $pagination, '/wo/' );
 JWRender::Display( 'wo/archive', array(
     'loginedUserInfo' => $loginedUserInfo,

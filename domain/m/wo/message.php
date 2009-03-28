@@ -18,7 +18,7 @@ if( $action == null ) {
 
 switch($action){
     case 'create':
-        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my', 'search', 'message', 'followings', 'replies');
+        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my', 'search', 'favourite', 'message', 'followings', 'replies');
         $userInfo = JWUser::GetUserInfo( $value );
         JWRender::Display( 'wo/message_create', array(
                         'userInfo' => $userInfo,

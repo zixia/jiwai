@@ -16,7 +16,7 @@
 <!--{/if}-->
 
 <!--{if in_array( 'search', $shortcut ) }-->
-<p>4 <a href="${buildUrl('/wo/search/')}" accesskey="2">搜索</a></p>
+<p>4 <a href="${buildUrl('/wo/search/')}" accesskey="4">搜索</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'public_timeline', $shortcut ) }-->

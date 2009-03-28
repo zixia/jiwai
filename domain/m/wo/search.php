@@ -31,7 +31,7 @@ if ( !strlen($q) ) {
 	$q = $tword[0];
 }
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'search', 'message' , 'followings', 'index', 'replies' );
+$shortcut = array( 'public_timeline', 'logout', 'my', 'favourite', 'message' , 'followings', 'index', 'replies' );
 JWRender::Display( 'wo/search', array(
 			'loginedUserInfo' => $loginedUserInfo,
 			'users' => $userRows,

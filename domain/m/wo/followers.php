@@ -19,7 +19,7 @@ $followerOps = actionop( $loginedUserInfo['id'], $followerIds , $forFollow = tru
 
 $pageString = paginate( $pagination, '/wo/followers/' );
 
-$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'search', 'message', 'followings', 'replies' );
+$shortcut = array( 'my', 'index', 'logout', 'public_timeline', 'search', 'favourite', 'message', 'followings', 'replies' );
 JWRender::Display( 'wo/followers', array(
                 'followers' => $followerRows,
                 'followerOps' => $followerOps,

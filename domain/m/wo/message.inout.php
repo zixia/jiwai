@@ -41,7 +41,7 @@ if( $boxType == JWMessage::INBOX ) {
 krsort( $messageRows );
 
 $pageString = paginate( $pagination, $url );
-$shortcut = array('logout', 'public_timeline', 'my', 'followings', 'index', 'search', 'replies');
+$shortcut = array('logout', 'public_timeline', 'my', 'followings', 'index', 'search', 'favourite', 'replies');
 JWRender::Display( $tpl, array(
             'messages' => $messageRows,
             'users' => $userRows,
