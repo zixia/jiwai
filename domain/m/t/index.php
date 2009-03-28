@@ -4,6 +4,8 @@ require_once( '../config.inc.php' );
 $tag_name	= @$_REQUEST['tag'];
 $pathParam 	= @$_REQUEST['pathParam'];
 
+$loginedUserInfo 	= JWUser::GetCurrentUserInfo();
+
 // $pathParam is like: "/statuses/123"
 @list ($dummy,$func,$param) = split('/', $pathParam, 3);
 
