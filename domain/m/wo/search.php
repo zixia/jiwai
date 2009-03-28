@@ -34,6 +34,7 @@ if ( !strlen($q) ) {
 $shortcut = array( 'public_timeline', 'logout', 'my', 'favourite', 'message' , 'followings', 'index', 'replies' );
 JWRender::Display( 'wo/search', array(
 			'loginedUserInfo' => $loginedUserInfo,
+			'q' => $q,
 			'users' => $userRows,
 			'statuses' => $statuses,
 			'followingsNum' => $followingsNum,
