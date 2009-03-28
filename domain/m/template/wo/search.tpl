@@ -1,12 +1,14 @@
 <!--{include header}-->
-<!--{include wo/update}-->
 
-<!--${
-	$msgCount = JWMessage::GetMessageStatusNum($loginedUserInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD);
-	$msgString = ( $msgCount == 0 ) ? '' : '('.$msgCount.'条)';
-}-->
-<h2>最新｜<a href="/wo/replies/">回复</a>｜<a href="/wo/message/inbox">{$msgString}悄悄话</a></h2>
-<ul>
+<!--{if $loginedUserInfo}-->
+<h2>叽歪搜索</h2>
+<form action="/wo/search/" method="get">
+<p><input type="text" name="q" value="{$q}"/></p>
+<p><input type="submit" value="搜索"/></p>
+</form>
+<!--{/if}-->
+
+<h2><a href="/wo/">最新</a>｜<a href="/wo/replies/">回复</a>｜搜索</h2>
 <!--{foreach $statuses as $status}-->
 <li>
 	<a href="${buildUrl('/'.$users[$status['idUser']]['nameUrl'].'/')}" rel="contact">${getDisplayName($users[$status['idUser']])}</a>：{$status['status']}
@@ -20,7 +22,6 @@
 	</span>
 </li>
 <!--{/foreach}-->
-</ul>
 {$pageString}
 
 <!--{include shortcut}-->

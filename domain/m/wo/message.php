@@ -18,7 +18,7 @@ if( $action == null ) {
 
 switch($action){
     case 'create':
-        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my', 'message', 'followings', 'replies');
+        $shortcut = array( 'index', 'logout' , 'public_timeline', 'my', 'search', 'message', 'followings', 'replies');
         $userInfo = JWUser::GetUserInfo( $value );
         JWRender::Display( 'wo/message_create', array(
                         'userInfo' => $userInfo,
@@ -34,6 +34,7 @@ switch($action){
     break;
     case 'inbox':
     case 'sent':
+	case 'notice':
         require_once( './message.inout.php' );
     break;
 }

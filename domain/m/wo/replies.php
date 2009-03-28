@@ -33,7 +33,7 @@ foreach( $statusRows as $k=>$s){
 $followingsNum = JWFollower::GetFollowingNum( $loginedUserInfo['id'] );
 $followersNum = JWFollower::GetFollowerNum( $loginedUserInfo['id'] );
 
-$shortcut = array( 'public_timeline', 'logout', 'my', 'message' , 'followings', 'index', 'replies');
+$shortcut = array( 'public_timeline', 'logout', 'my', 'search', 'message' , 'followings', 'index', 'replies');
 $pageString = paginate( $pagination, '/wo/replies/' );
 JWRender::Display( 'wo/replies', array(
     'loginedUserInfo' => $loginedUserInfo,

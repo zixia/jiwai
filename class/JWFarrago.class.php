@@ -33,21 +33,24 @@ class JWFarrago
 		return $events;
 	}
 
-	static public function GetHotWords($size=100) {
-
-		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'GetHotWords'), array($size) );
+	static public function GetHotWords($size=100, $offset=0) 
+	{
+		$maxnum = 200;
+		$offset = $offset > $maxnum ? 0 : $offset;
+		$size = (($offset+$size)>$maxnum) ? ($maxnum-$offset) : $size;
+		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'GetHotWords'), array($maxnum) );
 		$memcache = JWMemcache::Instance();
 		$hot_words = $memcache->Get( $mc_key );
 
 		$expire = 60 * 15; //15 mins
 		if ( false == $hot_words ) {
 			//statuses
-			$sql = "SELECT idTag, COUNT(1) AS count FROM Status WHERE idTag IS NOT NULL GROUP BY idTag ORDER BY count DESC LIMIT $size";
+			$sql = "SELECT idTag, COUNT(1) AS count FROM Status WHERE idTag IS NOT NULL GROUP BY idTag ORDER BY count DESC LIMIT $maxnum";
 			$rows = JWDB::GetQueryResult( $sql, true );
 			$rows = JWUtility::AssColumn( $rows, 'idTag' );
 			
 			//followers
-			$sql = "SELECT idTag, COUNT(1) AS count FROM TagFollower WHERE idUser IS NOT NULL GROUP BY idUser ORDER BY count DESC LIMIT $size";
+			$sql = "SELECT idTag, COUNT(1) AS count FROM TagFollower WHERE idUser IS NOT NULL GROUP BY idUser ORDER BY count DESC LIMIT $maxnum";
 			$rows2 = JWDB::GetQueryResult( $sql, true );
 			$rows2 = JWUtility::AssColumn( $rows2, 'idTag' );
 
@@ -65,8 +68,7 @@ class JWFarrago
 
 			$memcache->Set( $mc_key, $hot_words, 0, $expire );
 		}
-
-		return $hot_words;
+		return array_slice($hot_words, $offset, $size);
 	}
 
 	static public function GetBlogItem($size)
@@ -290,7 +292,7 @@ class JWFarrago
 	}
 
 	static public function GetPopkey() {
-		$f_tag = array_merge(self::TrendTag(null,3),array('笑话','小秘密'));
+		$f_tag = array_merge(self::TrendTag(null,3),array('地球一小时','小秘密'));
 		$f_word = self::TrendWord(null, 5);
 		$f_tag = array_unique($f_tag);
 		$r = array();

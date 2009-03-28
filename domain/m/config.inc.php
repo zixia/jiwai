@@ -59,14 +59,14 @@ function get_session_var($name, $use_once=true)
 
 function paginate($pagination, $url){
 	$pageString= '<p align="right">';
-	if( $pagination->isShowOlder()){
-		$pageString.= '6 <a href="' . JWPagination::BuildPageUrl($url, $pagination->GetOlderPageNo()).'" accesskey="6">下页</a>';
+	if( $pagination->isShowNewer() ){
+		$pageString.= '4 <a href="' . JWPagination::BuildPageUrl($url, $pagination->GetNewerPageNo()).'" accesskey="4">上页</a>';
 	}
 	if( $pagination->isShowOlder() && $pagination->isShowNewer() ){
 		$pageString.= '｜';
 	}
-	if( $pagination->isShowNewer() ){
-		$pageString.= '<a href="' . JWPagination::BuildPageUrl($url, $pagination->GetNewerPageNo()).'" accesskey="4">上页</a> 4';
+	if( $pagination->isShowOlder()){
+		$pageString.= '<a href="' . JWPagination::BuildPageUrl($url, $pagination->GetOlderPageNo()).'" accesskey="6">下页</a> 6';
 	}
 	$pageString.= '</p>';
 	return $pageString;

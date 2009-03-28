@@ -11,11 +11,13 @@
 <p>2 <a href="${buildUrl('/wo/followings/')}" accesskey="2">关注的人</a></p>
 <!--{/if}-->
 
-<!--{if in_array( '---------myfollowers', $shortcut ) }-->
-<p>2 <a href="${buildUrl('/wo/followers/')}" accesskey="2">关注我的人({$followersNum})</a></p>
+<!--{if in_array( 'favourite', $shortcut ) }-->
+<p>3 <a href="${buildUrl('/wo/favourites/')}" accesskey="3">我的收藏</a></p>
 <!--{/if}-->
 
-<p>3 <a href="${buildUrl('/wo/favourites/')}" accesskey="3">我的收藏</a></p>
+<!--{if in_array( 'search', $shortcut ) }-->
+<p>4 <a href="${buildUrl('/wo/search/')}" accesskey="2">搜索</a></p>
+<!--{/if}-->
 
 <!--{if in_array( 'public_timeline', $shortcut ) }-->
 <p>5 <a href="${buildUrl('/public_timeline/')}" accesskey="5">叽歪广场</a></p>

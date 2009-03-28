@@ -18,14 +18,14 @@ if( $tag_name )
 
 	if( null == $tag_id ) 
 	{
-		JWTemplate::RedirectTo404NotFound();
+		redirect_to_404();
 	}
 
 	$tag_row = JWDB_Cache_Tag::GetDbRowById( $tag_id );
 }
 else
 {
-	redirect_to_404();
+	$func = 'public';
 }
 
 if( null == $func )
@@ -36,8 +36,10 @@ if( null == $func )
 switch ( $func )
 {
 	case 'channel':
-	default:
 		require_once(dirname(__FILE__) . "/channel.inc.php");
+		break;
+	default:
+		require_once(dirname(__FILE__) . "/public.inc.php");
 		break;
 
 }

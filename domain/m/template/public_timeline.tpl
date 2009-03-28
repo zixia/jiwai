@@ -1,7 +1,7 @@
 <!--{include header}-->
 <!--{include wo/update}-->
 
-<h2>叽歪广场</h2>
+<h2>叽歪广场｜<a href="/t/">热门标签</a></h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>

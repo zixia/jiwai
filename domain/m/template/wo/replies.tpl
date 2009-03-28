@@ -1,7 +1,11 @@
 <!--{include header}-->
 <!--{include wo/update}-->
 
-<h2><a href="/wo/">最新叽歪</a>｜叽友回复</h2>
+<!--${
+	$msgCount = JWMessage::GetMessageStatusNum($loginedUserInfo['id'], JWMessage::INBOX, JWMessage::MESSAGE_NOTREAD);
+	$msgString = ( $msgCount == 0 ) ? '' : '('.$msgCount.'条)';
+}-->
+<h2><a href="/wo/">最新</a>｜回复｜<a href="/wo/message/inbox">{$msgString}悄悄话</a></h2>
 <ul>
 <!--{foreach $statuses as $status}-->
 <li>

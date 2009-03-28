@@ -1,6 +1,20 @@
 <?php
-$pageTitle = ($action=='sent') ? "我发出去的悄悄话" : "我接受到的悄悄话" ;
-$boxType = ($action=='sent') ? JWMessage::OUTBOX : JWMessage::INBOX ;
+if ( 'sent' == $action ) {
+	$pageTitle = '发件箱';
+	$boxType = JWMessage::OUTBOX;
+	$url = '/wo/message/sent';
+	$tpl = '/wo/message_sent';
+} else if ('notice' == $action ) {
+	$pageTitle = '提醒';
+	$boxType = JWMessage::NOTICE;
+	$url = '/wo/message/notice';
+	$tpl = '/wo/message_notice';
+} else {
+	$pageTitle = '收件箱';
+	$boxType = JWMessage::INBOX;
+	$url = '/wo/message/inbox';
+	$tpl = '/wo/message_inbox';
+}
 
 
 $messageNum = JWMessage::GetMessageNum( $loginedUserInfo['id'], $boxType );
@@ -26,10 +40,8 @@ if( $boxType == JWMessage::INBOX ) {
 
 krsort( $messageRows );
 
-$url = ($action=='sent') ? '/wo/message/sent' : '/wo/message/inbox' ;
 $pageString = paginate( $pagination, $url );
-$shortcut = array('logout', 'public_timeline', 'my', 'followings', 'index', 'message', 'replies');
-$tpl = ($action=='sent') ? 'wo/message_sent' : 'wo/message_inbox' ;
+$shortcut = array('logout', 'public_timeline', 'my', 'followings', 'index', 'search', 'replies');
 JWRender::Display( $tpl, array(
             'messages' => $messageRows,
             'users' => $userRows,

@@ -56,7 +56,7 @@ function unfavourite( $idUser, $value ) {
 	$confirm = '确认取消收藏这条更新吗？';
 
 	global $loginedUserInfo;
-	$shortcut = array('my','public_timeline','logout','message','index', 'followings', 'replies');
+	$shortcut = array('my','public_timeline','logout','search', 'message','index', 'followings', 'replies');
 	JWRender::Display( 'wo/destroy', array(
 		'object' => $object,
 		'id' => $value,

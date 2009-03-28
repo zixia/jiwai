@@ -1,5 +1,5 @@
 <!--{include header}-->
-<h2>我收到的悄悄话｜<a href="/wo/message/sent">我发出的悄悄话</a></h2>
+<h2>收件箱｜<a href="/wo/message/sent">发件箱</a>｜<a href="/wo/message/notice">提醒</a></h2>
 <ul>
 <!--{foreach $messages as $message}-->
 <li>
