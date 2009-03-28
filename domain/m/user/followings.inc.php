@@ -10,7 +10,7 @@ $pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followings/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){
-    array_push( $shortcut, 'logout','my','followings','message', 'replies');
+    array_push( $shortcut, 'logout','my','favourite', 'search', 'followings','message','replies');
 }
 
 JWRender::Display( 'user/followings', array(

@@ -45,7 +45,7 @@ foreach( $statusRows as $k=>$s ){
 
 $shortcut = array('public_timeline', 'index');
 if( JWLogin::isLogined() ) {
-	array_push( $shortcut, 'logout', 'my', 'message', 'followings', 'replies' );
+    array_push( $shortcut, 'logout','my','favourite', 'search', 'followings','message','replies');
 }else{
 	array_push( $shortcut, 'register' );
 }
