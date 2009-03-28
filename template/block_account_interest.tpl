@@ -7,23 +7,23 @@
 	<dl class="w3">
 		<dt>兴趣爱好</dt>
 		<dd>
-			<div><textarea name="user[interest]" rows="3" cols="60">${htmlSpecialChars($g_current_user['interest'])}</textarea></div>
+			<div><textarea name="user[interest]" rows="3" cols="50">${htmlSpecialChars($g_current_user['interest'])}</textarea></div>
 		</dd>
 		<dt>喜欢的书和作者</dt>
 		<dd>
-			<div><textarea name="user[bookWriter]" rows="3" cols="60">${htmlSpecialChars($g_current_user['bookWriter'])}</textarea></div>
+			<div><textarea name="user[bookWriter]" rows="3" cols="50">${htmlSpecialChars($g_current_user['bookWriter'])}</textarea></div>
 		</dd>
 		<dt>喜欢电影和演员</dt>
 		<dd>
-			<div><textarea name="user[player]" rows="3" cols="60">${htmlSpecialChars($g_current_user['player'])}</textarea></div>
+			<div><textarea name="user[player]" rows="3" cols="50">${htmlSpecialChars($g_current_user['player'])}</textarea></div>
 		</dd>
 		<dt>喜欢音乐和歌手</dt>
 		<dd>
-			<div><textarea name="user[music]" rows="3" cols="60">${htmlSpecialChars($g_current_user['music'])}</textarea></div>
+			<div><textarea name="user[music]" rows="3" cols="50">${htmlSpecialChars($g_current_user['music'])}</textarea></div>
 		</dd>
 		<dt>喜欢的地方</dt>
 		<dd>
-			<div><textarea name="user[place]" rows="3" cols="60">${htmlSpecialChars($g_current_user['place'])}</textarea></div>
+			<div><textarea name="user[place]" rows="3" cols="50">${htmlSpecialChars($g_current_user['place'])}</textarea></div>
 		</dd>
 		<dt></dt>
 		<dd>
