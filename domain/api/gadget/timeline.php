@@ -217,7 +217,7 @@ function jiwai_de_get_message_html(status)
 {
 	var status_html = status.text.replace(/(http:\/\/)([^\/ ]+)([^\s]*)/, "<a href='$1$2$3' target='_blank'>$1$2/...</a>");
 	return status_html
-			+ " <a href='http://jiwai.de/" + status.user.screen_name + "/statuses/" + status.id + "' target='_blank'><small>" 
+			+ " <a href='" + status.user.profile_url + "statuses/" + status.id + "' target='_blank'><small>" 
 			+ relative_time(status.created_at)
 			+ "</small></a>";
 }
@@ -229,16 +229,16 @@ function jiwai_de_get_picture_url(status)
 
 function jiwai_de_get_picture_html(status)
 {
-	return "<a href='http://JiWai.de/" + status.user.screen_name + "/' target='_blank'>"
-			+ "<img class='icon' border='0' alt='" + status.user.name + "' src='" + status.user.profile_image_url  + "' />";
+	return "<a href='" + status.user.profile_url+ "' target='_blank'>"
+			+ "<img class='icon' border='0' alt='" + status.user.screen_name + "' src='" + status.user.profile_image_url  + "' />";
 			+ "</a>";
 }
   
 
 function jiwai_de_get_user_html(status)
 {
-	return "<a href='http://JiWai.de/" + status.user.screen_name + "/' target='_blank'>"
-			+ status.user.name
+	return "<a href='" + status.user.profile_url + "' target='_blank'>"
+			+ status.user.screen_name
 			+ "</a>";
 }
 
