@@ -1,3 +1,6 @@
+<style type="text/css">
+li {font-size:12px;line-height:14px;}
+</style>
 <h2>用户管理</h2>
 <ul>
 	<li ${$menu_nav=='userquery'?'class="selected"':''}><a href="/userquery.php">用户信息查询</a></li>
@@ -15,7 +18,7 @@
 
 <h2>更新管理</h2>
 <ul>
-	<li ${$menu_nav=='statusdelete'?'class="selected"':''}><a href="/statusdelete.php">删除某条更新</a></li>
+	<li ${$menu_nav=='statusdelete'?'class="selected"':''}><a href="/statusdelete.php">修改某条更新</a></li>
 </ul>
 
 <h2>区块管理</h2>

@@ -46,7 +46,7 @@
 </select> 票 <br/>
 
 
-<br/><input type="submit" value="保存" /> 
+<br/><input type="submit" value="保存" /> <input type="submit" value="清零" name="toZero"/> 
 </form>
 
 <!--{/if}-->

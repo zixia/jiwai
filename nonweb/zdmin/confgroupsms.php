@@ -24,6 +24,7 @@ $content = " [叽歪网]";
 
 function DoPost( $name_screen, $content, $date_begin, $date_end, $use_number=false )
 {
+    /*
 	global $allow_user;
 	if ( false == in_array($_SESSION['idUser'] , $allow_user ) )
 	{
@@ -32,6 +33,7 @@ function DoPost( $name_screen, $content, $date_begin, $date_end, $use_number=fal
 		exit;
 	}
 
+    */
 	$conference_user = JWUser::GetUserInfo( $name_screen );
 	if ( empty( $conference_user ) )
 		return 0;

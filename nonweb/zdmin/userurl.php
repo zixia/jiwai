@@ -9,7 +9,7 @@ if($n) {
 	if( $u ) {
 		$uArray = array(
 			'isUrlFixed' => 'N',
-			'nameUrl' => $url,
+		        'nameUrl' => $url,
 		);
 		JWDB_Cache::UpdateTableRow('User', $u['id'], $uArray );
 		setTips( "允许 $n 再次修改 URL 成功。");

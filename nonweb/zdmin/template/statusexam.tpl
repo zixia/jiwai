@@ -3,6 +3,7 @@
 var x = 1;
 function cball(){
 	x = (x==1) ? 0 : 1;
+	var exam = document.getElementById('exam');
 	for (var i=0;i<exam.elements.length;i++) { 
 		var e = exam.elements[i];
 		if( e.type != 'checkbox' )
@@ -11,14 +12,14 @@ function cball(){
 	}
 }
 function ons(){
-	return confrim("确定操作所选的更新吗？");
+	return confirm("确定操作所选的更新吗？");
 }
 </script>
 <h2>审核更新</h2>
 <!--{include tips}-->
 <!--{if $statusQuarantine}-->
 	<h3>未审核更新信息(每页20条 - 审核完一页再进行下一页)</h3>
-	<form name="exam" action="statusexam.php" method="POST" onSubmit="return ons();">
+	<form name="exam" id="exam" action="statusexam.php" method="POST" onSubmit="return ons();">
 	<input type="submit" name="delete" value="删除">
 	<input type="submit" name="allow" value="审核通过">
 	<table class="result" width="740">

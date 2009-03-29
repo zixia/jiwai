@@ -48,6 +48,7 @@ if( $un1 ) {
         else if (34==strlen($password))
             JWDB_Cache::UpdateTableRow( 'User', $firstResult['id'], array('pass'=>$password) );
 	}
+	JWTemplate::RedirectToUrl( '/usersetting.php' );
 
 }
 

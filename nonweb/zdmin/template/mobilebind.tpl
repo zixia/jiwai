@@ -1,17 +1,17 @@
 <!--{include header}-->
 <h2>手机绑定 反馈列表</h2>
-<table width="100%"  border="0" cellpadding="1" cellspacing="1" bgcolor="#CCCCCC">
+<table width="750"  border="0" cellpadding="1" cellspacing="1" bgcolor="#CCCCCC">
   <tr align="center" bgcolor="#CCCCCC" style="font-weight:bold; line-height:24px; background-color:#e4e4e4; border:1px solid #fff; color:#333333;">
-    <td width="10%">地区</td>
-    <td width="10%">网络</td>
-    <td width="10%">累积填入数</td>
-    <td width="10%">累积成功数</td>
-    <td width="10%">打开通知数</td>
+    <td width="12%">地区</td>
+    <td width="12%">网络</td>
+    <td width="12%">累积填入数</td>
+    <td width="12%">累积成功数</td>
+    <td width="12%">打开通知数</td>
 
-    <td width="15%">大前天</td>
-    <td width="15%">前天</td>
-    <td width="15%">昨天</td>
-    <td width="15%">今天</td>
+    <td width="10%">大前天</td>
+    <td width="10%">前天</td>
+    <td width="10%">昨天</td>
+    <td width="10%">今天</td>
   </tr>
 <!--{foreach $result AS $id=>$one}-->
   <tr align="center" bgcolor="#FFFFFF">
@@ -37,7 +37,7 @@
     <td>{$one['u']['d-1-bind']}/{$one['u']['d-1-set']}</td>
     <td>{$one['u']['d-0-bind']}/{$one['u']['d-0-set']}</td>
   </tr>
-  <tr align="center" bgcolor="#FFFFFF">
+  <tr align="center" bgcolor="#ECECEC">
     <td> - 合计 -</td>
     <td>{$one['t']['total_set']}</td>
     <td>{$one['t']['total_bind']}</td>
@@ -73,7 +73,7 @@
     <td>{$total['u']['d-1-bind']}/{$total['u']['d-1-set']}</td>
     <td>{$total['u']['d-0-bind']}/{$total['u']['d-0-set']}</td>
   </tr>
-  <tr align="center" bgcolor="#FFFFFF">
+  <tr align="center" bgcolor="#ECECEC">
     <td> - 合计 -</td>
     <td>{$total['t']['total_set']}</td>
     <td>{$total['t']['total_bind']}</td>

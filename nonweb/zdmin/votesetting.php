@@ -150,6 +150,11 @@ function doPost()
 		JWNanoVote::Create( $status_id, $number, $options );
 		setTips( "更新设置成功" );
 	}
+	else if ( isset($_POST['toZero'] ) )
+	{
+		$runtime_key = 'JWNANO_VOTE_' . $status_id;	
+		JWRuntimeInfo::Set( $runtime_key, array() );
+	}
 	else
 	{
 		$options = array(

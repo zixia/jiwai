@@ -12,7 +12,7 @@ function checkUser(){
 	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
 	if ( $idUser ) 
 		return true;
-
+	$_SESSION['login_redirect_url'] = $_SERVER['SCRIPT_URI'];
 	JWTemplate::RedirectToUrl( '/login.php' );
 }
 checkUser();

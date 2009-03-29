@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -5,23 +6,23 @@
 <style>
 body { margin:0px; line-height:150%; font-size:14px; width:1000px;}
 td,th{ font-size:14px; }
-#header {padding:20px;text-align:center;font-size:32px; font-weight:bold; background-color:#456789; color:#FFF;}
-#footer {padding:10px;text-align:center;font-size:14px; border-top:1px solid #999;}
+#header {padding:10px;text-align:center;font-size:22px; font-weight:bold; background-color:#456789; color:#FFF;}
+#footer {padding:0px;text-align:center;font-size:14px; border-top:1px solid #999;}
 
 .notice { border:1px solid #900; margin:10px; background:#FFD9D9;}
 .notice td { padding:1em 3em 1em 3em; } 
 .page { width:100%; }
 .clear { clear:both; }
 
-#left { width:180px; float:left; padding:10px; border-right:1px solid #999;}
-#left h2 { font-size:16px; margin:0px; }
+#left { width:150px; float:left; padding:10px; border-right:1px solid #999;}
+#left h2 { font-size:14px; margin:0px; height:14px;}
 #left ul { margin:0px; padding:0px; display:block;}
 #left li { margin:5px; list-style:none; display:block; margin:5px;}
 #left li a{color:#00F;}
 #left li a:hover { font-size:15px; font-weight:bold; }
 #left li.selected a{ font-size:15px; font-weight:bold; color:#F00;}
 
-#main { padding:10px; float:left;clear:right;}
+#main { padding:10px; float:left;clear:right;width:800px;}
 #main h2 { font-size:20px; margin:0 0 15px 0; }
 #main h3 { font-size:16px; margin:0 0 10px 0; }
 
