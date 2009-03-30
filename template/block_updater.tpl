@@ -9,7 +9,7 @@
 		<li class="rt">Ctrl+Enter直接叽歪</li>
 		<li class="button">
 			<div class="at"></div><div class="bt"></div>
-			<div class="tt" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}" >叽歪一下</div>
+			<div class="tt"><a href="javascript:;" onclick="if($('jw_status').value.length>0){return JWAction.updateStatus();}else{$('jw_status').focus();}return false;" >叽歪一下</a></div>
 			<div class="bt"></div><div class="at"></div>
 		</li>
 	</ul>

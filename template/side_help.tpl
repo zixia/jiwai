@@ -1,9 +1,10 @@
+<!--${$b = JWTagFollower::GetTagUser($tag['id'], $g_current_user_id);}-->
 <div class="side1">
 	<div class="pagetitle">
 	<!--{if $tag}-->
 		<h3 class="mar_b8"><a href="/wo/feedback/index/1">信息不通？</a></h3>
 		<h3 class="mar_b8"><a href="/wo/feedback/index/2">举报用户？</a></h3>
-		<div class="lightbg"><a href="/wo/action/tfollow/{$tag['id']}">关注[帮助留言板]</a></div>
+		<div class="lightbg"><a href="/wo/action/<!--{if $b}-->toff<!--{else}-->tfollow<!--{/if}-->/{$tag['id']}"><!--{if $b}-->取消<!--{/if}-->关注[帮助留言板]</a></div>
 	<!--{else}-->
 		<h3 class="mar_b8"><a href="/t/帮助留言板/">帮助留言板</a></h3>
 	<!--{/if}-->

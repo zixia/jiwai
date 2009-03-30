@@ -14,8 +14,8 @@
 		case 'wo':
 			$tab = array(
 				'following'=>array('关注的','/wo/'),
-				'my'=>array('自己的','/wo/archive/'),
 				'reply'=>array('回复我','/wo/replies/'),
+				'my'=>array('自己的','/wo/archive/'),
 				'favourite'=>array('收藏的','/wo/favourites/'),
 				'public'=>array('大家的','/public_timeline/'),
 			);
