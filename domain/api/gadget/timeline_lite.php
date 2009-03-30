@@ -1,5 +1,6 @@
 <?php
 require_once("../../../jiwai.inc.php");
+ob_start();
 
 define ('GADGET_THEME_ROOT'		, JW_ROOT.'domain/asset/gadget/theme/');
 define ('GADGET_THEME_DEFAULT'	, GADGET_THEME_ROOT.'Lite/');
