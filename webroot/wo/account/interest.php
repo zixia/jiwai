@@ -14,23 +14,23 @@ if( $new_user_info )
 	$array_changed = array();
 
 	if( $new_user_info['interest'] != @$outInfo['interest'] ) {
-		$array_changed['interest'] = $new_user_info['interest'];
+		$array_changed['interest'] = strip_tags($new_user_info['interest']);
 	}
 
 	if( $new_user_info['bookWriter'] != @$outInfo['bookWriter'] ) {
-		$array_changed['bookWriter'] = $new_user_info['bookWriter'];
+		$array_changed['bookWriter'] = strip_tags($new_user_info['bookWriter']);
 	}
 
 	if( $new_user_info['player'] != @$outInfo['player'] ) {
-		$array_changed['player'] = $new_user_info['player'];
+		$array_changed['player'] = strip_tags($new_user_info['player']);
 	}
 
 	if( $new_user_info['music'] != @$outInfo['music'] ) {
-		$array_changed['music'] = $new_user_info['music'];
+		$array_changed['music'] = strip_tags($new_user_info['music']);
 	}
 
 	if( $new_user_info['place'] != @$outInfo['place'] ) {
-		$array_changed['place'] = $new_user_info['place'];
+		$array_changed['place'] = strip_tags($new_user_info['place']);
 	}
 
 	if( count( $array_changed ) ) {
