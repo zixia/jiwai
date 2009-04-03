@@ -36,35 +36,35 @@ if ( $new_user_info )
 	}
 
 	if( $new_user_info['address'] != @$outInfo['address'] ) {
-		$array_changed['address'] = $new_user_info['address'];
+		$array_changed['address'] = strip_tags($new_user_info['address']);
 	}
 
 	if( $new_user_info['zipcode'] != @$outInfo['zipcode'] ) {
-		$array_changed['zipcode'] = $new_user_info['zipcode'];
+		$array_changed['zipcode'] = strip_tags($new_user_info['zipcode']);
 	}
 
 	if( $new_user_info['current'] != @$outInfo['current'] ) {
-		$array_changed['current'] = $new_user_info['current'];
+		$array_changed['current'] = strip_tags($new_user_info['current']);
 	}
 
 	if( $new_user_info['gender'] != @$outInfo['gender'] ) {
-		$array_changed['gender'] = $new_user_info['gender'];
+		$array_changed['gender'] = strip_tags($new_user_info['gender']);
 	}
 
 	if( $new_user_info['marriage'] != @$outInfo['marriage'] ) {
-		$array_changed['marriage'] = $new_user_info['marriage'];
+		$array_changed['marriage'] = strip_tags($new_user_info['marriage']);
 	}
 
 	$new_user_info['birthday'] = "$birthday_info[year]-$birthday_info[month]-$birthday_info[day]";
 	if( $new_user_info['birthday'] != @$outInfo['birthday'] ) {
-		$array_changed['birthday'] = $new_user_info['birthday'];
+		$array_changed['birthday'] = strip_tags($new_user_info['birthday']);
 	}
 
 	if( $new_user_info['bio'] != $outInfo['bio'] ) {
 		if( $new_user_info['bio'] === '' ) {
 			$array_changed['bio'] = $outInfo['nameFull'];
 		} else {
-			$array_changed['bio'] = $new_user_info['bio'];
+			$array_changed['bio'] = strip_tags($new_user_info['bio']);
 		}
 	}
 
