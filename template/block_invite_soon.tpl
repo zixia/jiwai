@@ -45,4 +45,23 @@
 		<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
 	</div>
 </div>
+<div class="block">
+	<div class="gray">
+		<div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+		<div class="t hand">
+			<div class="lt pad_t3"><a id="ctr_3" name="ctr_3" href="javascript:ctrObj('ctr_2','elm_2')" class="max"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="12" height="12" /></a></div>
+			<div class="rt"><span class="ico_link"><img src="${JWTemplate::GetAssetUrl('/images/img.gif');}" width="20" height="14" /></span></div>
+			<h4 onClick="ctrObj('ctr_3','elm_3')">&nbsp; 通过链接邀请朋友...</h4>
+		</div>
+		<div class="f">
+			<div id="elm_3" class="pad" style="display:none">
+				<div class="mar_b8">复制下面的网址发送给朋友，当你的朋友接受邀请并注册后，你们将自动的相互关注。</div>
+				<div class="mar_b8">
+					<input value="http://JiWai.de/wo/invitations/i/${JWUser::GetIdEncodedFromIdUser($g_current_user_id)}" onclick="this.select();" size="60"/>
+				</div>
+			</div>
+		</div>
+		<div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div>
+	</div>
+</div>
 <div class="clear"></div>
