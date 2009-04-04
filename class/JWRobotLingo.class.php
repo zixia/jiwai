@@ -101,7 +101,12 @@ class JWRobotLingo {
 		}
 
 		if( $ret ) {
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_SUC' );
+			$newmn = JWDB_Cache_Message::GetNewMessageNum($user_id) + JWDB_Cache_Message::GetNewNoticeMessageNum($user_id);
+			if ( $newmn ) {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_SUC_DM', array($newmn) );
+			} else {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_SUC' );
+			}
 		}else{
 			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_ON_ERR' );
 		}
@@ -1788,9 +1793,56 @@ _SQL_;
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+	static function	Lingo_DD($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+		$body 		= $robotMsg->GetBody();	
+
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return null;
+		$user_id = $device_db_row['idUser'];
+		
+		//dm
+		$unread_message_num = JWDB_Cache_Message::GetNewMessageNum($user_id);
+		if ( $unread_message_num ) {
+			$mid = JWMessage::GetMessageIdsFromUser($user_id, JWMessage::INBOX, 1, $start=0, null, null, JWMessage::MESSAGE_NOTREAD);
+			$msg = JWDB_Cache_Message::GetDbRowById($mid['message_ids'][0]);
+			if ( $msg ) {
+				$su = JWUser::GetUserInfo($msg['idUserSender']);
+				$reply = "{$su['nameScreen']}: {$msg['message']}";
+				JWMessage::SetMessageStatus($msg['id'], JWMessage::INBOX, JWMessage::MESSAGE_HAVEREAD);
+				JWMessage::ClearCache($msg['id']);
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			}
+		}
+
+		//notice
+		$unread_notice_num = JWDB_Cache_Message::GetNewNoticeMessageNum($user_id);
+		if ( $unread_notice_num ) {
+			$mid = JWMessage::GetMessageIdsFromUser($user_id, JWMessage::NOTICE, 1, $start=0, null, null, JWMessage::MESSAGE_NOTREAD);
+			$msg = JWDB_Cache_Message::GetDbRowById($mid['message_ids'][0]);
+			if ( $msg ) {
+				$su = JWUser::GetUserInfo($msg['idUserSender']);
+				$reply = "{$su['nameScreen']}: {$msg['message']}";
+				JWMessage::SetMessageStatus($msg['id'], JWMessage::NOTICE, JWMessage::MESSAGE_HAVEREAD);
+				return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+			}
+		}
+
+		$reply = JWRobotLingoReply::GetReplyString($robotMsg, 'REPLY_DD_NIL');
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+	}
+
 
 	static public function CreateAccount($robotMsg, $pre_name_screen=null, $pre_name_full=null) {
-		
+
 		$address = $robotMsg->GetAddress();
 		$type = $robotMsg->GetType();
 
