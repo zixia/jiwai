@@ -15,9 +15,9 @@ class JWRender{
 		self::$mTemplate = null;
 	}
 
-	static public function Render( $templateFile, $v=array(), $dispaly=true){
+	static public function Render($templateFile, $v=array(), $display=false){
 		$templateFile = preg_replace('/'.TPL_FILE_SUFFIX.'$/', '', $templateFile);
-		$content = self::GetTemplate()->render( $templateFile, $v, $dispaly );
+		$content = self::GetTemplate()->render( $templateFile, $v, $display );
 		self::CloseTemplate();
 		return $content;
 	}
@@ -170,7 +170,7 @@ class Template_Render{
 		return file_exists( $this->realTemplateFile($templateFile) );
 	}
 
-	public function render($templateFile,$valueArray=array(), $dispaly=true) {
+	public function render($templateFile,$valueArray=array(), $display=true) {
 
 		$templateFile = $this->realTemplateFile($templateFile);
 		$compiledFile = TPL_COMPILED_DIR.'/'.md5($templateFile).'.php';
@@ -186,7 +186,7 @@ class Template_Render{
 			$this->parse($templateFile,$compiledFile);
 		}
 
-		if ( false == $dispaly ) {
+		if ( false == $display ) {
 			ob_start();
 			require($compiledFile);
 			self::$lastContent = ob_get_clean();

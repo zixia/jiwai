@@ -80,7 +80,7 @@ class JWElement {
 	{
 		global $g_page_user_id;
 		$user = JWUser::GetUserInfo($g_page_user_id);
-		$total = JWStatus::GetStatusNumFromUserNoRe($g_page_user_id);
+		$total = JWDB_Cache_Status::GetStatusNumFromUserNoRe($g_page_user_id);
 		$pager = new JWPager(array('rowCount'=>$total-1));
 		$status_data = JWDB_Cache_Status::GetStatusIdsFromUserNoRe($g_page_user_id, $pager->pageSize, $pager->offset);
 

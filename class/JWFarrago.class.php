@@ -292,7 +292,7 @@ class JWFarrago
 	}
 
 	static public function GetPopkey() {
-		$f_tag = array_merge(self::TrendTag(null,3),array('地球一小时','小秘密'));
+		$f_tag = array_merge(self::TrendTag(null,3),array('愚人节','小秘密'));
 		$f_word = self::TrendWord(null, 5);
 		$f_tag = array_unique($f_tag);
 		$r = array();
