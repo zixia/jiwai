@@ -10,7 +10,7 @@ $newsbot = array(
 		'信息科技' => array('cnBetaBot', 'engadget', 'solidot'),
 		'时事新闻' => array('googlenews', '新华网', 'bbcchinese'),
 		'体育竞技' => array('火炬', '中超', '休斯敦火箭'),
-		'生活休闲' => array('jiandan', 'qiushi', '55bot'),
+		'生活休闲' => array('diggdigest', 'qiushi', '55bot'),
 		'娱乐八卦' => array('星座', '劲爆娱乐', '豆瓣影评'),
 		'其他资讯' => array('历史上的今天', '你知道吗', 'autoblogcn'),
 	    );
