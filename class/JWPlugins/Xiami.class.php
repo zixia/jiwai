@@ -1,9 +1,14 @@
 <?php
+/**
+ * @package	    JiWai.de
+ * @copyright   AKA Inc.
+ * @author      glinus@jiwai.com
+ * @version	    $Id$
+ */
 
 /**
- * $Id$
- */ 
-
+ * JWPlugins_Xiami
+ */
 class JWPlugins_Xiami
 {
 
