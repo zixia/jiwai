@@ -18,7 +18,10 @@ if( !in_array( $type, array('json','xml') )){
 	JWApi::OutHeader(406, true);
 }
 
-if (!$consumer && isset($_REQUEST['apikey'])) {
+if (isset($_POST['apikey'])
+    && $_POST['apikey'] == '0e4a4c24954f22cecea6b06b33efbfd7') { // work-around for widsets
+    $source = 'widsets';
+} elseif (!$consumer && isset($_REQUEST['apikey'])) {
 	$ds = new JWOAuth_DataStore();
 	$consumer = $ds->lookup_consumer($_REQUEST['apikey']);
 	$source = $consumer ? $consumer->title : null;
