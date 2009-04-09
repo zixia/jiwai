@@ -85,6 +85,9 @@
 	<a href="http://wed.la/" title="结婚啦" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/wed_la.jpg');?>" alt="结婚啦"></a>
 	<a href="http://www.babytree.com/" title="育儿网站宝宝树" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/babytree8831.gif');?>" alt="育儿网站宝宝树"></a>
 	<a href="http://www.cayie.com/" title="凯羿娱浪潮" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/cayie8831.gif');?>" alt="凯羿娱浪潮"></a>
+	<a href="http://www.pindao.com/" title="品道" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/pindao8831.gif');?>" alt="品道"></a>
+	<a href="http://www.cn939.com/" title="中国中医网" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/yiyao8831.gif');?>" alt="中国中医网"></a>
+	<a href="http://www.ipart.cn/" title="爱情公寓" target="_blank"><img width="88" height="31" src="<? echo JWTemplate::GetAssetUrl('/images/flink/ipart8831.gif');?>" alt="爱情公寓"></a>
 	<p style="float:left;width:100%;text-align:right;margin-top:13px;font-size:1.2em;color:#545454">友情链接排名不分先后</p>
 	 </div>
  </div>
