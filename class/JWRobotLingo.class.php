@@ -56,6 +56,10 @@ class JWRobotLingo {
 	static function	Lingo_Tips($robotMsg)
 	{
 		$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_TIPS_SUC' );
+		$type = $robotMsg->GetType();
+		if ( $type == 'sms' ) {
+			$reply = mb_substr($reply, 0, 70);
+		}
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
@@ -866,7 +870,9 @@ class JWRobotLingo {
 		if ( $location = JWLocation::GetLocationName($friend_user_row['location']) )
 			$reply .= "，位置：$location";
 
-		if ( !empty($friend_user_row['url']) )
+		if ( $type == 'sms' ) {
+			$reply .= "，叽歪档案位于：http://m.JiWai.de/$friend_user_row[url]";
+		} else if ( !empty($friend_user_row['url']) )
 			$reply .= "，网站：$friend_user_row[url]";
 
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
@@ -1251,7 +1257,11 @@ class JWRobotLingo {
 	
 		if ( $is_web_user )
 		{
-			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_WEB', array( $address_user_row['nameScreen'], ) );
+			if ( 'sms' == $type ) {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_SMS', array( $address_user_row['nameScreen'], ) );
+			} else {
+				$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_WHOAMI_WEB', array( $address_user_row['nameScreen'], ) );
+			}
 		}
 		else
 		{

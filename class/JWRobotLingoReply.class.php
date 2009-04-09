@@ -103,6 +103,7 @@ class JWRobotLingoReply {
 
 			'REPLY_WHOAMI' => '你是 {0}',
 			'REPLY_WHOAMI_WEB' => '你是 {0}，你的叽歪档案位于：http://JiWai.de/{0}',
+			'REPLY_WHOAMI_SMS' => '你是 {0}，你的叽歪档案位于：http://JiWai.de/{0} ，手机访问：http://m.JiWai.de/{0}',
 			'REPLY_WHOAMI_IM' => '你是 {0}，设置密码请来这里：http://JiWai.de/wo/account/complete',
 
 			'REPLY_ACCEPT_HELP' => '如果你的叽歪受保护。接受请求发送：accept+空格+别人的名字；删除请求发送：deny+空格+别人的名字；例如“accept 叽歪小助理”',
