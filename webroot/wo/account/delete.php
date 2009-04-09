@@ -2,18 +2,19 @@
 require_once('../../../jiwai.inc.php');
 JWLogin::MustLogined(false);
 
-$element = JWElement::Instance();
-$param_main = array();
-
 if ( $_POST ) {
 	JWUtility::CheckCrumb();
-	$user_info = JWUser::CurrentUserInfo();
-	if ( !JWUser::IsAdmin($user_info['id']) ) {
+	$user_id = JWLogin::GetCurrentUserId();
+	if ( !JWUser::IsAdmin($user_id) ) {
 		JWSession::SetInfo('notice', "再见，{$user_info['nameScreen']}，欢迎下次来玩！");
-		JWUser::Destroy($user_info['id']);
+		JWLogin::Logout();
+		JWUser::Destroy($user_id);
 	}
 	JWTemplate::RedirectToUrl('/');
 }
+
+$element = JWElement::Instance();
+$param_main = array();
 
 $param_tab = array( 'tabtitle' => '删除账户' );
 $param_side = array( 'sindex' => 'account' );
