@@ -13,8 +13,8 @@
 		<div class="rt50">
 			<ul class="pad bg_pink">
 				<li>重设密码发送：</li>
-				<li><div align="center"><b>pass</b> + <b>空格</b> + <b>密码</b></div></li>
-				<li class="f_gra">例如：pass abc123</li>
+				<li><div align="center"><b>mima</b> + <b>空格</b> + <b>密码</b></div></li>
+				<li class="f_gra">例如：mima abc123</li>
 			</ul>
 		</div>
 		<div class="clear"></div>
