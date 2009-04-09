@@ -28,7 +28,8 @@
 			<div><input type="submit" name="" value="&nbsp; 保存修改 &nbsp;" />  &nbsp; <input type="reset" value="取消" /></div>
 		</dd>
 	</dl>
-	<div class="clear"></div>
+	<div class="clear mar50"></div>
+	<div style="float:right;">&gt;&gt;<a href="/wo/account/delete" onclick="return confirm('账户删除后，你的所有叽歪内容将无法找回，确定删除账户吗？');">删除我的帐户</a></div>
 	</form>
 </div>
 <div class="clear"></div>
