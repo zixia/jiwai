@@ -29,9 +29,9 @@
 		<div>手机发送短信到1066822888, 聊天软件发送信息给叽歪小弟。</div>
 		<div class="lt50">
 			<ul class="pad bg_pink">
-				<li>查询用户名发送：</li>
-				<li><div align="center"><b>woshishui</b></div></li>
-				<li class="f_gra">例如：woshishui</li>
+				<li>改名发送：</li>
+				<li><div align="center"><b>gm</b> + <b>空格</b> + <b>想要的名字</b></div></li>
+				<li class="f_gra">例如：gm 阿朱</li>
 			</ul>
 		</div>
 		<div class="rt50">
