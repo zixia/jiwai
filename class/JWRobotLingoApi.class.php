@@ -206,5 +206,49 @@ class JWRobotLingoApi {
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+    static function Lingo_Dict($robotMsg, $idUser)
+    {
+		/*
+	 	 *	解析命令参数
+	 	 */
+		$body = $robotMsg->GetBody();
+		$body = JWTextFormat::ConvertCorner( $body );
+
+		if ( ! preg_match('/^\w+\s+(\S+)\s*$/i',$body,$matches) ) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_HELP' );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+		}
+
+		$dict_query = $matches[1];
+        $dict_result = json_decode(
+                file_get_contents('http://e.jiwai.de/lab/dict/?q=' . urlencode($dict_query))
+                );
+
+        if (empty($dict_result)) {
+			$reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_NIL', array($dict_query) );
+			return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+        }
+
+        switch ($dict_result->type) {
+            case 'return' :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_MATCH', array(
+                            $dict_query,
+                            $dict_result->result[0]->exp,
+                            $dict_result->result[0]->bookname
+                            ));
+                break;
+            case 'match' :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_GUESS', array(
+                            $dict_result->result[0]->def
+                            ));
+                break;
+            default :
+                $reply = JWRobotLingoReply::GetReplyString( $robotMsg, 'REPLY_DICT_NIL', array($dict_query) );
+                break;
+        }
+
+		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
+    }
+
 }
 ?>

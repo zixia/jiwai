@@ -28,6 +28,7 @@ function renderLingoOut($lingo, $idUser) {
         'lingo_get',
         'lingo_whoami',
         'lingo_whois',
+        'lingo_dict',
     );
 
     $unsupportedMsg = "unsupported";
