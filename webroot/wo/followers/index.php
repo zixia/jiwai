@@ -10,7 +10,7 @@ if(empty($g_page_user_id)) {
 $g_page_user = JWUser::GetUserInfo($g_page_user_id);
 $style = abs(intval(@$_GET['s']));
 $now = $style ? 'square' : 'list';
-$limit = $style ? false : 20;
+$limit = isset($_GET['n']) ? min(50, abs(intval($_GET['n']))) : 20;
 
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']) ;
 $friend_ids = JWFollower::GetFollowerIds( $g_page_user_id );
