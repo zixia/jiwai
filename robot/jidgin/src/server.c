@@ -58,13 +58,13 @@ void jidgin_server_on_bot(struct evhttp_request *req, void *data) {
     pmsg->device  = g_ascii_strdown(device, -1);
     jidgin_log(LOG_INFO, "[jidign_server_on_bot]send_im: %s\n", to);
     jidgin_worker_send_im(NULL, NULL, pmsg);
-    jidgin_msg_destroy(pmsg);
     evhttp_send_reply(req, HTTP_OK, "OK", buf);
   } else {
     evhttp_send_reply(req, HTTP_BADREQUEST, "Bad Request", buf);
     jidgin_log(LOG_WARNING, "[jidign_server_on_bot]malformed packet: %s\n", uri);
   }
 
+  jidgin_msg_destroy(pmsg);
   evbuffer_free(buf);
   free(uri);
 
