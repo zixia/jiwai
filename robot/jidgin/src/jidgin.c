@@ -21,6 +21,7 @@
 #include "daemon.h"
 #include "buddy.h"
 #include "worker.h"
+#include "server.h"
 
 /**
  * The following eventloop functions are used in both pidgin and purple-text. If your
@@ -150,6 +151,8 @@ static void init_settings(void) {
   purple_settings.is_debug  = FALSE;
   purple_settings.chroot_dir = "/";
   purple_settings.queue_path = QUEUE_PATH;
+  purple_settings.srv_addr = NULL;
+  purple_settings.srv_port = 10080;
 }
 
 static void init_libpurple(void) {
@@ -220,6 +223,8 @@ int main(int argc, char *argv[]) {
   int wait_status;
   int inotify_pipe_fd[2];
 
+  pJidginServer httpd;
+
   signal(SIGCHLD, SIG_IGN);
   init_settings();
 
@@ -284,6 +289,7 @@ int main(int argc, char *argv[]) {
   purple_account_set_password(account, primary->password);
 
   if (primary->nickname) {
+    purple_account_set_alias(account, primary->nickname);
     purple_account_set_status(account, "available",
         TRUE, "message", primary->nickname, NULL);
   }
@@ -303,6 +309,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  /* fork the inotify process */
   pid = fork();
   if (pid < 0) {
     jidgin_log(LOG_ERR, "[jidgin_core]fork error: %s\n", strerror(errno));
@@ -324,14 +331,28 @@ int main(int argc, char *argv[]) {
     abort();
   }
 
+  /* evhttp */
+  struct event_base *base=event_init();
+  httpd = jidgin_server_init(base);
+  httpd->address = g_strdup(purple_settings.srv_addr);
+  httpd->port = purple_settings.srv_port;
+  jidgin_server_set_uri(httpd, URI_STATUS, "/status/");
+  jidgin_server_set_uri(httpd, URI_BOT, "/bot/");
+  if (!g_thread_create(jidgin_server_run, (gpointer)httpd, FALSE, NULL)) {
+    jidgin_log(LOG_ERR, "[jidgin_core]thread error\n");
+    abort();
+  }
+
   jidgin_reactor_attach( jidgin_worker_on_data );
   connect_to_signals();
 
   g_log_set_handler (NULL,
       G_LOG_LEVEL_WARNING | G_LOG_FLAG_FATAL | G_LOG_LEVEL_CRITICAL ,
       jidgin_log_nil, NULL);
+
   g_main_loop_run(loop);
 
+  jidgin_server_destroy(httpd);
   jidgin_reactor_destroy();
   jidgin_setting_account_destroy(primary);
   return 0;

@@ -27,6 +27,7 @@ void jidgin_setting_destroy(pJidginSetting s) {
     if (s->mo_path) free(s->mo_path);
     if (s->mt_path) free(s->mt_path);
     if (s->chroot_dir) free(s->chroot_dir);
+    if (s->srv_addr) free(s->srv_addr);
     free(s);
   }
 }
@@ -115,6 +116,10 @@ void jidgin_setting_get_main(GKeyFile *config, pJidginSetting setting) {
     setting->is_force_mt = g_key_file_get_boolean(config, SECTION_PURPLE, "is_force_mt", &error);
   if (g_key_file_has_key(config, SECTION_PURPLE, "nchars", &error))
     setting->nchars = g_key_file_get_integer(config, SECTION_PURPLE, "nchars", &error);
+  if (g_key_file_has_key(config, SECTION_PURPLE, "srv_addr", &error))
+    setting->srv_addr = g_key_file_get_string(config, SECTION_PURPLE, "srv_addr", &error);
+  if (g_key_file_has_key(config, SECTION_PURPLE, "srv_port", &error))
+    setting->srv_port = g_key_file_get_integer(config, SECTION_PURPLE, "srv_port", &error);
 
   if (setting->queue_path) {
     setting->mo_path = g_strjoin(G_DIR_SEPARATOR_S, setting->queue_path, "mo", NULL);

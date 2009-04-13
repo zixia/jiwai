@@ -446,7 +446,7 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	}
 
 	cookies = fb_cookies_to_string(fba);
-	user_agent = purple_account_get_string(fba->account, "user-agent", "Opera/9.50 (Windows NT 5.1; U; en-GB)");
+	user_agent = purple_account_get_string(fba->account, "user-agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_6; zh-cn)");
 
 	/* Build the request */
 	request = g_string_new(NULL);

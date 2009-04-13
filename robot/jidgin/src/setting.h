@@ -40,6 +40,8 @@ typedef struct {
   gboolean is_debug;
   gboolean is_force_mt;
   unsigned int nchars;
+  char *srv_addr;
+  int srv_port;
 } jidginSetting, *pJidginSetting;
 
 GKeyFile *jidgin_setting_init(const char *);

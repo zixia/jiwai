@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <assert.h>
+#include <unistd.h>
 
 static gchar *jidgin_robotmsg_path(pRobotMsg rmsg, ROBOTMSG_DIRECTION orient) {
   gchar *realname;
@@ -222,11 +223,17 @@ void jidgin_robotmsg_destroy(pRobotMsg rmsg) {
   assert(NULL != rmsg);
 
   if (rmsg->device) g_free(rmsg->device);
-  if (rmsg->path) g_free(rmsg->path);
   if (rmsg->from) g_free(rmsg->from);
   if (rmsg->stream) fclose(rmsg->stream);
   if (rmsg->headers) g_hash_table_destroy(rmsg->headers);
   if (rmsg->content) g_free(rmsg->content);
+
+  jidgin_log(LOG_DEBUG, "[jidgin_robotmsg_destroy]%s\n", rmsg->from);
+  if (rmsg->path) {
+    g_free(rmsg->path);
+    unlink(rmsg->path);
+    jidgin_log(LOG_DEBUG, "[jidgin_robotmsg_destroy][unlink]%s\n", rmsg->path);
+  }
 
   free(rmsg);
 }

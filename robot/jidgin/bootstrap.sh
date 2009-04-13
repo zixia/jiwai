@@ -1,3 +1,3 @@
 #!/bin/bash
 
-autoreconf -fivm
+autoreconf -fiv
