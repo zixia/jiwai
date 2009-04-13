@@ -11,13 +11,17 @@ $g_page_user = JWUser::GetUserInfo($g_page_user_id);
 $style = abs(intval(@$_GET['s']));
 $now = $style ? 'square' : 'list';
 $limit = isset($_GET['n']) ? min(50, abs(intval($_GET['n']))) : 20;
+$limit = ($limit==0) ? 20 : $limit;
 
 $page = !isset($_GET['page']) ? 1 : intval($_GET['page']) ;
 $friend_ids = JWFollower::GetFollowerIds( $g_page_user_id );
 $followers_num = count( $friend_ids );
 
 if ( $limit ) {
-	$pager = new JWPager(array('rowCount'=>$followers_num-1));
+	$pager = new JWPager(array(
+				'rowCount' => $followers_num,
+				'pageSize' => $limit,
+				));
 	$friend_ids = array_slice($friend_ids, ($page-1)*$limit, $limit);
 }
 $friend_user_rows = JWDB_Cache_User::GetDbRowsByIds($friend_ids);
