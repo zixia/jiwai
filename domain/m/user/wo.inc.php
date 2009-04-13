@@ -1,5 +1,5 @@
 <?php
-$showProtected = $userInfo['protected'] == 'N';
+$showProtected = $userInfo['protected'] == 'N' || JWUser::IsAdmin($loginedUserInfo['id']);
 if( false == $showProtected ){
 	$showProtected = JWFollower::IsFollower($loginedUserInfo['id'], $userInfo['id']) | $loginedUserInfo['id'] == $userInfo['id'] ;
 }

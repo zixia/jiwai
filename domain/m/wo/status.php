@@ -26,6 +26,13 @@ switch($action){
 		$_SESSION['name_screen_reply_to'] = "@$reply_user_info[nameScreen] ";
 		JWTemplate::RedirectToUrl("/wo/");
 	break;
+	case 'rt':
+		$_SESSION['id_status_reply_to'] = $value;
+		$status_row = JWDB_Cache_Status::GetDbRowById( $value );
+		$reply_user_info = JWUser::GetUserInfo($status_row['idUser']);
+		$_SESSION['name_screen_reply_to'] = "RT $reply_user_info[nameScreen]: ".htmlspecialchars($status_row['status']);
+		JWTemplate::RedirectToUrl("/wo/");
+	break;
 	case 'update':
 		update( $loginedUserInfo['id'], trim($status) );
 	break;
