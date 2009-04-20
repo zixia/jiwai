@@ -19,11 +19,17 @@
 		</alternate>
     </meta>
     <db>
-		<host>10.0.10.2</host>
+		<host>10.1.10.49</host>
 		<username>root</username>
 		<passwd></passwd>
 		<dbname>jiwai</dbname>
 	</db>
+    <rdb>
+		<host>10.1.10.49</host>
+		<username>root</username>
+		<passwd></passwd>
+		<dbname>jiwai</dbname>
+	</rdb>
 	<directory>
 		<queue>
 			<root>/var/cache/tmpfs/jiwai/queue/</root>
