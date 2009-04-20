@@ -20,8 +20,10 @@ if ( preg_match('#^(?P<idUser>\d+)\.css$#', $pathParam, $matches) ) {
 		header("Pragma: public");
 		header("Expires: $exp_gmt");
 		header('Content-Type: text/css; charset=utf-8;');
+		JWDB::Close();
 		die($design->GetStyleSheet());
 	}
 }
+JWDB::Close();
 exit(0);
 ?>

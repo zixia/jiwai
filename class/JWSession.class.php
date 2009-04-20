@@ -56,6 +56,8 @@ Class JWSession {
 	}
 
 	function __destruct() {
+		//add jwdb::close, it's stranger that when JWDB's instance destroyed ,the __destruct method of jwdb have not executed?
+		JWDB::Close(); 
 		if ( in_array('ob_gzhandler', ob_list_handlers()) ) {
 			ob_end_flush();
 			if ( $length = ob_get_length() ) {

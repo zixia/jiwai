@@ -18,5 +18,6 @@ if ( preg_match('#^user/profile_image/(?P<id_or_name>\w+)/(?P<pic_id>\w+)/(?P<pi
 	$file = $dir.$theme.'/theme';
 	JWEmote::RenderJS($theme, file_exists($file) ? $file : $dir.'default/theme');
 }
+JWDB::Close();
 exit(0);
 ?>

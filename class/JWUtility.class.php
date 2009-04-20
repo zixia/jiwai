@@ -121,7 +121,7 @@ class JWUtility {
 
 	static public function GetRssLink() {
 
-		if ( self::$global_vars['getrsslink'] ) 
+		if ( @self::$global_vars['getrsslink'] ) 
 			return self::$global_vars['getrsslink'];
 
 		global $g_page_user_id;
