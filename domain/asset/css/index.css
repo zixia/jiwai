@@ -25,7 +25,7 @@ a.dark:hover, .dark a:hover {color:#F87A01;}
 a.close{padding:0 4px;font-size:14px; color:#999; }
 a.close:hover{color:#fff;background:#ddd;text-decoration:none;}
 
-a.f_gra, .f_gra, a.f_gra_l{color:#999;}
+a.f_gra, .f_gra, a.f_gra_l, .a_gra a{color:#999;}
 a.f_gra_l{text-decoration:underline}
 .f_yel{color:#F87A01}
 .f_red{color:#ff0000}
@@ -100,7 +100,7 @@ h3, .f_14, h4{font-size:14px}
 #righter{width:252px;display:table-cell;word-break:break-all;}
 #righter .a,#righter .b,#righter .c,#righter .d{background:#fff4ea}
 #righter .b{border-right:2px #fff solid;border-left:2px #fff solid;}
-#righter .c,#righter .d,#righter .f{border-right:1px #fff solid;border-right:1px #fff solid;}
+#righter .c,#righter .d,#righter .f{border-left:1px #fff solid;border-right:1px #fff solid;}
 #righter .a{margin:0 5px;background:#fff;}
 #righter .b{margin:0 3px;}
 #righter .c{margin:0 2px;}
@@ -188,7 +188,7 @@ a.ags{COLOR:#D05D02;} 									/* 4 */
 
 .button .at,.button .bt,.button .ct,.button .dt,.button .tt{background-color:#f87000}
 .button .tt{font-size:14px; line-height:1.2em;text-align:center; font-weight:bold; color:#fff; padding:3px 0;}
-.button .tt a{color:#fff}
+.button .tt a{color:#fff; text-decoration:none}
 .side_btn{width:150px; margin:auto;}
 .sbtn{width:70px;}
 .usermsg .button, .update .button, .bbtn{width:100px;}
@@ -306,7 +306,7 @@ a.po_d{background-position:left -660px;}
 .one .hd a:hover{color:#F87A01;}
 .one .hd a em{display:block;width:48px; height:48px; padding:2px; overflow:hidden; border:1px #ddd solid; cursor:pointer}
 .one .hd a img{width:48px; height:48px;vertical-align:top;}
-.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em; word-break:break-all; }
+.one .text {font-size:14px; margin-bottom:5px; line-height:1.5em; word-break:break-all; word-wrap:break-word;}
 .one .mar_lt{margin-left:80px; z-index:10}
 .one li.hd{float:left; width:52px; height:70px; overflow:hidden; text-align:center;  margin:0 3px 6px 0;}
 .one li.hd img{padding:1px!important;padding:1px 0 0 2px; margin-bottom:3px}
@@ -332,6 +332,8 @@ dl dd{text-align:left;}
 #set_bor dl.w2 dd{width:300px;margin-bottom:30px;}
 #set_bor dl.w3 dt{width:100px; margin-bottom:20px;}
 #set_bor dl.w3 dd{width:380px; margin-bottom:20px;}
+
+.order_info li{margin-bottom:12px;}
 
 #login dl.w4 dt{width:40px;height:30px;font-size:12px; text-align:left;}
 #login dl.w4 dd{width:170px;height:30px;}
