@@ -34,6 +34,7 @@
  */
 class Wakka
 {
+  var $charset = 'latin1';
 	var $config = array();
 	var $dblink;
 	var $page;
@@ -52,6 +53,11 @@ class Wakka
 		$this->dblink = @mysql_connect($this->config["mysql_host"], $this->config["mysql_user"], $this->config["mysql_password"]);
 		if ($this->dblink)
 		{
+      if (function_exists('mysql_set_charset')) {
+        mysql_set_charset($this->charset, $this->dblink);
+      } else {
+        mysql_query('SET NAMES ' . $this->charset, $this->dblink);
+      }
 			if (!@mysql_select_db($this->config["mysql_database"], $this->dblink))
 			{
 				@mysql_close($this->dblink);
