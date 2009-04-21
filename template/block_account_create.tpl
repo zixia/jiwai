@@ -10,7 +10,7 @@
 		</dd>
 		<dt>密　码</dt>
 		<dd>
-			<div><input id="user_pass" type="password" name="user[pass]" alt="密码" minlength="6" maxlength="20" /></div>
+			<div><input id="user_pass" type="password" name="user[pass]" alt="密码" minlength="6" maxlength="16" /></div>
 			<div class="f_gra">至少6个字符</div>
 		</dd>
 		<dt>确认密码</dt>
