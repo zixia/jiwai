@@ -6,7 +6,7 @@
 <p><input type="text" name="name"/></p>
 <p>密码：</p>
 <p><input type="password" name="pass"/></p>
-<p><input type="checkbox" name="remember" value="1" checked/>记住我</p>
+<p><input type="checkbox" name="remember" value="1" checked="checked" />记住我</p>
 <p><input type="submit" value="登录" /></p>
 </form>
 
