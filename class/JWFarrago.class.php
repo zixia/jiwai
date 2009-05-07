@@ -315,7 +315,7 @@ class JWFarrago
 		$memcache = JWMemcache::Instance();
 		$tags = $memcache->Get( $mc_key );
 
-		if ( empty($tags) || true) {
+		if ( empty($tags) ) {
 
 			$tag_ids = JWDB_Cache_Status::GetTagIdsTopicByIdUser($user_id);
 			$tag_ids = array_keys($tag_ids);
