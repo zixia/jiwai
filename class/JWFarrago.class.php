@@ -292,7 +292,7 @@ class JWFarrago
 	}
 
 	static public function GetPopkey() {
-		$f_tag = array_merge(self::TrendTag(null,3),array('愚人节','小秘密'));
+		$f_tag = array_merge(self::TrendTag(null,3),array('母亲节','小秘密'));
 		$f_word = self::TrendWord(null, 5);
 		$f_tag = array_unique($f_tag);
 		$r = array();
@@ -306,69 +306,70 @@ class JWFarrago
 
 	static public function GetSuggestTag($user_id=null) 
 	{
-		$suggest_tags = array('新年愿望', '笑话');
-		$p_tags = array('叽歪', '读书', '美食', '生活');
+		$p_tags = array('笑话','叽歪','小秘密','旅行','工作','学习');
 		if ( $user_id == null ) {
-			return array_merge($suggest_tags, $p_tags);
+			return $p_tags;
 		}
 
 		$mc_key = JWDB_Cache::GetCacheKeyByFunction( array('JWFarrago', 'GetSuggestTag'), array($user_id) );
 		$memcache = JWMemcache::Instance();
 		$tags = $memcache->Get( $mc_key );
 
-		if ( empty($tags) ) {
-			$expire = 6 * 60 * 60; //6 hours
-			$tagids = JWTagFollower::GetFollowingIds($user_id);
-			$tagrows = JWDB_Cache_Tag::GetDbRowsByIds($tagids);
-			$tags = JWUtility::GetColumn($tagrows, 'name');
+		if ( empty($tags) || true) {
+
+			$tag_ids = JWDB_Cache_Status::GetTagIdsTopicByIdUser($user_id);
+			$tag_ids = array_keys($tag_ids);
+			$tag_rows = JWDB_Cache_Tag::GetDbRowsByIds($tag_ids);
+			$tags = JWUtility::GetColumn($tag_rows, 'name');
+			$count = count($tags);
+
+			if ( $count == 0 ) {
+				$tags = $p_tags;
+			}
+			else if ( $count < 6 ) {
+				$tags = array_slice(array_unique(array_merge($tags,$p_tags)),0,6);
+			}
+			else {
+				$firsts = array_slice($tags, 0, 3);
+				$ends = array_slice($tags, $count-3, 3);
+				$tags = array_merge($firsts, $ends);
+			}
+
 			$memcache->Set($mc_key, $tags, 0, $expire);
 		}
 
-		$tags = array_merge($tags, $p_tags);
-		$need_size = 4;
-		for($i=0; $i<$need_size;) {
-			if (!isset($tags[$i]))
-				break;
-			if (in_array($tags[$i], $suggest_tag)) {
-				$i++;
-				continue;
-			}
-			$suggest_tags[] = $tags[$i];
-			$i++;
-		}
-
-		return $suggest_tags;
+		return $tags;
 	}
 
 	static public function GetInitJs($onlyurl=true) 
 	{
-			$jses = array(
-							'/lib/mootools/mootools.v1.11.js',
-							'/js/onload.js',
-							'/js/jiwai.js',
-							'/js/buddyIcon.js',
-							'/js/location.js',
-							'/js/validator.js',
-							'/js/seekbox.js',
-							'/js/action.js',
-						 );
-			$content = null;
-			$timestamp = 0;
-			foreach( $jses AS $one ) {
-					$absone = JW_ROOT . '/domain/asset/' . $one;
-					if(false==file_exists($absone)) break;
-					$content[] = ($onlyurl) ? '' : file_get_contents($absone);
-					$ftimestamp = filemtime($absone);
-					$timestamp = max($timestamp, $ftimestamp);
-			}
-			if ( $onlyurl ) {
-					$timestamp = date('Y-m-d H:i:s', $timestamp);
-					return JWTemplate::GetAssetUrl('/jiwai.js', $timestamp);
-			}
-			return array(
-							'time' => $timestamp,
-							'content' => join("\n", $content),
-						);
+		$jses = array(
+				'/lib/mootools/mootools.v1.11.js',
+				'/js/onload.js',
+				'/js/jiwai.js',
+				'/js/buddyIcon.js',
+				'/js/location.js',
+				'/js/validator.js',
+				'/js/seekbox.js',
+				'/js/action.js',
+				);
+		$content = null;
+		$timestamp = 0;
+		foreach( $jses AS $one ) {
+			$absone = JW_ROOT . '/domain/asset/' . $one;
+			if(false==file_exists($absone)) break;
+			$content[] = ($onlyurl) ? '' : file_get_contents($absone);
+			$ftimestamp = filemtime($absone);
+			$timestamp = max($timestamp, $ftimestamp);
+		}
+		if ( $onlyurl ) {
+			$timestamp = date('Y-m-d H:i:s', $timestamp);
+			return JWTemplate::GetAssetUrl('/jiwai.js', $timestamp);
+		}
+		return array(
+				'time' => $timestamp,
+				'content' => join("\n", $content),
+				);
 	}
 }
 ?>
