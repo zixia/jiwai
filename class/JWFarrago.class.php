@@ -292,7 +292,9 @@ class JWFarrago
 	}
 
 	static public function GetPopkey() {
-		$f_tag = array_merge(self::TrendTag(null,3),array('母亲节','小秘密'));
+		$featured = JWUser::GetUserInfo('featured');
+		$popw = preg_split('/[\s]+/', $featured['interest'], 2, PREG_SPLIT_NO_EMPTY);
+		$f_tag = array_merge(self::TrendTag(null,3),$popw);
 		$f_word = self::TrendWord(null, 5);
 		$f_tag = array_unique($f_tag);
 		$r = array();
