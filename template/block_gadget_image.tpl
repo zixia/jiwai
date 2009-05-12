@@ -1,13 +1,11 @@
 <script type="text/javascript">
-$("o").onload = window.jiwai_init_hook_eheight;
 function draw() 
 {
 	var url = "http://api.jiwai.de" + ($("v2").checked ? "/g/i/" : "/gadget/image/") + "{$g_current_user_id}/c" + $("c").value + "/w"+ $("w").value + "/m" + $("m").value + "/g.png";
 	$('pic_url').value=url; 
 	$('ubb_url').value="[url=http://jiwai.de/{$g_current_user['nameUrl']}/][img]" + url + " [/img][/url]";
 	$('html_url').value='<a href="http://jiwai.de/{$g_current_user['nameUrl']}/" target="_blank" ><img src=' + url + ' title="叽歪" alt="叽歪" /></a>'; 
-	$("o").src = url;
-	$("o").onload = window.jiwai_init_hook_eheight;
+	$('o').src = url;
 }
 </script>
 <div id="set_bor">

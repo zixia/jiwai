@@ -3,10 +3,10 @@
 </div>
 <div class="block">
 	<div class="mar_b50">
-		<div><a href="/g/weather" class="rt">其他城市</a><span class="dark"><a href="/北京天气/">北京天气</a></span>&nbsp;${htmlspecialchars($weather['status'])}</div>
+		<div><a href="/g/weather/" class="rt">其他城市</a><span class="dark"><a href="/北京天气/">北京天气</a></span>&nbsp;${htmlspecialchars($weather['status'])}</div>
 		<!--${$program_u=JWUser::GetUserInfo($program['idUser'])}-->
-		<div><a href="/g/program" class="rt">更多电视台</a><span class="dark"><a href="/{$program_u['nameUrl']}/">{$program_u['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($program['status']),0,60,'...')}</div>
-		<div><a href="/g/astro" class="rt">更多星座</a><span class="dark"><a href="/{$astro_user['nameUrl']}/">{$astro_user['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($astro['status']),0,60,'...')}</div>
+		<div><a href="/g/program/" class="rt">更多电视台</a><span class="dark"><a href="/{$program_u['nameUrl']}/">{$program_u['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($program['status']),0,60,'...')}</div>
+		<div><a href="/g/astro/" class="rt">更多星座</a><span class="dark"><a href="/{$astro_user['nameUrl']}/">{$astro_user['nameScreen']}</a></span>&nbsp;${mb_strimwidth(strip_tags($astro['status']),0,60,'...')}</div>
 	</div>
 	<div class="mar_b50">
 		<ul>
@@ -107,7 +107,7 @@
 	}-->
 		<div class="one">
 			<div class="mar_b8"><a href="#" class="ico_{$done[0]}"><img src="${JWTemplate::GetAssetUrl('/images/img.gif')}" width="20" height="16" /></a> <b>{$dc} 共{$done[1][0]['count']}条</b></div>
-			<div class="lt"><a href=""><img src="${JWPicture::GetUrlById($u['idPicture'])}" width="32" height="32" /></a></div>
+			<div class="lt"><a href="/{$u['nameUrl']}/"><img src="${JWPicture::GetUrlById($u['idPicture'])}" width="32" height="32" /></a></div>
 			<div class="ct line">
 				<div class="g_rt">
 					<span class="lightbg"><a href="/{$u['nameUrl']}/thread/{$s['id']}">回复</a></span>
