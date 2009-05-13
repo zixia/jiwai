@@ -26,7 +26,7 @@
 	<div class="mar_b50">
 		<ul class="dot_b mar_b20">
 			<li>发送短信到 <b>{$robot}</b> 进行更新</li>
-			<li>发送彩信到 <b>m@jiwai.com</b> 进行更新</li>
+			<li>发送彩信到 <b>m@jiwai.de</b> 进行更新</li>
 			<li>发送 help 获得帮助信息。</li>
 		</ul>
 		<div class="f_gra">发短信或彩信给叽歪，与发短信或彩信给普通手机费用完全一样</div>
