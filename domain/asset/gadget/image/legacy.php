@@ -219,5 +219,5 @@ switch($mode) {
 		}
 		break;
 }
-
+JWDB::Close();
 ?>

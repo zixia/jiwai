@@ -652,6 +652,7 @@ _CMD_;
 				break;
 		}
 
+		JWDB::Close();
 		exit(0);
 	}
 

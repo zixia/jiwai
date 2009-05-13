@@ -120,8 +120,10 @@ function update($idUser, $status) {
 		if( !empty($status_reply) && preg_match('/^@\s*(\S+)\s+(.+)$/',$status, $matches))
 		{
 			$status_row = JWStatus::GetDbRowById( $status_reply );
-			if(empty($status_row))
+			if(empty($status_row)) 
+			{
 				JWTemplate::RedirectTo404NotFound();
+			}
 
 			$options_info = array(
 				'idThread' => !empty($status_row['idThread'])?$status_row['idThread']:$status_reply,
@@ -166,7 +168,7 @@ function update($idUser, $status) {
 	}
 
 	if( $isHelp ) {
-		header('Location: /help/' );
+		JWTemplate::RedirectToUrl('/help/');
 	} else {
 		JWTemplate::RedirectBackToLastUrl();
 	}

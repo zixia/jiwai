@@ -234,6 +234,42 @@ class JWStatus {
 	/** 
 	 * GetSymbolInfo
 	 */
+	static public function GetAnySymbol( $status, $symbol_need=null ) 
+	{
+		$nottags = array( 'TEX', '/TEX' );
+		/**
+		 * Convert to semi corner
+		 */
+		$status = JWTextFormat::ConvertCorner( $status, array(
+			'　','＃', '＄', '＠', '【', '】', '［', '］', '：',
+		));
+
+		if ( $symbol_need == null ) {
+			return null;
+		}
+
+		if ( '@' == $symbol_need && preg_match( '/(\s*[@]\s*)([^\s\b<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $m)) {
+			return trim($m[2]);
+		}
+
+		if ( '$' == $symbol_need && preg_match( '/^(\s*[\$]\s*)([^\s\b<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $m)) {
+			return trim($m[2]);
+		}
+
+		if ( '#' == $symbol_need && preg_match( '/(\s*[#]\s*)([^\s\b<>,:\$@#]{3,20})([\b\s:\$@#,;]+)/', $status, $m)) {
+			return trim($m[2]);
+		}
+
+		if ( '[]' == $symbol_need && preg_match( '/(\s*\[\s*)([^<>\$@#\]\[]{3,})(\s*\])(\s*)/U', $status, $m) ) {
+			return trim($m[2]);
+		}
+
+		return null;
+	}
+
+	/** 
+	 * GetSymbolInfo
+	 */
 	static public function GetSymbolInfo( $status, $symbol_need=null ) 
 	{
 		$nottags = array( 'TEX', '/TEX' );
@@ -255,7 +291,7 @@ class JWStatus {
 				return array(
 					'symbol' => $symbol,
 					'value' => $value,
-					'status' => $status,
+					'status' => trim($status),
 				);
 			}
 		}
@@ -274,7 +310,7 @@ class JWStatus {
 				{
 					if ( strlen($one) < 3 || strlen($one) > 20 )
 						continue;
-					$status = '['.$one.'] '.$status;
+					$status = '['.$one.'] '.trim($status);
 				}
 			}
 
@@ -286,7 +322,7 @@ class JWStatus {
 				return array(
 					'symbol' => $symbol,
 					'value' => $value,
-					'status' => $status,
+					'status' => trim($status),
 				);
 			}
 		}
@@ -1019,7 +1055,7 @@ _SQL_;
 
 		$reply_to_id = $status_row['idUserReplyTo'];
 		$tag_id = $status_row['idTag'];
-		$status = $status_row['status'];
+		$status = trim($status_row['status']);
 
 		if( $reply_to_id ) 
 		{
@@ -1161,7 +1197,7 @@ _HTML_;
 		if( $reply_to_user_id ) 
 		{
 			$reply_to_user = JWUser::GetUserInfo( $reply_to_user_id );
-			$symbol_info=self::GetSymbolInfo($status);
+			$symbol_info=self::GetSymbolInfo($status, '@');
 			if ( $symbol_info && '@'==$symbol_info['symbol'] )
 			{
 				$u = JWUser::GetUserInfo( $symbol_info['value'] );
@@ -1197,8 +1233,8 @@ _HTML_;
 		}
 
 		// Add @ Link For other User
-		$status = preg_replace(	 '/([^\w]|\s|^)@\s*([^\s<>,:\$@#]{3,20})(,|，|:|\b|\s|$)/' ,"\\1 @<a href='/\\2/' rel='contact'>\\2</a>\\3" ,$status );
-		$status = preg_replace(	 "/\[\s*([^<>@#\]\[]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/' rel='tag'>\\1</a>]\\2" ,$status );
+		$status = preg_replace(	 '/([^\w]|\s|^)@\s*([^\s<>,:\$@#\(\)]{3,20})(,|，|:|\b|\s|$)/' ,"\\1 @<a href='/\\2/' rel='contact'>\\2</a>\\3" ,$status );
+		$status = preg_replace(	 "/\[\s*([^<>@#\]\[\(\)]{3,20})\](|\b|\s|$)/" ,"[<a href='/t/\\1/' rel='tag'>\\1</a>]\\2" ,$status );
 
 		if( $conf_id ) 
 		{
