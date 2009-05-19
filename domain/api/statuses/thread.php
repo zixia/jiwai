@@ -114,6 +114,7 @@ function getMergedStatuses($status_rows, $user_rows, $needReBuild=false){
 
 	$statuses = array();
 	$current_user_id = JWApi::GetAuthedUserId();
+	ksort($status_rows);
 
 	foreach ( $status_rows as $status_id=>$status_row )
 	{
