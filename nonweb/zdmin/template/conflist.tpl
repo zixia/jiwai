@@ -3,7 +3,7 @@
 
 <!--{if $unResult}-->
 	<hr>
-	<table class="result" width="740">
+	<table class="result" width="800">
 		<tr>
 			<!--th width="48"></th-->
 			<th>会议编号</th>

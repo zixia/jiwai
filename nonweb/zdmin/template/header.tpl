@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>叽歪de(JiWai&trade;)后台管理系统</title>
+<link href="template/index.css" type="text/css" rel="stylesheet" />
 <style>
-body { margin:0px; line-height:150%; font-size:14px; width:1000px;}
 td,th{ font-size:14px; }
 #header {padding:10px;text-align:center;font-size:22px; font-weight:bold; background-color:#456789; color:#FFF;}
 #footer {padding:0px;text-align:center;font-size:14px; border-top:1px solid #999;}
@@ -14,7 +14,7 @@ td,th{ font-size:14px; }
 .page { width:100%; }
 .clear { clear:both; }
 
-#left { width:150px; float:left; padding:10px; border-right:1px solid #999;}
+.menu { float:left; padding:10px; border-right:1px solid #999;}
 #left h2 { font-size:14px; margin:0px; height:14px;}
 #left ul { margin:0px; padding:0px; display:block;}
 #left li { margin:5px; list-style:none; display:block; margin:5px;}
@@ -22,7 +22,7 @@ td,th{ font-size:14px; }
 #left li a:hover { font-size:15px; font-weight:bold; }
 #left li.selected a{ font-size:15px; font-weight:bold; color:#F00;}
 
-#main { padding:10px; float:left;clear:right;width:800px;}
+#main { padding:10px; float:left; width:820px;}
 #main h2 { font-size:20px; margin:0 0 15px 0; }
 #main h3 { font-size:16px; margin:0 0 10px 0; }
 
@@ -34,12 +34,14 @@ td,th{ font-size:14px; }
 </style>
 </head>
 <body>
-<div id="header">
-	叽歪de后台管理系统
+<div class="header">
+	叽歪de后台管理系统<span style="color:gray;padding:0 10px;font-size:12px;">({$_SESSION['zUserScreen']})</span>
 </div>
 
-<div class="page">
-	<div id="left">
+<div class="container">
+	<div class="areaa">
+		<div style="border-right:1px solid #999;">
 		<!--{include menu}-->
+		</div>
 	</div>
-	<div id="main">
+	<div class="areab"><div style="padding:10px;">

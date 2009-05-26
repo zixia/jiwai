@@ -1,0 +1,52 @@
+/* created by seek@zuitu.com */
+body, p, h1, h2, h3, h4 { margin:0; }
+input, select { font-size:13px; }
+* { line-height:1.4em; }
+ul, li { list-style: none; margin:0; padding:0; }
+body { font-size:14px; width: 100%; min-width:1000px;}
+.header { border-bottom:1px solid #ccc; margin:0; font-size:16px; font-weight:bold; background-color:#F0FAFC; padding: 10px; }
+.footer { font-size:14px; border-top:1px solid #ccc; margin:0; padding:5px 10px;}
+.container { }
+.areaa { width: 15%; float:left; min-width:150px;}
+.areab { width: 85%; float:left; min-width:850px;}
+.clear { clear:both; }
+.mb10 { margin-bottom: 10px; }
+.mt10 { margin-top: 10px; }
+
+a { text-decoration: none; color: #00F;}
+a:hover { text-decoration:underline; color: #F00; }
+a.now { color:#F00; }
+li.selected a{ color: #F00; }
+
+span.errorTip { padding:0 5px; font-size:12px; color:#F00; }
+span.right { float:right; }
+
+.menu { padding:10px; font-size:14px; }
+.menu li { height: 26px; padding-left:5px; }
+.menu .title { font-size:16px; font-weight: bold;}
+.main { padding:10px; }
+.welcome { padding: 50px 10px; font-size:20px; font-weight:bold; text-align:center; }
+
+h1 { font-size:18px; }
+h2 { font-size:16px; }
+h3,h4 { font-size:14px; }
+
+.form { margin: 20px; }
+td,th { font-size:14px; padding:4px; }
+input.sm { width: 260px; }
+
+.inner_notice {padding:10px;background-color:#FC6;border:1px solid #FA0;border:1px solid #CCC; margin-bottom:10px; } 
+
+/* list */
+.topic_list { margin:0px; }
+.topic_list table { margin:10px 0; width: 96%; }
+.topic_list td { padding: 2px 8px; color: #999; line-height: 140%; overflow: hidden; }
+.topic_list thead td { border-bottom: 1px solid #EBE6C9; color: #333; font-weight:bold; font-size:14px; }
+.topic_list tbody tr td { border-bottom: 1px solid #EBE6C9; }
+.topic_list tbody tr.alt td { background: #FCF9E6; } 
+.topic_list p { padding-top: 6px; }
+
+/* page */
+.page{padding:0;text-align:center;font-size:12px;}
+.page a,.page em{margin:0 1px;padding:1px 5px;border:1px solid #DDD;background:#FFF;font-style:normal;}
+.page a:hover {background:#2782D6;color:#FFF;}

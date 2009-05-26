@@ -4,7 +4,7 @@
 <!--{foreach $mArray as $m}-->
 <a href="?m={$m}">{$m}</a>
 <!--{/foreach}-->
-<table class="result" width="300">
+<table class="result" width="600">
 	<tr>
 		<th>日期</th>
 		<th>发布更新数</th>
