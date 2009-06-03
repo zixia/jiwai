@@ -123,6 +123,7 @@ function update($idUser, $status) {
 			if(empty($status_row)) 
 			{
 				JWTemplate::RedirectTo404NotFound();
+				exit;
 			}
 
 			$options_info = array(
@@ -172,5 +173,6 @@ function update($idUser, $status) {
 	} else {
 		JWTemplate::RedirectBackToLastUrl();
 	}
+	exit;
 }
 ?>

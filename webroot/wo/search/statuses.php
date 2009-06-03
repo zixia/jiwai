@@ -38,7 +38,7 @@ if ( $_REQUEST) {
 }
 if ( true ) { 
 	$q = isset($_GET['q']) ? $_GET['q'] : null;
-	if ( false===$no_guess AND 1===count($qs = preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
+	if ( false==preg_match('/[\#\@]+/',$q) AND false===$no_guess AND 1===count($qs = preg_split('/[\+\-\(\)\#\s\*]+/i', $q, -1, PREG_SPLIT_NO_EMPTY)) ) {
 		$q = JWRequest::IsIE() ? urlEncode($qs[0]) : $qs[0];
 		JWTemplate::RedirectToUrl( "/k/{$q}/" );
 	}
@@ -50,7 +50,7 @@ if ( true ) {
 	}
 	// $guessword = ( $no_guess==false && $page==1 ) ?  JWSearchWord::GuessWord($q, $result['count']) : null;
 	
-	$trackword = preg_replace('/(\s*)([^\s\(\)\\\\\*\#\+\-|AND|OR|NOT]+)(\s*)/', "\\1<a href=\"/k/\\2/\"><span class=\"f_red\">\\2</span></a>\\3", $q);
+	$trackword = preg_replace('/(\s*)([^\s\(\)\\\\\*\#\@\+\-|AND|OR|NOT]+)(\s*)/', "\\1<a href=\"/k/\\2/\"><span class=\"f_red\">\\2</span></a>\\3", $q);
 }
 
 //end search

@@ -162,11 +162,19 @@ class JWSearch {
 
 	static private function LuceneSearch($search_url, $query_info=array() )
 	{
+		$emptyresult = array('count'=>0, 'list'=>array(),);
+		$query_string = $query_info['query_string'];
+		/**
+		 * Filter 
+		 */
+		JWFilterConfig::Normal();
+		if ( JWFilterRule::IsNeedFilter( $query_string ) ) {
+			return $emptyresult;
+		}
+
 		/**
 		 * format query string
 		 */
-		$query_string = $query_info['query_string'];
-		$query_string = preg_replace('/[\\\\\#]+/', '', $query_string);
 		$query_string = trim(trim($query_string), '+');
 		$query_string = str_replace('-', ' - ', $query_string);
 		$query_string = str_replace('+', ' AND ', $query_string);
@@ -192,7 +200,7 @@ class JWSearch {
 		$error = json_decode( $return, true );
 
 		if ( $error['error'] )
-			return array('count'=>0, 'list'=>array(),);
+			return $emptyresult;
 
 		return $error;
 	}
