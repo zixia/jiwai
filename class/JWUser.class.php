@@ -995,14 +995,13 @@ _SQL_;
 
 	static public function IsAdmin($idUser)
 	{
-		$admin_user_db_row = self::GetUserInfo('adm');
-
-		if ( 		1==$idUser	// zixia
+		if (	1==$idUser	// zixia
+				|| 3==$idUser //adm
 				|| 32834==$idUser	// wqsemc
 				|| 89==$idUser	// seek
 				|| 863==$idUser	// lecause
 				|| 135898==$idUser // WinnieLin
-				|| $admin_user_db_row['idUser']==$idUser )
+				)
 			return true;
 
 		return false;
