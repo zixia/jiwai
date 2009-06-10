@@ -180,6 +180,9 @@ class JWApi{
 		if( isset( $status['device'] ) )
 		{
 			$out_info['device'] = $status['device'];
+			if ( $status['device']=='api' && @$status['idPartner'] ) {
+				$out_info['device'] = strip_tags(JWDevice::GetNameFromType($status['device'], $status['idPartner']));
+			}
 		}
 		return $out_info;
 	}
