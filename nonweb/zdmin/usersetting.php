@@ -17,6 +17,35 @@ if(isset($_POST) && !empty($_POST)) {
 		}
 	}
 }
+
+if ( $_POST && $_POST['un1'] && $_POST['removeuser'] ) {
+	$oneuser = JWUser::GetUserInfo($_POST['un1']);
+	$id = intval(@$oneuser['id']);
+	if ( $id && $id>80000 ) 
+	{
+		JWDB_Cache::DelTableRow( 'User', array( 'id' => $id, ) );
+		JWDB::CleanDiedRows();
+		setTips("删除用户 {$_POST['un1']} 成功!");
+		JWTemplate::RedirectToUrl( '/usersetting.php' );
+	}
+	setTips("无法删除用户 {$_POST['un1']}\n");
+	JWTemplate::RedirectToUrl( '/usersetting.php' );
+}
+
+if ( $_POST && $_POST['un1'] && $_POST['isolateuser'] ) {
+	$oneuser = JWUser::GetUserInfo($_POST['un1']);
+	var_dump( $oneuser );
+	$id = intval(@$oneuser['id']);
+	if ( $id ) 
+	{
+		JWDB_Cache::UpdateTableRow( 'User', $id, array('protected'=>'Y') );
+		setTips("隔离用户 {$_POST['un1']} 成功!");
+		JWTemplate::RedirectToUrl( '/usersetting.php' );
+	}
+	setTips("无法隔离用户 {$_POST['un1']}\n");
+	JWTemplate::RedirectToUrl( '/usersetting.php' );
+}
+
 // Device
 $im1Result = array();
 $im2Result = array();

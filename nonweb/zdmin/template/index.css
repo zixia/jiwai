@@ -35,6 +35,9 @@ h3,h4 { font-size:14px; }
 td,th { font-size:14px; padding:4px; }
 input.sm { width: 260px; }
 
+fieldset { padding:15px; }
+legend { font-weight: bold; }
+
 .inner_notice {padding:10px;background-color:#FC6;border:1px solid #FA0;border:1px solid #CCC; margin-bottom:10px; } 
 
 /* list */
