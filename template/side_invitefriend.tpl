@@ -1,3 +1,4 @@
+<!--{if $g_current_user_id}-->
 <div class="side3">
 	<div class="pagetitle">
 		<h3 class="lt">发送链接邀请朋友...</h3>
@@ -7,4 +8,5 @@
 	<input value="http://JiWai.de/wo/invitations/i/${JWUser::GetIdEncodedFromIdUser($g_current_user_id)}" onclick="this.select();" size="30" />
 	<div>你还可以通过更多的方式<a href="/wo/invite/">邀请朋友</a>。</div>
 </div>
+<!--{/if}-->
 <div class="clear"></div>

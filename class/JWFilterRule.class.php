@@ -117,7 +117,7 @@ class JWFilterRule {
 		}
 
 		if (self::$ruleWord && self::$dictFilter){
-			$words = self::$dictFilter->GetFilterWords( $status );
+			$words = self::$dictFilter->GetFilterWords( "{$status}|{$status}" );
 			if( !empty($words) ){
 				return true;
 			}
