@@ -17,6 +17,24 @@ function checkUser(){
 }
 checkUser();
 
+function isAdmin($level = 'super') {
+	$idUser = isset($_SESSION['idUser']) ? $_SESSION['idUser'] : null;
+	if ( 'super' == $level ) {
+		return JWUser::IsAdmin($idUser);
+	} else if ( 'admin' == $level ) {
+		return abs(intval(@$_SESSION['zLevel'])) == 9999 
+			|| JWUser::IsAdmin($idUser);
+	}
+	return abs(intval(@$_SESSION['zLevel'])) > 0;
+}
+
+function checkAdmin($level = 'super') {
+	if ( false == isAdmin($level) ) {
+		JWTemplate::RedirectToUrl( '/' );
+		return false;
+	}
+}
+
 function isWeekend($day){
 	$weekday = date('N', strtotime($day));
 	if( $weekday > 5 )

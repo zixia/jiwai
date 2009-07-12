@@ -1,5 +1,6 @@
 <?php
 require_once( dirname(__FILE__) . '/function.php');
+checkAdmin('admin');
 
 $filename =  FRAGMENT_ROOT . "page/sidebar_announcement.html";
 

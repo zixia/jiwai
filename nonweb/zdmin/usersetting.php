@@ -1,5 +1,6 @@
 <?php 
 require_once('./function.php');
+checkAdmin('admin');
 
 $un1 = $un2 = null;
 $dType = $dAddress = null;

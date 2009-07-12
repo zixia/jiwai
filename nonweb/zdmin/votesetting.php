@@ -1,5 +1,6 @@
 <?php
 require_once('./function.php');
+checkAdmin('admin');
 $vid = isset($_GET['vid']) ? $_GET['vid'] : null;
 $time = time();
 

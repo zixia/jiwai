@@ -1,5 +1,6 @@
 <?php
 require_once('./function.php');
+checkAdmin('admin');
 
 $un = null;
 extract($_GET, EXTR_IF_EXISTS);
