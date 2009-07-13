@@ -997,9 +997,8 @@ _SQL_;
 	{
 		if (	1==$idUser	// zixia
 				|| 3==$idUser //adm
-				|| 32834==$idUser	// wqsemc
 				|| 89==$idUser	// seek
-				|| 863==$idUser	// lecause
+				|| 2802 ==$idUser	// lecause
 				|| 135898==$idUser // WinnieLin
 				)
 			return true;

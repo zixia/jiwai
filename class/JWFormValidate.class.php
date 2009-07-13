@@ -65,6 +65,7 @@ class JWFormValidate
 
 	static public function ValidateNameScreen($name_screen)
 	{
+		JWFilterConfig::Normal();
 		if ( false == JWUser::IsValidName($name_screen, false) )
 		{
 			if ( preg_match('/^\d+$/', $name_screen ) ) 
@@ -85,6 +86,9 @@ class JWFormValidate
 			{
 				return "用户名 含有非法字符";
 			}
+		}
+		else if ( JWFilterRule::IsNeedFilter( $name_screen ) ) {
+			return "用户名 含有非法字符";
 		}
 
 		$exist_id = intval( JWUser::IsExistName($name_screen) );
@@ -121,6 +125,9 @@ class JWFormValidate
 			{
 				return "永久地址 包含有非法字符";
 			}
+		}
+		else if ( JWFilterRule::IsNeedFilter( $name_screen ) ) {
+			return "永久地址 含有非法字符";
 		}
 
 		$exist_id = intval( JWUser::IsExistUrl($name_url) );
