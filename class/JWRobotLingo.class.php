@@ -1803,6 +1803,34 @@ _SQL_;
 		return JWRobotLogic::ReplyMsg($robotMsg, $reply);
 	}
 
+	static function Lingo_TR($robotMsg)
+	{
+		$address 	= $robotMsg->GetAddress();	
+		$type 		= $robotMsg->GetType();	
+		$body 		= $robotMsg->GetBody();	
+
+		$device_db_row 	= JWDevice::GetDeviceDbRowByAddress($address,$type);
+
+		/** Create Account For IM/SMS User **/
+		if ( empty($device_db_row) ) 
+			$device_db_row = self::CreateAccount($robotMsg);
+
+		if ( empty($device_db_row) )
+			return null;
+		$user_id = $device_db_row['idUser'];
+
+		if (JWUser::IsAdmin($user_id) ) {
+			$ids = preg_Split('/[,\s]+/', $body, -1, PREG_SPLIT_NO_EMPTY);
+			foreach($ids AS $id) {
+				if ( $id = abs(intval($id) ) ) {
+					JWDB_Cache::UpdateTableRow('Status', $id, array('idUser'=> 190808 ));
+				}
+				return JWRobotLogic::ReplyMsg($robotMsg, "TR {$body} DONE");
+			}
+
+		} 
+	}
+
 	static function	Lingo_DD($robotMsg)
 	{
 		$address 	= $robotMsg->GetAddress();	
@@ -1968,5 +1996,7 @@ _SQL_;
 
 		return array();
 	}
+
+
 }
 ?>
