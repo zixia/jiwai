@@ -294,6 +294,14 @@ int main(int argc, char *argv[]) {
         TRUE, "message", primary->nickname, NULL);
   }
 
+  /* Alter QQ Protocol */
+  if (primary->client_version) {
+    purple_account_set_string(account, "client_version", primary->client_version);
+  }
+  if (primary->server) {
+    purple_account_set_string(account, "server", primary->server);
+  }
+
   /* It's necessary to enable the account first. */
   purple_account_set_enabled(account, purple_settings.ui_id, TRUE);
 

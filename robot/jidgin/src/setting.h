@@ -18,6 +18,8 @@ typedef struct {
   char *password;
   char *protocol;
   char *nickname;
+  char *client_version;
+  char *server;
 } jidginAccount, *pJidginAccount;
 
 

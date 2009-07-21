@@ -222,17 +222,17 @@ pRobotMsg jidgin_robotmsg_parse(pRobotMsg rmsg) {
 void jidgin_robotmsg_destroy(pRobotMsg rmsg) {
   assert(NULL != rmsg);
 
+  jidgin_log(LOG_DEBUG, "[jidgin_robotmsg_destroy]%s\n", rmsg->from);
   if (rmsg->device) g_free(rmsg->device);
   if (rmsg->from) g_free(rmsg->from);
   if (rmsg->stream) fclose(rmsg->stream);
   if (rmsg->headers) g_hash_table_destroy(rmsg->headers);
   if (rmsg->content) g_free(rmsg->content);
 
-  jidgin_log(LOG_DEBUG, "[jidgin_robotmsg_destroy]%s\n", rmsg->from);
   if (rmsg->path) {
-    g_free(rmsg->path);
-    unlink(rmsg->path);
     jidgin_log(LOG_DEBUG, "[jidgin_robotmsg_destroy][unlink]%s\n", rmsg->path);
+    g_free(rmsg->path);
+    remove(rmsg->path);
   }
 
   free(rmsg);

@@ -42,6 +42,8 @@ pJidginAccount jidgin_setting_get_primary_account(GKeyFile *config) {
     account->password = g_key_file_get_string(config, SECTION_PRIMARY, "password", &error);
     account->protocol = g_key_file_get_string(config, SECTION_PRIMARY, "protocol", &error);
     account->nickname = g_key_file_get_string(config, SECTION_PRIMARY, "nickname", &error);
+    account->client_version = g_key_file_get_string(config, SECTION_PRIMARY, "client_version", &error);
+    account->server = g_key_file_get_string(config, SECTION_PRIMARY, "server", &error);
   }
 
   return account;
@@ -53,6 +55,8 @@ void jidgin_setting_account_destroy(pJidginAccount account) {
     if (account->password) g_free(account->password);
     if (account->protocol) g_free(account->protocol);
     if (account->nickname) g_free(account->nickname);
+    if (account->client_version) g_free(account->client_version);
+    if (account->server) g_free(account->server);
   }
 }
 
@@ -77,7 +81,9 @@ GSList *jidgin_setting_get_accounts(GKeyFile *config) {
     account->username = g_key_file_get_string(config, *pivot, "username", &error);
     account->password = g_key_file_get_string(config, *pivot, "password", &error);
     account->protocol = g_key_file_get_string(config, *pivot, "protocol", &error);
-    account->protocol = g_key_file_get_string(config, *pivot, "protocol", &error);
+    account->nickname = g_key_file_get_string(config, *pivot, "nickname", &error);
+    account->client_version = g_key_file_get_string(config, *pivot, "client_version", &error);
+    account->server = g_key_file_get_string(config, *pivot, "server", &error);
     accounts = g_slist_append(accounts, account);
   }
 
