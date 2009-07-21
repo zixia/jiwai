@@ -29,7 +29,7 @@
 		</dd>
 	</dl>
 	<div class="clear mar50"></div>
-	<div style="float:right;">&gt;&gt;<a href="/wo/account/delete" onclick="return confirm('账户删除后，你的所有叽歪内容将无法找回，确定删除账户吗？');">删除我的帐户</a></div>
+	<div style="float:right;">&gt;&gt;<a href="/wo/account/delete">删除我的帐户</a></div>
 	</form>
 </div>
 <div class="clear"></div>

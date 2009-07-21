@@ -9,6 +9,13 @@
 */
 
 require_once(dirname(__FILE__) . '/../jiwai.inc.php');
+if (!extension_loaded('mysql')) {
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        dl('php_mysql.dll');
+    } else {
+        dl('mysql.so');
+    }
+}
 
 $hostname = '10.1.30.10';
 $username = 'root';

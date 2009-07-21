@@ -36,7 +36,7 @@
 				<!--{if $g_current_user_id}-->
 				<li><a href="/{$user['nameUrl']}/">我的叽歪</a></li>
 				<!--{/if}-->
-				<li><a href="/g/">随便逛逛</a> <!--a href="javascript:;" onClick="popShow(this,event,popKey)" class="po_d_b">流行</a--></li>
+				<li><a href="/g/">随便逛逛</a> <a href="javascript:;" onClick="popShow(this,event,popKey)" class="po_d_b">流行</a></li>
 				<!--{if $g_current_user_id}-->
 				<li><a href="/wo/invite/">找朋友</a></li>
 				<li><a href="/wo/gadget/">窗可贴</a></li>

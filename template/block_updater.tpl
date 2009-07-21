@@ -3,9 +3,9 @@
 	<input type="hidden" id="jw_rsid" name="jw_rsid"/>
 	<input type="hidden" id="jw_rtid" name="jw_rtid"/>
 	<input type="hidden" name="crumb" value="${JWUtility::GenCrumb()}"/>
-	<textarea id="jw_status" name="jw_status" mission="JWAction.updateStatus();" onKeyDown="JWAction.onEnterSubmit(event, this, true);" onKeyUp="textCounter(this.form.jw_status,$('count'),420);">{$_GET['status']}</textarea>
+	<textarea id="jw_status" name="jw_status" mission="JWAction.updateStatus();" onKeyDown="JWAction.onEnterSubmit(event, this, true);" onKeyUp="textCounter(this.form.jw_status,$('count'),140);">{$_GET['status']}</textarea>
 	<ul class="f_gra">
-		<li class="lt">还可输入&nbsp;<span id="count">420</span>&nbsp;字</li>
+		<li class="lt">一条叽歪</span>至少还剩&nbsp;<span id="count">140</span>&nbsp;字</li>
 		<li class="rt">Ctrl+Enter直接叽歪</li>
 		<li class="button">
 			<div class="at"></div><div class="bt"></div>
