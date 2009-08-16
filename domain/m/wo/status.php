@@ -24,7 +24,7 @@ switch($action){
 		$status_row = JWDB_Cache_Status::GetDbRowById( $value );
 		$reply_user_info = JWUser::GetUserInfo($status_row['idUser']);
 		$_SESSION['name_screen_reply_to'] = "@$reply_user_info[nameScreen] ";
-		JWTemplate::RedirectBackToLastUrl("/wo/");
+		JWTemplate::RedirectToUrl("/wo/");
 	break;
 	case 'rt':
 		$_SESSION['id_status_reply_to'] = $value;
