@@ -7,7 +7,7 @@ $loginedUserInfo 	= JWUser::GetCurrentUserInfo();
 $loginedIdUser 	= $loginedUserInfo['id'];
 $page = abs(intval(@$_GET['page'])) ? abs(intval(@$_GET['page'])) : 1;
 
-$q = @$_GET['q'];
+$q = empty($_GET['q']) ? 'RT' : trim($_GET['q']);
 if ( $q ) {
 	$extra = array( 'order_field' => 'time', 'order' => true, );
 	$result = JWSearch::SearchStatus($q, $page, 10, $extra);
@@ -25,10 +25,6 @@ if ( $q ) {
 		$statuses[ $k ] = $s;
 	}
 	$pageString = paginate( $pagination, '/wo/search/?q='.$q );
-}
-if ( !strlen($q) ) {
-	$tword = JWFarrago::TrendWord(null,1);
-	$q = $tword[0];
 }
 
 $shortcut = array( 'public_timeline', 'logout', 'my', 'favourite', 'message' , 'followings', 'index', 'replies' );

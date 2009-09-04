@@ -30,7 +30,7 @@ $mms_file_info = @$_FILES['mms_file'];
 if ( isset($mms_file_info) 
 	&& 0===$mms_file_info['error'] 
 	&& ( preg_match('/image/',$mms_file_info['type']) 
-		|| ( null==$mms_file_info['type'] && preg_match('/\.(jpg|jpeg|gif|png)$/', $mms_file_info['name']))
+		|| ( null==$mms_file_info['type'] && preg_match('/\.(jpg|jpeg|gif|png)$/i', $mms_file_info['name']))
 	   )
    )   
 { 
@@ -45,7 +45,6 @@ if ( isset($mms_file_info)
 		$picture_id = JWPicture::SaveUserIcon($current_user_id, $user_named_file, 'MMS');
 		if ( $picture_id )
 		{
-			
 			$options['idPicture'] = $picture_id;
 			$options['statusType'] = 'MMS';
                 	JWSns::UpdateStatus($current_user_id, $status, $device, $time_create, $server_address, $options);

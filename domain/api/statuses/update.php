@@ -32,6 +32,9 @@ if( !$status ) {
 	JWApi::OutHeader(400,true);
 }
 $status = mb_convert_encoding( $status, "UTF-8", "UTF-8,GB2312");
+if (stripos($status, '在“做啥”上跟随了') === 0) {
+	JWApi::OutHeader(405,true);
+}
 
 if( ! $idUser=JWApi::GetAuthedUserId() ){
 	JWApi::RenderAuth( JWApi::AUTH_HTTP );

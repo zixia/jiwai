@@ -15,10 +15,6 @@
 <p>3 <a href="${buildUrl('/wo/favourites/')}" accesskey="3">我的收藏</a></p>
 <!--{/if}-->
 
-<!--{if in_array( 'search', $shortcut ) }-->
-<p>4 <a href="${buildUrl('/wo/search/')}" accesskey="4">搜索</a></p>
-<!--{/if}-->
-
 <!--{if in_array( 'public_timeline', $shortcut ) }-->
 <p>5 <a href="${buildUrl('/public_timeline/')}" accesskey="5">叽歪广场</a></p>
 <!--{/if}-->
@@ -35,6 +31,10 @@
 
 <!--{if in_array( 'index', $shortcut ) }-->
 <p>9 <a href="${buildUrl('/')}" accesskey="9">首页</a></p>
+<!--{/if}-->
+
+<!--{if in_array( 'search', $shortcut ) }-->
+<p>0 <a href="${buildUrl('/wo/search/')}" accesskey="0">搜索</a></p>
 <!--{/if}-->
 
 <!--{if in_array( 'logout', $shortcut ) }-->
