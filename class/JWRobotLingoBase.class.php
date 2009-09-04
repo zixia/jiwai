@@ -72,7 +72,7 @@ class JWRobotLingoBase {
 			'DD' => array('class' => 'JWRobotLingo', 'func'=>'Lingo_DD', 'param' => 0),
 
 			//Lingo For SP
-			'A' => array('class' => 'JWRobotLingo_SP', 'func'=>'Lingo_A', 'param' => 0),
+			//'A' => array('class' => 'JWRobotLingo_SP', 'func'=>'Lingo_A', 'param' => 0),
 	
 			//Lingo For Admin
 			'TR' => array('class' => 'JWRobotLingo', 'func'=>'Lingo_TR', 'param' => 1),

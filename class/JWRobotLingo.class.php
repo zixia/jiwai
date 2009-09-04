@@ -246,6 +246,7 @@ class JWRobotLingo {
 						$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
 									$address_user_row['nameScreen'],
 									urlEncode($address_user_row['nameUrl']),		
+									$userInfoFollower['nameScreen'],
 									));
 						JWSns::CreateMessage( $address_user_id, $userInfoFollower['idUser'], $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true, ) );
 						$flag = true;
@@ -589,6 +590,7 @@ class JWRobotLingo {
 				$outMessage = JWRobotLingoReply::GetReplyString( $robotMsg, 'OUT_FOLLOW', array(
 					$address_user_row['nameScreen'], 
 					urlEncode($address_user_row['nameUrl']),		
+					$follower['nameScreen'],
 				));
 				JWSns::CreateMessage( $address_user_id, $friend_user_id, $outMessage, $type, array('noreply_tips'=>true, 'delete'=>true, 'notice'=>true,) );
 			}

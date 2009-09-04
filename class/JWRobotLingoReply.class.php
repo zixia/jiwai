@@ -124,7 +124,7 @@ class JWRobotLingoReply {
 			'OUT_ADD_EMAIL' => '{0}({1}) 邀请你来使用我们的服务！',
 			'OUT_ADD_IM' => '{0}({1}) 邀请你来使用我们的服务！想对你的朋友说些什么呢？',
 			'OUT_ADD_SMS' => '{0}({1}) 邀请你来使用我们的服务！想对你的朋友说些什么呢？(本短信服务免费)',
-			'OUT_FOLLOW' => '好消息！{0}( http://JiWai.de/{1}/ ) 关注了你。',
+			'OUT_FOLLOW' => '你好，{2}！{0}( http://JiWai.de/{1}/ ) 关注了你。',
 
 			'OUT_ADDACCEPT_YES_INVITER' => '{0} 已经接受你的邀请，并完成了注册，用户名为：{1}',
 			'OUT_ADDACCEPT_YES_INVITEE' => '{0} 你好，你已经成功接受了 {1} 的邀请；回复 HELP 了解更多。',
