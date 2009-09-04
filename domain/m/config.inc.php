@@ -131,6 +131,9 @@ function actionop($idUser, $idOthers, $forFollow=false){
 					break;
 			}
 		}
+		if ( $idOther == $idUser ) {
+			$actionString .= "<a href=\"/wo/avatar\">头像</a> | ";
+		}
 		$actionString = trim( $actionString, ' | ');
 		$ops[ $idOther ] = $actionString;
 	}
