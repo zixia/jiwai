@@ -24,7 +24,7 @@ if ( $q ) {
 		$s['status'] = $fs['status'];
 		$statuses[ $k ] = $s;
 	}
-	$pageString = paginate( $pagination, '/wo/search/?q='.$q );
+	$pageString = paginate( $pagination, '/wo/search/?q='.urlencode($q) );
 }
 
 $shortcut = array( 'public_timeline', 'logout', 'my', 'favourite', 'message' , 'followings', 'index', 'replies' );

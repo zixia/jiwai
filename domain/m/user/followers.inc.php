@@ -4,7 +4,7 @@ $pagination = new JWPagination( $followersNum, $page, 10 );
 $followerIds  = JWFollower::GetFollowerIds( $userInfo['id'], $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 $followerRows = JWDB_Cache_User::GetDbRowsByIds($followerIds);
 
-$pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followers/' );
+$pageString = paginate( $pagination, '/'.urlencode($userInfo['nameUrl']).'/followers/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){

@@ -6,7 +6,7 @@ $followingRows = JWDB_Cache_User::GetDbRowsByIds($followingIds);
 
 $pageTitle = "此人关注的人";
 
-$pageString = paginate( $pagination, '/'.$userInfo['nameUrl'].'/followings/' );
+$pageString = paginate( $pagination, '/'.urlencode($userInfo['nameUrl']).'/followings/' );
 
 $shortcut = array( 'index', 'public_timeline' );
 if( false == empty($loginedUserInfo) ){

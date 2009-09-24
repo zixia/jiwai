@@ -50,7 +50,7 @@ if( JWLogin::isLogined() ) {
 	array_push( $shortcut, 'register' );
 }
 
-$url = "/$userInfo[nameUrl]/" . ( $statusTab=='with_friends' ? 'with_friends/' : '' );
+$url = "/".urlencode($userInfo['nameUrl'])."/" . ( $statusTab=='with_friends' ? 'with_friends/' : '' );
 $pageString = paginate( $pagination, $url );
 JWRender::Display( $tpl , array(
 	'userInfo' => $userInfo,
