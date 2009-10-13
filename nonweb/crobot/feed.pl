@@ -144,7 +144,7 @@ sub _urlencode {
 sub _postItem {
     my ($user, $pass, $text) = @_;
     $text = _urlencode($text);
-    my $err = `curl --connect-timeout 3 -s -u "$user:$pass" -FidPartner=10044 -Fstatus="$text" http://api.jiwai.de/statuses/update.json`;
+    my $err = `curl --max-time 5 -s -u "$user:$pass" -FidPartner=10044 -Fstatus="$text" http://api.jiwai.de/statuses/update.json`;
 }
 
 # buddy encoding issue, this ugly version works properly
@@ -175,7 +175,7 @@ sub _mainLoop {
 # fetch feed
     my $feedUrl = $feedMap{$key}{'feedUrl'};
     my $feedPath = _getFeedPathFromName($key);
-    `curl --connect-timeout 3 -k -A 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12' -s \'$feedUrl\' -o $feedPath`;
+    `curl --max-time 5 -k -A 'Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.12) Gecko/20080201 Firefox/2.0.0.12' -s \'$feedUrl\' -o $feedPath`;
 
     my %items = getFeedItemsFromName($key, $feedMap{$key});
     my %omits = _loadCache($key);

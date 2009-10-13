@@ -26,43 +26,51 @@ sub _postStrFactory {
 }
 
 sub _postUrlFactory {
-  my ($astro) = @_;
-  my $converter = Text::Iconv->new("utf-8", "gbk");
-  my $converted = $converter->convert($astro);
-  $astro = _urlencode($converter->convert($astro));
-  my $url = 'http://appastro.qq.com/cgi-bin/astro_newluckday11?astro=' . $astro .  '&type=today';
+  my ($offset) = @_;
+  my $url = "http://astro.sina.com.cn/pc/west/frame0_$offset.html";
+  print $url,"\n";
   return $url;
 }
 
 sub _postItemsFactory {
-  my $astro = shift;
-  my $url = _postUrlFactory($astro);
+  my ($astro, $offset) = @_;
+  my $url = _postUrlFactory($offset);
   my %items = ();
   my %result = ();
   my $converter = Text::Iconv->new("gbk", "utf-8");
 
   open PAGE, "wget -A 'Googlebot' -q \"$url\" -O - |" or die "$!";
 
+  my $roi = 0;
   while (<PAGE>) {
     my $line = $converter->convert($_);
-    if ($line =~ m#⊙(.*?)：(.*?)\<#i) {
+    if ($line =~ m#<div class="tab"><h4>([^<;]+)</h4><p>([^<;]+)</p></div>#i) {
       $items{$1} = $2;
-    } elsif ($line =~ m#bluedzi\s+kong\s+h24">(.*?)<#i) {
+    } elsif ($line =~ m#<div class="tab"><h4>([^<;]+)</h4><p>(<img.*)</p>#i) {
+      my $row = $2; my $key = $1;
+      $row =~ s/<img\s+src.*?>/★/gi;
+      $items{$key} = $row;
+    } elsif ($line =~ m#<div class="lotconts">#i) {
+      $roi = 1;
+    } elsif ($roi and $line =~ m#(.*?)</div>#i) {
       $items{'今日概述'} = $1;
+      $roi = 0;
     }
   }
 
   close PAGE;
 
-  $result{'废话很多'} = sprintf("[%s]综合指数:%s 爱情指数:%s 工作指数:%s 财运指数:%s 健康指数:%s 幸运色:%s 幸运数字:%s",
+  $result{'废话很多'} = sprintf("[%s]综合运势:%s 爱情运势:%s 工作状况:%s 理财投资:%s 健康指数:%s 商谈指数:%s 幸运颜色:%s 幸运数字:%s 速配星座:%s",
       $astro,
-      $items{'综合指数'},
-      $items{'爱情指数'},
-      $items{'工作指数'},
-      $items{'财运指数'},
+      $items{'综合运势'},
+      $items{'爱情运势'},
+      $items{'工作状况'},
+      $items{'理财投资'},
       $items{'健康指数'},
-      $items{'幸运色'},
+      $items{'商谈指数'},
+      $items{'幸运颜色'},
       $items{'幸运数字'},
+      $items{'速配星座'},
       );
   $result{'废话概述'} = sprintf("[%s]今日概述: %s",
       $astro,
@@ -87,12 +95,14 @@ my @astros = (
     '双鱼座',
     );
 
+my $offset = 0;
 for my $astro (@astros) {
-  my %result = _postItemsFactory($astro);
+  my %result = _postItemsFactory($astro, $offset);
   print "[INF]$result{'废话很多'}", "\n";
   _postItem($astro . '运程', 'bulkdem1ma', $result{'废话很多'});
   print "[INF]$result{'废话概述'}", "\n";
   _postItem($astro . '运程', 'bulkdem1ma', $result{'废话概述'});
+  $offset += 1;
 }
 
 exit 0;
