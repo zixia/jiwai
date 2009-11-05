@@ -35,8 +35,8 @@ class scworker(threading.Thread):
 	def run(self):
 		line = self.sock.recv(8192).strip()
 		try:
-			cmd, param = line.split(' ',1)[0:2]
-			if cmd.upper() == 'GET':
+			cmd, param = line.lower().split(' ',1)[0:2]
+			if cmd == 'get':
 				idlist = regcomma.split(param)
 				r = cache_get(idlist)
 				if r is None:
@@ -44,14 +44,14 @@ class scworker(threading.Thread):
 					r.sort(reverse=True)
 					cache_set(idlist, r)
 				self.sock.send(json.dumps(r)+'\r\n')
-			elif cmd.upper() == 'PUBLIC':
-				r = cache_get('public')
+			elif cmd == 'public':
+				num = int(param)
+				r = cache_get([cmd, param])
 				if r is None:
-					num = int(param)
 					r = recent[0:num]
 					r = [(x[1],x[2]) for x in r]
 					r.sort(reverse=True)
-					cache_set('public', r)
+					cache_set([cmd, param], r)
 				self.sock.send(json.dumps(r)+'\r\n')
 			elif cmd.upper() == 'TEST':
 				self.sock.send('TEST BACK\r\n')
@@ -100,23 +100,22 @@ class service_thread(threading.Thread):
 		io_loop.start()		
 
 def cache_get(key):
-	if type(key) is str: key = [key]
-	lkey = [str(x) for x in key]
+	if type(key) is str: lkey = [key]
+	else: lkey = [str(x) for x in key]
 	hkey = hash(repr(lkey))
-	return cache.get( hkey, (None,None,None))[1]
+	return cache.get(hkey, (None,None,None))[1]
 
 def cache_mod(idUser=None):
 	mintime = int(time.time()) - 1800 #cache 30min
 	idUser = str(idUser)
 	for h, (k,v,t) in cache.items():
-		if idUser in k or t < mintime: 
-			del cache[h]
+		if idUser in k or t < mintime or 'public' in k: del cache[h]
 
 def cache_set(key, value):
-	if type(key) is str: key = [key]
-	lkey = [str(x) for x in key]
+	if type(key) is str: lkey = [key]
+	else: lkey = [str(x) for x in key]
 	hkey = hash(repr(lkey))
-	cache[hkey] = (key, value, int(time.time()))
+	cache[hkey] = (lkey, value, int(time.time()))
 
 def load():
 	global recent
