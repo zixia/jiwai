@@ -29,9 +29,6 @@ $mms_file_info = @$_FILES['mms_file'];
 /* change type limit for hesin client mms */
 if ( isset($mms_file_info) 
 	&& 0===$mms_file_info['error'] 
-	&& ( preg_match('/image/',$mms_file_info['type']) 
-		|| ( null==$mms_file_info['type'] && preg_match('/\.(jpg|jpeg|gif|png)$/i', $mms_file_info['name']))
-	   )
    )   
 { 
     /* work around with widsets */

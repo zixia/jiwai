@@ -8,6 +8,7 @@ $element = JWElement::Instance();
 $user = array();
 if ( $_POST ) 
 {
+	JWUtility::CheckCrumb();
 	$user = $read_and_accept = $error_string = null;
 	extract( $_POST, EXTR_IF_EXISTS );
 

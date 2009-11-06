@@ -442,10 +442,27 @@ die(var_dump($db_result));
 
 		foreach ( $db_rows as $db_row )
 		{
+			self::PubDelete($db_row, $table);
 			self::OnDirty($db_row, $table);
 		}
 			
 		return $ret; 
+	}
+
+	/*
+	 * 公布记录删除消息供处理程序处理
+	 */
+	static public function PubDelete($db_row, $table) 
+	{
+		$id = abs(intval(@$db_row['id']));
+		if (!$id) { return false; }
+		$pubinstance = JWPubSub::Instance('spread://localhost/');
+		$pubchannel = '/destroy/' . strtolower($table);
+		$pubdata = array('table' => strtolower($table));
+		foreach($db_row AS $k => $v){
+			if (0===strpos($k, 'id')) $pubdata[$k] = intval($v);
+		}
+		$pubinstance->Publish($pubchannel, $pubdata);
 	}
 
 

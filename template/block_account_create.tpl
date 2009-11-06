@@ -1,6 +1,7 @@
 <div id="set_bor">
 	<div class="mar_b20">如果你已经用手机或聊天工具叽歪过，可以<a href="/wo/login">点击这里</a>登陆到叽歪。</div>
 	<form id="f1" class="validator" method="post" action="/wo/account/create">
+	<input type="hidden" name="crumb" value="${JWUtility::GenCrumb()}"/>
 	<dl class="w3">
 		<dt>Email</dt>
 		<dd>
