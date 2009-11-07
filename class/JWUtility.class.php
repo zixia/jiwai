@@ -254,11 +254,8 @@ class JWUtility {
 	static function Publish($table, $id, $condition=array(), $action='create') 
 	{
 		if (!$id) { return false; }
-		$pubchannel = strtolower("/$action/$table");
-		$pubdata = array(
-				'table' => strtolower($table),
-				'id' => intval($id),
-				);
+
+		$pubdata = array();
 		foreach($condition AS $k => $v)
 		{
 			if ( 0===strpos($k, 'id') )
@@ -269,7 +266,16 @@ class JWUtility {
 			{
 				$pubdata[$k] = strval($v);
 			}
+			else if ( in_array($v, array('Y','N')) )
+			{
+				$pubdata[$k] = $v;
+			}
 		}
+		$pubdata['table'] = strtolower($table);
+		$pubdata['id'] = intval($id);
+		$pubdata['action'] = $action;
+
+		$pubchannel = strtolower("/$action/$table");
 		$pubinstance = JWPubSub::Instance('spread://localhost/');
 		$pubinstance->Publish($pubchannel, $pubdata);
 	}
