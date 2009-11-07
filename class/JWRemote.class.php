@@ -28,6 +28,14 @@ class JWRemote{
 		return self::_BuildStatusData($r);
 	}
 
+	static function GetActivateUserId($friend_ids=array(), $num=60) {
+		if (empty($friend_ids)) { 
+			return  array(); 
+		}
+		$idstring = join(',', $friend_ids);
+		return self::Get("GET $num $idstring", '10.1.40.10', 4003);
+	}
+
 	static function GetFriendId($user_id=0) {
 		$r = self::Get("MEFOLLOW $user_id", '10.1.40.10', 4002);
 		$r[] = strval($user_id);

@@ -1,7 +1,8 @@
 <!--${
 	$favourite_data = JWFavourite::GetBeFavouriteData($thread_id);
 	$user_ids = $favourite_data['user_ids'];
-	$users = JWUser::GetDbRowsByIdsAndOrderByActivate($user_ids, 32);
+	$user_ids = JWRemote::GetActivateUserId($user_ids, $size);
+	$users = JWDB_Cache_User::GetDbRowsByIds($user_ids);
 	$avatars = JWFunction::GetColArrayFromRows($users,'idPicture');
 	$avatars = JWPicture::GetUrlRowByIds($avatars);
 

@@ -7,7 +7,7 @@
 	$user_id = $one['idUser'];
 	$user = $user_rows[$user_id];
 
-	$can_delete = JWStatus::IsUserCanDelStatus($g_current_user_id, $status_id);
+	$can_delete = JWStatus::IsUserCanDelStatus($g_current_user_id, $one);
 	$is_favourited = $is_favourited_array[$status_id];
 
 	$is_protected = JWSns::IsProtectedStatus($one, $g_current_user_id);

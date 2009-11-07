@@ -1580,7 +1580,7 @@ _SQL_;
 	 * @param	int		user pk
 	 * @return	bool	if user own status
 	 */
-	static public function IsUserCanDelStatus ($idUser, $idStatus)
+	static public function IsUserCanDelStatus ($idUser, $idStatusOrRow)
 	{
 		if(intval($idUser) <=0 ) return false;
 
@@ -1591,9 +1591,12 @@ _SQL_;
 			return false;
 
 		$idUser 	= JWDB_Cache::CheckInt($idUser);
-		$idStatus	= JWDB_Cache::CheckInt($idStatus);
-
-		$db_row = JWDB_Cache_Status::GetDbRowById($idStatus);
+		if (is_array($idStatusOrRow)) {
+			$db_row = $idStatusOrRow;
+		} else {
+			$idStatus	= JWDB_Cache::CheckInt($idStatusOrRow);
+			$db_row = JWDB_Cache_Status::GetDbRowById($idStatus);
+		}
 
 		if ( empty($db_row) )
 			return false;

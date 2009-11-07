@@ -2,7 +2,8 @@
 <!--${
 	$size = 40;
 	$user_ids = JWFollower::GetFollowingIds($g_page_user_id);
-	$users = JWUser::GetDbRowsByIdsAndOrderByActivate($user_ids, $size);
+	$user_ids = JWRemote::GetActivateUserId($user_ids, $size);
+	$users = JWDB_Cache_User::GetDbRowsByIds($user_ids);
 	$avatars = JWFunction::GetColArrayFromRows($users,'idPicture');
 	$avatars = JWPicture::GetUrlRowByIds($avatars);
 	$u = $g_page_on ? $g_page_user['nameUrl'] : 'wo';

@@ -1027,6 +1027,7 @@ _SQL_;
 		$updateRow = array(
 			'timeStamp' => null,
 		);
+		JWUtility::Publish('User', $idUser, array(), $action='activate');
 		return JWDB_Cache::UpdateTableRow( 'User', $idUser, $updateRow );
 	}
 
