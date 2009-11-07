@@ -266,9 +266,10 @@ class JWDB implements JWDB_Interface
 			return false;
 		}
 
-		return self::GetInsertedId();
+		$id = self::GetInsertedId();
+		JWUtility::Publish($table, $id, $condition, 'create');
+		return $id;
 	}
-
 
 	/*
 	 * @return bool

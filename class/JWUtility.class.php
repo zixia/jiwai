@@ -247,5 +247,31 @@ class JWUtility {
 		}
 		return false;
 	}
+
+	/*
+	 * PubSub the message 
+	 */
+	static function Publish($table, $id, $condition=array(), $action='create') 
+	{
+		if (!$id) { return false; }
+		$pubchannel = strtolower("/$action/$table");
+		$pubdata = array(
+				'table' => strtolower($table),
+				'id' => intval($id),
+				);
+		foreach($condition AS $k => $v)
+		{
+			if ( 0===strpos($k, 'id') )
+			{
+				$pubdata[$k] = intval($v);
+			}
+			else if ( $k == 'device' ) 
+			{
+				$pubdata[$k] = strval($v);
+			}
+		}
+		$pubinstance = JWPubSub::Instance('spread://localhost/');
+		$pubinstance->Publish($pubchannel, $pubdata);
+	}
 }
 ?>
