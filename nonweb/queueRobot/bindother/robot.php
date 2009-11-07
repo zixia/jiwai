@@ -28,7 +28,7 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 			{
 				if ( JWBindOther::PostStatus($bindother['twitter'], $message) )
 				{
-					echo "[SYNC] twitter://".$bindother['twitter']['loginName']."\n";
+					echo "[SYNC] twitter://",$bindother['twitter']['loginName']," ",strftime("%c"),"\n";
 				}
 				else
 				{
@@ -39,12 +39,13 @@ class JWPubSub_Listener_BindOther implements JWPubSub_Listener
 
 		if ( isset($bindother['fanfou']) )
 		{
+			return; // fanfou.com is down
 			if ( ('Y'==$bindother['fanfou']['syncReply'] || $not_reply)
 				&& ('Y'==$bindother['fanfou']['syncConference'] || $not_conference) )
 			{
 				if ( JWBindOther::PostStatus($bindother['fanfou'], $message) )
 				{
-					echo "[SYNC] fanfou://".$bindother['fanfou']['loginName']."\n";
+					echo "[SYNC] fanfou://".$bindother['fanfou']['loginName']," ",strftime("%c"),"\n";
 				}
 				else
 				{

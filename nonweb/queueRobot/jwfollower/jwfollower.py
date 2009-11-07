@@ -13,59 +13,40 @@ try: import simplejson as json
 except: import json
 
 class spworker(threading.Thread):
-	'''data(time, id, idUser, idUserReplyTo, idThread)'''
 	def __init__(self):
 		threading.Thread.__init__(self)
 	def run(self):
 		while True:
 			try:
 				data = json.loads( spqueue.get(True) )
-				recent_lock.acquire()
+				follower_lock.acquire()
 
 				id = str(data['id'])
 				idUser = str(data['idUser'])
-				idThread = str(data['idThread'])
+				idFollower = str(data['idFollower'])
 				action = str(data['action'])
 				now = int(time.time())
 
 				if action == 'create':
-					item = (now, id, idUser, idThread)
-					recent.insert(0, item)
-					recentdict.setdefault(idUser,[]).append(item)
+					follower.setdefault(idUser,set()).add(idFollower)
+					following.setdefault(idFollower,set()).add(idUser)
 				elif action == 'destroy':
-					remove.append((id, idUser))
+					follower.setdefault(idUser,set()).discard(idFollower)
+					following.setdefault(idFollower,set()).discard(idUser)
 				pass
 
-				cache_mod(idUser)
-				recent_lock.release()
+				follower_lock.release()
 			except Exception,e: pass
 		pass
 			
 def process(line):
 	try:
-		cmd, param = line.lower().split(' ',1)[0:2]
-		if cmd == 'get':
-			idlist = regcomma.split(param)
-			r = cache_get(idlist)
-			if r is None:
-				r = []
-				for k in recentdict.keys():
-					if str(k) in idlist: r += recentdict[k]
-				r = [(x[1],x[2]) for x in r]
-				r = [x for x in r if x not in remove]
-				r.sort(reverse=True)
-				cache_set(idlist, r)
-			return r
-		elif cmd == 'public':
-			num = int(param)
-			r = cache_get([cmd, param])
-			if r is None:
-				r = recent[0:num]
-				r = [(x[1],x[2]) for x in r]
-				r = [x for x in r if x not in remove]
-				r.sort(reverse=True)
-				cache_set([cmd, param], r)
-			return r
+		cmd, idUser = line.lower().split(' ',1)[0:2]
+		if cmd == 'followme':
+			return list(follower.get(idUser, set()))
+		elif cmd == 'mefollow':
+			return list(following.get(idUser, set()))
+		pass
 	except: pass
 	return None
 	
@@ -100,13 +81,13 @@ class service_thread(threading.Thread):
 			#ioprocess(sock.accept()[0])
 			scworker(sock.accept()[0]).start()
 
-		print "recent jiwai service, when reboot, data will be lost"
-		print "listen (0.0.0.0:4001) for updates in 24hour"
-		print "query example: telnet localhost 4001, GET 89,2802,32529"
+		print "follower service"
+		print "listen (0.0.0.0:4002) for followers db"
+		print "example: telnet localhost 4002, followme/mefollow 89"
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
 		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		sock.setblocking(0)
-		sock.bind(('', 4001))
+		sock.bind(('', 4002))
 		sock.listen(128)
 		io_loop = tornado.ioloop.IOLoop.instance()
 		callback = partial(connection_ready, sock)
@@ -131,36 +112,22 @@ def cache_set(key, value):
 	cache[hkey] = (lkey, value, int(time.time()))
 
 def load():
-	global recent
-	global recentdict
-	if os.path.exists('jwrecent.db'): 
-		recent = pickle.load(file('jwrecent.db'))
-		for x in recent: recentdict.setdefault(str(x[2]),[]).append(x)
+	global follower
+	global following
+	r = file('db.txt')
+	follower = {}
+	following = {}
+	for q in r:
+		idUser, idFollower  = str(q.strip()).split('\t');
+		follower.setdefault(idUser,set()).add(idFollower)
+		following.setdefault(idFollower,set()).add(idUser)
 		
-def clear(delay=1800):
-	global recent
-	global recentdict
-	global remove
-	mintime = int(time.time() - 86400)
-	recent_lock.acquire()
-
-	recent = [x for x in recent if x[0]>mintime and (x[1],x[2]) not in remove]
-	pickle.dump(recent, file('jwrecent.db', 'w+'), 1)
-	recentdict = {}
-	remove = []
-	for x in recent: recentdict.setdefault(str(x[2]),[]).append(x)
-
-	recent_lock.release()
-	print "clear expired list at:", mintime
-	threading.Timer(delay, clear, [delay]).start()
-
 spqueue = Queue.Queue()
 scqueue = Queue.Queue()
 
-recent = []
-recent_lock = threading.Lock()
-recentdict = {}
-remove = []
+follower = {}
+following = {}
+follower_lock = threading.Lock()
 cache = {} #for 30min
 
 regcomma = re.compile('[\s,]+')
@@ -179,9 +146,8 @@ def partial(func, *args, **keywords):
 def main():
 	sp = spread.Spread(str(os.getpid()), '4803@localhost')
 	sp.connect()
-	sp.join(['/create/status', '/destroy/status'])
+	sp.join(['/create/follower', '/destroy/follower'])
 	load();
-	clear(600)
 	service_thread().start()
 	for x in range(10): spworker().start()
 	while True: spqueue.put(sp.receive())
