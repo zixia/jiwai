@@ -256,19 +256,17 @@ class JWUtility {
 		if (!$id) { return false; }
 
 		$pubdata = array();
+		$alterkey = array('device', 'notification', 'isProtected', 'isMms');
 		foreach($condition AS $k => $v)
 		{
+			$k = trim(strval($k));
 			if ( 0===strpos($k, 'id') )
 			{
 				$pubdata[$k] = intval($v);
 			}
-			else if ( $k == 'device' ) 
+			else if ( in_array($k, $alterkey) )
 			{
 				$pubdata[$k] = strval($v);
-			}
-			else if ( in_array($v, array('Y','N')) )
-			{
-				$pubdata[$k] = $v;
 			}
 		}
 		$pubdata['table'] = strtolower($table);
