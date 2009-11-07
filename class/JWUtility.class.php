@@ -249,6 +249,24 @@ class JWUtility {
 	}
 
 	/*
+	 * Slice Status_DATA
+	 */
+	static function SliceStatusData($data, $size=20, $offset=0) 
+	{
+		$total = count($data['status_ids']);
+		$status_ids = $user_ids = array();
+		if ( $offset < $total ) 
+		{
+			$status_ids = @array_slice($data['status_ids'], $offset, $size);
+			$user_ids = @array_slice($data['user_ids'], $offset, $size);
+		} 
+		return array( 
+				'status_ids' => $status_ids,
+				'user_ids' => $user_ids,
+				);
+	}
+
+	/*
 	 * PubSub the message 
 	 */
 	static function Publish($table, $id, $condition=array(), $action='create') 

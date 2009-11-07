@@ -102,6 +102,23 @@ class JWElement {
 		$this->block_pager( array('pager'=>$pager) );
 	}
 
+	function block_statuses_with_friendsnew($args=array())
+	{
+		global $g_page_user_id;
+		$host = '10.1.40.10';
+		$port = 4002;
+		$status_data = JWRemote::GetFriendStatus($g_page_user_id);
+		$total = count($status_data['status_ids']);
+		$pager = new JWPager(array('rowCount'=>$total));
+		$offset = $pager->offset;
+		$pagesize = $pager->pageSize;
+		$status_data = JWUtility::SliceStatusData($status_data, $pagesize, $offset);
+
+		/* display */
+		$this->block_statuses($status_data);
+		$this->block_pager( array('pager'=>$pager) );
+	}
+
 	function block_statuses_user($args=array())
 	{
 		global $g_page_user_id, $g_current_user_id;
@@ -187,6 +204,23 @@ class JWElement {
 		$total = JWStatus::GetStatusNumFromFriends($user_id);
 		$pager = new JWPager(array('rowCount'=>$total));
 		$status_data = JWDB_Cache_Status::GetStatusIdsFromFriends( (string)$user_id, $pager->pageSize, $pager->offset);
+
+		/* display */
+		$this->block_statuses($status_data);
+		$this->block_pager( array('pager'=>$pager) );
+	}
+
+	function block_statuses_wo_with_friendsnew()
+	{
+		$user_id = JWLogin::GetCurrentUserId();
+		$host = '10.1.40.10';
+		$port = 4002;
+		$status_data = JWRemote::GetFriendStatus($user_id);
+		$total = count($status_data['status_ids']);
+		$pager = new JWPager(array('rowCount'=>$total));
+		$offset = $pager->offset;
+		$pagesize = $pager->pageSize;
+		$status_data = JWUtility::SliceStatusData($status_data, $pagesize, $offset);
 
 		/* display */
 		$this->block_statuses($status_data);

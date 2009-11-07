@@ -13,8 +13,12 @@ class JWRemote{
 		return self::_BuildStatusData($r);
 	}
 
-	static function GetFriendStatus($friend_ids=array()) {
-		settype($friend_ids, 'array');
+	static function GetFriendStatus($user_id=0) {
+		if (is_array($user_id)) {
+			$friend_ids = $user_id;
+		} else {
+			$friend_ids = self::GetFriendId($user_id);
+		}
 		if (empty($friend_ids)) { 
 			$r = array(); 
 		} else {
@@ -22,6 +26,12 @@ class JWRemote{
 			$r = self::Get("GET $idstring", '10.1.40.10', 4001);
 		}
 		return self::_BuildStatusData($r);
+	}
+
+	static function GetFriendId($user_id=0) {
+		$r = self::Get("MEFOLLOW $user_id", '10.1.40.10', 4002);
+		$r[] = strval($user_id);
+		return array_unique($r);
 	}
 
 	static private function _BuildStatusData($r=array()){

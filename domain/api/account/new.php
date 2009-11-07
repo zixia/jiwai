@@ -44,7 +44,7 @@ if ($caller) {
 $name_screen = JWUser::GetPossibleName($name_screen, $email);
 
 $autoFollowers = array(
-    2,  // JiWai
+    //2,  // JiWai
 );
 
 if (null == $email

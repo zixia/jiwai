@@ -13,7 +13,7 @@ $param_tab = array( 'now' => 'user_following' );
 		<div class="s"><div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div></div>
 		<div class="f">
 			<?php $element->block_tab($param_tab);?>
-			<?php $element->block_statuses_with_friends();?>
+			<?php $element->block_statuses_with_friendsnew();?>
 			<?php $element->block_rsslink();?>
 		</div>
 		<div class="s"><div class="d"></div><div class="c"></div><div class="b"></div><div class="a"></div></div>

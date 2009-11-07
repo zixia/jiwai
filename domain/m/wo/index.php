@@ -8,10 +8,9 @@ $loginedIdUser 	= $loginedUserInfo['id'];
 $page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 1;
 $page = ($page < 1 ) ? 1 : $page;
 
-
-$statusNum= JWStatus::GetStatusNumFromFriends($loginedIdUser);
-$pagination = new JWPagination($statusNum, $page, 10);
-$statusData = JWStatus::GetStatusIdsFromFriends($loginedIdUser, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
+$statusData = JWRemote::GetFriendStatus($loginedIdUser);
+$pagination = new JWPagination(count($statusData['status_ids']), $page, 10);
+$statusData = JWUtility::SliceStatusData($statusData, $pagination->GetNumPerPage(), $pagination->GetStartPos() );
 
 $statusRows = JWDB_Cache_Status::GetDbRowsByIds($statusData['status_ids']);
 $userRows = JWDB_Cache_User::GetDbRowsByIds($statusData['user_ids']);
