@@ -17,6 +17,7 @@ class spworker(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 	def run(self):
+		global public
 		while True:
 			try:
 				data = json.loads( spqueue.get(True) )
@@ -32,6 +33,9 @@ class spworker(threading.Thread):
 					item = (now, id, idUser, idThread)
 					recent.insert(0, item)
 					recentdict.setdefault(idUser,[]).append(item)
+					if data['idPicture']: 
+						public.insert(0, (item))
+						public = public[0:1000]
 				elif action == 'destroy':
 					remove.append((id, idUser))
 				pass
@@ -57,6 +61,13 @@ def process(line):
 				cache_set(idlist, r)
 			return r
 		elif cmd == 'public':
+			num = int(param)
+			r = public[0:num]
+			r = [(x[1],x[2]) for x in r]
+			r = [x for x in r if x not in remove]
+			r.sort(reverse=True)
+			return r
+		elif cmd == 'rpublic':
 			num = int(param)
 			r = cache_get([cmd, param])
 			if r is None:
@@ -132,9 +143,11 @@ def cache_set(key, value):
 
 def load():
 	global recent
+	global public
 	global recentdict
 	if os.path.exists('jwrecent.db'): 
 		recent = pickle.load(file('jwrecent.db'))
+		public = recent[0:1000]
 		for x in recent: recentdict.setdefault(str(x[2]),[]).append(x)
 		
 def clear(delay=1800):
@@ -160,6 +173,7 @@ scqueue = Queue.Queue()
 recent = []
 recent_lock = threading.Lock()
 recentdict = {}
+public = []
 remove = []
 cache = {} #for 30min
 
