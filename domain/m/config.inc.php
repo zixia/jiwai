@@ -85,7 +85,7 @@ function redirect($url = null){
 
 function redirect_to_404()
 {
-	JWSession::SetInfo('notice', '哎呀，叽歪没有找到这个页面！');
+	#JWSession::SetInfo('notice', '哎呀，叽歪没有找到这个页面！');
 	JWTemplate::RedirectToUrl('/');
 }
 

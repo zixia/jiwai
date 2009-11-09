@@ -676,7 +676,7 @@ die(var_dump($db_result));
 		ksort($condition);
 
 		$param_string = var_export($condition, true);
-		$param_string = preg_replace("/(=>)\s*'(\d+)'/", "\\1\\2", $param_string);
+		$param_string = preg_replace("/(=>)(\s*)'(\d+)'/", "\\1\\2\\3", $param_string);
 		$param_string = preg_replace('/[\s]+/','_',$param_string);
 
 		if ( strlen($param_string)>150 )

@@ -13,7 +13,7 @@
 			<li><a href="http://jiwai.de/wo/about/partner" target="_blank">友情链接</a></li>
 		</ul>
 		<ul>
-			<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP证020015号</a></li>
+			<li><a href="http://www.miibeian.gov.cn" target="_blank">京ICP证020015号</a><!--${if(defined('JW_TIMESTART')){debug(microtime(true)-JW_TIMESTART);}}--></li>
 		</ul>
 		<div class="clear"></div>
 	</div>

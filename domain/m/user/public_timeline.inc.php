@@ -1,7 +1,8 @@
 <?php
 $pageTitle = "叽歪广场";
 
-$status_data    = JWStatus::GetStatusIdsFromPublic(100);
+//$status_data    = JWStatus::GetStatusIdsFromPublic(100);
+$status_data    = JWRemote::GetPublicStatus(100);
 $status_rows    = JWStatus::GetDbRowsByIds($status_data['status_ids']);
 $user_rows      = JWDB_Cache_User::GetDbRowsByIds    ($status_data['user_ids']);
 

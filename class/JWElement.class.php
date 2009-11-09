@@ -328,7 +328,8 @@ class JWElement {
 	function block_statuses_public()
 	{
 		//one user one line -- simple;	
-		$status_data = JWStatus::GetStatusIdsFromPublic(100);
+		//$status_data = JWStatus::GetStatusIdsFromPublic(100);
+		$status_data = JWRemote::GetPublicStatus(100);
 		$combined = array_combine($status_data['status_ids'], $status_data['user_ids']);
 		$combined = array_unique($combined);
 		$m = count($combined)>20 ? 20 : count($combined);

@@ -69,7 +69,7 @@ class JWRemote{
 			@socket_close($sock);
 			return array();
 		}
-		$line = trim(socket_read($sock, 8192));
+		$line = trim(socket_read($sock, 20480, PHP_NORMAL_READ));
 		$r = @json_decode($line);
 		socket_close($sock);
 		return $r ? $r : array();
