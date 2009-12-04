@@ -28,6 +28,7 @@ class JWPlugins
 	static private $plugin_domains = array(
 			'yupoo.com' => 'Yupoo',
 			'8box.cn'   => 'Box',
+			'8box.com'  => 'Box',
             'xiami.com' => 'Xiami',
 			'yobo.com'  => 'Yobo',
 			'flickr.com'    => 'Flickr',
