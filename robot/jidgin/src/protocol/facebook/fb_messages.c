@@ -20,45 +20,144 @@
 
 #include "fb_messages.h"
 #include "fb_connection.h"
+#include "fb_conversation.h"
+#include "fb_blist.h"
+#include "fb_util.h"
+
+#include "conversation.h"
 
 typedef struct _FacebookOutgoingMessage FacebookOutgoingMessage;
 
 struct _FacebookOutgoingMessage {
 	FacebookAccount *fba;
 	gchar *who;
-	time_t time;
+	GTimeVal time;
 	gchar *message;
 	gint msg_id;
 	guint retry_count;
+	guint resend_timer;
 };
 
 static gboolean fb_send_im_fom(FacebookOutgoingMessage *msg);
+static gboolean fb_resend_im_fom(FacebookOutgoingMessage *msg);
 static gboolean fb_get_new_messages(FacebookAccount *fba);
 
+static FacebookOutgoingMessage *fb_msg_create(FacebookAccount *fba)
+{
+	FacebookOutgoingMessage *msg;
+	
+	msg = g_new0(FacebookOutgoingMessage, 1);
+	msg->fba = fba;
+	
+	return msg;
+}
+
+static void fb_msg_destroy(FacebookOutgoingMessage *msg)
+{
+	if (msg->resend_timer) {
+		purple_timeout_remove(msg->resend_timer);
+	}
+	g_free(msg->who);
+	g_free(msg->message);
+	g_free(msg);	
+}
+
+void fb_cancel_resending_messages(FacebookAccount *fba)
+{
+	while (fba->resending_messages != NULL) {
+		FacebookOutgoingMessage *msg = fba->resending_messages->data;
+		fba->resending_messages = g_slist_remove(fba->resending_messages, msg);
+		fb_msg_destroy(msg);
+	}	
+}
+
+static void parse_message(PurpleConnection *pc, FacebookAccount *fba,
+	JsonObject *messageObj, const char* from, const char* to)
+{
+	gint64 message_time;
+	const gchar *message;
+
+	purple_debug_info("facebook", "message from %s to %s\n", from, to);
+
+	message = json_node_get_string(
+		json_object_get_member(messageObj, "text"));
+
+	message_time = fb_time_kludge(json_node_get_int(
+				json_object_get_member(messageObj, "time")));
+
+	fb_conversation_handle_message(fba, from, to, message_time, message, TRUE);			
+}
+
+static void parse_new_messages(PurpleConnection *pc, FacebookAccount *fba, JsonArray *messages)
+{
+	int i;
+	PurpleBuddy *buddy;
+
+	purple_debug_info("facebook", "parsing new messages\n");
+
+	for (i = 0; i < json_array_get_length(messages); i++) {
+		const gchar *type;
+		gchar *from, *to;
+		
+
+		JsonObject *object = json_node_get_object(json_array_get_element(messages, i));
+		type = json_node_get_string(json_object_get_member(object, "type"));
+
+		from = g_strdup_printf("%" G_GINT64_FORMAT, (gint64)json_node_get_int(json_object_get_member(object, "from")));
+		to = g_strdup_printf("%" G_GINT64_FORMAT, (gint64)json_node_get_int(json_object_get_member(object, "to")));
+		
+		/* Use the in-line buddy name if the buddy list hasn't been downloaded yet */
+		buddy = purple_find_buddy(pc->account, from);
+		if (buddy == NULL || buddy->server_alias == NULL || buddy->alias == NULL)
+		{
+			if (json_object_has_member(object, "from_name"))
+			{
+				const gchar *from_name = json_node_get_string(json_object_get_member(
+					object, "from_name"));
+				fb_blist_set_alias(fba, from, from_name);
+			}
+		}
+
+		if (from && to && g_str_equal(type, "msg")) {
+			JsonObject *messageObj = json_node_get_object(json_object_get_member(object, "msg"));
+			parse_message(pc, fba, messageObj, from, to);
+		} else if (from && g_str_equal(type, "typ")) {
+			purple_debug_info("facebook", "handling typing notification\n");
+
+			gint typing = json_node_get_int(json_object_get_member(object, "st"));
+			if (typing == 0) {
+				serv_got_typing(pc, from, 10, PURPLE_NOT_TYPING);
+			} else {
+				serv_got_typing(pc, from, 10, PURPLE_TYPING);
+			}
+		}
+
+		/*
+		 * we've received something from a buddy, assume they're online
+		 * only if it's not from ourselves
+		 */
+		if (from && fba->uid != atoll(from)) {
+			purple_prpl_got_user_status(
+				fba->account, from, 
+				purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
+
+		}
+	
+		g_free(from);
+		g_free(to);
+
+		fba->message_fetch_sequence++;
+	}
+}
+								  
 static void got_new_messages(FacebookAccount *fba, gchar *data,
 		gsize data_len, gpointer userdata)
 {
-	gchar *message_text;
-	gchar *message_time;
-	gchar *from;
-	gchar *to;
-	gchar *tmp;
-	gchar *type;
-	gchar *start;
-	gchar *end;
-	gint64 msgID;
-	int i;
+	JsonParser *parser;
+
 	PurpleConnection *pc = userdata;
-	PurpleBuddy *buddy;
 
-	/* NULL data will crash on Windows */
-	if (data == NULL)
-		data = "(null)";
-
-	purple_debug_misc("facebook", "got new messages: %s\n", data);
-
-	/* purple_debug_info("facebook", "fba: %d\n", fba); */
-	/* purple_debug_info("facebook", "account: %d\n", fba->account); */
+	purple_debug_misc("facebook", "got new messages:\n%s\n", data);
 
 	/* for (;;);{"t":"msg","c":"p_800753867","ms":[{"type":"msg",
 		"msg":{"text":"yes","time":1211176515861,"clientTime":1211176514750,
@@ -89,12 +188,10 @@ static void got_new_messages(FacebookAccount *fba, gchar *data,
 		"msgID":"3382240259"},"from":596176850,"to":800753867,
 		"from_name":"Jeremy Lawson","to_name":"Eion Robb",
 		"from_first_name":"Jeremy","to_first_name":"Eion"}]} */
-
 	/* for (;;);{"t":"refresh", "seq":1} */
 
-	/* look for the start of the JSON, and ignore any proxy headers */
-	data = g_strstr_len(data, data_len, "for (;;);");
-	if (!data)
+	parser = fb_get_parser(data, data_len);
+	if (!parser)
 	{
 		/* Sometimes proxies will return incorrect data, so we just shrug 
 		 * it off.
@@ -105,196 +202,49 @@ static void got_new_messages(FacebookAccount *fba, gchar *data,
 		/* Continue looping, waiting for more messages */
 		purple_debug_error("facebook",
 				"got data back, but it's not even json\n");
-
+				
 		fb_get_new_messages(fba);
 		return;
 	}
 
-	/* refresh means that the session or post_form_id is invalid */
-	if (g_str_equal(data, "for (;;);{\"t\":\"refresh\"}"))
-	{
-		purple_timeout_add_seconds(1, (GSourceFunc)fb_get_post_form_id, fba);
-		return;
-	}
+	JsonObject *objnode = fb_get_json_object(parser, NULL);
 
-	/* continue means that the server wants us to remake the connection */
-	if (g_str_equal(data, "for (;;);{\"t\":\"continue\"}"))
-	{
-		/* Continue looping, waiting for more messages */
-		fb_get_new_messages(fba);
-		return;
-	}
+	if (json_object_has_member(objnode, "t")) {
+		const gchar* command = json_node_get_string(json_object_get_member(objnode, "t"));
+		if (g_str_equal(command, "refresh")) {
+			if (json_object_has_member(objnode, "seq")) {
+				fba->message_fetch_sequence = json_node_get_int(
+					json_object_get_member(objnode, "seq"));
+			}
 
-	tmp = strstr(data, "\"seq\":");
-	if (tmp != NULL)
-	{
-		tmp = tmp + 6;
-		tmp = g_strndup(tmp, strchr(tmp, '}') - tmp);
-		purple_debug_info("facebook", "new seq number: %s\n", tmp);
-		fba->message_fetch_sequence = atoi(tmp);
-		g_free(tmp);
-	} else {
-		fba->message_fetch_sequence++;
-	}
+			/* grab history items for all open conversations */
+			GList *conversations = purple_get_conversations();
+			while (conversations != NULL) {
+				PurpleConversation *conv =
+					(PurpleConversation *)conversations->data;
+				if (fb_conversation_is_fb(conv)) {
+					purple_debug_info("facebook",
+						"checking for dropped messages with %s\n",
+						conv->name);
+					fb_history_fetch(fba, conv->name, FALSE);
+				}
+				conversations = conversations->next;
+			}
 
-	if (strncmp(data, "for (;;);{\"t\":\"msg\"", 19) == 0)
-	{
-		start = g_strstr_len(data, data_len, "\"ms\":[");
-		if (!start)
-		{
-			/* Continue looping, waiting for more messages */
-			fb_get_new_messages(fba);
+			/* refresh means that the channel is invalid */
+			fb_reconnect(fba);
+			json_parser_free(parser);
 			return;
-		}
-		start += 6;
-		while (*start != ']')
-		{
-			tmp = strstr(start, "\"type\":\"");
-			if (tmp)
-			{
-				tmp += 8;
-				type = g_strndup(tmp, strchr(tmp, '"') - tmp);
-				purple_debug_info("facebook", "type: %s\n", type);
-			} else {
-				type = g_strdup("unknown");
-			}
-
-			tmp = strstr(start, "\"from\":");
-			if (tmp)
-			{
-				tmp += 7;
-				from = g_strndup(tmp, strchr(tmp, ',') - tmp);
-				if (from[0] == '"')
-					snprintf(from, strlen(from), "%d", atoi(from + 1));
-				purple_debug_info("facebook", "from: %s\n", from);
-			} else {
-				from = NULL;
-			}
-			tmp = strstr(start, "\"to\":");
-			if (tmp)
-			{
-				tmp += 5;
-				end = strchr(tmp, ',');
-				if (end == NULL || strchr(tmp, '}') < end)
-					end = strchr(tmp, '}');
-				to = g_strndup(tmp, end - tmp);
-				if (to[0] == '"')
-					snprintf(to, strlen(to), "%d", atoi(to + 1));
-				purple_debug_info("facebook", "to: %s\n", to);
-			} else {
-				to = NULL;
-			}
-
-			if (from && to && g_str_equal(type, "msg"))
-			{
-				/* IM message */
-				if (fba->uid != atoi(from) || fba->uid == atoi(to))
-				{
-					tmp = strstr(start, "\"msgID\":");
-					tmp += 9;
-					tmp = g_strndup(tmp, strchr(tmp, '"') - tmp);
-					msgID = atoll(tmp);
-					purple_debug_info("facebook", "message id: %s %" G_GINT64_FORMAT " %lld\n", tmp, msgID, atoll(tmp));
-					g_free(tmp);
-					/* loop through all the previous messages that we have stored */
-					/* to make sure that we havn't already received this message */
-					for(i = 0; i < FB_LAST_MESSAGE_MAX; i++)
-					{
-						purple_debug_info("facebook", "last_messages[%d] = %" G_GINT64_FORMAT "\n", i, fba->last_messages[i]);
-						if (fba->last_messages[i] == msgID)
-							break;
-					}
-					purple_debug_info("facebook", "i: %d\n", i);
-					if (i == FB_LAST_MESSAGE_MAX)
-					{
-						gchar *postdata;
-
-						/* if we're here, it must be a new message */
-						fba->last_messages[fba->next_message_pointer++] = msgID;
-						if (fba->next_message_pointer >= FB_LAST_MESSAGE_MAX)
-							fba->next_message_pointer = 0;
-
-						tmp = strstr(start, "\"text\":\"");
-						tmp += 8;
-						tmp = g_strndup(tmp, strstr(tmp, "\",\"time\":") - tmp);
-						message_text = fb_convert_unicode(tmp);
-						g_free(tmp);
-						tmp = fb_strdup_withhtml(message_text);
-						g_free(message_text);
-						message_text = tmp;
-						purple_debug_info("facebook", "text: %s\n", message_text);
-						
-						tmp = strstr(start, "\"time\":");
-						tmp += 7;
-						message_time = g_strndup(tmp, strchr(tmp, ',') - tmp - 3);
-						purple_debug_info("facebook", "time: %s\n", message_time);
-						
-						/* Use the in-line buddy name if the buddy list hasn't been downloaded yet */
-						buddy = purple_find_buddy(pc->account, from);
-						if (buddy == NULL || buddy->server_alias == NULL)
-						{
-							tmp = strstr(start, "\"from_name\":\"");
-							if (tmp)
-							{
-								tmp += 13;
-								tmp = g_strndup(tmp, strstr(tmp, "\",") - tmp);
-								serv_got_alias(pc, from, tmp);
-								g_free(tmp);
-							}
-						}
-
-						serv_got_im(pc, from, message_text, PURPLE_MESSAGE_RECV, atoi(message_time));
-
-						/*
-						 * Acknowledge receipt of the message by simulating
-						 * focusing the window.  Not sure what the window_id
-						 * is here, but it doesn't seem to matter.  Maybe
-						 * something internal to the Facebook javascript that
-						 * is used for maintaining UI state across page loads?
-						 */
-						/*postdata = g_strdup_printf(
-								"focus_chat=%s&window_id=12345&post_form_id=%s",
-								from, fba->post_form_id);
-						fb_post_or_get(fba, FB_METHOD_POST, NULL,
-								"/ajax/chat/settings.php?_ecdc=false",
-								postdata, NULL, NULL, FALSE);
-						g_free(postdata);*/
-
-						g_free(message_text);
-						g_free(message_time);
-					}
-				}
-				start = strchr(start, '}')+1;
-			} else if (from && g_str_equal(type, "typ"))
-			{
-				/* typing notification */
-				tmp = strstr(start, "\"st\":");
-				if (tmp != NULL)
-				{
-					tmp += 5;
-					if (*tmp == '0')
-						serv_got_typing(pc, from, 10, PURPLE_TYPED);
-					else
-						serv_got_typing(pc, from, 10, PURPLE_TYPING);
-				}
-			}
-
-			/*
-			 * we've received something from a buddy, assume they're online
-			 * only if it's not from ourselves
-			 */
-			if (from && fba->uid != atoi(from))
-				purple_prpl_got_user_status(fba->account, from, purple_primitive_get_id_from_type(PURPLE_STATUS_AVAILABLE), NULL);
-
-			g_free(from);
-			g_free(to);
-			g_free(type);
-
-			start = strchr(start, '}')+1;
-			while (*start == ',')
-				start++;
+		} else if (g_str_equal(command, "continue")) {
+			/* continue means that the server wants us to remake the connection.
+ 			 * continue the loop and wait for messages. noop. */
+		} else if (g_str_equal(command, "msg")) {
+			parse_new_messages(pc, fba,
+				json_node_get_array(json_object_get_member(objnode, "ms")));
 		}
 	}
+
+	json_parser_free(parser);
 
 	/* Continue looping, waiting for more messages */
 	fb_get_new_messages(fba);
@@ -310,9 +260,6 @@ static void got_new_messages(FacebookAccount *fba, gchar *data,
  */
 static gboolean fb_get_new_messages(FacebookAccount *fba)
 {
-	/* MARKCONFLICT (r283,r286): Mark uses the fba->chanel_number variable here,
-	 * where this patch/fix eschews that in favor of some hacks.
-	 */
 	time_t now;
 	gchar *fetch_url;
 	gchar *fetch_server;
@@ -337,22 +284,16 @@ static gboolean fb_get_new_messages(FacebookAccount *fba)
 
 	if (fba->channel_number == NULL)
 	{
-		channel_number = purple_account_get_string(fba->account, "last_channel_number", NULL);
-		if (channel_number == NULL)
-		{
-			/* channel number is probably updating */
-			fba->new_messages_check_timer = purple_timeout_add_seconds(3 - (now - fba->last_messages_download_time), (GSourceFunc)fb_get_new_messages, fba);
-			return FALSE;
-		}
+		return FALSE;
 	} else {
 		channel_number = fba->channel_number;
 	}
 
 	purple_debug_info("facebook", "getting new messages\n");
 
-	fetch_server = g_strdup_printf("%d.channel%s.facebook.com", 0, channel_number);
+	fetch_server = g_strdup_printf("%d.%s.facebook.com", 0, channel_number);
 	/* use the current time in the url to get past any transparent proxy caches */
-	fetch_url = g_strdup_printf("/x/%lu/%s/p_%d=%d", time(NULL), (fba->is_idle?"false":"true"), fba->uid, fba->message_fetch_sequence);
+	fetch_url = g_strdup_printf("/x/%lu/%s/p_%" G_GINT64_FORMAT "=%d", (gulong)time(NULL), (fba->is_idle?"false":"true"), fba->uid, fba->message_fetch_sequence);
 
 	fb_post_or_get(fba, FB_METHOD_GET, fetch_server, fetch_url, NULL, got_new_messages, fba->pc, TRUE);
 	fba->last_messages_download_time = now;
@@ -366,74 +307,61 @@ static gboolean fb_get_new_messages(FacebookAccount *fba)
 static void fb_send_im_cb(FacebookAccount *fba, gchar *data, gsize data_len, gpointer user_data)
 {
 	FacebookOutgoingMessage *msg = user_data;
-	gchar *error_summary = NULL;
-	gchar *tmp;
+	JsonParser *parser;
+	JsonObject *object;
+	PurpleConversation *conv;
+	gchar *error = NULL;
 
-	/* NULL data crashes on Windows */
-	if (data == NULL)
-		data = "(null)";
-	
 	purple_debug_misc("facebook", "sent im response: %s\n", data);
-	/* for (;;);{"error":1356003,"errorSummary":"Send destination not online",
-		"errorDescription":"This person is no longer online.","payload":null,
-		"bootload":[{"name":"js\/common.js.pkg.php","type":"js",
-		"src":"http:\/\/static.ak.fbcdn.net\/rsrc.php\/pkg\/59\/98936\
-		/js\/common.js.pkg.php"}]} */
-	/* for (;;);{"error":0,"errorSummary":"","errorDescription":"No error.",
-		"payload":[],"bootload":[{"name":"js\/common.js.pkg.php","type":"js",
-		"src":"http:\/\/static.ak.fbcdn.net\/rsrc.php\/pkg\/59\/98936\
-		/js\/common.js.pkg.php"}]} */
-
-	tmp = g_strstr_len(data, data_len, "\"error\":");
-	if (tmp != NULL)
+	
+	parser = fb_get_parser(data, data_len);
+	if (!parser) {
+		// We didn't get data, but this isn't necessarily fatal.
+		purple_debug_warning("facebook", "bad data while parsing sent IM\n");
+		return;
+	}
+	object = fb_get_json_object(parser, &error);
+	
+	if (error)
 	{
-		tmp += 8;
-		tmp = g_strndup(tmp, strchr(tmp, ',') - tmp);
-		if (strlen(tmp) > 1 || tmp[0] != '0')
+		purple_debug_error("facebook", "sent im error: %s\n", error);
+		/* there was an error, either report it or retry */
+		if (msg->retry_count++ < FB_MAX_MSG_RETRY)
 		{
-			g_free(tmp);
-			tmp = g_strstr_len(data, data_len, "\"errorSummary\":\"");
-			tmp += 16;
-			error_summary = g_strndup(tmp, strchr(tmp, '"') - tmp);
-			purple_debug_error("facebook", "sent im error: %s\n", error_summary);
-			if (*error_summary)
-			{
-				/* there was an error, either report it or retry */
-				if (msg->retry_count++ < FB_MAX_MSG_RETRY)
-				{
-					purple_timeout_add_seconds(1, (GSourceFunc)fb_send_im_fom, msg);
-					g_free(error_summary);
-					return;
-				}
-				else
-				{
-					PurpleConversation *conv;
-					conv = purple_conversation_new(PURPLE_CONV_TYPE_IM,
-							fba->account, msg->who);
-					purple_conversation_write(conv, NULL, error_summary,
-							PURPLE_MESSAGE_ERROR, msg->time);
-				}
-			}
+			msg->resend_timer = purple_timeout_add_seconds(1, (GSourceFunc)fb_resend_im_fom, msg);
+			fba->resending_messages = g_slist_prepend(fba->resending_messages, msg);
+			json_parser_free(parser);
+			return;
 		}
+		else
+		{
+			conv = purple_conversation_new(PURPLE_CONV_TYPE_IM,
+					fba->account, msg->who);
+			purple_conversation_write(conv, NULL, error,
+					PURPLE_MESSAGE_ERROR, msg->time.tv_sec);
+		}
+		
+		g_hash_table_remove(fba->sent_messages_hash, msg->message);
 	}
 
-	g_free(error_summary);
-	g_free(msg->who);
-	g_free(msg->message);
-	g_free(msg);
+	json_parser_free(parser);
+	fb_msg_destroy(msg);
 }
 
 static gboolean fb_send_im_fom(FacebookOutgoingMessage *msg)
 {
 	gchar *encoded_message;
 	gchar *postdata;
+	gchar *jstime;
+	
+	jstime = g_strdup_printf("%ld%ld", msg->time.tv_sec, (msg->time.tv_usec/1000));
 
 	encoded_message = g_strdup(purple_url_encode(msg->message));
-	postdata = g_strdup_printf("msg_text=%s&msg_id=%d&to=%s&client_time=%lu&post_form_id=%s",
-			encoded_message, msg->msg_id, msg->who,
-			msg->time,
+	postdata = g_strdup_printf("msg_text=%s&msg_id=%d&to=%s&client_time=%s&post_form_id=%s",
+			encoded_message, msg->msg_id, msg->who, jstime,
 			msg->fba->post_form_id ? msg->fba->post_form_id : "0");
 	g_free(encoded_message);
+	g_free(jstime);
 
 	fb_post_or_get(msg->fba, FB_METHOD_POST, NULL, "/ajax/chat/send.php", postdata, fb_send_im_cb, msg, FALSE);
 	g_free(postdata);
@@ -441,37 +369,107 @@ static gboolean fb_send_im_fom(FacebookOutgoingMessage *msg)
 	return FALSE;
 }
 
+static gboolean fb_resend_im_fom(FacebookOutgoingMessage *msg)
+{
+	msg->fba->resending_messages = g_slist_remove(msg->fba->resending_messages, msg);
+
+	return fb_send_im_fom(msg);
+}
+
 int fb_send_im(PurpleConnection *pc, const gchar *who, const gchar *message, PurpleMessageFlags flags)
 {
 	FacebookOutgoingMessage *msg;
+	FacebookAccount *fba = pc->proto_data;
 
-	msg = g_new0(FacebookOutgoingMessage, 1);
-	msg->fba = pc->proto_data;
+	msg = fb_msg_create(fba);
 
 	/* convert html to plaintext, removing trailing spaces */
 	msg->message = purple_markup_strip_html(message);
 	if (strlen(msg->message) > 999)
 	{
-		g_free(msg->message);
-		g_free(msg);
+		fb_msg_destroy(msg);
 		return -E2BIG;
 	}
 
 	msg->msg_id = g_random_int();
 	msg->who = g_strdup(who);
-	msg->time = time(NULL);
+	g_get_current_time(&msg->time);
 	msg->retry_count = 0;
+
+	//save that we're sending the message
+	g_hash_table_insert(fba->sent_messages_hash, strdup(msg->message), NULL);
 
 	fb_send_im_fom(msg);
 
-	return strlen(message);
+	/* Return 1 so UI will display message */
+	return 1;
+}
+
+void got_reconnect_json(FacebookAccount *fba, gchar *data, gsize data_len, gpointer userdata)
+{
+	JsonParser *parser;
+	JsonObject *objnode;
+
+	parser = fb_get_parser(data, data_len);
+
+	if (!parser) {
+		purple_debug_error("facebook", "couldn't parse reconnect data\n");
+		purple_debug_info("facebook", "page content: %s\n", data);
+		purple_connection_error_reason(fba->pc,
+				PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
+				_("Chat service currently unavailable"));
+		return;
+	}
+
+	objnode = fb_get_json_object(parser, NULL);
+
+	JsonObject *payload = json_node_get_object(json_object_get_member(objnode, "payload"));
+	
+	/* eg {"host":"channel01"} */
+	const gchar *new_channel_host = json_node_get_string(json_object_get_member(payload, "host"));
+
+	if (new_channel_host == NULL)
+	{
+		purple_debug_error("facebook", "couldn't find new channel number\n");
+		purple_debug_info("facebook", "page content: %s\n", data);
+		purple_connection_error_reason(fba->pc,
+				PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
+				_("Error fetching channel; did you log in elsewhere?"));
+		json_parser_free(parser);
+		return;
+	}
+	
+	g_free(fba->channel_number);
+	fba->channel_number = g_strdup(new_channel_host);
+	
+	gint new_seq = json_node_get_int(json_object_get_member(payload, "seq"));
+	fba->message_fetch_sequence = new_seq;
+	
+	/*
+	 * Now that we have a channel number we can start looping and
+	 * waiting for messages
+	 */
+	fb_get_new_messages(fba);
+	json_parser_free(parser);
+}
+
+gboolean fb_reconnect(FacebookAccount *fba)
+{
+	gchar *url = g_strdup_printf("/ajax/presence/reconnect.php?reason=7&post_form_id=%s&__a=1", fba->post_form_id);
+	fb_post_or_get(fba, FB_METHOD_GET, NULL, url, NULL, got_reconnect_json, NULL, FALSE);
+	g_free(url);
+	
+	return FALSE;
 }
 
 static void got_form_id_page(FacebookAccount *fba, gchar *data, gsize data_len, gpointer userdata)
 {
 	const gchar *start_text = "id=\"post_form_id\" name=\"post_form_id\" value=\"";
+	const gchar *dtsg_start = "fb_dtsg:\"";
+	const gchar *channel_start = "js\", \"channel";
+	const gchar *channel_start2 = "js\",\"channel";
 	gchar *post_form_id;
-	gchar *channel_number;
+	gchar *channel = NULL;
 	gchar *tmp = NULL;
 	
 	/* NULL data crashes on Windows */
@@ -491,58 +489,45 @@ static void got_form_id_page(FacebookAccount *fba, gchar *data, gsize data_len, 
 	}
 	tmp += strlen(start_text);
 	post_form_id = g_strndup(tmp, strchr(tmp, '"') - tmp);
-
+	
 	g_free(fba->post_form_id);
 	fba->post_form_id = post_form_id;
-
-	/* dodgy as search for channel server number */
-	if (!fba->channel_number)
+	
+	tmp = g_strstr_len(data, data_len, dtsg_start);
+	if (tmp != NULL)
 	{
-		start_text = "\", \"channel";
-		tmp = g_strstr_len(data, data_len, start_text);
-		if (tmp == NULL)
-		{
-			/* Some proxies strip whitepsace */
-			start_text = "\",\"channel";
-			tmp = g_strstr_len(data, data_len, start_text);
-			if (tmp == NULL)
-			{
-				/* TODO: Is it better to pick a random channel number or to disconnect? */
-				/* MARKCONFLICT (r283,r286) */
-				channel_number = g_strdup(purple_account_get_string(fba->account, "last_channel_number", ""));
-				if (channel_number[0] == '\0')
-				{
-					purple_debug_error("facebook", "couldn't find channel\n");
-					purple_debug_misc("facebook", "page content: %s\n", data);
-					purple_connection_error_reason(fba->pc,
-							PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
-							_("Chat service currently unavailable."));
-					return;
-				}
-			}
-		}
+		tmp += strlen(dtsg_start);
+		g_free(fba->dtsg);
+		fba->dtsg = g_strndup(tmp, strchr(tmp, '"') - tmp);
+	}
 
+	tmp = g_strstr_len(data, data_len, channel_start);
+	if (tmp != NULL)
+	{
+		tmp += 6;
+	} else {
+		tmp = g_strstr_len(data, data_len, channel_start2);
 		if (tmp != NULL)
-		{
-			tmp += strlen(start_text);
-			channel_number = g_strndup(tmp, strchr(tmp, '"') - tmp);
-		}
-
-		purple_account_set_string(fba->account, "last_channel_number", channel_number);
-
+			tmp += 5;
+	}
+	if (tmp != NULL)
+	{
+		channel = g_strndup(tmp, strchr(tmp, '"') - tmp);
 		g_free(fba->channel_number);
-		fba->channel_number = channel_number;
+		fba->channel_number = channel;
 	}
 
 	tmp = g_strdup_printf("visibility=true&post_form_id=%s", post_form_id);
 	fb_post_or_get(fba, FB_METHOD_POST, "apps.facebook.com", "/ajax/chat/settings.php", tmp, NULL, NULL, FALSE);
 	g_free(tmp);
-
-	/*
-	 * Now that we have a channel number we can start looping and
-	 * waiting for messages
-	 */
-	fb_get_new_messages(fba);
+	
+	if (channel == NULL)
+	{
+		/* Grab new channel number */
+		fb_reconnect(fba);
+	} else {
+		fb_get_new_messages(fba);
+	}
 }
 
 gboolean fb_get_post_form_id(FacebookAccount *fba)

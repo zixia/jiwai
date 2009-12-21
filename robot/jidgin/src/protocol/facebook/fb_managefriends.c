@@ -25,61 +25,74 @@ static void fb_auth_accept_cb(gpointer data)
 {
 	FacebookBuddy *fbuddy = data;
 	FacebookAccount *fba = fbuddy->fba;
+	gchar *buddy_uid;
 	gchar *postdata;
 
 	g_return_if_fail(fba != NULL);
 	g_return_if_fail(fba->post_form_id != NULL);
 	g_return_if_fail(fbuddy->uid != 0);
 
+	buddy_uid = g_strdup_printf("%" G_GINT64_FORMAT, fbuddy->uid);
+
 	postdata = g_strdup_printf(
-			"type=friend_add&id=%d&action=accept&post_form_id=%s",
-			fbuddy->uid, fba->post_form_id);
+			"type=friend_connect&id=%s&actions[accept]=Confirm&"
+			"post_form_id=%s&fb_dtsg=%s&confirm=%s&"
+			"post_form_id_source=AsyncRequest&__a=1",
+			buddy_uid, fba->post_form_id, fba->dtsg, buddy_uid);
 	fb_post_or_get(fba, FB_METHOD_POST, NULL, "/ajax/reqs.php",
 			postdata, NULL, NULL, FALSE);
+
+	g_hash_table_remove(fba->auth_buddies, buddy_uid);
+	
 	g_free(postdata);
-
-	fba->auth_buddies = g_slist_remove(fba->auth_buddies,
-			GINT_TO_POINTER(fbuddy->uid));
-
 	g_free(fbuddy);
+	g_free(buddy_uid);
 }
 
 static void fb_auth_reject_cb(gpointer data)
 {
 	FacebookBuddy *fbuddy = data;
 	FacebookAccount *fba = fbuddy->fba;
+	gchar *buddy_uid;
 	gchar *postdata;
 
 	g_return_if_fail(fba != NULL);
 	g_return_if_fail(fba->post_form_id != NULL);
 	g_return_if_fail(fbuddy->uid != 0);
 
+	buddy_uid = g_strdup_printf("%" G_GINT64_FORMAT, fbuddy->uid);
+
 	postdata = g_strdup_printf(
-			"type=friend_add&id=%d&action=reject&post_form_id=%s",
-			fbuddy->uid, fba->post_form_id);
+			"type=friend_connect&id=%s&action=reject&"
+			"post_form_id=%s&fb_dtsg=%s&"
+			"post_form_id_source=AsyncRequest&__a=1",
+			buddy_uid, fba->post_form_id, fba->dtsg);
 	fb_post_or_get(fba, FB_METHOD_POST, NULL, "/ajax/reqs.php",
 			postdata, NULL, NULL, FALSE);
+
+	g_hash_table_remove(fba->auth_buddies, buddy_uid);
+	
 	g_free(postdata);
-
-	fba->auth_buddies = g_slist_remove(fba->auth_buddies,
-			GINT_TO_POINTER(fbuddy->uid));
-
 	g_free(fbuddy);
+	g_free(buddy_uid);
 }
 
 static void fb_check_friend_request_cb(FacebookAccount *fba, gchar *data,
 		gsize data_len, gpointer user_data)
 {
-	const char *uid_pre_text = "class=\"confirm\" id=\"friend_add_";
+	const char *uid_pre_text = "class=\"confirm\" id=\"friend_connect_";
 	const char *name_pre_text = "<td class=\"info\"><a ";
 	const char *msg_pre_text = "<div class=\"personal_msg\"><span>";
 	gchar *uid;
-	gint32 uid_int;
+	gint64 uid_int;
 	gchar *name;
 	gchar *msg;
 	gchar *msg_plain;
 	FacebookBuddy *buddy;
 	gchar *search_start = data;
+
+	g_return_if_fail(data_len > 0);
+	g_return_if_fail(data != NULL);
 
 	/* loop through the data and look for confirm_friend_add_([0-9]*)" */
 	while ((search_start = strstr(search_start, uid_pre_text)))
@@ -89,10 +102,10 @@ static void fb_check_friend_request_cb(FacebookAccount *fba, gchar *data,
 				strchr(search_start, '"') - search_start);
 		purple_debug_info("facebook", "uid: %s\n", uid);
 
-		uid_int = atoi(uid);
+		uid_int = atoll(uid);
 
-		if (g_slist_find(fba->auth_buddies,
-				GINT_TO_POINTER(uid_int)) != NULL)
+		if (g_hash_table_lookup_extended(fba->auth_buddies,
+						uid, NULL, NULL))
 		{
 			/* we've already notified the user of this friend request */
 			g_free(uid);
@@ -130,12 +143,11 @@ static void fb_check_friend_request_cb(FacebookAccount *fba, gchar *data,
 				name, msg_plain, TRUE,
 				fb_auth_accept_cb, fb_auth_reject_cb, buddy);
 
-		g_free(uid);
-		/* TODO: msg_plain might be leaking here? */
-
 		/* Don't display an auth request for this buddy again */
-		fba->auth_buddies = g_slist_prepend(
-				fba->auth_buddies, GINT_TO_POINTER(uid_int));
+		g_hash_table_insert(fba->auth_buddies, uid, NULL);
+		
+		g_free(name);
+		g_free(msg_plain);		
 	}
 }
 
@@ -157,20 +169,23 @@ gboolean fb_check_friend_requests(gpointer data)
 void fb_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group)
 {
 	gchar *postdata;
-	gchar *url;
 	FacebookAccount *fba = pc->proto_data;
 	gchar *buddy_tmp;
 
 	if (!purple_account_get_bool(
 				fba->account, "facebook_manage_friends", FALSE)) {
+		/*
+		 * We used to pop up dialogs here but if a user renamed a group,
+		 * this would spawn message for each person in the buddy list.  Bad!
 		purple_notify_info(fba->pc, _("Friend not added"),
 				_("Adding Facebook friends via Pidgin is disabled"),
 				_("Either add a friend via Facebook.com or edit your account preferences"));
-		// TODO: Message here
+		*/
+		purple_debug_warning("facebook", "attempted to add %s but was blocked\n", buddy->name);
 		return;
 	}
 
-	if (atoi(buddy->name) == fba->uid)
+	if (atoll(buddy->name) == fba->uid)
 	{
 		purple_account_set_bool(fba->account,
 				"facebook_hide_self", FALSE);
@@ -179,36 +194,40 @@ void fb_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group)
 
 	buddy_tmp = g_strdup(purple_url_encode(buddy->name));
 	postdata = g_strdup_printf(
-			"confirmed=1&add=Add+Friend&action=follow_up&uid=%s&flids=&flid_name=&source=search&is_from_whitelist=0&message=&failed_captcha=0&post_form_id=%s",
-			buddy_tmp, fba->post_form_id);
-	url = g_strdup_printf("/ajax/addfriend.php?id=%s", buddy_tmp);
+			"user=%" G_GINT64_FORMAT "&profile_id=%s&message=&"
+			"source=&submit=1&post_form_id=%s&fb_dtsg=%s&"
+			"post_form_id_source=AsyncRequest&__a=1",
+			fba->uid, buddy_tmp, fba->post_form_id, fba->dtsg);
 	g_free(buddy_tmp);
 
-	fb_post_or_get(fba, FB_METHOD_POST, NULL, url, postdata,
-			NULL, NULL, FALSE);
+	fb_post_or_get(fba, FB_METHOD_POST, NULL, "/ajax/profile/connect.php",
+			postdata, NULL, NULL, FALSE);
 
 	g_free(postdata);
-	g_free(url);
 }
 
-#if 0
-/* This code should never be reinstated in it's current form.  Period.  See
- * issue 185 for why */
-static void fb_remove_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group)
+void fb_buddy_delete(PurpleConnection *pc, PurpleBuddy *buddy,
+		PurpleGroup *group)
 {
-	gchar *postdata;
 	FacebookAccount *fba = pc->proto_data;
+	gchar *buddy_tmp, *postdata;
 
-	if (atoi(buddy->name) == fba->uid)
-	{
-		purple_account_set_bool(fba->account, "facebook_hide_self", TRUE);
+	//This function removes a buddy from our friends list on facebook
+	//and shouldn't really be used
+	if (!purple_account_get_bool(fba->account, "facebook_manage_friends", FALSE)) {
+		purple_debug_warning("facebook", "attempted to add %s but was blocked\n", buddy->name);
 		return;
 	}
 
-	postdata = g_strdup_printf("uid=%s&post_form_id=%s", buddy->name, fba->post_form_id);
+	buddy_tmp = g_strdup(purple_url_encode(buddy->name));
+	postdata = g_strdup_printf(
+			"uid=%s&post_form_id=%s&fb_dtsg=%s&"
+			"post_form_id_source=AsyncRequest&__a=1",
+			buddy_tmp, fba->post_form_id, fba->dtsg);
+	g_free(buddy_tmp);
 
-	fb_post_or_get(fba, FB_METHOD_POST, NULL, "/ajax/removefriend.php", postdata, NULL, NULL, FALSE);
+	fb_post_or_get(fba, FB_METHOD_POST, NULL, "/ajax/profile/removefriend.php",
+			postdata, NULL, NULL, FALSE);
 
 	g_free(postdata);
 }
-#endif

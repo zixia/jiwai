@@ -25,5 +25,6 @@ PURPLE_LIBDIR=`pkg-config --variable=libdir purple`
 PURPLE_DATADIR=`pkg-config --variable=datadir purple`
 AC_SUBST(PURPLE_LIBDIR)
 AC_SUBST(PURPLE_DATADIR)
+PKG_CHECK_MODULES(GJSON1, json-glib-1.0)
 
 AC_OUTPUT([Makefile])

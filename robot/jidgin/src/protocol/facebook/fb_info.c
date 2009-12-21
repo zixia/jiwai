@@ -20,6 +20,7 @@
 
 #include "fb_connection.h"
 #include "fb_info.h"
+#include "fb_blist.h"
 
 /*
  * TODO: Do we really want to do this?  Maybe we could just set a
@@ -65,6 +66,7 @@ static void fb_get_info_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 	FacebookBuddy *fbuddy = NULL;
 
 	purple_debug_info("facebook", "get_info_cb\n");
+	purple_debug_misc("facebook", "%s\n", data);
 
 	buddy = purple_find_buddy(fba->account, uid);
 	if (buddy)
@@ -72,6 +74,39 @@ static void fb_get_info_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 		fbuddy = buddy->proto_data;
 	}
 	
+	/* look from <div id="info_tab" class="info_tab"> */
+	/* until </div></div></div></div> */
+	search_start = g_strstr_len(data, data_len, "<div id=\"info_tab\" class=\"info_tab\">");
+	if (search_start == NULL)
+	{
+		search_start = g_strstr_len(data, data_len, "window.location.replace(\"http:\\/\\/www.facebook.com\\");
+		if (search_start)
+		{
+			search_start += strlen("window.location.replace(\"http:\\/\\/www.facebook.com\\");
+			search_end = strchr(search_start, '"');
+			value_tmp = g_strndup(search_start, search_end - search_start);
+			if (value_tmp) {
+				purple_debug_info("facebook", "info url: %s\n", value_tmp);
+				fb_post_or_get(fba, FB_METHOD_GET, NULL, value_tmp, NULL, fb_get_info_cb, uid, FALSE);
+				g_free(value_tmp);
+				return;
+			}
+		}
+		purple_debug_warning("facebook",
+				"could not find user info, showing default");
+		user_info = purple_notify_user_info_new();
+		value_tmp = g_strdup_printf("<a href=\"http://www.facebook.com/profile.php?id=%s\">%s</a>",
+				uid, _("View web profile"));
+		purple_notify_user_info_add_pair(user_info, NULL, value_tmp);
+		purple_notify_user_info_add_section_break(user_info);
+		g_free(value_tmp);
+		purple_notify_userinfo(fba->pc, uid, user_info, NULL, NULL);
+		purple_notify_user_info_destroy(user_info);
+		g_free(uid);
+		return;
+	}
+	search_end = strstr(search_start, "</div></div></div></div>");
+
 	user_info = purple_notify_user_info_new();
 
 	/* Insert link to profile at top */
@@ -81,20 +116,6 @@ static void fb_get_info_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 	purple_notify_user_info_add_section_break(user_info);
 	g_free(value_tmp);
 
-	/* look from <div id="info_tab" class="info_tab"> */
-	/* until </div></div></div></div> */
-	search_start = g_strstr_len(data, data_len, "<div id=\"info_tab\" class=\"info_tab\">");
-	if (search_start == NULL)
-	{
-		purple_debug_warning("facebook",
-				"could not find user info, showing default");
-		purple_notify_userinfo(fba->pc, uid, user_info, NULL, NULL);
-		purple_notify_user_info_destroy(user_info);
-		g_free(uid);
-		return;
-	}
-	search_end = strstr(search_start, "</div></div></div></div>");
-
 	value_tmp = g_strstr_len(data, data_len, "<title>Facebook | ");
 	if (value_tmp)
 	{
@@ -102,7 +123,7 @@ static void fb_get_info_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 		value_tmp2 = g_strndup(value_tmp, strstr(value_tmp, "</title>")-value_tmp);
 		value_tmp = g_strchomp(purple_markup_strip_html(value_tmp2));
 		purple_notify_user_info_add_pair(user_info, _("Name"), value_tmp);
-		serv_got_alias(fba->pc, uid, value_tmp);
+		fb_blist_set_alias(fba, uid, value_tmp);
 		g_free(value_tmp);
 		g_free(value_tmp2);
 	}
@@ -177,12 +198,16 @@ static void fb_get_info_cb(FacebookAccount *fba, gchar *data, gsize data_len, gp
 		}
 
 		/* turn html to plaintext */
-		value_tmp2 = g_strchomp(purple_markup_strip_html(value_tmp));
-		g_free(value_tmp);
+		if (strcmp(label_tmp, "AIM")) {
+			value_tmp2 = g_strchomp(purple_markup_strip_html(value_tmp));
+			g_free(value_tmp);
+			value_tmp = value_tmp2;
 
-		/* remove the silly links */
-		value_tmp = fb_remove_useless_stripped_links(value_tmp2);
-		g_free(value_tmp2);
+			/* remove the silly links */
+			value_tmp2 = fb_remove_useless_stripped_links(value_tmp);
+			g_free(value_tmp);
+			value_tmp = value_tmp2;
+		}
 
 		purple_debug_info("facebook", "label: %s\n", label_tmp);
 		purple_debug_info("facebook", "value: %s\n", value_tmp);

@@ -25,5 +25,6 @@
 
 gboolean fb_check_friend_requests(gpointer data);
 void fb_add_buddy(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
+void fb_buddy_delete(PurpleConnection *pc, PurpleBuddy *buddy, PurpleGroup *group);
 
 #endif /* FACEBOOK_MANAGEFRIENDS_H */

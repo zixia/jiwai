@@ -21,7 +21,9 @@
 #ifndef LIBFACEBOOK_H
 #define LIBFACEBOOK_H
 
-#define FACEBOOK_PLUGIN_VERSION "1.47"
+#define FACEBOOK_PLUGIN_VERSION "1.64"
+#define FACEBOOK_PLUGIN_ID "prpl-facebook"
+#define FACEBOOK_CAPTCHA_SITE "6LezHAAAAAAAADqVjseQ3ctG3ocfQs2Elo1FTa_a"
 
 #include <glib.h>
 
@@ -66,16 +68,10 @@
 #include "sslconn.h"
 #include "version.h"
 
-#ifdef HAVE_ZLIB
-/* for dynamically loading gzip uncompression */
-#include <zlib.h>
-static void *zlib_library = NULL;
-static int (*zlib_inflate)(z_streamp, int) = NULL;
-static int (*zlib_inflateEnd)(z_streamp) = NULL;
-static int (*zlib_inflateInit2_)(z_streamp, int, char *, int) = NULL;
+#if GLIB_MAJOR_VERSION >= 2 && GLIB_MINOR_VERSION >= 12
+#	define atoll(a) g_ascii_strtoll(a, NULL, 0)
 #endif
 
-#define FB_LAST_MESSAGE_MAX 10
 #define FB_MAX_MSG_RETRY 2
 
 typedef struct _FacebookAccount FacebookAccount;
@@ -90,14 +86,16 @@ struct _FacebookAccount {
 	GSList *dns_queries;
 	GHashTable *cookie_table;
 	gchar *post_form_id;
-	gint32 uid;
-	guint buddy_list_timer;
+	gint64 uid;
+	guint buddy_list_timer; 		/* handled by fb_blist */
+	GHashTable *friend_lists;		/* handled by fb_friendlist */
+	GHashTable *friend_lists_reverse;	/* handled by fb_friendlist */
 	guint friend_request_timer;
 	gchar *channel_number;
 	guint message_fetch_sequence;
-	gint64 last_messages[FB_LAST_MESSAGE_MAX];
-	guint16 next_message_pointer;
-	GSList *auth_buddies;
+	gint64 last_message_time;		/* handled by fb_conversation */
+	GSList *resending_messages;
+	GHashTable *auth_buddies;
 	GHashTable *hostname_ip_cache;
 	guint notifications_timer;
 	time_t last_messages_download_time;
@@ -105,19 +103,23 @@ struct _FacebookAccount {
 	guint perpetual_messages_timer;
 	gchar *last_status_message;
 	gboolean is_idle;
+	GHashTable *sent_messages_hash;
+	gint last_inbox_count;
+	gchar *extra_challenge;
+	gchar *persist_data;
+	gchar *captcha_session;
+	gint last_status_timestamp;
+	guint bad_buddy_list_count;
+	gchar *dtsg;
 };
 
 struct _FacebookBuddy {
 	FacebookAccount *fba;
 	PurpleBuddy *buddy;
-	gint32 uid;
+	gint64 uid;
 	gchar *name;
 	gchar *status;
-	gchar *status_rel_time;
 	gchar *thumb_url;
 };
-
-gchar *fb_strdup_withhtml(const gchar *src);
-gchar *fb_convert_unicode(const gchar *input);
 
 #endif /* LIBFACEBOOK_H */

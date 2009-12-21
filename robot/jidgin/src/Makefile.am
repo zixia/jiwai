@@ -27,7 +27,10 @@ jidgin_SOURCES = jidgin.c \
                  setting.h \
                  intercept.h \
                  server.h
-jidgin_LDADD = $(PURPLE_LIBS) ${GLIB2_LIBS} ${GTHREAD2_LIBS} ${LIBEVENT_ROOT}/.libs/libevent.a
+jidgin_LDADD =   $(PURPLE_LIBS) \
+                 ${GLIB2_LIBS} \
+                 ${GTHREAD2_LIBS} \
+                 ${LIBEVENT_ROOT}/.libs/libevent.a
 EXTRA_DIST = 	 jidgin.h \
                  reactor.h \
                  log.h \

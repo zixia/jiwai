@@ -23,41 +23,80 @@
 static void fb_attempt_connection(FacebookConnection *);
 
 #ifdef HAVE_ZLIB
-static guchar *fb_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
+#include <zlib.h>
+
+static gchar *fb_gunzip(const guchar *gzip_data, ssize_t *len_ptr)
 {
 	gsize gzip_data_len	= *len_ptr;
 	z_stream zstr;
 	int gzip_err = 0;
-	guchar *output_data;
+	gchar *data_buffer;
 	gulong gzip_len = G_MAXUINT16;
+	GString *output_string = NULL;
 
-	g_return_val_if_fail(zlib_inflate != NULL, NULL);
+	data_buffer = g_new0(gchar, gzip_len);
 
-	output_data = g_new0(guchar, gzip_len);
-
-	zstr.next_in = gzip_data;
-	zstr.avail_in = gzip_data_len;
+	zstr.next_in = NULL;
+	zstr.avail_in = 0;
 	zstr.zalloc = Z_NULL;
 	zstr.zfree = Z_NULL;
-	zstr.opaque = Z_NULL;
-	int flags = gzip_data[3];
-	int offset = 4;
-	/* if (flags & 0x04) offset += *tmp[] */
-	zstr.next_in += offset;
-	zstr.avail_in -= offset;
-	zlib_inflateInit2_(&zstr, -MAX_WBITS, ZLIB_VERSION, sizeof(z_stream));
-	zstr.next_out = output_data;
+	zstr.opaque = 0;
+	gzip_err = inflateInit2(&zstr, MAX_WBITS+32);
+	if (gzip_err != Z_OK)
+	{
+		g_free(data_buffer);
+		purple_debug_error("facebook", "no built-in gzip support in zlib\n");
+		return NULL;
+	}
+	
+	zstr.next_in = (Bytef *)gzip_data;
+	zstr.avail_in = gzip_data_len;
+	
+	zstr.next_out = (Bytef *)data_buffer;
 	zstr.avail_out = gzip_len;
-	gzip_err = zlib_inflate(&zstr, Z_FINISH);
-	zlib_inflateEnd(&zstr);
+	
+	gzip_err = inflate(&zstr, Z_SYNC_FLUSH);
 
-	purple_debug_info("facebook", "gzip len: %ld, len: %ld\n", gzip_len,
-			gzip_data_len);
-	purple_debug_info("facebook", "gzip flags: %d\n", flags);
-	purple_debug_info("facebook", "gzip error: %d\n", gzip_err);
+	if (gzip_err == Z_DATA_ERROR)
+	{
+		inflateEnd(&zstr);
+		inflateInit2(&zstr, -MAX_WBITS);
+		if (gzip_err != Z_OK)
+		{
+			g_free(data_buffer);
+			purple_debug_error("facebook", "Cannot decode gzip header\n");
+			return NULL;
+		}
+		zstr.next_in = (Bytef *)gzip_data;
+		zstr.avail_in = gzip_data_len;
+		zstr.next_out = (Bytef *)data_buffer;
+		zstr.avail_out = gzip_len;
+		gzip_err = inflate(&zstr, Z_SYNC_FLUSH);
+	}
+	output_string = g_string_new("");
+	while (gzip_err == Z_OK)
+	{
+		//append data to buffer
+		output_string = g_string_append_len(output_string, data_buffer, gzip_len - zstr.avail_out);
+		//reset buffer pointer
+		zstr.next_out = (Bytef *)data_buffer;
+		zstr.avail_out = gzip_len;
+		gzip_err = inflate(&zstr, Z_SYNC_FLUSH);
+	}
+	if (gzip_err == Z_STREAM_END)
+	{
+		output_string = g_string_append_len(output_string, data_buffer, gzip_len - zstr.avail_out);
+	} else {
+		purple_debug_error("facebook", "gzip inflate error\n");
+	}
+	inflateEnd(&zstr);
 
-	*len_ptr = gzip_len;
-	return output_data;
+	g_free(data_buffer);	
+
+	if (len_ptr)
+		*len_ptr = output_string->len;
+
+	return g_string_free(output_string, FALSE);
 }
 #endif
 
@@ -83,6 +122,7 @@ void fb_connection_destroy(FacebookConnection *fbconn)
 	if (fbconn->input_watcher > 0)
 		purple_input_remove(fbconn->input_watcher);
 
+	g_free(fbconn->url);
 	g_free(fbconn->hostname);
 	g_free(fbconn);
 }
@@ -103,7 +143,7 @@ static void fb_update_cookies(FacebookAccount *fba, const gchar *headers)
 	/* grab the data up until ';' */
 	cookie_start = headers;
 	while ((cookie_start = strstr(cookie_start, "\r\nSet-Cookie: ")) &&
-			(headers-cookie_start) < header_len)
+			(cookie_start - headers) < header_len)
 	{
 		cookie_start += 14;
 		cookie_end = strchr(cookie_start, '=');
@@ -112,9 +152,6 @@ static void fb_update_cookies(FacebookAccount *fba, const gchar *headers)
 		cookie_end = strchr(cookie_start, ';');
 		cookie_value= g_strndup(cookie_start, cookie_end-cookie_start);
 		cookie_start = cookie_end;
-
-		purple_debug_info("facebook", "got cookie %s=%s\n",
-				cookie_name, cookie_value);
 
 		g_hash_table_replace(fba->cookie_table, cookie_name,
 				cookie_value);
@@ -144,21 +181,16 @@ static void fb_connection_process_data(FacebookConnection *fbconn)
 		tmp = g_memdup(tmp, len + 1);
 		tmp[len] = '\0';
 		fbconn->rx_buf[fbconn->rx_len - len] = '\0';
-		purple_debug_misc("facebook", "response headers\n%s\n",
-				fbconn->rx_buf);
 		fb_update_cookies(fbconn->fba, fbconn->rx_buf);
 
 #ifdef HAVE_ZLIB
 		if (strstr(fbconn->rx_buf, "Content-Encoding: gzip"))
 		{
 			/* we've received compressed gzip data, decompress */
-			if (zlib_inflate != NULL)
-			{
-				gchar *gunzipped;
-				gunzipped = fb_gunzip((const guchar *)tmp, &len);
-				g_free(tmp);
-				tmp = gunzipped;
-			}
+			gchar *gunzipped;
+			gunzipped = fb_gunzip((const guchar *)tmp, &len);
+			g_free(tmp);
+			tmp = gunzipped;
 		}
 #endif
 	}
@@ -166,8 +198,10 @@ static void fb_connection_process_data(FacebookConnection *fbconn)
 	g_free(fbconn->rx_buf);
 	fbconn->rx_buf = NULL;
 
-	if (fbconn->callback != NULL)
+	if (fbconn->callback != NULL) {
+		purple_debug_info("facebook", "executing callback for %s\n", fbconn->url);
 		fbconn->callback(fbconn->fba, tmp, len, fbconn->user_data);
+	}
 
 	g_free(tmp);
 }
@@ -275,13 +309,13 @@ static void fb_post_or_get_connect_cb(gpointer data, gint source,
 
 	if (error_message)
 	{
+		purple_debug_error("facebook", "post_or_get_connect failure to %s\n", fbconn->url);
 		purple_debug_error("facebook", "post_or_get_connect_cb %s\n",
 				error_message);
 		fb_fatal_connection_cb(fbconn);
 		return;
 	}
 
-	purple_debug_info("facebook", "post_or_get_connect_cb\n");
 	fbconn->fd = source;
 
 	/* TODO: Check the return value of write() */
@@ -318,8 +352,6 @@ static void fb_host_lookup_cb(GSList *hosts, gpointer data,
 	gchar *ip_address;
 	FacebookAccount *fba;
 	PurpleDnsQueryData *query;
-
-	purple_debug_info("facebook", "updating cache of dns addresses\n");
 
 	/* Extract variables */
 	host_lookup_list = data;
@@ -375,9 +407,6 @@ static void fb_host_lookup_cb(GSList *hosts, gpointer data,
 		hosts = g_slist_delete_link(hosts, hosts);
 	}
 
-	purple_debug_info("facebook", "Host %s has IP %s\n",
-			hostname, ip_address);
-
 	g_hash_table_insert(fba->hostname_ip_cache, hostname, ip_address);
 }
 
@@ -425,6 +454,11 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	gchar *real_url;
 	gboolean is_proxy = FALSE;
 	const gchar *user_agent;
+	const gchar* const *languages;
+	gchar *language_names;
+	PurpleProxyInfo *proxy_info = NULL;
+	gchar *proxy_auth;
+	gchar *proxy_auth_base64;
 
 	/* TODO: Fix keepalive and use it as much as possible */
 	keepalive = FALSE;
@@ -432,28 +466,36 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	if (host == NULL)
 		host = "www.facebook.com";
 
-	if (fba && fba->account && fba->account->proxy_info &&
-		(fba->account->proxy_info->type == PURPLE_PROXY_HTTP ||
-		(fba->account->proxy_info->type == PURPLE_PROXY_USE_GLOBAL &&
-			purple_global_proxy_get_info() &&
-			purple_global_proxy_get_info()->type ==
-					PURPLE_PROXY_HTTP)))
+	if (fba && fba->account && !(method & FB_METHOD_SSL))
+	{
+		proxy_info = purple_proxy_get_setup(fba->account);
+		if (purple_proxy_info_get_type(proxy_info) == PURPLE_PROXY_USE_GLOBAL)
+			proxy_info = purple_global_proxy_get_info();
+		if (purple_proxy_info_get_type(proxy_info) == PURPLE_PROXY_HTTP)
+		{
+			is_proxy = TRUE;
+		}	
+	}
+	if (is_proxy == TRUE)
 	{
 		real_url = g_strdup_printf("http://%s%s", host, url);
-		is_proxy = TRUE;
 	} else {
 		real_url = g_strdup(url);
 	}
 
 	cookies = fb_cookies_to_string(fba);
-	user_agent = purple_account_get_string(fba->account, "user-agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_6; zh-cn)");
+	user_agent = purple_account_get_string(fba->account, "user-agent", "Opera/9.50 (Windows NT 5.1; U; en-GB)");
+	
+	if (method & FB_METHOD_POST && !postdata)
+		postdata = "";
 
 	/* Build the request */
 	request = g_string_new(NULL);
 	g_string_append_printf(request, "%s %s HTTP/1.0\r\n",
 			(method & FB_METHOD_POST) ? "POST" : "GET",
 			real_url);
-	g_string_append_printf(request, "Host: %s\r\n", host);
+	if (is_proxy == FALSE)
+		g_string_append_printf(request, "Host: %s\r\n", host);
 	g_string_append_printf(request, "Connection: %s\r\n",
 			(keepalive ? "Keep-Alive" : "close"));
 	g_string_append_printf(request, "User-Agent: %s\r\n", user_agent);
@@ -466,13 +508,29 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	g_string_append_printf(request, "Accept: */*\r\n");
 	g_string_append_printf(request, "Cookie: isfbe=false;%s\r\n", cookies);
 #ifdef HAVE_ZLIB
-	if (zlib_inflate != NULL)
-		g_string_append_printf(request, "Accept-Encoding: gzip\r\n");
+	g_string_append_printf(request, "Accept-Encoding: gzip\r\n");
 #endif
+	if (is_proxy == TRUE)
+	{
+		if (purple_proxy_info_get_username(proxy_info) &&
+			purple_proxy_info_get_password(proxy_info))
+		{
+			proxy_auth = g_strdup_printf("%s:%s", purple_proxy_info_get_username(proxy_info), purple_proxy_info_get_password(proxy_info));
+			proxy_auth_base64 = purple_base64_encode((guchar *)proxy_auth, strlen(proxy_auth));
+			g_string_append_printf(request, "Proxy-Authorization: Basic %s\r\n", proxy_auth_base64);
+			g_free(proxy_auth_base64);
+			g_free(proxy_auth);
+		}
+	}
 
+	/* Tell the server what language we accept, so that we get error messages in our language (rather than our IP's) */
+	languages = g_get_language_names();
+	language_names = g_strjoinv(", ", (gchar **)languages);
+	purple_util_chrreplace(language_names, '_', '-');
+	g_string_append_printf(request, "Accept-Language: %s\r\n", language_names);
+	g_free(language_names);
 
-	purple_debug_misc("facebook", "sending request headers:\n%s\n",
-			request->str);
+	purple_debug_info("facebook", "getting url %s\n", url);
 
 	g_string_append_printf(request, "\r\n");
 	if (method & FB_METHOD_POST)
@@ -482,11 +540,11 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	 * it in the debug log.  Without this condition a user's password is
 	 * printed in the debug log */
 	if (method == FB_METHOD_POST)
-		purple_debug_misc("facebook", "sending request data:\n%s\n",
+		purple_debug_info("facebook", "sending request data:\n%s\n",
 			postdata);
 
 	g_free(cookies);
-	g_free(real_url);
+
 	/*
 	 * Do a separate DNS lookup for the given host name and cache it
 	 * for next time.
@@ -500,16 +558,13 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 	 *       the TTL returned by the DNS server.  We should expire things
 	 *       from the cache after some amount of time.
 	 */
-	if (!is_proxy)
+	if (!is_proxy && !(method & FB_METHOD_SSL))
 	{
 		/* Don't do this for proxy connections, since proxies do the DNS lookup */
 		gchar *host_ip;
 
 		host_ip = g_hash_table_lookup(fba->hostname_ip_cache, host);
 		if (host_ip != NULL) {
-			purple_debug_info("facebook",
-					"swapping original host %s with cached value of %s\n",
-					host, host_ip);
 			host = host_ip;
 		} else if (fba->account && !fba->account->disconnecting) {
 			GSList *host_lookup_list = NULL;
@@ -529,6 +584,7 @@ void fb_post_or_get(FacebookAccount *fba, FacebookMethod method,
 
 	fbconn = g_new0(FacebookConnection, 1);
 	fbconn->fba = fba;
+	fbconn->url = real_url;
 	fbconn->method = method;
 	fbconn->hostname = g_strdup(host);
 	fbconn->request = request;

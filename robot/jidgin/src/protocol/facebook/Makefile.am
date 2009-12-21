@@ -18,10 +18,13 @@ libfacebook_la_SOURCES = fb_blist.c \
                          fb_messages.c \
                          fb_notifications.c \
                          fb_search.c \
+                         fb_json.c \
+                         fb_util.c \
+                         fb_friendlist.c \
                          libfacebook.c
 
 libfacebook_la_LDFLAGS = -module -avoid-version
-libfacebook_la_LIBADD = $(PURPLE_LIBS) $(GLIB_LIBS)
+libfacebook_la_LIBADD = $(PURPLE_LIBS) $(GLIB_LIBS) ${GJSON1_LIBS}
 
 AM_CPPFLAGS = \
         -DDATADIR=\"$(PURPLE_DATADIR)\" \
@@ -31,4 +34,5 @@ AM_CPPFLAGS = \
 	-std=gnu99 \
 	$(PURPLE_CFLAGS) \
 	$(GLIB_CFLAGS) \
+	$(GJSON1_CFLAGS) \
 	$(DEBUG_CFLAGS)
