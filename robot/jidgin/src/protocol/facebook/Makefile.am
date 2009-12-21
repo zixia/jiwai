@@ -21,6 +21,7 @@ libfacebook_la_SOURCES = fb_blist.c \
                          fb_json.c \
                          fb_util.c \
                          fb_friendlist.c \
+                         fb_conversation.c \
                          libfacebook.c
 
 libfacebook_la_LDFLAGS = -module -avoid-version
