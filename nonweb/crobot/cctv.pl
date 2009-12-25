@@ -71,7 +71,9 @@ sub getTVGuideByChannel {
         $_ =~ s#<img[^>]+>##gi;
         $_ =~ s#<a[^>]+>##gi;
         $_ =~ s#<\/a>##gi;
-        if (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>\s+<div.*?>([^<>]*?)\s+#i) {
+        $_ =~ s#<div[^>]+>##gi;
+        $_ =~ s#<\/div>##gi;
+        if (m#<li.*?>([^\s]+)\s+([^<>]*?)</li>#i) {
             ($time, $show) = ($1, $2);
             ($hourNow) = split(":", $1);
         } elsif (m#<div\s+id="pgrow"><font.*?>([^<> ]+)<\/font>.*?([^<>]*?)\s+<\/div>#i) {
