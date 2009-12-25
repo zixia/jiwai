@@ -17,18 +17,6 @@ sub _postItem {
     my $err = `curl -s -u "$user:$pass" -Fstatus="$text" http://api.jiwai.de/statuses/update.json`;
 }
 
-=pod
-    'news'  => {
-        'username'  => 'wiki.news@jiwai.de',
-        'password'  => 'geekdem1ma',
-        'roiBegin'  => '新闻动态</span>',
-        'roiEnd'    => '更多新闻',
-        'withinRoi' => 0,
-        'match'     => '^<li>(.*?)</li>$',
-        'filter'    => 's/<[^<>]+>//g',
-        'prefix'    => '[新闻]',
-    },
-=cut
 my %roi = (
     'history'   => {
         'username'  => 'day.in.history@jiwai.de',
@@ -40,9 +28,19 @@ my %roi = (
         'filter'    => 's/<[^<>]+>//g',
         'prefix'    => '[历史]' . `date +%m/%d, `,
     },
+    'news'  => {
+        'username'  => 'wiki.news@jiwai.de',
+        'password'  => 'geekdem1ma',
+        'roiBegin'  => '新闻动态</span>',
+        'roiEnd'    => '更多新闻',
+        'withinRoi' => 0,
+        'match'     => '^<li>(.*?)</li>$',
+        'filter'    => 's/<[^<>]+>//g',
+        'prefix'    => '[新闻]',
+    },
 );
 
-my $url = 'http://zh.wikipedia.org/w/index.php?title=首页&variant=zh-cn';
+my $url = 'http://zh.wikipedia.org/zh-cn/Wikipedia:首页';
 open PAGE, "wget -A 'Googlebot' -q \'$url\' -O - |" or die "$!";
 
 while (<PAGE>) {
